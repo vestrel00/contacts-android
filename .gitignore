@@ -1,0 +1,17 @@
+# Generated files (class, dex, apk, etc)
+**/build/
+
+# Local configuration file (sdk path, etc)
+**/local.properties
+
+# Android Studio / IntelliJ
+*.idea/
+*.gradle/
+*.iml
+*~
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
