@@ -1,0 +1,58 @@
+buildscript {
+
+    // We could declare these in Kotlin objects in buildSrc/ but let's just declare it here.
+    // We'll utilize the buildSrc/ if this project gets bigger.
+    ext {
+        versions = [
+                name  : "1.0.0",
+                code  : 1,
+
+                build : [
+                        java   : [
+                                targetCompatibility: '1.7',
+                                sourceCompatibility: '1.7'
+                        ],
+                        android: [
+                                minSdk    : 19,
+                                targetSdk : 28,
+                                compileSdk: 28,
+
+                                tools     : '28.0.3',
+                                gradle    : '3.5.1',
+                        ]
+                ],
+
+                kotlin: [
+                        core      : '1.3.50'
+                ]
+        ]
+
+        // Notice that this library has a very minimal dependency list. Let's keep it that way =)
+        libraries = [
+                kotlin: [
+                        standardLib      : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin.core"
+                ]
+        ]
+    }
+
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$versions.build.android.gradle"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin.core"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,52 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+}
+
+android {
+    compileSdkVersion versions.build.android.compileSdk
+    buildToolsVersion versions.build.android.tools
+
+    defaultConfig {
+        versionName versions.name
+        versionCode versions.code
+
+        minSdkVersion versions.build.android.minSdk
+        targetSdkVersion versions.build.android.targetSdk
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility versions.build.java.sourceCompatibility
+        targetCompatibility versions.build.java.targetCompatibility
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+/*
+ * Enable experimental mode for Parcelize Android extension.
+ * See https://kotlinlang.org/docs/tutorials/android-plugin.html#parcelable
+ *
+ * Even though Parcelize is still labeled as "experimental", most developers say it is
+ * production-ready. The entities package benefits from this greatly, removing ugly boilerplate code
+ * and reducing lines of code by more than half!
+ *
+ * FIXME: Remove experimental flag when Parcelize is no longer experimental
+ */
+androidExtensions {
+    experimental = true
+}
+
+dependencies {
+    implementation libraries.kotlin.standardLib
+}
