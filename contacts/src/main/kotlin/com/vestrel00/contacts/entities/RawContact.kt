@@ -69,7 +69,9 @@ data class RawContact internal constructor(
 
     val name: Name?,
 
-    val nickname: Nickname?
+    val nickname: Nickname?,
+
+    val note: Note?
 
 ) : Entity, Parcelable {
 
@@ -91,7 +93,9 @@ data class RawContact internal constructor(
 
         name = name?.toMutableName(),
 
-        nickname = nickname?.toMutableNickname()
+        nickname = nickname?.toMutableNickname(),
+
+        note = note?.toMutableNote()
     )
 }
 
@@ -157,13 +161,18 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.nickname].
      */
-    var nickname: MutableNickname?
+    var nickname: MutableNickname?,
+
+    /**
+     * Mutable version of [RawContact.note].
+     */
+    var note: MutableNote?
 
 ) : Entity, Parcelable {
 
     constructor() : this(
         INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf(),
-        mutableListOf(), mutableListOf(), null, null
+        mutableListOf(), mutableListOf(), null, null, null
     )
 
     internal fun toRawContact() = RawContact(
@@ -184,6 +193,8 @@ data class MutableRawContact internal constructor(
 
         name = name?.toName(),
 
-        nickname = nickname?.toNickname()
+        nickname = nickname?.toNickname(),
+
+        note = note?.toNote()
     )
 }
