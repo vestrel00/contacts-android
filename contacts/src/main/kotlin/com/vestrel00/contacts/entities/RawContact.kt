@@ -50,7 +50,12 @@ data class RawContact internal constructor(
     /**
      * An immutable list of emails.
      */
-    val emails: List<Email>
+    val emails: List<Email>,
+
+    /**
+     * An immutable list of events.
+     */
+    val events: List<Event>
 
 ) : Entity, Parcelable {
 
@@ -62,7 +67,9 @@ data class RawContact internal constructor(
 
         company = company?.toMutableCompany(),
 
-        emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList()
+        emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList(),
+
+        events = events.asSequence().map { it.toMutableEvent() }.toMutableList()
     )
 }
 
@@ -99,11 +106,18 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.emails].
      */
-    var emails: MutableList<MutableEmail>
+    var emails: MutableList<MutableEmail>,
+
+    /**
+     * Mutable version of [RawContact.events].
+     */
+    var events: MutableList<MutableEvent>
 
 ) : Entity, Parcelable {
 
-    constructor() : this(INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf())
+    constructor() : this(
+        INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf()
+    )
 
     internal fun toRawContact() = RawContact(
         id = id,
@@ -113,6 +127,8 @@ data class MutableRawContact internal constructor(
 
         company = company?.toCompany(),
 
-        emails = emails.asSequence().map { it.toEmail() }.toList()
+        emails = emails.asSequence().map { it.toEmail() }.toList(),
+
+        events = events.asSequence().map { it.toEvent() }.toList()
     )
 }
