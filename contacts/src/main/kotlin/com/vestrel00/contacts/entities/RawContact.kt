@@ -6,6 +6,15 @@ import kotlinx.android.parcel.Parcelize
 /**
  * Contact data specific to an [android.accounts.Account].
  *
+ * ## Note
+ *
+ * A [Contact] may consist of one or more [RawContact]. A [RawContact] is an association between a
+ * Contact and an [android.accounts.Account]. Each [RawContact] is associated with several pieces of
+ * Data such as emails.
+ *
+ * The Contacts Provider may combine [RawContact] from several different Accounts. The same effect
+ * is achieved when merging / linking multiple contacts.
+ *
  * ## Developer notes
  *
  * MutableLists are used instead of MutableSets to allow for duplicates, which are allowed in the
