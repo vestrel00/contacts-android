@@ -81,7 +81,9 @@ data class RawContact internal constructor(
     /**
      * An immutable list of relations.
      */
-    val relations: List<Relation>
+    val relations: List<Relation>,
+
+    val sipAddress: SipAddress?
 
 ) : Entity, Parcelable {
 
@@ -109,7 +111,9 @@ data class RawContact internal constructor(
 
         phones = phones.asSequence().map { it.toMutablePhone() }.toMutableList(),
 
-        relations = relations.asSequence().map { it.toMutableRelation() }.toMutableList()
+        relations = relations.asSequence().map { it.toMutableRelation() }.toMutableList(),
+
+        sipAddress = sipAddress?.toMutableSipAddress()
     )
 }
 
@@ -190,14 +194,19 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.relations].
      */
-    var relations: MutableList<MutableRelation>
+    var relations: MutableList<MutableRelation>,
+
+    /**
+     * Mutable version of [RawContact.sipAddress].
+     */
+    var sipAddress: MutableSipAddress?
 
 ) : Entity, Parcelable {
 
     constructor() : this(
         INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, mutableListOf(),
-        mutableListOf()
+        mutableListOf(), null
     )
 
     internal fun toRawContact() = RawContact(
@@ -224,6 +233,8 @@ data class MutableRawContact internal constructor(
 
         phones = phones.asSequence().map { it.toPhone() }.toList(),
 
-        relations = relations.asSequence().map { it.toRelation() }.toList()
+        relations = relations.asSequence().map { it.toRelation() }.toList(),
+
+        sipAddress = sipAddress?.toSipAddress()
     )
 }
