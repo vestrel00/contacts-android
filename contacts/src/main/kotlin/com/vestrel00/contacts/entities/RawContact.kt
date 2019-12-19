@@ -65,7 +65,9 @@ data class RawContact internal constructor(
     /**
      * An immutable list of ims.
      */
-    val ims: List<Im>
+    val ims: List<Im>,
+
+    val name: Name?
 
 ) : Entity, Parcelable {
 
@@ -83,7 +85,9 @@ data class RawContact internal constructor(
 
         groupMemberships = groupMemberships.toMutableList(),
 
-        ims = ims.asSequence().map { it.toMutableIm() }.toMutableList()
+        ims = ims.asSequence().map { it.toMutableIm() }.toMutableList(),
+
+        name = name?.toMutableName()
     )
 }
 
@@ -139,13 +143,18 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.ims].
      */
-    var ims: MutableList<MutableIm>
+    var ims: MutableList<MutableIm>,
+
+    /**
+     * Mutable version of [RawContact.name].
+     */
+    var name: MutableName?
 
 ) : Entity, Parcelable {
 
     constructor() : this(
         INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf(),
-        mutableListOf(), mutableListOf()
+        mutableListOf(), mutableListOf(), null
     )
 
     internal fun toRawContact() = RawContact(
@@ -162,6 +171,8 @@ data class MutableRawContact internal constructor(
 
         groupMemberships = groupMemberships.toList(),
 
-        ims = ims.asSequence().map { it.toIm() }.toList()
+        ims = ims.asSequence().map { it.toIm() }.toList(),
+
+        name = name?.toName()
     )
 }
