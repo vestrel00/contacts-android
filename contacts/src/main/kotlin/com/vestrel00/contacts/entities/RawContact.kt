@@ -45,7 +45,12 @@ data class RawContact internal constructor(
      */
     val addresses: List<Address>,
 
-    val company: Company?
+    val company: Company?,
+
+    /**
+     * An immutable list of emails.
+     */
+    val emails: List<Email>
 
 ) : Entity, Parcelable {
 
@@ -55,7 +60,9 @@ data class RawContact internal constructor(
 
         addresses = addresses.asSequence().map { it.toMutableAddress() }.toMutableList(),
 
-        company = company?.toMutableCompany()
+        company = company?.toMutableCompany(),
+
+        emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList()
     )
 }
 
@@ -87,11 +94,16 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.company].
      */
-    var company: MutableCompany?
+    var company: MutableCompany?,
+
+    /**
+     * Mutable version of [RawContact.emails].
+     */
+    var emails: MutableList<MutableEmail>
 
 ) : Entity, Parcelable {
 
-    constructor() : this(INVALID_ID, INVALID_ID, mutableListOf(), null)
+    constructor() : this(INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf())
 
     internal fun toRawContact() = RawContact(
         id = id,
@@ -99,6 +111,8 @@ data class MutableRawContact internal constructor(
 
         addresses = addresses.asSequence().map { it.toAddress() }.toList(),
 
-        company = company?.toCompany()
+        company = company?.toCompany(),
+
+        emails = emails.asSequence().map { it.toEmail() }.toList()
     )
 }
