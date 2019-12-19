@@ -55,7 +55,12 @@ data class RawContact internal constructor(
     /**
      * An immutable list of events.
      */
-    val events: List<Event>
+    val events: List<Event>,
+
+    /**
+     * An immutable list of group memberships.
+     */
+    val groupMemberships: List<GroupMembership>
 
 ) : Entity, Parcelable {
 
@@ -69,7 +74,9 @@ data class RawContact internal constructor(
 
         emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList(),
 
-        events = events.asSequence().map { it.toMutableEvent() }.toMutableList()
+        events = events.asSequence().map { it.toMutableEvent() }.toMutableList(),
+
+        groupMemberships = groupMemberships.toMutableList()
     )
 }
 
@@ -111,12 +118,22 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.events].
      */
-    var events: MutableList<MutableEvent>
+    var events: MutableList<MutableEvent>,
+
+    /**
+     * Mutable version of [RawContact.groupMemberships].
+     *
+     * Only group memberships to groups that belong to the same account as this contact will be
+     * inserted. Group membership to the account's default group will not be deleted even if it
+     * is removed in this list!
+     */
+    var groupMemberships: MutableList<GroupMembership>
 
 ) : Entity, Parcelable {
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf()
+        INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf(),
+        mutableListOf()
     )
 
     internal fun toRawContact() = RawContact(
@@ -129,6 +146,8 @@ data class MutableRawContact internal constructor(
 
         emails = emails.asSequence().map { it.toEmail() }.toList(),
 
-        events = events.asSequence().map { it.toEvent() }.toList()
+        events = events.asSequence().map { it.toEvent() }.toList(),
+
+        groupMemberships = groupMemberships.toList()
     )
 }
