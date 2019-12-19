@@ -60,7 +60,12 @@ data class RawContact internal constructor(
     /**
      * An immutable list of group memberships.
      */
-    val groupMemberships: List<GroupMembership>
+    val groupMemberships: List<GroupMembership>,
+
+    /**
+     * An immutable list of ims.
+     */
+    val ims: List<Im>
 
 ) : Entity, Parcelable {
 
@@ -76,7 +81,9 @@ data class RawContact internal constructor(
 
         events = events.asSequence().map { it.toMutableEvent() }.toMutableList(),
 
-        groupMemberships = groupMemberships.toMutableList()
+        groupMemberships = groupMemberships.toMutableList(),
+
+        ims = ims.asSequence().map { it.toMutableIm() }.toMutableList()
     )
 }
 
@@ -127,13 +134,18 @@ data class MutableRawContact internal constructor(
      * inserted. Group membership to the account's default group will not be deleted even if it
      * is removed in this list!
      */
-    var groupMemberships: MutableList<GroupMembership>
+    var groupMemberships: MutableList<GroupMembership>,
+
+    /**
+     * Mutable version of [RawContact.ims].
+     */
+    var ims: MutableList<MutableIm>
 
 ) : Entity, Parcelable {
 
     constructor() : this(
         INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf(),
-        mutableListOf()
+        mutableListOf(), mutableListOf()
     )
 
     internal fun toRawContact() = RawContact(
@@ -148,6 +160,8 @@ data class MutableRawContact internal constructor(
 
         events = events.asSequence().map { it.toEvent() }.toList(),
 
-        groupMemberships = groupMemberships.toList()
+        groupMemberships = groupMemberships.toList(),
+
+        ims = ims.asSequence().map { it.toIm() }.toList()
     )
 }
