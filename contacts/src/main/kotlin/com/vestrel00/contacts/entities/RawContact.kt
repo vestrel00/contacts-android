@@ -31,12 +31,27 @@ data class RawContact internal constructor(
      *
      * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
      */
-    override val id: Long
+    override val id: Long,
+
+    /**
+     * The ID of the [Contact] that this [RawContact] is associated with.
+     *
+     * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
+     */
+    val contactId: Long,
+
+    /**
+     * An immutable list of addresses.
+     */
+    val addresses: List<Address>
 
 ) : Entity, Parcelable {
 
     fun toMutableRawContact() = MutableRawContact(
-        id = id
+        id = id,
+        contactId = contactId,
+
+        addresses = addresses.asSequence().map { it.toMutableAddress() }.toMutableList()
     )
 }
 
@@ -51,13 +66,28 @@ data class MutableRawContact internal constructor(
      *
      * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
-    override val id: Long
+    override val id: Long,
+
+    /**
+     * See [RawContact.contactId].
+     *
+     * This may be an INVALID_ID if not retrieved from the DB via a query.
+     */
+    val contactId: Long,
+
+    /**
+     * Mutable version of [RawContact.addresses].
+     */
+    var addresses: MutableList<MutableAddress>
 
 ) : Entity, Parcelable {
 
-    constructor() : this(INVALID_ID)
+    constructor() : this(INVALID_ID, INVALID_ID, mutableListOf())
 
     internal fun toRawContact() = RawContact(
-        id = id
+        id = id,
+        contactId = contactId,
+
+        addresses = addresses.asSequence().map { it.toAddress() }.toList()
     )
 }

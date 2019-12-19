@@ -16,6 +16,9 @@ interface Entity {
      */
     fun hasValidId(): Boolean = id > INVALID_ID
 
+    interface Type {
+        val value: Int
+    }
 }
 
 internal const val INVALID_ID: Long = -1L
