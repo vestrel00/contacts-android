@@ -39,8 +39,16 @@ data class Event internal constructor(
      *
      * Only the day, month, and year will be recorded!
      *
-     * For query matching, use [com.vestrel00.contacts.util.toWhereString] to convert these event
-     * dates to the correct format.
+     * ## Query matching
+     *
+     * To match event dates in queries, the [Date] must be converted to a string first before using
+     * it in the where clause. Use [com.vestrel00.contacts.util.toWhereString] to convert [Date]s to
+     * the correct format required to match event dates.
+     *
+     * Unlike other dates in other entities in this library that are stored as milliseconds, these
+     * dates are stored in the Content Provider DB as strings in he format of yyyy-MM-dd
+     * (e.g. 2019-08-21). Therefore, in order to correctly perform queries with event dates in the
+     * where clause, the date value must first be converted using this function.
      */
     val date: Date?
 
