@@ -117,7 +117,7 @@ private fun <T : Any> Collection<T>.where(where: (T) -> Where, separator: String
  * The above will never match any row because 'johnson' = 'colorado' is never true.
  */
 private fun where(field: AbstractField, operator: String, value: Any?): String {
-    var where = "${field.columnName} $operator $value"
+    var where = "${field.columnName} $operator ${value.toSqlString()}"
     if (field.mimeType.value.isNotBlank()) {
         where += " AND ${Fields.MimeType.columnName} = '${field.mimeType.value}'"
     }
@@ -171,3 +171,15 @@ private class DoesNotContain(field: AbstractField, value: String) : NotLike(fiel
 private class JoinedWhere(whereString: String) : Where(whereString)
 
 internal object NoWhere : Where("")
+
+private fun Any?.toSqlString(): String = when (this) {
+    null -> "NULL"
+    is Boolean -> if (this) "1" else "0"
+    is String -> DatabaseUtils.sqlEscapeString(this)
+    is Collection<*> -> this.map { it?.toSqlString() }
+        .joinToString(separator = ", ", prefix = "(", postfix = ")")
+    is Entity.Type -> value.toSqlString()
+    is Date -> time.toSqlString()
+    is MimeType -> value.toSqlString()
+    else -> this.toString()
+}
