@@ -86,6 +86,82 @@ fun AbstractField.isNotNull(): Where = IsNot(this, null)
  */
 fun AbstractField.isNotNullOrEmpty(): Where = this.isNotNull() and IsNot(this, "")
 
+// Collection convenience functions
+
+/**
+ * Transforms each item in this collection to a [Where] and combines them with the "OR" operator.
+ *
+ * For example;
+ *
+ * ```
+ * val letters = listOf("a", "b", "c")
+ * val whereStartsWithLetter = letters whereOr { Fields.Contact.DisplayName startsWith it }
+ * ```
+ *
+ * Outputs
+ *
+ * ```
+ * // (display_name LIKE 'a%%') OR (display_name LIKE 'b%%') OR (display_name LIKE 'c%%')
+ * ```
+ *
+ * This may also be applied to a collection of [AbstractField]s. For example,
+ *
+ * ```
+ * val fields = listOf(Fields.Contact.DisplayName, Fields.Email.Address)
+ * val whereFieldsStartsWithLetter = fields whereOr { it startsWith "letter" }
+ * ```
+ *
+ * Outputs
+ *
+ * ```
+ * // (display_name LIKE 'letter%%') OR (data1 LIKE 'letter%%' <omitted for brevity>)
+ * ```
+ */
+// Not inlined because of private functions and classes.
+infix fun <T : Any> Collection<T>.whereOr(where: (T) -> Where): Where = where(where, "OR")
+
+/**
+ * Transforms each item in this collection to a [Where] and combines them with the "AND" operator.
+ *
+ * For example;
+ *
+ * ```
+ * val letters = listOf("a", "b", "c")
+ * val whereDoesNotStartWithLetter =
+ *      letters whereAnd { Fields.Contact.DisplayName doesNotStartWith it }
+ * ```
+ *
+ * Outputs
+ *
+ * ```
+ * (display_name NOT LIKE 'a%%') AND (display_name NOT LIKE 'b%%') AND (display_name NOT LIKE 'c%%')
+ * ```
+ *
+ * This may also be applied to a collection of [AbstractField]s. For example,
+ *
+ * ```
+ * val fields = listOf(Fields.Contact.DisplayName, Fields.Email.Address)
+ * val whereFieldsDoesNotStartWithLetter = fields whereAnd { it doesNotStartWith "letter" }
+ * ```
+ *
+ * Outputs
+ *
+ * ```
+ * // (display_name NOT LIKE 'letter%%') AND (data1 NOT LIKE 'letter%%' <omitted for brevity>)
+ */
+// Not inlined because of private functions and classes.
+infix fun <T : Any> Collection<T>.whereAnd(where: (T) -> Where): Where = where(where, "AND")
+
+/**
+ * See [whereOr].
+ */
+infix fun FieldSet.whereOr(where: (AbstractField) -> Where): Where = fields.whereOr(where)
+
+/**
+ * See [whereAnd].
+ */
+infix fun FieldSet.whereAnd(where: (AbstractField) -> Where): Where = fields.whereAnd(where)
+
 // Note that the above functions are not inlined because it requires this private fun to be public.
 private fun <T : Any> Collection<T>.where(where: (T) -> Where, separator: String): Where {
     if (isEmpty()) {
