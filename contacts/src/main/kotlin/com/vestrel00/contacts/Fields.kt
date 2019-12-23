@@ -4,6 +4,7 @@ package com.vestrel00.contacts
 
 import android.provider.BaseColumns
 import android.provider.ContactsContract.Data
+import android.provider.ContactsContract.RawContacts
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MimeType.SIP_ADDRESS
 import com.vestrel00.contacts.entities.MimeType.UNKNOWN
@@ -15,7 +16,6 @@ import android.provider.ContactsContract.CommonDataKinds.Nickname as NicknameCol
 import android.provider.ContactsContract.CommonDataKinds.Note as NoteColumns
 import android.provider.ContactsContract.CommonDataKinds.Organization as CompanyColumns
 import android.provider.ContactsContract.CommonDataKinds.Phone as PhoneColumns
-import android.provider.ContactsContract.CommonDataKinds.Photo as PhotoColumns
 import android.provider.ContactsContract.CommonDataKinds.Relation as RelationColumns
 import android.provider.ContactsContract.CommonDataKinds.SipAddress as SipAddressColumns
 import android.provider.ContactsContract.CommonDataKinds.StructuredName as NameColumns
@@ -93,9 +93,8 @@ object Fields {
     @JvmField
     val Phone = PhoneFields()
 
-    // Do not add Photo to AllFields even though it is part of the Data table.
-    // These fields are used exclusively in ContactPhoto and RawContactPhoto extension functions.
-    internal val Photo = PhotoFields()
+    // Do not add RawContact to AllFields because this does not belong in Data table queries.
+    internal val RawContact = RawContactFields()
 
     @JvmField
     val RawContactId = AbstractField(Data.RAW_CONTACT_ID, UNKNOWN)
@@ -404,13 +403,23 @@ class PhoneFields : FieldSet(MimeType.PHONE) {
     override val fields = setOf(Type, Label, Number, NormalizedNumber)
 }
 
-internal class PhotoFields : FieldSet(MimeType.PHOTO) {
+/*
+ * This and all of its fields are used for the RawContacts table operations!
+ *
+ * This is technically not the most correct place to put this but it is the simplest and most
+ * convenient place.
+ */
+internal class RawContactFields : FieldSet(UNKNOWN) {
 
-    val PhotoFileId = AbstractField(PhotoColumns.PHOTO_FILE_ID, mimeType)
+    val Id = AbstractField(BaseColumns._ID, UNKNOWN)
 
-    val PhotoThumbnail = AbstractField(PhotoColumns.PHOTO, mimeType)
+    val ContactId = AbstractField(RawContacts.CONTACT_ID, mimeType)
 
-    override val fields = setOf(PhotoFileId, PhotoThumbnail)
+    val AccountName = AbstractField(RawContacts.ACCOUNT_NAME, mimeType)
+
+    val AccountType = AbstractField(RawContacts.ACCOUNT_TYPE, mimeType)
+
+    override val fields = setOf(Id, ContactId, AccountName, AccountType)
 }
 
 class RelationFields : FieldSet(MimeType.RELATION) {
