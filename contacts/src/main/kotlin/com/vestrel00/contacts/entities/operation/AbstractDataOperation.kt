@@ -14,15 +14,31 @@ import com.vestrel00.contacts.equalTo
 
 private val TABLE_URI = Table.DATA.uri
 
+/**
+ * Builds [ContentProviderOperation]s for [Table.DATA].
+ */
 internal abstract class AbstractDataOperation<T : DataEntity> {
 
     abstract val mimeType: MimeType
 
+    /**
+     * There [Where] clause used as the selection for queries, updates, and deletes.
+     */
     protected fun selection(rawContactId: Long): Where =
         (Fields.MimeType equalTo mimeType.value) and (Fields.RawContactId equalTo rawContactId)
 
+    /**
+     * Sets the [data] values into the operation via the provided [setValue] function.
+     */
     abstract fun setData(data: T, setValue: (field: AbstractField, value: Any?) -> Unit)
 
+    /**
+     * Returns a [ContentProviderOperation] for adding [it]'s properties to the insert operation.
+     * This assumes that this will be used in a batch of operations where the first operation is the
+     * insertion of a new RawContact.
+     *
+     * Returns null if [it] is blank.
+     */
     fun insert(it: T): ContentProviderOperation? {
         if (it.isBlank()) {
             return null
@@ -49,6 +65,13 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
         return operation.build()
     }
 
+    /**
+     * Returns [ContentProviderOperation]s for adding [these]'s properties to the insert operation.
+     * This assumes that this will be used in a batch of operations where the first operation is the
+     * insertion of a new RawContact.
+     *
+     * Blank entities are excluded.
+     */
     fun insert(these: List<T>): List<ContentProviderOperation> =
         mutableListOf<ContentProviderOperation>().apply {
             for (it in these) {
@@ -56,6 +79,13 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             }
         }
 
+    /**
+     * Provides the [ContentProviderOperation] for updating, inserting, or deleting the data row(s)
+     * (represented by the [entities]) of the raw contact with the given [rawContactId].
+     *
+     * Use this function for data rows of a contact with [mimeType] that may occur more than once.
+     * For example, a contact may have more than 1 data row for address, email, phone, etc.
+     */
     fun updateInsertOrDelete(
         entities: Collection<T>, rawContactId: Long, contentResolver: ContentResolver
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
@@ -106,6 +136,13 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
         }
     }
 
+    /**
+     * Provides the [ContentProviderOperation] for updating, inserting, or deleting the data row
+     * (represented by the [entity]) of the raw contact with the given [rawContactId].
+     *
+     * Use this function for data rows of a contact with [mimeType] that may only occur once.
+     * For example, a contact may only have 1 data row for company, name, note, etc.
+     */
     fun updateInsertOrDelete(
         entity: T?, rawContactId: Long, contentResolver: ContentResolver
     ):
@@ -132,6 +169,10 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             deleteDataRows(rawContactId)
         }
 
+    /**
+     * Provides the [ContentProviderOperation] for inserting the data row (represented by the
+     * [entity]) for the given [RawContact] with [rawContactId].
+     */
     protected fun insertDataRow(entity: T, rawContactId: Long): ContentProviderOperation {
         val operation = newInsert(TABLE_URI)
             // The Contacts Provider automatically sets the value of the CONTACT_ID and prohibits
@@ -151,6 +192,10 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
         return operation.build()
     }
 
+    /**
+     * Provides the [ContentProviderOperation] for updating the data row (represented by the
+     * [entity]) with the given [dataRowId].
+     */
     private fun updateDataRow(entity: T, dataRowId: Long): ContentProviderOperation {
         val operation = newUpdate(TABLE_URI)
             .withSelection("${Fields.Id equalTo dataRowId}", null)
@@ -163,16 +208,26 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
         return operation.build()
     }
 
+    /**
+     * Provides the [ContentProviderOperation] for deleting the data rows of type [T] of the
+     * [RawContact] with [rawContactId].
+     */
     private fun deleteDataRows(rawContactId: Long): ContentProviderOperation =
         newDelete(TABLE_URI)
             .withSelection("${selection(rawContactId)}", null)
             .build()
 
+    /**
+     * Provides the [ContentProviderOperation] for deleting the data row with the given [dataRowId].
+     */
     protected fun deleteDataRowWithId(dataRowId: Long): ContentProviderOperation =
         newDelete(TABLE_URI)
             .withSelection("${Fields.Id equalTo dataRowId}", null)
             .build()
 
+    /**
+     * Provides the [Cursor] to the data rows of type [T] of the [RawContact] with [rawContactId].
+     */
     private fun ContentResolver.dataRowIdsFor(rawContactId: Long): Cursor? = query(
         TABLE_URI,
         arrayOf(Fields.Id.columnName),
