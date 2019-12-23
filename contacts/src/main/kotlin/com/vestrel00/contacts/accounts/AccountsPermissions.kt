@@ -5,8 +5,14 @@ import android.content.Context
 import com.vestrel00.contacts.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
 import com.vestrel00.contacts.isPermissionGrantedFor
 
+/**
+ * Provides functions for checking permissions.
+ */
 interface AccountsPermissions {
 
+    /**
+     * Returns true if [GET_ACCOUNTS_PERMISSION] is granted.
+     */
     fun canGetAccounts(): Boolean
 
     companion object {

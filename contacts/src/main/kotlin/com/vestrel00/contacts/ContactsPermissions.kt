@@ -12,10 +12,20 @@ import com.vestrel00.contacts.accounts.AccountsPermissions
 internal fun ContactsPermissions(context: Context): ContactsPermissions =
     ContactsPermissionsImpl(context, AccountsPermissions(context))
 
+/**
+ * Provides functions for checking required permissions.
+ */
 interface ContactsPermissions {
 
+    /**
+     * Returns true if [READ_PERMISSION] is granted.
+     */
     fun canQuery(): Boolean
 
+    /**
+     * Returns true if [WRITE_PERMISSION] and [AccountsPermissions.GET_ACCOUNTS_PERMISSION] are
+     * granted.
+     */
     fun canInsertUpdateDelete(): Boolean
 
     companion object {
