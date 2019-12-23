@@ -8,36 +8,237 @@ import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
 import kotlin.math.min
 
+/**
+ * Queries the Contacts data table and returns one or more contacts matching the search criteria.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All queries will return an empty list or null result if the permission
+ * is not granted.
+ *
+ * ## Usage
+ *
+ * Here is an example query that returns the first 10 [Contact]s, skipping the first 5, where the
+ * contact's name starts with "john" or has an email ending with "gmail", ordered by the name in
+ * ascending order (not ignoring case) and email (ignoring case) in descending order respectively.
+ * Only contacts in the given account are included. Only the full name and email address attributes
+ * of the [Contact] objects are included.
+ *
+ * In Kotlin,
+ *
+ * ```kotlin
+ * import com.vestrel00.contacts.Fields.Name
+ * import com.vestrel00.contacts.Fields.Address
+ *
+ * val contacts : List<Contact> = query.
+ *      .accounts(account)
+ *      .include(Name, Address)
+ *      .where((Name.DisplayName startsWith "john") and (Email.Address endsWith "gmail"))
+ *      .orderBy(Name.DisplayName.asc(), Email.Address.desc(true))
+ *      .offset(5)
+ *      .limit(10)
+ *      .find()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * import static com.vestrel00.contacts.Fields.*;
+ * import static com.vestrel00.contacts.WhereKt.*;
+ * import static com.vestrel00.contacts.OrderByKt.*;
+ *
+ * List<Contact> contacts = query
+ *      .accounts(account)
+ *      .include(Name, Address)
+ *      .where(startsWith(Name.DisplayName, "john").and(endsWith(Email.Address, "gmail")))
+ *      .orderBy(asc(Name.DisplayName), desc(Email.Address, true))
+ *      .offset(5)
+ *      .limit(10)
+ *      .find();
+ * ```
+ *
+ * ## Note
+ *
+ * All functions here are safe to call in the Main / UI thread EXCEPT for the [find] and [findFirst]
+ * functions, which should be called in a worker thread in order to prevent blocking the UI.
+ *
+ * ## Developer Notes
+ *
+ * This API is unable to use the ORDER BY, LIMIT, and OFFSET functions of a raw database query. The
+ * Android contacts **data table** uses generic column names (e.g. data1, data2, ...) using the
+ * column 'mimetype' to distinguish the type of data in that generic column. For example, the column
+ * name of [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is
+ * 'data1'. This means that if you order by the display name, you are also ordering by the formatted
+ * address and all other columns whose value is 'data1'. This API works around this limitation by
+ * performing the ordering, limiting, and offsetting manually after the contacts have been retrieved
+ * before returning it to the consumer. Note that there is no workaround for the [include] function
+ * because the [ContentResolver.query] function only takes in an array of column names.
+ *
+ * Each row in the data table consists of a piece of contact data (e.g. a phone number), its
+ * mimetype, and the associated contact id. A row does not contain all of the data for a contact.
+ * A contact in the **data table** may have 1 or more entries. Combined with generic column names,
+ * this makes using the ORDER BY, LIMIT, and OFFSET functions of a raw database query impossible.
+ *
+ * With that said, Kotlin's Flow or reactive frameworks like RxJava and Java 8 Streams cannot really
+ * be supported. We cannot emit complete contact instances and still honor ORDER BY, LIMIT, and
+ * OFFSET functions because contact Data is scattered without order in the Data table.
+ */
 interface Query {
 
+    /**
+     * Limits this query to only search for contacts associated with the given accounts.
+     *
+     * If no accounts are specified, then all contacts from all accounts are searched.
+     */
     fun accounts(vararg accounts: Account): Query
 
+    /**
+     * Limits this query to only search for contacts associated with the given accounts.
+     *
+     * If no accounts are specified, then all contacts from all accounts are searched.
+     */
     fun accounts(accounts: Collection<Account>): Query
 
+    /**
+     * Includes the given set of [fields] in the resulting contact object(s).
+     *
+     * If no fields are specified, then all fields are included. Otherwise, only the specified
+     * fields will be included in addition to the contact id, which is always included.
+     *
+     * Fields that are included will not guarantee non-null attributes in the returned contact
+     * object instances.
+     *
+     * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * Note that the Android contacts **data table** uses generic column names (e.g. data1, data2,
+     * ...) using the column 'mimetype' to distinguish the type of data in that generic column. For
+     * example, the column name of [NameFields.DisplayName] is the same as
+     * [AddressFields.FormattedAddress], which is 'data1'. This means that
+     * [AddressFields.FormattedAddress] is also included when [NameFields.DisplayName] is included.
+     * There is no workaround for this because the [ContentResolver.query] function only takes in
+     * an array of column names.
+     *
+     * ## IMPORTANT!!!
+     *
+     * Do not perform updates on contacts returned by a query where all fields are not included as
+     * it will result in data loss!!
+     */
     fun include(vararg fields: Field): Query
 
+    /**
+     * See [Query.include].
+     */
     fun include(fields: Collection<Field>): Query
 
+    /**
+     * See [Query.include].
+     */
     fun include(fields: Sequence<Field>): Query
 
+    /**
+     * Filters the returned [Contact]s matching the criteria defined by the [where].
+     *
+     * If not specified or null, then all [Contact]s are returned (which is limited by [limit]).
+     */
     fun where(where: Where?): Query
 
+    /**
+     * Orders the returned [Contact]s using one or more [orderBy]s.
+     *
+     * You may only order by the [ContactFields.Id] and any combination of the included [Field]s.
+     * This will throw an [IllegalArgumentException] if ordering by a field that is not included in
+     * the query. Read the **LIMITATIONS** section in the class doc to learn more.
+     *
+     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase`
+     * as an optional parameter.
+     *
+     * If not specified, then contacts are ordered by ID in ascending order.
+     */
     fun orderBy(vararg orderBy: OrderBy): Query
 
+    /**
+     * See [Query.orderBy].
+     */
     fun orderBy(orderBy: Collection<OrderBy>): Query
 
+    /**
+     * See [Query.orderBy].
+     */
     fun orderBy(orderBy: Sequence<OrderBy>): Query
 
+    /**
+     * Skips results 0 to [offset].
+     *
+     * If not specified, offset value of 0 is used.
+     */
     fun offset(offset: Int): Query
 
+    /**
+     * Limits the maximum number of returned [Contact]s to the given [limit].
+     *
+     * If not specified, limit value of [Int.MAX_VALUE] is used.
+     */
     fun limit(limit: Int): Query
 
+    /**
+     * Returns a list of [Contact]s matching the preceding query options.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun find(): List<Contact>
 
+    /**
+     * Returns a list of [Contact]s matching the preceding query options.
+     *
+     * ## Cancellation
+     *
+     * The number of contacts and contact data found and processed may be large, which results
+     * in this operation to take a while. Therefore, cancellation is supported while the contacts
+     * list is being built. To cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun find(cancel: () -> Boolean = { false }): List<Contact>
     fun find(cancel: () -> Boolean): List<Contact>
 
+    /**
+     * Returns the first [Contact] matching the preceding query options.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun findFirst(): Contact?
 
+    /**
+     * Returns the first [Contact] matching the preceding query options.
+     *
+     * ## Cancellation
+     *
+     * The number of contacts and contact data found and processed may be large, which results
+     * in this operation to take a while. Therefore, cancellation is supported while the contacts
+     * list is being built. To cancel at ay time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun findFirst(cancel: () -> Boolean = { false }): Contact?
     fun findFirst(cancel: () -> Boolean): Contact?
 }
 
