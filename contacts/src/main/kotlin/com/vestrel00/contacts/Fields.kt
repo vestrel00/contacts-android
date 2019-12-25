@@ -21,6 +21,7 @@ import android.provider.ContactsContract.CommonDataKinds.SipAddress as SipAddres
 import android.provider.ContactsContract.CommonDataKinds.StructuredName as NameColumns
 import android.provider.ContactsContract.CommonDataKinds.StructuredPostal as AddressColumns
 import android.provider.ContactsContract.CommonDataKinds.Website as WebsiteColumns
+import android.provider.ContactsContract.Groups as GroupColumns
 
 /**
  * Represents a database field(s) / column(s) that maps to a Contact attribute.
@@ -67,6 +68,9 @@ object Fields {
 
     @JvmField
     val Event = EventFields()
+
+    // Do not add Group to AllFields because this does not belong in Data table queries.
+    internal val Group = GroupFields()
 
     @JvmField
     val GroupMembership = GroupMembershipFields()
@@ -287,6 +291,31 @@ class EventFields : FieldSet(MimeType.EVENT) {
     val Date = AbstractField(EventColumns.START_DATE, mimeType)
 
     override val fields = setOf(Type, Label, Date)
+}
+
+/*
+ * This and all of its fields are used for the Groups table operations!
+ *
+ * This is technically not the most correct place to put this but it is the simplest and most
+ * convenient place.
+ */
+internal class GroupFields : FieldSet(UNKNOWN) {
+
+    val Id = AbstractField(BaseColumns._ID, UNKNOWN)
+
+    val Title = AbstractField(GroupColumns.TITLE, mimeType)
+
+    val ReadOnly = AbstractField(GroupColumns.GROUP_IS_READ_ONLY, mimeType)
+
+    val Favorites = AbstractField(GroupColumns.FAVORITES, mimeType)
+
+    val AutoAdd = AbstractField(GroupColumns.AUTO_ADD, mimeType)
+
+    val AccountName = AbstractField(GroupColumns.ACCOUNT_NAME, mimeType)
+
+    val AccountType = AbstractField(GroupColumns.ACCOUNT_TYPE, mimeType)
+
+    override val fields = setOf(Id, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
 }
 
 class GroupMembershipFields : FieldSet(MimeType.GROUP_MEMBERSHIP) {
