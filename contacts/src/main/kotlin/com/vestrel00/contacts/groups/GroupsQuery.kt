@@ -9,22 +9,134 @@ import com.vestrel00.contacts.entities.cursor.GroupCursor
 import com.vestrel00.contacts.entities.mapper.GroupMapper
 import com.vestrel00.contacts.entities.table.Table
 
+/**
+ * Queries on the groups table.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All queries will return an empty list if the permission is not granted.
+ *
+ * ## Filtering
+ *
+ * Given the nature of groups, this library makes an assumption that there are not that many groups.
+ * Typical users usually have less than 10. Even those in large companies, have less than 100 (?)
+ * groups. This assumption means that the query function of groups need not be as extensive (or at
+ * all) as Contacts Query. Filter, order, offset, and limit functions are left to consumers to
+ * implement if they wish.
+ *
+ * ## Usage
+ *
+ * To get all groups for a given account;
+ *
+ * In Kotlin and Java,
+ *
+ * ```kotlin
+ * groupsQuery.fromAccount(account)
+ * ```
+ *
+ * ## Developer notes
+ *
+ * Groups are inextricably linked to Accounts. A group must be assigned to an account, if an account
+ * is available. The native Contacts app only shows groups that belong to the selected account. When
+ * there are no available accounts, the native Contacts app does not show the groups field because
+ * there are no rows in the groups table.
+ */
 interface GroupsQuery {
 
+    /**
+     * Limits the group(s) returned by this query to groups belonging to the given [account].
+     */
     fun account(account: Account): GroupsQuery
 
+    /**
+     * Limits the group(s) returned by this query to groups that match the given [groupIds].
+     */
     fun withIds(vararg groupIds: Long): GroupsQuery
 
+    /**
+     * See [GroupsQuery.withIds].
+     */
     fun withIds(groupIds: Collection<Long>): GroupsQuery
 
+    /**
+     * See [GroupsQuery.withIds].
+     */
     fun withIds(groupIds: Sequence<Long>): GroupsQuery
 
+    /**
+     * Returns the list of [Group]s belonging to the [Account] specified in [fromAccount] that match
+     * IDs specified in [withIds].
+     *
+     * If no [Account] or ID is provided, then this will return all [Groups] from all available
+     * [Account]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun find(): List<Group>
 
+    /**
+     * Returns the list of [Group]s belonging to the [Account] specified in [fromAccount] that match
+     * IDs specified in [withIds].
+     *
+     * If no [Account] or ID is provided, then this will return all [Groups] from all available
+     * [Account]s.
+     *
+     * ## Cancellation
+     *
+     * The number of group data found may take more than a few milliseconds to process. Therefore,
+     * cancellation is supported while the groups list is being built. To cancel at any time, the
+     * [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun find(cancel: () -> Boolean = { false }): List<Group>
     fun find(cancel: () -> Boolean): List<Group>
 
+    /**
+     * Returns the first [Group] belonging to the [Account] specified in [fromAccount] that match
+     * IDs specified in [withIds].
+     *
+     * If no [Account] or ID is provided, then this will return all [Groups] from all available
+     * [Account]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     fun findFirst(): Group?
-    
+
+    /**
+     * Returns the first [Group] belonging to the [Account] specified in [fromAccount] that match
+     * IDs specified in [withIds].
+     *
+     * If no [Account] or ID is provided, then this will return all [Groups] from all available
+     * [Account]s.
+     *
+     * ## Cancellation
+     *
+     * The number of group data found may take more than a few milliseconds to process. Therefore,
+     * cancellation is supported while the groups list is being built. To cancel at any time, the
+     * [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun findFirst(cancel: () -> Boolean = { false }): Group?
     fun findFirst(cancel: () -> Boolean): Group?
 }
 
