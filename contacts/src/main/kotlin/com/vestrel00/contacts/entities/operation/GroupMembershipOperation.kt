@@ -13,6 +13,7 @@ import com.vestrel00.contacts.entities.cursor.GroupMembershipCursor
 import com.vestrel00.contacts.entities.mapper.GroupMembershipMapper
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.Groups
+import com.vestrel00.contacts.util.account
 import com.vestrel00.contacts.util.accountForRawContactWithId
 
 internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>() {
@@ -25,6 +26,9 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
         setValue(Fields.GroupMembership.GroupId, data.groupId)
     }
 
+    /**
+     * Inserts all of the [groupMemberships] that belong to the given [account].
+     */
     fun insert(
         groupMemberships: Collection<GroupMembership>,
         account: Account,
@@ -45,6 +49,13 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
             .forEach { insert(it)?.let(::add) }
     }
 
+    /**
+     * Provides the [ContentProviderOperation] for updating, inserting, or deleting the
+     * [groupMemberships] data row(s) of the raw contact with the given [rawContactId].
+     *
+     * [GroupMembership]s that do not belong to the given [account] will be ignored. Also,
+     * memberships to default groups are never deleted.
+     */
     fun updateInsertOrDelete(
         groupMemberships: Collection<GroupMembership>,
         rawContactId: Long,
