@@ -8,26 +8,165 @@ import com.vestrel00.contacts.accounts.Accounts
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 
+/**
+ * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
+ * data table.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
+ * been granted already in these  examples for brevity. All inserts will do nothing if these
+ * permissions are not granted.
+ *
+ * ## Accounts
+ *
+ * The get accounts permission is required here because this API retrieves all available accounts,
+ * if any, and does the following;
+ *
+ * 1. If an account is not specified for the contacts being inserted via [forAccount];
+ *
+ *     - if an account is available, the first account is assigned for all raw contacts inserted
+ *     - if no account is available, no account is assigned for any raw contacts to be inserted
+ *
+ * 2. If an account is specified for the contacts being inserted via [forAccount];
+ *
+ *     - if the account specified is found in the list of accounts returned by the system, the
+ *     account is used
+ *     - if the account specified is not found in the list of accounts returned by the system, the
+ *     first account returned by the system is used
+ *
+ * In other words, this API does not allow raw contacts to not have an associated account if
+ * account(s) are available.
+ *
+ * Actually, the Contacts Provider automatically updates the raw contacts to be associated with an
+ * existing account (if available). The Contacts Provider does not allow null accounts associated
+ * with raw contacts when there are existing accounts. The Contacts Provider enforces this rule by
+ * routinely checking for raw contacts associated with null accounts and assigns non-null accounts
+ * to those raw contacts.
+ *
+ * This API takes the initiative instead of waiting for the Contacts Provider to assign accounts
+ * (and groups) at some later point in time. This ensures that consumers are not subject to the
+ * "randomness" or the asynchronous nature of the Contacts Provider.
+ *
+ * ## Usage
+ *
+ * To insert a raw contact with the name "john doe" with email "john@doe.com" for the given account;
+ *
+ * In Kotlin,
+ *
+ * ```kotlin
+ * val rawContact = MutableRawContact().apply {
+ *      name = MutableName().apply {
+ *          givenName = "john"
+ *          familyName = "doe"
+ *      }
+ *      emails.add(MutableEmail().apply {
+ *          type = Email.Type.HOME
+ *          address = "john@doe.com"
+ *      })
+ * }
+ *
+ *
+ * val result = insert
+ *      .forAccount(account)
+ *      .rawContacts(rawContact)
+ *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * MutableName name = new MutableName();
+ * name.setGivenName("john");
+ * name.setFamilyName("doe");
+ *
+ * MutableEmail email = new MutableEmail();
+ * email.setType(Email.Type.HOME);
+ * email.setAddress("john@doe.com");
+ *
+ * List<MutableEmail> emails = new ArrayList<>();
+ * emails.add(email);
+ *
+ * MutableRawContact rawContact = new MutableRawContact();
+ * rawContact.setName(name);
+ * rawContact.setEmails(emails);
+ *
+ * Insert.Result result = insert
+ *      .forAccount(account)
+ *      .rawContacts(rawContact)
+ *      .commit();
+ * ```
+ */
 interface Insert {
 
+    /**
+     * All of the raw contacts that are inserted on [commit] will belong to the given [account].
+     *
+     * If not provided or if an incorrect account is provided, the first account returned by the
+     * system will be used (if any).
+     */
     fun forAccount(account: Account?): Insert
 
+    /**
+     * Adds the given [rawContacts] to the insert queue, which will be inserted on [commit].
+     * Duplicates are ignored.
+     *
+     * Raw contacts with only null and empty attributes, blanks ([MutableRawContact.isBlank]),
+     * will NOT be added to the insert queue. This mimics the native Contacts app behavior of not
+     * allowing creation of a raw contact with no data.
+     *
+     * Existing RawContacts are allowed to be inserted to facilitate "duplication".
+     */
     fun rawContacts(vararg rawContacts: MutableRawContact): Insert
 
+    /**
+     * See [Insert.rawContacts].
+     */
     fun rawContacts(rawContacts: Collection<MutableRawContact>): Insert
 
+    /**
+     * See [Insert.rawContacts].
+     */
     fun rawContacts(rawContacts: Sequence<MutableRawContact>): Insert
 
+    /**
+     * Inserts the [MutableRawContact]s in the queue (added via [rawContacts]) and returns the
+     * [Result].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
     interface Result {
 
+        /**
+         * The list of IDs of successfully created RawContacts.
+         */
         val rawContactIds: List<Long>
 
+        /**
+         * True if all MutableRawContacts have successfully been inserted. False if even one insert
+         * failed.
+         */
         val isSuccessful: Boolean
 
+        /**
+         * True if the [rawContact] has been successfully inserted. False otherwise.
+         */
         fun isSuccessful(rawContact: MutableRawContact): Boolean
 
+        /**
+         * Returns the ID of the newly created RawContact (from the [rawContact] passed to
+         * [Insert.rawContacts]). Use the ID to get the newly created RawContact via a query. The
+         * manually constructed [MutableRawContact] passed to [Insert.rawContacts] are not
+         * automatically updated and will remain to have an invalid ID.
+         *
+         * Returns null if the insert operation failed.
+         */
         fun rawContactId(rawContact: MutableRawContact): Long?
     }
 }
@@ -76,6 +215,22 @@ private class InsertImpl(
         return InsertResult(results)
     }
 
+    /**
+     * This ensures that a valid account is used, if available.
+     *
+     * 1. If an account is not specified for the contacts being inserted via [forAccount];
+     *
+     *     - if an account is available, the first account is assigned for all raw contacts to be
+     *     inserted
+     *     - if no account is available, no account is assigned for any raw contacts to be inserted
+     *
+     * 2. If an account is specified for the contacts being inserted via [forAccount];
+     *
+     *     - if the account specified is found in the list of accounts returned by the system, the
+     *     account is used
+     *     - if the account specified is not found in the list of accounts returned by the system,
+     *     the first account returned by the system is used
+     */
     private fun setValidAccount() {
         val accounts = accounts.allAccounts(context)
 
@@ -85,6 +240,14 @@ private class InsertImpl(
         }
     }
 
+    /**
+     * Inserts a new RawContacts row and any non-null Data rows. A Contacts row is automatically
+     * created by the Contacts Provider and is associated with the new RawContacts and Data rows.
+     *
+     * Contact rows should not be manually created because the Contacts Provider and other sync
+     * providers may consolidate multiple RawContacts and associated Data rows to a single Contacts
+     * row.
+     */
     private fun insertRawContactForAccount(
         account: Account?,
         rawContact: MutableRawContact
