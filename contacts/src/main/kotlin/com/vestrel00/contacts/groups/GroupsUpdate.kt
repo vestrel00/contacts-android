@@ -7,20 +7,89 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.operation.GroupOperation
 
+/**
+ * Updates one or more groups' rows in the groups table.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
+ * been granted already in these  examples for brevity. All updates will do nothing if these
+ * permissions are not granted.
+ *
+ * ## Usage
+ *
+ * To update a groups's name to "Best Friends";
+ *
+ * In Kotlin,
+ *
+ * ```kotlin
+ * val result = groupsUpdate
+ *      .groups(group.toMutableGroup()?.apply {
+ *          title = "Best Friends"
+ *      })
+ *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * MutableGroup mutableGroup = group.toMutableGroup();
+ *
+ * if (mutableGroup != null) {
+ *   mutableGroup.setTitle("Best Friends");
+ *
+ *   GroupsUpdate.Result result = groupsUpdate
+ *        .groups(mutableGroup)
+ *        .commit();
+ * }
+ * ```
+ */
 interface GroupsUpdate {
 
+    /**
+     * Adds the given [groups] to the update queue, which will be updated on [commit].
+     *
+     * Only existing [groups] that have been retrieved via a query will be added to the update
+     * queue. Those that have been manually created via a constructor will be ignored.
+     *
+     * ## Null [MutableGroup]s
+     *
+     * Null groups are ignored. The only reason null is allowed to be passed here is for consumer
+     * convenience because the group's `toMutable` returns null if the `readOnly` property is true.
+     */
     fun groups(vararg groups: MutableGroup?): GroupsUpdate
 
+    /**
+     * See [GroupsUpdate.groups].
+     */
     fun groups(groups: Collection<MutableGroup?>): GroupsUpdate
 
+    /**
+     * See [GroupsUpdate.groups].
+     */
     fun groups(groups: Sequence<MutableGroup?>): GroupsUpdate
 
+    /**
+     * Updates the [MutableGroup]s in the queue (added via [groups]) and returns the [Result].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
     interface Result {
 
+        /**
+         * True if all Groups have successfully been updated. False if even one update failed.
+         */
         val isSuccessful: Boolean
 
+        /**
+         * True if the [group] has been successfully updated. False otherwise.
+         */
         fun isSuccessful(group: MutableGroup): Boolean
     }
 }
