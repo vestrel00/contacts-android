@@ -3,6 +3,22 @@ package com.vestrel00.contacts
 import android.content.Context
 import com.vestrel00.contacts.groups.Groups
 
+/**
+ * Creates a new [Query], [Insert], [Update], and [Delete] instances.
+ *
+ * ## Permissions
+ *
+ * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
+ * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
+ * [update], and [delete].
+ *
+ * Use [permissions] convenience functions to check for required permissions. The same permissions
+ * apply to [Groups].
+ *
+ * ## Groups
+ *
+ * For group management, use [groups].
+ */
 interface Contacts {
 
     /**
@@ -14,6 +30,11 @@ interface Contacts {
      * Returns a new [Insert] instance.
      */
     fun insert(context: Context): Insert
+
+    /**
+     * Returns a new [Update] instance.
+     */
+    fun update(context: Context): Update
 
     /**
      * Returns a new [Delete] instance.
@@ -43,6 +64,8 @@ private class ContactsImpl : Contacts {
     override fun query(context: Context) = Query(context)
 
     override fun insert(context: Context) = Insert(context)
+
+    override fun update(context: Context) = Update(context)
 
     override fun delete(context: Context) = Delete(context)
 
