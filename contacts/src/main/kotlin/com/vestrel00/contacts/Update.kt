@@ -7,28 +7,152 @@ import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 
+/**
+ * Updates one or more raw contacts' rows in the data table.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
+ * been granted already in these  examples for brevity. All updates will do nothing if these
+ * permissions are not granted.
+ *
+ * ## Accounts
+ *
+ * The get accounts permission is required here in order to ensure that only
+ * [MutableRawContact.groupMemberships] belonging to the same account as the raw contact are
+ * inserted.
+ *
+ * ## Usage
+ *
+ * To update a raw contact's name to "john doe" and add an email "john@doe.com";
+ *
+ * In Kotlin,
+ *
+ * ```kotlin
+ * val mutableRawContact = rawContact.toMutableRawContact().apply {
+ *      name = MutableName().apply {
+ *          givenName = "john"
+ *          familyName = "doe"
+ *      }
+ *      emails.add(MutableEmail().apply {
+ *          type = Email.Type.HOME
+ *          address = "john@doe.com"
+ *      })
+ * }
+ *
+ * val result = update
+ *      .rawContacts(mutableRawContact)
+ *      .commit()
+ * ```
+ *
+ * Java,
+ *
+ * ```java
+ * MutableName name = new MutableName();
+ * name.setGivenName("john");
+ * name.setFamilyName("doe");
+ *
+ * MutableEmail email = new MutableEmail();
+ * email.setType(Email.Type.HOME);
+ * email.setAddress("john@doe.com");
+ *
+ * MutableRawContact mutableRawContact = rawContact.toMutableRawContact();
+ * mutableRawContact.setName(name);
+ * mutableRawContact.getEmails().add(email);
+ *
+ * Update.Result result = update
+ *      .rawContacts(mutableRawContact)
+ *      .commit();
+ * ```
+ */
 interface Update {
 
+    /**
+     * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
+     *
+     * Only existing [rawContacts] that have been retrieved via a query will be added to the
+     * update queue. Those that have been manually created via a constructor will be ignored.
+     *
+     * Null (or empty collection) raw contact attributes will be deleted. Non-null (and non-empty
+     * collection) raw contact attributes will be inserted.
+     *
+     * Raw contacts with only null and empty attributes, blanks ([MutableRawContact.isBlank]), will
+     * be deleted instead! This mimics the native Contacts app behavior deleting an existing contact
+     * when saved without a single piece of non-null data.
+     */
     fun rawContacts(vararg rawContacts: MutableRawContact): Update
 
+    /**
+     * See [Update.rawContacts].
+     */
     fun rawContacts(rawContacts: Collection<MutableRawContact>): Update
 
+    /**
+     * See [Update.rawContacts].
+     */
     fun rawContacts(rawContacts: Sequence<MutableRawContact>): Update
 
+    /**
+     * Adds the [MutableRawContact]s of the given [contacts] to the update queue, which will be
+     * updated on [commit].
+     *
+     * Only existing raw contacts that have been retrieved via a query will be added to the
+     * update queue. Those that have been manually created via a constructor will be ignored.
+     *
+     * Null (or empty collection) raw contact attributes will be deleted. Non-null (and non-empty
+     * collection) raw contact attributes will be inserted.
+     *
+     * Raw contacts with only null and empty attributes, blanks ([MutableRawContact.isBlank]), will
+     * be deleted instead! This mimics the native Contacts app behavior deleting an existing contact
+     * when saved without a single piece of non-null data.
+     */
     fun contacts(vararg contacts: MutableContact): Update
 
+    /**
+     * See [Update.contacts].
+     */
     fun contacts(contacts: Collection<MutableContact>): Update
 
+    /**
+     * See [Update.contacts].
+     */
     fun contacts(contacts: Sequence<MutableContact>): Update
 
+    /**
+     * Updates the [MutableRawContact]s in the queue (added via [rawContacts] and [contacts]) and
+     * returns the [Result].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
     interface Result {
 
+        /**
+         * True if all Contacts and RawContacts have successfully been updated. False if even one
+         * update failed.
+         */
         val isSuccessful: Boolean
 
+        /**
+         * True if the [rawContact] has been successfully updated. False otherwise.
+         */
         fun isSuccessful(rawContact: MutableRawContact): Boolean
 
+        /**
+         * True if all of the [MutableContact.rawContacts] has been successfully updated. False
+         * otherwise.
+         *
+         * ## Important
+         *
+         * If this [contact] has as [MutableRawContact] that has not been updated, then this will
+         * return false. This may occur if only some (not all) of the [MutableRawContact] in
+         * [MutableContact.rawContacts] has been added to the update queue via [Update.rawContacts].
+         */
         fun isSuccessful(contact: MutableContact): Boolean
     }
 }
@@ -86,6 +210,15 @@ private class UpdateImpl(
         return UpdateResult(notBlankRawContactsResults + blankRawContactsResults)
     }
 
+    /**
+     * Updates a raw contact's data rows.
+     *
+     * If a raw contact attribute is null or the attribute's values are all null, then the
+     * corresponding data row (if any) will be deleted.
+     *
+     * If only some of a raw contact's attribute's values are null, then a data row will be created
+     * if it does not yet exist.
+     */
     private fun updateRawContact(rawContact: MutableRawContact): Boolean {
         val operations = arrayListOf<ContentProviderOperation>()
         val contentResolver = context.contentResolver
