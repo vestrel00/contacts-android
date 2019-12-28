@@ -7,28 +7,109 @@ import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.RawContact
 import com.vestrel00.contacts.entities.operation.RawContactOperation
 
+/**
+ * Deletes one or more raw contacts or contacts from the contacts table. All associated raw contacts
+ * and data rows are also deleted.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All deletes will do nothing if the permission is not granted.
+ *
+ * ## Usage
+ *
+ * To delete a [Contact] and all associated [RawContact]s;
+ *
+ * ```kotlin
+ * val result = delete
+ *      .contacts(contact)
+ *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * Delete.Result result = delete
+ *      .contacts(contact)
+ *      .commit()
+ * ```
+ */
 interface Delete {
 
+    /**
+     * Adds the given [rawContacts] to the delete queue, which will be deleted on [commit].
+     *
+     * ## IMPORTANT
+     *
+     * Deleting all [RawContact]s of a [Contact] will result in the deletion of the associated
+     * [Contact]! However, the [Contact] will remain as long as it has at least has one associated
+     * [RawContact].
+     */
     fun rawContacts(vararg rawContacts: RawContact): Delete
 
+    /**
+     * See [Delete.rawContacts].
+     */
     fun rawContacts(rawContacts: Collection<RawContact>): Delete
 
+    /**
+     * See [Delete.rawContacts].
+     */
     fun rawContacts(rawContacts: Sequence<RawContact>): Delete
 
+    /**
+     * Adds the given [contacts] to the delete queue, which will be deleted on [commit].
+     *
+     * ## IMPORTANT
+     *
+     * Deleting a [Contact] will result in the deletion of all associated [RawContact]s even those
+     * that are not in the [Contact.rawContacts] set!
+     */
     fun contacts(vararg contacts: Contact): Delete
 
+    /**
+     * See [Delete.contacts].
+     */
     fun contacts(contacts: Collection<Contact>): Delete
 
+    /**
+     * See [Delete.contacts].
+     */
     fun contacts(contacts: Sequence<Contact>): Delete
 
+    /**
+     * Deletes the [Contact]s and [RawContact]s in the queue (added via [contacts] and
+     * [rawContacts]) and returns the [Result].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
     interface Result {
 
+        /**
+         * True if all Contacts and RawContacts have successfully been deleted. False if even one
+         * delete failed.
+         */
         val isSuccessful: Boolean
 
+        /**
+         * True if the [rawContact] has been successfully deleted. False otherwise.
+         */
         fun isSuccessful(rawContact: RawContact): Boolean
 
+        /**
+         * True the [Contact] (and all of its associated [RawContact]s has been successfully
+         * deleted). False otherwise.
+         *
+         * ## Important
+         *
+         * This will return false even if all associated [RawContact]s have been deleted. This
+         * should only be used in conjunction with [Delete.contacts] to avoid incorrect results.
+         */
         fun isSuccessful(contact: Contact): Boolean
     }
 }
