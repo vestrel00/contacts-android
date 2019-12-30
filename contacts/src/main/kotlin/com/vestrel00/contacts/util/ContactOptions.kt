@@ -6,15 +6,58 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.operation.OptionsOperation
 
+/**
+ * Updates this [Contact.options] with the given [options].
+ *
+ * Note that changes to the options of a RawContact may affect the options of the parent Contact.
+ * On the other hand, changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.setOptions(context: Context, options: MutableOptions): Boolean =
     setOptions(id, options, context)
 
+/**
+ * Updates this [Contact.options] in [update]. If this contact has null options, a new blank options
+ * will be used in [update].
+ *
+ * Note that changes to the options of a RawContact may affect the options of the parent Contact.
+ * On the other hand, changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.updateOptions(context: Context, update: MutableOptions.() -> Unit): Boolean =
     updateOptions(id, options, update, context)
 
+/**
+ * See [Contact.setOptions].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.setOptions(context: Context, options: MutableOptions): Boolean =
     setOptions(id, options, context)
 
+/**
+ * See [Contact.updateOptions].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.updateOptions(
     context: Context, update: MutableOptions.() -> Unit
 ): Boolean = updateOptions(id, options, update, context)
