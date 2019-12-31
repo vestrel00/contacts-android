@@ -6,6 +6,20 @@ import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.RawContact
 
+/**
+ * Returns the newly created [RawContact] or null if the insert operation failed.
+ *
+ * ## Permissions
+ *
+ * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
+ * will be returned if the permission is not granted.
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+@JvmOverloads
 fun Insert.Result.rawContact(
     context: Context, rawContact: MutableRawContact, cancel: () -> Boolean = { false }
 ): RawContact? {
@@ -18,6 +32,20 @@ fun Insert.Result.rawContact(
         .find { it.id == rawContactId }
 }
 
+/**
+ * Returns all newly created [RawContact]s (for those insert operations that succeeded).
+ *
+ * ## Permissions
+ *
+ * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, an empty
+ * list will be returned if the permission is not granted.
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+@JvmOverloads
 fun Insert.Result.rawContacts(
     context: Context, cancel: () -> Boolean = { false }
 ): List<RawContact> = Query(context).where(Fields.RawContactId `in` rawContactIds).find(cancel)
@@ -26,6 +54,21 @@ fun Insert.Result.rawContacts(
     .filter { rawContactIds.contains(it.id) }
     .toList()
 
+/**
+ * Returns the newly created [Contact] containing the [RawContact] or null if the insert operation
+ * failed.
+ *
+ * ## Permissions
+ *
+ * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
+ * will be returned if the permission is not granted.
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+@JvmOverloads
 fun Insert.Result.contact(
     context: Context, rawContact: MutableRawContact, cancel: () -> Boolean = { false }
 ): Contact? {
@@ -40,6 +83,23 @@ fun Insert.Result.contact(
         }
 }
 
+/**
+ * Returns all newly created [Contact]s containing the [RawContact]s (for those insert operations
+ * that succeeded).
+ *
+ * Returns an empty list all insert operations failed.
+ *
+ * ## Permissions
+ *
+ * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, an empty
+ * list will be returned if the permission is not granted.
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+@JvmOverloads
 fun Insert.Result.contacts(context: Context, cancel: () -> Boolean = { false }): List<Contact> =
     Query(context).where(Fields.RawContactId `in` rawContactIds).find(cancel)
         .filter { contact ->
