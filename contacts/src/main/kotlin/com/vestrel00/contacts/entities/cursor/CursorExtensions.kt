@@ -25,6 +25,11 @@ internal fun Cursor.getLong(field: AbstractField): Long? {
     return if (index == -1) null else getLong(index)
 }
 
+internal fun Cursor.getBlob(field: AbstractField): ByteArray? {
+    val index = getColumnIndex(field.columnName)
+    return if (index == -1) null else getBlob(index)
+}
+
 internal fun Cursor.getUri(field: AbstractField): Uri? {
     val uriStr = getString(field)
     return if (uriStr != null) Uri.parse(uriStr) else null
