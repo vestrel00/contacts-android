@@ -3,6 +3,7 @@
 package com.vestrel00.contacts
 
 import android.provider.BaseColumns
+import android.provider.ContactsContract
 import android.provider.ContactsContract.Data
 import android.provider.ContactsContract.RawContacts
 import com.vestrel00.contacts.entities.MimeType
@@ -63,6 +64,10 @@ object Fields {
 
     @JvmField
     val Contact = ContactFields()
+
+    // Do not add Contacts to AllFields even though it is joined with the Data table.
+    // These fields are used exclusively in ContactPhoto extension functions.
+    internal val Contacts = ContactsFields()
 
     @JvmField
     val Email = EmailFields()
@@ -268,6 +273,27 @@ class ContactFields : FieldSet(UNKNOWN) {
     val LastUpdatedTimestamp = AbstractField(Data.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
 
     override val fields = setOf(Id, DisplayName, LastUpdatedTimestamp)
+}
+
+/*
+ * This and all of its fields are used for the Contacts table operations!
+ *
+ * This is technically not the most correct place to put this but it is the simplest and most
+ * convenient place.
+ */
+internal class ContactsFields : FieldSet(UNKNOWN) {
+
+    val Id = AbstractField(BaseColumns._ID, UNKNOWN)
+
+    // These columns are also available via the Data table reference as they are joined.
+    val PhotoUri = AbstractField(ContactsContract.Contacts.PHOTO_URI, mimeType)
+
+    val PhotoThumbnailUri =
+        AbstractField(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI, mimeType)
+
+    val PhotoFileId = AbstractField(ContactsContract.Contacts.PHOTO_FILE_ID, mimeType)
+
+    override val fields = setOf(Id, PhotoUri, PhotoThumbnailUri, PhotoFileId)
 }
 
 class EmailFields : FieldSet(MimeType.EMAIL) {
