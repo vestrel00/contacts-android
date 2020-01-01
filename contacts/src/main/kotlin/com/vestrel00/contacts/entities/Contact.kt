@@ -70,7 +70,27 @@ data class Contact internal constructor(
      */
     val options: Options?
 
+    /* Intentionally not including these to ensure consumers obtain Contact photos the same way that
+     * RawContact photos are obtained. The ContactPhoto extension functions ensures that only the
+     * most up-to-date photos are exposed to consumers.
+
+     * The uri to the full-sized image of this contact. This full sized image is from the associated
+     * [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this photo
+     * belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
+    val photoUri: Uri?,
+
+     * The uri to the thumbnail-sized version of the [photoUri]. This thumbnail image is from the
+     * associated [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this
+     * photo belongs to is not guaranteed to be in the [rawContacts] list depending on query
+     * filters.
+    val photoThumbnailUri: Uri?
+     */
+
 ) : Entity, Parcelable {
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        displayName, lastUpdatedTimestamp, options
+    ) && entitiesAreAllBlank(rawContacts)
 
     fun toMutableContact() = MutableContact(
         id = id,
@@ -118,4 +138,9 @@ data class MutableContact internal constructor(
      */
     val options: Options?
 
-) : Entity, Parcelable
+) : Entity, Parcelable {
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        displayName, lastUpdatedTimestamp, options
+    ) && entitiesAreAllBlank(rawContacts)
+}

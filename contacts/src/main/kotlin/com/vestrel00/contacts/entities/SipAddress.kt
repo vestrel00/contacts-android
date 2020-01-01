@@ -31,6 +31,8 @@ data class SipAddress internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(sipAddress)
+
     fun toMutableSipAddress() = MutableSipAddress(
         id = id,
         rawContactId = rawContactId,
@@ -72,6 +74,8 @@ data class MutableSipAddress internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(sipAddress)
 
     internal fun toSipAddress() = SipAddress(
         id = id,

@@ -30,4 +30,10 @@ data class GroupMembership internal constructor(
      */
     val groupId: Long
 
-) : DataEntity, Parcelable
+) : DataEntity, Parcelable {
+
+    override fun isBlank(): Boolean = false
+}
+
+// NOTE. The GroupMembership class intentionally does not have a mutable version unlike the other
+// entities. Manage the group memberships via the ContactGroupMemberships extension functions.

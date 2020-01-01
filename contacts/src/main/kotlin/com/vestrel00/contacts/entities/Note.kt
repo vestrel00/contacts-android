@@ -28,6 +28,8 @@ data class Note internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(note)
+
     fun toMutableNote() = MutableNote(
         id = id,
         rawContactId = rawContactId,
@@ -69,6 +71,8 @@ data class MutableNote internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(note)
 
     internal fun toNote() = Note(
         id = id,

@@ -61,6 +61,10 @@ data class Company internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        company, title, department, jobDescription, officeLocation, symbol, phoneticName
+    )
+
     fun toMutableCompany() = MutableCompany(
         id = id,
         rawContactId = rawContactId,
@@ -141,6 +145,10 @@ data class MutableCompany internal constructor(
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, null, null, null, null,
         null, null, null
+    )
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        company, title, department, jobDescription, officeLocation, symbol, phoneticName
     )
 
     internal fun toCompany() = Company(

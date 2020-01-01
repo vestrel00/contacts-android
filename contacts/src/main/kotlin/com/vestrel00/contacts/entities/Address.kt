@@ -86,6 +86,10 @@ data class Address internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        label, formattedAddress, street, poBox, neighborhood, city, region, postcode, country
+    )
+
     fun toMutableAddress() = MutableAddress(
         id = id,
         rawContactId = rawContactId,
@@ -198,6 +202,10 @@ data class MutableAddress internal constructor(
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, Type.HOME, null, null, null,
         null, null, null, null, null, null
+    )
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        label, formattedAddress, street, poBox, neighborhood, city, region, postcode, country
     )
 
     internal fun toAddress() = Address(

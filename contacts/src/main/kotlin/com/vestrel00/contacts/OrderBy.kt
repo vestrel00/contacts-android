@@ -153,6 +153,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
         // CONTACT
         Fields.Contact.Id -> lhs.id.compareTo(rhs.id)
         Fields.Contact.DisplayName -> lhs.displayName.compareTo(ignoreCase, rhs.displayName)
+        // PhotoUri and PhotoThumbnailUri are excluded.
         Fields.Contact.LastUpdatedTimestamp ->
             lhs.lastUpdatedTimestamp.compareTo(rhs.lastUpdatedTimestamp)
 

@@ -31,6 +31,8 @@ data class Website internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(url)
+
     fun toMutableWebsite() = MutableWebsite(
         id = id,
         rawContactId = rawContactId,
@@ -72,6 +74,8 @@ data class MutableWebsite internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(url)
 
     internal fun toWebsite() = Website(
         id = id,

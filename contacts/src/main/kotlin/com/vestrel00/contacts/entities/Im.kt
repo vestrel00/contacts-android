@@ -43,6 +43,8 @@ data class Im internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(customProtocol, data)
+
     fun toMutableIm() = MutableIm(
         id = id,
         rawContactId = rawContactId,
@@ -117,6 +119,8 @@ data class MutableIm internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Protocol.AIM, null, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(customProtocol, data)
 
     internal fun toIm() = Im(
         id = id,

@@ -40,6 +40,7 @@ data class Relation internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, name)
 
     fun toMutableRelation() = MutableRelation(
         id = id,
@@ -120,6 +121,8 @@ data class MutableRelation internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Type.ASSISTANT, null, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, name)
 
     internal fun toRelation() = Relation(
         id = id,

@@ -87,6 +87,9 @@ fun Contact.phones(): Sequence<Phone> = rawContacts
     .flatMap { it.phones.asSequence() }
     .sortedBy { it.number }
 
+// Photo intentionally left out because a Contact and associated RawContacts have independent
+// Photos.
+
 /**
  * Sequence of relations from all [rawContacts] ordered by the [Relation.name].
  */
@@ -334,6 +337,9 @@ fun MutableContact.removePhone(phone: MutablePhone, byReference: Boolean = false
         rawContact.phones.removeAll(phone, byReference)
     }
 }
+
+// Photo intentionally left out because a Contact and associated RawContacts have independent
+// Photos.
 
 /**
  * Sequence of relations from all [rawContacts] ordered by the [MutableRelation.name].

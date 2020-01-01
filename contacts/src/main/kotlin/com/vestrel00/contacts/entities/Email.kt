@@ -40,6 +40,8 @@ data class Email internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, address)
+
     fun toMutableEmail() = MutableEmail(
         id = id,
         rawContactId = rawContactId,
@@ -109,6 +111,8 @@ data class MutableEmail internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Type.HOME, null, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, address)
 
     internal fun toEmail() = Email(
         id = id,

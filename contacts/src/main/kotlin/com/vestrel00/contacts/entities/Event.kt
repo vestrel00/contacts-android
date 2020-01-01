@@ -54,6 +54,8 @@ data class Event internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, date)
+
     fun toMutableEvent() = MutableEvent(
         id = id,
         rawContactId = rawContactId,
@@ -122,6 +124,8 @@ data class MutableEvent internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Type.BIRTHDAY, null, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, date)
 
     internal fun toEvent() = Event(
         id = id,

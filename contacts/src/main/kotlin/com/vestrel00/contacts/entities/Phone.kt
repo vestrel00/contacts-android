@@ -59,6 +59,8 @@ data class Phone internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, number, normalizedNumber)
+
     /**
      * The string representing the [type].
      *
@@ -175,6 +177,8 @@ data class MutablePhone internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Type.MOBILE, null, null, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, number, normalizedNumber)
 
     /**
      * The string representing the [type].

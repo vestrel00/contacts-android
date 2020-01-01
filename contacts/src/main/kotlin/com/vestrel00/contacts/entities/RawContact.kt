@@ -73,6 +73,9 @@ data class RawContact internal constructor(
 
     val note: Note?,
 
+    // Use the ContactOptions extension functions to get/set options.
+    // The Data table contains the options columns for Contacts, not for RawContacts.
+
     /**
      * An immutable list of phones.
      */
@@ -91,6 +94,12 @@ data class RawContact internal constructor(
     val websites: List<Website>
 
 ) : Entity, Parcelable {
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        company, name, nickname, note, sipAddress
+    ) && entitiesAreAllBlank(
+        addresses, emails, events, groupMemberships, ims, phones, relations, websites
+    )
 
     fun toMutableRawContact() = MutableRawContact(
         id = id,
@@ -193,6 +202,8 @@ data class MutableRawContact internal constructor(
      */
     var note: MutableNote?,
 
+    // Use the ContactOptions extension functions to get/set options.
+
     /**
      * Mutable version of [RawContact.phones].
      */
@@ -219,6 +230,12 @@ data class MutableRawContact internal constructor(
         INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, mutableListOf(),
         mutableListOf(), null, mutableListOf()
+    )
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        company, name, nickname, note, sipAddress
+    ) && entitiesAreAllBlank(
+        addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
 
     internal fun toRawContact() = RawContact(

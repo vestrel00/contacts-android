@@ -31,6 +31,8 @@ data class Nickname internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
+
     fun toMutableNickname() = MutableNickname(
         id = id,
         rawContactId = rawContactId,
@@ -72,6 +74,8 @@ data class MutableNickname internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, null)
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
 
     internal fun toNickname() = Nickname(
         id = id,
