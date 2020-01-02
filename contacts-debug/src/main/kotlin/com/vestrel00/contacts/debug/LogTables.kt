@@ -6,6 +6,13 @@ import android.content.pm.PackageManager
 import android.os.Process
 import android.provider.ContactsContract.*
 
+fun Context.logContactsProviderTables() {
+    logGroupsTable()
+    logContactsTable()
+    logRawContactsTable()
+    logDataTable()
+}
+
 fun Context.logContactsTable() {
     if (!canLog()) {
         log("#### Contacts table - read contacts permission not granted")
@@ -153,6 +160,51 @@ fun Context.logDataTable() {
                  data1: $data1, data2: $data2, data3: $data3, data4: $data4, data5: $data5,
                  data6: $data6, data7: $data7, data8: $data8, data9: $data9, data10: $data10,
                  data11: $data11, data12: $data12, data13: $data13, data14: $data14
+            """.trimIndent().replace("\n", "")
+        )
+    }
+
+    cursor.close()
+}
+
+fun Context.logGroupsTable() {
+    if (!canLog()) {
+        log("#### Groups table - read contacts permission not granted")
+        return
+    }
+
+    val cursor = contentResolver.query(
+        Groups.CONTENT_URI,
+        arrayOf(
+            Groups._ID, Groups.SYSTEM_ID, Groups.TITLE,
+            Groups.GROUP_IS_READ_ONLY, Groups.FAVORITES, Groups.AUTO_ADD,
+            Groups.SHOULD_SYNC, Groups.ACCOUNT_NAME, Groups.ACCOUNT_TYPE
+        ),
+        null,
+        null,
+        null
+    )
+
+    cursor ?: return
+
+    log("#### Groups table")
+    cursor.moveToPosition(-1)
+    while (cursor.moveToNext()) {
+        val id = cursor.getString(0)
+        val systemId = cursor.getString(1)
+        val title = cursor.getString(2)
+        val readOnly = cursor.getString(3)
+        val favorites = cursor.getString(4)
+        val autoAdd = cursor.getString(5)
+        val shouldSync = cursor.getString(6)
+        val accountName = cursor.getString(7)
+        val accountType = cursor.getString(8)
+
+        log(
+            """
+                Group id: $id, systemId: $systemId, title: $title,
+                 readOnly: $readOnly, favorites: $favorites, autoAdd: $autoAdd,
+                 shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType
             """.trimIndent().replace("\n", "")
         )
     }
