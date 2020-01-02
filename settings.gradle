@@ -1,1 +1,2 @@
 include ':contacts'
+include ':contacts-debug'
