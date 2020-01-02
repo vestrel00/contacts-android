@@ -104,6 +104,62 @@ fun Context.logRawContactsTable() {
     cursor.close()
 }
 
+fun Context.logDataTable() {
+    if (!canLog()) {
+        log("#### Data table - read contacts permission not granted")
+        return
+    }
+
+    val cursor = contentResolver.query(
+        Data.CONTENT_URI,
+        arrayOf(
+            Data._ID, Data.RAW_CONTACT_ID, Data.CONTACT_ID, Data.MIMETYPE,
+            Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6, Data.DATA13,
+            Data.DATA7, Data.DATA8, Data.DATA9, Data.DATA10, Data.DATA11, Data.DATA12, Data.DATA14
+        ),
+        null,
+        null,
+        null
+    )
+
+    cursor ?: return
+
+    log("#### Data table")
+    cursor.moveToPosition(-1)
+    while (cursor.moveToNext()) {
+        val id = cursor.getString(0)
+        val rawContactId = cursor.getString(1)
+        val contactId = cursor.getString(2)
+        val mimeType = cursor.getString(3)
+        val data1 = cursor.getString(4)
+        val data2 = cursor.getString(5)
+        val data3 = cursor.getString(6)
+        val data4 = cursor.getString(7)
+        val data5 = cursor.getString(8)
+        val data6 = cursor.getString(9)
+        val data7 = cursor.getString(10)
+        val data8 = cursor.getString(11)
+        val data9 = cursor.getString(12)
+        val data10 = cursor.getString(13)
+        val data11 = cursor.getString(14)
+        val data12 = cursor.getString(15)
+        val data13 = cursor.getString(16)
+        val data14 = cursor.getString(17)
+
+        log(
+            """
+                Data id: $id, rawContactId: $rawContactId, contactId: $contactId,
+                 mimeType: $mimeType,
+                 data1: $data1, data2: $data2, data3: $data3, data4: $data4, data5: $data5,
+                 data6: $data6, data7: $data7, data8: $data8, data9: $data9, data10: $data10,
+                 data11: $data11, data12: $data12, data13: $data13, data14: $data14
+            """.trimIndent().replace("\n", "")
+        )
+    }
+
+    cursor.close()
+}
+
 // Intentionally not reusing the ContactsPermission to avoid a dependency on the contacts module.
 private fun Context.canLog(): Boolean = checkPermission(
     Manifest.permission.READ_CONTACTS, Process.myPid(), Process.myUid()
