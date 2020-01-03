@@ -58,6 +58,46 @@ The tables are connected the following way;
 - RawContacts contains a reference to the Contacts row Id.
 - Data contains a reference to the RawContacts row Id and Contacts row Id. 
 
+## Java Support
+
+This library is intended to be Java-friendly. The policy is that we should attempt to write 
+Java-friendly code that does not increase lines of code by much or add external dependencies to 
+cater exclusively to Java consumers.
+
+## Creating Entities
+
+Entities (e.g. `MutableContact`) are done my constructing an instance using the default no-parameter
+constructor. Then, the individual attributes / properties are set afterwards (Kotlin's `apply` 
+comes in handy here). The constructor is made internal so that consumers do not have the option
+to set read-only and private or internal variables such as `id` and `rawId`. 
+
+> FIXME? Make constructors public if Kotlin ever supports private setter for an attribute in the 
+> constructor. 
+> See https://discuss.kotlinlang.org/t/private-setter-for-var-in-primary-constructor/3640.
+
+HOWEVER! Consumers are still able to set read-only and private or internal variables though because 
+all `Entity` classes are data classes. Data classes provide a `copy` function that allows for 
+setting any property no matter their visibility and even if the constructor is private. As a matter
+of fact, setting the constructor of a `data class` as `private` gives this warning by Android
+Studio: "Private data class constructor is exposed via the 'copy' method.
+
+There is currently no way to disable the `copy` function of data classes (that I know of). The only
+thing we can do is to provide documentation to consumers, insisting against the use of the `copy`
+method as it may lead to unwanted modifications when updating and deleting contacts.
+
+> We could just use regular classes instead of data classes but entities should be data classes
+> because it is what they are (know what I mean?!).
+> FIXME? Hide / disable data class `copy` function if kotlin ever allows it. 
+
+## Mutable Entities? 
+
+Why not use a more conventional builder pattern? Why "mutable"? Because it's the simplest way to 
+implement a form of the builder pattern without having the write builder code or adding a dependency
+on Google's `AutoValue`. Furthermore, having "mutable" entities as data classes with all properties
+defined in the constructor allows it to be `Parcelize`d. Besides, one of the main benefits of the
+conventional builder pattern really only benefits Java consumers. That is function chaining. Kotlin 
+consumers may just use `apply` (and other similar ones).
+
 ## Why Not Add Android X / Support Library Dependency?
 
 I want to keep the dependency list of this library to a minimum. The Contacts Provider is native to
