@@ -17,9 +17,22 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Requests the [ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until the
+ * user either grants or denies the permission request.
+ *
+ * Returns true if permission is granted. False otherwise.
+ */
 suspend fun ContactsPermissions.requestQueryPermission(activity: Activity): Boolean =
     requestContactsPermission(ContactsPermissions.READ_PERMISSION, activity)
 
+/**
+ * Requests the [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION]. The current
+ * coroutine is suspended until the user either grants or denies the permissions request.
+ *
+ * Returns true if permissions are granted. False otherwise.
+ */
 suspend fun ContactsPermissions.requestInsertUpdateDeletePermission(activity: Activity): Boolean =
     requestContactsPermission(ContactsPermissions.WRITE_PERMISSION, activity)
             && Accounts().permissions(activity).requestGetAccountsPermission(activity)
