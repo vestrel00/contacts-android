@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Contacts -->
+    <string name="contacts_request_permission_title">Contacts permission</string>
+    <string name="contacts_request_permission_description">This permission is required to access your contacts</string>
+
+    <!-- Accounts -->
+    <string name="contacts_accounts_request_permission_title">Accounts permission</string>
+    <string name="contacts_accounts_request_permission_description">This permission is required to access your accounts</string>
+</resources>
