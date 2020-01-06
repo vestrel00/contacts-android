@@ -2,8 +2,11 @@ package com.vestrel00.contacts.sample
 
 import android.accounts.Account
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.async.findAsync
@@ -35,6 +38,35 @@ class ContactsActivity : BaseActivity() {
         setupSearchField()
         setupContactsListView()
         showContacts()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_contacts, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.accounts -> {
+                AccountsActivity.selectAccounts(this, true, ArrayList(selectedAccounts))
+                return true
+            }
+            R.id.refresh -> {
+                showContacts()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(menuItem)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) { selectedAccounts ->
+            this.selectedAccounts = selectedAccounts
+            showContacts()
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setupSearchField() {

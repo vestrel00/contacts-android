@@ -6,4 +6,7 @@
     <string name="contacts_search_field_hint">Enter name, email, or phone number</string>
     <string name="contacts_refresh">Refresh</string>
 
+    <!-- Accounts activity -->
+    <string name="accounts">Accounts</string>
+    <string name="accounts_select">Select Account(s)</string>
 </resources>
