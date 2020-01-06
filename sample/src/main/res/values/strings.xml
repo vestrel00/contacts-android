@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Contacts activity -->
     <string name="contacts">Contacts</string>
+    <string name="contacts_search_field_hint">Enter name, email, or phone number</string>
+    <string name="contacts_refresh">Refresh</string>
+
 </resources>

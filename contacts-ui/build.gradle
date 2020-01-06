@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
 }
@@ -35,12 +35,6 @@ android {
 
 dependencies {
     implementation project(':contacts')
-    implementation project(':contacts-async')
-    implementation project(':contacts-debug')
-    implementation project(':contacts-permissions')
-    implementation project(':contacts-ui')
 
-    implementation libraries.kotlin.coroutines
-    implementation libraries.kotlin.coroutinesAndroid
     implementation libraries.kotlin.standardLib
 }

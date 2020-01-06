@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- [ANDROID X] Not using ConstraintLayout to avoid dependency on androidx.constraintlayout -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/searchField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/contacts_search_field_hint"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <!-- [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview -->
+    <ListView
+        android:id="@+id/contactsListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/searchField"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
