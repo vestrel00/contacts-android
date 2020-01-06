@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.vestrel00.contacts.sample">
+
+    <!-- Required for getting accounts. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <!-- Required for query operations. -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- Only need this permission if using insert, update, delete operations! -->
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/contacts"
+        android:supportsRtl="true"/>
+
+</manifest>
