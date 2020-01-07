@@ -14,6 +14,29 @@ import com.vestrel00.contacts.ui.text.AbstractTextWatcher
 import com.vestrel00.contacts.ui.util.PhoneType
 import kotlinx.android.synthetic.main.view_phone.view.*
 
+/**
+ * A [RelativeLayout] that displays a [MutablePhone] and handles the modifications to the given
+ * [phone].
+ *
+ * This is used in the [PhonesView].
+ *
+ * ## Note
+ *
+ * This is a very simple view that is not styled or made to look good. Consumers of the library may
+ * choose to use this as is or simply as a reference on how to implement this part of native
+ * Contacts app.
+ *
+ * This does not support state retention (e.g. device rotation). The OSS community may contribute to
+ * this by implementing it.
+ *
+ * The community may contribute by styling and adding more features and customizations with these
+ * views if desired.
+ *
+ * ## Developer Notes
+ *
+ * I usually am a proponent of passive views and don't add any logic to views. However, I will make
+ * an exception for this basic view that I don't really encourage consumers to use.
+ */
 class PhoneView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,

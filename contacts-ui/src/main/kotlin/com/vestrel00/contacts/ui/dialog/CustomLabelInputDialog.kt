@@ -8,14 +8,37 @@ import android.widget.EditText
 import com.vestrel00.contacts.ui.R
 import com.vestrel00.contacts.ui.text.AbstractTextWatcher
 
+/**
+ * Shows an [AlertDialog] with an [EditText] and a cancel and ok button. The ok button is enabled
+ * only when the user input is not null or empty. Clicking the ok button invokes the onLabelEntered
+ * function parameter callback with the non-null and non-empty string.
+ *
+ * This is useful for prompting users for custom labels.
+ *
+ * ## Note
+ *
+ * This does not support state retention (e.g. device rotation). The community may contribute to
+ * this by implementing it.
+ */
 class CustomLabelInputDialog(private val context: Context) {
 
     private var alertDialog: AlertDialog? = null
 
+    /**
+     * Shows the custom label input dialog with the given [titleRes].
+     *
+     * The ok button is enabled only when the user input is not null or empty. Clicking the ok
+     * button invokes the [onLabelEntered] function parameter callback with the non-null and
+     * non-empty string.
+     */
+    // [ANDROID X] @StringRes (not using annotation to avoid dependency on androidx.annotation)
     fun show(titleRes: Int, onLabelEntered: (label: String) -> Unit, onCancelled: () -> Unit) {
         show(context.getString(titleRes), onLabelEntered, onCancelled)
     }
 
+    /**
+     * See [show].
+     */
     @Suppress("InflateParams")
     fun show(title: String, onLabelEntered: (label: String) -> Unit, onCancelled: () -> Unit) {
         alertDialog?.dismiss()

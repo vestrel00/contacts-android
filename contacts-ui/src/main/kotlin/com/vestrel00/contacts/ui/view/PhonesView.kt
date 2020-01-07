@@ -9,6 +9,29 @@ import com.vestrel00.contacts.util.addPhone
 import com.vestrel00.contacts.util.phones
 import com.vestrel00.contacts.util.removePhone
 
+/**
+ * A (vertical) [LinearLayout] that displays the [MutablePhone]s of the [contact] and handles its
+ * addition, removal, and modification.
+ *
+ * Each [MutablePhone] is displayed using a [PhoneView].
+ *
+ * ## Note
+ *
+ * This is a very simple view that is not styled or made to look good. Consumers of the library may
+ * choose to use this as is or simply as a reference on how to implement this part of native
+ * Contacts app.
+ *
+ * This does not support state retention (e.g. device rotation). The OSS community may contribute to
+ * this by implementing it.
+ *
+ * The community may contribute by styling and adding more features and customizations with these
+ * views if desired.
+ *
+ * ## Developer Notes
+ *
+ * I usually am a proponent of passive views and don't add any logic to views. However, I will make
+ * an exception for this basic view that I don't really encourage consumers to use.
+ */
 class PhonesView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
