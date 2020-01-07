@@ -3,14 +3,18 @@ package com.vestrel00.contacts.sample
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.vestrel00.contacts.Contacts
 import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.async.commitAsync
 import com.vestrel00.contacts.async.findFirstAsync
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.permissions.queryWithPermission
+import com.vestrel00.contacts.permissions.updateWithPermission
 import com.vestrel00.contacts.util.names
 import kotlinx.android.synthetic.main.activity_contact_details.*
 import kotlinx.coroutines.launch
@@ -36,6 +40,22 @@ class ContactDetailsActivity : BaseActivity() {
             setupNameFields()
             setupPhoneFields()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_contact_details, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.save -> {
+                launch { save() }
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(menuItem)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -74,6 +94,31 @@ class ContactDetailsActivity : BaseActivity() {
 
     private fun setupPhoneFields() {
         phonesView.contact = contact
+    }
+
+    private suspend fun save(): Boolean {
+        showProgressDialog()
+
+        // Save changes.
+        val contactSaveResult = Contacts().updateWithPermission(this)
+            .contacts(contact)
+            .commitAsync()
+
+        // Save photo.
+        val photoSaveSuccess = photoView.saveContactPhoto()
+
+        val success = contactSaveResult.isSuccessful && photoSaveSuccess
+
+        val resultMessageRes = if (success) {
+            R.string.contact_details_save_success
+        } else {
+            R.string.contact_details_save_error
+        }
+        Toast.makeText(this, resultMessageRes, LENGTH_SHORT).show()
+
+        dismissProgressDialog()
+
+        return success
     }
 
     companion object {
