@@ -89,6 +89,368 @@ Data not suitable to be a display name are;
 The kind of data used as the display for the Contact is set in 
 `ContactNameColumns.DISPLAY_NAME_SOURCE`.
 
+#### RawContacts; Accounts + Contacts
+
+The RawContacts table links the Contact to the `android.accounts.Account` that it belongs to. 
+
+When there are no available Accounts in the device, each new RawContacts row created results in;
+
+- a new row in the Contacts table (unless the RawContact is associated to another existing Contact)
+- a new row in the RawContacts with account name and type set to null
+- new row(s) in the Data table with a reference to the new Contacts and RawContacts Ids
+
+For example, creating 4 new contacts using the native Android Contacts app results in;
+
+```
+Contact id: 4, displayName: First Local Contact
+Contact id: 5, displayName: Second Local Contact
+Contact id: 6, displayName: Third Local Contact
+Contact id: 7, displayName: Third Local Contact
+RawContact id: 4, accountName: null, accountType: null
+RawContact id: 5, accountName: null, accountType: null
+RawContact id: 6, accountName: null, accountType: null
+RawContact id: 7, accountName: null, accountType: null
+Data id: 15, rawContactId: 4, contactId: 4, data: First Local Contact
+Data id: 16, rawContactId: 5, contactId: 5, data: Second Local Contact
+Data id: 17, rawContactId: 6, contactId: 6, data: Third Local Contact
+Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
+```
+
+When an Account is added, all of the null `accountName` and `accountType` in the RawContacts table 
+are set to that Account's name and type;
+
+```
+RawContact id: 4, accountName: vestrel00@gmail.com, accountType: com.google
+RawContact id: 5, accountName: vestrel00@gmail.com, accountType: com.google
+RawContact id: 6, accountName: vestrel00@gmail.com, accountType: com.google
+RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
+```
+
+Removing the Account will delete all of the associated rows in the Contact, RawContact, and 
+Data tables.
+
+Note that all of these operations are not instantaneous! It make take a few seconds for the 
+RawContacts to be updated of deleted.
+
+Creating a new RawContacts row where the account name and type are null when there are available 
+Accounts results in the RawContacts row to be updated by the Android Contacts Provider automatically
+later on to have an existing Account's name and type. 
+
+#### RawContacts; Deletion
+
+Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained
+in the documentation in `ContactsContract.RawContacts`;
+
+> When a raw contact is deleted, all of its Data rows as well as StatusUpdates, 
+> AggregationExceptions, PhoneLookup rows are deleted automatically. 
+> 
+> When all raw contacts associated with a Contacts row are deleted, the Contacts  row itself is also 
+> deleted automatically.
+> 
+> The invocation of resolver.delete(...), does not immediately delete a raw contacts row. Instead, 
+> it sets the ContactsContract.RawContactsColumns.DELETED flag on the raw contact and removes the 
+> raw contact from its aggregate contact. The sync adapter then deletes the raw contact from the
+> server and finalizes phone-side deletion by calling resolver.delete(...) again and passing the 
+> ContactsContract#CALLER_IS_SYNCADAPTER  query parameter. 
+> 
+> Some sync adapters are read-only, meaning that they only sync server-side changes to the phone,
+> but not the reverse. If one of those raw contacts is marked for deletion, it will remain on the
+> phone. However it will be effectively invisible, because it will not be part of any aggregate
+> contact.
+
+**TLDR**
+
+To delete a contacts and all associated rows, simply delete all RawContact rows with the desired
+Contacts id. Deletion of the Contacts row and associated Data row(s) will be done automatically by
+the Contacts Provider.
+
+Note that deleting a RawContacts row may not immediately (or at all) actually delete the RawContacts
+row. In this case, it is marked and is effectively invisible.
+
+#### Multiple RawContacts Per Contact
+
+Each row in the Contacts table may be associated with more than one row in the RawContacts table. 
+The Contacts Provider may consolidate multiple contacts belonging to different accounts and combine 
+them into a single entry in the Contacts table whilst maintaining the separate entries in the 
+RawContacts table.
+
+A more common scenario that causes multiple RawContacts per Contact is when two or more Contacts are
+"linked" (or "merged" for API 23 and below).
+
+#### Behavior of linking/merging contacts
+
+Given the following tables;
+
+```
+#### Contacts table
+Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+#### RawContacts table
+RawContact id: 30, contactId: 32, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 33, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+#### Data table
+Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X
+Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y
+Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+```
+
+When contact **X** links/merges contact **Y**, the tables becomes;
+
+```
+#### Contacts table
+Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+
+#### RawContacts table
+RawContact id: 30, contactId: 32, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 33, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+#### Data table
+Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X
+Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y
+Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+```
+
+**What changed?**
+
+Contact Y row has been deleted and its column values have been merged into contact X row. This is 
+done automatically by the Contacts Provider for Contacts that no longer have at least one associated
+RawContact.
+
+The RawContacts and Data table remains the same except the joined contactId column values have now
+been changed to the id of Contact X.
+
+The Groups table remains unmodified.
+
+**Options updates**
+
+Changes to the options (starred, timesContacted, lastTimeContacted, customRingtone, and 
+sendToVoicemail) of a RawContact may affect the options of the parent Contact. On the other hand, 
+changes to the options of the parent Contact will be propagated to all child RawContact options.
+
+**Photo updates**
+
+A RawContact may have a full-sized photo saved as a file and a thumbnail version of that saved in
+the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
+references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).
+
+> Note that when removing the photo in the native contacts app, the photo data row is not 
+> immediately deleted, though the `PHOTO_FILE_ID` is immediately set to null. This may result in 
+> the `PHOTO_URI` and `PHOTO_THUMBNAIL_URI` to still have a valid image uri even though the photo
+> has been "removed". This library immediately deletes the photo data row, which seems to work
+> perfectly.
+
+**Data inserts**
+
+In the native Contacts app, Data inserted in combined contacts mode will be associated to the first
+RawContact in the list, which may not be the same as the RawContact referenced by 
+`ContactsColumns.NAME_RAW_CONTACT_ID`.
+
+**UI changes?**
+
+The native Contacts App does not display the groups field when displaying / editing Contacts that
+have multiple RawContacts (linked/merged) in combined mode. However, it does allow editing 
+individual RawContact Data rows in which case the groups field is displayed and editable.
+
+In the native Contacts app, the name attribute used comes from the RawContact with ID of
+`ContactsColumns.NAME_RAW_CONTACT_ID`. All other "unique" mimetypes (company/organization) and
+non-unique mimetypes (email) per RawContact are shown only if they are not blank.
+
+#### Data Table
+
+The Data table uses generic column names (e.g. "data1", "data2", ...) using the column "mimetype" to
+distinguish the type of data in that generic column. For example, the column name of 
+`StructuredName.DISPLAY_NAME` is the same as `Email.ADDRESS`, which is "data1". 
+
+Each row in the Data table consists of a piece of contact data (e.g. a phone number), its 
+"mimetype", and the associated contact id. A row does not contain all of the data for a contact. 
+
+> A RawContact has one (could be 0 if no accounts are available) or more entries in the Data 
+> `table`. A Contact has one or more associated RawContacts. All data belonging to all RawContacts
+> of a Contact belong to that Contact via aggregation.
+
+RawContacts may only have one row of certain mimetypes and may have multiple rows of other 
+mimetypes. Here is the list.
+
+**Unique mimetype per RawContact**
+
+- Company (Organization)
+- Name (StructuredName)
+- Nickname
+- Note
+- Photo
+- SipAddress
+
+**Non-unique mimetype per Raw Contact**
+
+- Address (StructuredPostal)
+- Email
+- Event
+- GroupMembership
+- Im
+- Phone
+- Relation
+- Website
+
+Although some mimetypes are unique per RawContact, none of those mimetypes are unique per Contact
+because a Contact is an aggregate of one or more RawContacts!
+
+#### Data Table Joins
+
+All columns returned by the Data table are specified in `DataColumnsWithJoins`, which includes the
+`DataColumns`, `ContactsColumns`, and `ContactOptionsColumns`. 
+
+The `DataColumns` gives us access to all of the columns in the Data table. All other joined columns,
+including the `ContactsColumns` are appended to each row in the query. This means that the 
+`ContactsColumns`; `DISPLAY_NAME`, `PHOTO_URI`, and `PHOTO_THUMBNAIL_URI` are repeated for all Data
+rows belonging to the same Contact.
+
+The `ContactOptionsColumns` values joined with the Data table are the values of the Contact, not
+the RawContact that the Data row belongs to!
+
+#### Data Updates
+
+A new row in the Data table is created for each new piece of data (e.g. email address) entered for 
+the contact. 
+
+Removing a piece of existing data results in the deletion of the row in the Data table if that row
+no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is the 
+behavior of the native Android Contacts app. Therefore, querying for null fields is not possible. 
+For example, there may be no Data rows that exist where the email address is null. Thus, a query to 
+search for all contacts with null email address may return 0 contacts even if there are some
+contacts without email addresses.
+
+#### Data Required
+
+Creating new RawContacts without email address (or other fields), results in no row in the Data 
+table for the email address, and all other fields. There are a few exceptions. The following 
+Data rows are automatically created for all contacts, if not provided;
+
+- Group membership?, defaults to the account's default system group
+- Name, defaults to null 
+- Nickname, defaults to null 
+- Note, defaults to null
+
+If a valid account is provided, the default (auto add) group membership row is automatically created
+immediately by the Contacts Provider at the time of contact insertion. The name, nickname, and note
+are automatically created at a later time.
+
+When there are no available accounts, none of the above data rows are automatically created. This is
+a problem because then queries for all contacts will not return existing contacts that do not have 
+any rows in the Data table. As a workaround, the RawContacts table is queried for all rows with a
+non-null contact id.
+
+#### Data `StructuredName`
+
+The `DISPLAY_NAME` of the `StructuredName` row in the Data table is automatically set by the 
+Contacts Provider by combining the other name elements; `GIVEN_NAME`, `FAMILY_NAME`, etc. 
+For example, if given and family name is "vandolf" and "estrellado", then the display name 
+will be set to "vandolf estrellado".
+
+The inverse is also true. If the display name is provided but not the other elements 
+(given name, family name, etc), then the Contacts Provider will automatically derive the other
+values from the display name. For example, if the display name is set to "vandolf estrellado", 
+then the given and family names are "vandolf" and "estrellado" respectively.
+
+#### Data `StructuredPostal`
+
+The `FORMATTED_ADDRESS` of the `StructuredPostal` row in the data table is automatically set by the 
+Contacts Provider by combining the other address elements; `STREET`, `CITY`, etc. This is similar to
+the `StructuredName`.
+
+The inverse may not be true as the Contacts Provider does not seem to be able to derived the other
+address elements from the `FORMATTED_ADDRESS`.
+
+#### Groups Table & Accounts
+
+Contacts are assigned to one or more groups via the `GroupMembership`. The actual groups are in a
+separate table. It typically looks like this;
+
+```
+Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1
+Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0
+Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0
+Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0
+Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0
+Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0
+`````
+
+> Note that the **ids will vary** as the user adds and removes accounts! Furthermore, each account
+> will have its own set of the above groups. This means that there may be multiple groups with the
+> same title belonging to different accounts.
+
+The first 5 (this number depends on the OS / manufacturer) are system groups that are read-only.
+Newly created contacts are automatically assigned to group 1 (notice autoAdd is true). Group 2
+is usually the favorites group, though other custom groups can also be marked as favorites. Custom
+groups created by users can be written to, deleted, set as favorites, and set to auto add.
+
+Like RawContacts, creating a new Groups row where the account name and type are null when there are
+available Accounts (or when an account becomes available) results in the Groups row to be updated by
+the Contacts Provider automatically later on to have an existing Account's name and type. 
+
+Removing the Account will delete all of the associated rows in the Groups table.
+
+**Groups, no available accounts**
+
+The native Contacts app does not display the groups field when creating or updating contacts when
+there are no available accounts present. To enforce this behavior, this library does not allow
+creation of groups without associated accounts.
+
+**Groups, duplicate titles**
+
+The Contacts Provider and the native Contacts app allows multiple groups with the same title 
+belonging to the same account to exist. Therefore, this library also allows this behavior even 
+though it is considered a bug for most consumers. If desired, it is up to consumers to protect 
+against multiple groups from the same account having the same titles.
+
+#### Groups Table & GroupMemberships (Data Table)
+
+There may be multiple groups with the same title from different accounts. Therefore, the group
+membership should point to the group belonging to the same account as the contact. The native 
+Contacts app displays only the groups belonging to the selected account.
+
+Updating group memberships of existing contacts seem to be almost instant. All contacts must be a 
+part of at least the default contact group 1 (may vary). Contacts with no group membership will be 
+asynchronously added to the default group by the Contacts Provider.
+
+Membership to the default group should never be deleted!
+
+**Starred in Android (Favorites)**
+
+Setting the `ContactOptionsColumns.STARRED` of a contact in the Contacts table to true results in 
+the addition of a group membership to the favorites group of the associated account. Setting it to
+false removes that membership. 
+
+The inverse works too. Adding a group membership to the favorites group results in 
+`ContactOptionsColumns.STARRED` being set to true. Removing the membership sets it to false.
+
+When there are no accounts, there are also no groups and group memberships that can exist. Even
+though the favorites group does not exist, contacts may still be starred because 
+`ContactOptionsColumns.STARRED` is a column in the Contacts table and is not dependent on the
+existence of the favorites row in the Groups table and a membership to the favorites group in the
+Data table. When an account is added, all of the starred contacts also gain a membership to the
+favorites group.
+
+#### Groups; Deletion
+
+Deleting a group simply sets the "deleted" column of the row to true. It's up to a sync adapter to
+actually perform the group deletion. The RawContacts table shares the same mechanism as the Groups
+table. Both have columns defined in `SyncColumns`. However, unlike the RawContacts syncing where
+deletion is immediate (even without internet connection), group deletion is unpredictable. Groups
+that are marked for deletion remain in the DB and is still shown in the native Contacts app. 
+Sometimes they do get deleted at some point but the trigger for the actual deletion eludes me.
+
+The native Contacts app does not support group deletion or updates perhaps because groups syncing 
+isn't implemented or at least not to the same extent as contacts syncing. Therefore, this library
+will also not support group deletion.
+
 #### Sync Adapters
 
 This library does not add any custom sync adapters to keep it short and sweet. This relies on the
