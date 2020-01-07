@@ -58,6 +58,42 @@ The tables are connected the following way;
 - RawContacts contains a reference to the Contacts row Id.
 - Data contains a reference to the RawContacts row Id and Contacts row Id. 
 
+#### Contacts; Display Name
+
+The Contacts display name may be different than the Data `StructuredName` display name! If a 
+structured name in the Data table is not provided, then other kinds of data will be used as the 
+`Contacts` row display name. For example, if an email is provided but no structured name then the
+display name will be the email. When a structured name is inserted, the Contacts Provider 
+automatically updates the Contacts row display name.
+
+If no data rows suitable to be a display name are available, then the Contacts row display name will
+be null. Data suitable to be a Contacts row display name are enumerated in `DisplayNameSources`;
+ 
+- company name
+- email address
+- nickname
+- phone number
+- structured name
+
+Data not suitable to be a display name are;
+
+- address
+- event
+- group
+- im
+- note
+- relation
+- sip
+- website
+
+The kind of data used as the display for the Contact is set in 
+`ContactNameColumns.DISPLAY_NAME_SOURCE`.
+
+#### Sync Adapters
+
+This library does not add any custom sync adapters to keep it short and sweet. This relies on the
+default system sync settings and functions.
+
 ## Java Support
 
 This library is intended to be Java-friendly. The policy is that we should attempt to write 
@@ -109,4 +145,3 @@ it is not part of the core `contacts` module so I'm able to live with this.
 
 [1]: https://developer.android.com/guide/topics/providers/contacts-provider
 [2]: https://github.com/Karumi/Dexter
-
