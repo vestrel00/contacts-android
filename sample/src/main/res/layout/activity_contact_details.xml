@@ -19,5 +19,52 @@
             android:scaleType="fitCenter"
             android:src="@drawable/placeholder_photo" />
 
+        <!-- Name -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/contact_details_name_label"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+        <EditText
+            android:id="@+id/namePrefixField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="@string/contact_details_name_prefix_hint"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/firstNameField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="@string/contact_details_name_first_hint"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/middleNameField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="@string/contact_details_name_middle_hint"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/lastNameField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="@string/contact_details_name_last_hint"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/nameSuffixField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="@string/contact_details_name_suffix_hint"
+            android:inputType="textPersonName" />
     </LinearLayout>
 </ScrollView>

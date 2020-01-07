@@ -11,6 +11,7 @@ import com.vestrel00.contacts.async.findFirstAsync
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.permissions.queryWithPermission
+import com.vestrel00.contacts.util.names
 import kotlinx.android.synthetic.main.activity_contact_details.*
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,7 @@ class ContactDetailsActivity : BaseActivity() {
 
             // TODO Add linked contacts field
             setupPhotoView()
+            setupNameFields()
         }
     }
 
@@ -56,6 +58,17 @@ class ContactDetailsActivity : BaseActivity() {
     private fun setupPhotoView() {
         photoView.init(this)
         photoView.contact = contact
+    }
+
+    private fun setupNameFields() {
+        // TODO Move this to a custom view in contacts-ui and handle multiple names the same way the
+        // native Contacts app does. For now just pick the first name, if any.
+        val name = contact.names().firstOrNull()
+        namePrefixField.setText(name?.prefix)
+        firstNameField.setText(name?.givenName)
+        middleNameField.setText(name?.middleName)
+        lastNameField.setText(name?.familyName)
+        nameSuffixField.setText(name?.suffix)
     }
 
     companion object {

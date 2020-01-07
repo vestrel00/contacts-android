@@ -10,6 +10,13 @@
     <string name="contact_details">Contact details</string>
     <string name="contact_details_photo">Contact photo</string>
 
+    <string name="contact_details_name_label">Name</string>
+    <string name="contact_details_name_prefix_hint">Name prefix</string>
+    <string name="contact_details_name_first_hint">First name</string>
+    <string name="contact_details_name_middle_hint">Middle name</string>
+    <string name="contact_details_name_last_hint">Last name</string>
+    <string name="contact_details_name_suffix_hint">Name suffix</string>
+
     <string name="contact_details_fetch_error">Unable to get contact details</string>
 
     <!-- Accounts activity -->
