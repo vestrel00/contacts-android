@@ -7,6 +7,15 @@ import android.net.Uri
 import android.widget.Toast
 import com.vestrel00.contacts.ui.R
 
+/**
+ * Launches an external activity to pick a ringtone.
+ *
+ * This (sub)activity is the same one used in the native Contacts app and typically looks and
+ * behaves like an alert dialog that floats on top of the current activity with a translucent dimmed
+ * overlay.
+ *
+ * This is used in conjunction with [onRingtoneSelected] to process the results.
+ */
 fun Activity.selectRingtone(currentRingtoneUri: Uri?) {
     val selectRingtoneIntent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
         putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE)
@@ -21,6 +30,10 @@ fun Activity.selectRingtone(currentRingtoneUri: Uri?) {
     }
 }
 
+/**
+ * Call this in [Activity.onActivityResult] to get the selected ringtone uri after the ringtone
+ * select activity has finished. This is used in conjunction with [selectRingtone].
+ */
 fun onRingtoneSelected(
     requestCode: Int, resultCode: Int, intent: Intent?,
     ringtoneSelected: (ringtoneUri: Uri?) -> Unit
