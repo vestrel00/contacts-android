@@ -27,6 +27,11 @@
         </activity>
 
         <activity
+            android:name=".ContactDetailsActivity"
+            android:label="@string/contact_details"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
             android:name=".AccountsActivity"
             android:label="@string/accounts" />
     </application>

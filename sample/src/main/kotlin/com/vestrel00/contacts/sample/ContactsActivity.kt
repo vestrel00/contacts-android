@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.async.findAsync
@@ -61,6 +63,10 @@ class ContactsActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        ContactDetailsActivity.onShowContactDetailsResult(requestCode) {
+            showContacts()
+        }
+
         AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) { selectedAccounts ->
             this.selectedAccounts = selectedAccounts
             showContacts()
@@ -82,6 +88,7 @@ class ContactsActivity : BaseActivity() {
         // Ahh, my good ol' friend ListView. You serve me once again =)
         contactsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
         contactsListView.adapter = contactsAdapter
+        contactsListView.onItemClickListener = OnContactClickListener()
     }
 
     private fun showContacts() {
@@ -138,6 +145,13 @@ class ContactsActivity : BaseActivity() {
             clear()
             addAll(listOfContactNameAndEmails)
             notifyDataSetChanged()
+        }
+    }
+
+    private inner class OnContactClickListener : AdapterView.OnItemClickListener {
+        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            val contact = searchResults[position]
+            ContactDetailsActivity.showContactDetails(this@ContactsActivity, contact.id)
         }
     }
 }
