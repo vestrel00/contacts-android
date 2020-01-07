@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Contact photo picker -->
+    <string name="contact_photo_take_error">Unable to take a photo</string>
+    <string name="contact_photo_select_error">Unable to select a photo</string>
+
+    <string name="contact_photo_picker_dialog_title">Change photo</string>
+
+    <string-array name="contact_photo_picker_dialog_choices_1">
+        <item>Take new photo</item>
+        <item>Select new photo</item>
+        <item>Remove photo</item>
+    </string-array>
+
+    <string-array name="contact_photo_picker_dialog_choices_2">
+        <item>Take new photo</item>
+        <item>Select new photo</item>
+    </string-array>
+</resources>

@@ -11,6 +11,7 @@ import com.vestrel00.contacts.async.findFirstAsync
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.permissions.queryWithPermission
+import kotlinx.android.synthetic.main.activity_contact_details.*
 import kotlinx.coroutines.launch
 
 class ContactDetailsActivity : BaseActivity() {
@@ -28,7 +29,15 @@ class ContactDetailsActivity : BaseActivity() {
                 finish()
                 return@launch
             }
+
+            // TODO Add linked contacts field
+            setupPhotoView()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        photoView.onActivityResult(requestCode, resultCode, data)
     }
 
     private suspend fun fetchContact(): Boolean {
@@ -42,6 +51,11 @@ class ContactDetailsActivity : BaseActivity() {
         }
 
         return false
+    }
+
+    private fun setupPhotoView() {
+        photoView.init(this)
+        photoView.contact = contact
     }
 
     companion object {
