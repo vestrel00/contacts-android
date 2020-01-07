@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Contact phone -->
+    <string name="contact_phone_number_hint">Phone number</string>
+
     <!-- Contact photo picker -->
     <string name="contact_photo_take_error">Unable to take a photo</string>
     <string name="contact_photo_select_error">Unable to select a photo</string>
@@ -17,4 +20,11 @@
         <item>Take new photo</item>
         <item>Select new photo</item>
     </string-array>
+
+    <!-- Contact ringtone picker -->
+    <string name="contact_ringtone_select_error">Unable to select a ringtone</string>
+
+    <!-- Custom label input dialog -->
+    <string name="contact_custom_label_input_dialog_title">Custom label name</string>
+
 </resources>

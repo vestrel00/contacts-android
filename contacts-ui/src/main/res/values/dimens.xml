@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="custom_label_input_dialog_margin_horizontal">24dp</dimen>
+</resources>

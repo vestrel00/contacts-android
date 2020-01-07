@@ -34,6 +34,7 @@ class ContactDetailsActivity : BaseActivity() {
             // TODO Add linked contacts field
             setupPhotoView()
             setupNameFields()
+            setupPhoneFields()
         }
     }
 
@@ -69,6 +70,10 @@ class ContactDetailsActivity : BaseActivity() {
         middleNameField.setText(name?.middleName)
         lastNameField.setText(name?.familyName)
         nameSuffixField.setText(name?.suffix)
+    }
+
+    private fun setupPhoneFields() {
+        phonesView.contact = contact
     }
 
     companion object {

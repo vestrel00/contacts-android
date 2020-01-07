@@ -66,5 +66,22 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:hint="@string/contact_details_name_suffix_hint"
             android:inputType="textPersonName" />
+
+        <!-- Phone -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:text="@string/contact_details_phone_label"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+        <com.vestrel00.contacts.ui.view.PhonesView
+            android:id="@+id/phonesView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical" />
+
     </LinearLayout>
 </ScrollView>

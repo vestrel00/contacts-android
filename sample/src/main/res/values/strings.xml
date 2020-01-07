@@ -8,6 +8,12 @@
 
     <!-- Contact details activity -->
     <string name="contact_details">Contact details</string>
+
+    <string name="contact_details_save_success">Contact saved</string>
+    <string name="contact_details_save_error">Unable to save contact</string>
+
+    <string name="contact_details_fetch_error">Unable to get contact details</string>
+
     <string name="contact_details_photo">Contact photo</string>
 
     <string name="contact_details_name_label">Name</string>
@@ -17,7 +23,7 @@
     <string name="contact_details_name_last_hint">Last name</string>
     <string name="contact_details_name_suffix_hint">Name suffix</string>
 
-    <string name="contact_details_fetch_error">Unable to get contact details</string>
+    <string name="contact_details_phone_label">Phone</string>
 
     <!-- Accounts activity -->
     <string name="accounts">Accounts</string>
