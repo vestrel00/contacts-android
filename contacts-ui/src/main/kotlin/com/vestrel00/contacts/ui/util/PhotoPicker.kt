@@ -9,6 +9,19 @@ import android.provider.MediaStore
 import android.widget.Toast
 import com.vestrel00.contacts.ui.R
 
+/**
+ * Shows an alert dialog with two options; take a new photo using the camera and elect an existing
+ * photo.
+ *
+ * If the [withRemovePhotoOption] is true, then a third option is available; remove photo.
+ *
+ * This is used in conjunction with [onPhotoPicked] to process the results.
+ *
+ * ## Important!
+ *
+ * This uses [Activity.takeNewPhoto], which only provides a thumbnail version of the photo taken.
+ * To get full-sized photos, see https://developer.android.com/training/camera/photobasics#TaskPath
+ */
 @JvmOverloads
 fun Activity.showPhotoPickerDialog(
     withRemovePhotoOption: Boolean = false,
@@ -33,6 +46,23 @@ fun Activity.showPhotoPickerDialog(
         .show()
 }
 
+/**
+ * Launches an external activity to take a new photo using the camera.
+ *
+ * This is used in the [showPhotoPickerDialog] but can also be used on its own in conjunction
+ * with [onPhotoPicked].
+ *
+ * The photo will be available as a bitmap thumbnail in [Activity.onActivityResult];
+ *
+ * ```kotlin
+ * val bitmap = intent?.extras?.get("data") as Bitmap?
+ * ```
+ *
+ * ## Important!
+ *
+ * This only provides a thumbnail version of the photo taken. To get full-sized photos, see
+ * https://developer.android.com/training/camera/photobasics#TaskPath
+ */
 fun Activity.takeNewPhoto() {
     val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     val component = takePhotoIntent.resolveActivity(packageManager)
@@ -43,6 +73,12 @@ fun Activity.takeNewPhoto() {
     }
 }
 
+/**
+ * Launches an external activity to select an existing photo.
+ *
+ * This is used in the [showPhotoPickerDialog] but can also be used on its own in conjunction
+ * with [onPhotoPicked].
+ */
 fun Activity.selectPhoto() {
     val selectPhotoIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
     val component = selectPhotoIntent.resolveActivity(packageManager)
@@ -53,6 +89,11 @@ fun Activity.selectPhoto() {
     }
 }
 
+/**
+ * Call this in [Activity.onActivityResult] to get the image bitmap or uri after the take or select
+ * photo activity has finished. This is used in conjunction with [showPhotoPickerDialog] or
+ * [takeNewPhoto] or [selectPhoto].
+ */
 fun onPhotoPicked(
     requestCode: Int, resultCode: Int, intent: Intent?,
     photoBitmapPicked: (bitmap: Bitmap) -> Unit,
