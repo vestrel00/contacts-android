@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.entities.MutablePhone
+import com.vestrel00.contacts.entities.Phone
 import com.vestrel00.contacts.util.addPhone
 import com.vestrel00.contacts.util.phones
 import com.vestrel00.contacts.util.removePhone
@@ -71,9 +72,18 @@ class PhonesView @JvmOverloads constructor(
     }
 
     private fun addEmptyPhoneView() {
-        contact?.let {
-            emptyPhoneView = addPhone(MutablePhone())
-            it.addPhone(emptyPhoneView.phone)
+        contact?.let { contact ->
+            // In the native Contacts app, the new empty phone that is added has a phone type of
+            // either mobile, home, work, or other in that other; which ever has not yet been added.
+            // If all those phone types already exist, it defaults to other.
+            val existingPhoneTypes = contact.phones().map { it.type }
+            val phoneType = DEFAULT_PHONE_TYPES.minus(existingPhoneTypes).firstOrNull()
+                ?: DEFAULT_PHONE_TYPES.last()
+
+            // I didn't bother implementing that logic here to keep things simple. The community may
+            // contribute here by adding this functionality.
+            emptyPhoneView = addPhone(MutablePhone().apply { type = phoneType })
+            contact.addPhone(emptyPhoneView.phone)
         }
     }
 
@@ -97,3 +107,7 @@ class PhonesView @JvmOverloads constructor(
         removeView(phoneView)
     }
 }
+
+private val DEFAULT_PHONE_TYPES = listOf(
+    Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.OTHER
+)
