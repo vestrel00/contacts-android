@@ -4,9 +4,9 @@
     - Add `DataColumns.IS_PRIMARY` and `DataColumns.IS_SUPER_PRIMARY` to `DataEntity` ???
         - Add extension functions for Contact and RawContact entities to get primary and super
           primary entity in sequence/collection.
+    - Join/Separate (API 22-), Merge/Unmerge (API 23), Link/unlink (API 24+) Contacts.
     - Behavior of name field (`ContactsColumns.NAME_RAW_CONTACT_ID`) for Contacts with more than one
       RawContact in API 19 emulator.
-    - Merge/Unmerge  (API 23) / Link/unlink (API 24+) Contacts.
 2. Lint / code quality checks.
 3. Unit test.
 4. Espresso test.
@@ -15,29 +15,50 @@
 
 #### Complete sample app
 
-Build the app base on NEWEST (API 28+) native Contacts app. Older versions should still be
-referenced to ensure nothing is overlooked. 
+Build the sample app as simple as possible, referencing new and older versions to ensure all
+functionality is included (though may look different). Document that the sample app design is more 
+based on older versions; API Nougat and below.
+
+- Contacts list
+    - Long press options
+      - Share (post v1)
+      - Delete
+      - Link (when multiple selected)
                 
-- Edit Contact / RawContact
-    - Combined edit mode (editing multiple linked raw contacts) available in API 24 but removed in
-      API (28?). Document this.
-    - Save
-    - Star (favorite) contact
-    - Merge/Unmerge  (API 23) / Link/unlink (API 24+) Contacts.
-    - Place on Home screen
-    - Delete
-    - Set ringtone
-    - All calls to voicemail
-    - Discard changes
-- Create contact
-    - Saving to account
-        - What happens to fields that have been filled out when different account is picked?
-- Delete contact
 - View starred (favorites only) contacts
+
+- View Contact
+    - Star (favorite) contact
+    - Edit
+    - Join/Separate (API 22-), Merge/Unmerge (API 23), Link/unlink (API 24+) Contacts.
+    - Delete
+    - Share (post v1)
+    - Create shortcut / Place on Home screen
+    - Set ringtone
+    - Route to voicemail / All calls to voicemail
+    - Press action for each data
+    - Long press options for each data
+      - Data
+      - Copy to clipboard
+      - Set default / clear default (isSuperPrimary)
+      
+- Edit Contact / RawContact
+    - Saving to which account (uneditable)
+    - Combined edit mode (editing multiple linked raw contacts) available in API 24 but removed in
+      API (28?) and not in API 22. Try all supported API levels! Choose behavior of latest API. 
+      Document this.
+    - Save
+    - Discard changes
+    
+- Create contact
+    - Saving to which account (editable)
+        - What happens to fields (groups) that have been filled out when different account is picked?
+        
 - Set up my profile
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
     - `ContactsContract.Profile`
+    
 - No account & no contacts screen
     - Add account
 
@@ -50,6 +71,7 @@ referenced to ensure nothing is overlooked.
                 - Long press -> Remove sync group
                 - More groups... (Add sync group)
                 - All other contacts
+                
 - Manage accounts
     
 ----------------------------------------------------------------------------------------------------
