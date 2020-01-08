@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.accounts.permissions
+package com.vestrel00.contacts.permissions.accounts
 
 import android.accounts.Account
 import android.app.Activity

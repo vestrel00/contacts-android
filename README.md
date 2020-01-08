@@ -1,7 +1,6 @@
 ## TODO
 
 1. More feature work;
-    - Move package `contacts.accounts.permissions` to `contacts.permissions.accounts`.
     - Add `DataColumns.IS_PRIMARY` and `DataColumns.IS_SUPER_PRIMARY` to `DataEntity` ???
         - Add extension functions for Contact and RawContact entities to get primary and super
           primary entity in sequence/collection.

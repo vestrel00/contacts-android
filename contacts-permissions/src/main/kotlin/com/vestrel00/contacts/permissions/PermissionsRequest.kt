@@ -12,7 +12,7 @@ import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener
 import com.karumi.dexter.listener.single.PermissionListener
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.accounts.Accounts
-import com.vestrel00.contacts.accounts.permissions.requestGetAccountsPermission
+import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
