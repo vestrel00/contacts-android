@@ -63,7 +63,7 @@ class ContactsActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        ContactDetailsActivity.onShowContactDetailsResult(requestCode) {
+        EditContactDetailsActivity.onEditContactDetailsResult(requestCode) {
             showContacts()
         }
 
@@ -151,7 +151,8 @@ class ContactsActivity : BaseActivity() {
     private inner class OnContactClickListener : AdapterView.OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val contact = searchResults[position]
-            ContactDetailsActivity.showContactDetails(this@ContactsActivity, contact.id)
+            // TODO Show contact details instead of edit
+            EditContactDetailsActivity.editContactDetails(this@ContactsActivity, contact.id)
         }
     }
 }

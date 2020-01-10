@@ -19,14 +19,6 @@ Build the sample app as simple as possible, referencing new and older versions t
 functionality is included (though may look different). Document that the sample app design is more 
 based on older versions; API Nougat and below.
 
-- Contacts list
-    - Long press options
-      - Share (post v1)
-      - Delete
-      - Link (when multiple selected)
-                
-- View starred (favorites only) contacts
-
 - View Contact
     - Star (favorite) contact
     - Edit
@@ -54,6 +46,14 @@ based on older versions; API Nougat and below.
     - Saving to which account (editable)
         - What happens to fields (groups) that have been filled out when different account is picked?
         
+- Contacts list
+    - Long press options
+      - Share (post v1)
+      - Delete
+      - Link (when multiple selected)
+                
+- View starred (favorites only) contacts
+
 - Set up my profile
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`

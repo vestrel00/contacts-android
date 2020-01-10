@@ -175,7 +175,7 @@ them into a single entry in the Contacts table whilst maintaining the separate e
 RawContacts table.
 
 A more common scenario that causes multiple RawContacts per Contact is when two or more Contacts are
-"linked" (or "merged" for API 23 and below).
+"linked" (or "merged" for API 23 and below, or "joined" for API 22 and below).
 
 #### Behavior of linking/merging contacts
 
@@ -199,7 +199,7 @@ Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/
 Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
 ```
 
-When contact **X** links/merges contact **Y**, the tables becomes;
+When contact **X** links/merges/joins contact **Y**, the tables becomes;
 
 ```
 #### Contacts table
@@ -256,7 +256,7 @@ RawContact in the list, which may not be the same as the RawContact referenced b
 **UI changes?**
 
 The native Contacts App does not display the groups field when displaying / editing Contacts that
-have multiple RawContacts (linked/merged) in combined mode. However, it does allow editing 
+have multiple RawContacts (linked/merged/joined) in combined mode. However, it does allow editing 
 individual RawContact Data rows in which case the groups field is displayed and editable.
 
 In the native Contacts app, the name attribute used comes from the RawContact with ID of
