@@ -48,6 +48,8 @@ interface DataEntity : Entity {
 }
 
 // Keep the MimeType internal with this mapping function.
+// FIXME Remove this mapping and add mimeType val to DataEntity interface if mimetypes are to be
+// made public.
 internal fun DataEntity.mimeType(): MimeType = when (this) {
     is Address, is MutableAddress -> MimeType.ADDRESS
     is Company, is MutableCompany -> MimeType.COMPANY

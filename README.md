@@ -2,13 +2,13 @@
 
 1. More feature work;
     - Join/Separate (API 22-), Merge/Unmerge (API 23), Link/unlink (API 24+) Contacts.
-        - Is it as simple as changing the CONTACT_ID reference of all RawContacts?
-        - Behavior of primary and super primary data rows? What happens to super primary rows when merged?
-        - Document this in the dev notes' **Data Primary and Super Primary Rows** section.
+        - See https://stackoverflow.com/questions/39804979/how-i-can-programmatically-merge-two-different-contactsandroid/39805494
     - Behavior of name field (`ContactsColumns.NAME_RAW_CONTACT_ID`) for Contacts with more than one
       RawContact in API 19 emulator.
         - Contact display name same as super primary name data row?
         - Contact display name changes if primary name is changed?
+    - Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+        - See FIXME in DataEntity.mimeType() function.
 2. Lint / code quality checks.
 3. Unit test.
 4. Espresso test.
@@ -80,9 +80,9 @@ based on older versions; API Nougat and below.
     
 #### Final steps!
 
-1. Update AS, Kotlin, Gradle, Dexter, and all other dependencies before releasing.
-2. Review remaining TODOs and FIXMEs.
-3. Provide usage documentation in README and other places as needed.
+1. Review remaining TODOs and FIXMEs.
+2. Provide usage documentation in README and other places as needed.
+3. Update AS, Kotlin, Gradle, Dexter, and all other dependencies before releasing.
 4. Publish artifact AND write/publish medium blog.
 5. Immediately setup Travis CI (free for public repos).
 
