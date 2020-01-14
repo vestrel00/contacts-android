@@ -14,6 +14,16 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
 /**
+ * Returns the default data entity in the collection or null if not found.
+ */
+fun Collection<DataEntity>.default(): DataEntity? = firstOrNull { it.isDefault() }
+
+/**
+ * Returns the default data entity in the sequence or null if not found.
+ */
+fun Sequence<DataEntity>.default(): DataEntity? = firstOrNull { it.isDefault() }
+
+/**
  * Sets this data as the default for the set of data of the same type (e.g. email) for the aggregate
  * Contact. If a default data already exist before this call, then it will no longer be the default.
  *

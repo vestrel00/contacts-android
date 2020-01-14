@@ -1,8 +1,6 @@
 ## TODO
 
 1. More feature work;
-    - ~~Add `DataColumns.IS_PRIMARY` and `DataColumns.IS_SUPER_PRIMARY` to `DataEntity`~~
-        - Add extension functions for Collection and Sequence of entities to get default.
     - Join/Separate (API 22-), Merge/Unmerge (API 23), Link/unlink (API 24+) Contacts.
         - Is it as simple as changing the CONTACT_ID reference of all RawContacts?
         - Behavior of primary and super primary data rows? What happens to super primary rows when merged?
