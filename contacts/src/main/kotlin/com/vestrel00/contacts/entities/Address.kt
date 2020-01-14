@@ -8,20 +8,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Address internal constructor(
 
-    /**
-     * The id of this row in the Data table.
-     */
     override val id: Long,
 
-    /**
-     * The id of the [RawContact] this data is associated with.
-     */
     override val rawContactId: Long,
 
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
     override val contactId: Long,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
 
     /**
      * The [Type] of address. Defaults to [Type.HOME].
@@ -38,7 +33,7 @@ data class Address internal constructor(
      *
      * This field must be consistent with any structured data.
      *
-     * Note! This is automatically set the the Contacts Provider if null.
+     * Note! This is automatically set by the Contacts Provider if null.
      */
     val formattedAddress: String?,
 
@@ -95,6 +90,9 @@ data class Address internal constructor(
         rawContactId = rawContactId,
         contactId = contactId,
 
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
         type = type,
         label = label,
 
@@ -126,26 +124,15 @@ data class Address internal constructor(
 @Parcelize
 data class MutableAddress internal constructor(
 
-    /**
-     * See [Address.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val id: Long,
 
-    /**
-     * See [Address.rawContactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val rawContactId: Long,
 
-    /**
-     * See [Address.contactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val contactId: Long,
+
+    override var isPrimary: Boolean,
+
+    override var isSuperPrimary: Boolean,
 
     /**
      * See [Address.type].
@@ -200,8 +187,8 @@ data class MutableAddress internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, INVALID_ID, Type.HOME, null, null, null,
-        null, null, null, null, null, null
+        INVALID_ID, INVALID_ID, INVALID_ID, false, false, Type.HOME, null, null,
+        null, null, null, null, null, null, null
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
@@ -212,6 +199,9 @@ data class MutableAddress internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         type = type,
         label = label,

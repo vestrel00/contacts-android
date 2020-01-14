@@ -6,20 +6,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Name internal constructor(
 
-    /**
-     * The id of this row in the Data table.
-     */
     override val id: Long,
 
-    /**
-     * The id of the [RawContact] this data belongs to.
-     */
     override val rawContactId: Long,
 
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
     override val contactId: Long,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
 
     /**
      * The name that should be used to display the contact.
@@ -84,6 +79,9 @@ data class Name internal constructor(
         rawContactId = rawContactId,
         contactId = contactId,
 
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
         displayName = displayName,
 
         givenName = givenName,
@@ -102,26 +100,15 @@ data class Name internal constructor(
 @Parcelize
 data class MutableName internal constructor(
 
-    /**
-     * See [Name.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val id: Long,
 
-    /**
-     * See [Name.rawContactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val rawContactId: Long,
 
-    /**
-     * See [Name.contactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val contactId: Long,
+
+    override var isPrimary: Boolean,
+
+    override var isSuperPrimary: Boolean,
 
     /**
      * See [Name.displayName].
@@ -171,8 +158,8 @@ data class MutableName internal constructor(
 ) : DataEntity, Parcelable {
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, INVALID_ID, null, null, null, null,
-        null, null, null, null, null
+        INVALID_ID, INVALID_ID, INVALID_ID, false, false, null, null,
+        null, null, null, null, null, null, null
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
@@ -186,6 +173,9 @@ data class MutableName internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         displayName = displayName,
 

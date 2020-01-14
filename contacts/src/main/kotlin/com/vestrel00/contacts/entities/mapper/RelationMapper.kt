@@ -11,6 +11,9 @@ internal class RelationMapper(private val relationCursor: RelationCursor) {
             rawContactId = relationCursor.rawContactId,
             contactId = relationCursor.contactId,
 
+            isPrimary = relationCursor.isPrimary,
+            isSuperPrimary = relationCursor.isSuperPrimary,
+
             type = relationCursor.type,
             label = relationCursor.label,
 

@@ -14,6 +14,9 @@ internal class EventMapper(private val eventCursor: EventCursor) {
             rawContactId = eventCursor.rawContactId,
             contactId = eventCursor.contactId,
 
+            isPrimary = eventCursor.isPrimary,
+            isSuperPrimary = eventCursor.isSuperPrimary,
+
             type = eventCursor.type,
             label = eventCursor.label,
 

@@ -7,20 +7,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class GroupMembership internal constructor(
 
-    /**
-     * The id of this row in the Data table.
-     */
     override val id: Long,
 
-    /**
-     * The id of the [RawContact] this data belongs to.
-     */
     override val rawContactId: Long,
 
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
     override val contactId: Long,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
 
     /**
      * The id of the Group in the Groups table that this membership refers to, which must share

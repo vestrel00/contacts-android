@@ -8,20 +8,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Relation internal constructor(
 
-    /**
-     * The id of this row in the Data table.
-     */
     override val id: Long,
 
-    /**
-     * The id of the [RawContact] this data belongs to.
-     */
     override val rawContactId: Long,
 
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
     override val contactId: Long,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
 
     /**
      * The [Type] of relation. Defaults to [Type.ASSISTANT].
@@ -46,6 +41,9 @@ data class Relation internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         type = type,
         label = label,
@@ -82,26 +80,15 @@ data class Relation internal constructor(
 @Parcelize
 data class MutableRelation internal constructor(
 
-    /**
-     * See [Relation.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val id: Long,
 
-    /**
-     * See [Relation.rawContactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val rawContactId: Long,
 
-    /**
-     * See [Relation.contactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val contactId: Long,
+
+    override var isPrimary: Boolean,
+
+    override var isSuperPrimary: Boolean,
 
     /**
      * See [Relation.type].
@@ -120,7 +107,10 @@ data class MutableRelation internal constructor(
 
 ) : DataEntity, Parcelable {
 
-    constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Type.ASSISTANT, null, null)
+    constructor() : this(
+        INVALID_ID, INVALID_ID, INVALID_ID, false, false,
+        Type.ASSISTANT, null, null
+    )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, name)
 
@@ -128,6 +118,9 @@ data class MutableRelation internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         type = type,
         label = label,

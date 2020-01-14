@@ -11,6 +11,9 @@ internal class NicknameMapper(private val nicknameCursor: NicknameCursor) {
             rawContactId = nicknameCursor.rawContactId,
             contactId = nicknameCursor.contactId,
 
+            isPrimary = nicknameCursor.isPrimary,
+            isSuperPrimary = nicknameCursor.isSuperPrimary,
+
             name = nicknameCursor.name
         )
 }

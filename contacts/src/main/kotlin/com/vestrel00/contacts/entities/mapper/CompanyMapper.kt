@@ -11,6 +11,9 @@ internal class CompanyMapper(private val companyCursor: CompanyCursor) {
             rawContactId = companyCursor.rawContactId,
             contactId = companyCursor.contactId,
 
+            isPrimary = companyCursor.isPrimary,
+            isSuperPrimary = companyCursor.isSuperPrimary,
+
             company = companyCursor.company,
             title = companyCursor.title,
             department = companyCursor.department,

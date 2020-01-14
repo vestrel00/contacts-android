@@ -106,7 +106,7 @@ class PhotoView @JvmOverloads constructor(
         }
 
         return if (photoDrawable != null) {
-            contact.setPhotoAsync(photoDrawable, context)
+            contact.setPhotoAsync(context, photoDrawable)
         } else {
             contact.removePhotoAsync(context)
         }

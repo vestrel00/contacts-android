@@ -48,57 +48,57 @@ import java.io.InputStream
  * class documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(photoBytes: ByteArray, context: Context): Boolean =
-    setContactPhoto(id, rawContacts.firstOrNull()?.id, photoBytes, context)
+fun Contact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
+    setContactPhoto(context, id, rawContacts.firstOrNull()?.id, photoBytes)
 
 /**
  * See [Contact.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(photoInputStream: InputStream, context: Context): Boolean =
-    setPhoto(photoInputStream.readBytes(), context)
+fun Contact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
+    setPhoto(context, photoInputStream.readBytes())
 
 /**
  * See [Contact.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(photoBitmap: Bitmap, context: Context): Boolean =
-    setPhoto(photoBitmap.bytes(), context)
+fun Contact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
+    setPhoto(context, photoBitmap.bytes())
 
 /**
  * See [Contact.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(photoDrawable: BitmapDrawable, context: Context): Boolean =
-    setPhoto(photoDrawable.bitmap.bytes(), context)
+fun Contact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
+    setPhoto(context, photoDrawable.bitmap.bytes())
 
 /**
  * See [Contact.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(photoBytes: ByteArray, context: Context): Boolean =
-    setContactPhoto(id, rawContacts.firstOrNull()?.id, photoBytes, context)
+fun MutableContact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
+    setContactPhoto(context, id, rawContacts.firstOrNull()?.id, photoBytes)
 
 /**
  * See [MutableContact.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(photoInputStream: InputStream, context: Context): Boolean =
-    setPhoto(photoInputStream.readBytes(), context)
+fun MutableContact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
+    setPhoto(context, photoInputStream.readBytes())
 
 /**
  * See [MutableContact.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(photoBitmap: Bitmap, context: Context): Boolean =
-    setPhoto(photoBitmap.bytes(), context)
+fun MutableContact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
+    setPhoto(context, photoBitmap.bytes())
 
 /**
  * See [MutableContact.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(photoDrawable: BitmapDrawable, context: Context): Boolean =
-    setPhoto(photoDrawable.bitmap.bytes(), context)
+fun MutableContact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
+    setPhoto(context, photoDrawable.bitmap.bytes())
 
 // REMOVE PHOTO
 
@@ -120,13 +120,13 @@ fun MutableContact.setPhoto(photoDrawable: BitmapDrawable, context: Context): Bo
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.removePhoto(context: Context): Boolean = removeContactPhoto(id, context)
+fun Contact.removePhoto(context: Context): Boolean = removeContactPhoto(context, id)
 
 /**
  * See [Contact.removePhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.removePhoto(context: Context): Boolean = removeContactPhoto(id, context)
+fun MutableContact.removePhoto(context: Context): Boolean = removeContactPhoto(context, id)
 
 // GET PHOTO
 
@@ -148,7 +148,7 @@ fun MutableContact.removePhoto(context: Context): Boolean = removeContactPhoto(i
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoInputStream(context: Context): InputStream? = photoUriInputStream(id, context)
+fun Contact.photoInputStream(context: Context): InputStream? = photoUriInputStream(context, id)
 
 /**
  * Returns the full-sized photo as a [ByteArray]. Returns null if a photo has not yet been set.
@@ -216,7 +216,7 @@ fun Contact.photoBitmapDrawable(context: Context): BitmapDrawable? =
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.photoInputStream(context: Context): InputStream? =
-    photoUriInputStream(id, context)
+    photoUriInputStream(context, id)
 
 /**
  * See [Contact.photoBytes].
@@ -265,7 +265,7 @@ fun MutableContact.photoBitmapDrawable(context: Context): BitmapDrawable? =
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.photoThumbnailInputStream(context: Context): InputStream? =
-    photoThumbnailUriInputStream(id, context)
+    photoThumbnailUriInputStream(context, id)
 
 /**
  * Returns the photo thumbnail as a [ByteArray]. Returns null if a photo has not yet been set.
@@ -337,7 +337,7 @@ fun Contact.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable? =
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.photoThumbnailInputStream(context: Context): InputStream? =
-    photoThumbnailUriInputStream(id, context)
+    photoThumbnailUriInputStream(context, id)
 
 /**
  * See [Contact.photoThumbnailBytes].
@@ -369,7 +369,7 @@ fun MutableContact.photoThumbnailBitmapDrawable(context: Context): BitmapDrawabl
 // HELPERS
 
 private fun setContactPhoto(
-    contactId: Long, defaultRawContactId: Long?, photoBytes: ByteArray, context: Context
+    context: Context, contactId: Long, defaultRawContactId: Long?, photoBytes: ByteArray
 ): Boolean {
     if (
         !ContactsPermissions(context).canInsertUpdateDelete()
@@ -379,25 +379,25 @@ private fun setContactPhoto(
         return false
     }
 
-    val photoFileId = photoFileId(contactId, context)
+    val photoFileId = photoFileId(context, contactId)
 
     val rawContactId = if (photoFileId != null) {
         // A photo exists for the Contact. Get the ID of the RawContact in the Data table that holds
         // the photo row with the same photo file id. Keep in mind that there may be multiple
         // RawContacts associated with a single Contact.
-        rawContactIdWithPhotoFileId(photoFileId, context)
+        rawContactIdWithPhotoFileId(context, photoFileId)
     } else {
         // No photo exists for the Contact or any of its associated RawContacts. Use the
         // defaultRawContactId.
         defaultRawContactId ?: INVALID_ID
     }
 
-    return setRawContactPhoto(rawContactId, photoBytes, context)
+    return setRawContactPhoto(context, rawContactId, photoBytes)
 }
 
 
 // Removing the photo data rows does the trick!
-private fun removeContactPhoto(contactId: Long, context: Context): Boolean {
+private fun removeContactPhoto(context: Context, contactId: Long): Boolean {
     if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == INVALID_ID) {
         return false
     }
@@ -425,7 +425,7 @@ private fun removeContactPhoto(contactId: Long, context: Context): Boolean {
     return true
 }
 
-private fun photoFileId(contactId: Long, context: Context): Long? {
+private fun photoFileId(context: Context, contactId: Long): Long? {
     if (!ContactsPermissions(context).canQuery() || contactId == INVALID_ID) {
         return null
     }
@@ -448,7 +448,7 @@ private fun photoFileId(contactId: Long, context: Context): Long? {
     return photoFileId
 }
 
-private fun rawContactIdWithPhotoFileId(photoFileId: Long, context: Context): Long {
+private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long {
     val cursor = context.contentResolver.query(
         Table.DATA.uri,
         arrayOf(Fields.RawContactId.columnName),
@@ -467,7 +467,7 @@ private fun rawContactIdWithPhotoFileId(photoFileId: Long, context: Context): Lo
     return rawContactId ?: INVALID_ID
 }
 
-private fun photoUriInputStream(contactId: Long, context: Context): InputStream? {
+private fun photoUriInputStream(context: Context, contactId: Long): InputStream? {
     if (!ContactsPermissions(context).canQuery() || contactId == INVALID_ID) {
         return null
     }
@@ -487,10 +487,10 @@ private fun photoUriInputStream(contactId: Long, context: Context): InputStream?
         cursor.close()
     }
 
-    return uriInputStream(photoUri, context)
+    return uriInputStream(context, photoUri)
 }
 
-private fun photoThumbnailUriInputStream(contactId: Long, context: Context): InputStream? {
+private fun photoThumbnailUriInputStream(context: Context, contactId: Long): InputStream? {
     if (!ContactsPermissions(context).canQuery() || contactId == INVALID_ID) {
         return null
     }
@@ -510,10 +510,10 @@ private fun photoThumbnailUriInputStream(contactId: Long, context: Context): Inp
         cursor.close()
     }
 
-    return uriInputStream(photoThumbnailUri, context)
+    return uriInputStream(context, photoThumbnailUri)
 }
 
-private fun uriInputStream(uri: Uri?, context: Context): InputStream? {
+private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
     if (uri == null) {
         return null
     }

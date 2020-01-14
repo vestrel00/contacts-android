@@ -6,20 +6,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Website internal constructor(
 
-    /**
-     * The id of this row in the Data table.
-     */
     override val id: Long,
 
-    /**
-     * The id of the [RawContact] this data belongs to.
-     */
     override val rawContactId: Long,
 
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
     override val contactId: Long,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
 
     // Type and Label are also available. However, both keep getting set to null automatically by
     // the Contacts Provider...
@@ -38,6 +33,9 @@ data class Website internal constructor(
         rawContactId = rawContactId,
         contactId = contactId,
 
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
         url = url
     )
 }
@@ -45,26 +43,15 @@ data class Website internal constructor(
 @Parcelize
 data class MutableWebsite internal constructor(
 
-    /**
-     * See [Website.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val id: Long,
 
-    /**
-     * See [Website.rawContactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val rawContactId: Long,
 
-    /**
-     * See [Website.contactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val contactId: Long,
+
+    override var isPrimary: Boolean,
+
+    override var isSuperPrimary: Boolean,
 
     /**
      * See [Website.url].
@@ -73,7 +60,7 @@ data class MutableWebsite internal constructor(
 
 ) : DataEntity, Parcelable {
 
-    constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, null)
+    constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, false, false, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(url)
 
@@ -81,6 +68,9 @@ data class MutableWebsite internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         url = url
     )

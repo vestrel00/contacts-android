@@ -9,20 +9,15 @@ import java.util.*
 @Parcelize
 data class Event internal constructor(
 
-    /**
-     * The id of this row in the Data table.
-     */
     override val id: Long,
 
-    /**
-     * The id of the [RawContact] this data belongs to.
-     */
     override val rawContactId: Long,
 
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
     override val contactId: Long,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
 
     /**
      * The [Type] of event. Defaults to [Type.BIRTHDAY].
@@ -61,6 +56,9 @@ data class Event internal constructor(
         rawContactId = rawContactId,
         contactId = contactId,
 
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
         type = type,
         label = label,
 
@@ -85,26 +83,15 @@ data class Event internal constructor(
 @Parcelize
 data class MutableEvent internal constructor(
 
-    /**
-     * See [Event.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val id: Long,
 
-    /**
-     * See [Event.rawContactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val rawContactId: Long,
 
-    /**
-     * See [Event.contactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val contactId: Long,
+
+    override var isPrimary: Boolean,
+
+    override var isSuperPrimary: Boolean,
 
     /**
      * See [Event.type].
@@ -123,7 +110,10 @@ data class MutableEvent internal constructor(
 
 ) : DataEntity, Parcelable {
 
-    constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Type.BIRTHDAY, null, null)
+    constructor() : this(
+        INVALID_ID, INVALID_ID, INVALID_ID, false, false,
+        Type.BIRTHDAY, null, null
+    )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, date)
 
@@ -131,6 +121,9 @@ data class MutableEvent internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         type = type,
         label = label,

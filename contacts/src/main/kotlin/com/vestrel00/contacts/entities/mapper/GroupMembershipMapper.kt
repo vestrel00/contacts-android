@@ -11,6 +11,9 @@ internal class GroupMembershipMapper(private val groupMembershipCursor: GroupMem
             rawContactId = groupMembershipCursor.rawContactId,
             contactId = groupMembershipCursor.contactId,
 
+            isPrimary = groupMembershipCursor.isPrimary,
+            isSuperPrimary = groupMembershipCursor.isSuperPrimary,
+
             groupId = groupMembershipCursor.groupId
         )
 }

@@ -11,6 +11,9 @@ internal class NoteMapper(private val noteCursor: NoteCursor) {
             rawContactId = noteCursor.rawContactId,
             contactId = noteCursor.contactId,
 
+            isPrimary = noteCursor.isPrimary,
+            isSuperPrimary = noteCursor.isSuperPrimary,
+
             note = noteCursor.note
         )
 }

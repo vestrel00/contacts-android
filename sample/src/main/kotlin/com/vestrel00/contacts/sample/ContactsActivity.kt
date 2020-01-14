@@ -130,8 +130,24 @@ class ContactsActivity : BaseActivity() {
     private fun setContactsAdapterItems() {
         val listOfContactNameAndEmails = searchResults.map { contact ->
             val displayName = contact.displayName
-            val emails = contact.emails().map { it.address }.joinToString(", ")
-            val phoneNumbers = contact.phones().map { it.number }.joinToString(", ")
+
+            val emails = contact
+                .emails()
+                // Order by super primary first and then primary. This is the same behavior as the
+                // native Contacts app.
+                .sortedByDescending { it.isSuperPrimary }
+                .sortedByDescending { it.isPrimary }
+                .map { it.address }
+                .joinToString(", ")
+
+            val phoneNumbers = contact
+                .phones()
+                // Order by super primary first and then primary. This is the same behavior as the
+                // native Contacts app.
+                .sortedByDescending { it.isSuperPrimary }
+                .sortedByDescending { it.isPrimary }
+                .map { it.number }
+                .joinToString(", ")
 
             """
                 |$displayName

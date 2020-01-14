@@ -11,6 +11,9 @@ internal class ImMapper(private val imCursor: ImCursor) {
             rawContactId = imCursor.rawContactId,
             contactId = imCursor.contactId,
 
+            isPrimary = imCursor.isPrimary,
+            isSuperPrimary = imCursor.isSuperPrimary,
+
             protocol = imCursor.protocol,
             customProtocol = imCursor.customProtocol,
 

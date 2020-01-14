@@ -86,6 +86,12 @@ object Fields {
     @JvmField
     val Im = ImFields()
 
+    @JvmField
+    val IsPrimary = AbstractField(Data.IS_PRIMARY, UNKNOWN)
+
+    @JvmField
+    val IsSuperPrimary = AbstractField(Data.IS_SUPER_PRIMARY, UNKNOWN)
+
     internal val MimeType = AbstractField(Data.MIMETYPE, UNKNOWN)
 
     @JvmField
@@ -155,6 +161,8 @@ class AllFields : FieldSet(UNKNOWN) {
         addAll(Fields.GroupMembership.fields)
         add(Fields.Id)
         addAll(Fields.Im.fields)
+        add(Fields.IsPrimary)
+        add(Fields.IsSuperPrimary)
         add(Fields.MimeType)
         addAll(Fields.Name.fields)
         addAll(Fields.Nickname.fields)
@@ -178,6 +186,8 @@ class AllForMatchingFields : FieldSet(UNKNOWN) {
         // addAll(Fields.GroupMembership.fields)
         // add(Fields.Id)
         addAll(Fields.Im.fields.asSequence().minus(Fields.Im.Protocol))
+        // add(Fields.IsPrimary)
+        // add(Fields.IsSuperPrimary)
         // add(Fields.MimeType)
         addAll(Fields.Name.fields)
         addAll(Fields.Nickname.fields)

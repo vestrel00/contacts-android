@@ -18,8 +18,8 @@ import java.io.InputStream
  *
  * See [RawContact.setPhoto].
  */
-suspend fun RawContact.setPhotoAsync(imageBytes: ByteArray, context: Context): Boolean =
-    withContext(ASYNC_DISPATCHER) { setPhoto(imageBytes, context) }
+suspend fun RawContact.setPhotoAsync(context: Context, imageBytes: ByteArray): Boolean =
+    withContext(ASYNC_DISPATCHER) { setPhoto(context, imageBytes) }
 
 /**
  * Suspends the current coroutine, sets the photo in background, then returns the control flow to
@@ -27,8 +27,8 @@ suspend fun RawContact.setPhotoAsync(imageBytes: ByteArray, context: Context): B
  *
  * See [RawContact.setPhoto].
  */
-suspend fun RawContact.setPhotoAsync(photoInputStream: InputStream, context: Context): Boolean =
-    withContext(ASYNC_DISPATCHER) { setPhoto(photoInputStream, context) }
+suspend fun RawContact.setPhotoAsync(context: Context, photoInputStream: InputStream): Boolean =
+    withContext(ASYNC_DISPATCHER) { setPhoto(context, photoInputStream) }
 
 /**
  * Suspends the current coroutine, sets the photo in background, then returns the control flow to
@@ -36,8 +36,8 @@ suspend fun RawContact.setPhotoAsync(photoInputStream: InputStream, context: Con
  *
  * See [RawContact.setPhoto].
  */
-suspend fun RawContact.setPhotoAsync(photoBitmap: Bitmap, context: Context): Boolean =
-    withContext(ASYNC_DISPATCHER) { setPhoto(photoBitmap, context) }
+suspend fun RawContact.setPhotoAsync(context: Context, photoBitmap: Bitmap): Boolean =
+    withContext(ASYNC_DISPATCHER) { setPhoto(context, photoBitmap) }
 
 /**
  * Suspends the current coroutine, sets the photo in background, then returns the control flow to
@@ -45,8 +45,8 @@ suspend fun RawContact.setPhotoAsync(photoBitmap: Bitmap, context: Context): Boo
  *
  * See [RawContact.setPhoto].
  */
-suspend fun RawContact.setPhotoAsync(photoDrawable: BitmapDrawable, context: Context): Boolean =
-    withContext(ASYNC_DISPATCHER) { setPhoto(photoDrawable, context) }
+suspend fun RawContact.setPhotoAsync(context: Context, photoDrawable: BitmapDrawable): Boolean =
+    withContext(ASYNC_DISPATCHER) { setPhoto(context, photoDrawable) }
 
 /**
  * Suspends the current coroutine, sets the photo in background, then returns the control flow to
@@ -54,8 +54,8 @@ suspend fun RawContact.setPhotoAsync(photoDrawable: BitmapDrawable, context: Con
  *
  * See [MutableRawContact.setPhoto].
  */
-suspend fun MutableRawContact.setPhotoAsync(imageBytes: ByteArray, context: Context): Boolean =
-    withContext(ASYNC_DISPATCHER) { setPhoto(imageBytes, context) }
+suspend fun MutableRawContact.setPhotoAsync(context: Context, imageBytes: ByteArray): Boolean =
+    withContext(ASYNC_DISPATCHER) { setPhoto(context, imageBytes) }
 
 /**
  * Suspends the current coroutine, sets the photo in background, then returns the control flow to
@@ -64,9 +64,8 @@ suspend fun MutableRawContact.setPhotoAsync(imageBytes: ByteArray, context: Cont
  * See [MutableRawContact.setPhoto].
  */
 suspend fun MutableRawContact.setPhotoAsync(
-    photoInputStream: InputStream,
-    context: Context
-): Boolean = withContext(ASYNC_DISPATCHER) { setPhoto(photoInputStream, context) }
+    context: Context, photoInputStream: InputStream
+): Boolean = withContext(ASYNC_DISPATCHER) { setPhoto(context, photoInputStream) }
 
 /**
  * Suspends the current coroutine, sets the photo in background, then returns the control flow to
@@ -74,8 +73,8 @@ suspend fun MutableRawContact.setPhotoAsync(
  *
  * See [MutableRawContact.setPhoto].
  */
-suspend fun MutableRawContact.setPhotoAsync(photoBitmap: Bitmap, context: Context): Boolean =
-    withContext(ASYNC_DISPATCHER) { setPhoto(photoBitmap, context) }
+suspend fun MutableRawContact.setPhotoAsync(context: Context, photoBitmap: Bitmap): Boolean =
+    withContext(ASYNC_DISPATCHER) { setPhoto(context, photoBitmap) }
 
 /**
  * Suspends the current coroutine, sets the photo in background, then returns the control flow to
@@ -84,9 +83,8 @@ suspend fun MutableRawContact.setPhotoAsync(photoBitmap: Bitmap, context: Contex
  * See [MutableRawContact.setPhoto].
  */
 suspend fun MutableRawContact.setPhotoAsync(
-    photoDrawable: BitmapDrawable,
-    context: Context
-): Boolean = withContext(ASYNC_DISPATCHER) { setPhoto(photoDrawable, context) }
+    context: Context, photoDrawable: BitmapDrawable
+): Boolean = withContext(ASYNC_DISPATCHER) { setPhoto(context, photoDrawable) }
 
 // REMOVE PHOTO
 

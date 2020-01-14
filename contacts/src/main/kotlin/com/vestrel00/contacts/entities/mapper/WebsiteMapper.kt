@@ -11,6 +11,9 @@ internal class WebsiteMapper(private val websiteCursor: WebsiteCursor) {
             rawContactId = websiteCursor.rawContactId,
             contactId = websiteCursor.contactId,
 
+            isPrimary = websiteCursor.isPrimary,
+            isSuperPrimary = websiteCursor.isSuperPrimary,
+
             url = websiteCursor.url
         )
 }

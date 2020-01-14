@@ -353,6 +353,8 @@ private class QueryImpl(
             Fields.Id,
             Fields.Contact.Id,
             Fields.RawContactId,
+            Fields.IsPrimary,
+            Fields.IsSuperPrimary,
             Fields.MimeType
         )
 

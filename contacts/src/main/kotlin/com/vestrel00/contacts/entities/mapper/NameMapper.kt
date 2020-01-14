@@ -11,6 +11,9 @@ internal class NameMapper(private val nameCursor: NameCursor) {
             rawContactId = nameCursor.rawContactId,
             contactId = nameCursor.contactId,
 
+            isPrimary = nameCursor.isPrimary,
+            isSuperPrimary = nameCursor.isSuperPrimary,
+
             displayName = nameCursor.displayName,
 
             givenName = nameCursor.givenName,

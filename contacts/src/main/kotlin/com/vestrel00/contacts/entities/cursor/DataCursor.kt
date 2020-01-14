@@ -14,4 +14,10 @@ internal abstract class DataCursor(protected val cursor: Cursor) {
 
     val contactId: Long
         get() = cursor.getLong(Fields.Contact.Id) ?: INVALID_ID
+
+    val isPrimary: Boolean
+        get() = cursor.getBoolean(Fields.IsPrimary) ?: false
+
+    val isSuperPrimary: Boolean
+        get() = cursor.getBoolean(Fields.IsSuperPrimary) ?: false
 }

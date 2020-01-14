@@ -11,6 +11,9 @@ internal class PhoneMapper(private val phoneCursor: PhoneCursor) {
             rawContactId = phoneCursor.rawContactId,
             contactId = phoneCursor.contactId,
 
+            isPrimary = phoneCursor.isPrimary,
+            isSuperPrimary = phoneCursor.isSuperPrimary,
+
             type = phoneCursor.type,
             label = phoneCursor.label,
 

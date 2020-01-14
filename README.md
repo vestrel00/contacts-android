@@ -1,12 +1,16 @@
 ## TODO
 
 1. More feature work;
-    - Add `DataColumns.IS_PRIMARY` and `DataColumns.IS_SUPER_PRIMARY` to `DataEntity` ???
-        - Add extension functions for Contact and RawContact entities to get primary and super
-          primary entity in sequence/collection.
+    - ~~Add `DataColumns.IS_PRIMARY` and `DataColumns.IS_SUPER_PRIMARY` to `DataEntity`~~
+        - Add extension functions for Collection and Sequence of entities to get default.
     - Join/Separate (API 22-), Merge/Unmerge (API 23), Link/unlink (API 24+) Contacts.
+        - Is it as simple as changing the CONTACT_ID reference of all RawContacts?
+        - Behavior of primary and super primary data rows? What happens to super primary rows when merged?
+        - Document this in the dev notes' **Data Primary and Super Primary Rows** section.
     - Behavior of name field (`ContactsColumns.NAME_RAW_CONTACT_ID`) for Contacts with more than one
       RawContact in API 19 emulator.
+        - Contact display name same as super primary name data row?
+        - Contact display name changes if primary name is changed?
 2. Lint / code quality checks.
 3. Unit test.
 4. Espresso test.

@@ -11,6 +11,9 @@ internal class EmailMapper(private val emailCursor: EmailCursor) {
             rawContactId = emailCursor.rawContactId,
             contactId = emailCursor.contactId,
 
+            isPrimary = emailCursor.isPrimary,
+            isSuperPrimary = emailCursor.isSuperPrimary,
+
             type = emailCursor.type,
             label = emailCursor.label,
 

@@ -11,6 +11,9 @@ internal class AddressMapper(private val addressCursor: AddressCursor) {
             rawContactId = addressCursor.rawContactId,
             contactId = addressCursor.contactId,
 
+            isPrimary = addressCursor.isPrimary,
+            isSuperPrimary = addressCursor.isSuperPrimary,
+
             type = addressCursor.type,
             label = addressCursor.label,
 

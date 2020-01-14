@@ -37,32 +37,31 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      * This assumes that this will be used in a batch of operations where the first operation is the
      * insertion of a new RawContact.
      *
-     * Returns null if [it] is blank.
+     * Returns null if [entity] is blank.
      */
-    fun insert(it: T): ContentProviderOperation? {
-        if (it.isBlank()) {
+    fun insert(entity: T): ContentProviderOperation? {
+        if (entity.isBlank()) {
             return null
         }
 
         val operation = newInsert(TABLE_URI)
 
-        setData(it) { field, dataValue ->
+        setData(entity) { field, dataValue ->
             if (dataValue.isNotNullOrBlank()) {
                 // Do not insert null or blank values, same as the native Android Contacts app.
                 operation.withValue(field, dataValue)
             }
         }
 
-        // Sets the raw contact id column of this Data table row to the first result of the
-        // batch operation, which is assumed to be a new raw contact.
-        // Note that the Contact ID is automatically set by the Contacts provider.
-        operation.withValueBackReference(Fields.RawContactId.columnName, 0)
-
-        // Sets the mimetype, which is the type of data (e.g. email) contained in this
-        // row's "data1", "data2", ... columns
-        operation.withValue(Fields.MimeType, mimeType.value)
-
-        return operation.build()
+        return operation
+            // Sets the raw contact id column of this Data table row to the first result of the
+            // batch operation, which is assumed to be a new raw contact.
+            // Note that the Contact ID is automatically set by the Contacts provider.
+            .withValueBackReference(Fields.RawContactId.columnName, 0)
+            // Sets the mimetype, which is the type of data (e.g. email) contained in this
+            // row's "data1", "data2", ... columns
+            .withValue(Fields.MimeType, mimeType.value)
+            .build()
     }
 
     /**

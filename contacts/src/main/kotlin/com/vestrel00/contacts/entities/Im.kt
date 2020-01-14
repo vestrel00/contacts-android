@@ -8,20 +8,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Im internal constructor(
 
-    /**
-     * The id of this row in the Data table.
-     */
     override val id: Long,
 
-    /**
-     * The id of the [RawContact] this data belongs to.
-     */
     override val rawContactId: Long,
 
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
     override val contactId: Long,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
 
     // Type and Label are also available. However, they have no use here as the protocol and custom
     // protocol have taken their place...
@@ -49,6 +44,9 @@ data class Im internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         protocol = protocol,
         customProtocol = customProtocol,
@@ -80,26 +78,15 @@ data class Im internal constructor(
 @Parcelize
 data class MutableIm internal constructor(
 
-    /**
-     * See [Im.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val id: Long,
 
-    /**
-     * See [Im.rawContactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val rawContactId: Long,
 
-    /**
-     * See [Im.contactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
-     */
     override val contactId: Long,
+
+    override var isPrimary: Boolean,
+
+    override var isSuperPrimary: Boolean,
 
     /**
      * See [Im.protocol].
@@ -118,7 +105,10 @@ data class MutableIm internal constructor(
 
 ) : DataEntity, Parcelable {
 
-    constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, Protocol.AIM, null, null)
+    constructor() : this(
+        INVALID_ID, INVALID_ID, INVALID_ID, false, false,
+        Protocol.AIM, null, null
+    )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(customProtocol, data)
 
@@ -126,6 +116,9 @@ data class MutableIm internal constructor(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
 
         protocol = protocol,
         customProtocol = customProtocol,

@@ -302,6 +302,106 @@ mimetypes. Here is the list.
 Although some mimetypes are unique per RawContact, none of those mimetypes are unique per Contact
 because a Contact is an aggregate of one or more RawContacts!
 
+#### Data Primary and Super Primary Rows
+
+As per documentation, for a set of data rows with the same mimetype (e.g. a set of emails), there 
+should only be one primary data row (e.g. email) per RawContact and one super primary data row per
+Contact. Furthermore, a data row that is super primary must also be primary.
+
+Unfortunately, the Contacts Provider does not do any data set validation for the Data columns 
+`IS_PRIMARY` and `IS_SUPER_PRIMARY`. This means that it is possible to set more than one data row of
+the same mimetype as primary for the same RawContact and super primary for the same aggregate
+Contact. It is also possible to set a data row as super primary but not primary. Upholding the the
+contract is left to us... 
+
+For example, given this relationship;
+
+- Contact
+    - RawContact X
+        - Email A
+        - Email B
+    - RawContact Y
+        - Email C
+        - Email D
+        
+When Emails A, B, C, and D are inserted with the RawContacts or after the RawContacts have been 
+created, we get the following state;
+
+| **Email** | **Primary** | **Super Primary** |
+|-----------|-------------|-------------------|
+| A         | 0           | 0                 |
+| B         | 0           | 0                 |
+| C         | 0           | 0                 |
+| D         | 0           | 0                 |
+
+
+The state does not change when RawContact X is linked with RawContact Y.
+
+After setting Email A as the "default" email, it becomes primary and super primary;
+
+| **Email** | **Primary** | **Super Primary** |
+|-----------|-------------|-------------------|
+| A         | 1           | 1                 |
+| B         | 0           | 0                 |
+| C         | 0           | 0                 |
+| D         | 0           | 0                 |
+
+Then setting Email B as the default email, it becomes primary and super primary. Email A is no
+longer primary or super primary.
+
+| **Email** | **Primary** | **Super Primary** |
+|-----------|-------------|-------------------|
+| A         | 0           | 0                 |
+| B         | 1           | 1                 |
+| C         | 0           | 0                 |
+| D         | 0           | 0                 |
+
+Then setting Email C as the default email, it becomes primary and super primary. Email B is still
+primary because it belongs to a different RawContact than Email C. However, Email B is no longer the
+super primary as there can only be one per aggregate Contact.
+
+| **Email** | **Primary** | **Super Primary** |
+|-----------|-------------|-------------------|
+| A         | 0           | 0                 |
+| B         | 1           | 0                 |
+| C         | 1           | 1                 |
+| D         | 0           | 0                 |
+
+Then setting Email D as the default email, it becomes primary and super primary. Email C is no 
+longer primary or super primary.
+
+| **Email** | **Primary** | **Super Primary** |
+|-----------|-------------|-------------------|
+| A         | 0           | 0                 |
+| B         | 1           | 0                 |
+| C         | 0           | 0                 |
+| D         | 1           | 1                 |
+
+Then clearing the default email D, removes its primary and super primary status. However, email B 
+remains a primary but not a super primary.
+
+| **Email** | **Primary** | **Super Primary** |
+|-----------|-------------|-------------------|
+| A         | 0           | 0                 |
+| B         | 1           | 0                 |
+| C         | 0           | 0                 |
+| D         | 0           | 0                 |
+
+The above behavior is observed from the native Contacts app. The "super primary" data of an 
+aggregate Contact is referred to as the "default".
+
+> At this point, the native Contacts app still shows email B as the first email in the list even
+> though it isn't the "default" (super primary) because it is still a primary. This adds a bit of
+> confusion in my opinion, especially when more than 2, 3, or 4 RawContacts are linked. A "fix" 
+> would be to only order the list of emails using "super primary" instead of "super primary" and 
+> "primary". OR to remove the primary status of the data set of all linked RawContacts.
+> 
+> One benefit of the native Contacts implementation of this is that it retains the primary status
+> when unlinking RawContacts. 
+> 
+> This library should follow what the native Contacts app is doing in spirit of recreating the
+> native experience as closely as possible, even if it seems like a lesser experience.
+
 #### Data Table Joins
 
 All columns returned by the Data table are specified in `DataColumnsWithJoins`, which includes the

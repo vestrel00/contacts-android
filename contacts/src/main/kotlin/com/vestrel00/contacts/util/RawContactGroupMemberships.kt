@@ -8,7 +8,9 @@ fun Group.toGroupMembership(): GroupMembership = GroupMembership(
     id = INVALID_ID,
     rawContactId = INVALID_ID,
     contactId = INVALID_ID,
-    groupId = id
+    groupId = id,
+    isPrimary = false,
+    isSuperPrimary = false
 )
 
 fun Collection<Group>.toGroupMemberships(): List<GroupMembership> = map { it.toGroupMembership() }
