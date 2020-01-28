@@ -23,6 +23,15 @@ import com.vestrel00.contacts.entities.operation.*
  * [MutableRawContact.groupMemberships] belonging to the same account as the raw contact are
  * inserted.
  *
+ * ## Contacts & RawContacts may be deleted automatically in some cases!
+ *
+ * When a RawContact does not have an associated Account, it is automatically deleted when all of
+ * its data (e.g. emails, phones, name, ...) are deleted (set to null or removed from the list).
+ * On the contrary, when a RawContact has an associated Account, it does not get deleted when all of
+ * its data rows are deleted.
+ *
+ * This will, in turn, also delete the Contact if there are no more RawContacts belonging to it.
+ *
  * ## Usage
  *
  * To update a raw contact's name to "john doe" and add an email "john@doe.com";

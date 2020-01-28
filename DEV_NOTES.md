@@ -165,7 +165,15 @@ Contacts id. Deletion of the Contacts row and associated Data row(s) will be don
 the Contacts Provider.
 
 Note that deleting a RawContacts row may not immediately (or at all) actually delete the RawContacts
-row. In this case, it is marked and is effectively invisible.
+row. In this case, it is marked as deleted and is effectively invisible.
+
+**Contacts & RawContacts may be deleted automatically in some cases!**
+
+When a RawContact does not have an associated Account, the RawContact row is automatically deleted
+when all of its Data rows are deleted. On the contrary, when a RawContact has an associated Account,
+the RawContact row remains when all of its Data rows are deleted.
+
+This will, in turn, also delete the Contact if there are no more RawContacts belonging to it.
 
 #### Multiple RawContacts Per Contact
 
