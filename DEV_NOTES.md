@@ -258,8 +258,8 @@ references to the "chosen" RawContact's full-sized photo and thumbnail (though t
 **Data inserts**
 
 In the native Contacts app, Data inserted in combined contacts mode will be associated to the first
-RawContact in the list, which may not be the same as the RawContact referenced by 
-`ContactsColumns.NAME_RAW_CONTACT_ID`.
+RawContact in the list sorted by the RawContact ID. This may not be the same as the RawContact 
+referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
 
 **UI changes?**
 
