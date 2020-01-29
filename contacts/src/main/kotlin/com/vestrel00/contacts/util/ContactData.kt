@@ -127,11 +127,11 @@ fun MutableContact.addresses(): Sequence<MutableAddress> = rawContacts
     .sortedBy { it.formattedAddress }
 
 /**
- * Adds the given [address] to the list of [RawContact.addresses] of the first
- * [MutableContact.rawContacts].
+ * Adds the given [address] to the list of [RawContact.addresses] of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id] sorted by the [RawContact.id].
  */
 fun MutableContact.addAddress(address: MutableAddress) {
-    rawContacts.firstOrNull()?.addresses?.add(address)
+    firstRawContact()?.addresses?.add(address)
 }
 
 /**
@@ -158,9 +158,10 @@ fun MutableContact.companies(): Sequence<MutableCompany> = rawContacts
     .sortedBy { it.company }
 
 /**
- * Sets the [RawContact.company] of the first [MutableContact.rawContacts].
+ * Sets the [RawContact.company] of the first [RawContact] in [MutableContact.rawContacts] sorted by
+ * the [RawContact.id].
  */
-fun MutableContact.setCompany(company: MutableCompany) {
+fun MutableContact.setCompany(company: MutableCompany?) {
     rawContacts.firstOrNull()?.company = company
 }
 
@@ -173,11 +174,11 @@ fun MutableContact.emails(): Sequence<MutableEmail> = rawContacts
     .sortedBy { it.address }
 
 /**
- * Adds the given [email] to the list of [RawContact.emails] of the first
- * [MutableContact.rawContacts].
+ * Adds the given [email] to the list of [RawContact.emails] of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
  */
 fun MutableContact.addEmail(email: MutableEmail) {
-    rawContacts.firstOrNull()?.emails?.add(email)
+    firstRawContact()?.emails?.add(email)
 }
 
 /**
@@ -203,11 +204,11 @@ fun MutableContact.events(): Sequence<MutableEvent> = rawContacts
     .sortedBy { it.date }
 
 /**
- * Adds the given [event] to the list of [RawContact.events] of the first
- * [MutableContact.rawContacts].
+ * Adds the given [event] to the list of [RawContact.events] of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
  */
 fun MutableContact.addEvent(event: MutableEvent) {
-    rawContacts.firstOrNull()?.events?.add(event)
+    firstRawContact()?.events?.add(event)
 }
 
 /**
@@ -237,10 +238,11 @@ fun MutableContact.ims(): Sequence<MutableIm> = rawContacts
     .sortedBy { it.data }
 
 /**
- * Adds the given [im] to the list of [RawContact.ims] of the first [MutableContact.rawContacts].
+ * Adds the given [im] to the list of [RawContact.ims] of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
  */
 fun MutableContact.addIm(im: MutableIm) {
-    rawContacts.firstOrNull()?.ims?.add(im)
+    firstRawContact()?.ims?.add(im)
 }
 
 /**
@@ -267,10 +269,11 @@ fun MutableContact.names(): Sequence<MutableName> = rawContacts
     .sortedBy { it.displayName }
 
 /**
- * Sets the [RawContact.name] of the first [MutableContact.rawContacts].
+ * Sets the [RawContact.name] of the first [RawContact] in [MutableContact.rawContacts] sorted by
+ * the [RawContact.id].
  */
-fun MutableContact.setName(name: MutableName) {
-    rawContacts.firstOrNull()?.name = name
+fun MutableContact.setName(name: MutableName?) {
+    firstRawContact()?.name = name
 }
 
 /**
@@ -283,10 +286,11 @@ fun MutableContact.nicknames(): Sequence<MutableNickname> = rawContacts
     .sortedBy { it.name }
 
 /**
- * Sets the [RawContact.nickname] of the first [MutableContact.rawContacts].
+ * Sets the [RawContact.nickname] of the first [RawContact] in [MutableContact.rawContacts] sorted
+ * by the [RawContact.id].
  */
-fun MutableContact.setNickname(nickname: MutableNickname) {
-    rawContacts.firstOrNull()?.nickname = nickname
+fun MutableContact.setNickname(nickname: MutableNickname?) {
+    firstRawContact()?.nickname = nickname
 }
 
 /**
@@ -299,10 +303,11 @@ fun MutableContact.notes(): Sequence<MutableNote> = rawContacts
     .sortedBy { it.note }
 
 /**
- * Sets the [RawContact.note] of the first [MutableContact.rawContacts].
+ * Sets the [RawContact.note] of the first [RawContact] in [MutableContact.rawContacts] sorted by
+ * the [RawContact.id].
  */
-fun MutableContact.setNote(note: MutableNote) {
-    rawContacts.firstOrNull()?.note = note
+fun MutableContact.setNote(note: MutableNote?) {
+    firstRawContact()?.note = note
 }
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
@@ -317,11 +322,11 @@ fun MutableContact.phones(): Sequence<MutablePhone> = rawContacts
     .sortedBy { it.number }
 
 /**
- * Adds the given [phone] to the list of [RawContact.phones] of the first
- * [MutableContact.rawContacts].
+ * Adds the given [phone] to the list of [RawContact.phones] of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
  */
 fun MutableContact.addPhone(phone: MutablePhone) {
-    rawContacts.firstOrNull()?.phones?.add(phone)
+    firstRawContact()?.phones?.add(phone)
 }
 
 /**
@@ -350,11 +355,11 @@ fun MutableContact.relations(): Sequence<MutableRelation> = rawContacts
     .sortedBy { it.name }
 
 /**
- * Adds the given [relation] to the list of [RawContact.relations] of the first
- * [MutableContact.rawContacts].
+ * Adds the given [relation] to the list of [RawContact.relations] of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
  */
 fun MutableContact.addRelation(relation: MutableRelation) {
-    rawContacts.firstOrNull()?.relations?.add(relation)
+    firstRawContact()?.relations?.add(relation)
 }
 
 
@@ -383,10 +388,11 @@ fun MutableContact.sipAddresses(): Sequence<MutableSipAddress> = rawContacts
     .sortedBy { it.sipAddress }
 
 /**
- * Sets the [RawContact.sipAddress] of the first [MutableContact.rawContacts].
+ * Sets the [RawContact.sipAddress] of the first [RawContact] in [MutableContact.rawContacts] sorted
+ * by the [RawContact.id].
  */
-fun MutableContact.setSipAddress(sipAddress: MutableSipAddress) {
-    rawContacts.firstOrNull()?.sipAddress = sipAddress
+fun MutableContact.setSipAddress(sipAddress: MutableSipAddress?) {
+    firstRawContact()?.sipAddress = sipAddress
 }
 
 /**
@@ -398,11 +404,11 @@ fun MutableContact.websites(): Sequence<MutableWebsite> = rawContacts
     .sortedBy { it.url }
 
 /**
- * Adds the given [website] to the list of [RawContact.websites] of the first
- * [MutableContact.rawContacts].
+ * Adds the given [website] to the list of [RawContact.websites] of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
  */
 fun MutableContact.addWebsite(website: MutableWebsite) {
-    rawContacts.firstOrNull()?.websites?.add(website)
+    firstRawContact()?.websites?.add(website)
 }
 
 /**
@@ -434,3 +440,5 @@ fun <T> MutableCollection<T>.removeAll(instance: T, byReference: Boolean = false
         removeAll { it == instance }
     }
 }
+
+private fun MutableContact.firstRawContact(): MutableRawContact? = rawContacts.minBy { it.id }
