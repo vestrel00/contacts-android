@@ -30,6 +30,10 @@ data class Contact internal constructor(
     /**
      * A list of [RawContact]s that are associated with this contact.
      *
+     * This list is sorted by [RawContact.id], which seems to be the sort order used by the native
+     * Contacts app when displaying the linked RawContacts and when inserting new data for a Contact
+     * with multiple linked RawContacts.
+     *
      * Note that this list may not include all raw contacts that are actually associated with this
      * contact depending on query filters.
      */
@@ -117,7 +121,8 @@ data class MutableContact internal constructor(
     override val id: Long,
 
     /**
-     * Contains a list of **mutable** raw contacts though the list containing them is immutable.
+     * Contains a list of **mutable** raw contacts (sorted by [MutableRawContact.id]) though the
+     * list containing them is immutable.
      *
      * See [Contact.rawContacts].
      */

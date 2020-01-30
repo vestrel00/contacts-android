@@ -74,7 +74,8 @@ internal class ContactsMapper(
             val rawContacts = contactRawMap.getOrElse(contact.id) { emptyList<RawContact>() }
 
             // The data class copy function comes in handy here.
-            contact.copy(rawContacts = rawContacts)
+            // Sort RawContacts by id as specified by RawContact.id.
+            contact.copy(rawContacts = rawContacts.sortedBy { it.id })
         }
     }
 
