@@ -7,6 +7,8 @@
       RawContact in API 19 emulator.
         - Contact display name same as super primary name data row?
         - Contact display name changes if primary name is changed?
+    - Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
+        - SettingsColumns? (group visible / invisible)
     - Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
         - See FIXME in DataEntity.mimeType() function.
 2. Lint / code quality checks.
