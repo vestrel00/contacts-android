@@ -71,13 +71,13 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * This should be called in a background thread to avoid blocking the UI thread.
  */
-// TODO return Result object with isSuccessful and contactId() and contact() functions that queries for the new contact.
+// TODO ContactLinkResult
 // TODO vararg, collection functions
 // TODO ContactLinksAsync and LinkResultAsync
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.link(context: Context, contacts: Sequence<Contact>): Boolean {
+fun Contact.link(context: Context, contacts: Sequence<Contact>): ContactLinkResult {
     if (!ContactsPermissions(context).canInsertUpdateDelete() || id == INVALID_ID) {
-        return false
+        return ContactLinkFailed
     }
 
     val sortedContactIds = contacts
@@ -92,7 +92,7 @@ fun Contact.link(context: Context, contacts: Sequence<Contact>): Boolean {
 
     if (sortedContactIds.size < 2) {
         // At least 2 Contacts is required to link.
-        return false
+        return ContactLinkFailed
     }
 
     val prioritizedContactIds = sortedContactIds.toSet()
@@ -101,27 +101,60 @@ fun Contact.link(context: Context, contacts: Sequence<Contact>): Boolean {
 
     if (sortedRawContactIds.size < 2) {
         // At least 2 RawContacts is required to link.
-        return false
+        return ContactLinkFailed
     }
 
     val nameRowIdToUseAsDefault = nameRowIdToUseAsDefault(context, prioritizedContactIds)
 
     try {
+        // Note that the result uri is null. There is no meaningful information we can get here.
         context.contentResolver.applyBatch(
             AUTHORITY,
             linkRawContactsOperations(sortedRawContactIds)
         )
     } catch (exception: Exception) {
-        return false
+        return ContactLinkFailed
     }
 
     // Link succeeded. Set the default name.
-    nameWithId(context, nameRowIdToUseAsDefault)?.setAsDefault(context)
+    val name = nameWithId(context, nameRowIdToUseAsDefault)
+    name?.setAsDefault(context)
 
-    return true
+    // Get the new Contact id of the RawContacts from the queried name. If no name is found,
+    // query it.
+    val contactId = name?.contactId ?: contactIdOfRawContact(context, sortedRawContactIds.first())
+
+    return ContactLinkSuccess(contactId)
+}
+
+interface ContactLinkResult {
+
+    /**
+     * The parent [Contact.id] for all of the linked RawContacts. Null if [isSuccessful] is false.
+     */
+    val contactId: Long?
+
+    /**
+     * True if the link succeeded.
+     */
+    val isSuccessful: Boolean
+}
+
+private class ContactLinkSuccess(override val contactId: Long?) : ContactLinkResult {
+
+    override val isSuccessful: Boolean = true
+}
+
+private object ContactLinkFailed : ContactLinkResult {
+
+    override val contactId: Long? = null
+
+    override val isSuccessful: Boolean = false
 }
 
 /**
+ * Provides the operations to ensure that all or the given raw contacts are linked.
+ *
  * See DEV_NOTES "AggregationExceptions table" section.
  */
 private fun linkRawContactsOperations(sortedRawContactIds: List<Long>):
@@ -169,29 +202,6 @@ private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Lo
     }
 
     return nameRowIdToUseAsDefault
-}
-
-private fun nameWithId(context: Context, nameRowId: Long): MutableName? {
-    if (nameRowId == INVALID_ID) {
-        return null
-    }
-
-    val cursor = context.contentResolver.query(
-        Table.DATA.uri,
-        Include(Fields.Required).columnNames,
-        "${Fields.Id equalTo nameRowId}",
-        null,
-        null
-    )
-
-    var name: MutableName? = null
-    if (cursor != null && cursor.moveToNext()) {
-        name = NameMapper(NameCursor(cursor)).name
-
-        cursor.close()
-    }
-
-    return name
 }
 
 /**
@@ -310,6 +320,48 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
             cursor.close()
         }
     }
+}
+
+private fun nameWithId(context: Context, nameRowId: Long): MutableName? {
+    if (nameRowId == INVALID_ID) {
+        return null
+    }
+
+    val cursor = context.contentResolver.query(
+        Table.DATA.uri,
+        Include(Fields.Required).columnNames,
+        "${Fields.Id equalTo nameRowId}",
+        null,
+        null
+    )
+
+    var name: MutableName? = null
+    if (cursor != null && cursor.moveToNext()) {
+        name = NameMapper(NameCursor(cursor)).name
+
+        cursor.close()
+    }
+
+    return name
+}
+
+private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? {
+    val cursor = context.contentResolver.query(
+        Table.RAW_CONTACTS.uri,
+        arrayOf(Fields.RawContact.ContactId.columnName),
+        "${Fields.RawContact.Id equalTo rawContactId}",
+        null,
+        null
+    )
+
+    var contactId: Long? = null
+    if (cursor != null) {
+        contactId = cursor.getLong(0)
+
+        cursor.close()
+    }
+
+    return contactId
 }
 
 // TODO MutableContact link

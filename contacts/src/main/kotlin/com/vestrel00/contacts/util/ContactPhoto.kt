@@ -44,7 +44,8 @@ import java.io.InputStream
  *
  * ## DEV NOTES
  *
- * The function body is mostly taken from the sample code from the [RawContacts.DisplayPhoto]
+ * The function body is mostly taken from the sample code from the
+ * [ContactsContract.RawContacts.DisplayPhoto]
  * class documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
