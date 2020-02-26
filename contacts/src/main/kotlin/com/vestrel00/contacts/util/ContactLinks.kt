@@ -6,17 +6,14 @@ import android.os.Build
 import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import com.vestrel00.contacts.*
-import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.INVALID_ID
-import com.vestrel00.contacts.entities.MimeType
-import com.vestrel00.contacts.entities.MutableName
+import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.NameCursor
 import com.vestrel00.contacts.entities.mapper.NameMapper
 import com.vestrel00.contacts.entities.table.Table
 
 /**
- * Links [this] Contact with the given [contact]. This will aggregate all RawContacts belonging to
- * [this] Contact and the given [contact] into a single Contact. Aggregation is done by the
+ * Links [this] Contact with the given [contacts]. This will aggregate all RawContacts belonging to
+ * [this] Contact and the given [contacts] into a single Contact. Aggregation is done by the
  * Contacts Provider. For example,
  *
  * - Contact (id: 1, display name: A)
@@ -54,7 +51,7 @@ import com.vestrel00.contacts.entities.table.Table
  * do automatically; setting the display name for the aggregated Contact. The native Contacts app
  * sets the name of [this] as the "default" (if available) and clears the default status of all
  * other names belonging to the other RawContacts. If [this] does not have any names available,
- * then a name belonging to the other [contact] will be set as default.
+ * then a name belonging to the other [contacts] will be set as default.
  *
  * The Contacts Provider automatically sets the Contact display name to the default name that
  * belongs to any associated RawContact.
@@ -71,26 +68,64 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * This should be called in a background thread to avoid blocking the UI thread.
  */
-// TODO vararg, collection functions
 // TODO ContactLinksAsync and LinkResultAsync
+// TODO unlink, unlinkAsync, UnlinkResult, UnlinkResultAsync.
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.link(context: Context, contacts: Sequence<Contact>): ContactLinkResult {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || id == INVALID_ID) {
+fun Contact.link(context: Context, vararg contacts: Contact): ContactLinkResult =
+    link(context, contacts.asSequence())
+
+/**
+ * See [Contact.link].
+ */
+fun Contact.link(context: Context, contacts: Collection<Contact>): ContactLinkResult =
+    link(context, contacts.asSequence())
+
+/**
+ * See [Contact.link].
+ */
+fun Contact.link(context: Context, contacts: Sequence<Contact>): ContactLinkResult =
+    link(context, id, contacts.map { it.id })
+
+/**
+ * See [Contact.link].
+ */
+fun MutableContact.link(context: Context, vararg contacts: MutableContact): ContactLinkResult =
+    link(context, contacts.asSequence())
+
+/**
+ * See [Contact.link].
+ */
+fun MutableContact.link(context: Context, contacts: Collection<MutableContact>): ContactLinkResult =
+    link(context, contacts.asSequence())
+
+/**
+ * See [Contact.link].
+ */
+fun MutableContact.link(context: Context, contacts: Sequence<MutableContact>): ContactLinkResult =
+    link(context, id, contacts.map { it.id })
+
+/**
+ * Links the RawContacts of all the given [contactIds]. The [mainContactId] will be used as the
+ * first choice in display name resolution.
+ */
+private fun link(context: Context, mainContactId: Long, contactIds: Sequence<Long>):
+        ContactLinkResult {
+
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || mainContactId == INVALID_ID) {
         return ContactLinkFailed
     }
 
-    val sortedContactIds = contacts
-        .map { it.id }
-        .filter { it != this.id && it != INVALID_ID }
+    val sortedContactIds = contactIds
+        .filter { it != mainContactId && it != INVALID_ID }
         .sortedBy { it }
         .toMutableList()
 
-    // Insert [this] as the first contact in the list to ensure it is the first choice in display
-    // name resolution.
-    sortedContactIds.add(0, this.id)
+    // Insert the mainContactId as the first contact in the list to ensure it is the first choice
+    // in display name resolution.
+    sortedContactIds.add(0, mainContactId)
 
     if (sortedContactIds.size < 2) {
-        // At least 2 Contacts is required to link.
+        // At least 2 Contacts are required to link.
         return ContactLinkFailed
     }
 
@@ -99,7 +134,7 @@ fun Contact.link(context: Context, contacts: Sequence<Contact>): ContactLinkResu
     val sortedRawContactIds = sortedRawContactIds(context, prioritizedContactIds)
 
     if (sortedRawContactIds.size < 2) {
-        // At least 2 RawContacts is required to link.
+        // At least 2 RawContacts are required to link.
         return ContactLinkFailed
     }
 
@@ -362,6 +397,3 @@ private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? {
 
     return contactId
 }
-
-// TODO MutableContact link
-// TODO unlink
