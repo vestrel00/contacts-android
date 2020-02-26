@@ -75,12 +75,7 @@ fun Insert.Result.contact(
 
     val rawContactId = rawContactId(rawContact) ?: return null
 
-    return Query(context).where(Fields.RawContactId equalTo rawContactId).find(cancel)
-        .find { contact ->
-            contact.rawContacts.find { rawContact ->
-                rawContact.id == rawContactId
-            } != null
-        }
+    return Query(context).where(Fields.RawContactId equalTo rawContactId).findFirst(cancel)
 }
 
 /**
@@ -102,8 +97,3 @@ fun Insert.Result.contact(
 @JvmOverloads
 fun Insert.Result.contacts(context: Context, cancel: () -> Boolean = { false }): List<Contact> =
     Query(context).where(Fields.RawContactId `in` rawContactIds).find(cancel)
-        .filter { contact ->
-            contact.rawContacts.find { rawContact ->
-                rawContactIds.contains(rawContact.id)
-            } != null
-        }

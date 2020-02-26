@@ -71,7 +71,6 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * This should be called in a background thread to avoid blocking the UI thread.
  */
-// TODO ContactLinkResult
 // TODO vararg, collection functions
 // TODO ContactLinksAsync and LinkResultAsync
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
