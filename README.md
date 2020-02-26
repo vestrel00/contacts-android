@@ -1,19 +1,17 @@
 ## TODO
 
-1. More feature work;
-    - Join/Separate (API 22-), Merge/Unmerge (API 23), Link/unlink (API 24+) Contacts.
-        - See https://stackoverflow.com/questions/39804979/how-i-can-programmatically-merge-two-different-contactsandroid/39805494
-    - Behavior of name field (`ContactsColumns.NAME_RAW_CONTACT_ID`) for Contacts with more than one
-      RawContact in API 19 emulator.
-        - Contact display name same as super primary name data row?
-        - Contact display name changes if primary name is changed?
-    - Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
-        - SettingsColumns? (group visible / invisible)
-    - Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-        - See FIXME in DataEntity.mimeType() function.
-2. Lint / code quality checks.
-3. Unit test.
-4. Espresso test.
+1. Reorg Fields. Move groups, contacts, raw contacts, and data fields to separate internal objects.
+   Expose data fields as just (alias) Fields for consumers. 
+2. Create Contacts().queryData (with permission and asynchronous extensions) that returns only one 
+   data kind (eg emails, phones, etc). Useful for ordering and paginating of only one data kind.
+3. Setup user profile  
+    - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
+    - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
+    - `ContactsContract.Profile`
+4. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
+    - SettingsColumns? (group visible / invisible)
+5.  Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+    - See FIXME in DataEntity.mimeType() function.
 
 ----------------------------------------------------------------------------------------------------
 
@@ -41,7 +39,7 @@ based on older versions; API Nougat and below.
 - Edit Contact / RawContact
     - Saving to which account (uneditable)
     - Combined edit mode (editing multiple linked raw contacts) available in API 24 but removed in
-      API (28?) and not in API 22. Try all supported API levels! Choose behavior of latest API. 
+      API (28?) and not in API 22. Try all supported API levels! Choose behavior of simplest API. 
       Document this.
     - Save
     - Discard changes
@@ -58,10 +56,7 @@ based on older versions; API Nougat and below.
                 
 - View starred (favorites only) contacts
 
-- Set up my profile
-    - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
-    - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
-    - `ContactsContract.Profile`
+- Set up user (my) profile
     
 - No account & no contacts screen
     - Add account
@@ -79,7 +74,14 @@ based on older versions; API Nougat and below.
 - Manage accounts
     
 ----------------------------------------------------------------------------------------------------
-    
+
+#### Tidy up
+
+1. Lint / code quality checks.
+2. Unit test.
+3. Espresso test.
+    - Test RAM usage when paginating hundreds of thousands of contacts.
+
 #### Final steps!
 
 1. Review remaining TODOs and FIXMEs.

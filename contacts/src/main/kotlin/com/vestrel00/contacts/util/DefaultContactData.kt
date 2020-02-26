@@ -38,7 +38,11 @@ fun Sequence<DataEntity>.default(): DataEntity? = firstOrNull { it.isDefault() }
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun DataEntity.setAsDefault(context: Context): Boolean {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || id == INVALID_ID) {
+    if (!ContactsPermissions(context).canInsertUpdateDelete()
+        || id == INVALID_ID
+        || rawContactId == INVALID_ID
+        || contactId == INVALID_ID
+    ) {
         return false
     }
 
@@ -83,7 +87,10 @@ fun DataEntity.setAsDefault(context: Context): Boolean {
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun DataEntity.clearDefault(context: Context): Boolean {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || id == INVALID_ID) {
+    if (!ContactsPermissions(context).canInsertUpdateDelete()
+        || rawContactId == INVALID_ID
+        || contactId == INVALID_ID
+    ) {
         return false
     }
 

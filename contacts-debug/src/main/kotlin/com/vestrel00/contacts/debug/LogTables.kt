@@ -10,7 +10,53 @@ fun Context.logContactsProviderTables() {
     logGroupsTable()
     logContactsTable()
     logRawContactsTable()
+    logAggregationExceptions()
     logDataTable()
+}
+
+fun Context.logGroupsTable() {
+    if (!canLog()) {
+        log("#### Groups table - read contacts permission not granted")
+        return
+    }
+
+    val cursor = contentResolver.query(
+        Groups.CONTENT_URI,
+        arrayOf(
+            Groups._ID, Groups.SYSTEM_ID, Groups.TITLE,
+            Groups.GROUP_IS_READ_ONLY, Groups.FAVORITES, Groups.AUTO_ADD,
+            Groups.SHOULD_SYNC, Groups.ACCOUNT_NAME, Groups.ACCOUNT_TYPE
+        ),
+        null,
+        null,
+        null
+    )
+
+    cursor ?: return
+
+    log("#### Groups table")
+    cursor.moveToPosition(-1)
+    while (cursor.moveToNext()) {
+        val id = cursor.getString(0)
+        val systemId = cursor.getString(1)
+        val title = cursor.getString(2)
+        val readOnly = cursor.getString(3)
+        val favorites = cursor.getString(4)
+        val autoAdd = cursor.getString(5)
+        val shouldSync = cursor.getString(6)
+        val accountName = cursor.getString(7)
+        val accountType = cursor.getString(8)
+
+        log(
+            """
+                Group id: $id, systemId: $systemId, title: $title,
+                 readOnly: $readOnly, favorites: $favorites, autoAdd: $autoAdd,
+                 shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType
+            """.trimIndent().replace("\n", "")
+        )
+    }
+
+    cursor.close()
 }
 
 fun Context.logContactsTable() {
@@ -22,10 +68,7 @@ fun Context.logContactsTable() {
     val cursor = contentResolver.query(
         Contacts.CONTENT_URI,
         arrayOf(
-            Contacts._ID, Contacts.DISPLAY_NAME,
-            Contacts.STARRED, Contacts.TIMES_CONTACTED, Contacts.LAST_TIME_CONTACTED,
-            Contacts.CUSTOM_RINGTONE, Contacts.SEND_TO_VOICEMAIL,
-            Contacts.PHOTO_FILE_ID, Contacts.PHOTO_URI, Contacts.PHOTO_THUMBNAIL_URI
+            Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.DISPLAY_NAME_SOURCE, Contacts.NAME_RAW_CONTACT_ID
         ),
         null,
         null,
@@ -39,23 +82,12 @@ fun Context.logContactsTable() {
     while (cursor.moveToNext()) {
         val id = cursor.getString(0)
         val displayName = cursor.getString(1)
-
-        val starred = cursor.getString(2)
-        val timesContacted = cursor.getString(3)
-        val lastTimeContacted = cursor.getString(4)
-        val customRingtone = cursor.getString(5)
-        val sendToVoicemail = cursor.getString(6)
-        val photoFileId = cursor.getString(7)
-        val photoUri = cursor.getString(8)
-        val photoThumbnailUri = cursor.getString(9)
+        val displayNameSource = cursor.getString(2)
+        val nameRawContactId = cursor.getLong(3)
 
         log(
             """
-                Contact id: $id, displayName: $displayName, starred: $starred,
-                 timesContacted: $timesContacted, lastTimeContacted: $lastTimeContacted,
-                 customRingtone: $customRingtone, sendToVoicemail: $sendToVoicemail,
-                 photoFileId: $photoFileId, photoUri: $photoUri,
-                 photoThumbnailUri: $photoThumbnailUri
+                Contact id: $id, displayName: $displayName, displayNameSource: $displayNameSource, nameRawContactId: $nameRawContactId
             """.trimIndent().replace("\n", "")
         )
     }
@@ -72,10 +104,7 @@ fun Context.logRawContactsTable() {
     val cursor = contentResolver.query(
         RawContacts.CONTENT_URI,
         arrayOf(
-            RawContacts._ID, RawContacts.CONTACT_ID,
-            RawContacts.ACCOUNT_NAME, RawContacts.ACCOUNT_TYPE,
-            RawContacts.STARRED, RawContacts.TIMES_CONTACTED, RawContacts.LAST_TIME_CONTACTED,
-            RawContacts.CUSTOM_RINGTONE, RawContacts.SEND_TO_VOICEMAIL
+            RawContacts._ID, RawContacts.CONTACT_ID, RawContacts.DISPLAY_NAME_PRIMARY, RawContacts.DISPLAY_NAME_SOURCE, RawContacts.AGGREGATION_MODE
         ),
         null,
         null,
@@ -89,21 +118,54 @@ fun Context.logRawContactsTable() {
     while (cursor.moveToNext()) {
         val id = cursor.getString(0)
         val contactId = cursor.getString(1)
-        val name = cursor.getString(2)
-        val type = cursor.getString(3)
-
-        val starred = cursor.getString(4)
-        val timesContacted = cursor.getString(5)
-        val lastTimeContacted = cursor.getString(6)
-        val customRingtone = cursor.getString(7)
-        val sendToVoicemail = cursor.getString(8)
+        val displayName = cursor.getString(2)
+        val displayNameSource = cursor.getString(3)
+        val aggregationMode = cursor.getString(4)
 
         log(
             """
-                RawContact id: $id, contactId: $contactId, accountName: $name, accountType: $type,
-                 starred: $starred, timesContacted: $timesContacted, 
-                 lastTimeContacted: $lastTimeContacted, customRingtone: $customRingtone, 
-                 sendToVoicemail: $sendToVoicemail
+                RawContact id: $id, contactId: $contactId, displayName: $displayName,
+                 displayNameSource: $displayNameSource, aggregationMode: $aggregationMode
+            """.trimIndent().replace("\n", "")
+        )
+    }
+
+    cursor.close()
+}
+
+fun Context.logAggregationExceptions() {
+    if (!canLog()) {
+        log("#### Aggregation exceptions table - read contacts permission not granted")
+        return
+    }
+
+    val cursor = contentResolver.query(
+        AggregationExceptions.CONTENT_URI,
+        arrayOf(
+            AggregationExceptions._ID,
+            AggregationExceptions.TYPE,
+            AggregationExceptions.RAW_CONTACT_ID1,
+            AggregationExceptions.RAW_CONTACT_ID2
+        ),
+        null,
+        null,
+        null
+    )
+
+    cursor ?: return
+
+    log("#### Aggregation exceptions table")
+    cursor.moveToPosition(-1)
+    while (cursor.moveToNext()) {
+        val id = cursor.getLong(0)
+        val type = cursor.getString(1)
+        val rawContactId1 = cursor.getLong(2)
+        val rawContactId2 = cursor.getLong(3)
+
+        log(
+            """
+                Aggregation exception id: $id, type: $type,
+                 rawContactId1: $rawContactId1, rawContactId2: $rawContactId2
             """.trimIndent().replace("\n", "")
         )
     }
@@ -160,55 +222,10 @@ fun Context.logDataTable() {
         log(
             """
                 Data id: $id, rawContactId: $rawContactId, contactId: $contactId,
-                 mimeType: $mimeType, isPrimary:$isPrimary, isSuperPrimary: $isSuperPrimary,
+                 mimeType: $mimeType, isPrimary: $isPrimary, isSuperPrimary: $isSuperPrimary,
                  data1: $data1, data2: $data2, data3: $data3, data4: $data4, data5: $data5,
                  data6: $data6, data7: $data7, data8: $data8, data9: $data9, data10: $data10,
                  data11: $data11, data12: $data12, data13: $data13, data14: $data14
-            """.trimIndent().replace("\n", "")
-        )
-    }
-
-    cursor.close()
-}
-
-fun Context.logGroupsTable() {
-    if (!canLog()) {
-        log("#### Groups table - read contacts permission not granted")
-        return
-    }
-
-    val cursor = contentResolver.query(
-        Groups.CONTENT_URI,
-        arrayOf(
-            Groups._ID, Groups.SYSTEM_ID, Groups.TITLE,
-            Groups.GROUP_IS_READ_ONLY, Groups.FAVORITES, Groups.AUTO_ADD,
-            Groups.SHOULD_SYNC, Groups.ACCOUNT_NAME, Groups.ACCOUNT_TYPE
-        ),
-        null,
-        null,
-        null
-    )
-
-    cursor ?: return
-
-    log("#### Groups table")
-    cursor.moveToPosition(-1)
-    while (cursor.moveToNext()) {
-        val id = cursor.getString(0)
-        val systemId = cursor.getString(1)
-        val title = cursor.getString(2)
-        val readOnly = cursor.getString(3)
-        val favorites = cursor.getString(4)
-        val autoAdd = cursor.getString(5)
-        val shouldSync = cursor.getString(6)
-        val accountName = cursor.getString(7)
-        val accountType = cursor.getString(8)
-
-        log(
-            """
-                Group id: $id, systemId: $systemId, title: $title,
-                 readOnly: $readOnly, favorites: $favorites, autoAdd: $autoAdd,
-                 shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType
             """.trimIndent().replace("\n", "")
         )
     }

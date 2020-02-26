@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.INVALID_ID
 
 /**
- * Retrieves [Fields.RawContactId] data from the given [cursor].
+ * Retrieves RawContact and Contact ids in the Data table from the given [cursor].
  *
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.

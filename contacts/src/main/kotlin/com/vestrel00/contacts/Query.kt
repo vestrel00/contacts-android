@@ -292,7 +292,7 @@ private class QueryImpl(
         include = if (fields.count() == 0) {
             DEFAULT_INCLUDE
         } else {
-            Include(fields + REQUIRED_INCLUDES.asSequence())
+            Include(fields + Fields.Required.fields.asSequence())
         }
     }
 
@@ -349,15 +349,6 @@ private class QueryImpl(
     override fun findFirst(cancel: () -> Boolean): Contact? = find(cancel).firstOrNull()
 
     private companion object {
-        val REQUIRED_INCLUDES = setOf<Field>(
-            Fields.Id,
-            Fields.Contact.Id,
-            Fields.RawContactId,
-            Fields.IsPrimary,
-            Fields.IsSuperPrimary,
-            Fields.MimeType
-        )
-
         val DEFAULT_RAW_CONTACTS_WHERE = NoWhere
         val DEFAULT_INCLUDE = Include(Fields.All)
         val DEFAULT_WHERE = NoWhere

@@ -75,7 +75,7 @@ be null. Data suitable to be a Contacts row display name are enumerated in `Disp
 - phone number
 - structured name
 
-Data not suitable to be a display name are;
+Data not suitable to be display names are;
 
 - address
 - event
@@ -88,6 +88,30 @@ Data not suitable to be a display name are;
 
 The kind of data used as the display for the Contact is set in 
 `ContactNameColumns.DISPLAY_NAME_SOURCE`.
+
+#### Contact Display Name and Default Name Rows
+
+If available, the "default" (isPrimary and isSuperPrimary set to 1) name row for a Contact is 
+automatically set as the Contact display name by the Contacts Provider. Otherwise, the Contacts
+Provider chooses from any of the other suitable data from the aggregate Contact.
+
+> The `ContactsColumns.NAME_RAW_CONTACT_ID` is automatically updated by the Contacts Provider
+> along with the display name.
+
+The default status of other sources (e.g. email) does not affect the Contact display name.
+
+The native Contacts app also sets the most recently updated name as the default at every update (and
+new Contact creation). This results in the Contact display name changing to the most recently 
+updated name from one of the associated RawContacts.
+
+TODO AbstractDataOperation should not update rows that have not been changed to avoid incrementing 
+DATA_VERSION unnecessarily! Should this only be done for name rows or all rows? Check what the
+native Contacts app is doing.
+
+TODO Set the most recently updated name of a Contact as the default, if available. Apply this to
+insert and update functions.
+
+TODO Add more documentation (if necessary) when ContactLinks implementation is finished.
 
 #### RawContacts; Accounts + Contacts
 
@@ -185,7 +209,9 @@ RawContacts table.
 A more common scenario that causes multiple RawContacts per Contact is when two or more Contacts are
 "linked" (or "merged" for API 23 and below, or "joined" for API 22 and below).
 
-#### Behavior of linking/merging contacts
+#### Behavior of linking/merging/joining contacts
+
+> These operations are supported by the `ContactsContract.AggregationExceptions`.
 
 Given the following tables;
 
@@ -200,14 +226,16 @@ RawContact id: 31, contactId: 33, accountName: y@y.com, accountType: com.google,
 
 #### Data table
 Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
-Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
 Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 1
 Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
-Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y
+Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 1
 Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 1
 ```
 
-When contact **X** links/merges/joins contact **Y**, the tables becomes;
+When Contact **X** links/merges/joins Contact **Y**, the tables becomes;
 
 ```
 #### Contacts table
@@ -219,21 +247,37 @@ RawContact id: 31, contactId: 33, accountName: y@y.com, accountType: com.google,
 
 #### Data table
 Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
-Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
 Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 0
 Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
-Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y
+Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 0
 Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 0
 ```
 
 **What changed?**
 
-Contact Y row has been deleted and its column values have been merged into contact X row. This is 
-done automatically by the Contacts Provider for Contacts that no longer have at least one associated
-RawContact.
+Contact Y's row has been deleted and its column values have been merged into Contact X row. If the 
+reverse occurred (Contact Y merged with Contact X), Contact Y's row would still be deleted. The 
+difference is that Contact X's display name will be set to Contact Y's display name, which is
+done by the native Contacts app manually by setting Contact Y's Data name row to be the "default" 
+(isPrimary and isSuperPrimary both set to 1).
+
+> The AggregationExceptions table records the linked RawContacts's IDs in ascending order regardless
+> of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.
 
 The RawContacts and Data table remains the same except the joined contactId column values have now
-been changed to the id of Contact X.
+been changed to the id of Contact X. All Data rows' isSuperPrimary value has been set to 0 though 
+the isPrimary columns remain the same. In other words, this clears any "default" (isPrimary and 
+isSuperPrimary both set to 1) set before the link. These are done automatically by the Contacts 
+Provider during the link operation.
+
+What is not done automatically by the Contacts Provider is that the name row of former Contact X is
+set as the default. The native Contacts app does this manually. The Contacts Providers automatically
+sets the Contact display name to whatever the default name row is for the Contact, if available.
+For more info on Contact display name resolution, read the **Contact Display Name and Default Name
+Rows** section.
 
 The Groups table remains unmodified.
 
@@ -258,8 +302,9 @@ references to the "chosen" RawContact's full-sized photo and thumbnail (though t
 **Data inserts**
 
 In the native Contacts app, Data inserted in combined contacts mode will be associated to the first
-RawContact in the list sorted by the RawContact ID. This may not be the same as the RawContact 
-referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
+RawContact in the list sorted by the RawContact ID. 
+
+> This may not be the same as the RawContact referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
 
 **UI changes?**
 
@@ -267,9 +312,62 @@ The native Contacts App does not display the groups field when displaying / edit
 have multiple RawContacts (linked/merged/joined) in combined mode. However, it does allow editing 
 individual RawContact Data rows in which case the groups field is displayed and editable.
 
-In the native Contacts app, the name attribute used comes from the RawContact with ID of
-`ContactsColumns.NAME_RAW_CONTACT_ID`. All other "unique" mimetypes (company/organization) and
-non-unique mimetypes (email) per RawContact are shown only if they are not blank.
+In the native Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
+set to true. This and all other "unique" mimetypes (company/organization) and non-unique mimetypes
+(email) per RawContact are shown only if they are not blank.
+
+#### AggregationExceptions table
+
+Given the following Contacts and their RawContacts;
+
+- Contact A
+    - RawContact 1
+- Contact B
+    - RawContact 2
+- Contact C
+    - RawContact 3
+- Contact D
+    - RawContact 4
+    
+Linking one by one in this order;
+
+- Contact B link Contact A
+- Contact C link Contact D
+- Contact C link Contact B
+
+Results in the following AggregationExceptions rows respectively;
+
+```
+Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+
+```
+
+```
+Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+Aggregation exception id: 432, type: 1, rawContactId1: 3, rawContactId2: 4
+```
+
+```
+Aggregation exception id: 436, type: 1, rawContactId1: 1, rawContactId2: 2
+Aggregation exception id: 439, type: 1, rawContactId1: 1, rawContactId2: 3
+Aggregation exception id: 442, type: 1, rawContactId1: 1, rawContactId2: 4
+Aggregation exception id: 440, type: 1, rawContactId1: 2, rawContactId2: 3
+Aggregation exception id: 443, type: 1, rawContactId1: 2, rawContactId2: 4
+Aggregation exception id: 444, type: 1, rawContactId1: 3, rawContactId2: 4
+```
+
+There is a pattern here. RawContact ids are sorted in ascending order and linked from least to 
+greatest exhaustively but no double links (1-2 is the same as 2-1).
+
+- RawContact 1 has a row with RawContact 2, 3, and 4.
+- RawContact 2 has a row with RawContact 3 and 4.
+- RawContact 3 has a row with RawContact 4.
+
+Linking all in one go;
+
+- Contact C link Contact A, B, D
+
+Results in the same AggregationExceptions rows.
 
 #### Data Table
 

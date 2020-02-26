@@ -149,6 +149,8 @@ object Fields {
      */
     @JvmField
     val AllForMatching = AllForMatchingFields()
+
+    internal val Required = Required()
 }
 
 class AllFields : FieldSet(UNKNOWN) {
@@ -199,6 +201,20 @@ class AllForMatchingFields : FieldSet(UNKNOWN) {
         addAll(Fields.SipAddress.fields)
         addAll(Fields.Website.fields)
     }.toSet()
+}
+
+/**
+ * All of the Data table fields required when constructing Data entities retrieved from a Query.
+ */
+internal class Required : FieldSet(UNKNOWN) {
+    override val fields: Set<AbstractField> = setOf(
+        Fields.Id,
+        Fields.Contact.Id,
+        Fields.RawContactId,
+        Fields.IsPrimary,
+        Fields.IsSuperPrimary,
+        Fields.MimeType
+    )
 }
 
 class AddressFields : FieldSet(MimeType.ADDRESS) {
@@ -277,7 +293,7 @@ class ContactFields : FieldSet(UNKNOWN) {
     val Id = AbstractField(Data.CONTACT_ID, mimeType)
 
     @JvmField
-    val DisplayName = AbstractField(Data.DISPLAY_NAME, mimeType)
+    val DisplayName = AbstractField(Data.DISPLAY_NAME_PRIMARY, mimeType)
 
     @JvmField
     val LastUpdatedTimestamp = AbstractField(Data.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
@@ -295,7 +311,6 @@ internal class ContactsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(BaseColumns._ID, UNKNOWN)
 
-    // These columns are also available via the Data table reference as they are joined.
     val PhotoUri = AbstractField(ContactsContract.Contacts.PHOTO_URI, mimeType)
 
     val PhotoThumbnailUri =
