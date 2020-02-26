@@ -106,9 +106,27 @@ fun Contact.link(context: Context, contacts: Sequence<Contact>): Boolean {
 
     val nameRowIdToUseAsDefault = nameRowIdToUseAsDefault(context, prioritizedContactIds)
 
-    val operations = arrayListOf<ContentProviderOperation>()
+    try {
+        context.contentResolver.applyBatch(
+            AUTHORITY,
+            linkRawContactsOperations(sortedRawContactIds)
+        )
+    } catch (exception: Exception) {
+        return false
+    }
 
-    // See DEV_NOTES "AggregationExceptions table" section.
+    // Link succeeded. Set the default name.
+    nameWithId(context, nameRowIdToUseAsDefault)?.setAsDefault(context)
+
+    return true
+}
+
+/**
+ * See DEV_NOTES "AggregationExceptions table" section.
+ */
+private fun linkRawContactsOperations(sortedRawContactIds: List<Long>):
+        ArrayList<ContentProviderOperation> = arrayListOf<ContentProviderOperation>().apply {
+
     for (i in 0 until (sortedRawContactIds.size - 1)) {
         for (j in (i + 1) until sortedRawContactIds.size) {
 
@@ -121,20 +139,9 @@ fun Contact.link(context: Context, contacts: Sequence<Contact>): Boolean {
                 .withValue(AggregationExceptions.RAW_CONTACT_ID2, rawContactId2)
                 .build()
 
-            operations.add(operation)
+            add(operation)
         }
     }
-
-    try {
-        context.contentResolver.applyBatch(AUTHORITY, operations)
-    } catch (exception: Exception) {
-        return false
-    }
-
-    // Link succeeded. Set the default name.
-    nameWithId(context, nameRowIdToUseAsDefault)?.setAsDefault(context)
-
-    return true
 }
 
 /**
