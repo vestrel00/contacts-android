@@ -68,7 +68,10 @@ fun Context.logContactsTable() {
     val cursor = contentResolver.query(
         Contacts.CONTENT_URI,
         arrayOf(
-            Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.DISPLAY_NAME_SOURCE, Contacts.NAME_RAW_CONTACT_ID
+            Contacts._ID, Contacts.DISPLAY_NAME,
+            Contacts.STARRED, Contacts.TIMES_CONTACTED, Contacts.LAST_TIME_CONTACTED,
+            Contacts.CUSTOM_RINGTONE, Contacts.SEND_TO_VOICEMAIL,
+            Contacts.PHOTO_FILE_ID, Contacts.PHOTO_URI, Contacts.PHOTO_THUMBNAIL_URI
         ),
         null,
         null,
@@ -82,12 +85,23 @@ fun Context.logContactsTable() {
     while (cursor.moveToNext()) {
         val id = cursor.getString(0)
         val displayName = cursor.getString(1)
-        val displayNameSource = cursor.getString(2)
-        val nameRawContactId = cursor.getLong(3)
+
+        val starred = cursor.getString(2)
+        val timesContacted = cursor.getString(3)
+        val lastTimeContacted = cursor.getString(4)
+        val customRingtone = cursor.getString(5)
+        val sendToVoicemail = cursor.getString(6)
+        val photoFileId = cursor.getString(7)
+        val photoUri = cursor.getString(8)
+        val photoThumbnailUri = cursor.getString(9)
 
         log(
             """
-                Contact id: $id, displayName: $displayName, displayNameSource: $displayNameSource, nameRawContactId: $nameRawContactId
+                Contact id: $id, displayName: $displayName, starred: $starred,
+                 timesContacted: $timesContacted, lastTimeContacted: $lastTimeContacted,
+                 customRingtone: $customRingtone, sendToVoicemail: $sendToVoicemail,
+                 photoFileId: $photoFileId, photoUri: $photoUri,
+                 photoThumbnailUri: $photoThumbnailUri
             """.trimIndent().replace("\n", "")
         )
     }
@@ -104,7 +118,10 @@ fun Context.logRawContactsTable() {
     val cursor = contentResolver.query(
         RawContacts.CONTENT_URI,
         arrayOf(
-            RawContacts._ID, RawContacts.CONTACT_ID, RawContacts.DISPLAY_NAME_PRIMARY, RawContacts.DISPLAY_NAME_SOURCE, RawContacts.AGGREGATION_MODE
+            RawContacts._ID, RawContacts.CONTACT_ID,
+            RawContacts.ACCOUNT_NAME, RawContacts.ACCOUNT_TYPE,
+            RawContacts.STARRED, RawContacts.TIMES_CONTACTED, RawContacts.LAST_TIME_CONTACTED,
+            RawContacts.CUSTOM_RINGTONE, RawContacts.SEND_TO_VOICEMAIL
         ),
         null,
         null,
@@ -118,14 +135,21 @@ fun Context.logRawContactsTable() {
     while (cursor.moveToNext()) {
         val id = cursor.getString(0)
         val contactId = cursor.getString(1)
-        val displayName = cursor.getString(2)
-        val displayNameSource = cursor.getString(3)
-        val aggregationMode = cursor.getString(4)
+        val name = cursor.getString(2)
+        val type = cursor.getString(3)
+
+        val starred = cursor.getString(4)
+        val timesContacted = cursor.getString(5)
+        val lastTimeContacted = cursor.getString(6)
+        val customRingtone = cursor.getString(7)
+        val sendToVoicemail = cursor.getString(8)
 
         log(
             """
-                RawContact id: $id, contactId: $contactId, displayName: $displayName,
-                 displayNameSource: $displayNameSource, aggregationMode: $aggregationMode
+                RawContact id: $id, contactId: $contactId, accountName: $name, accountType: $type,
+                 starred: $starred, timesContacted: $timesContacted, 
+                 lastTimeContacted: $lastTimeContacted, customRingtone: $customRingtone, 
+                 sendToVoicemail: $sendToVoicemail
             """.trimIndent().replace("\n", "")
         )
     }
