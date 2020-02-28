@@ -200,7 +200,7 @@ private object ContactLinkFailed : ContactLinkResult {
 }
 
 // UNLINK
-// TODO unlinkAsync, UnlinkResult, UnlinkResultAsync.
+// TODO UnlinkResultAsync.
 // TODO Check link behavior in API 19
 
 /**

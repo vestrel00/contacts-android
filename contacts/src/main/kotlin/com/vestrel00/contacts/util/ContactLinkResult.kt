@@ -3,6 +3,7 @@ package com.vestrel00.contacts.util
 import android.content.Context
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Query
+import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.equalTo
 
@@ -23,7 +24,33 @@ import com.vestrel00.contacts.equalTo
 @JvmOverloads
 fun ContactLinkResult.contact(context: Context, cancel: () -> Boolean = { false }): Contact? {
 
-    val contactId = this.contactId ?: return null
+    val contactId = contactId ?: return null
 
     return Query(context).where(Fields.Contact.Id equalTo contactId).findFirst(cancel)
 }
+
+/**
+ * Returns all of the [Contact]s that are associated with each of the unlinked RawContacts.
+ * Returns an empty list if the unlink operation failed.
+ *
+ * ## Permissions
+ *
+ * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, empty
+ * list will be returned if the permission is not granted.
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+@JvmOverloads
+fun ContactUnlinkResult.contacts(context: Context, cancel: () -> Boolean = { false }):
+        List<Contact> {
+
+    if (rawContactIds.isEmpty()) {
+        return emptyList()
+    }
+
+    return Query(context).where(Fields.RawContactId `in` rawContactIds).find(cancel)
+}
+

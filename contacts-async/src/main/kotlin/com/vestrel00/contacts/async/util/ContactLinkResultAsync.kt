@@ -8,7 +8,6 @@ import com.vestrel00.contacts.util.contact
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
-
 /**
  * Suspends the current coroutine, gets the contact, then returns the control flow to the calling
  * coroutine scope.
