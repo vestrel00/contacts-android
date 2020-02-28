@@ -97,7 +97,7 @@ class PhotoView @JvmOverloads constructor(
         if (!shouldSavePhoto) {
             return true
         }
-        
+
         val contact = contact
         val photoDrawable = photoDrawable
 
@@ -130,7 +130,7 @@ class PhotoView @JvmOverloads constructor(
             scaleType = ScaleType.FIT_CENTER
 
             val placeHolderImageDrawable = withContext(Dispatchers.IO) {
-                context.resources.getDrawable(R.drawable.placeholder_photo, null)
+                context.resources.getDrawable(R.drawable.placeholder_photo)
             }
             setImageDrawable(placeHolderImageDrawable)
         }
