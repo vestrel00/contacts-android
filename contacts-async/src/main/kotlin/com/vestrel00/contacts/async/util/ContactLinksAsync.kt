@@ -5,7 +5,9 @@ import com.vestrel00.contacts.async.ASYNC_DISPATCHER
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.util.ContactLinkResult
+import com.vestrel00.contacts.util.ContactUnlinkResult
 import com.vestrel00.contacts.util.link
+import com.vestrel00.contacts.util.unlink
 import kotlinx.coroutines.withContext
 
 /**
@@ -63,3 +65,21 @@ suspend fun MutableContact.linkAsync(context: Context, contacts: Collection<Muta
  */
 suspend fun MutableContact.linkAsync(context: Context, contacts: Sequence<MutableContact>):
         ContactLinkResult = withContext(ASYNC_DISPATCHER) { link(context, contacts) }
+
+/**
+ * Suspends the current coroutine, unlinks the contact, then returns the control flow to the calling
+ * coroutine scope.
+ *
+ * See [Contact.unlink].
+ */
+suspend fun Contact.unlinkAsync(context: Context): ContactUnlinkResult =
+    withContext(ASYNC_DISPATCHER) { unlink(context) }
+
+/**
+ * Suspends the current coroutine, unlinks the contact, then returns the control flow to the calling
+ * coroutine scope.
+ *
+ * See [Contact.unlink].
+ */
+suspend fun MutableContact.unlinkAsync(context: Context): ContactUnlinkResult =
+    withContext(ASYNC_DISPATCHER) { unlink(context) }

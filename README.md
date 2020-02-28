@@ -12,6 +12,7 @@
     - SettingsColumns? (group visible / invisible)
 5.  Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
     - See FIXME in DataEntity.mimeType() function.
+6. Add Copyright to all non-sample files.
 
 ----------------------------------------------------------------------------------------------------
 
