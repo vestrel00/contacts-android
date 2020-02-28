@@ -54,11 +54,12 @@ import com.vestrel00.contacts.entities.table.Table
  * There is one thing that the native Contacts app manually does that the Contacts Provider does not
  * do automatically; setting the display name for the aggregated Contact. The native Contacts app
  * sets the name of [this] as the "default" (if available) and clears the default status of all
- * other names belonging to the other RawContacts. If [this] does not have any names available,
- * then a name belonging to the other [contacts] will be set as default.
+ * other names belonging to the other RawContacts. The Contacts Provider automatically sets the
+ * Contact display name to the default name that belongs to any associated RawContact. If [this]
+ * does not have any names available, then a name belonging to the other [contacts] will be set as
+ * default.
  *
- * The Contacts Provider automatically sets the Contact display name to the default name that
- * belongs to any associated RawContact.
+ * The same logic is employed here in this function.
  *
  * The native Contacts app also sets the most recently updated name as the default at every update
  * (and new Contact creation). This results in the Contact display name changing to the most
@@ -66,6 +67,13 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * If there is no structured name found for any of the contacts being linked, the Contacts app lets
  * the Contact Provider choose a suitable name.
+ *
+ * ## Contact Display Name Resolution does not work for APIs below 21 (pre-Lollipop)!
+ *
+ * This library is unable to control the [Contact.displayName] resolution for APIs below 21. Linking
+ * and unlinking will still work but the Contact display name is left for the Contacts Provider.
+ *
+ * See the "Contact Display Name and Default Name Rows" section in the DEV_NOTES for more details.
  *
  * ## Permissions
  *
@@ -200,8 +208,6 @@ private object ContactLinkFailed : ContactLinkResult {
 }
 
 // UNLINK
-// TODO UnlinkResultAsync.
-// TODO Check link behavior in API 19
 
 /**
  * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [Contact] for each

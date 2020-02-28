@@ -100,9 +100,21 @@ Provider chooses from any of the other suitable data from the aggregate Contact.
 
 The default status of other sources (e.g. email) does not affect the Contact display name.
 
-The native Contacts app also sets the most recently updated name as the default at every update (and
-new Contact creation). This results in the Contact display name changing to the most recently 
-updated name from one of the associated RawContacts.
+The native Contacts app also sets the most recently updated name as the default at every update. 
+This results in the Contact display name changing to the most recently updated name from one of the
+associated RawContacts.
+
+All of the above only applies to API 21 and above.
+
+**Display name resolution is different for APIs below 21 (pre-Lollipop)!**
+
+The `ContactsColumns.NAME_RAW_CONTACT_ID` was added in API 21. It changed the way display names
+are resolved when linking, which is what has been described so far.
+
+Before this change (APIs 20 and below), the native Contacts app is still able to set the Contact
+display name somehow. I'm not sure how. If someone figures it out, please let me know. I tried 
+updating the Contact DISPLAY_NAME directly but it does not work. Setting a name row as default also
+does not affect the Contact DISPLAY_NAME.
 
 TODO AbstractDataOperation should not update rows that have not been changed to avoid incrementing 
 DATA_VERSION unnecessarily! Should this only be done for name rows or all rows? Check what the
@@ -285,6 +297,8 @@ set as the default. The native Contacts app does this manually. The Contacts Pro
 sets the Contact display name to whatever the default name row is for the Contact, if available.
 For more info on Contact display name resolution, read the **Contact Display Name and Default Name
 Rows** section.
+
+> Note that display name resolution is different for APIs below 21 (pre-lollipop).
 
 The Groups table remains unmodified.
 
