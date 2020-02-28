@@ -11,10 +11,12 @@ import com.vestrel00.contacts.entities.cursor.NameCursor
 import com.vestrel00.contacts.entities.mapper.NameMapper
 import com.vestrel00.contacts.entities.table.Table
 
+// LINK
+
 /**
- * Links [this] Contact with the given [contacts]. This will aggregate all RawContacts belonging to
- * [this] Contact and the given [contacts] into a single Contact. Aggregation is done by the
- * Contacts Provider. For example,
+ * Links (keep together) [this] Contact with the given [contacts]. This will aggregate all
+ * RawContacts belonging to [this] Contact and the given [contacts] into a single Contact.
+ * Aggregation is done by the Contacts Provider. For example,
  *
  * - Contact (id: 1, display name: A)
  *     - RawContact A
@@ -45,6 +47,8 @@ import com.vestrel00.contacts.entities.table.Table
  * single Contact. Details on how RawContacts are aggregated into a single Contact are left to the
  * Contacts Provider.
  *
+ * This does nothing / fails if there is only one RawContact associated with [this].
+ *
  * ## Contact Display Name Resolution
  *
  * There is one thing that the native Contacts app manually does that the Contacts Provider does not
@@ -60,6 +64,9 @@ import com.vestrel00.contacts.entities.table.Table
  * (and new Contact creation). This results in the Contact display name changing to the most
  * recently updated name from one of the associated RawContacts.
  *
+ * If there is no structured name found for any of the contacts being linked, the Contacts app lets
+ * the Contact Provider choose a suitable name.
+ *
  * ## Permissions
  *
  * The [com.vestrel00.contacts.ContactsPermissions.WRITE_PERMISSION] is required.
@@ -68,7 +75,6 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * This should be called in a background thread to avoid blocking the UI thread.
  */
-// TODO unlink, unlinkAsync, UnlinkResult, UnlinkResultAsync.
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.link(context: Context, vararg contacts: Contact): ContactLinkResult =
     link(context, contacts.asSequence())
@@ -76,30 +82,35 @@ fun Contact.link(context: Context, vararg contacts: Contact): ContactLinkResult 
 /**
  * See [Contact.link].
  */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.link(context: Context, contacts: Collection<Contact>): ContactLinkResult =
     link(context, contacts.asSequence())
 
 /**
  * See [Contact.link].
  */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.link(context: Context, contacts: Sequence<Contact>): ContactLinkResult =
     link(context, id, contacts.map { it.id })
 
 /**
  * See [Contact.link].
  */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.link(context: Context, vararg contacts: MutableContact): ContactLinkResult =
     link(context, contacts.asSequence())
 
 /**
  * See [Contact.link].
  */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.link(context: Context, contacts: Collection<MutableContact>): ContactLinkResult =
     link(context, contacts.asSequence())
 
 /**
  * See [Contact.link].
  */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.link(context: Context, contacts: Sequence<MutableContact>): ContactLinkResult =
     link(context, id, contacts.map { it.id })
 
@@ -143,7 +154,10 @@ private fun link(context: Context, mainContactId: Long, contactIds: Sequence<Lon
         // Note that the result uri is null. There is no meaningful information we can get here.
         context.contentResolver.applyBatch(
             AUTHORITY,
-            linkRawContactsOperations(sortedRawContactIds)
+            aggregateExceptionsOperations(
+                sortedRawContactIds,
+                AggregationExceptions.TYPE_KEEP_TOGETHER
+            )
         )
     } catch (exception: Exception) {
         return ContactLinkFailed
@@ -185,12 +199,99 @@ private object ContactLinkFailed : ContactLinkResult {
     override val isSuccessful: Boolean = false
 }
 
+// UNLINK
+// TODO unlinkAsync, UnlinkResult, UnlinkResultAsync.
+// TODO Check link behavior in API 19
+
 /**
- * Provides the operations to ensure that all or the given raw contacts are linked.
+ * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [Contact] for each
+ * [Contact.rawContacts].
+ *
+ * This does nothing / fails if there is only one RawContact associated with [this].
+ *
+ * ## Permissions
+ *
+ * The [com.vestrel00.contacts.ContactsPermissions.WRITE_PERMISSION] is required.
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun Contact.unlink(context: Context): ContactUnlinkResult = unlink(context, id)
+
+/**
+ * See [Contact.unlink].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun MutableContact.unlink(context: Context): ContactUnlinkResult = unlink(context, id)
+
+/**
+ * Unlinks (separates) the RawContacts of the given [contactId].
+ */
+private fun unlink(context: Context, contactId: Long): ContactUnlinkResult {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == INVALID_ID) {
+        return ContactUnlinkFailed
+    }
+
+    val sortedRawContactIds = sortedRawContactIds(context, setOf(contactId))
+
+    if (sortedRawContactIds.size < 2) {
+        // At least 2 RawContacts are required to unlink.
+        return ContactUnlinkFailed
+    }
+
+    try {
+        context.contentResolver.applyBatch(
+            AUTHORITY,
+            aggregateExceptionsOperations(
+                sortedRawContactIds,
+                AggregationExceptions.TYPE_KEEP_SEPARATE
+            )
+        )
+    } catch (exception: Exception) {
+        return ContactUnlinkFailed
+    }
+
+    return ContactUnlinkSuccess(sortedRawContactIds)
+}
+
+interface ContactUnlinkResult {
+
+    /**
+     * The list of [RawContact.id] that have been unlinked. Empty if [isSuccessful] is false.
+     */
+    val rawContactIds: List<Long>
+
+    /**
+     * True if the unlink succeeded.
+     */
+    val isSuccessful: Boolean
+}
+
+private class ContactUnlinkSuccess(override val rawContactIds: List<Long>) : ContactUnlinkResult {
+
+    override val isSuccessful: Boolean = true
+}
+
+private object ContactUnlinkFailed : ContactUnlinkResult {
+
+    override val rawContactIds: List<Long> = emptyList()
+
+    override val isSuccessful: Boolean = false
+}
+
+
+// HELPER
+
+/**
+ * Provides the operations to ensure that all or the given raw contacts are kept together
+ * [AggregationExceptions.TYPE_KEEP_TOGETHER] or kept separate
+ * [AggregationExceptions.TYPE_KEEP_SEPARATE], depending on the given [type].
  *
  * See DEV_NOTES "AggregationExceptions table" section.
  */
-private fun linkRawContactsOperations(sortedRawContactIds: List<Long>):
+private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type: Int):
         ArrayList<ContentProviderOperation> = arrayListOf<ContentProviderOperation>().apply {
 
     for (i in 0 until (sortedRawContactIds.size - 1)) {
@@ -200,7 +301,7 @@ private fun linkRawContactsOperations(sortedRawContactIds: List<Long>):
             val rawContactId2 = sortedRawContactIds[j]
 
             val operation = ContentProviderOperation.newUpdate(AggregationExceptions.CONTENT_URI)
-                .withValue(AggregationExceptions.TYPE, AggregationExceptions.TYPE_KEEP_TOGETHER)
+                .withValue(AggregationExceptions.TYPE, type)
                 .withValue(AggregationExceptions.RAW_CONTACT_ID1, rawContactId1)
                 .withValue(AggregationExceptions.RAW_CONTACT_ID2, rawContactId2)
                 .build()
@@ -279,7 +380,6 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
 private fun nameRawContactId(context: Context, contactId: Long): Long {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
         // Contacts.NAME_RAW_CONTACT_ID is not available
-        // TODO Check behavior in API 19
         return INVALID_ID
     }
 

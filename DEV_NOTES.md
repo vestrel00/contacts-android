@@ -211,6 +211,13 @@ A more common scenario that causes multiple RawContacts per Contact is when two 
 
 #### Behavior of linking/merging/joining contacts
 
+> The Contacts app terminology has changed over time;
+>   - API 22 and below; join / separate
+>   - API 23; merge / unmerge
+>   - API 24 and above; link / unlink 
+> 
+> However, the internals have not changed; KEEP_TOGETHER / KEEP_SEPARATE.
+> 
 > These operations are supported by the `ContactsContract.AggregationExceptions`.
 
 Given the following tables;
@@ -368,6 +375,9 @@ Linking all in one go;
 - Contact C link Contact A, B, D
 
 Results in the same AggregationExceptions rows.
+
+Unlinking results in the same AggregationExceptions rows **except** the type is 2 
+(TYPE_KEEP_SEPARATE).
 
 #### Data Table
 
