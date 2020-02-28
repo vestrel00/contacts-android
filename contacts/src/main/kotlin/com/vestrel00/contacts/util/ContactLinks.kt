@@ -68,7 +68,6 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * This should be called in a background thread to avoid blocking the UI thread.
  */
-// TODO ContactLinkResultAsync
 // TODO unlink, unlinkAsync, UnlinkResult, UnlinkResultAsync.
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.link(context: Context, vararg contacts: Contact): ContactLinkResult =
