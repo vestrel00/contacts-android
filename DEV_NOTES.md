@@ -102,7 +102,10 @@ The default status of other sources (e.g. email) does not affect the Contact dis
 
 The native Contacts app also sets the most recently updated name as the default at every update. 
 This results in the Contact display name changing to the most recently updated name from one of the
-associated RawContacts.
+associated RawContacts. The "most recently updated name" is the name field that was last updated
+by the user when editing in the Contacts app, which is irrelevant to its value. It does not matter
+if the user deleted the last character of the name, added the same character back, and then saved. 
+It still counts as the most recently updated. 
 
 All of the above only applies to API 21 and above.
 
@@ -115,12 +118,6 @@ Before this change (APIs 20 and below), the native Contacts app is still able to
 display name somehow. I'm not sure how. If someone figures it out, please let me know. I tried 
 updating the Contact DISPLAY_NAME directly but it does not work. Setting a name row as default also
 does not affect the Contact DISPLAY_NAME.
-
-TODO AbstractDataOperation should not update rows that have not been changed to avoid incrementing 
-DATA_VERSION unnecessarily!
-
-TODO Set the most recently updated name of a Contact as the default, if available. Apply this to
-insert and update functions. Note that this has nothing to do with the DATA_VERSION!
 
 #### RawContacts; Accounts + Contacts
 

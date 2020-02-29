@@ -60,14 +60,21 @@ import com.vestrel00.contacts.entities.table.Table
  * does not have any names available, then a name belonging to the other [contacts] will be set as
  * default.
  *
+ * If there is no structured name found for any of the contacts being linked, the Contacts app lets
+ * the Contact Provider choose a suitable name.
+ *
  * The same logic is employed here in this function.
+ *
+ * **A side note**
  *
  * The native Contacts app also sets the most recently updated name as the default at every update
  * (and new Contact creation). This results in the Contact display name changing to the most
- * recently updated name from one of the associated RawContacts.
- *
- * If there is no structured name found for any of the contacts being linked, the Contacts app lets
- * the Contact Provider choose a suitable name.
+ * recently updated name from one of the associated RawContacts. The "most recently updated name"
+ * is the name field that was last updated by the user when editing in the Contacts app, which is
+ * irrelevant to its value. It does not matter if the user deleted the last character of the name,
+ * added back the same character (undo), and then saved. It still counts as the most recently
+ * updated. This logic is not implemented in this library. It is up to the consumers to implement it
+ * or not, or do it differently.
  *
  * ## Contact Display Name Resolution does not work for APIs below 21 (pre-Lollipop)!
  *
