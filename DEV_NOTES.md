@@ -282,9 +282,8 @@ done by the native Contacts app manually by setting Contact Y's Data name row to
 
 The RawContacts and Data table remains the same except the joined contactId column values have now
 been changed to the id of Contact X. All Data rows' isSuperPrimary value has been set to 0 though 
-the isPrimary columns remain the same. In other words, this clears any "default" (isPrimary and 
-isSuperPrimary both set to 1) set before the link. These are done automatically by the Contacts 
-Provider during the link operation.
+the isPrimary columns remain the same. In other words, this clears any "default" set before the 
+link. These are done automatically by the Contacts Provider during the link operation.
 
 What is not done automatically by the Contacts Provider is that the name row of former Contact X is
 set as the default. The native Contacts app does this manually. The Contacts Providers automatically
