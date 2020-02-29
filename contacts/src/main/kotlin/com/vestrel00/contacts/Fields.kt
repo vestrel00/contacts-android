@@ -48,7 +48,15 @@ abstract class FieldSet internal constructor(
 }
 
 /**
- * Contains all Contact [Field]s.
+ * Contains all Contact Data table [Field]s.
+ *
+ * ## Developer Notes
+ *
+ * This is not named "DataFields" for several reasons;
+ *
+ * 1. Consumers are only exposed Data table fields. There is no need for them to know the fields
+ *    of the other tables.
+ * 2. Fields is shorter than DataFields. This is important for keeping lines short.
  */
 // Note: All of this is condensed inside one file / class for (Kotlin & Java) consumer convenience.
 // The structure of this class and the Kotlin language features that are used here are to cater to

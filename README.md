@@ -1,18 +1,16 @@
 ## TODO
 
-1. Reorg Fields. Move groups, contacts, raw contacts, and data fields to separate internal objects.
-   Expose data fields as just (alias) Fields for consumers. 
-2. Create Contacts().queryData (with permission and asynchronous extensions) that returns only one 
+1. Create Contacts().queryData (with permission and asynchronous extensions) that returns only one 
    data kind (eg emails, phones, etc). Useful for ordering and paginating of only one data kind.
-3. Setup user profile  
+2. Setup user profile  
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
     - `ContactsContract.Profile`
-4. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
+3. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
-5.  Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+4.  Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
     - See FIXME in DataEntity.mimeType() function.
-6. Add Copyright to all non-sample files.
+5. Add Copyright to all non-sample files.
 
 ----------------------------------------------------------------------------------------------------
 
