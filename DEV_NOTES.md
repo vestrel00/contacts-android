@@ -117,13 +117,10 @@ updating the Contact DISPLAY_NAME directly but it does not work. Setting a name 
 does not affect the Contact DISPLAY_NAME.
 
 TODO AbstractDataOperation should not update rows that have not been changed to avoid incrementing 
-DATA_VERSION unnecessarily! Should this only be done for name rows or all rows? Check what the
-native Contacts app is doing.
+DATA_VERSION unnecessarily!
 
 TODO Set the most recently updated name of a Contact as the default, if available. Apply this to
-insert and update functions.
-
-TODO Add more documentation (if necessary) when ContactLinks implementation is finished.
+insert and update functions. Note that this has nothing to do with the DATA_VERSION!
 
 #### RawContacts; Accounts + Contacts
 

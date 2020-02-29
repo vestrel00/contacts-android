@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.util
 
+import android.annotation.TargetApi
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.os.Build
@@ -287,7 +288,6 @@ private object ContactUnlinkFailed : ContactUnlinkResult {
     override val isSuccessful: Boolean = false
 }
 
-
 // HELPER
 
 /**
@@ -320,21 +320,22 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
 /**
  * Returns the name row id pre-link of the name that will be used as the default post-link. This
  * goes through the set of [contactIds] in order. For each contact, this attempts to find the name
- * row of the raw contact specified by NAME_RAW_CONTACT_ID. If not found, the default or most
- * recently updated name is used. Repeat this process for all subsequent contacts until a name
- * row is found.
+ * row of the raw contact specified by NAME_RAW_CONTACT_ID. If not found, repeat this process for
+ * all subsequent contacts until a name row is found.
  *
- * Returns [INVALID_ID] if no name row is found.
+ * Returns [INVALID_ID] if no name row is found or if the API version this is running on is less
+ * than 21 (Lollipop).
  */
 private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Long {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        // Contacts.NAME_RAW_CONTACT_ID is not available
+        return INVALID_ID
+    }
 
     var nameRowIdToUseAsDefault = INVALID_ID
 
     for (contactId in contactIds) {
         nameRowIdToUseAsDefault = nameRawContactIdStructuredNameId(context, contactId)
-        if (nameRowIdToUseAsDefault == INVALID_ID) {
-            nameRowIdToUseAsDefault = defaultOrMostRecentlyUpdatedNameId(context, contactId)
-        }
 
         if (nameRowIdToUseAsDefault != INVALID_ID) {
             break
@@ -383,12 +384,8 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
  * Returns [INVALID_ID] if the [Contacts.DISPLAY_NAME_SOURCE] is not
  * [DisplayNameSources.STRUCTURED_NAME].
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 private fun nameRawContactId(context: Context, contactId: Long): Long {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-        // Contacts.NAME_RAW_CONTACT_ID is not available
-        return INVALID_ID
-    }
-
     val cursor = context.contentResolver.query(
         Table.CONTACTS.uri,
         arrayOf(Contacts.DISPLAY_NAME_SOURCE, Contacts.NAME_RAW_CONTACT_ID),
@@ -412,30 +409,6 @@ private fun nameRawContactId(context: Context, contactId: Long): Long {
     } else {
         nameRawContactId
     }
-}
-
-/**
- * Returns the default name row ID of the Contact with the given [contactId]. If there is no default
- * name, then the most recently updated name is returned. Otherwise, [INVALID_ID].
- */
-private fun defaultOrMostRecentlyUpdatedNameId(context: Context, contactId: Long): Long {
-    val cursor = context.contentResolver.query(
-        Table.DATA.uri,
-        arrayOf(Fields.Id.columnName),
-        "${(Fields.Contact.Id equalTo contactId)
-                and (Fields.MimeType equalTo MimeType.NAME)}",
-        null,
-        "${Data.IS_SUPER_PRIMARY} DESC, ${Data.DATA_VERSION} DESC LIMIT 1"
-    )
-
-    var nameRowId: Long = INVALID_ID
-    if (cursor != null && cursor.moveToNext()) {
-        nameRowId = cursor.getLong(0)
-
-        cursor.close()
-    }
-
-    return nameRowId
 }
 
 /**
