@@ -118,7 +118,14 @@ fun AbstractField.isNotNullOrEmpty(): Where = this.isNotNull() and IsNot(this, "
  * ```
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Collection<T>.whereOr(where: (T) -> Where): Where = where(where, "OR")
+infix fun <T : Any> Collection<T>.whereOr(where: (T) -> Where): Where =
+    asSequence().where(where, "OR")
+
+/**
+ * See [whereOr].
+ */
+// Not inlined because of private functions and classes.
+infix fun <T : Any> Sequence<T>.whereOr(where: (T) -> Where): Where = where(where, "OR")
 
 /**
  * Transforms each item in this collection to a [Where] and combines them with the "AND" operator.
@@ -150,7 +157,14 @@ infix fun <T : Any> Collection<T>.whereOr(where: (T) -> Where): Where = where(wh
  * // (display_name NOT LIKE 'letter%%') AND (data1 NOT LIKE 'letter%%' <omitted for brevity>)
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Collection<T>.whereAnd(where: (T) -> Where): Where = where(where, "AND")
+infix fun <T : Any> Collection<T>.whereAnd(where: (T) -> Where): Where =
+    asSequence().where(where, "AND")
+
+/**
+ * See [whereAnd].
+ */
+// Not inlined because of private functions and classes.
+infix fun <T : Any> Sequence<T>.whereAnd(where: (T) -> Where): Where = where(where, "AND")
 
 /**
  * See [whereOr].
@@ -163,8 +177,8 @@ infix fun FieldSet.whereOr(where: (AbstractField) -> Where): Where = fields.wher
 infix fun FieldSet.whereAnd(where: (AbstractField) -> Where): Where = fields.whereAnd(where)
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
-private fun <T : Any> Collection<T>.where(where: (T) -> Where, separator: String): Where {
-    if (isEmpty()) {
+private fun <T : Any> Sequence<T>.where(where: (T) -> Where, separator: String): Where {
+    if (count() == 0) {
         return NoWhere
     }
 
