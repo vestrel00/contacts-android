@@ -317,7 +317,7 @@ class ContactFields : FieldSet(UNKNOWN) {
  */
 internal class ContactsFields : FieldSet(UNKNOWN) {
 
-    val Id = AbstractField(BaseColumns._ID, UNKNOWN)
+    val Id = AbstractField(ContactsContract.Contacts._ID, UNKNOWN)
 
     val PhotoUri = AbstractField(ContactsContract.Contacts.PHOTO_URI, mimeType)
 
@@ -365,7 +365,7 @@ class EventFields : FieldSet(MimeType.EVENT) {
  */
 internal class GroupFields : FieldSet(UNKNOWN) {
 
-    val Id = AbstractField(BaseColumns._ID, UNKNOWN)
+    val Id = AbstractField(GroupColumns._ID, UNKNOWN)
 
     val Title = AbstractField(GroupColumns.TITLE, mimeType)
 
@@ -513,7 +513,7 @@ internal class PhotoFields : FieldSet(MimeType.PHOTO) {
  */
 internal class RawContactFields : FieldSet(UNKNOWN) {
 
-    val Id = AbstractField(BaseColumns._ID, UNKNOWN)
+    val Id = AbstractField(RawContacts._ID, UNKNOWN)
 
     val ContactId = AbstractField(RawContacts.CONTACT_ID, mimeType)
 
