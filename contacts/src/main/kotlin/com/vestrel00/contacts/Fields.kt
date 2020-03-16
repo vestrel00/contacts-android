@@ -121,11 +121,11 @@ object Fields {
     // These fields are used exclusively in ContactPhoto and RawContactPhoto extension functions.
     internal val Photo = PhotoFields()
 
+    @JvmField
+    val RawContact = RawContactFields()
+
     // Do not add RawContact to AllFields because this does not belong in Data table queries.
     internal val RawContacts = RawContactsFields()
-
-    @JvmField
-    val RawContactId = AbstractField(Data.RAW_CONTACT_ID, UNKNOWN)
 
     @JvmField
     val Relation = RelationFields()
@@ -179,7 +179,7 @@ class AllFields : FieldSet(UNKNOWN) {
         addAll(Fields.Note.fields)
         addAll(Fields.Options.fields)
         addAll(Fields.Phone.fields)
-        add(Fields.RawContactId)
+        add(Fields.RawContact.Id)
         addAll(Fields.Relation.fields)
         addAll(Fields.SipAddress.fields)
         addAll(Fields.Website.fields)
@@ -204,7 +204,7 @@ class AllForMatchingFields : FieldSet(UNKNOWN) {
         addAll(Fields.Note.fields)
         // addAll(Fields.Options.fields)
         addAll(Fields.Phone.fields.asSequence().minus(Fields.Phone.Type))
-        // add(Fields.RawContactId)
+        // add(Fields.RawContact.Id)
         addAll(Fields.Relation.fields.asSequence().minus(Fields.Relation.Type))
         addAll(Fields.SipAddress.fields)
         addAll(Fields.Website.fields)
@@ -218,7 +218,7 @@ internal class Required : FieldSet(UNKNOWN) {
     override val fields: Set<AbstractField> = setOf(
         Fields.Id,
         Fields.Contact.Id,
-        Fields.RawContactId,
+        Fields.RawContact.Id,
         Fields.IsPrimary,
         Fields.IsSuperPrimary,
         Fields.MimeType
@@ -503,6 +503,13 @@ internal class PhotoFields : FieldSet(MimeType.PHOTO) {
     val PhotoThumbnail = AbstractField(PhotoColumns.PHOTO, mimeType)
 
     override val fields = setOf(PhotoFileId, PhotoThumbnail)
+}
+
+class RawContactFields : FieldSet(UNKNOWN) {
+
+    val Id = AbstractField(Data.RAW_CONTACT_ID, UNKNOWN)
+
+    override val fields = setOf(Id)
 }
 
 /*

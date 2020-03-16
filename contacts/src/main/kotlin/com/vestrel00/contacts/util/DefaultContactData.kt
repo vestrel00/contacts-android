@@ -114,7 +114,7 @@ fun DataEntity.clearDefault(context: Context): Boolean {
  */
 private fun DataEntity.clearPrimary(): ContentProviderOperation = newUpdate(TABLE_URI)
     .withSelection(
-        "${(Fields.RawContactId equalTo rawContactId) and (Fields.MimeType equalTo mimeType())}",
+        "${(Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo mimeType())}",
         null
     )
     .withValue(Fields.IsPrimary, 0)

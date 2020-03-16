@@ -13,7 +13,7 @@ import com.vestrel00.contacts.entities.INVALID_ID
 internal class RawContactCursor(private val cursor: Cursor) {
 
     val id: Long
-        get() = cursor.getLong(Fields.RawContactId) ?: INVALID_ID
+        get() = cursor.getLong(Fields.RawContact.Id) ?: INVALID_ID
 
     val contactId: Long
         get() = cursor.getLong(Fields.Contact.Id) ?: INVALID_ID

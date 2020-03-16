@@ -25,7 +25,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      * There [Where] clause used as the selection for queries, updates, and deletes.
      */
     protected fun selection(rawContactId: Long): Where =
-        (Fields.MimeType equalTo mimeType.value) and (Fields.RawContactId equalTo rawContactId)
+        (Fields.MimeType equalTo mimeType.value) and (Fields.RawContact.Id equalTo rawContactId)
 
     /**
      * Sets the [data] values into the operation via the provided [setValue] function.
@@ -57,7 +57,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             // Sets the raw contact id column of this Data table row to the first result of the
             // batch operation, which is assumed to be a new raw contact.
             // Note that the Contact ID is automatically set by the Contacts provider.
-            .withValueBackReference(Fields.RawContactId.columnName, 0)
+            .withValueBackReference(Fields.RawContact.Id.columnName, 0)
             // Sets the mimetype, which is the type of data (e.g. email) contained in this
             // row's "data1", "data2", ... columns
             .withValue(Fields.MimeType, mimeType.value)
@@ -178,7 +178,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             // us from setting it manually by failing the insert operation with an exception if
             // the CONTACT_ID is provided. After all, the Contacts Provider has exclusive rights
             // with deciding how the RawContacts are associated with Contacts.
-            .withValue(Fields.RawContactId, rawContactId)
+            .withValue(Fields.RawContact.Id, rawContactId)
             .withValue(Fields.MimeType, mimeType.value)
 
         setData(entity) { field, dataValue ->

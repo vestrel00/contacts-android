@@ -369,7 +369,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
     val cursor = context.contentResolver.query(
         Table.DATA.uri,
         arrayOf(Fields.Id.columnName),
-        "${(Fields.RawContactId equalTo nameRawContactId)
+        "${(Fields.RawContact.Id equalTo nameRawContactId)
                 and (Fields.MimeType equalTo MimeType.NAME)}",
         null,
         null

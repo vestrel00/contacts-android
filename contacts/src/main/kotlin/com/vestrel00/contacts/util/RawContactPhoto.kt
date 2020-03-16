@@ -372,7 +372,7 @@ private fun removeRawContactPhoto(context: Context, rawContactId: Long): Boolean
 
     val deleteRawContactPhotoOperation = ContentProviderOperation.newDelete(Table.DATA.uri)
         .withSelection(
-            "${(Fields.RawContactId equalTo rawContactId)
+            "${(Fields.RawContact.Id equalTo rawContactId)
                     and (Fields.MimeType equalTo MimeType.PHOTO)}",
             null
         )
@@ -401,7 +401,7 @@ private fun photoInputStream(context: Context, rawContactId: Long): InputStream?
     val cursor = context.contentResolver.query(
         Table.DATA.uri,
         arrayOf(Fields.Photo.PhotoFileId.columnName),
-        "${(Fields.RawContactId equalTo rawContactId)
+        "${(Fields.RawContact.Id equalTo rawContactId)
                 and (Fields.MimeType equalTo MimeType.PHOTO)}",
         null,
         null
@@ -439,7 +439,7 @@ private fun photoThumbnailInputStream(context: Context, rawContactId: Long): Inp
     val cursor = context.contentResolver.query(
         Table.DATA.uri,
         arrayOf(Fields.Photo.PhotoThumbnail.columnName),
-        "${(Fields.RawContactId equalTo rawContactId)
+        "${(Fields.RawContact.Id equalTo rawContactId)
                 and (Fields.MimeType equalTo MimeType.PHOTO)}",
         null,
         null

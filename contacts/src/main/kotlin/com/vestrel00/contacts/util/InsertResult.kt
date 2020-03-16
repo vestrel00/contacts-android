@@ -26,7 +26,7 @@ fun Insert.Result.rawContact(
 
     val rawContactId = rawContactId(rawContact) ?: return null
 
-    return Query(context).where(Fields.RawContactId equalTo rawContactId).find(cancel)
+    return Query(context).where(Fields.RawContact.Id equalTo rawContactId).find(cancel)
         .asSequence()
         .flatMap { it.rawContacts.asSequence() }
         .find { it.id == rawContactId }
@@ -48,7 +48,7 @@ fun Insert.Result.rawContact(
 @JvmOverloads
 fun Insert.Result.rawContacts(
     context: Context, cancel: () -> Boolean = { false }
-): List<RawContact> = Query(context).where(Fields.RawContactId `in` rawContactIds).find(cancel)
+): List<RawContact> = Query(context).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
     .asSequence()
     .flatMap { it.rawContacts.asSequence() }
     .filter { rawContactIds.contains(it.id) }
@@ -75,7 +75,7 @@ fun Insert.Result.contact(
 
     val rawContactId = rawContactId(rawContact) ?: return null
 
-    return Query(context).where(Fields.RawContactId equalTo rawContactId).findFirst(cancel)
+    return Query(context).where(Fields.RawContact.Id equalTo rawContactId).findFirst(cancel)
 }
 
 /**
@@ -96,4 +96,4 @@ fun Insert.Result.contact(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun Insert.Result.contacts(context: Context, cancel: () -> Boolean = { false }): List<Contact> =
-    Query(context).where(Fields.RawContactId `in` rawContactIds).find(cancel)
+    Query(context).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)

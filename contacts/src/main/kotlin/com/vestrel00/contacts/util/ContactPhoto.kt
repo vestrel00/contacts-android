@@ -452,7 +452,7 @@ private fun photoFileId(context: Context, contactId: Long): Long? {
 private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long {
     val cursor = context.contentResolver.query(
         Table.DATA.uri,
-        arrayOf(Fields.RawContactId.columnName),
+        arrayOf(Fields.RawContact.Id.columnName),
         "${Fields.Photo.PhotoFileId equalTo photoFileId}",
         null,
         null

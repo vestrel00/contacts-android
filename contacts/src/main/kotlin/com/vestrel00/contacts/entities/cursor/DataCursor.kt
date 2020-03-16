@@ -10,7 +10,7 @@ internal abstract class DataCursor(protected val cursor: Cursor) {
         get() = cursor.getLong(Fields.Id) ?: INVALID_ID
 
     val rawContactId: Long
-        get() = cursor.getLong(Fields.RawContactId) ?: INVALID_ID
+        get() = cursor.getLong(Fields.RawContact.Id) ?: INVALID_ID
 
     val contactId: Long
         get() = cursor.getLong(Fields.Contact.Id) ?: INVALID_ID

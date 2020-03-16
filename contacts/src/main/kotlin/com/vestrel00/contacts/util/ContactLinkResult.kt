@@ -51,6 +51,6 @@ fun ContactUnlinkResult.contacts(context: Context, cancel: () -> Boolean = { fal
         return emptyList()
     }
 
-    return Query(context).where(Fields.RawContactId `in` rawContactIds).find(cancel)
+    return Query(context).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
 }
 

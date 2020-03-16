@@ -26,7 +26,7 @@ import com.vestrel00.contacts.equalTo
 @JvmOverloads
 fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): RawContact? =
     Query(context)
-        .where(Fields.RawContactId equalTo id)
+        .where(Fields.RawContact.Id equalTo id)
         .findFirst(cancel)
         ?.rawContacts
         ?.firstOrNull()
@@ -51,7 +51,7 @@ fun MutableRawContact.refresh(
     }
 
     return Query(context)
-        .where(Fields.RawContactId equalTo id)
+        .where(Fields.RawContact.Id equalTo id)
         .findFirst(cancel)
         ?.rawContacts
         ?.firstOrNull()
