@@ -58,7 +58,7 @@ private fun rawContactOptions(rawContactId: Long, context: Context): Options {
     )
 
     if (cursor != null && cursor.moveToNext()) {
-        val options = OptionsMapper(OptionsCursor(cursor)).options
+        val options = OptionsMapper(OptionsCursor(cursor)).toImmutable
 
         cursor.close()
 

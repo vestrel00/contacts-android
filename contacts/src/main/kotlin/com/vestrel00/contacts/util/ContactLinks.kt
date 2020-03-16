@@ -456,7 +456,7 @@ private fun nameWithId(context: Context, nameRowId: Long): MutableName? {
 
     var name: MutableName? = null
     if (cursor != null && cursor.moveToNext()) {
-        name = NameMapper(NameCursor(cursor)).name
+        name = NameMapper(NameCursor(cursor)).toMutable
 
         cursor.close()
     }

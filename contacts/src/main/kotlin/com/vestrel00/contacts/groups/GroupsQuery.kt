@@ -214,7 +214,7 @@ private class GroupsQueryImpl(
             val groupMapper = GroupMapper(GroupCursor(cursor))
 
             while (cursor.moveToNext()) {
-                val group = groupMapper.group.toGroup()
+                val group = groupMapper.toImmutable
                 groups.add(group)
 
                 if (cancel()) {
