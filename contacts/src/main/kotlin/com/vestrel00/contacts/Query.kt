@@ -11,16 +11,23 @@ import kotlin.math.min
 /**
  * Queries the Contacts data table and returns one or more contacts matching the search criteria.
  *
+ * To query specific types of data (e.g. emails, phones, etc), use [QueryData].
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
  * examples for brevity. All queries will return an empty list or null result if the permission
  * is not granted.
  *
+ * ## Accounts
+ *
+ * When limiting queries to certain accounts, contacts returned may contain data that belongs to
+ * other accounts not specified in [accounts]. This follows the native Contacts app behavior.
+ *
  * ## Usage
  *
  * Here is an example query that returns the first 10 [Contact]s, skipping the first 5, where the
- * contact's name starts with "john" or has an email ending with "gmail", ordered by the name in
+ * contact's name starts with "john" and has an email ending with "gmail", ordered by the name in
  * ascending order (not ignoring case) and email (ignoring case) in descending order respectively.
  * Only contacts in the given account are included. Only the full name and email address attributes
  * of the [Contact] objects are included.
@@ -65,15 +72,16 @@ import kotlin.math.min
  *
  * ## Developer Notes
  *
- * This API is unable to use the ORDER BY, LIMIT, and OFFSET functions of a raw database query. The
- * Android contacts **data table** uses generic column names (e.g. data1, data2, ...) using the
- * column 'mimetype' to distinguish the type of data in that generic column. For example, the column
- * name of [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is
- * 'data1'. This means that if you order by the display name, you are also ordering by the formatted
- * address and all other columns whose value is 'data1'. This API works around this limitation by
- * performing the ordering, limiting, and offsetting manually after the contacts have been retrieved
- * before returning it to the consumer. Note that there is no workaround for the [include] function
- * because the [ContentResolver.query] function only takes in an array of column names.
+ * Unlike [QueryData], this API is unable to use the ORDER BY, LIMIT, and OFFSET functions of a raw
+ * database query. The Android contacts **data table** uses generic column names (e.g. data1, data2,
+ * ...) using the column 'mimetype' to distinguish the type of data in that generic column. For
+ * example, the column name of [NameFields.DisplayName] is the same as
+ * [AddressFields.FormattedAddress], which is 'data1'. This means that if you order by the display
+ * name, you are also ordering by the formatted address and all other columns whose value is
+ * 'data1'. This API works around this limitation by performing the ordering, limiting, and
+ * offsetting manually after the contacts have been retrieved before returning it to the consumer.
+ * Note that there is no workaround for the [include] function because the [ContentResolver.query]
+ * function only takes in an array of column names.
  *
  * Each row in the data table consists of a piece of contact data (e.g. a phone number), its
  * mimetype, and the associated contact id. A row does not contain all of the data for a contact.
@@ -82,7 +90,8 @@ import kotlin.math.min
  *
  * With that said, Kotlin's Flow or reactive frameworks like RxJava and Java 8 Streams cannot really
  * be supported. We cannot emit complete contact instances and still honor ORDER BY, LIMIT, and
- * OFFSET functions because contact Data is scattered without order in the Data table.
+ * OFFSET functions. Although, it is possible for [QueryData] as queries are limited to a single
+ * mimetype.
  */
 interface Query {
 
@@ -94,17 +103,20 @@ interface Query {
     fun accounts(vararg accounts: Account): Query
 
     /**
-     * Limits this query to only search for contacts associated with the given accounts.
-     *
-     * If no accounts are specified, then all contacts from all accounts are searched.
+     * See [Query.accounts]
      */
     fun accounts(accounts: Collection<Account>): Query
+
+    /**
+     * See [Query.accounts]
+     */
+    fun accounts(accounts: Sequence<Account>): Query
 
     /**
      * Includes the given set of [fields] in the resulting contact object(s).
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to the contact id, which is always included.
+     * fields will be included in addition to the required fields, which are always included.
      *
      * Fields that are included will not guarantee non-null attributes in the returned contact
      * object instances.
@@ -139,14 +151,13 @@ interface Query {
     /**
      * Filters the returned [Contact]s matching the criteria defined by the [where].
      *
-     * If not specified or null, then all [Contact]s are returned (which is limited by [limit]).
+     * If not specified or null, then all [Contact]s are returned, limited by [limit].
      */
     fun where(where: Where?): Query
 
     /**
      * Orders the returned [Contact]s using one or more [orderBy]s.
      *
-     * You may only order by the [ContactFields.Id] and any combination of the included [Field]s.
      * This will throw an [IllegalArgumentException] if ordering by a field that is not included in
      * the query. Read the **LIMITATIONS** section in the class doc to learn more.
      *
@@ -168,7 +179,7 @@ interface Query {
     fun orderBy(orderBy: Sequence<OrderBy>): Query
 
     /**
-     * Skips results 0 to [offset].
+     * Skips results 0 to [offset] (excluding the offset).
      *
      * If not specified, offset value of 0 is used.
      */
@@ -271,13 +282,15 @@ private class QueryImpl(
         """.trimIndent()
     }
 
-    override fun accounts(vararg accounts: Account): Query = accounts(accounts.asList())
+    override fun accounts(vararg accounts: Account): Query = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account>): Query = apply {
-        rawContactsWhere = if (accounts.isEmpty()) {
+    override fun accounts(accounts: Collection<Account>): Query = accounts(accounts.asSequence())
+
+    override fun accounts(accounts: Sequence<Account>): Query = apply {
+        rawContactsWhere = if (accounts.count() == 0) {
             DEFAULT_RAW_CONTACTS_WHERE
         } else {
-            accounts.toSet().whereOr { account ->
+            accounts.whereOr { account ->
                 (Fields.RawContact.AccountName equalToIgnoreCase account.name)
                     .and(Fields.RawContact.AccountType equalToIgnoreCase account.type)
             }
@@ -367,14 +380,6 @@ private class QueryResolver(
     private val cancel: () -> Boolean
 ) {
 
-    /*
-     * Note. It's necessary to make at least 2 separate queries because we cannot retrieve all data
-     * rows for a contact with just 1 query.
-     *
-     * For example, if the where clause is "email = 'a@gmail.com'" then it would only return the
-     * contact objects with email of "a@gmail.com". Other contact fields would not be included
-     * (e.g. phone, address, etc).
-     */
     fun resolve(
         rawContactsWhere: Where,
         include: Include,
@@ -433,13 +438,16 @@ private class QueryResolver(
             Table.RAW_CONTACTS,
             // There may be lingering RawContacts whose associated contact was already deleted.
             // Such RawContacts have contact id column value as null. We do not query the Contacts
-            // table because our mappers only work with the RawContacts and Data tables.
-            Fields.Contact.Id.isNotNull() and (Fields.Contact.Id notIn contactIds),
-            Include(Fields.Contact.Id)
+            // table because our mappers only work with the RawContacts (some attr) and Data tables.
+            Fields.RawContact.ContactId.isNotNull()
+                    and (Fields.RawContact.ContactId notIn contactIds),
+            Include(Fields.RawContact.ContactId)
         )
 
     private fun findContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> =
-        findContactsInTable(Table.RAW_CONTACTS, rawContactsWhere, Include(Fields.Contact.Id))
+        findContactsInTable(
+            Table.RAW_CONTACTS, rawContactsWhere, Include(Fields.RawContact.ContactId)
+        )
             .map { it.id }
             .toSet()
 
