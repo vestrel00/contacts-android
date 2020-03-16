@@ -18,7 +18,7 @@ buildscript {
                                 compileSdk: 28,
 
                                 tools     : '28.0.3',
-                                gradle    : '3.5.1',
+                                gradle    : '3.6.1',
                         ]
                 ],
 
