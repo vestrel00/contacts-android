@@ -424,10 +424,10 @@ private fun nameRawContactId(context: Context, contactId: Long): Long {
 private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<Long> {
     val cursor = context.contentResolver.query(
         Table.RAW_CONTACTS.uri,
-        arrayOf(Fields.RawContact.Id.columnName),
-        "${Fields.RawContact.ContactId `in` contactIds}",
+        arrayOf(Fields.RawContacts.Id.columnName),
+        "${Fields.RawContacts.ContactId `in` contactIds}",
         null,
-        Fields.RawContact.Id.columnName
+        Fields.RawContacts.Id.columnName
     )
 
     return mutableListOf<Long>().apply {
@@ -467,8 +467,8 @@ private fun nameWithId(context: Context, nameRowId: Long): MutableName? {
 private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? {
     val cursor = context.contentResolver.query(
         Table.RAW_CONTACTS.uri,
-        arrayOf(Fields.RawContact.ContactId.columnName),
-        "${Fields.RawContact.Id equalTo rawContactId}",
+        arrayOf(Fields.RawContacts.ContactId.columnName),
+        "${Fields.RawContacts.Id equalTo rawContactId}",
         null,
         null
     )

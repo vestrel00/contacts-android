@@ -122,7 +122,7 @@ object Fields {
     internal val Photo = PhotoFields()
 
     // Do not add RawContact to AllFields because this does not belong in Data table queries.
-    internal val RawContact = RawContactFields()
+    internal val RawContacts = RawContactsFields()
 
     @JvmField
     val RawContactId = AbstractField(Data.RAW_CONTACT_ID, UNKNOWN)
@@ -511,7 +511,7 @@ internal class PhotoFields : FieldSet(MimeType.PHOTO) {
  * This is technically not the most correct place to put this but it is the simplest and most
  * convenient place.
  */
-internal class RawContactFields : FieldSet(UNKNOWN) {
+internal class RawContactsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(RawContacts._ID, UNKNOWN)
 

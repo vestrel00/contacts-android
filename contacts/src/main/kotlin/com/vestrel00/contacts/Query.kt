@@ -291,8 +291,8 @@ private class QueryImpl(
             DEFAULT_RAW_CONTACTS_WHERE
         } else {
             accounts.whereOr { account ->
-                (Fields.RawContact.AccountName equalToIgnoreCase account.name)
-                    .and(Fields.RawContact.AccountType equalToIgnoreCase account.type)
+                (Fields.RawContacts.AccountName equalToIgnoreCase account.name)
+                    .and(Fields.RawContacts.AccountType equalToIgnoreCase account.type)
             }
         }
     }
@@ -439,14 +439,14 @@ private class QueryResolver(
             // There may be lingering RawContacts whose associated contact was already deleted.
             // Such RawContacts have contact id column value as null. We do not query the Contacts
             // table because our mappers only work with the RawContacts (some attr) and Data tables.
-            Fields.RawContact.ContactId.isNotNull()
-                    and (Fields.RawContact.ContactId notIn contactIds),
-            Include(Fields.RawContact.ContactId)
+            Fields.RawContacts.ContactId.isNotNull()
+                    and (Fields.RawContacts.ContactId notIn contactIds),
+            Include(Fields.RawContacts.ContactId)
         )
 
     private fun findContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> =
         findContactsInTable(
-            Table.RAW_CONTACTS, rawContactsWhere, Include(Fields.RawContact.ContactId)
+            Table.RAW_CONTACTS, rawContactsWhere, Include(Fields.RawContacts.ContactId)
         )
             .map { it.id }
             .toSet()

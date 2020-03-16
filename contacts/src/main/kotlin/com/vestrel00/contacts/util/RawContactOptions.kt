@@ -52,7 +52,7 @@ private fun rawContactOptions(rawContactId: Long, context: Context): Options {
     val cursor = context.contentResolver.query(
         Table.RAW_CONTACTS.uri,
         Include(Fields.Options).columnNames,
-        "${(Fields.RawContact.Id equalTo rawContactId)}",
+        "${(Fields.RawContacts.Id equalTo rawContactId)}",
         null,
         null
     )

@@ -22,12 +22,12 @@ internal class RawContactOperation {
          * account becomes available (or is already available), Android will automatically update
          * the RawContact name and type to an existing Account.
          */
-        .withValue(Fields.RawContact.AccountName, rawContactAccount?.name)
-        .withValue(Fields.RawContact.AccountType, rawContactAccount?.type)
+        .withValue(Fields.RawContacts.AccountName, rawContactAccount?.name)
+        .withValue(Fields.RawContacts.AccountType, rawContactAccount?.type)
         .build()
 
     fun deleteRawContact(rawContactId: Long): ContentProviderOperation = newDelete(TABLE_URI)
-        .withSelection("${Fields.RawContact.Id equalTo rawContactId}", null)
+        .withSelection("${Fields.RawContacts.Id equalTo rawContactId}", null)
         .build()
 
     /*
@@ -35,6 +35,6 @@ internal class RawContactOperation {
      * deletion of the Contacts row and associated Data rows.
      */
     fun deleteContact(contactId: Long): ContentProviderOperation = newDelete(TABLE_URI)
-        .withSelection("${Fields.RawContact.ContactId equalTo contactId}", null)
+        .withSelection("${Fields.RawContacts.ContactId equalTo contactId}", null)
         .build()
 }
