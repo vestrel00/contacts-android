@@ -728,5 +728,7 @@ modules (not in the core modules). I'm tempted to remove the Dexter dependency a
 permissions handling myself because Dexter brings in a lot of other dependencies with it. However,
 it is not part of the core `contacts` module so I'm able to live with this.
 
+If the community strongly desires the addition of these support libs, then I may change my mind =)
+
 [1]: https://developer.android.com/guide/topics/providers/contacts-provider
 [2]: https://github.com/Karumi/Dexter

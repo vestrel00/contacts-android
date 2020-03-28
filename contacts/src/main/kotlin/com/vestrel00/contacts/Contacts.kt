@@ -27,6 +27,11 @@ interface Contacts {
     fun query(context: Context): Query
 
     /**
+     * Returns a new [QueryData] instance.
+     */
+    fun queryData(context: Context): QueryData
+
+    /**
      * Returns a new [Insert] instance.
      */
     fun insert(context: Context): Insert
@@ -62,6 +67,8 @@ fun Contacts(): Contacts = ContactsImpl()
 private class ContactsImpl : Contacts {
 
     override fun query(context: Context) = Query(context)
+
+    override fun queryData(context: Context) = QueryData(context)
 
     override fun insert(context: Context) = Insert(context)
 

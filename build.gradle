@@ -1,7 +1,7 @@
 buildscript {
 
     // We could declare these in Kotlin objects in buildSrc/ but let's just declare it here.
-    // We'll utilize the buildSrc/ if this project gets bigger.
+    // We'll utilize the buildSrc/ if absolutely necessary.
     ext {
         versions = [
                 name  : "1.0.0",
