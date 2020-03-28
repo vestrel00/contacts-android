@@ -6,8 +6,7 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.*
-import com.vestrel00.contacts.entities.cursor.OptionsCursor
-import com.vestrel00.contacts.entities.mapper.OptionsMapper
+import com.vestrel00.contacts.entities.mapper.optionsMapper
 import com.vestrel00.contacts.entities.operation.OptionsOperation
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -58,7 +57,7 @@ private fun rawContactOptions(rawContactId: Long, context: Context): Options {
     )
 
     if (cursor != null && cursor.moveToNext()) {
-        val options = OptionsMapper(OptionsCursor(cursor)).value
+        val options = cursor.optionsMapper().value
 
         cursor.close()
 

@@ -5,8 +5,7 @@ import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Group
-import com.vestrel00.contacts.entities.cursor.GroupCursor
-import com.vestrel00.contacts.entities.mapper.GroupMapper
+import com.vestrel00.contacts.entities.mapper.groupMapper
 import com.vestrel00.contacts.entities.table.Table
 
 /**
@@ -211,7 +210,7 @@ private class GroupsQueryImpl(
         )
 
         if (cursor != null) {
-            val groupMapper = GroupMapper(GroupCursor(cursor))
+            val groupMapper = cursor.groupMapper()
 
             while (cursor.moveToNext()) {
                 val group = groupMapper.value

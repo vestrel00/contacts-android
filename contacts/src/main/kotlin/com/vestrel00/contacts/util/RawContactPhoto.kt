@@ -15,7 +15,7 @@ import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.RawContact
-import com.vestrel00.contacts.entities.cursor.PhotoCursor
+import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import java.io.ByteArrayInputStream
@@ -408,7 +408,7 @@ private fun photoInputStream(context: Context, rawContactId: Long): InputStream?
     )
 
     val photoFileId = if (cursor != null && cursor.moveToNext()) {
-        PhotoCursor(cursor).photoFileId
+        cursor.photoCursor().photoFileId
     } else {
         null
     }
@@ -447,7 +447,7 @@ private fun photoThumbnailInputStream(context: Context, rawContactId: Long): Inp
 
     var photoThumbnail: ByteArray? = null
     if (cursor != null && cursor.moveToNext()) {
-        photoThumbnail = PhotoCursor(cursor).photoThumbnail
+        photoThumbnail = cursor.photoCursor().photoThumbnail
 
         cursor.close()
     }

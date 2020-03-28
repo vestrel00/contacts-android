@@ -9,8 +9,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.GroupMembership
 import com.vestrel00.contacts.entities.MimeType
-import com.vestrel00.contacts.entities.cursor.GroupMembershipCursor
-import com.vestrel00.contacts.entities.mapper.GroupMembershipMapper
+import com.vestrel00.contacts.entities.mapper.groupMembershipMapper
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.util.account
@@ -117,7 +116,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
             null
         )
         if (cursor != null) {
-            val groupMembershipMapper = GroupMembershipMapper(GroupMembershipCursor(cursor))
+            val groupMembershipMapper = cursor.groupMembershipMapper()
             while (cursor.moveToNext()) {
                 add(groupMembershipMapper.value)
             }

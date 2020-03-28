@@ -1,11 +1,12 @@
 package com.vestrel00.contacts.entities.mapper
 
 import com.vestrel00.contacts.entities.Contact
+import com.vestrel00.contacts.entities.Options
 import com.vestrel00.contacts.entities.cursor.ContactCursor
 
 internal class ContactMapper(
     private val contactCursor: ContactCursor,
-    private val optionsMapper: OptionsMapper
+    private val optionsMapper: EntityMapper<Options>
 ) : EntityMapper<Contact> {
 
     override val value: Contact

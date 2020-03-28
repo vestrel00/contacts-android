@@ -13,8 +13,8 @@ import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableContact
-import com.vestrel00.contacts.entities.cursor.ContactsCursor
-import com.vestrel00.contacts.entities.cursor.PhotoCursor
+import com.vestrel00.contacts.entities.cursor.contactsCursor
+import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import java.io.InputStream
@@ -441,7 +441,7 @@ private fun photoFileId(context: Context, contactId: Long): Long? {
 
     var photoFileId: Long? = null
     if (cursor != null && cursor.moveToNext()) {
-        photoFileId = ContactsCursor(cursor).photoFileId
+        photoFileId = cursor.contactsCursor().photoFileId
 
         cursor.close()
     }
@@ -460,7 +460,7 @@ private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Lo
 
     var rawContactId: Long? = null
     if (cursor != null && cursor.moveToNext()) {
-        rawContactId = PhotoCursor(cursor).rawContactId
+        rawContactId = cursor.photoCursor().rawContactId
 
         cursor.close()
     }
@@ -483,7 +483,7 @@ private fun photoUriInputStream(context: Context, contactId: Long): InputStream?
 
     var photoUri: Uri? = null
     if (cursor != null && cursor.moveToNext()) {
-        photoUri = ContactsCursor(cursor).photoUri
+        photoUri = cursor.contactsCursor().photoUri
 
         cursor.close()
     }
@@ -506,7 +506,7 @@ private fun photoThumbnailUriInputStream(context: Context, contactId: Long): Inp
 
     var photoThumbnailUri: Uri? = null
     if (cursor != null && cursor.moveToNext()) {
-        photoThumbnailUri = ContactsCursor(cursor).photoThumbnailUri
+        photoThumbnailUri = cursor.contactsCursor().photoThumbnailUri
 
         cursor.close()
     }

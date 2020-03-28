@@ -2,68 +2,44 @@ package com.vestrel00.contacts.entities.mapper
 
 import android.database.Cursor
 import com.vestrel00.contacts.entities.*
-import com.vestrel00.contacts.entities.cursor.CursorFactory
+import com.vestrel00.contacts.entities.cursor.*
 
-internal class EntityMapperFactory(private val cursorFactory: CursorFactory = CursorFactory()) {
+internal fun Cursor.addressMapper(): EntityMapper<Address> = AddressMapper(addressCursor())
 
-    fun init(cursor: Cursor) {
-        cursorFactory.init(cursor)
-    }
+internal fun Cursor.companyMapper(): EntityMapper<Company> = CompanyMapper(companyCursor())
 
-    val addressMapper: EntityMapper<Address>
-        get() = AddressMapper(cursorFactory.addressCursor)
+internal fun Cursor.contactMapper(): EntityMapper<Contact> = ContactMapper(
+    contactCursor(),
+    optionsMapper()
+)
 
-    val companyMapper: EntityMapper<Company>
-        get() = CompanyMapper(cursorFactory.companyCursor)
+internal fun Cursor.emailMapper(): EntityMapper<Email> = EmailMapper(emailCursor())
 
-    val contactMapper: EntityMapper<Contact>
-        get() = ContactMapper(
-            cursorFactory.contactCursor,
-            OptionsMapper(cursorFactory.optionsCursor)
-        )
+internal fun Cursor.eventMapper(): EntityMapper<Event> = EventMapper(eventCursor())
 
-    val contactId: Long
-        get() = cursorFactory.contactCursor.id
+internal fun Cursor.groupMapper(): EntityMapper<Group> = GroupMapper(groupCursor())
 
-    val emailMapper: EntityMapper<Email>
-        get() = EmailMapper(cursorFactory.emailCursor)
+internal fun Cursor.groupMembershipMapper(): EntityMapper<GroupMembership> =
+    GroupMembershipMapper(groupMembershipCursor())
 
-    val eventMapper: EntityMapper<Event>
-        get() = EventMapper(cursorFactory.eventCursor)
+internal fun Cursor.imMapper(): EntityMapper<Im> = ImMapper(imCursor())
 
-    val groupMembershipMapper: EntityMapper<GroupMembership>
-        get() = GroupMembershipMapper(cursorFactory.groupMembershipCursor)
+internal fun Cursor.nameMapper(): EntityMapper<Name> = NameMapper(nameCursor())
 
-    val imMapper: EntityMapper<Im>
-        get() = ImMapper(cursorFactory.imCursor)
+internal fun Cursor.nicknameMapper(): EntityMapper<Nickname> = NicknameMapper(nicknameCursor())
 
-    val mimeType: MimeType
-        get() = cursorFactory.mimeTypeCursor.mimeType
+internal fun Cursor.noteMapper(): EntityMapper<Note> = NoteMapper(noteCursor())
 
-    val nameMapper: EntityMapper<Name>
-        get() = NameMapper(cursorFactory.nameCursor)
+internal fun Cursor.optionsMapper(): EntityMapper<Options> = OptionsMapper(optionsCursor())
 
-    val nicknameMapper: EntityMapper<Nickname>
-        get() = NicknameMapper(cursorFactory.nicknameCursor)
+internal fun Cursor.phoneMapper(): EntityMapper<Phone> = PhoneMapper(phoneCursor())
 
-    val noteMapper: EntityMapper<Note>
-        get() = NoteMapper(cursorFactory.noteCursor)
+internal fun Cursor.relationMapper(): EntityMapper<Relation> = RelationMapper(relationCursor())
 
-    val phoneMapper: EntityMapper<Phone>
-        get() = PhoneMapper(cursorFactory.phoneCursor)
+internal fun Cursor.sipAddressMapper(): EntityMapper<SipAddress> =
+    SipAddressMapper(sipAddressCursor())
 
-    val rawContactId: Long
-        get() = cursorFactory.rawContactCursor.id
+internal fun Cursor.tempRawContactMapper(): EntityMapper<TempRawContact> =
+    TempRawContactMapper(rawContactCursor())
 
-    val relationMapper: EntityMapper<Relation>
-        get() = RelationMapper(cursorFactory.relationCursor)
-
-    val sipAddressMapper: EntityMapper<SipAddress>
-        get() = SipAddressMapper(cursorFactory.sipAddressCursor)
-
-    val tempRawContactMapper: EntityMapper<TempRawContact>
-        get() = TempRawContactMapper(cursorFactory.rawContactCursor)
-
-    val websiteMapper: EntityMapper<Website>
-        get() = WebsiteMapper(cursorFactory.websiteCursor)
-}
+internal fun Cursor.websiteMapper(): EntityMapper<Website> = WebsiteMapper(websiteCursor())

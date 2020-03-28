@@ -8,8 +8,7 @@ import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
-import com.vestrel00.contacts.entities.cursor.NameCursor
-import com.vestrel00.contacts.entities.mapper.NameMapper
+import com.vestrel00.contacts.entities.mapper.nameMapper
 import com.vestrel00.contacts.entities.table.Table
 
 // LINK
@@ -456,7 +455,7 @@ private fun nameWithId(context: Context, nameRowId: Long): Name? {
 
     var name: Name? = null
     if (cursor != null && cursor.moveToNext()) {
-        name = NameMapper(NameCursor(cursor)).value
+        name = cursor.nameMapper().value
 
         cursor.close()
     }
