@@ -103,18 +103,4 @@ data class MutableEmail internal constructor(
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, address)
-
-    internal fun toEmail() = Email(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        address = address
-    )
 }

@@ -116,18 +116,4 @@ data class MutableEvent internal constructor(
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, date)
-
-    internal fun toEvent() = Event(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        date = date
-    )
 }

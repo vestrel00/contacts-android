@@ -46,7 +46,7 @@ fun MutableRawContact.options(context: Context): Options = rawContactOptions(id,
 
 private fun rawContactOptions(rawContactId: Long, context: Context): Options {
     if (!ContactsPermissions(context).canQuery() || rawContactId == INVALID_ID) {
-        return MutableOptions().toOptions()
+        return Options()
     }
 
     val cursor = context.contentResolver.query(
@@ -58,14 +58,14 @@ private fun rawContactOptions(rawContactId: Long, context: Context): Options {
     )
 
     if (cursor != null && cursor.moveToNext()) {
-        val options = OptionsMapper(OptionsCursor(cursor)).toImmutable
+        val options = OptionsMapper(OptionsCursor(cursor)).value
 
         cursor.close()
 
         return options
     }
 
-    return MutableOptions().toOptions()
+    return Options()
 }
 
 /**

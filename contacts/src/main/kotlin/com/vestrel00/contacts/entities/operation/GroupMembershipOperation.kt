@@ -119,7 +119,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
         if (cursor != null) {
             val groupMembershipMapper = GroupMembershipMapper(GroupMembershipCursor(cursor))
             while (cursor.moveToNext()) {
-                add(groupMembershipMapper.toImmutable)
+                add(groupMembershipMapper.value)
             }
             cursor.close()
         }

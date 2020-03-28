@@ -1,13 +1,12 @@
 package com.vestrel00.contacts.entities.mapper
 
-import com.vestrel00.contacts.entities.Entity
 import com.vestrel00.contacts.entities.GroupMembership
 import com.vestrel00.contacts.entities.cursor.GroupMembershipCursor
 
 internal class GroupMembershipMapper(private val groupMembershipCursor: GroupMembershipCursor) :
-    EntityMapper<GroupMembership, Entity> {
+    EntityMapper<GroupMembership> {
 
-    override val toImmutable: GroupMembership
+    override val value: GroupMembership
         get() = GroupMembership(
             id = groupMembershipCursor.id,
             rawContactId = groupMembershipCursor.rawContactId,
@@ -18,7 +17,4 @@ internal class GroupMembershipMapper(private val groupMembershipCursor: GroupMem
 
             groupId = groupMembershipCursor.groupId
         )
-
-    override val toMutable: Entity
-        get() = throw UnsupportedOperationException("There is no mutable group membership")
 }

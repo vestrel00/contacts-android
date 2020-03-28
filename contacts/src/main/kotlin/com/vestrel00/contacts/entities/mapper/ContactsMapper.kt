@@ -3,8 +3,8 @@ package com.vestrel00.contacts.entities.mapper
 import android.database.Cursor
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.MimeType.*
-import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.RawContact
+import com.vestrel00.contacts.entities.TempRawContact
 
 /**
  * Returns a list of [Contact]s from the given cursor, which assumed to have been retrieved from the
@@ -17,9 +17,9 @@ internal class ContactsMapper(
     private val contactsMap: MutableMap<Long, Contact> = mutableMapOf(),
 
     /**
-     * A map of raw contact id to a [MutableRawContact]s.
+     * A map of raw contact ids to [TempRawContact]s.
      */
-    private val rawContactsMap: MutableMap<Long, MutableRawContact> = mutableMapOf(),
+    private val rawContactsMap: MutableMap<Long, TempRawContact> = mutableMapOf(),
 
     private val entityMappers: EntityMapperFactory = EntityMapperFactory()
 ) {
@@ -41,13 +41,13 @@ internal class ContactsMapper(
             // Collect contacts.
             val contactId = entityMappers.contactId
             if (!contactsMap.containsKey(contactId)) {
-                contactsMap[contactId] = entityMappers.contactMapper.toImmutable
+                contactsMap[contactId] = entityMappers.contactMapper.value
             }
 
             // Collect the RawContacts and update them.
             val rawContactId = entityMappers.rawContactId
             val rawContact =
-                rawContactsMap.getOrPut(rawContactId) { entityMappers.rawContactMapper.toMutable }
+                rawContactsMap.getOrPut(rawContactId) { entityMappers.tempRawContactMapper.value }
             updateRawContact(rawContact)
 
             if (cancel()) {
@@ -61,11 +61,11 @@ internal class ContactsMapper(
 
         // Map contact id to set of raw contacts.
         val contactRawMap = mutableMapOf<Long, MutableList<RawContact>>()
-        for (mutableRawContact in rawContactsMap.values) {
-            val rawContacts = contactRawMap.getOrPut(mutableRawContact.contactId) {
+        for (tempRawContact in rawContactsMap.values) {
+            val rawContacts = contactRawMap.getOrPut(tempRawContact.contactId) {
                 mutableListOf()
             }
-            rawContacts.add(mutableRawContact.toRawContact())
+            rawContacts.add(tempRawContact.toRawContact())
 
             if (cancel()) {
                 // Return empty sequence if cancelled to ensure only correct data set is returned.
@@ -82,26 +82,26 @@ internal class ContactsMapper(
         }
     }
 
-    private fun updateRawContact(rawContact: MutableRawContact) {
+    private fun updateRawContact(rawContact: TempRawContact) {
         // Each row in the cursor only contains a subset of contact data paired by the mime type.
         // This is why full contact objects cannot be built per cursor row.
         // Therefore, mutable contact objects must be updated with different pieces of data
         // that each cursor row provides.
         when (entityMappers.mimeType) {
-            ADDRESS -> rawContact.addresses.add(entityMappers.addressMapper.toMutable)
-            COMPANY -> rawContact.company = entityMappers.companyMapper.toMutable
-            EMAIL -> rawContact.emails.add(entityMappers.emailMapper.toMutable)
-            EVENT -> rawContact.events.add(entityMappers.eventMapper.toMutable)
+            ADDRESS -> rawContact.addresses.add(entityMappers.addressMapper.value)
+            COMPANY -> rawContact.company = entityMappers.companyMapper.value
+            EMAIL -> rawContact.emails.add(entityMappers.emailMapper.value)
+            EVENT -> rawContact.events.add(entityMappers.eventMapper.value)
             GROUP_MEMBERSHIP -> rawContact.groupMemberships
-                .add(entityMappers.groupMembershipMapper.toImmutable)
-            IM -> rawContact.ims.add(entityMappers.imMapper.toMutable)
-            NAME -> rawContact.name = entityMappers.nameMapper.toMutable
-            NICKNAME -> rawContact.nickname = entityMappers.nicknameMapper.toMutable
-            NOTE -> rawContact.note = entityMappers.noteMapper.toMutable
-            PHONE -> rawContact.phones.add(entityMappers.phoneMapper.toMutable)
-            RELATION -> rawContact.relations.add(entityMappers.relationMapper.toMutable)
-            SIP_ADDRESS -> rawContact.sipAddress = entityMappers.sipAddressMapper.toMutable
-            WEBSITE -> rawContact.websites.add(entityMappers.websiteMapper.toMutable)
+                .add(entityMappers.groupMembershipMapper.value)
+            IM -> rawContact.ims.add(entityMappers.imMapper.value)
+            NAME -> rawContact.name = entityMappers.nameMapper.value
+            NICKNAME -> rawContact.nickname = entityMappers.nicknameMapper.value
+            NOTE -> rawContact.note = entityMappers.noteMapper.value
+            PHONE -> rawContact.phones.add(entityMappers.phoneMapper.value)
+            RELATION -> rawContact.relations.add(entityMappers.relationMapper.value)
+            SIP_ADDRESS -> rawContact.sipAddress = entityMappers.sipAddressMapper.value
+            WEBSITE -> rawContact.websites.add(entityMappers.websiteMapper.value)
 
             // Photo types are not included as an entity. Photo extension functions exist to get/set
             // Contact and RawContact photos.

@@ -111,18 +111,4 @@ data class MutableIm internal constructor(
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(customProtocol, data)
-
-    internal fun toIm() = Im(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        protocol = protocol,
-        customProtocol = customProtocol,
-
-        data = data
-    )
 }

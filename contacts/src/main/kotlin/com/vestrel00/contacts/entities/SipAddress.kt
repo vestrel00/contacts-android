@@ -63,15 +63,4 @@ data class MutableSipAddress internal constructor(
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, false, false, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(sipAddress)
-
-    internal fun toSipAddress() = SipAddress(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        sipAddress = sipAddress
-    )
 }

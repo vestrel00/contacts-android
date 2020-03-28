@@ -192,16 +192,4 @@ data class MutableGroup internal constructor(
     val isFavoritesGroup: Boolean = readOnly && favorites
 
     override fun isBlank(): Boolean = false
-
-    internal fun toGroup() = Group(
-        id = id,
-
-        title = title,
-
-        readOnly = readOnly,
-        favorites = favorites,
-        autoAdd = autoAdd,
-
-        account = account
-    )
 }

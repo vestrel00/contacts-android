@@ -63,15 +63,4 @@ data class MutableNickname internal constructor(
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, false, false, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
-
-    internal fun toNickname() = Nickname(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        name = name
-    )
 }

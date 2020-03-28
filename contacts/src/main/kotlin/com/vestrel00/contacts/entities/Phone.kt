@@ -178,19 +178,4 @@ data class MutablePhone internal constructor(
      */
     fun typeLabel(resources: Resources): String =
         CommonDataKinds.Phone.getTypeLabel(resources, type.value, label).toString()
-
-    internal fun toPhone() = Phone(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        number = number,
-        normalizedNumber = normalizedNumber
-    )
 }

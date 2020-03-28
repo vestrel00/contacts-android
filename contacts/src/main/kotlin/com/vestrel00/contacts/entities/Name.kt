@@ -168,26 +168,4 @@ data class MutableName internal constructor(
         prefix, suffix,
         phoneticGivenName, phoneticMiddleName, phoneticFamilyName
     )
-
-    internal fun toName() = Name(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        displayName = displayName,
-
-        givenName = givenName,
-        middleName = middleName,
-        familyName = familyName,
-
-        prefix = prefix,
-        suffix = suffix,
-
-        phoneticGivenName = phoneticGivenName,
-        phoneticMiddleName = phoneticMiddleName,
-        phoneticFamilyName = phoneticFamilyName
-    )
 }

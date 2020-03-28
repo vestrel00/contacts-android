@@ -441,7 +441,7 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
     }
 }
 
-private fun nameWithId(context: Context, nameRowId: Long): MutableName? {
+private fun nameWithId(context: Context, nameRowId: Long): Name? {
     if (nameRowId == INVALID_ID) {
         return null
     }
@@ -454,9 +454,9 @@ private fun nameWithId(context: Context, nameRowId: Long): MutableName? {
         null
     )
 
-    var name: MutableName? = null
+    var name: Name? = null
     if (cursor != null && cursor.moveToNext()) {
-        name = NameMapper(NameCursor(cursor)).toMutable
+        name = NameMapper(NameCursor(cursor)).value
 
         cursor.close()
     }

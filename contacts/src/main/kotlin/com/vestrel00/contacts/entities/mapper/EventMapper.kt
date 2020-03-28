@@ -1,32 +1,15 @@
 package com.vestrel00.contacts.entities.mapper
 
 import com.vestrel00.contacts.entities.Event
-import com.vestrel00.contacts.entities.MutableEvent
 import com.vestrel00.contacts.entities.cursor.EventCursor
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-internal class EventMapper(private val eventCursor: EventCursor) :
-    EntityMapper<Event, MutableEvent> {
+internal class EventMapper(private val eventCursor: EventCursor) : EntityMapper<Event> {
 
-    override val toImmutable: Event
+    override val value: Event
         get() = Event(
-            id = eventCursor.id,
-            rawContactId = eventCursor.rawContactId,
-            contactId = eventCursor.contactId,
-
-            isPrimary = eventCursor.isPrimary,
-            isSuperPrimary = eventCursor.isSuperPrimary,
-
-            type = eventCursor.type,
-            label = eventCursor.label,
-
-            date = dateFromString(eventCursor.date)
-        )
-
-    override val toMutable: MutableEvent
-        get() = MutableEvent(
             id = eventCursor.id,
             rawContactId = eventCursor.rawContactId,
             contactId = eventCursor.contactId,

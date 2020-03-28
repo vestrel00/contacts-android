@@ -137,22 +137,4 @@ data class MutableCompany internal constructor(
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         company, title, department, jobDescription, officeLocation, symbol, phoneticName
     )
-
-    internal fun toCompany() = Company(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        company = company,
-        title = title,
-        department = department,
-        jobDescription = jobDescription,
-        officeLocation = officeLocation,
-        symbol = symbol,
-
-        phoneticName = phoneticName
-    )
 }

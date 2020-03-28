@@ -60,15 +60,4 @@ data class MutableNote internal constructor(
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, false, false, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(note)
-
-    internal fun toNote() = Note(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        note = note
-    )
 }

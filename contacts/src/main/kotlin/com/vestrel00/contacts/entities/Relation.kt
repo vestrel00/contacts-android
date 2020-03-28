@@ -113,18 +113,4 @@ data class MutableRelation internal constructor(
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, name)
-
-    internal fun toRelation() = Relation(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        name = name
-    )
 }

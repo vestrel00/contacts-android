@@ -54,6 +54,8 @@ data class Options internal constructor(
 
 ) : Entity, Parcelable {
 
+    internal constructor() : this(INVALID_ID, null, null, null, null, null)
+
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         starred, timesContacted, lastTimeContacted, customRingtone, sendToVoicemail
     )
@@ -113,18 +115,5 @@ data class MutableOptions internal constructor(
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         starred, timesContacted, lastTimeContacted, customRingtone, sendToVoicemail
-    )
-
-    internal fun toOptions() = Options(
-        id = id,
-
-        starred = starred,
-
-        timesContacted = timesContacted,
-        lastTimeContacted = lastTimeContacted,
-
-        customRingtone = customRingtone,
-
-        sendToVoicemail = sendToVoicemail
     )
 }

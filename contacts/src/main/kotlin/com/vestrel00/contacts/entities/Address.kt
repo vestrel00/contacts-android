@@ -194,25 +194,4 @@ data class MutableAddress internal constructor(
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         label, formattedAddress, street, poBox, neighborhood, city, region, postcode, country
     )
-
-    internal fun toAddress() = Address(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        formattedAddress = formattedAddress,
-        street = street,
-        poBox = poBox,
-        neighborhood = neighborhood,
-        city = city,
-        region = region,
-        postcode = postcode,
-        country = country
-    )
 }

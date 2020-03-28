@@ -237,35 +237,67 @@ data class MutableRawContact internal constructor(
     ) && entitiesAreAllBlank(
         addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
+}
 
-    internal fun toRawContact() = RawContact(
+/**
+ * A temporary holder of immutable entities in mutable lists / attribute.
+ *
+ * Used internally to optimize cursor to contact mappings.
+ */
+internal data class TempRawContact constructor(
+
+    override val id: Long,
+    val contactId: Long,
+    var addresses: MutableList<Address>,
+    var company: Company?,
+    var emails: MutableList<Email>,
+    var events: MutableList<Event>,
+    var groupMemberships: MutableList<GroupMembership>,
+    var ims: MutableList<Im>,
+    var name: Name?,
+    var nickname: Nickname?,
+    var note: Note?,
+    var phones: MutableList<Phone>,
+    var relations: MutableList<Relation>,
+    var sipAddress: SipAddress?,
+    var websites: MutableList<Website>
+
+) : Entity {
+
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+        company, name, nickname, note, sipAddress
+    ) && entitiesAreAllBlank(
+        addresses, emails, events, groupMemberships, ims, phones, relations, websites
+    )
+
+    fun toRawContact() = RawContact(
         id = id,
         contactId = contactId,
 
-        addresses = addresses.asSequence().map { it.toAddress() }.toList(),
+        addresses = addresses.toList(),
 
-        company = company?.toCompany(),
+        company = company,
 
-        emails = emails.asSequence().map { it.toEmail() }.toList(),
+        emails = emails.toList(),
 
-        events = events.asSequence().map { it.toEvent() }.toList(),
+        events = events.toList(),
 
         groupMemberships = groupMemberships.toList(),
 
-        ims = ims.asSequence().map { it.toIm() }.toList(),
+        ims = ims.toList(),
 
-        name = name?.toName(),
+        name = name,
 
-        nickname = nickname?.toNickname(),
+        nickname = nickname,
 
-        note = note?.toNote(),
+        note = note,
 
-        phones = phones.asSequence().map { it.toPhone() }.toList(),
+        phones = phones.toList(),
 
-        relations = relations.asSequence().map { it.toRelation() }.toList(),
+        relations = relations.toList(),
 
-        sipAddress = sipAddress?.toSipAddress(),
+        sipAddress = sipAddress,
 
-        websites = websites.asSequence().map { it.toWebsite() }.toList()
+        websites = websites.toList()
     )
 }
