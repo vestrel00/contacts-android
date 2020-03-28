@@ -1,6 +1,7 @@
 package com.vestrel00.contacts.entities
 
 import android.os.Parcelable
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -25,6 +26,9 @@ data class SipAddress internal constructor(
     val sipAddress: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.SIP_ADDRESS
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(sipAddress)
 
@@ -59,6 +63,9 @@ data class MutableSipAddress internal constructor(
     var sipAddress: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.SIP_ADDRESS
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, false, false, null)
 

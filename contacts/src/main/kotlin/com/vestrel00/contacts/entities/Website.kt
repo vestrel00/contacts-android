@@ -1,6 +1,7 @@
 package com.vestrel00.contacts.entities
 
 import android.os.Parcelable
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -25,6 +26,9 @@ data class Website internal constructor(
     val url: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.WEBSITE
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(url)
 
@@ -59,6 +63,9 @@ data class MutableWebsite internal constructor(
     var url: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.WEBSITE
 
     constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, false, false, null)
 

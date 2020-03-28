@@ -8,7 +8,6 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
 import com.vestrel00.contacts.entities.INVALID_ID
-import com.vestrel00.contacts.entities.mimeType
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -114,7 +113,7 @@ fun DataEntity.clearDefault(context: Context): Boolean {
  */
 private fun DataEntity.clearPrimary(): ContentProviderOperation = newUpdate(TABLE_URI)
     .withSelection(
-        "${(Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo mimeType())}",
+        "${(Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo mimeType)}",
         null
     )
     .withValue(Fields.IsPrimary, 0)
@@ -128,7 +127,7 @@ private fun DataEntity.clearPrimary(): ContentProviderOperation = newUpdate(TABL
  */
 private fun DataEntity.clearSuperPrimary(): ContentProviderOperation = newUpdate(TABLE_URI)
     .withSelection(
-        "${(Fields.Contact.Id equalTo contactId) and (Fields.MimeType equalTo mimeType())}",
+        "${(Fields.Contact.Id equalTo contactId) and (Fields.MimeType equalTo mimeType)}",
         null
     )
     .withValue(Fields.IsSuperPrimary, 0)

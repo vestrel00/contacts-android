@@ -2,7 +2,7 @@ package com.vestrel00.contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 
-internal enum class MimeType(internal val value: String) {
+enum class MimeType(internal val value: String) {
 
     ADDRESS(CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE),
     COMPANY(CommonDataKinds.Organization.CONTENT_ITEM_TYPE),

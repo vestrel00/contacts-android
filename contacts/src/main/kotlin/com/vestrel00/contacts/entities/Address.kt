@@ -3,6 +3,7 @@ package com.vestrel00.contacts.entities
 import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Address.Type
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -80,6 +81,9 @@ data class Address internal constructor(
     val country: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.ADDRESS
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         label, formattedAddress, street, poBox, neighborhood, city, region, postcode, country
@@ -186,6 +190,9 @@ data class MutableAddress internal constructor(
 
 ) : DataEntity, Parcelable {
 
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.ADDRESS
+    
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false, Type.HOME, null, null,
         null, null, null, null, null, null, null

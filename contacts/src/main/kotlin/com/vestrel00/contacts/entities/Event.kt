@@ -3,6 +3,7 @@ package com.vestrel00.contacts.entities
 import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Event.Type
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -48,6 +49,9 @@ data class Event internal constructor(
     val date: Date?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.EVENT
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, date)
 
@@ -109,6 +113,9 @@ data class MutableEvent internal constructor(
     var date: Date?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.EVENT
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,

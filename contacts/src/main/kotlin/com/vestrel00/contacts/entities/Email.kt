@@ -3,6 +3,7 @@ package com.vestrel00.contacts.entities
 import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Email.Type
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -34,6 +35,9 @@ data class Email internal constructor(
     val address: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.EMAIL
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, address)
 
@@ -96,6 +100,9 @@ data class MutableEmail internal constructor(
     var address: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.EMAIL
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,

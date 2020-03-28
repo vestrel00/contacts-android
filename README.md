@@ -9,7 +9,6 @@
 3. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
 4.  Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-    - See FIXME in DataEntity.mimeType() function.
 5. Add Copyright to all non-sample files.
 
 ----------------------------------------------------------------------------------------------------

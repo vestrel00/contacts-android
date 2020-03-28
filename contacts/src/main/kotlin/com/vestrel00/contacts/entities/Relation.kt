@@ -3,6 +3,7 @@ package com.vestrel00.contacts.entities
 import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Relation.Type
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -34,6 +35,9 @@ data class Relation internal constructor(
     val name: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.RELATION
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, name)
 
@@ -106,6 +110,9 @@ data class MutableRelation internal constructor(
     var name: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.RELATION
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,

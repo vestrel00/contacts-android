@@ -16,6 +16,11 @@ interface DataEntity : Entity {
     val contactId: Long
 
     /**
+     * The type of data.
+     */
+    val mimeType: MimeType
+
+    /**
      * Whether this is the primary entry of its kind for the [RawContact] it belongs to.
      *
      * ## Developer Notes
@@ -45,29 +50,4 @@ interface DataEntity : Entity {
      * DefaultContactData extension functions to set a data entity as default or not.
      */
     fun isDefault(): Boolean = isSuperPrimary
-}
-
-// Keep the MimeType internal with this mapping function.
-// FIXME Remove this mapping and add mimeType val to DataEntity interface if mimetypes are to be
-// made public.
-internal fun DataEntity.mimeType(): MimeType = when (this) {
-    is Address, is MutableAddress -> MimeType.ADDRESS
-    is Company, is MutableCompany -> MimeType.COMPANY
-    is Email, is MutableEmail -> MimeType.EMAIL
-    is Event, is MutableEvent -> MimeType.EVENT
-    is GroupMembership -> MimeType.GROUP_MEMBERSHIP
-    is Im, is MutableIm -> MimeType.IM
-    is Name, is MutableName -> MimeType.NAME
-    is Nickname, is MutableNickname -> MimeType.NICKNAME
-    is Note, is MutableNote -> MimeType.NOTE
-    is Phone, is MutablePhone -> MimeType.PHONE
-    is Relation, is MutableRelation -> MimeType.RELATION
-    is SipAddress, is MutableSipAddress -> MimeType.SIP_ADDRESS
-    is Website, is MutableWebsite -> MimeType.WEBSITE
-
-    // There is currently no Photo class.
-    // Throw this exception to prevent programmer error.
-    else -> throw RuntimeException(
-        "DataEntity ${this.javaClass.simpleName} is not mapped to a mimetype"
-    )
 }

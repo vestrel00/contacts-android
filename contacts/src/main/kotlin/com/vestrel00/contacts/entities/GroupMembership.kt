@@ -1,6 +1,7 @@
 package com.vestrel00.contacts.entities
 
 import android.os.Parcelable
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 // Note that the actual Group lives in a separate table that is not joined with the Data table.
@@ -26,6 +27,9 @@ data class GroupMembership internal constructor(
     val groupId: Long
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP
 
     override fun isBlank(): Boolean = false
 }

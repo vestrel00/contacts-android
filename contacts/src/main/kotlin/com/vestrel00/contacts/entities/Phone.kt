@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Phone.Type
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -53,6 +54,9 @@ data class Phone internal constructor(
     val normalizedNumber: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.PHONE
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, number, normalizedNumber)
 
@@ -162,6 +166,9 @@ data class MutablePhone internal constructor(
     var normalizedNumber: String?
 
 ) : DataEntity, Parcelable {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.PHONE
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,
