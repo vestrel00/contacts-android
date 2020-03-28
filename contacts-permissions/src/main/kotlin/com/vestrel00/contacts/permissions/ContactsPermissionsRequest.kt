@@ -19,6 +19,21 @@ suspend fun Contacts.queryWithPermission(activity: Activity): Query {
 }
 
 /**
+ * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permission, and then returns a new [QueryData] instance.
+ *
+ * If permission is already granted, then immediately returns a new [QueryData] instance.
+ */
+suspend fun Contacts.queryDataWithPermission(activity: Activity): QueryData {
+    val permissions = permissions(activity)
+    if (!permissions.canQuery()) {
+        permissions.requestQueryPermission(activity)
+    }
+
+    return queryData(activity)
+}
+
+/**
  * If [ContactsPermissions.WRITE_PERMISSION] and
  * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
  * granted, suspends the current coroutine, requests for the permissions, and then returns a new
