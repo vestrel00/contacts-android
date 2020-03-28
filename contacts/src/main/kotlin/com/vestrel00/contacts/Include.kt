@@ -15,7 +15,7 @@ internal class Include(fields: Sequence<Field>) {
     }.toSet()
 
     val columnNames: Array<out String>
-        get() = fields.map { it.columnName }.toTypedArray()
+        get() = fields.asSequence().map { it.columnName }.toSet().toTypedArray()
 
     override fun toString(): String = columnNames.joinToString(", ")
 }
