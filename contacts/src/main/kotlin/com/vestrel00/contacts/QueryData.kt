@@ -29,8 +29,6 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * ## Usage
  *
- * // TODO verify that usage example works once implementation is complete
- *
  * Here is an example query that returns the first 10 [Address]s, skipping the first 5, where the
  * [Address.country] is "US" and [Address.postcode] starting with "78", ordered by the
  * [Address.postcode] in ascending order. Only addresses in the given account are included. Only the
@@ -39,13 +37,11 @@ import com.vestrel00.contacts.entities.table.Table
  * In Kotlin,
  *
  * ```kotlin
- * import com.vestrel00.contacts.Fields.Address
- *
  * val addresses : List<Address> = queryData.
  *      .accounts(account)
- *      .include(Address.FormattedAddress)
- *      .where((Address.Country equalTo "US") and (Address.PostCode startsWith "78"))
- *      .orderBy(Address.PostCode.asc())
+ *      .include(Fields.Address.FormattedAddress)
+ *      .where((Fields.Address.Country equalTo "US") and (Fields.Address.PostCode startsWith "78"))
+ *      .orderBy(Fields.Address.PostCode.asc())
  *      .offset(5)
  *      .limit(10)
  *      .addresses()
@@ -54,10 +50,6 @@ import com.vestrel00.contacts.entities.table.Table
  * In Java,
  *
  * ```java
- * import static com.vestrel00.contacts.Fields.*;
- * import static com.vestrel00.contacts.WhereKt.*;
- * import static com.vestrel00.contacts.OrderByKt.*;
- *
  * List<Address> addresses = query
  *      .accounts(account)
  *      .include(Address.FormattedAddress)
