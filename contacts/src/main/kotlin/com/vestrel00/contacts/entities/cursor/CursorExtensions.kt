@@ -7,7 +7,11 @@ import java.util.*
 
 internal fun Cursor.getString(field: AbstractField): String? {
     val index = getColumnIndex(field.columnName)
-    return if (index == -1) null else getString(index)
+    return if (index == -1) null else try {
+        getString(index)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 internal fun Cursor.getBoolean(field: AbstractField): Boolean? {
@@ -17,17 +21,29 @@ internal fun Cursor.getBoolean(field: AbstractField): Boolean? {
 
 internal fun Cursor.getInt(field: AbstractField): Int? {
     val index = getColumnIndex(field.columnName)
-    return if (index == -1) null else getInt(index)
+    return if (index == -1) null else try {
+        getInt(index)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 internal fun Cursor.getLong(field: AbstractField): Long? {
     val index = getColumnIndex(field.columnName)
-    return if (index == -1) null else getLong(index)
+    return if (index == -1) null else try {
+        getLong(index)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 internal fun Cursor.getBlob(field: AbstractField): ByteArray? {
     val index = getColumnIndex(field.columnName)
-    return if (index == -1) null else getBlob(index)
+    return if (index == -1) null else try {
+        getBlob(index)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 internal fun Cursor.getUri(field: AbstractField): Uri? {
