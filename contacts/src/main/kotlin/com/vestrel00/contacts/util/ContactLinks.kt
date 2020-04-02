@@ -8,6 +8,8 @@ import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
+import com.vestrel00.contacts.entities.cursor.getInt
+import com.vestrel00.contacts.entities.cursor.getLong
 import com.vestrel00.contacts.entities.mapper.nameMapper
 import com.vestrel00.contacts.entities.table.Table
 
@@ -376,7 +378,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
 
     var nameRowId: Long = INVALID_ID
     if (cursor != null && cursor.moveToNext()) {
-        nameRowId = cursor.getLong(0)
+        nameRowId = cursor.getLong(Fields.Id) ?: INVALID_ID
 
         cursor.close()
     }
@@ -394,7 +396,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
 private fun nameRawContactId(context: Context, contactId: Long): Long {
     val cursor = context.contentResolver.query(
         Table.CONTACTS.uri,
-        arrayOf(Contacts.DISPLAY_NAME_SOURCE, Contacts.NAME_RAW_CONTACT_ID),
+        Include(Fields.Contacts.DisplayNameSource, Fields.Contacts.NameRawContactId).columnNames,
         "${Fields.Contacts.Id equalTo contactId}",
         null,
         null
@@ -404,8 +406,9 @@ private fun nameRawContactId(context: Context, contactId: Long): Long {
     var nameRawContactId: Long = INVALID_ID
 
     if (cursor != null && cursor.moveToNext()) {
-        displayNameSource = cursor.getInt(0)
-        nameRawContactId = cursor.getLong(1)
+        displayNameSource =
+            cursor.getInt(Fields.Contacts.DisplayNameSource) ?: DisplayNameSources.UNDEFINED
+        nameRawContactId = cursor.getLong(Fields.Contacts.NameRawContactId) ?: INVALID_ID
 
         cursor.close()
     }
@@ -432,7 +435,7 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
     return mutableListOf<Long>().apply {
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                add(cursor.getLong(0))
+                cursor.getLong(Fields.RawContacts.Id)?.let(::add)
             }
 
             cursor.close()
@@ -474,7 +477,7 @@ private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? {
 
     var contactId: Long? = null
     if (cursor != null) {
-        contactId = cursor.getLong(0)
+        contactId = cursor.getLong(Fields.RawContacts.ContactId)
 
         cursor.close()
     }

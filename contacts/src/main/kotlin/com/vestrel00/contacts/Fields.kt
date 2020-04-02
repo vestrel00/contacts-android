@@ -73,8 +73,7 @@ object Fields {
     @JvmField
     val Contact = ContactFields()
 
-    // Do not add Contacts to AllFields even though it is joined with the Data table.
-    // These fields are used exclusively in ContactPhoto extension functions.
+    // Do not add this to AllFields as this is a different table from the Data table.
     internal val Contacts = ContactsFields()
 
     @JvmField
@@ -83,7 +82,7 @@ object Fields {
     @JvmField
     val Event = EventFields()
 
-    // Do not add Group to AllFields because this does not belong in Data table queries.
+    // Do not add this to AllFields as this is a different table from the Data table.
     internal val Group = GroupFields()
 
     @JvmField
@@ -118,13 +117,12 @@ object Fields {
     val Phone = PhoneFields()
 
     // Do not add Photo to AllFields even though it is part of the Data table.
-    // These fields are used exclusively in ContactPhoto and RawContactPhoto extension functions.
     internal val Photo = PhotoFields()
 
     @JvmField
     val RawContact = RawContactFields()
 
-    // Do not add RawContact to AllFields because this does not belong in Data table queries.
+    // Do not add this to AllFields as this is a different table from the Data table.
     internal val RawContacts = RawContactsFields()
 
     @JvmField
@@ -325,6 +323,10 @@ internal class ContactsFields : FieldSet(UNKNOWN) {
         AbstractField(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI, mimeType)
 
     val PhotoFileId = AbstractField(ContactsContract.Contacts.PHOTO_FILE_ID, mimeType)
+
+    val DisplayNameSource = AbstractField(ContactsContract.Contacts.DISPLAY_NAME_SOURCE, mimeType)
+
+    val NameRawContactId = AbstractField(ContactsContract.Contacts.NAME_RAW_CONTACT_ID, mimeType)
 
     override val fields = setOf(Id, PhotoUri, PhotoThumbnailUri, PhotoFileId)
 }

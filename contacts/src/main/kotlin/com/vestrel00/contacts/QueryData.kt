@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.entities.*
+import com.vestrel00.contacts.entities.cursor.getLong
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
 import com.vestrel00.contacts.entities.table.Table
 
@@ -472,7 +473,7 @@ private class QueryDataResolver(
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                rawContactIds.add(cursor.getLong(0))
+                cursor.getLong(Fields.RawContacts.Id)?.let(rawContactIds::add)
             }
             cursor.close()
         }
