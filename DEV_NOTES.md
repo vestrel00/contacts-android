@@ -215,7 +215,7 @@ RawContacts table.
 A more common scenario that causes multiple RawContacts per Contact is when two or more Contacts are
 "linked" (or "merged" for API 23 and below, or "joined" for API 22 and below).
 
-#### Behavior of linking/merging/joining contacts
+#### Behavior of linking/merging/joining contacts (AggregationExceptions)
 
 > The Contacts app terminology has changed over time;
 >   - API 22 and below; join / separate
@@ -673,6 +673,34 @@ Sometimes they do get deleted at some point but the trigger for the actual delet
 The native Contacts app does not support group deletion or updates perhaps because groups syncing 
 isn't implemented or at least not to the same extent as contacts syncing. Therefore, this library
 will also not support group deletion.
+
+#### Profile
+
+There exist one Contacts row that identifies the owner of the device;
+`ContactsColumns.IS_USER_PROFILE`. There is at least one RawContacts row that is associated with the
+user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts are not
+associated with an Account (null account name and type) as it is a local profile. The RawContacts
+row(s) may have rows in the Data table as usual.
+
+The profile Contact row may not be merged / linked with other contacts and do not belong to any
+group (favorites / starred).
+
+Profile rows in the Contacts, RawContacts, and Data table are not visible via queries in the
+respective tables. They will not be in the resulting cursor. To get the profile Contacts table rows,
+query the `Profile.CONTENT_URI`. To get profile RawContacts table rows, query the
+`Profile.CONTENT_RAW_CONTACTS_URI`. To get the profile Data table rows, query the
+`Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
+RawContacts.Data.CONTENT_DIRECTORY.
+
+Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
+associated Contacts and Data table rows will automatically be deleted.
+
+**Profile permissions**
+
+Profile permissions (READ_PROFILE and WRITE_PROFILE) have been removed since API 23. However, they
+are still required for API 22 and below. Reading and writing the profile is included in the Contacts
+permissions. There is no need to ask for profile permissions at runtime because prior to API 23,
+permissions in the AndroidManifest have to be accepted prior to installation.
 
 #### Sync Adapters
 

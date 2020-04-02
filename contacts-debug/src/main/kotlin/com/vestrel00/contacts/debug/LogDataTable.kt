@@ -1,6 +1,7 @@
 package com.vestrel00.contacts.debug
 
 import android.content.Context
+import android.net.Uri
 import android.provider.ContactsContract
 
 fun Context.logDataTable() {
@@ -9,8 +10,14 @@ fun Context.logDataTable() {
         return
     }
 
+    log("#### Data table")
+
+    logDataTable(ContactsContract.Data.CONTENT_URI)
+}
+
+internal fun Context.logDataTable(contentUri: Uri) {
     val cursor = contentResolver.query(
-        ContactsContract.Data.CONTENT_URI,
+        contentUri,
         arrayOf(
             ContactsContract.Data._ID,
             ContactsContract.Data.RAW_CONTACT_ID,
@@ -40,15 +47,14 @@ fun Context.logDataTable() {
 
     cursor ?: return
 
-    log("#### Data table")
-    cursor.moveToPosition(-1)
     while (cursor.moveToNext()) {
+        // Use getString instead of getLong, getInt, etc so that the value could be null.
         val id = cursor.getString(0)
         val rawContactId = cursor.getString(1)
         val contactId = cursor.getString(2)
         val mimeType = cursor.getString(3)
-        val isPrimary = cursor.getInt(4)
-        val isSuperPrimary = cursor.getInt(5)
+        val isPrimary = cursor.getString(4)
+        val isSuperPrimary = cursor.getString(5)
 
         val data1 = cursor.getString(6)
         val data2 = cursor.getString(7)

@@ -1,6 +1,7 @@
 package com.vestrel00.contacts.debug
 
 import android.content.Context
+import android.net.Uri
 import android.provider.ContactsContract
 
 fun Context.logContactsTable() {
@@ -9,8 +10,14 @@ fun Context.logContactsTable() {
         return
     }
 
+    log("#### Contacts table")
+
+    logContactsTable(ContactsContract.Contacts.CONTENT_URI)
+}
+
+internal fun Context.logContactsTable(contentUri: Uri) {
     val cursor = contentResolver.query(
-        ContactsContract.Contacts.CONTENT_URI,
+        contentUri,
         arrayOf(
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.DISPLAY_NAME,
@@ -30,9 +37,8 @@ fun Context.logContactsTable() {
 
     cursor ?: return
 
-    log("#### Contacts table")
-    cursor.moveToPosition(-1)
     while (cursor.moveToNext()) {
+        // Use getString instead of getLong, getInt, etc so that the value could be null.
         val id = cursor.getString(0)
         val displayName = cursor.getString(1)
 

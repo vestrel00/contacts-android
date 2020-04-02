@@ -9,6 +9,8 @@ fun Context.logGroupsTable() {
         return
     }
 
+    log("#### Groups table")
+
     val cursor = contentResolver.query(
         ContactsContract.Groups.CONTENT_URI,
         arrayOf(
@@ -29,9 +31,8 @@ fun Context.logGroupsTable() {
 
     cursor ?: return
 
-    log("#### Groups table")
-    cursor.moveToPosition(-1)
     while (cursor.moveToNext()) {
+        // Use getString instead of getLong, getInt, etc so that the value could be null.
         val id = cursor.getString(0)
         val systemId = cursor.getString(1)
         val title = cursor.getString(2)

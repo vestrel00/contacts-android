@@ -5,11 +5,21 @@
     <!-- Required for getting accounts. -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
-    <!-- Required for query operations. -->
+    <!-- Required for query operations (includes Profile starting at API 23). -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <!-- Only need this permission if using insert, update, delete operations! -->
+    <!-- Required for insert, update, delete operations (includes Profile starting at API 23). -->
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+    <!--
+     Profile permissions have been removed since API 23. It is still required for API 22 and below.
+      -->
+    <uses-permission
+        android:name="android.permission.READ_PROFILE"
+        android:maxSdkVersion="22" />
+    <uses-permission
+        android:name="android.permission.WRITE_PROFILE"
+        android:maxSdkVersion="22" />
 
     <application
         android:allowBackup="true"

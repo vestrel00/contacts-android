@@ -9,6 +9,8 @@ fun Context.logAggregationExceptions() {
         return
     }
 
+    log("#### Aggregation exceptions table")
+
     val cursor = contentResolver.query(
         ContactsContract.AggregationExceptions.CONTENT_URI,
         arrayOf(
@@ -24,13 +26,12 @@ fun Context.logAggregationExceptions() {
 
     cursor ?: return
 
-    log("#### Aggregation exceptions table")
-    cursor.moveToPosition(-1)
     while (cursor.moveToNext()) {
-        val id = cursor.getLong(0)
+        // Use getString instead of getLong, getInt, etc so that the value could be null.
+        val id = cursor.getString(0)
         val type = cursor.getString(1)
-        val rawContactId1 = cursor.getLong(2)
-        val rawContactId2 = cursor.getLong(3)
+        val rawContactId1 = cursor.getString(2)
+        val rawContactId2 = cursor.getString(3)
 
         log(
             """
