@@ -5,6 +5,14 @@ import android.net.Uri
 import com.vestrel00.contacts.AbstractField
 import java.util.*
 
+/*
+ * This should be used for all retrievals of ints, longs, and everything else (including strings).
+ *
+ * Unlike the other native cursor get functions, this get string function returns null if the cursor
+ * value is null. For example, the native [Cursor.getLong] function would return 0 if it has a null
+ * value. However, we want the null value instead of 0 so we first use the native [Cursor.getString]
+ * and then attempt to cast it to long.
+ */
 internal fun Cursor.getString(field: AbstractField): String? {
     val index = getColumnIndex(field.columnName)
     return if (index == -1) null else try {
@@ -14,25 +22,25 @@ internal fun Cursor.getString(field: AbstractField): String? {
     }
 }
 
+internal fun Cursor.getInt(field: AbstractField): Int? {
+    val intStr = getString(field)
+    return try {
+        intStr?.toInt()
+    } catch (e: NumberFormatException) {
+        null
+    }
+}
+
 internal fun Cursor.getBoolean(field: AbstractField): Boolean? {
     val int = getInt(field)
     return int != null && int == 1
 }
 
-internal fun Cursor.getInt(field: AbstractField): Int? {
-    val index = getColumnIndex(field.columnName)
-    return if (index == -1) null else try {
-        getInt(index)
-    } catch (e: Exception) {
-        null
-    }
-}
-
 internal fun Cursor.getLong(field: AbstractField): Long? {
-    val index = getColumnIndex(field.columnName)
-    return if (index == -1) null else try {
-        getLong(index)
-    } catch (e: Exception) {
+    val longStr = getString(field)
+    return try {
+        longStr?.toLong()
+    } catch (e: NumberFormatException) {
         null
     }
 }
@@ -40,6 +48,8 @@ internal fun Cursor.getLong(field: AbstractField): Long? {
 internal fun Cursor.getBlob(field: AbstractField): ByteArray? {
     val index = getColumnIndex(field.columnName)
     return if (index == -1) null else try {
+        // Should probably not use getString for getting a byte array.
+        // Worst case the byte array would be null or empty
         getBlob(index)
     } catch (e: Exception) {
         null
