@@ -4,6 +4,8 @@
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
     - `ContactsContract.Profile`
+    - Requires READ_PROFILE / WRITE_PROFILE permissions!!!!!!
+    - https://stackoverflow.com/questions/33981594/how-to-insert-profile-contact-programmatically-in-android
 2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
 3. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
