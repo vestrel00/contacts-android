@@ -21,9 +21,9 @@ data class Event internal constructor(
     override val isSuperPrimary: Boolean,
 
     /**
-     * The [Type] of event. Defaults to [Type.BIRTHDAY].
+     * The [Type] of event.
      */
-    val type: Type,
+    val type: Type?,
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
@@ -53,7 +53,8 @@ data class Event internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EVENT
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, date)
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(date)
 
     fun toMutableEvent() = MutableEvent(
         id = id,
@@ -79,7 +80,7 @@ data class Event internal constructor(
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type = values().find { it.value == value } ?: BIRTHDAY
+            fun fromValue(value: Int?): Type? = values().find { it.value == value }
         }
     }
 }
@@ -100,7 +101,7 @@ data class MutableEvent internal constructor(
     /**
      * See [Event.type].
      */
-    var type: Type,
+    var type: Type?,
 
     /**
      * See [Event.label].
@@ -119,8 +120,9 @@ data class MutableEvent internal constructor(
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,
-        Type.BIRTHDAY, null, null
+        null, null, null
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, date)
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(date)
 }

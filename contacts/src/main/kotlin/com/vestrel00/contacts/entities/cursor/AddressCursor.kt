@@ -12,7 +12,7 @@ import com.vestrel00.contacts.entities.Address
  */
 internal class AddressCursor(cursor: Cursor) : DataCursor(cursor) {
 
-    val type: Address.Type
+    val type: Address.Type?
         get() = Address.Type.fromValue(cursor.getInt(Fields.Address.Type))
 
     val label: String?

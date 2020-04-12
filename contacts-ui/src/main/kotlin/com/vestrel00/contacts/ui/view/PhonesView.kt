@@ -80,8 +80,6 @@ class PhonesView @JvmOverloads constructor(
             val phoneType = DEFAULT_PHONE_TYPES.minus(existingPhoneTypes).firstOrNull()
                 ?: DEFAULT_PHONE_TYPES.last()
 
-            // I didn't bother implementing that logic here to keep things simple. The community may
-            // contribute here by adding this functionality.
             emptyPhoneView = addPhone(MutablePhone().apply { type = phoneType })
             contact.addPhone(emptyPhoneView.phone)
         }
@@ -108,6 +106,6 @@ class PhonesView @JvmOverloads constructor(
     }
 }
 
-private val DEFAULT_PHONE_TYPES = listOf(
+private val DEFAULT_PHONE_TYPES = sequenceOf(
     Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.OTHER
 )

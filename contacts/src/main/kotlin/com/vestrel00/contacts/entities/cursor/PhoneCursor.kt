@@ -12,7 +12,7 @@ import com.vestrel00.contacts.entities.Phone
  */
 internal class PhoneCursor(cursor: Cursor) : DataCursor(cursor) {
 
-    val type: Phone.Type
+    val type: Phone.Type?
         get() = Phone.Type.fromValue(cursor.getInt(Fields.Phone.Type))
 
     val label: String?

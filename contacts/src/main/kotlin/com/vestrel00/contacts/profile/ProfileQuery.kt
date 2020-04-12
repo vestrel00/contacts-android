@@ -41,10 +41,8 @@ import com.vestrel00.contacts.entities.mapper.ContactsMapper
  *
  * ```java
  * import static com.vestrel00.contacts.Fields.*;
- * import static com.vestrel00.contacts.WhereKt.*;
- * import static com.vestrel00.contacts.OrderByKt.*;
  *
- * List<Contact> contacts = query
+ * List<Contact> contacts = profileQuery
  *      .accounts(account)
  *      .include(Name, Address)
  *      .find();

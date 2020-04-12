@@ -12,7 +12,7 @@ import com.vestrel00.contacts.entities.Im
  */
 internal class ImCursor(cursor: Cursor) : DataCursor(cursor) {
 
-    val protocol: Im.Protocol
+    val protocol: Im.Protocol?
         get() = Im.Protocol.fromValue(cursor.getInt(Fields.Im.Protocol))
 
     val customProtocol: String?

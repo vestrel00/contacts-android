@@ -20,9 +20,9 @@ data class Email internal constructor(
     override val isSuperPrimary: Boolean,
 
     /**
-     * The [Type] of email. Defaults to [Type.HOME].
+     * The [Type] of email.
      */
-    val type: Type,
+    val type: Type?,
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
@@ -39,7 +39,8 @@ data class Email internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EMAIL
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, address)
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(address)
 
     fun toMutableEmail() = MutableEmail(
         id = id,
@@ -66,7 +67,7 @@ data class Email internal constructor(
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type = values().find { it.value == value } ?: HOME
+            fun fromValue(value: Int?): Type? = values().find { it.value == value }
         }
     }
 }
@@ -87,7 +88,7 @@ data class MutableEmail internal constructor(
     /**
      * See [Email.type].
      */
-    var type: Type,
+    var type: Type?,
 
     /**
      * See [Email.label].
@@ -106,8 +107,9 @@ data class MutableEmail internal constructor(
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,
-        Type.HOME, null, null
+        null, null, null
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, address)
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(address)
 }

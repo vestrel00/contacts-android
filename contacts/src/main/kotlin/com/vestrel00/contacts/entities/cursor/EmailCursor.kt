@@ -12,7 +12,7 @@ import com.vestrel00.contacts.entities.Email
  */
 internal class EmailCursor(cursor: Cursor) : DataCursor(cursor) {
 
-    val type: Email.Type
+    val type: Email.Type?
         get() = Email.Type.fromValue(cursor.getInt(Fields.Email.Type))
 
     val label: String?

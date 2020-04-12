@@ -12,7 +12,7 @@ internal class EmailOperation : AbstractDataOperation<MutableEmail>() {
     override fun setData(
         data: MutableEmail, setValue: (field: AbstractField, dataValue: Any?) -> Unit
     ) {
-        setValue(Fields.Email.Type, data.type.value)
+        setValue(Fields.Email.Type, data.type?.value)
         setValue(Fields.Email.Label, data.label)
         setValue(Fields.Email.Address, data.address)
     }

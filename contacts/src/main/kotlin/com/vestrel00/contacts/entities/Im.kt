@@ -23,9 +23,9 @@ data class Im internal constructor(
     // protocol have taken their place...
 
     /**
-     * The [Protocol] of this Im. Defaults to [Protocol.AIM].
+     * The [Protocol] of this Im.
      */
-    val protocol: Protocol,
+    val protocol: Protocol?,
 
     /**
      * The name of the custom protocol. Used when the [protocol] is [Protocol.CUSTOM].
@@ -42,7 +42,9 @@ data class Im internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.IM
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(customProtocol, data)
+    // protocol and customProtocol are excluded from this check as they are useless information by
+    // themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(data)
 
     fun toMutableIm() = MutableIm(
         id = id,
@@ -74,7 +76,7 @@ data class Im internal constructor(
 
         internal companion object {
 
-            fun fromValue(value: Int?): Protocol = values().find { it.value == value } ?: AIM
+            fun fromValue(value: Int?): Protocol? = values().find { it.value == value }
         }
     }
 }
@@ -95,7 +97,7 @@ data class MutableIm internal constructor(
     /**
      * See [Im.protocol].
      */
-    var protocol: Protocol,
+    var protocol: Protocol?,
 
     /**
      * See [Im.customProtocol].
@@ -114,8 +116,10 @@ data class MutableIm internal constructor(
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,
-        Protocol.AIM, null, null
+        null, null, null
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(customProtocol, data)
+    // protocol and customProtocol are excluded from this check as they are useless information by
+    // themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(data)
 }

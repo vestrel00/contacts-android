@@ -32,6 +32,8 @@ data class PhoneType internal constructor(
 
     companion object {
 
+        private val DEFAULT_TYPE = Phone.Type.MOBILE
+
         /**
          * Returns all the system phone types.
          */
@@ -41,26 +43,32 @@ data class PhoneType internal constructor(
             .toMutableList()
 
         /**
-         * Returns the [PhoneType] of the given [phone]. If the phone type is [Phone.Type.CUSTOM],
-         * [PhoneType.userCustomType] will be true.
-         */
-        fun from(phone: Phone, resources: Resources): PhoneType =
-            from(phone.type, phone.typeLabel(resources))
-
-        /**
-         * See [from].
-         */
-        fun from(phone: MutablePhone, resources: Resources): PhoneType =
-            from(phone.type, phone.typeLabel(resources))
-
-        /**
          * Creates a new [PhoneType] with the given [typeLabel] with a type of [Phone.Type.CUSTOM].
          */
         fun userCustomType(typeLabel: String): PhoneType = from(Phone.Type.CUSTOM, typeLabel)
 
+        /**
+         * Returns the [PhoneType] of the given [phone].
+         *
+         * If the [Phone.type] is null, it will default to [DEFAULT_TYPE]. If it is
+         * [Phone.Type.CUSTOM], [PhoneType.userCustomType] will be true.
+         */
+        fun from(resources: Resources, phone: Phone): PhoneType =
+            from(resources, phone.type, phone.label)
+
+        /**
+         * See [from].
+         */
+        fun from(resources: Resources, phone: MutablePhone): PhoneType =
+            from(resources, phone.type, phone.label)
+
+        private fun from(resources: Resources, type: Phone.Type?, label: String?): PhoneType {
+            val nonNullType = type ?: DEFAULT_TYPE
+            return from(nonNullType, nonNullType.typeLabel(resources, label))
+        }
+
         private fun from(type: Phone.Type, typeLabel: String): PhoneType = PhoneType(
-            type, typeLabel,
-            type == Phone.Type.CUSTOM
+            type, typeLabel, type == Phone.Type.CUSTOM
         )
     }
 }

@@ -95,7 +95,7 @@ class PhoneView @JvmOverloads constructor(
     }
 
     private fun setPhoneTypeField() {
-        val phoneType = PhoneType.from(phone, resources)
+        val phoneType = PhoneType.from(resources, phone)
 
         typesAdapter.apply {
             setNotifyOnChange(false)

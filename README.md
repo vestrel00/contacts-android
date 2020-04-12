@@ -1,8 +1,7 @@
 ## TODO
 
-0. Make Entity.Types nullable because the default type is returned when type is not included.
 1. Setup user profile
-    - Query, Insert, Update, Delete + withPermission & async
+    - Update (insert included), Delete + withPermission & async
     - Add isUserProfile to Contact and RawContact entities. Review and update ALL util functions accordingly.
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`

@@ -12,7 +12,7 @@ internal class AddressOperation : AbstractDataOperation<MutableAddress>() {
     override fun setData(
         data: MutableAddress, setValue: (field: AbstractField, dataValue: Any?) -> Unit
     ) {
-        setValue(Fields.Address.Type, data.type.value)
+        setValue(Fields.Address.Type, data.type?.value)
         setValue(Fields.Address.Label, data.label)
         setValue(Fields.Address.FormattedAddress, data.formattedAddress)
         setValue(Fields.Address.Street, data.street)

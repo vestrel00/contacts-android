@@ -97,7 +97,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
     return when (this) {
         // ADDRESS
         Fields.Address.Type -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.type.ordinal.toString()
+            it.type?.ordinal?.toString()
         }
         Fields.Address.Label -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
             it.label
@@ -159,7 +159,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
 
         // EMAIL
         Fields.Email.Type -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
-            it.type.ordinal.toString()
+            it.type?.ordinal?.toString()
         }
         Fields.Email.Label -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
             it.label
@@ -170,7 +170,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
 
         // EVENT
         Fields.Event.Type -> lhs.events().compareTo(ignoreCase, rhs.events()) {
-            it.type.ordinal.toString()
+            it.type?.ordinal?.toString()
         }
         Fields.Event.Label -> lhs.events().compareTo(ignoreCase, rhs.events()) {
             it.label
@@ -188,7 +188,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
 
         // IM
         Fields.Im.Protocol -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
-            it.protocol.ordinal.toString()
+            it.protocol?.ordinal?.toString()
         }
         Fields.Im.CustomProtocol -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
             it.customProtocol
@@ -251,7 +251,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
 
         // PHONE
         Fields.Phone.Type -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
-            it.type.ordinal.toString()
+            it.type?.ordinal?.toString()
         }
         Fields.Phone.Label -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
             it.label
@@ -268,7 +268,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
 
         // RELATION
         Fields.Relation.Type -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
-            it.type.ordinal.toString()
+            it.type?.ordinal?.toString()
         }
         Fields.Relation.Label -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
             it.label

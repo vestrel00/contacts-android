@@ -20,9 +20,9 @@ data class Relation internal constructor(
     override val isSuperPrimary: Boolean,
 
     /**
-     * The [Type] of relation. Defaults to [Type.ASSISTANT].
+     * The [Type] of relation.
      */
-    val type: Type,
+    val type: Type?,
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
@@ -39,7 +39,8 @@ data class Relation internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.RELATION
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, name)
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
 
     fun toMutableRelation() = MutableRelation(
         id = id,
@@ -76,7 +77,7 @@ data class Relation internal constructor(
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type = values().find { it.value == value } ?: ASSISTANT
+            fun fromValue(value: Int?): Type? = values().find { it.value == value }
         }
     }
 }
@@ -97,7 +98,7 @@ data class MutableRelation internal constructor(
     /**
      * See [Relation.type].
      */
-    var type: Type,
+    var type: Type?,
 
     /**
      * See [Relation.label].
@@ -116,8 +117,9 @@ data class MutableRelation internal constructor(
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,
-        Type.ASSISTANT, null, null
+        null, null, null
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, name)
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
 }

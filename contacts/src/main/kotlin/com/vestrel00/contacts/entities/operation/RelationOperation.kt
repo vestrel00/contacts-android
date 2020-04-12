@@ -12,7 +12,7 @@ internal class RelationOperation : AbstractDataOperation<MutableRelation>() {
     override fun setData(
         data: MutableRelation, setValue: (field: AbstractField, dataValue: Any?) -> Unit
     ) {
-        setValue(Fields.Relation.Type, data.type.value)
+        setValue(Fields.Relation.Type, data.type?.value)
         setValue(Fields.Relation.Label, data.label)
         setValue(Fields.Relation.Name, data.name)
     }

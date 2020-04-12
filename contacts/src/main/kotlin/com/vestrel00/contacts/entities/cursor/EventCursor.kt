@@ -12,7 +12,7 @@ import com.vestrel00.contacts.entities.Event
  */
 internal class EventCursor(cursor: Cursor) : DataCursor(cursor) {
     
-    val type: Event.Type
+    val type: Event.Type?
         get() = Event.Type.fromValue(cursor.getInt(Fields.Event.Type))
 
     val label: String?

@@ -12,7 +12,7 @@ import com.vestrel00.contacts.entities.Relation
  */
 internal class RelationCursor(cursor: Cursor) : DataCursor(cursor) {
 
-    val type: Relation.Type
+    val type: Relation.Type?
         get() = Relation.Type.fromValue(cursor.getInt(Fields.Relation.Type))
 
     val label: String?

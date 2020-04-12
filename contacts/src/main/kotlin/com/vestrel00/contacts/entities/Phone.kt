@@ -21,18 +21,18 @@ data class Phone internal constructor(
     override val isSuperPrimary: Boolean,
 
     /**
-     * The [Type] of phone. Defaults to [Type.MOBILE].
+     * The [Type] of phone.
      *
-     * Use [typeLabel] to get the display name of the type.
+     * Use [Type.typeLabel] to get the display name of the type.
      */
-    val type: Type,
+    val type: Type?,
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
      *
      * This should be null if the [type] is not [Type.CUSTOM]!!!
      *
-     * Use [typeLabel] to get the display name of the type.
+     * Use [Type.typeLabel] to get the display name of the type.
      */
     val label: String?,
 
@@ -58,16 +58,8 @@ data class Phone internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.PHONE
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, number, normalizedNumber)
-
-    /**
-     * The string representing the [type].
-     *
-     * If the [type] is [Type.CUSTOM] then the [label] is used. Otherwise, the Android default
-     * string for the [type] is used.
-     */
-    fun typeLabel(resources: Resources): String =
-        CommonDataKinds.Phone.getTypeLabel(resources, type.value, label).toString()
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
     fun toMutablePhone() = MutablePhone(
         id = id,
@@ -125,9 +117,18 @@ data class Phone internal constructor(
         val typeLabelResource: Int
             get() = CommonDataKinds.Phone.getTypeLabelResource(value)
 
+        /**
+         * The string representing the [type].
+         *
+         * If the [type] is [Type.CUSTOM] then the [label] is used. Otherwise, the Android default
+         * string for the [type] is used.
+         */
+        fun typeLabel(resources: Resources, label: String?): String =
+            CommonDataKinds.Phone.getTypeLabel(resources, value, label).toString()
+
         internal companion object {
 
-            fun fromValue(value: Int?): Type = values().find { it.value == value } ?: MOBILE
+            fun fromValue(value: Int?): Type? = values().find { it.value == value }
         }
     }
 }
@@ -148,7 +149,7 @@ data class MutablePhone internal constructor(
     /**
      * See [Phone.type].
      */
-    var type: Type,
+    var type: Type?,
 
     /**
      * See [Phone.label].
@@ -172,17 +173,9 @@ data class MutablePhone internal constructor(
 
     constructor() : this(
         INVALID_ID, INVALID_ID, INVALID_ID, false, false,
-        Type.MOBILE, null, null, null
+        null, null, null, null
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(label, number, normalizedNumber)
-
-    /**
-     * The string representing the [type].
-     *
-     * If the [type] is [Type.CUSTOM] then the [label] is used. Otherwise, the Android default
-     * string for the [type] is used.
-     */
-    fun typeLabel(resources: Resources): String =
-        CommonDataKinds.Phone.getTypeLabel(resources, type.value, label).toString()
+    // type and label are excluded from this check as they are useless information by themselves
+    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(number, normalizedNumber)
 }

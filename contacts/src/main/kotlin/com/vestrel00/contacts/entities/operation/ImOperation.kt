@@ -12,7 +12,7 @@ internal class ImOperation : AbstractDataOperation<MutableIm>() {
     override fun setData(
         data: MutableIm, setValue: (field: AbstractField, dataValue: Any?) -> Unit
     ) {
-        setValue(Fields.Im.Protocol, data.protocol.value)
+        setValue(Fields.Im.Protocol, data.protocol?.value)
         setValue(Fields.Im.CustomProtocol, data.customProtocol)
         setValue(Fields.Im.Data, data.data)
     }

@@ -20,9 +20,9 @@ data class Address internal constructor(
     override val isSuperPrimary: Boolean,
 
     /**
-     * The [Type] of address. Defaults to [Type.HOME].
+     * The [Type] of address.
      */
-    val type: Type,
+    val type: Type?,
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
@@ -85,8 +85,9 @@ data class Address internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ADDRESS
 
+    // type and label are excluded from this check as they are useless information by themselves
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        label, formattedAddress, street, poBox, neighborhood, city, region, postcode, country
+        formattedAddress, street, poBox, neighborhood, city, region, postcode, country
     )
 
     fun toMutableAddress() = MutableAddress(
@@ -120,7 +121,7 @@ data class Address internal constructor(
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type = values().find { it.value == value } ?: HOME
+            fun fromValue(value: Int?): Type? = values().find { it.value == value }
         }
     }
 }
@@ -141,7 +142,7 @@ data class MutableAddress internal constructor(
     /**
      * See [Address.type].
      */
-    var type: Type,
+    var type: Type?,
 
     /**
      * See [Address.label].
@@ -192,13 +193,14 @@ data class MutableAddress internal constructor(
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ADDRESS
-    
+
     constructor() : this(
-        INVALID_ID, INVALID_ID, INVALID_ID, false, false, Type.HOME, null, null,
+        INVALID_ID, INVALID_ID, INVALID_ID, false, false, null, null, null,
         null, null, null, null, null, null, null
     )
 
+    // type and label are excluded from this check as they are useless information by themselves
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        label, formattedAddress, street, poBox, neighborhood, city, region, postcode, country
+        formattedAddress, street, poBox, neighborhood, city, region, postcode, country
     )
 }
