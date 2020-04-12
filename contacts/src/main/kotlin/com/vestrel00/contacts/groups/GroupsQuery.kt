@@ -24,6 +24,9 @@ import com.vestrel00.contacts.entities.table.Table
  * all) as Contacts Query. Filter, order, offset, and limit functions are left to consumers to
  * implement if they wish.
  *
+ * Furthermore, groups operations should usually be tied per account, which limits the amount of
+ * groups even further. Are there company accounts that has over thousands of groups?
+ *
  * ## Usage
  *
  * To get all groups for a given account;
@@ -31,7 +34,9 @@ import com.vestrel00.contacts.entities.table.Table
  * In Kotlin and Java,
  *
  * ```kotlin
- * groupsQuery.fromAccount(account)
+ * val groups = groupsQuery
+ *      .account(account)
+ *      .find()
  * ```
  *
  * ## Developer notes
@@ -64,8 +69,8 @@ interface GroupsQuery {
     fun withIds(groupIds: Sequence<Long>): GroupsQuery
 
     /**
-     * Returns the list of [Group]s belonging to the [Account] specified in [fromAccount] that match
-     * IDs specified in [withIds].
+     * Returns the list of [Group]s belonging to the [Account] specified in [account] that match IDs
+     * specified in [withIds].
      *
      * If no [Account] or ID is provided, then this will return all [Groups] from all available
      * [Account]s.
@@ -78,8 +83,8 @@ interface GroupsQuery {
     fun find(): List<Group>
 
     /**
-     * Returns the list of [Group]s belonging to the [Account] specified in [fromAccount] that match
-     * IDs specified in [withIds].
+     * Returns the list of [Group]s belonging to the [Account] specified in [account] that match IDs
+     * specified in [withIds].
      *
      * If no [Account] or ID is provided, then this will return all [Groups] from all available
      * [Account]s.
@@ -102,8 +107,8 @@ interface GroupsQuery {
     fun find(cancel: () -> Boolean): List<Group>
 
     /**
-     * Returns the first [Group] belonging to the [Account] specified in [fromAccount] that match
-     * IDs specified in [withIds].
+     * Returns the first [Group] belonging to the [Account] specified in [account] that match IDs
+     * specified in [withIds].
      *
      * If no [Account] or ID is provided, then this will return all [Groups] from all available
      * [Account]s.
@@ -115,8 +120,8 @@ interface GroupsQuery {
     fun findFirst(): Group?
 
     /**
-     * Returns the first [Group] belonging to the [Account] specified in [fromAccount] that match
-     * IDs specified in [withIds].
+     * Returns the first [Group] belonging to the [Account] specified in [account] that match IDs
+     * specified in [withIds].
      *
      * If no [Account] or ID is provided, then this will return all [Groups] from all available
      * [Account]s.
