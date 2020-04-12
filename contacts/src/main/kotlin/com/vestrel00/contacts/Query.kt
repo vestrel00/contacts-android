@@ -19,18 +19,13 @@ import kotlin.math.min
  * examples for brevity. All queries will return an empty list or null result if the permission
  * is not granted.
  *
- * ## Accounts
- *
- * When limiting queries to certain accounts, contacts returned may contain data that belongs to
- * other accounts not specified in [accounts]. This follows the native Contacts app behavior.
- *
  * ## Usage
  *
  * Here is an example query that returns the first 10 [Contact]s, skipping the first 5, where the
  * contact's name starts with "john" and has an email ending with "gmail", ordered by the name in
  * ascending order (not ignoring case) and email (ignoring case) in descending order respectively.
- * Only contacts in the given account are included. Only the full name and email address attributes
- * of the [Contact] objects are included.
+ * Only Contacts with at least one RawContact belonging to the given account are included. Only the
+ * full name and email address attributes of the [Contact] objects are included.
  *
  * In Kotlin,
  *

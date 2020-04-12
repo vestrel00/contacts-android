@@ -10,6 +10,51 @@ import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.cursor.getString
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 
+/**
+ * Queries the Contacts, RawContacts, and Data tables and returns the one and only profile
+ * [Contact], if available.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All queries will return null if the permission is not granted.
+ *
+ * ## Usage
+ *
+ * Here is an example query that returns the profile [Contact]. Only RawContacts belonging to the
+ * given account are included. Only the full name and email address attributes of the profile
+ * [Contact] are included.
+ *
+ * In Kotlin,
+ *
+ * ```kotlin
+ * import com.vestrel00.contacts.Fields.Name
+ * import com.vestrel00.contacts.Fields.Address
+ *
+ * val profileContact : Contact? = profileQuery.
+ *      .accounts(account)
+ *      .include(Name, Address)
+ *      .find()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * import static com.vestrel00.contacts.Fields.*;
+ * import static com.vestrel00.contacts.WhereKt.*;
+ * import static com.vestrel00.contacts.OrderByKt.*;
+ *
+ * List<Contact> contacts = query
+ *      .accounts(account)
+ *      .include(Name, Address)
+ *      .find();
+ * ```
+ *
+ * ## Note
+ *
+ * All functions here are safe to call in the Main / UI thread EXCEPT for [find], which should be
+ * called in a worker thread in order to prevent blocking the UI.
+ */
 interface ProfileQuery {
 
     /**
@@ -67,7 +112,7 @@ interface ProfileQuery {
     fun include(fields: Sequence<Field>): ProfileQuery
 
     /**
-     * Returns the profile [Contact], if any.
+     * Returns the profile [Contact], if available.
      *
      * ## Thread Safety
      *
@@ -77,7 +122,7 @@ interface ProfileQuery {
     fun find(): Contact?
 
     /**
-     * Returns the profile [Contact], if any.
+     * Returns the profile [Contact], if available.
      *
      * ## Cancellation
      *
