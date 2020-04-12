@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.permissions
+package com.vestrel00.contacts.permissions.groups
 
 import android.app.Activity
 import com.vestrel00.contacts.ContactsPermissions
@@ -6,6 +6,8 @@ import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.groups.GroupsInsert
 import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.groups.GroupsUpdate
+import com.vestrel00.contacts.permissions.requestInsertUpdateDeletePermission
+import com.vestrel00.contacts.permissions.requestQueryPermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
