@@ -674,13 +674,12 @@ The native Contacts app does not support group deletion or updates perhaps becau
 isn't implemented or at least not to the same extent as contacts syncing. Therefore, this library
 will also not support group deletion.
 
-#### Profile
+#### User Profile
 
-There exist one Contacts row that identifies the owner of the device;
+There exist one (profile) Contacts row that identifies the user;
 `ContactsColumns.IS_USER_PROFILE`. There is at least one RawContacts row that is associated with the
-user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts are not
-associated with an Account (null account name and type) as it is a local profile. The RawContacts
-row(s) may have rows in the Data table as usual.
+user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts may or may
+not be associated with an Account. The RawContacts row(s) may have rows in the Data table as usual.
 
 The profile Contact row may not be merged / linked with other contacts and do not belong to any
 group (favorites / starred).
@@ -694,6 +693,31 @@ RawContacts.Data.CONTENT_DIRECTORY.
 
 Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
 associated Contacts and Data table rows will automatically be deleted.
+
+**Profile and users**
+
+Note that as of Android 5 Lollipop, there may exist multiple users in a device. Each user has a
+separate list of accounts and contact data. This also means that each user has a separate (local)
+profile contact.
+
+**Profile and Accounts**
+
+According to the `Profile` documentation; "... each account (including data set, if applicable) on
+the device may contribute a single raw contact representing the user's personal profile data from
+that source."
+
+In other words, 1 account can have 1 profile RawContact. Whether or not profile RawContacts
+associated to an Account can be carried over and sync'ed across devices and users is up to the
+Contacts Provider / Sync provider for that Account.
+
+> From my experience, profile RawContacts associated to an Account is not carried over / sync'ed
+> across devices and users.
+
+> TODO attempt to create a profile with multiple RawContacts each from a different account.
+
+Unlike regular contacts where the Contacts Provider automatically assigns to an Account (when
+available) RawContacts that currently don't belong to an Account, profile RawContacts that don't
+belong to an Account are NOT automatically assigned to an Account.
 
 **Profile permissions**
 

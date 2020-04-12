@@ -96,9 +96,11 @@ import kotlin.math.min
 interface Query {
 
     /**
-     * Limits this query to only search for contacts associated with the given accounts.
+     * Limits the search to only those RawContacts associated with the given accounts. Contacts
+     * returned may still contain data that belongs to other accounts not specified in [accounts].
+     * This follows the native Contacts app behavior.
      *
-     * If no accounts are specified, then all contacts from all accounts are searched.
+     * If no accounts are specified, then all RawContacts of Contacts are included in the search.
      */
     fun accounts(vararg accounts: Account): Query
 
@@ -482,7 +484,7 @@ private class QueryResolver(
         var contactsSequence: Sequence<Contact> = emptySequence()
 
         if (cursor != null) {
-            contactsSequence = ContactsMapper().fromCursor(cursor, cancel)
+            contactsSequence = ContactsMapper(cancel).fromCursor(cursor).map()
             cursor.close()
         }
 

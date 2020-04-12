@@ -2,9 +2,10 @@ package com.vestrel00.contacts
 
 import android.content.Context
 import com.vestrel00.contacts.groups.Groups
+import com.vestrel00.contacts.profile.Profile
 
 /**
- * Creates a new [Query], [Insert], [Update], and [Delete] instances.
+ * Provides new [Query], [Insert], [Update], [Delete], [Groups], and [Profile] instances.
  *
  * ## Permissions
  *
@@ -18,6 +19,10 @@ import com.vestrel00.contacts.groups.Groups
  * ## Groups
  *
  * For group management, use [groups].
+ *
+ * ## Profile
+ *
+ * For user profile management, use [profile].
  */
 interface Contacts {
 
@@ -47,15 +52,20 @@ interface Contacts {
     fun delete(context: Context): Delete
 
     /**
+     * Returns a new [Groups] instance.
+     */
+    fun groups(): Groups
+
+    /**
+     * Returns a new [Profile] instance.
+     */
+    fun profile(): Profile
+
+    /**
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
     fun permissions(context: Context): ContactsPermissions
-
-    /**
-     * Returns a new [Groups] instance.
-     */
-    fun groups(): Groups
 }
 
 /**
@@ -76,7 +86,9 @@ private class ContactsImpl : Contacts {
 
     override fun delete(context: Context) = Delete(context)
 
-    override fun permissions(context: Context) = ContactsPermissions(context)
-
     override fun groups() = Groups()
+
+    override fun profile(): Profile = Profile()
+
+    override fun permissions(context: Context) = ContactsPermissions(context)
 }

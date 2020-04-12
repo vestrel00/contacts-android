@@ -14,6 +14,14 @@ import com.vestrel00.contacts.entities.cursor.rawContactCursor
  * Data table.
  */
 internal class ContactsMapper(
+
+    /**
+     * If this function returns true while contacts are being looked-up / processed, an empty
+     * sequence will be returned regardless of the accumulated data before cancellation. This is
+     * done to ensure that only correct and complete data set is returned.
+     */
+    private val cancel: () -> Boolean,
+
     /**
      * A map of contact id to [Contact].
      */
@@ -26,13 +34,11 @@ internal class ContactsMapper(
 ) {
 
     /**
-     * Returns a sequence of contacts.
+     * Retrieves contact data from the given Data table cursor.
      *
-     * If [cancel] returns true while the [cursor] is being traversed, an empty sequence will be
-     * returned regardless of the cursor data processed before cancellation. This is done to ensure
-     * that only correct and complete data set is returned.
+     * This will not close the given [cursor].
      */
-    fun fromCursor(cursor: Cursor, cancel: () -> Boolean): Sequence<Contact> {
+    fun fromCursor(cursor: Cursor): ContactsMapper = apply {
         cursor.moveToPosition(-1)
 
         // Changing the cursor position also changes the values returned by the entityMapper.
@@ -50,12 +56,12 @@ internal class ContactsMapper(
             cursor.updateRawContact(rawContact)
 
             if (cancel()) {
-                // Return empty sequence if cancelled to ensure only correct data set is returned.
-                return emptySequence()
+                break
             }
         }
-        cursor.close()
+    }
 
+    fun map(): Sequence<Contact> {
         sortRawContactsDataLists()
 
         // Map contact id to set of raw contacts.

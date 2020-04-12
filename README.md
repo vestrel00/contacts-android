@@ -1,10 +1,12 @@
 ## TODO
 
+0. Make Entity.Types nullable because the default type is returned when type is not included.
 1. Setup user profile
+    - Query, Insert, Update, Delete + withPermission & async
+    - Add isUserProfile to Contact and RawContact entities. Review and update ALL util functions accordingly.
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
     - `ContactsContract.Profile`
-    - Requires READ_PROFILE / WRITE_PROFILE permissions!!!!!!
     - https://stackoverflow.com/questions/33981594/how-to-insert-profile-contact-programmatically-in-android
 2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)

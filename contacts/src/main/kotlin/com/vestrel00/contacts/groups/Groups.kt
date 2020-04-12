@@ -50,9 +50,6 @@ interface Groups {
     fun permissions(context: Context): ContactsPermissions
 }
 
-/**
- * Creates a new [Groups] instance.
- */
 @Suppress("FunctionName")
 internal fun Groups(): Groups = GroupsImpl()
 
