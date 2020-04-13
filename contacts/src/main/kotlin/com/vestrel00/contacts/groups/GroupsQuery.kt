@@ -184,13 +184,9 @@ private class GroupsQueryImpl(
         this.account = account
     }
 
-    override fun withIds(vararg groupIds: Long): GroupsQuery = apply {
-        this.groupIds = groupIds.toSet()
-    }
+    override fun withIds(vararg groupIds: Long): GroupsQuery = withIds(groupIds.asSequence())
 
-    override fun withIds(groupIds: Collection<Long>): GroupsQuery = apply {
-        this.groupIds = groupIds.toSet()
-    }
+    override fun withIds(groupIds: Collection<Long>): GroupsQuery = withIds(groupIds.asSequence())
 
     override fun withIds(groupIds: Sequence<Long>): GroupsQuery = apply {
         this.groupIds = groupIds.toSet()
