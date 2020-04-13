@@ -149,8 +149,8 @@ Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
 RawContacts inserted without an associated account are considered local or device-only contacts,
 which are not sync'ed.
 
-When an Account is added, from a state where no accounts have yet been added to the system, the 
-Contacts Provider automatically sets all of the null `accountName` and `accountType` in the 
+When an Account is added, from a state where no accounts have yet been added to the system, the
+Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
 RawContacts table to that Account's name and type;
 
 ```
@@ -162,8 +162,8 @@ RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
 
 This is a special case that only occurs when there are no accounts yet in the system. RawContacts
 that are not associated with an account when there are existing accounts remain local. The Contacts
-Provider does not automatically associate local accounts when a new account is added if there are
-already other accounts in the system.
+Provider does not automatically associate local contacts to an account when a new account is added
+if there are already other accounts in the system.
 
 Removing the Account will delete all of the associated rows in the Contact, RawContact, and 
 Data tables.

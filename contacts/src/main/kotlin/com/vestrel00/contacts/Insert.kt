@@ -30,8 +30,8 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * This is a special case that only occurs when there are no accounts yet in the system. RawContacts
  * that are not associated with an account when there are existing accounts remain local. The
- * Contacts Provider does not automatically associate local accounts when a new account is added if
- * there are already other accounts in the system.
+ * Contacts Provider does not automatically associate local contacts to an account when a new
+ * account is added if there are already other accounts in the system.
  *
  * ## Usage
  *
