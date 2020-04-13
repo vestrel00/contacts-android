@@ -20,26 +20,17 @@ import com.vestrel00.contacts.entities.operation.GroupOperation
  *
  * ## Accounts
  *
+ * A set of groups exist for each [Account]. When there are no accounts in the system, there are
+ * no groups and inserting groups will fail.
+ *
  * The get accounts permission is required here because this API retrieves all available accounts,
  * if any, and does the following;
  *
  * - if the account specified is found in the list of accounts returned by the system, the account
  * is used
- * - if the account specified is not found in the list of accounts returned by the system, the first
- * account returned by the system is used
- *
- * In other words, this API does not allow groups to not have an associated account if account(s)
- * are available.
- *
- * Actually, the Contacts Provider automatically updates the groups to be associated with an
- * existing account (if available). The Contacts Provider does not allow null accounts associated
- * with groups when there are existing accounts. The Contacts Provider enforces this rule by
- * routinely checking for groups associated with null accounts and assigns non-null accounts to
- * those groups.
- *
- * This API takes the initiative instead of waiting for the Contacts Provider to assign accounts
- * (and groups) at some later point in time. This ensures that consumers are not subject to the
- * "randomness"/asynchronous nature of the Contacts Provider.
+ * - if the account specified is not found in the list of accounts returned by the system, then the
+ * insertion fails for that group
+ * - if there are no accounts in the system, [commit] does nothing and fails immediately
  *
  * ## Usage
  *
@@ -157,7 +148,11 @@ private class GroupsInsertImpl(
 
         val results = mutableMapOf<MutableGroup, Long?>()
         for (group in groups) {
-            results[group] = insertGroup(group.withValidAccount(accounts))
+            results[group] = if (accounts.contains(group.account)) {
+                insertGroup(group)
+            } else {
+                null
+            }
         }
         return GroupsInsertResult(results)
     }
@@ -191,16 +186,6 @@ private class GroupsInsertImpl(
             val groupId = groupUri.lastPathSegment?.toLongOrNull()
             groupId
         }
-    }
-
-    private fun MutableGroup.withValidAccount(accounts: List<Account>): MutableGroup {
-        if (!accounts.contains(account)) {
-            // We dissuade consumers from using the copy method. However, we know what we are doing
-            // so we make an exception here =)
-            return this.copy(account = accounts.first())
-        }
-
-        return this
     }
 }
 
