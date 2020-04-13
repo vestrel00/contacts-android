@@ -156,6 +156,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
         // PhotoUri and PhotoThumbnailUri are excluded.
         Fields.Contact.LastUpdatedTimestamp ->
             lhs.lastUpdatedTimestamp.compareTo(rhs.lastUpdatedTimestamp)
+        // IsProfile is left out as it is not meant for queries
 
         // EMAIL
         Fields.Email.Type -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
@@ -196,6 +197,8 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
         Fields.Im.Data -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
             it.data
         }
+
+        // Primary and super primary intentionally excluded because it is per data entity instance.
 
         // MIMETYPE intentionally excluded because they are not meant to be used for queries.
 
@@ -264,7 +267,6 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
         }
 
         // RAW CONTACT intentionally excluded because they are not meant to be used for queries.
-        // These OrderBys only apply to Data table fields.
 
         // RELATION
         Fields.Relation.Type -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {

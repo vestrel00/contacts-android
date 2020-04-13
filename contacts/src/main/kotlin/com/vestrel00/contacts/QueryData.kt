@@ -442,22 +442,21 @@ private class QueryDataResolver(
             "$orderBy LIMIT $limit OFFSET $offset"
         )
 
-        val entities = mutableListOf<T>()
-        if (cursor != null) {
-            val entityMapper = cursor.entityMapperFor<T>(mimeType)
-            while (cursor.moveToNext()) {
-                entities.add(entityMapper.value)
+        return mutableListOf<T>().apply {
+            if (cursor != null) {
+                val entityMapper = cursor.entityMapperFor<T>(mimeType)
+                while (cursor.moveToNext()) {
+                    add(entityMapper.value)
 
-                if (cancel()) {
-                    // Return empty list if cancelled to ensure only correct data set is returned.
-                    entities.clear()
-                    break
+                    if (cancel()) {
+                        // Return empty list if cancelled to ensure only correct data set is returned.
+                        clear()
+                        break
+                    }
                 }
+                cursor.close()
             }
-            cursor.close()
         }
-
-        return entities
     }
 
     private fun findRawContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> {

@@ -302,7 +302,7 @@ private class QueryImpl(
         include = if (fields.count() == 0) {
             DEFAULT_INCLUDE
         } else {
-            Include(fields + Fields.Required.fields.asSequence())
+            Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
     }
 
@@ -361,6 +361,7 @@ private class QueryImpl(
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE = NoWhere
         val DEFAULT_INCLUDE = Include(Fields.All)
+        val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
         val DEFAULT_WHERE = NoWhere
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Contact.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
@@ -479,7 +480,9 @@ private class QueryResolver(
         var contactsSequence: Sequence<Contact> = emptySequence()
 
         if (cursor != null) {
-            contactsSequence = ContactsMapper(cancel).fromCursor(cursor).map()
+            contactsSequence = ContactsMapper(isProfile = false, cancel = cancel)
+                .fromCursor(cursor)
+                .map()
             cursor.close()
         }
 

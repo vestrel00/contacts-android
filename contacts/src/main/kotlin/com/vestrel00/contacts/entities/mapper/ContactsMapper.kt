@@ -16,6 +16,11 @@ import com.vestrel00.contacts.entities.cursor.rawContactCursor
 internal class ContactsMapper(
 
     /**
+     * True if the cursors used in [fromCursor] contains data belonging to the user profile.
+     */
+    private val isProfile: Boolean,
+
+    /**
      * If this function returns true while contacts are being looked-up / processed, an empty
      * sequence will be returned regardless of the accumulated data before cancellation. This is
      * done to ensure that only correct and complete data set is returned.
@@ -46,13 +51,15 @@ internal class ContactsMapper(
             // Collect contacts.
             val contactId = cursor.contactCursor().id
             if (!contactsMap.containsKey(contactId)) {
-                contactsMap[contactId] = cursor.contactMapper().value
+                contactsMap[contactId] = cursor.contactMapper(isProfile).value
             }
 
             // Collect the RawContacts and update them.
             val rawContactId = cursor.rawContactCursor().id
             val rawContact =
-                rawContactsMap.getOrPut(rawContactId) { cursor.tempRawContactMapper().value }
+                rawContactsMap.getOrPut(rawContactId) {
+                    cursor.tempRawContactMapper(isProfile).value
+                }
             cursor.updateRawContact(rawContact)
 
             if (cancel()) {

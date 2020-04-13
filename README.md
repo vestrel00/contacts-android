@@ -1,12 +1,15 @@
 ## TODO
 
 1. Setup user profile
-    - Update (insert included), Delete + withPermission & async
-    - Add isUserProfile to Contact and RawContact entities. Review and update ALL util functions accordingly.
+    - Update (insert included), Delete + withPermission & async.
+    - Review and update ALL util functions accordingly.
+    - Attempt to create a profile with multiple RawContacts each from a different account.
+
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
     - `ContactsContract.Profile`
     - https://stackoverflow.com/questions/33981594/how-to-insert-profile-contact-programmatically-in-android
+
 2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
 3. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
@@ -46,6 +49,7 @@ based on older versions; API Nougat and below.
 - Create contact
     - Saving to which account (editable)
         - What happens to fields (groups) that have been filled out when different account is picked?
+        - Preference for default account for new contacts
         
 - Contacts list
     - Long press options

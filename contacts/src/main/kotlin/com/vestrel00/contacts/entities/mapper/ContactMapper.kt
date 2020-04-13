@@ -6,12 +6,15 @@ import com.vestrel00.contacts.entities.cursor.ContactCursor
 
 internal class ContactMapper(
     private val contactCursor: ContactCursor,
-    private val optionsMapper: EntityMapper<Options>
+    private val optionsMapper: EntityMapper<Options>,
+    private val isProfile: Boolean
 ) : EntityMapper<Contact> {
 
     override val value: Contact
         get() = Contact(
             id = contactCursor.id,
+
+            isProfile = isProfile,
 
             rawContacts = emptyList(),
 

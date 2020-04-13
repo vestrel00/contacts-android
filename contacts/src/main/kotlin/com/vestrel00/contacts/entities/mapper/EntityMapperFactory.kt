@@ -8,10 +8,8 @@ internal fun Cursor.addressMapper(): EntityMapper<Address> = AddressMapper(addre
 
 internal fun Cursor.companyMapper(): EntityMapper<Company> = CompanyMapper(companyCursor())
 
-internal fun Cursor.contactMapper(): EntityMapper<Contact> = ContactMapper(
-    contactCursor(),
-    optionsMapper()
-)
+internal fun Cursor.contactMapper(isProfile: Boolean): EntityMapper<Contact> =
+    ContactMapper(contactCursor(), optionsMapper(), isProfile)
 
 internal fun Cursor.emailMapper(): EntityMapper<Email> = EmailMapper(emailCursor())
 
@@ -39,7 +37,7 @@ internal fun Cursor.relationMapper(): EntityMapper<Relation> = RelationMapper(re
 internal fun Cursor.sipAddressMapper(): EntityMapper<SipAddress> =
     SipAddressMapper(sipAddressCursor())
 
-internal fun Cursor.tempRawContactMapper(): EntityMapper<TempRawContact> =
-    TempRawContactMapper(rawContactCursor())
+internal fun Cursor.tempRawContactMapper(isProfile: Boolean): EntityMapper<TempRawContact> =
+    TempRawContactMapper(rawContactCursor(), isProfile)
 
 internal fun Cursor.websiteMapper(): EntityMapper<Website> = WebsiteMapper(websiteCursor())

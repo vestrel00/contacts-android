@@ -41,6 +41,11 @@ data class RawContact internal constructor(
     val contactId: Long,
 
     /**
+     * True if this raw contact belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean,
+
+    /**
      * An immutable list of addresses.
      */
     val addresses: List<Address>,
@@ -105,6 +110,8 @@ data class RawContact internal constructor(
         id = id,
         contactId = contactId,
 
+        isProfile = isProfile,
+
         addresses = addresses.asSequence().map { it.toMutableAddress() }.toMutableList(),
 
         company = company?.toMutableCompany(),
@@ -152,6 +159,11 @@ data class MutableRawContact internal constructor(
      * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
     val contactId: Long,
+
+    /**
+     * See [RawContact.isProfile].
+     */
+    val isProfile: Boolean,
 
     /**
      * Mutable version of [RawContact.addresses].
@@ -227,7 +239,7 @@ data class MutableRawContact internal constructor(
 ) : Entity, Parcelable {
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, mutableListOf(), null, mutableListOf(), mutableListOf(),
+        INVALID_ID, INVALID_ID, false, mutableListOf(), null, mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, mutableListOf(),
         mutableListOf(), null, mutableListOf()
     )
@@ -248,6 +260,7 @@ internal data class TempRawContact constructor(
 
     override val id: Long,
     val contactId: Long,
+    val isProfile: Boolean,
     var addresses: MutableList<Address>,
     var company: Company?,
     var emails: MutableList<Email>,
@@ -273,6 +286,8 @@ internal data class TempRawContact constructor(
     fun toRawContact() = RawContact(
         id = id,
         contactId = contactId,
+
+        isProfile = isProfile,
 
         addresses = addresses.toList(),
 

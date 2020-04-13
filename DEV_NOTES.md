@@ -681,6 +681,11 @@ There exist one (profile) Contacts row that identifies the user;
 user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts may or may
 not be associated with an Account. The RawContacts row(s) may have rows in the Data table as usual.
 
+> Note that the Contacts Provider will throw an IllegalArgument exception when attempting to include
+> `ContactsColumns.IS_USER_PROFILE` and `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE` columns
+> in Data table queries. I have not yet tried including these columns in the Contacts or RawContacts
+> table queries.
+
 The profile Contact row may not be merged / linked with other contacts and do not belong to any
 group (favorites / starred).
 
@@ -689,7 +694,7 @@ respective tables. They will not be in the resulting cursor. To get the profile 
 query the `Profile.CONTENT_URI`. To get profile RawContacts table rows, query the
 `Profile.CONTENT_RAW_CONTACTS_URI`. To get the profile Data table rows, query the
 `Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
-RawContacts.Data.CONTENT_DIRECTORY.
+`RawContacts.Data.CONTENT_DIRECTORY`.
 
 Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
 associated Contacts and Data table rows will automatically be deleted.
@@ -712,8 +717,6 @@ Contacts Provider / Sync provider for that Account.
 
 > From my experience, profile RawContacts associated to an Account is not carried over / sync'ed
 > across devices and users.
-
-> TODO attempt to create a profile with multiple RawContacts each from a different account.
 
 Unlike regular contacts where the Contacts Provider automatically assigns to an Account (when
 available) RawContacts that currently don't belong to an Account, profile RawContacts that don't

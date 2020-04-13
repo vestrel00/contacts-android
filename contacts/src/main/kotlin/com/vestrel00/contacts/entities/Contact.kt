@@ -28,6 +28,11 @@ data class Contact internal constructor(
     override val id: Long,
 
     /**
+     * True if this contact represents the user's personal profile entry.
+     */
+    val isProfile: Boolean,
+
+    /**
      * A list of [RawContact]s that are associated with this contact.
      *
      * This list is sorted by [RawContact.id], which seems to be the sort order used by the native
@@ -99,6 +104,8 @@ data class Contact internal constructor(
     fun toMutableContact() = MutableContact(
         id = id,
 
+        isProfile = isProfile,
+
         rawContacts = rawContacts.map { it.toMutableRawContact() },
 
         displayName = displayName,
@@ -119,6 +126,11 @@ data class MutableContact internal constructor(
      * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
     override val id: Long,
+
+    /**
+     * See [Contact.isProfile].
+     */
+    val isProfile: Boolean,
 
     /**
      * Contains a list of **mutable** raw contacts (sorted by [MutableRawContact.id]) though the

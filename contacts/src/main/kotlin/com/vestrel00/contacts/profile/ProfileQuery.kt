@@ -5,7 +5,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.*
-import com.vestrel00.contacts.Fields.Required
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.cursor.getString
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
@@ -185,7 +184,7 @@ private class ProfileQueryImpl(
         include = if (fields.count() == 0) {
             DEFAULT_INCLUDE
         } else {
-            Include(fields + Required.fields.asSequence())
+            Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
     }
 
@@ -204,6 +203,7 @@ private class ProfileQueryImpl(
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE = NoWhere
         val DEFAULT_INCLUDE = Include(Fields.All)
+        val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
     }
 }
 
@@ -219,7 +219,7 @@ private class QueryResolver(
     fun resolve(rawContactsWhere: Where, include: Include): Contact? {
         val rawContactIds = rawContactIds(rawContactsWhere)
 
-        val contactsMapper = ContactsMapper(cancel)
+        val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
         for (rawContactId in rawContactIds) {
             val cursor = dataCursorFor(rawContactId, include)
 

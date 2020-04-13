@@ -2,6 +2,8 @@
 
 package com.vestrel00.contacts
 
+import android.annotation.TargetApi
+import android.os.Build
 import android.provider.BaseColumns
 import android.provider.ContactsContract
 import android.provider.ContactsContract.Data
@@ -134,6 +136,8 @@ object Fields {
     @JvmField
     val Website = WebsiteFields()
 
+    internal val Required = Required()
+
     /**
      * Be careful with using this for queries. This field set includes the following fields, which
      * may lead to unintentional query matches (especially when matching numbers);
@@ -155,8 +159,6 @@ object Fields {
      */
     @JvmField
     val AllForMatching = AllForMatchingFields()
-
-    internal val Required = Required()
 }
 
 class AllFields : FieldSet(UNKNOWN) {
@@ -177,8 +179,9 @@ class AllFields : FieldSet(UNKNOWN) {
         addAll(Fields.Note.fields)
         addAll(Fields.Options.fields)
         addAll(Fields.Phone.fields)
-        add(Fields.RawContact.Id)
+        addAll(Fields.RawContact.fields)
         addAll(Fields.Relation.fields)
+        addAll(Fields.Required.fields)
         addAll(Fields.SipAddress.fields)
         addAll(Fields.Website.fields)
     }.toSet()
@@ -202,8 +205,9 @@ class AllForMatchingFields : FieldSet(UNKNOWN) {
         addAll(Fields.Note.fields)
         // addAll(Fields.Options.fields)
         addAll(Fields.Phone.fields.asSequence().minus(Fields.Phone.Type))
-        // add(Fields.RawContact.Id)
+        // addAll(Fields.RawContact.fields)
         addAll(Fields.Relation.fields.asSequence().minus(Fields.Relation.Type))
+        // addAll(Fields.Required.fields)
         addAll(Fields.SipAddress.fields)
         addAll(Fields.Website.fields)
     }.toSet()
@@ -315,7 +319,7 @@ class ContactFields : FieldSet(UNKNOWN) {
  */
 internal class ContactsFields : FieldSet(UNKNOWN) {
 
-    val Id = AbstractField(ContactsContract.Contacts._ID, UNKNOWN)
+    val Id = AbstractField(ContactsContract.Contacts._ID, mimeType)
 
     val PhotoUri = AbstractField(ContactsContract.Contacts.PHOTO_URI, mimeType)
 
@@ -326,6 +330,7 @@ internal class ContactsFields : FieldSet(UNKNOWN) {
 
     val DisplayNameSource = AbstractField(ContactsContract.Contacts.DISPLAY_NAME_SOURCE, mimeType)
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     val NameRawContactId = AbstractField(ContactsContract.Contacts.NAME_RAW_CONTACT_ID, mimeType)
 
     override val fields = setOf(Id, PhotoUri, PhotoThumbnailUri, PhotoFileId)
@@ -367,7 +372,7 @@ class EventFields : FieldSet(MimeType.EVENT) {
  */
 internal class GroupFields : FieldSet(UNKNOWN) {
 
-    val Id = AbstractField(GroupColumns._ID, UNKNOWN)
+    val Id = AbstractField(GroupColumns._ID, mimeType)
 
     val Title = AbstractField(GroupColumns.TITLE, mimeType)
 
@@ -509,7 +514,7 @@ internal class PhotoFields : FieldSet(MimeType.PHOTO) {
 
 class RawContactFields : FieldSet(UNKNOWN) {
 
-    val Id = AbstractField(Data.RAW_CONTACT_ID, UNKNOWN)
+    val Id = AbstractField(Data.RAW_CONTACT_ID, mimeType)
 
     override val fields = setOf(Id)
 }
@@ -522,7 +527,7 @@ class RawContactFields : FieldSet(UNKNOWN) {
  */
 internal class RawContactsFields : FieldSet(UNKNOWN) {
 
-    val Id = AbstractField(RawContacts._ID, UNKNOWN)
+    val Id = AbstractField(RawContacts._ID, mimeType)
 
     val ContactId = AbstractField(RawContacts.CONTACT_ID, mimeType)
 
