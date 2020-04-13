@@ -26,5 +26,10 @@ internal enum class Table(val uri: Uri) {
     /**
      * See [ContactsContract.Groups].
      */
-    GROUPS(ContactsContract.Groups.CONTENT_URI)
+    GROUPS(ContactsContract.Groups.CONTENT_URI),
+
+    /**
+     * See [ContactsContract.AggregationExceptions].
+     */
+    AGGREGATION_EXCEPTIONS(ContactsContract.AggregationExceptions.CONTENT_URI)
 }

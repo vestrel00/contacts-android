@@ -3,11 +3,15 @@ package com.vestrel00.contacts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
+import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
 import kotlin.math.min
 
+// TODO migrate Fields, Cursors, Mappers, Operations, etc to use Entity instead
+// TODO update all usages and mentions of the Data table accordingly
+// TODO mention entity
 /**
  * Queries the Contacts data table and returns one or more contacts matching the search criteria.
  *
@@ -480,6 +484,7 @@ private class QueryResolver(
         var contactsSequence: Sequence<Contact> = emptySequence()
 
         if (cursor != null) {
+            // Direct data table queries do not return user profile data.
             contactsSequence = ContactsMapper(isProfile = false, cancel = cancel)
                 .fromCursor(cursor)
                 .map()

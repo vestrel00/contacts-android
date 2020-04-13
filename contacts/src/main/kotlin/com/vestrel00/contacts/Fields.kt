@@ -69,6 +69,9 @@ object Fields {
     @JvmField
     val Address = AddressFields()
 
+    // Do not add this to AllFields as this is a different table from the Data table.
+    internal val AggregationExceptions = AggregationExceptionsFields()
+
     @JvmField
     val Company = CompanyFields()
 
@@ -264,6 +267,25 @@ class AddressFields : FieldSet(MimeType.ADDRESS) {
         Street, PoBox, Neighborhood,
         City, Region, PostCode, Country
     )
+}
+
+/*
+ * This and all of its fields are used for the AggregationsExceptions table operations!
+ *
+ * This is technically not the most correct place to put this but it is the simplest and most
+ * convenient place.
+ */
+internal class AggregationExceptionsFields : FieldSet(UNKNOWN) {
+
+    val Type = AbstractField(ContactsContract.AggregationExceptions.TYPE, mimeType)
+
+    val RawContactId1 =
+        AbstractField(ContactsContract.AggregationExceptions.RAW_CONTACT_ID1, mimeType)
+
+    val RawContactId2 =
+        AbstractField(ContactsContract.AggregationExceptions.RAW_CONTACT_ID2, mimeType)
+
+    override val fields = setOf(Type, RawContactId1, RawContactId2)
 }
 
 class CompanyFields : FieldSet(MimeType.COMPANY) {

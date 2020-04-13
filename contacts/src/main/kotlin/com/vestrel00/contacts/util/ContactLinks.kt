@@ -11,6 +11,7 @@ import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.getInt
 import com.vestrel00.contacts.entities.cursor.getLong
 import com.vestrel00.contacts.entities.mapper.nameMapper
+import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 
 // LINK
@@ -314,10 +315,10 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
             val rawContactId1 = sortedRawContactIds[i]
             val rawContactId2 = sortedRawContactIds[j]
 
-            val operation = ContentProviderOperation.newUpdate(AggregationExceptions.CONTENT_URI)
-                .withValue(AggregationExceptions.TYPE, type)
-                .withValue(AggregationExceptions.RAW_CONTACT_ID1, rawContactId1)
-                .withValue(AggregationExceptions.RAW_CONTACT_ID2, rawContactId2)
+            val operation = ContentProviderOperation.newUpdate(Table.AGGREGATION_EXCEPTIONS.uri)
+                .withValue(Fields.AggregationExceptions.Type, type)
+                .withValue(Fields.AggregationExceptions.RawContactId1, rawContactId1)
+                .withValue(Fields.AggregationExceptions.RawContactId2, rawContactId2)
                 .build()
 
             add(operation)

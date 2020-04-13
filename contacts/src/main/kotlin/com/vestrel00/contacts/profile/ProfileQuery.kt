@@ -219,6 +219,7 @@ private class QueryResolver(
     fun resolve(rawContactsWhere: Where, include: Include): Contact? {
         val rawContactIds = rawContactIds(rawContactsWhere)
 
+        // Data table queries using profile uris only return user profile data.
         val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
         for (rawContactId in rawContactIds) {
             val cursor = dataCursorFor(rawContactId, include)
