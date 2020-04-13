@@ -146,8 +146,12 @@ Data id: 17, rawContactId: 6, contactId: 6, data: Third Local Contact
 Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
 ```
 
-When an Account is added, all of the null `accountName` and `accountType` in the RawContacts table 
-are set to that Account's name and type;
+RawContacts inserted without an associated account are considered local or device-only contacts,
+which are not sync'ed.
+
+When an Account is added, from a state where no accounts have yet been added to the system, the 
+Contacts Provider automatically sets all of the null `accountName` and `accountType` in the 
+RawContacts table to that Account's name and type;
 
 ```
 RawContact id: 4, accountName: vestrel00@gmail.com, accountType: com.google
@@ -156,15 +160,13 @@ RawContact id: 6, accountName: vestrel00@gmail.com, accountType: com.google
 RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
 ```
 
+This is a special case that only occurs when there are no accounts yet in the system. RawContacts
+that are not associated with an account when there are existing accounts remain local. The Contacts
+Provider does not automatically associate local accounts when a new account is added if there are
+already other accounts in the system.
+
 Removing the Account will delete all of the associated rows in the Contact, RawContact, and 
 Data tables.
-
-Note that all of these operations are not instantaneous! It make take a few seconds for the 
-RawContacts to be updated of deleted.
-
-Creating a new RawContacts row where the account name and type are null when there are available 
-Accounts results in the RawContacts row to be updated by the Android Contacts Provider automatically
-later on to have an existing Account's name and type. 
 
 #### RawContacts; Deletion
 
@@ -203,7 +205,7 @@ When a RawContact does not have an associated Account, the RawContact row is aut
 when all of its Data rows are deleted. On the contrary, when a RawContact has an associated Account,
 the RawContact row remains when all of its Data rows are deleted.
 
-This will, in turn, also delete the Contact if there are no more RawContacts belonging to it.
+Contacts with no associated RawContacts are automatically deleted.
 
 #### Multiple RawContacts Per Contact
 
@@ -593,8 +595,7 @@ address elements from the `FORMATTED_ADDRESS`.
 
 #### Groups Table & Accounts
 
-Contacts are assigned to one or more groups via the `GroupMembership`. The actual groups are in a
-separate table. It typically looks like this;
+Contacts are assigned to one or more groups via the `GroupMembership`. It typically looks like this;
 
 ```
 Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1
@@ -605,6 +606,9 @@ Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, a
 Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0
 `````
 
+The actual groups are in a separate table; Groups. Each group is associated with an Account. No
+group can exist without an account. It is account-exclusive.
+
 > Note that the **ids will vary** as the user adds and removes accounts! Furthermore, each account
 > will have its own set of the above groups. This means that there may be multiple groups with the
 > same title belonging to different accounts.
@@ -613,10 +617,6 @@ The first 5 (this number depends on the OS / manufacturer) are system groups tha
 Newly created contacts are automatically assigned to group 1 (notice autoAdd is true). Group 2
 is usually the favorites group, though other custom groups can also be marked as favorites. Custom
 groups created by users can be written to, deleted, set as favorites, and set to auto add.
-
-Like RawContacts, creating a new Groups row where the account name and type are null when there are
-available Accounts (or when an account becomes available) results in the Groups row to be updated by
-the Contacts Provider automatically later on to have an existing Account's name and type. 
 
 Removing the Account will delete all of the associated rows in the Groups table.
 
@@ -640,8 +640,8 @@ membership should point to the group belonging to the same account as the contac
 Contacts app displays only the groups belonging to the selected account.
 
 Updating group memberships of existing contacts seem to be almost instant. All contacts must be a 
-part of at least the default contact group 1 (may vary). Contacts with no group membership will be 
-asynchronously added to the default group by the Contacts Provider.
+part of at least the default contact group. Contacts with no group membership will be asynchronously
+added to the default group by the Contacts Provider.
 
 Membership to the default group should never be deleted!
 
@@ -718,9 +718,9 @@ Contacts Provider / Sync provider for that Account.
 > From my experience, profile RawContacts associated to an Account is not carried over / sync'ed
 > across devices and users.
 
-Unlike regular contacts where the Contacts Provider automatically assigns to an Account (when
-available) RawContacts that currently don't belong to an Account, profile RawContacts that don't
-belong to an Account are NOT automatically assigned to an Account.
+// TODO Try inserting a RawContact for every single Account.
+// TODO Try inserting two RawContacts for the same Account.
+// TODO Try inserting a device-only RawContact. Try two!
 
 **Profile permissions**
 

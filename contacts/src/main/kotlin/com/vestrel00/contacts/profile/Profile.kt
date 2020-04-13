@@ -4,14 +4,13 @@ import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 
 /**
- * Creates a new [ProfileQuery], [ProfileUpdate] (updates or inserts the one and only profile
- * contact), and [ProfileDelete] instances.
+ * Creates a new [ProfileQuery], [ProfileInsert], [ProfileUpdate], and [ProfileDelete] instances.
  *
  * ## Permissions
  *
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
- * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [update] and
- * [delete].
+ * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
+ * [update], and delete].
  *
  * Use [permissions] convenience functions to check for required permissions.
  */

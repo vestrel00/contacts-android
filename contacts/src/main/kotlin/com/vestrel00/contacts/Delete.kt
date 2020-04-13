@@ -6,6 +6,7 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.RawContact
 import com.vestrel00.contacts.entities.operation.RawContactOperation
+import com.vestrel00.contacts.entities.table.Table
 
 /**
  * Deletes one or more raw contacts or contacts from the contacts table. All associated raw contacts
@@ -166,7 +167,7 @@ private class DeleteImpl(
 }
 
 internal fun deleteRawContactWithId(rawContactId: Long, contentResolver: ContentResolver): Boolean {
-    val operation = RawContactOperation().deleteRawContact(rawContactId)
+    val operation = RawContactOperation(Table.RAW_CONTACTS.uri).deleteRawContact(rawContactId)
 
     /*
      * Perform this single operation in a batch to be consistent with the other CRUD functions.
@@ -181,7 +182,7 @@ internal fun deleteRawContactWithId(rawContactId: Long, contentResolver: Content
 }
 
 internal fun deleteContactWithId(contactId: Long, contentResolver: ContentResolver): Boolean {
-    val operation = RawContactOperation().deleteContact(contactId)
+    val operation = RawContactOperation(Table.RAW_CONTACTS.uri).deleteContact(contactId)
 
     /*
      * Perform this single operation in a batch to be consistent with the other CRUD functions.

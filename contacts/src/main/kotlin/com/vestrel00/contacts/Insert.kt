@@ -7,6 +7,7 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.accounts.Accounts
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
+import com.vestrel00.contacts.entities.table.Table
 
 /**
  * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
@@ -16,38 +17,21 @@ import com.vestrel00.contacts.entities.operation.*
  *
  * The [ContactsPermissions.WRITE_PERMISSION] and
  * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
- * been granted already in these  examples for brevity. All inserts will do nothing if these
+ * been granted already in these examples for brevity. All inserts will do nothing if these
  * permissions are not granted.
  *
  * ## Accounts
  *
- * The get accounts permission is required here because this API retrieves all available accounts,
- * if any, and does the following;
+ * RawContacts inserted without an associated account are considered local or device-only contacts,
+ * which are not sync'ed.
  *
- * 1. If an account is not specified for the contacts being inserted via [forAccount];
+ * When an Account is added, from a state where no accounts have yet been added to the system, the
+ * Contacts Provider automatically associates all existing RawContacts to that Account.
  *
- *     - if an account is available, the first account is assigned for all raw contacts inserted
- *     - if no account is available, no account is assigned for any raw contacts to be inserted
- *
- * 2. If an account is specified for the contacts being inserted via [forAccount];
- *
- *     - if the account specified is found in the list of accounts returned by the system, the
- *     account is used
- *     - if the account specified is not found in the list of accounts returned by the system, the
- *     first account returned by the system is used
- *
- * In other words, this API does not allow raw contacts to not have an associated account if
- * account(s) are available.
- *
- * Actually, the Contacts Provider automatically updates the raw contacts to be associated with an
- * existing account (if available). The Contacts Provider does not allow null accounts associated
- * with raw contacts when there are existing accounts. The Contacts Provider enforces this rule by
- * routinely checking for raw contacts associated with null accounts and assigns non-null accounts
- * to those raw contacts.
- *
- * This API takes the initiative instead of waiting for the Contacts Provider to assign accounts
- * (and groups) at some later point in time. This ensures that consumers are not subject to the
- * "randomness" or the asynchronous nature of the Contacts Provider.
+ * This is a special case that only occurs when there are no accounts yet in the system. RawContacts
+ * that are not associated with an account when there are existing accounts remain local. The
+ * Contacts Provider does not automatically associate local accounts when a new account is added if
+ * there are already other accounts in the system.
  *
  * ## Usage
  *
@@ -103,8 +87,9 @@ interface Insert {
     /**
      * All of the raw contacts that are inserted on [commit] will belong to the given [account].
      *
-     * If not provided or if an incorrect account is provided, the first account returned by the
-     * system will be used (if any).
+     * If not provided or if an incorrect account is provided, the raw contacts inserted here
+     * will be local. RawContacts inserted without an associated account are considered local or
+     * device-only contacts, which are not sync'ed.
      */
     fun forAccount(account: Account?): Insert
 
@@ -198,7 +183,8 @@ private class InsertImpl(
 
     override fun rawContacts(rawContacts: Sequence<MutableRawContact>): Insert = apply {
         // Do not insert blank contacts.
-        this.rawContacts.addAll(rawContacts.filter { !it.isBlank() })
+        val nonBlankRawContacts = rawContacts.filter { !it.isBlank() }
+        this.rawContacts.addAll(nonBlankRawContacts)
     }
 
     override fun commit(): Insert.Result {
@@ -206,7 +192,7 @@ private class InsertImpl(
             return InsertFailed
         }
 
-        setValidAccount()
+        setAccountToNullIfNotValid()
 
         val results = mutableMapOf<MutableRawContact, Long?>()
         for (rawContact in rawContacts) {
@@ -216,27 +202,15 @@ private class InsertImpl(
     }
 
     /**
-     * This ensures that a valid account is used, if available.
-     *
-     * 1. If an account is not specified for the contacts being inserted via [forAccount];
-     *
-     *     - if an account is available, the first account is assigned for all raw contacts to be
-     *     inserted
-     *     - if no account is available, no account is assigned for any raw contacts to be inserted
-     *
-     * 2. If an account is specified for the contacts being inserted via [forAccount];
-     *
-     *     - if the account specified is found in the list of accounts returned by the system, the
-     *     account is used
-     *     - if the account specified is not found in the list of accounts returned by the system,
-     *     the first account returned by the system is used
+     * This ensures that a valid account is used. Otherwise, the [account] is set to null.
      */
-    private fun setValidAccount() {
-        val accounts = accounts.allAccounts(context)
+    private fun setAccountToNullIfNotValid() {
+        account?.let {
+            val allAccounts = accounts.allAccounts(context)
 
-        val account = this.account
-        if (account == null || !accounts.contains(account)) {
-            this.account = accounts.firstOrNull()
+            if (!allAccounts.contains(it)) {
+                account = null
+            }
         }
     }
 
@@ -261,7 +235,7 @@ private class InsertImpl(
          * This needs to be the first operation in the batch as it will be used by all subsequent
          * Data table insert operations.
          */
-        operations.add(RawContactOperation().insert(account))
+        operations.add(RawContactOperation(Table.RAW_CONTACTS.uri).insert(account))
 
         operations.addAll(AddressOperation().insert(rawContact.addresses))
 

@@ -30,7 +30,7 @@ import com.vestrel00.contacts.entities.operation.*
  * On the contrary, when a RawContact has an associated Account, it does not get deleted when all of
  * its data rows are deleted.
  *
- * This will, in turn, also delete the Contact if there are no more RawContacts belonging to it.
+ * Contacts with no associated RawContacts are automatically deleted.
  *
  * ## Usage
  *
@@ -190,13 +190,13 @@ private class UpdateImpl(
     }
 
     override fun contacts(vararg contacts: MutableContact): Update =
-        rawContacts(contacts.asSequence().flatMap { it.rawContacts.asSequence() })
+        contacts(contacts.asSequence())
 
     override fun contacts(contacts: Collection<MutableContact>): Update =
-        rawContacts(contacts.asSequence().flatMap { it.rawContacts.asSequence() })
+        contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<MutableContact>): Update =
-        rawContacts(contacts.asSequence().flatMap { it.rawContacts.asSequence() })
+        rawContacts(contacts.flatMap { it.rawContacts.asSequence() })
 
     override fun commit(): Update.Result {
         if (rawContacts.isEmpty() || !permissions.canInsertUpdateDelete()) {

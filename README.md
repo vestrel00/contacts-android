@@ -1,9 +1,8 @@
 ## TODO
 
 1. Setup user profile
-    - Update (insert included), Delete + withPermission & async.
+    - Insert, Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly.
-    - Attempt to create a profile with multiple RawContacts each from a different account.
 
     - `ContactsContract.ContactsColumns.IS_USER_PROFILE`
     - `ContactsContract.RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`
