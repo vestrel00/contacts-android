@@ -434,6 +434,7 @@ private class QueryDataResolver(
             dataWhere = dataWhere and where
         }
 
+        // TODO Narrow down the search by using the mimetype-specific content uri.
         val cursor = contentResolver.query(
             Table.DATA.uri,
             include.columnNames,

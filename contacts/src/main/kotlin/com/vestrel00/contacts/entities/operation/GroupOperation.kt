@@ -15,9 +15,9 @@ private val TABLE_URI = Table.GROUPS.uri
 internal class GroupOperation {
 
     fun insert(group: MutableGroup): ContentProviderOperation = newInsert(TABLE_URI)
-        .withValue(Fields.Group.Title, group.title)
-        .withValue(Fields.Group.AccountName, group.account.name)
-        .withValue(Fields.Group.AccountType, group.account.type)
+        .withValue(Fields.Groups.Title, group.title)
+        .withValue(Fields.Groups.AccountName, group.account.name)
+        .withValue(Fields.Groups.AccountType, group.account.type)
         // Setting favorites and auto add has no effect. The Contacts Provider will routinely set
         // them to false for all user-created groups.
         // .withValue(Fields.Group.Favorites, it.favorites.toSqlValue())
@@ -25,11 +25,11 @@ internal class GroupOperation {
         .build()
 
     fun update(group: MutableGroup): ContentProviderOperation = newUpdate(TABLE_URI)
-        .withSelection("${Fields.Group.Id equalTo group.id}", null)
-        .withValue(Fields.Group.Title, group.title)
+        .withSelection("${Fields.Groups.Id equalTo group.id}", null)
+        .withValue(Fields.Groups.Title, group.title)
         .build()
 
     fun delete(groupId: Long): ContentProviderOperation = newDelete(TABLE_URI)
-        .withSelection("${Fields.Group.Id equalTo groupId}", null)
+        .withSelection("${Fields.Groups.Id equalTo groupId}", null)
         .build()
 }

@@ -529,8 +529,9 @@ aggregate Contact is referred to as the "default".
 
 #### Data Table Joins
 
-All columns returned by the Data table are specified in `DataColumnsWithJoins`, which includes the
-`DataColumns`, `ContactsColumns`, and `ContactOptionsColumns`. 
+All columns accessible via cursors returned from Data table queries are specified in
+`DataColumnsWithJoins`, which includes the `DataColumns`, `ContactsColumns`, and
+`ContactOptionsColumns`. In code, mentions of the "Data table" typically refers to the joined table.
 
 The `DataColumns` gives us access to all of the columns in the Data table. All other joined columns,
 including the `ContactsColumns` are appended to each row in the query. This means that the 
@@ -592,6 +593,10 @@ the `StructuredName`.
 
 The inverse may not be true as the Contacts Provider does not seem to be able to derived the other
 address elements from the `FORMATTED_ADDRESS`.
+
+#### Entity
+
+TODO
 
 #### Groups Table & Accounts
 

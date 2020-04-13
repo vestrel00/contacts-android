@@ -6,33 +6,33 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.INVALID_ID
 
 /**
- * Retrieves [Fields.Group] data from the given [cursor].
+ * Retrieves [Fields.Groups] data from the given [cursor].
  *
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class GroupCursor(private val cursor: Cursor) {
+internal class GroupsCursor(private val cursor: Cursor) {
 
     val id: Long
-        get() = cursor.getLong(Fields.Group.Id) ?: INVALID_ID
+        get() = cursor.getLong(Fields.Groups.Id) ?: INVALID_ID
 
     val title: String
-        get() = cursor.getString(Fields.Group.Title) ?: "Null"
+        get() = cursor.getString(Fields.Groups.Title) ?: "Null"
 
     val readOnly: Boolean
-        get() = cursor.getBoolean(Fields.Group.ReadOnly) ?: false
+        get() = cursor.getBoolean(Fields.Groups.ReadOnly) ?: false
 
     val favorites: Boolean
-        get() = cursor.getBoolean(Fields.Group.Favorites) ?: false
+        get() = cursor.getBoolean(Fields.Groups.Favorites) ?: false
 
     val autoAdd: Boolean
-        get() = cursor.getBoolean(Fields.Group.AutoAdd) ?: false
+        get() = cursor.getBoolean(Fields.Groups.AutoAdd) ?: false
 
     val account: Account
         get() {
             // There should never be null account name or type...
-            val accountName = cursor.getString(Fields.Group.AccountName) ?: "null"
-            val accountType = cursor.getString(Fields.Group.AccountType) ?: "null"
+            val accountName = cursor.getString(Fields.Groups.AccountName) ?: "null"
+            val accountType = cursor.getString(Fields.Groups.AccountType) ?: "null"
 
             return Account(accountName, accountType)
         }

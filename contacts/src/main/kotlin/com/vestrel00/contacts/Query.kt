@@ -11,7 +11,8 @@ import kotlin.math.min
 
 // TODO migrate Fields, Cursors, Mappers, Operations, etc to use Entity instead
 // TODO update all usages and mentions of the Data table accordingly
-// TODO mention entity
+// TODO mention entity in DEV_NOTES
+// TODO Look through utils to see if entity sub-table can be used instead of data table
 /**
  * Queries the Contacts data table and returns one or more contacts matching the search criteria.
  *
@@ -409,6 +410,9 @@ private class QueryResolver(
                 }
             )
         }
+
+        // TODO use Entity table to fix RawContacts with no Data not showing up and for optimization purposes
+        // Test what happens when there is a Contact with no data rows and dataWhere is provided.
 
         // Search for all contacts with the matching contactIds. Note that contactIds will never be
         // null (though it may be empty) as long as at least one of rawContactsWhere or where is not

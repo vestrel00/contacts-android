@@ -1,20 +1,20 @@
 package com.vestrel00.contacts.entities.mapper
 
 import com.vestrel00.contacts.entities.Group
-import com.vestrel00.contacts.entities.cursor.GroupCursor
+import com.vestrel00.contacts.entities.cursor.GroupsCursor
 
-internal class GroupMapper(private val groupCursor: GroupCursor) : EntityMapper<Group> {
+internal class GroupMapper(private val groupsCursor: GroupsCursor) : EntityMapper<Group> {
 
     override val value: Group
         get() = Group(
-            id = groupCursor.id,
+            id = groupsCursor.id,
 
-            title = groupCursor.title,
+            title = groupsCursor.title,
 
-            readOnly = groupCursor.readOnly,
-            favorites = groupCursor.favorites,
-            autoAdd = groupCursor.autoAdd,
+            readOnly = groupsCursor.readOnly,
+            favorites = groupsCursor.favorites,
+            autoAdd = groupsCursor.autoAdd,
 
-            account = groupCursor.account
+            account = groupsCursor.account
         )
 }

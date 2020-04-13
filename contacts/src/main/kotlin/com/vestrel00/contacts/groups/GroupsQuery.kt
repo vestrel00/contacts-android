@@ -164,16 +164,16 @@ private class GroupsQueryImpl(
 
             account?.let {
                 // Limit the query to the given account.
-                where = (Fields.Group.AccountName equalTo it.name) and
-                        (Fields.Group.AccountType equalTo it.type)
+                where = (Fields.Groups.AccountName equalTo it.name) and
+                        (Fields.Groups.AccountType equalTo it.type)
             }
 
             if (groupIds.isNotEmpty()) {
                 // Limit the query to the given set of ids.
                 where = if (where != NoWhere) {
-                    where and (Fields.Group.Id `in` groupIds)
+                    where and (Fields.Groups.Id `in` groupIds)
                 } else {
-                    Fields.Group.Id `in` groupIds
+                    Fields.Groups.Id `in` groupIds
                 }
             }
 
@@ -204,7 +204,7 @@ private class GroupsQueryImpl(
         val where = where
         val cursor = contentResolver.query(
             Table.GROUPS.uri,
-            Include(Fields.Group).columnNames,
+            Include(Fields.Groups).columnNames,
             if (where == NoWhere) null else "$where",
             null,
             null
