@@ -94,15 +94,14 @@ import com.vestrel00.contacts.entities.table.Table
 interface Insert {
 
     /**
-     * If [allowBlanks] is set to false, then blank RawContacts ([MutableRawContact.isBlank]) will
-     * will not be inserted. Otherwise, blanks will be inserted. This flag is set to false by
+     * If [allowBlanks] is set to true, then blank RawContacts ([MutableRawContact.isBlank]) will
+     * will be inserted. Otherwise, blanks will not be inserted. This flag is set to false by
      * default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks").
-     *
-     * The native Contacts app does not allow insertion of new RawContacts without at least one data
-     * row. It also deletes blanks on update.
+     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
+     * without at least one data row. It also deletes blanks on update. Despite seemingly not
+     * allowing blanks, the native Contacts app shows them.
      */
     fun allowBlanks(allowBlanks: Boolean): Insert
 
@@ -184,9 +183,10 @@ private class InsertImpl(
     private val context: Context,
     private val accounts: Accounts,
     private val permissions: ContactsPermissions,
-    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf(),
+
+    private var allowBlanks: Boolean = false,
     private var account: Account? = null,
-    private var allowBlanks: Boolean = false
+    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : Insert {
 
     override fun allowBlanks(allowBlanks: Boolean): Insert = apply {

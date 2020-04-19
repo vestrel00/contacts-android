@@ -9,7 +9,10 @@ import java.util.*
 data class Options internal constructor(
 
     /**
-     * The id of this row in the Data table.
+     * The id of this row in the Contacts, RawContacts, or Data table.
+     *
+     * The columns here technically belong to the Contacts table but are accessible via joins in the
+     * RawContacts and Data table.
      */
     override val id: Long,
 

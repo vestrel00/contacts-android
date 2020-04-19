@@ -91,6 +91,27 @@ import kotlin.math.min
 interface Query {
 
     /**
+     * If [includeBlanks] is set to true, then queries may include blank RawContacts or blank
+     * Contacts ([Contact.isBlank]). Otherwise, blanks will not be included. This flag is set to
+     * true by default, which results in more database queries so setting this to false will
+     * increase performance, especially for large Contacts databases.
+     *
+     * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
+     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
+     * without at least one data row. It also deletes blanks on update. Despite seemingly not
+     * allowing blanks, the native Contacts app shows them.
+     *
+     * There are two scenarios where blanks may not be returned if this flag is set to false.
+     *
+     * 1. Contact with RawContact(s) with no Data row(s).
+     *     - In this case, the Contact is blank as well as its RawContact(s).
+     * 2. Contact that has RawContact with Data row(s) and a RawContact with no Data row.
+     *     - In this case, the Contact and the RawContact with Data row(s) are not blank but the
+     *     RawContact with no Data row is blank.
+     */
+    fun includeBlanks(includeBlanks: Boolean): Query
+
+    /**
      * Limits the search to only those RawContacts associated with the given accounts. Contacts
      * returned may still contain data that belongs to other accounts not specified in [accounts].
      * This follows the native Contacts app behavior.
@@ -149,6 +170,20 @@ interface Query {
      * Filters the returned [Contact]s matching the criteria defined by the [where].
      *
      * If not specified or null, then all [Contact]s are returned, limited by [limit].
+     *
+     * **Read this part if you are a Contacts Provider expert**
+     *
+     * This where clause is only used to query the Data table. Some contacts do not have any Data
+     * table rows. However, this library exposes some fields that belong to other tables, accessible
+     * via the Data table with joins;
+     *
+     * - [Fields.Contact]
+     * - [Fields.Options]
+     *
+     * Using these fields in the where clause does not have any effect in matching blank Contacts
+     * or RawContacts simply because they have no Data rows containing these joined fields.
+     *
+     * See [includeBlanks] for more info about blank Contacts and RawContacts.
      */
     fun where(where: Where?): Query
 
@@ -260,6 +295,7 @@ private class QueryImpl(
     private val permissions: ContactsPermissions,
     private val queryResolverFactory: QueryResolverFactory,
 
+    private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE,
     private var where: Where = DEFAULT_WHERE,
@@ -270,6 +306,7 @@ private class QueryImpl(
 
     override fun toString(): String {
         return """
+            includeBlanks = $includeBlanks
             rawContactsWhere = $rawContactsWhere
             include = $include
             where = $where
@@ -277,6 +314,10 @@ private class QueryImpl(
             limit = $limit
             offset = $offset
         """.trimIndent()
+    }
+
+    override fun includeBlanks(includeBlanks: Boolean): Query = apply {
+        this.includeBlanks = includeBlanks
     }
 
     override fun accounts(vararg accounts: Account): Query = accounts(accounts.asSequence())
@@ -359,6 +400,7 @@ private class QueryImpl(
     override fun findFirst(cancel: () -> Boolean): Contact? = find(cancel).firstOrNull()
 
     private companion object {
+        const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE = NoWhere
         val DEFAULT_INCLUDE = Include(Fields.All)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
@@ -406,6 +448,8 @@ private class QueryResolver(
             )
         }
 
+        // TODO This solution does not work for RawContacts that are a part of a multi-RawContact Contact.
+
         // Search for all contacts with the matching contactIds. Note that contactIds will never be
         // null (though it may be empty) as long as at least one of rawContactsWhere or where is not
         // NoWhere. If contactIds is null, findContactsInDataTableWithIds will return all contacts
@@ -413,21 +457,14 @@ private class QueryResolver(
         var contacts = findContactsInDataTableWithIds(contactIds, include)
 
         if (contactIds == null) {
-            // TODO Update DEV_NOTES accordingly once all of the below TODOs have been answered.
-            // TODO Fix RawContacts with no Data rows not showing up???
+            // TODO Fix RawContacts with no Data rows not showing up.
 
             // If contactIds is null, that means that rawContactsWhere and original parameter where
             // are both NoWhere. This means this query should include contacts that have no rows in
             // the Data table.
-            //
-            // Contacts that are not yet associated with an account may not have any
-            // rows in the Data table. TODO Aren't these Contacts deleted???
-            //
-            // Contacts that are already associated with an account will
-            // have at least one row in the Data table; a group membership row to the default group.
-            // TODO can't users of this lib delete all data rows of Contacts with an account???
             val contactIdsWithDataRows = contacts.map { it.id }.toSet()
             val contactsWithNoDataRows =
+                // TODO Includes should also be applied here
                 findAllContactsInRawContactsTableNotIn(contactIdsWithDataRows)
 
             contacts += contactsWithNoDataRows
@@ -447,6 +484,8 @@ private class QueryResolver(
             // table because our mappers only work with the RawContacts (some attr) and Data tables.
             Fields.RawContacts.ContactId.isNotNull()
                     and (Fields.RawContacts.ContactId notIn contactIds),
+            // Luckily, the contacts id columns of the RawContacts table and Data table are the
+            // same. This allows us to reuse our contacts mapper (for getting the contact id).
             Include(Fields.RawContacts.ContactId)
         )
 
@@ -457,6 +496,8 @@ private class QueryResolver(
             // Such RawContacts have contact id column value as null. We do not query the Contacts
             // table because our mappers only work with the RawContacts (some attr) and Data tables.
             rawContactsWhere and Fields.RawContacts.ContactId.isNotNull(),
+            // Luckily, the contacts id columns of the RawContacts table and Data table are the
+            // same. This allows us to reuse our contacts mapper (for getting the contact id).
             Include(Fields.RawContacts.ContactId)
         )
             .map { it.id }

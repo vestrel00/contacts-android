@@ -73,10 +73,9 @@ interface Update {
      * their deletion. Otherwise, blanks will not be deleted. This flag is set to true by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks").
-     *
-     * The native Contacts app does not allow insertion of new RawContacts without at least one data
-     * row. It also deletes blanks on update.
+     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
+     * without at least one data row. It also deletes blanks on update. Despite seemingly not
+     * allowing blanks, the native Contacts app shows them.
      */
     fun deleteBlanks(deleteBlanks: Boolean): Update
 
@@ -102,8 +101,7 @@ interface Update {
      * Adds the [MutableRawContact]s of the given [contacts] to the update queue, which will be
      * updated on [commit].
      *
-     * Only existing raw contacts that have been retrieved via a query will be added to the
-     * update queue. Those that have been manually created via a constructor will be ignored.
+     * See [rawContacts].
      */
     fun contacts(vararg contacts: MutableContact): Update
 
@@ -164,8 +162,9 @@ internal fun Update(context: Context): Update = UpdateImpl(
 private class UpdateImpl(
     private val context: Context,
     private val permissions: ContactsPermissions,
-    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf(),
-    private var deleteBlanks: Boolean = true
+
+    private var deleteBlanks: Boolean = true,
+    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : Update {
 
     override fun deleteBlanks(deleteBlanks: Boolean): Update = apply {

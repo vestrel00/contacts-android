@@ -578,10 +578,17 @@ If a valid account is not provided, none of the above data rows are automaticall
 **Blank RawContacts**
 
 The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call them
-"blanks").
+"blanks") to exist. The native Contacts app does not allow insertion of new RawContacts without at
+least one data row. It also deletes blanks on update. Despite seemingly not allowing blanks, the
+native Contacts app shows them.
 
-The native Contacts app does not allow insertion of new RawContacts without at least one data row.
-It also deletes blanks on update.
+There are two scenarios where blanks may exist.
+
+1. Contact with RawContact(s) with no Data row(s).
+    - In this case, the Contact is blank as well as its RawContact(s).
+2. Contact that has RawContact with Data row(s) and a RawContact with no Data row.
+    - In this case, the Contact and the RawContact with Data row(s) are not blank but the RawContact
+    with no Data row is blank.
 
 #### Data `StructuredName`
 

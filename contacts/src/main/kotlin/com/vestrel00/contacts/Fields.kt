@@ -33,21 +33,26 @@ abstract class FieldSet internal constructor(
 }
 
 /**
- * Contains all Contact Data table [Field]s.
+ * Contains all Contact Data table [Field]s, including columns from other tables that are joined.
  *
- * ## Developer Notes
- *
- * This is not named "DataFields" for several reasons;
- *
- * 1. Consumers are only exposed Data table fields. There is no need for them to know the fields
- *    of the other tables.
- * 2. Fields is shorter than DataFields. This is important for keeping lines short.
+ * These are mainly used for queries.
  */
-// Note: All of this is condensed inside one file / class for (Kotlin & Java) consumer convenience.
-// The structure of this class and the Kotlin language features that are used here are to cater to
-// both Java and Kotlin consumers, whilst still attempting to keep the code structured in idiomatic
-// Kotlin fashion (as much as possible).
 object Fields {
+
+    /*
+     * ## Developer Notes
+     *
+     * This is not named "DataFields" for several reasons;
+     *
+     * 1. Consumers are only exposed Data table fields. There is no need for them to know the fields
+     *    of the other tables.
+     * 2. Fields is shorter than DataFields. This is important for keeping lines short.
+     *
+     * All of this is condensed inside one file / class for (Kotlin & Java) consumer convenience.
+     * The structure of this class and the Kotlin language features that are used here are to cater
+     * to both Java and Kotlin consumers, whilst still attempting to keep the code structured in
+     * a Kotlin-first fashion.
+     */
 
     @JvmField
     val Address = AddressFields()
@@ -301,8 +306,8 @@ class CompanyFields : FieldSet(MimeType.COMPANY) {
 
 class ContactFields : FieldSet(UNKNOWN) {
 
-    // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. However, the
-    // values are the same. This is only meant to be used for Data table operations.
+    // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. This is only
+    // meant to be used for Data table operations.
     @JvmField
     val Id = AbstractField(Data.CONTACT_ID, mimeType)
 
