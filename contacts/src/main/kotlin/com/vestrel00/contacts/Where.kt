@@ -39,8 +39,10 @@ infix fun AbstractField.greaterThanOrEqual(value: Any): Where =
 infix fun AbstractField.lessThan(value: Any): Where = LessThan(this, value)
 infix fun AbstractField.lessThanOrEqual(value: Any): Where = LessThanOrEqual(this, value)
 
-infix fun AbstractField.`in`(values: Collection<Any>): Where = In(this, values)
-infix fun AbstractField.notIn(values: Collection<Any>): Where = NotIn(this, values)
+infix fun AbstractField.`in`(values: Collection<Any>): Where = In(this, values.asSequence())
+infix fun AbstractField.`in`(values: Sequence<Any>): Where = In(this, values)
+infix fun AbstractField.notIn(values: Collection<Any>): Where = NotIn(this, values.asSequence())
+infix fun AbstractField.notIn(values: Sequence<Any>): Where = NotIn(this, values)
 
 /**
  * Note that the value is case-insensitive when within ASCII range.
@@ -240,8 +242,8 @@ private class LessThanOrEqual(field: AbstractField, value: Any) : Where(where(fi
 
 private class IsNot(field: AbstractField, value: Any?) : Where(where(field, "IS NOT", value))
 
-private class In(field: AbstractField, values: Collection<Any>) : Where(where(field, "IN", values))
-private class NotIn(field: AbstractField, values: Collection<Any>) :
+private class In(field: AbstractField, values: Sequence<Any>) : Where(where(field, "IN", values))
+private class NotIn(field: AbstractField, values: Sequence<Any>) :
     Where(where(field, "NOT IN", values))
 
 private open class Like(field: AbstractField, value: Any) : Where(where(field, "LIKE", value))
@@ -266,7 +268,8 @@ private fun Any?.toSqlString(): String = when (this) {
     null -> "NULL"
     is Boolean -> if (this) "1" else "0"
     is String -> DatabaseUtils.sqlEscapeString(this)
-    is Collection<*> -> this.map { it?.toSqlString() }
+    is Collection<*> -> this.asSequence().toSqlString()
+    is Sequence<*> -> this.map { it?.toSqlString() }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
     is Entity.Type -> value.toSqlString()
     is Date -> time.toSqlString()
