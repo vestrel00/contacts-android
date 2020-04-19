@@ -3,6 +3,8 @@ package com.vestrel00.contacts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
+import android.net.Uri
+import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.getLong
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
@@ -60,6 +62,14 @@ import com.vestrel00.contacts.entities.table.Table
  *      .limit(10)
  *      .addresses();
  * ```
+ *
+ * ## Developer notes
+ *
+ * Phones, Emails, and Addresses have a CONTENT_URI that contains all rows consisting of only those
+ * data kinds. Other data kinds do not have this content uri. These probably exists as an index /
+ * for optimization since phones, emails, and addresses are the most commonly used data kinds. Using
+ * these CONTENT_URIs probably results in shorter search times since it only has to look through a
+ * subset of data instead of the entire data table.
  */
 interface QueryData {
 
@@ -324,6 +334,11 @@ private class QueryDataImpl(
         }
     }
 
+    // Note that Phones, Emails, and Addresses have a CONTENT_URI that contains all rows
+    // consisting of only those data kinds. Other data kinds do not have this content uri.
+    // It probably exists as an index / optimization tool since phones, emails, and
+    // addresses are the most commonly used data kinds.
+
     override fun addresses(): List<Address> = addresses { false }
 
     override fun addresses(cancel: () -> Boolean): List<Address> = resolve(MimeType.ADDRESS, cancel)
@@ -420,7 +435,7 @@ private class QueryDataResolver(
         limit: Int
     ): List<T> {
 
-        var dataWhere = Fields.MimeType equalTo mimeType
+        var dataWhere = mimeType.dataWhere()
 
         if (rawContactsWhere != NoWhere) {
             // Limit the data to the set associated with the RawContacts found in the RawContacts
@@ -431,14 +446,13 @@ private class QueryDataResolver(
         }
 
         if (where != NoWhere) {
-            dataWhere = dataWhere and where
+            dataWhere = if (dataWhere != NoWhere) dataWhere and where else where
         }
 
-        // TODO Narrow down the search by using the mimetype-specific content uri.
         val cursor = contentResolver.query(
-            Table.DATA.uri,
+            mimeType.contentUri(),
             include.columnNames,
-            "$dataWhere",
+            if (dataWhere != NoWhere) "$dataWhere" else null,
             null,
             "$orderBy LIMIT $limit OFFSET $offset"
         )
@@ -480,4 +494,17 @@ private class QueryDataResolver(
 
         return rawContactIds
     }
+}
+
+// See the developer notes in the QueryData interface documentation.
+private fun MimeType.dataWhere(): Where = when (this) {
+    MimeType.PHONE, MimeType.EMAIL, MimeType.ADDRESS -> NoWhere
+    else -> Fields.MimeType equalTo this
+}
+
+private fun MimeType.contentUri(): Uri = when (this) {
+    MimeType.PHONE -> ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+    MimeType.EMAIL -> ContactsContract.CommonDataKinds.Email.CONTENT_URI
+    MimeType.ADDRESS -> ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI
+    else -> Table.DATA.uri
 }
