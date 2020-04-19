@@ -1,13 +1,15 @@
 ## TODO
 
-1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
-    - Read-only like GroupMemberships. Update relevant util functions.
-    - Add Photo entity to Contact (delete the block comment about photos) and RawContact.
-2. What happens when inserting a new RawContact with an invalid account?
+1. Implement; `Insert.rawContact((MutableRawContact) -> Unit)`
+2. Implement; `GroupsInsert.group((MutableGroup) -> Unit)`
+
+3. What happens when inserting a new RawContact with an invalid account?
     - Comment out the check for a valid account in insert.
     - Update DEV_NOTES Data Required section with the findings.
-3. Implement; `Insert.rawContact((MutableRawContact) -> Unit)`
-4. Implement; `GroupsInsert.group((MutableGroup) -> Unit)`
+
+4. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
+    - Read-only like GroupMemberships. Update relevant util functions.
+    - Add Photo entity to Contact (delete the block comment about photos) and RawContact.
 
 5. Support local account query. Account objects can not be created with null account name or type.
 6. Migrate local account to a remote account and vice versa.

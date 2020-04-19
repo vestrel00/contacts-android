@@ -9,10 +9,6 @@ import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 import com.vestrel00.contacts.entities.table.Table
 
-// TODO Update documentation about how Contacts Provider allows for RawContacts to exist without
-// any data rows and how the native Contacts app does not allow creation of / delete-on-update
-// these "blank" RawContacts. Fixup accounts documentation.
-
 /**
  * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
  * data table.
@@ -98,6 +94,19 @@ import com.vestrel00.contacts.entities.table.Table
 interface Insert {
 
     /**
+     * If [allowBlanks] is set to false, then blank RawContacts ([MutableRawContact.isBlank]) will
+     * will not be inserted. Otherwise, blanks will be inserted. This flag is set to false by
+     * default.
+     *
+     * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
+     * them "blanks").
+     *
+     * The native Contacts app does not allow insertion of new RawContacts without at least one data
+     * row. It also deletes blanks on update.
+     */
+    fun allowBlanks(allowBlanks: Boolean): Insert
+
+    /**
      * All of the raw contacts that are inserted on [commit] will belong to the given [account].
      *
      * If not provided or if an incorrect account is provided, the raw contacts inserted here
@@ -108,12 +117,6 @@ interface Insert {
 
     /**
      * Adds the given [rawContacts] to the insert queue, which will be inserted on [commit].
-     * Duplicates are ignored.
-     *
-     * Raw contacts with only null and empty attributes, blanks ([MutableRawContact.isBlank]),
-     * will NOT be added to the insert queue. This mimics the native Contacts app behavior of not
-     * allowing creation of a raw contact with no data even though the Contacts Provider allows for
-     * RawContacts with no data.
      *
      * Existing RawContacts are allowed to be inserted to facilitate "duplication".
      */
@@ -182,8 +185,13 @@ private class InsertImpl(
     private val accounts: Accounts,
     private val permissions: ContactsPermissions,
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf(),
-    private var account: Account? = null
+    private var account: Account? = null,
+    private var allowBlanks: Boolean = false
 ) : Insert {
+
+    override fun allowBlanks(allowBlanks: Boolean): Insert = apply {
+        this.allowBlanks = allowBlanks
+    }
 
     override fun forAccount(account: Account?): Insert = apply {
         this.account = account
@@ -196,9 +204,7 @@ private class InsertImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<MutableRawContact>): Insert = apply {
-        // Do not insert blank contacts.
-        val nonBlankRawContacts = rawContacts.filter { !it.isBlank() }
-        this.rawContacts.addAll(nonBlankRawContacts)
+        this.rawContacts.addAll(rawContacts)
     }
 
     override fun commit(): Insert.Result {
@@ -209,7 +215,14 @@ private class InsertImpl(
         setAccountToNullIfNotValid()
 
         val results = mutableMapOf<MutableRawContact, Long?>()
-        for (rawContact in rawContacts) {
+
+        val rawContactsToInsert = if (allowBlanks) {
+            rawContacts.asSequence()
+        } else {
+            rawContacts.asSequence().filter { !it.isBlank() }
+        }
+
+        for (rawContact in rawContactsToInsert) {
             results[rawContact] = insertRawContactForAccount(account, rawContact)
         }
         return InsertResult(results)
