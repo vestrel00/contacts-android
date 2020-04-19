@@ -4,11 +4,13 @@
     - Insert, Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly.
     - See TODOs in DEV_NOTES.
+2. Support local account query. Account objects can not be created with null account name or type.
+3. Migrate local account to a remote account and vice versa.
 
-2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
+4. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
-3. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-4. Add Copyright to all non-sample files.
+5. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+6. Add Copyright to all non-sample files.
 
 ----------------------------------------------------------------------------------------------------
 

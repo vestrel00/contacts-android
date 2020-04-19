@@ -149,6 +149,8 @@ Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
 RawContacts inserted without an associated account are considered local or device-only contacts,
 which are not sync'ed.
 
+**Account addition, Lollipop (API 22) and below**
+
 When an Account is added, from a state where no accounts have yet been added to the system, the
 Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
 RawContacts table to that Account's name and type;
@@ -160,10 +162,16 @@ RawContact id: 6, accountName: vestrel00@gmail.com, accountType: com.google
 RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
 ```
 
-This is a special case that only occurs when there are no accounts yet in the system. RawContacts
-that are not associated with an account when there are existing accounts remain local. The Contacts
-Provider does not automatically associate local contacts to an account when a new account is added
-if there are already other accounts in the system.
+RawContacts inserted without an associated account will automatically get assigned to an account if
+there are any available. This may take a few seconds, whenever the Contacts Provider decides to do
+it.
+
+**Account addition, Marshmallow (API 23) and above**
+
+The Contacts Provider no longer associates local contacts to an account when an account is or
+becomes available.
+
+**Account removal**
 
 Removing the Account will delete all of the associated rows in the Contact, RawContact, and 
 Data tables.
@@ -201,6 +209,7 @@ row. In this case, it is marked as deleted and is effectively invisible.
 
 **Contacts & RawContacts may be deleted automatically in some cases!**
 
+// TODO verify this for API 19 and 23
 When a RawContact does not have an associated Account, the RawContact row is automatically deleted
 when all of its Data rows are deleted. On the contrary, when a RawContact has an associated Account,
 the RawContact row remains when all of its Data rows are deleted.
@@ -397,12 +406,11 @@ distinguish the type of data in that generic column. For example, the column nam
 Each row in the Data table consists of a piece of contact data (e.g. a phone number), its 
 "mimetype", and the associated contact id. A row does not contain all of the data for a contact. 
 
-> A RawContact has one (could be 0 if no accounts are available) or more entries in the Data 
-> `table`. A Contact has one or more associated RawContacts. All data belonging to all RawContacts
-> of a Contact belong to that Contact via aggregation.
-
 RawContacts may only have one row of certain mimetypes and may have multiple rows of other 
 mimetypes. Here is the list.
+
+// TODO verify this
+A RawContact may have 0 or more rows in the Data table.
 
 **Unique mimetype per RawContact**
 
@@ -568,10 +576,11 @@ If a valid account is provided, the default (auto add) group membership row is a
 immediately by the Contacts Provider at the time of contact insertion. The name, nickname, and note
 are automatically created at a later time.
 
-When there are no available accounts, none of the above data rows are automatically created. This is
-a problem because then queries for all contacts will not return existing contacts that do not have 
-any rows in the Data table. As a workaround, the RawContacts table is queried for all rows with a
-non-null contact id.
+// TODO verify this
+If a valid account is not provided, none of the above data rows are automatically created. One might
+initially think that this would be a problem because then Data table queries for all contacts will
+not return existing contacts that do not have any rows in the Data table. However, Contacts with no
+data rows that are not associated with an account are automatically deleted.
 
 #### Data `StructuredName`
 
@@ -593,10 +602,6 @@ the `StructuredName`.
 
 The inverse may not be true as the Contacts Provider does not seem to be able to derived the other
 address elements from the `FORMATTED_ADDRESS`.
-
-#### Entity
-
-TODO
 
 #### Groups Table & Accounts
 
@@ -659,12 +664,10 @@ false removes that membership.
 The inverse works too. Adding a group membership to the favorites group results in 
 `ContactOptionsColumns.STARRED` being set to true. Removing the membership sets it to false.
 
-When there are no accounts, there are also no groups and group memberships that can exist. Even
-though the favorites group does not exist, contacts may still be starred because 
-`ContactOptionsColumns.STARRED` is a column in the Contacts table and is not dependent on the
-existence of the favorites row in the Groups table and a membership to the favorites group in the
-Data table. When an account is added, all of the starred contacts also gain a membership to the
-favorites group.
+Contacts that are not associated with an account do not have any group memberships. Even though
+these contacts may not have a membership to the favorites group, these contacts may still be
+"starred" (favortied) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is
+not dependent on the existence of a favorites group membership.
 
 #### Groups; Deletion
 
@@ -721,7 +724,7 @@ associated to an Account can be carried over and sync'ed across devices and user
 Contacts Provider / Sync provider for that Account.
 
 > From my experience, profile RawContacts associated to an Account is not carried over / sync'ed
-> across devices and users.
+> across devices or users.
 
 // TODO Try inserting a RawContact for every single Account.
 // TODO Try inserting two RawContacts for the same Account.

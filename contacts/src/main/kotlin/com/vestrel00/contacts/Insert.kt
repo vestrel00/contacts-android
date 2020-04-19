@@ -22,16 +22,25 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * ## Accounts
  *
- * RawContacts inserted without an associated account are considered local or device-only contacts,
- * which are not sync'ed.
+ * **For Lollipop (API 22) and below**
  *
  * When an Account is added, from a state where no accounts have yet been added to the system, the
- * Contacts Provider automatically associates all existing RawContacts to that Account.
+ * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
+ * RawContacts table to that Account's name and type.
  *
- * This is a special case that only occurs when there are no accounts yet in the system. RawContacts
- * that are not associated with an account when there are existing accounts remain local. The
- * Contacts Provider does not automatically associate local contacts to an account when a new
- * account is added if there are already other accounts in the system.
+ * RawContacts inserted without an associated account will automatically get assigned to an account
+ * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
+ * to do it.
+ *
+ * **For Marshmallow (API 23) and above**
+ *
+ * The Contacts Provider no longer associates local contacts to an account when an account is or
+ * becomes available.
+ *
+ * **Account removal**
+ *
+ * Removing the Account will delete all of the associated rows in the Contact, RawContact, and
+ * Data tables.
  *
  * ## Usage
  *
@@ -88,8 +97,8 @@ interface Insert {
      * All of the raw contacts that are inserted on [commit] will belong to the given [account].
      *
      * If not provided or if an incorrect account is provided, the raw contacts inserted here
-     * will be local. RawContacts inserted without an associated account are considered local or
-     * device-only contacts, which are not sync'ed.
+     * will not be associated with an account. RawContacts inserted without an associated account
+     * are considered local or device-only contacts, which are not sync'ed.
      */
     fun forAccount(account: Account?): Insert
 

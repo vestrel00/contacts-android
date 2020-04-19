@@ -3,16 +3,11 @@ package com.vestrel00.contacts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
 import kotlin.math.min
 
-// TODO migrate Fields, Cursors, Mappers, Operations, etc to use Entity instead
-// TODO update all usages and mentions of the Data table accordingly
-// TODO mention entity in DEV_NOTES
-// TODO Look through utils to see if entity sub-table can be used instead of data table
 /**
  * Queries the Contacts data table and returns one or more contacts matching the search criteria.
  *
@@ -411,9 +406,6 @@ private class QueryResolver(
             )
         }
 
-        // TODO use Entity table to fix RawContacts with no Data not showing up and for optimization purposes
-        // Test what happens when there is a Contact with no data rows and dataWhere is provided.
-
         // Search for all contacts with the matching contactIds. Note that contactIds will never be
         // null (though it may be empty) as long as at least one of rawContactsWhere or where is not
         // NoWhere. If contactIds is null, findContactsInDataTableWithIds will return all contacts
@@ -421,11 +413,19 @@ private class QueryResolver(
         var contacts = findContactsInDataTableWithIds(contactIds, include)
 
         if (contactIds == null) {
+            // TODO Update DEV_NOTES accordingly once all of the below TODOs have been answered.
+            // TODO Fix RawContacts with no Data rows not showing up???
+
             // If contactIds is null, that means that rawContactsWhere and original parameter where
             // are both NoWhere. This means this query should include contacts that have no rows in
-            // the Data table. Contacts that are not yet associated with an account may not have any
-            // rows in the Data table. Contacts that are already associated with an account will
+            // the Data table.
+            //
+            // Contacts that are not yet associated with an account may not have any
+            // rows in the Data table. TODO Aren't these Contacts deleted???
+            //
+            // Contacts that are already associated with an account will
             // have at least one row in the Data table; a group membership row to the default group.
+            // TODO can't users of this lib delete all data rows of Contacts with an account???
             val contactIdsWithDataRows = contacts.map { it.id }.toSet()
             val contactsWithNoDataRows =
                 findAllContactsInRawContactsTableNotIn(contactIdsWithDataRows)
