@@ -123,11 +123,14 @@ does not affect the Contact DISPLAY_NAME.
 
 The RawContacts table links the Contact to the `android.accounts.Account` that it belongs to. 
 
-When there are no available Accounts in the device, each new RawContacts row created results in;
+Each new RawContacts row created results in;
 
 - a new row in the Contacts table (unless the RawContact is associated to another existing Contact)
 - a new row in the RawContacts with account name and type set to null
-- new row(s) in the Data table with a reference to the new Contacts and RawContacts Ids
+- 0 or more rows in the Data table with a reference to the new Contacts and RawContacts Ids
+
+> It is possible to create RawContacts without any rows in the Data table. See the **Data required**
+> section for more details.
 
 For example, creating 4 new contacts using the native Android Contacts app results in;
 
@@ -145,6 +148,8 @@ Data id: 16, rawContactId: 5, contactId: 5, data: Second Local Contact
 Data id: 17, rawContactId: 6, contactId: 6, data: Third Local Contact
 Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
 ```
+
+**Local Contacts / RawContacts**
 
 RawContacts inserted without an associated account are considered local or device-only contacts,
 which are not sync'ed.
@@ -174,17 +179,17 @@ becomes available.
 **Account removal**
 
 Removing the Account will delete all of the associated rows in the Contact, RawContact, and 
-Data tables.
+Data tables. This includes user Profile data in those tables.
 
 #### RawContacts; Deletion
 
 Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained
 in the documentation in `ContactsContract.RawContacts`;
 
-> When a raw contact is deleted, all of its Data rows as well as StatusUpdates, 
-> AggregationExceptions, PhoneLookup rows are deleted automatically. 
+> When a raw contact is deleted, all of its Data rows as well as StatusUpdates,
+> AggregationExceptions, PhoneLookup rows are deleted automatically.
 > 
-> When all raw contacts associated with a Contacts row are deleted, the Contacts  row itself is also 
+> When all raw contacts associated with a Contacts row are deleted, the Contacts row itself is also
 > deleted automatically.
 > 
 > The invocation of resolver.delete(...), does not immediately delete a raw contacts row. Instead, 
@@ -205,16 +210,7 @@ Contacts id. Deletion of the Contacts row and associated Data row(s) will be don
 the Contacts Provider.
 
 Note that deleting a RawContacts row may not immediately (or at all) actually delete the RawContacts
-row. In this case, it is marked as deleted and is effectively invisible.
-
-**Contacts & RawContacts may be deleted automatically in some cases!**
-
-// TODO verify this for API 19 and 23
-When a RawContact does not have an associated Account, the RawContact row is automatically deleted
-when all of its Data rows are deleted. On the contrary, when a RawContact has an associated Account,
-the RawContact row remains when all of its Data rows are deleted.
-
-Contacts with no associated RawContacts are automatically deleted.
+row. In this case, it is marked as deleted and its reference to a contact id is nulled.
 
 #### Multiple RawContacts Per Contact
 
@@ -403,14 +399,12 @@ The Data table uses generic column names (e.g. "data1", "data2", ...) using the 
 distinguish the type of data in that generic column. For example, the column name of 
 `StructuredName.DISPLAY_NAME` is the same as `Email.ADDRESS`, which is "data1". 
 
-Each row in the Data table consists of a piece of contact data (e.g. a phone number), its 
-"mimetype", and the associated contact id. A row does not contain all of the data for a contact. 
+Each row in the Data table consists of a piece of RawContact data (e.g. a phone number), its
+"mimetype", and the associated RawContact and Contact id. A row does not contain all of the data for
+a contact.
 
 RawContacts may only have one row of certain mimetypes and may have multiple rows of other 
 mimetypes. Here is the list.
-
-// TODO verify this
-A RawContact may have 0 or more rows in the Data table.
 
 **Unique mimetype per RawContact**
 
@@ -572,15 +566,22 @@ Data rows are automatically created for all contacts, if not provided;
 - Nickname, defaults to null 
 - Note, defaults to null
 
+> Note that all of the above rows are only automatically created for RawContacts that are associated
+> with an Account.
+
 If a valid account is provided, the default (auto add) group membership row is automatically created
 immediately by the Contacts Provider at the time of contact insertion. The name, nickname, and note
 are automatically created at a later time.
 
-// TODO verify this
-If a valid account is not provided, none of the above data rows are automatically created. One might
-initially think that this would be a problem because then Data table queries for all contacts will
-not return existing contacts that do not have any rows in the Data table. However, Contacts with no
-data rows that are not associated with an account are automatically deleted.
+If a valid account is not provided, none of the above data rows are automatically created.
+
+**Blank RawContacts**
+
+The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call them
+"blanks").
+
+The native Contacts app does not allow insertion of new RawContacts without at least one data row.
+It also deletes blanks on update.
 
 #### Data `StructuredName`
 

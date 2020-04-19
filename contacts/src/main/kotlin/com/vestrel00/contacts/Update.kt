@@ -19,18 +19,8 @@ import com.vestrel00.contacts.entities.operation.*
  *
  * ## Accounts
  *
- * The get accounts permission is required here in order to ensure that only
- * [MutableRawContact.groupMemberships] belonging to the same account as the raw contact are
- * inserted.
- *
- * ## Contacts & RawContacts may be deleted automatically in some cases!
- *
- * When a RawContact does not have an associated Account, it is automatically deleted when all of
- * its data (e.g. emails, phones, name, ...) are deleted (set to null or removed from the list).
- * On the contrary, when a RawContact has an associated Account, it does not get deleted when all of
- * its data rows are deleted.
- *
- * Contacts with no associated RawContacts are automatically deleted.
+ * These operations ensure that only [MutableRawContact.groupMemberships] belonging to the same
+ * account as the raw contact are inserted.
  *
  * ## Usage
  *
@@ -78,17 +68,23 @@ import com.vestrel00.contacts.entities.operation.*
 interface Update {
 
     /**
+     * If [deleteBlanks] is set to true, then updating blank RawContacts
+     * ([MutableRawContact.isBlank]) or blank Contacts ([MutableContact.isBlank]) will result in
+     * their deletion. Otherwise, blanks will not be deleted. This flag is set to true by default.
+     *
+     * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
+     * them "blanks").
+     *
+     * The native Contacts app does not allow insertion of new RawContacts without at least one data
+     * row. It also deletes blanks on update.
+     */
+    fun deleteBlanks(deleteBlanks: Boolean): Update
+
+    /**
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
      *
      * Only existing [rawContacts] that have been retrieved via a query will be added to the
      * update queue. Those that have been manually created via a constructor will be ignored.
-     *
-     * Null (or empty collection) raw contact attributes will be deleted. Non-null (and non-empty
-     * collection) raw contact attributes will be inserted.
-     *
-     * Raw contacts with only null and empty attributes, blanks ([MutableRawContact.isBlank]), will
-     * be deleted instead! This mimics the native Contacts app behavior deleting an existing contact
-     * when saved without a single piece of non-null data.
      */
     fun rawContacts(vararg rawContacts: MutableRawContact): Update
 
@@ -108,13 +104,6 @@ interface Update {
      *
      * Only existing raw contacts that have been retrieved via a query will be added to the
      * update queue. Those that have been manually created via a constructor will be ignored.
-     *
-     * Null (or empty collection) raw contact attributes will be deleted. Non-null (and non-empty
-     * collection) raw contact attributes will be inserted.
-     *
-     * Raw contacts with only null and empty attributes, blanks ([MutableRawContact.isBlank]), will
-     * be deleted instead! This mimics the native Contacts app behavior deleting an existing contact
-     * when saved without a single piece of non-null data.
      */
     fun contacts(vararg contacts: MutableContact): Update
 
@@ -175,8 +164,13 @@ internal fun Update(context: Context): Update = UpdateImpl(
 private class UpdateImpl(
     private val context: Context,
     private val permissions: ContactsPermissions,
-    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
+    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf(),
+    private var deleteBlanks: Boolean = true
 ) : Update {
+
+    override fun deleteBlanks(deleteBlanks: Boolean): Update = apply {
+        this.deleteBlanks = deleteBlanks
+    }
 
     override fun rawContacts(vararg rawContacts: MutableRawContact): Update =
         rawContacts(rawContacts.asSequence())
@@ -203,6 +197,14 @@ private class UpdateImpl(
             return UpdateFailed
         }
 
+        return if (deleteBlanks) {
+            commitDeletingBlanks()
+        } else {
+            commitNotDeletingBlanks()
+        }
+    }
+
+    private fun commitDeletingBlanks(): UpdateResult {
         val notBlankRawContacts = rawContacts.asSequence().filter { !it.isBlank() }
         val notBlankRawContactsResults = mutableMapOf<Long, Boolean>()
         for (rawContact in notBlankRawContacts) {
@@ -217,6 +219,16 @@ private class UpdateImpl(
         }
 
         return UpdateResult(notBlankRawContactsResults + blankRawContactsResults)
+    }
+
+    private fun commitNotDeletingBlanks(): UpdateResult {
+        val results = mutableMapOf<Long, Boolean>()
+
+        for (rawContact in rawContacts) {
+            results[rawContact.id] = updateRawContact(rawContact)
+        }
+
+        return UpdateResult(results)
     }
 
     /**

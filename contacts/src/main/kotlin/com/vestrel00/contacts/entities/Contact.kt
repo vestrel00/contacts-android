@@ -95,9 +95,8 @@ data class Contact internal constructor(
 
 ) : Entity, Parcelable {
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        displayName, lastUpdatedTimestamp, options
-    ) && entitiesAreAllBlank(rawContacts)
+    // We only care about the contents of the RawContacts
+    override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
 
     fun toMutableContact() = MutableContact(
         id = id,
@@ -155,7 +154,6 @@ data class MutableContact internal constructor(
 
 ) : Entity, Parcelable {
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        displayName, lastUpdatedTimestamp, options
-    ) && entitiesAreAllBlank(rawContacts)
+    // We only care about the contents of the RawContacts
+    override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
 }

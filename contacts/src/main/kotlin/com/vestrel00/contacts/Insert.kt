@@ -9,6 +9,10 @@ import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 import com.vestrel00.contacts.entities.table.Table
 
+// TODO Update documentation about how Contacts Provider allows for RawContacts to exist without
+// any data rows and how the native Contacts app does not allow creation of / delete-on-update
+// these "blank" RawContacts. Fixup accounts documentation.
+
 /**
  * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
  * data table.
@@ -108,7 +112,8 @@ interface Insert {
      *
      * Raw contacts with only null and empty attributes, blanks ([MutableRawContact.isBlank]),
      * will NOT be added to the insert queue. This mimics the native Contacts app behavior of not
-     * allowing creation of a raw contact with no data.
+     * allowing creation of a raw contact with no data even though the Contacts Provider allows for
+     * RawContacts with no data.
      *
      * Existing RawContacts are allowed to be inserted to facilitate "duplication".
      */

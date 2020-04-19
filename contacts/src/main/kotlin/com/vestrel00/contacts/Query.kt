@@ -452,7 +452,12 @@ private class QueryResolver(
 
     private fun findContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> =
         findContactsInTable(
-            Table.RAW_CONTACTS, rawContactsWhere, Include(Fields.RawContacts.ContactId)
+            Table.RAW_CONTACTS,
+            // There may be lingering RawContacts whose associated contact was already deleted.
+            // Such RawContacts have contact id column value as null. We do not query the Contacts
+            // table because our mappers only work with the RawContacts (some attr) and Data tables.
+            rawContactsWhere and Fields.RawContacts.ContactId.isNotNull(),
+            Include(Fields.RawContacts.ContactId)
         )
             .map { it.id }
             .toSet()

@@ -75,13 +75,13 @@ infix fun AbstractField.doesNotContain(value: String): Where = DoesNotContain(th
 // Non-infix convenience functions
 
 /**
- * Note that there is no function for "isNull" or "isNullOrEmpty". This API does not allow these
+ * Note that there is no function for "isNull" or "isNullOrEmpty". This API does not provide these
  * functions because Data rows for null values may not exist.
  */
 fun AbstractField.isNotNull(): Where = IsNot(this, null)
 
 /**
- * Note that there is no function for "isNull" or "isNullOrEmpty". This API does not allow these
+ * Note that there is no function for "isNull" or "isNullOrEmpty". This API does not provide these
  * functions because Data rows for null values may not exist.
  */
 fun AbstractField.isNotNullOrEmpty(): Where = this.isNotNull() and IsNot(this, "")
