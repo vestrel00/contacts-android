@@ -55,8 +55,6 @@ data class Contact internal constructor(
      */
     val displayName: String?,
 
-    // FIXME Add `ContactsColumns.NAME_RAW_CONTACT_ID` when minSdkVersion is at least 21.
-
     /**
      * Timestamp of when this contact was last updated. This includes updates to all data associated
      * with this contact including raw contacts. Any modification (including deletes and inserts) of
