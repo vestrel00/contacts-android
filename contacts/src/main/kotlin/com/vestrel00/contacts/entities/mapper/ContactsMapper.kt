@@ -16,7 +16,7 @@ import com.vestrel00.contacts.entities.cursor.rawContactCursor
 internal class ContactsMapper(
 
     /**
-     * True if the cursors used in [fromCursor] contains data belonging to the user profile.
+     * True if the cursors used to collect contacts contains data belonging to the user profile.
      */
     private val isProfile: Boolean,
 
@@ -39,11 +39,29 @@ internal class ContactsMapper(
 ) {
 
     /**
-     * Retrieves contact data from the given Data table cursor.
+     * Collects Contacts from the given Contacts table cursor.
      *
      * This will not close the given [cursor].
      */
-    fun fromCursor(cursor: Cursor): ContactsMapper = apply {
+    fun processContactsCursor(cursor: Cursor): ContactsMapper = apply {
+        // TODO
+    }
+
+    /**
+     * Collects RawContacts from the given RawContacts table cursor.
+     *
+     * This will not close the given [cursor].
+     */
+    fun processRawContactsCursor(cursor: Cursor): ContactsMapper = apply {
+        // TODO
+    }
+
+    /**
+     * Collects Contacts, RawContacts, and Data from the given Data table cursor.
+     *
+     * This will not close the given [cursor].
+     */
+    fun processDataCursor(cursor: Cursor): ContactsMapper = apply {
         cursor.moveToPosition(-1)
 
         // Changing the cursor position also changes the values returned by the entityMapper.
@@ -56,10 +74,9 @@ internal class ContactsMapper(
 
             // Collect the RawContacts and update them.
             val rawContactId = cursor.rawContactCursor().id
-            val rawContact =
-                rawContactsMap.getOrPut(rawContactId) {
-                    cursor.tempRawContactMapper(isProfile).value
-                }
+            val rawContact = rawContactsMap.getOrPut(rawContactId) {
+                cursor.tempRawContactMapper(isProfile).value
+            }
             cursor.updateRawContact(rawContact)
 
             if (cancel()) {

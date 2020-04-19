@@ -225,7 +225,7 @@ private class QueryResolver(
             val cursor = dataCursorFor(rawContactId, include)
 
             if (cursor != null) {
-                contactsMapper.fromCursor(cursor)
+                contactsMapper.processDataCursor(cursor)
                 cursor.close()
             }
 

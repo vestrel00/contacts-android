@@ -6,6 +6,7 @@ import android.content.Context
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.query
 import kotlin.math.min
 
 /**
@@ -392,7 +393,7 @@ private class QueryImpl(
 
         return queryResolverFactory
             .resolver(cancel)
-            .resolve(rawContactsWhere, include, where, orderBy, offset, limit)
+            .resolve(includeBlanks, rawContactsWhere, include, where, orderBy, offset, limit)
     }
 
     override fun findFirst() = findFirst { false }
@@ -421,6 +422,7 @@ private class QueryResolver(
 ) {
 
     fun resolve(
+        includeBlanks: Boolean,
         rawContactsWhere: Where,
         include: Include,
         where: Where,
@@ -448,13 +450,18 @@ private class QueryResolver(
             )
         }
 
-        // TODO This solution does not work for RawContacts that are a part of a multi-RawContact Contact.
-
-        // Search for all contacts with the matching contactIds. Note that contactIds will never be
-        // null (though it may be empty) as long as at least one of rawContactsWhere or where is not
-        // NoWhere. If contactIds is null, findContactsInDataTableWithIds will return all contacts
-        // that have a row in the Data table.
-        var contacts = findContactsInDataTableWithIds(contactIds, include)
+        var contacts = if (includeBlanks) {
+            // Search for all contacts with the matching contactIds in the Data table.
+            // This will not include Contacts and RawContacts with no rows in the Data table.
+            findContactsInDataTableWithIds(contactIds, include)
+        } else {
+            // Create 3 functions in ContactsMapper; processContactsCursor, processRawContactsCursor, processDataCursor.
+            // Rename fromCursor to processDataCursor.
+            // TODO Collect Contacts from the Contacts table and include eligible fields.
+            // TODO Then, collect RawContacts from the RawContacts table.
+            // Finally, collect Data (and Contacts and RawContacts) from the Data table.
+            findContactsInDataTableWithIds(contactIds, include)
+        }
 
         if (contactIds == null) {
             // TODO Fix RawContacts with no Data rows not showing up.
@@ -511,6 +518,11 @@ private class QueryResolver(
     private fun findContactsInDataTableWithIds(
         contactIds: Set<Long>?, include: Include
     ): Sequence<Contact> {
+        if (contactIds != null && contactIds.isEmpty()) {
+            // This guard isn't necessary to get the correct result but it does save one query.
+            return emptySequence()
+        }
+
         val where = if (contactIds != null) {
             Fields.Contact.Id `in` contactIds
         } else {
@@ -522,27 +534,13 @@ private class QueryResolver(
 
     private fun findContactsInTable(
         table: Table, where: Where?, include: Include
-    ): Sequence<Contact> {
-        val cursor = contentResolver.query(
-            table.uri,
-            include.columnNames,
-            if (where != null) "$where" else null,
-            null,
-            null
-        )
+    ): Sequence<Contact> = contentResolver.query(table, include, where) { cursor ->
 
-        var contactsSequence: Sequence<Contact> = emptySequence()
+        ContactsMapper(isProfile = false, cancel = cancel)
+            .processDataCursor(cursor)
+            .map()
 
-        if (cursor != null) {
-            // Direct data table queries do not return user profile data.
-            contactsSequence = ContactsMapper(isProfile = false, cancel = cancel)
-                .fromCursor(cursor)
-                .map()
-            cursor.close()
-        }
-
-        return contactsSequence
-    }
+    } ?: emptySequence()
 }
 
 private fun Sequence<Contact>.offsetAndLimit(offset: Int, limit: Int): Sequence<Contact> {
