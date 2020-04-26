@@ -9,6 +9,7 @@ import android.net.Uri
 import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType
@@ -45,8 +46,7 @@ import java.io.InputStream
  * ## DEV NOTES
  *
  * The function body is mostly taken from the sample code from the
- * [ContactsContract.RawContacts.DisplayPhoto]
- * class documentation.
+ * [ContactsContract.RawContacts.DisplayPhoto] class documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
@@ -426,69 +426,52 @@ private fun removeContactPhoto(context: Context, contactId: Long): Boolean {
     return true
 }
 
-private fun photoFileId(context: Context, contactId: Long): Long? {
-    if (!ContactsPermissions(context).canQuery() || contactId == INVALID_ID) {
-        return null
-    }
-
-    val cursor = context.contentResolver.query(
-        Table.CONTACTS.uri,
-        arrayOf(Fields.Contacts.PhotoFileId.columnName),
-        "${Fields.Contacts.Id equalTo contactId}",
-        null,
-        null
-    )
-
+private fun photoFileId(context: Context, contactId: Long): Long? = context.contentResolver.query(
+    Table.CONTACTS,
+    Include(Fields.Contacts.PhotoFileId),
+    Fields.Contacts.Id equalTo contactId
+) {
     var photoFileId: Long? = null
-    if (cursor != null && cursor.moveToNext()) {
-        photoFileId = cursor.contactsCursor().photoFileId
 
-        cursor.close()
+    if (it.moveToNext()) {
+        photoFileId = it.contactsCursor().photoFileId
     }
 
-    return photoFileId
+    photoFileId
 }
 
-private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long {
-    val cursor = context.contentResolver.query(
-        Table.DATA.uri,
-        arrayOf(Fields.RawContact.Id.columnName),
-        "${Fields.Photo.PhotoFileId equalTo photoFileId}",
-        null,
-        null
-    )
+private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long =
+    context.contentResolver.query(
+        Table.DATA,
+        Include(Fields.RawContact.Id),
+        Fields.Photo.PhotoFileId equalTo photoFileId
+    ) {
+        var rawContactId: Long = INVALID_ID
 
-    var rawContactId: Long? = null
-    if (cursor != null && cursor.moveToNext()) {
-        rawContactId = cursor.photoCursor().rawContactId
+        if (it.moveToNext()) {
+            rawContactId = it.photoCursor().rawContactId
+        }
 
-        cursor.close()
-    }
-
-    return rawContactId ?: INVALID_ID
-}
+        rawContactId
+    } ?: INVALID_ID
 
 private fun photoUriInputStream(context: Context, contactId: Long): InputStream? {
     if (!ContactsPermissions(context).canQuery() || contactId == INVALID_ID) {
         return null
     }
 
-    val cursor = context.contentResolver.query(
-        Table.CONTACTS.uri,
-        arrayOf(Fields.Contacts.PhotoUri.columnName),
-        "${Fields.Contacts.Id equalTo contactId}",
-        null,
-        null
-    )
+    return context.contentResolver.query(
+        Table.CONTACTS,
+        Include(Fields.Contacts.PhotoUri),
+        Fields.Contacts.Id equalTo contactId
+    ) {
+        var photoUri: Uri? = null
+        if (it.moveToNext()) {
+            photoUri = it.contactsCursor().photoUri
+        }
 
-    var photoUri: Uri? = null
-    if (cursor != null && cursor.moveToNext()) {
-        photoUri = cursor.contactsCursor().photoUri
-
-        cursor.close()
+        uriInputStream(context, photoUri)
     }
-
-    return uriInputStream(context, photoUri)
 }
 
 private fun photoThumbnailUriInputStream(context: Context, contactId: Long): InputStream? {
@@ -496,22 +479,18 @@ private fun photoThumbnailUriInputStream(context: Context, contactId: Long): Inp
         return null
     }
 
-    val cursor = context.contentResolver.query(
-        Table.CONTACTS.uri,
-        arrayOf(Fields.Contacts.PhotoThumbnailUri.columnName),
-        "${Fields.Contacts.Id equalTo contactId}",
-        null,
-        null
-    )
+    return context.contentResolver.query(
+        Table.CONTACTS,
+        Include(Fields.Contacts.PhotoThumbnailUri),
+        Fields.Contacts.Id equalTo contactId
+    ) {
+        var photoThumbnailUri: Uri? = null
+        if (it.moveToNext()) {
+            photoThumbnailUri = it.contactsCursor().photoThumbnailUri
+        }
 
-    var photoThumbnailUri: Uri? = null
-    if (cursor != null && cursor.moveToNext()) {
-        photoThumbnailUri = cursor.contactsCursor().photoThumbnailUri
-
-        cursor.close()
+        uriInputStream(context, photoThumbnailUri)
     }
-
-    return uriInputStream(context, photoThumbnailUri)
 }
 
 private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
