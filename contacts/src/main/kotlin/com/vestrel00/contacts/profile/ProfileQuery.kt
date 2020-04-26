@@ -6,8 +6,10 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.cursor.getString
+import com.vestrel00.contacts.entities.INVALID_ID
+import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
+import com.vestrel00.contacts.util.query
 
 /**
  * Queries the Contacts, RawContacts, and Data tables and returns the one and only profile
@@ -213,12 +215,15 @@ private fun ContentResolver.resolve(
     // Data table queries using profile uris only return user profile data.
     val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
     for (rawContactId in rawContactIds) {
-        val cursor = dataCursorFor(rawContactId, include)
-
-        if (cursor != null) {
-            contactsMapper.processDataCursor(cursor)
-            cursor.close()
-        }
+        query(
+            ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
+                .appendEncodedPath(rawContactId)
+                .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)
+                .build(),
+            include,
+            null,
+            processCursor = contactsMapper::processDataCursor
+        )
 
         if (cancel()) {
             return null
@@ -228,41 +233,25 @@ private fun ContentResolver.resolve(
     return contactsMapper.map().firstOrNull()
 }
 
-private fun ContentResolver.dataCursorFor(rawContactId: String, include: Include) = query(
-    ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
-        .appendEncodedPath(rawContactId)
-        .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)
-        .build(),
-    include.columnNames,
-    null,
-    null,
-    null
-)
-
 private fun ContentResolver.rawContactIds(
     rawContactsWhere: Where, cancel: () -> Boolean
-): Set<String> {
-    val cursor = query(
-        ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
-        Include(Fields.RawContacts.Id).columnNames,
-        if (rawContactsWhere == NoWhere) null else "$rawContactsWhere",
-        null,
-        null
-    )
-
-    return mutableSetOf<String>().apply {
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                val rawContactId = cursor.getString(Fields.RawContacts.Id)
-                rawContactId?.let(::add)
-
-                if (cancel()) {
-                    clear()
-                    break
-                }
+): Set<String> = query(
+    ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
+    Include(Fields.RawContacts.Id),
+    rawContactsWhere
+) {
+    mutableSetOf<String>().apply {
+        val rawContactsCursor = it.rawContactsCursor()
+        while (!cancel() && it.moveToNext()) {
+            val rawContactId = rawContactsCursor.rawContactId
+            if (rawContactId != INVALID_ID) {
+                add("$rawContactId")
             }
+        }
 
-            cursor.close()
+        // Ensure incomplete data sets are not returned.
+        if (cancel()) {
+            clear()
         }
     }
-}
+} ?: emptySet()
