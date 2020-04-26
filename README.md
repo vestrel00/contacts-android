@@ -1,5 +1,6 @@
 ## TODO
 
+0. Use ContentResolverExtensions everywhere; `grep --include="*kt" -r "\.query" contacts/`
 1. Implement; `Insert.rawContact((MutableRawContact) -> Unit)`
 2. Implement; `GroupsInsert.group((MutableGroup) -> Unit)`
 

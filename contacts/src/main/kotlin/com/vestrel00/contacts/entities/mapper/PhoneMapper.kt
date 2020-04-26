@@ -7,7 +7,7 @@ internal class PhoneMapper(private val phoneCursor: PhoneCursor) : EntityMapper<
 
     override val value: Phone
         get() = Phone(
-            id = phoneCursor.id,
+            id = phoneCursor.dataId,
             rawContactId = phoneCursor.rawContactId,
             contactId = phoneCursor.contactId,
 

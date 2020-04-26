@@ -6,7 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.*
-import com.vestrel00.contacts.entities.cursor.getLong
+import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
 import com.vestrel00.contacts.entities.table.Table
 
@@ -483,16 +483,18 @@ private class QueryDataResolver(
             null
         )
 
-        val rawContactIds = mutableSetOf<Long>()
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                cursor.getLong(Fields.RawContacts.Id)?.let(rawContactIds::add)
+        return mutableSetOf<Long>().apply {
+            if (cursor != null) {
+                val rawContactsCursor = cursor.rawContactsCursor()
+                while (cursor.moveToNext()) {
+                    val rawContactId = rawContactsCursor.rawContactId
+                    if (rawContactId != INVALID_ID) {
+                        add(rawContactId)
+                    }
+                }
+                cursor.close()
             }
-            cursor.close()
         }
-
-        return rawContactIds
     }
 }
 

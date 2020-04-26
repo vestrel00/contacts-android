@@ -142,12 +142,12 @@ interface ProfileQuery {
 @Suppress("FunctionName")
 internal fun ProfileQuery(context: Context): ProfileQuery = ProfileQueryImpl(
     ContactsPermissions(context),
-    QueryResolverFactory(context.contentResolver)
+    context.contentResolver
 )
 
 private class ProfileQueryImpl(
     private val permissions: ContactsPermissions,
-    private val queryResolverFactory: QueryResolverFactory,
+    private val contentResolver: ContentResolver,
 
     private var rawContactsWhere: Where = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE
@@ -195,9 +195,7 @@ private class ProfileQueryImpl(
             return null
         }
 
-        return queryResolverFactory
-            .resolver(cancel)
-            .resolve(rawContactsWhere, include)
+        return contentResolver.resolve(rawContactsWhere, include, cancel)
     }
 
     private companion object {
@@ -207,70 +205,64 @@ private class ProfileQueryImpl(
     }
 }
 
-private class QueryResolverFactory(private val contentResolver: ContentResolver) {
-    fun resolver(cancel: () -> Boolean): QueryResolver = QueryResolver(contentResolver, cancel)
-}
+private fun ContentResolver.resolve(
+    rawContactsWhere: Where, include: Include, cancel: () -> Boolean
+): Contact? {
+    val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
-private class QueryResolver(
-    private val contentResolver: ContentResolver,
-    private val cancel: () -> Boolean
-) {
+    // Data table queries using profile uris only return user profile data.
+    val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
+    for (rawContactId in rawContactIds) {
+        val cursor = dataCursorFor(rawContactId, include)
 
-    fun resolve(rawContactsWhere: Where, include: Include): Contact? {
-        val rawContactIds = rawContactIds(rawContactsWhere)
-
-        // Data table queries using profile uris only return user profile data.
-        val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
-        for (rawContactId in rawContactIds) {
-            val cursor = dataCursorFor(rawContactId, include)
-
-            if (cursor != null) {
-                contactsMapper.processDataCursor(cursor)
-                cursor.close()
-            }
-
-            if (cancel()) {
-                return null
-            }
+        if (cursor != null) {
+            contactsMapper.processDataCursor(cursor)
+            cursor.close()
         }
 
-        return contactsMapper.map().firstOrNull()
+        if (cancel()) {
+            return null
+        }
     }
 
-    private fun dataCursorFor(rawContactId: String, include: Include) = contentResolver.query(
-        ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
-            .appendEncodedPath(rawContactId)
-            .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)
-            .build(),
-        include.columnNames,
-        null,
+    return contactsMapper.map().firstOrNull()
+}
+
+private fun ContentResolver.dataCursorFor(rawContactId: String, include: Include) = query(
+    ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
+        .appendEncodedPath(rawContactId)
+        .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)
+        .build(),
+    include.columnNames,
+    null,
+    null,
+    null
+)
+
+private fun ContentResolver.rawContactIds(
+    rawContactsWhere: Where, cancel: () -> Boolean
+): Set<String> {
+    val cursor = query(
+        ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
+        Include(Fields.RawContacts.Id).columnNames,
+        if (rawContactsWhere == NoWhere) null else "$rawContactsWhere",
         null,
         null
     )
 
-    private fun rawContactIds(rawContactsWhere: Where): Set<String> {
-        val cursor = contentResolver.query(
-            ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
-            Include(Fields.RawContacts.Id).columnNames,
-            if (rawContactsWhere == NoWhere) null else "$rawContactsWhere",
-            null,
-            null
-        )
+    return mutableSetOf<String>().apply {
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val rawContactId = cursor.getString(Fields.RawContacts.Id)
+                rawContactId?.let(::add)
 
-        return mutableSetOf<String>().apply {
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    val rawContactId = cursor.getString(Fields.RawContacts.Id)
-                    rawContactId?.let(::add)
-
-                    if (cancel()) {
-                        clear()
-                        break
-                    }
+                if (cancel()) {
+                    clear()
+                    break
                 }
-
-                cursor.close()
             }
+
+            cursor.close()
         }
     }
 }

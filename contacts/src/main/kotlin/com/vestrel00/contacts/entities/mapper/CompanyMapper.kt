@@ -7,7 +7,7 @@ internal class CompanyMapper(private val companyCursor: CompanyCursor) : EntityM
 
     override val value: Company
         get() = Company(
-            id = companyCursor.id,
+            id = companyCursor.dataId,
             rawContactId = companyCursor.rawContactId,
             contactId = companyCursor.contactId,
 

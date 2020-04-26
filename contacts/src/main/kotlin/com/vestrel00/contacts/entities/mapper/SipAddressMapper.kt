@@ -8,7 +8,7 @@ internal class SipAddressMapper(private val sipAddressCursor: SipAddressCursor) 
 
     override val value: SipAddress
         get() = SipAddress(
-            id = sipAddressCursor.id,
+            id = sipAddressCursor.dataId,
             rawContactId = sipAddressCursor.rawContactId,
             contactId = sipAddressCursor.contactId,
 

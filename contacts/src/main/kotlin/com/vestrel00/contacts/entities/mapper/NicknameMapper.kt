@@ -7,7 +7,7 @@ internal class NicknameMapper(private val nicknameCursor: NicknameCursor) : Enti
 
     override val value: Nickname
         get() = Nickname(
-            id = nicknameCursor.id,
+            id = nicknameCursor.dataId,
             rawContactId = nicknameCursor.rawContactId,
             contactId = nicknameCursor.contactId,
 

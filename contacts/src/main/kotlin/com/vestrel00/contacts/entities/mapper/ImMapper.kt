@@ -7,7 +7,7 @@ internal class ImMapper(private val imCursor: ImCursor) : EntityMapper<Im> {
 
     override val value: Im
         get() = Im(
-            id = imCursor.id,
+            id = imCursor.dataId,
             rawContactId = imCursor.rawContactId,
             contactId = imCursor.contactId,
 

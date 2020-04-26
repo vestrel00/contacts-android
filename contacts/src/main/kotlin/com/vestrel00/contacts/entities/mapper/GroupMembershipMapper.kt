@@ -8,7 +8,7 @@ internal class GroupMembershipMapper(private val groupMembershipCursor: GroupMem
 
     override val value: GroupMembership
         get() = GroupMembership(
-            id = groupMembershipCursor.id,
+            id = groupMembershipCursor.dataId,
             rawContactId = groupMembershipCursor.rawContactId,
             contactId = groupMembershipCursor.contactId,
 

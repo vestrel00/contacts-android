@@ -10,6 +10,7 @@ import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.getInt
 import com.vestrel00.contacts.entities.cursor.getLong
+import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.nameMapper
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
@@ -435,10 +436,13 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
 
     return mutableListOf<Long>().apply {
         if (cursor != null) {
+            val rawContactsCursor = cursor.rawContactsCursor()
             while (cursor.moveToNext()) {
-                cursor.getLong(Fields.RawContacts.Id)?.let(::add)
+                val rawContactId = rawContactsCursor.rawContactId
+                if (rawContactId != INVALID_ID) {
+                    add(rawContactId)
+                }
             }
-
             cursor.close()
         }
     }
@@ -478,7 +482,7 @@ private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? {
 
     var contactId: Long? = null
     if (cursor != null) {
-        contactId = cursor.getLong(Fields.RawContacts.ContactId)
+        contactId = cursor.rawContactsCursor().contactId
 
         cursor.close()
     }

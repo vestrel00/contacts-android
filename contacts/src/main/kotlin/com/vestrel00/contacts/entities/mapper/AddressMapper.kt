@@ -7,7 +7,7 @@ internal class AddressMapper(private val addressCursor: AddressCursor) : EntityM
 
     override val value: Address
         get() = Address(
-            id = addressCursor.id,
+            id = addressCursor.dataId,
             rawContactId = addressCursor.rawContactId,
             contactId = addressCursor.contactId,
 

@@ -7,7 +7,7 @@ internal class RelationMapper(private val relationCursor: RelationCursor) : Enti
 
     override val value: Relation
         get() = Relation(
-            id = relationCursor.id,
+            id = relationCursor.dataId,
             rawContactId = relationCursor.rawContactId,
             contactId = relationCursor.contactId,
 

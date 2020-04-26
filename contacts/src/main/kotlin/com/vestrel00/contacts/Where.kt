@@ -188,6 +188,46 @@ private fun <T : Any> Sequence<T>.where(where: (T) -> Where, separator: String):
     return JoinedWhere(whereString)
 }
 
+
+// Conversion functions
+
+/**
+ * Converts [this] where clause to a where clause that is usable for the Contacts table.
+ *
+ * More specifically, this translates the following column names to work with the Contacts table;
+ *
+ * - RawContacts.CONTACT_ID -> Contacts._ID
+ * - Data.CONTACT_ID -> Contacts._ID
+ *
+ * This does no translate anything else. So any fields used that does not exist in the Contacts
+ * table will remain.
+ */
+internal fun Where.inContactsTable(): Where = ContactsTableWhere(
+    toString()
+        .replace(Fields.RawContacts.ContactId.columnName, Fields.Contacts.Id.columnName)
+        // Technically, Fields.RawContacts.ContactId and Fields.Contact.Id have the same columnName.
+        // For the sake of OCD, I'm performing this redundant replacement =) SUE ME!!!
+        .replace(Fields.Contact.Id.columnName, Fields.Contacts.Id.columnName)
+)
+
+private class ContactsTableWhere(whereString: String) : Where(whereString)
+
+/**
+ * Converts [this] where clause to a where clause that is usable for the RawContacts table.
+ *
+ * More specifically, this translates the following column names to work with the RawContacts table;
+ *
+ * - Data.RAW_CONTACT_ID -> RawContacts._ID
+ *
+ * This does no translate anything else. So any fields used that does not exist in the RawContacts
+ * table will remain.
+ */
+internal fun Where.inRawContactsTable(): Where = RawContactsTableWhere(
+    toString().replace(Fields.RawContact.Id.columnName, Fields.RawContacts.Id.columnName)
+)
+
+private class RawContactsTableWhere(whereString: String) : Where(whereString)
+
 /**
  * Each where expression is paired with its mimetype because the contacts Data table uses
  * generic column names (e.g. data1, data2, etc) using the column 'mimetype' to distinguish

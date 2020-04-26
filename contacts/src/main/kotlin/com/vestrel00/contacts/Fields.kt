@@ -18,7 +18,7 @@ sealed class Field
 /**
  * Represents a database field / column that maps to a Contact attribute.
  */
-class AbstractField internal constructor(
+data class AbstractField internal constructor(
     internal val columnName: String,
     internal val mimeType: MimeType
 ) : Field()
@@ -323,12 +323,18 @@ class ContactFields : FieldSet(UNKNOWN) {
 /*
  * This and all of its fields are used for the Contacts table operations!
  *
+ * All of these fields except the Id are actually accessible in Data table queries via joins.
+ *
  * This is technically not the most correct place to put this but it is the simplest and most
  * convenient place.
  */
 internal class ContactsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(Contacts._ID, mimeType)
+
+    val DisplayName = AbstractField(Contacts.DISPLAY_NAME_PRIMARY, mimeType)
+
+    val LastUpdatedTimestamp = AbstractField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
 
     val PhotoUri = AbstractField(Contacts.PHOTO_URI, mimeType)
 
@@ -341,7 +347,9 @@ internal class ContactsFields : FieldSet(UNKNOWN) {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     val NameRawContactId = AbstractField(Contacts.NAME_RAW_CONTACT_ID, mimeType)
 
-    override val fields = setOf(Id, PhotoUri, PhotoThumbnailUri, PhotoFileId)
+    override val fields = setOf(
+        Id, DisplayName, LastUpdatedTimestamp, PhotoUri, PhotoThumbnailUri, PhotoFileId
+    )
 }
 
 class EmailFields : FieldSet(MimeType.EMAIL) {

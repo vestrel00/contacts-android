@@ -8,7 +8,7 @@ import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.RawContact
-import com.vestrel00.contacts.entities.cursor.getString
+import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -48,8 +48,9 @@ internal fun accountForRawContactWithId(rawContactId: Long, context: Context): A
     )
 
     if (cursor != null && cursor.moveToNext()) {
-        val accountName = cursor.getString(Fields.RawContacts.AccountName)
-        val accountType = cursor.getString(Fields.RawContacts.AccountType)
+        val rawContactsCursor = cursor.rawContactsCursor()
+        val accountName = rawContactsCursor.accountName
+        val accountType = rawContactsCursor.accountType
 
         if (accountName != null && accountType != null) {
             return Account(accountName, accountType)

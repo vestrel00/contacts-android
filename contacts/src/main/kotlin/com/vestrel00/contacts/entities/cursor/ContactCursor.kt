@@ -11,9 +11,9 @@ import java.util.*
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class ContactCursor(private val cursor: Cursor) {
+internal class ContactCursor(private val cursor: Cursor) : ContactIdCursor {
 
-    val id: Long
+    override val contactId: Long
         get() = cursor.getLong(Fields.Contact.Id) ?: INVALID_ID
 
     val displayName: String?

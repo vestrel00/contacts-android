@@ -10,7 +10,7 @@ internal class EventMapper(private val eventCursor: EventCursor) : EntityMapper<
 
     override val value: Event
         get() = Event(
-            id = eventCursor.id,
+            id = eventCursor.dataId,
             rawContactId = eventCursor.rawContactId,
             contactId = eventCursor.contactId,
 

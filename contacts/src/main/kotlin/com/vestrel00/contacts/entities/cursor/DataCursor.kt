@@ -4,15 +4,15 @@ import android.database.Cursor
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.INVALID_ID
 
-internal abstract class DataCursor(protected val cursor: Cursor) {
+internal open class DataCursor(protected val cursor: Cursor) : DataIdCursor {
 
-    val id: Long
+    override val dataId: Long
         get() = cursor.getLong(Fields.Id) ?: INVALID_ID
 
-    val rawContactId: Long
+    override val rawContactId: Long
         get() = cursor.getLong(Fields.RawContact.Id) ?: INVALID_ID
 
-    val contactId: Long
+    override val contactId: Long
         get() = cursor.getLong(Fields.Contact.Id) ?: INVALID_ID
 
     val isPrimary: Boolean

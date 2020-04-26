@@ -7,7 +7,7 @@ internal class WebsiteMapper(private val websiteCursor: WebsiteCursor) : EntityM
 
     override val value: Website
         get() = Website(
-            id = websiteCursor.id,
+            id = websiteCursor.dataId,
             rawContactId = websiteCursor.rawContactId,
             contactId = websiteCursor.contactId,
 

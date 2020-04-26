@@ -7,7 +7,7 @@ internal class NoteMapper(private val noteCursor: NoteCursor) : EntityMapper<Not
 
     override val value: Note
         get() = Note(
-            id = noteCursor.id,
+            id = noteCursor.dataId,
             rawContactId = noteCursor.rawContactId,
             contactId = noteCursor.contactId,
 

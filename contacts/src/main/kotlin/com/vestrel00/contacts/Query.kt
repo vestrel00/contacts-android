@@ -4,6 +4,8 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.entities.Contact
+import com.vestrel00.contacts.entities.INVALID_ID
+import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.query
@@ -289,12 +291,12 @@ interface Query {
 @Suppress("FunctionName")
 internal fun Query(context: Context): Query = QueryImpl(
     ContactsPermissions(context),
-    QueryResolverFactory(context.contentResolver)
+    context.contentResolver
 )
 
 private class QueryImpl(
     private val permissions: ContactsPermissions,
-    private val queryResolverFactory: QueryResolverFactory,
+    private val contentResolver: ContentResolver,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where = DEFAULT_RAW_CONTACTS_WHERE,
@@ -391,9 +393,9 @@ private class QueryImpl(
             return emptyList()
         }
 
-        return queryResolverFactory
-            .resolver(cancel)
-            .resolve(includeBlanks, rawContactsWhere, include, where, orderBy, offset, limit)
+        return contentResolver.resolve(
+            includeBlanks, rawContactsWhere, include, where, orderBy, offset, limit, cancel
+        )
     }
 
     override fun findFirst() = findFirst { false }
@@ -412,136 +414,117 @@ private class QueryImpl(
     }
 }
 
-private class QueryResolverFactory(private val contentResolver: ContentResolver) {
-    fun resolver(cancel: () -> Boolean): QueryResolver = QueryResolver(contentResolver, cancel)
+private fun ContentResolver.resolve(
+    includeBlanks: Boolean,
+    rawContactsWhere: Where,
+    include: Include,
+    where: Where,
+    orderBy: CompoundOrderBy,
+    offset: Int,
+    limit: Int,
+    cancel: () -> Boolean
+): List<Contact> {
+
+    var contactIdsMatchingSelectedAccounts: Set<Long>? = null
+
+    if (rawContactsWhere != NoWhere) {
+        // Limit the contacts data to the set associated with the contacts found in the
+        // RawContacts table matching the rawContactsWhere.
+        contactIdsMatchingSelectedAccounts =
+            findContactIdsInRawContactsTable(rawContactsWhere, cancel)
+    }
+
+    // If contactIdsMatchingSelectedAccounts is null, then rawContactsWhere is NoWhere.
+    // If contactIdsMatchingSelectedAccounts is empty, there are no matches; return empty list.
+    if (
+        cancel()
+        || (contactIdsMatchingSelectedAccounts != null
+                && contactIdsMatchingSelectedAccounts.isEmpty())
+    ) {
+        return emptyList()
+    }
+
+    // Formulate the where clause that will be used for Data table, and possible Contacts and
+    // RawContacts table queries.
+    val whereMatching = if (where != NoWhere) {
+        if (contactIdsMatchingSelectedAccounts != null) {
+            where and (Fields.Contact.Id `in` contactIdsMatchingSelectedAccounts)
+        } else {
+            where
+        }
+    } else {
+        if (contactIdsMatchingSelectedAccounts != null) {
+            Fields.Contact.Id `in` contactIdsMatchingSelectedAccounts
+        } else {
+            NoWhere
+        }
+    }
+
+    val contactsMapper = ContactsMapper(isProfile = false, cancel = cancel)
+
+    // Collect Contacts, RawContacts, and Data from the Data table.
+    query(Table.DATA, include, whereMatching, processCursor = contactsMapper::processDataCursor)
+
+    // If includeBlanks is true, blank Contacts/RawContacts will not be included in the Data
+    // table query. Read the function documentation of includeBlanks for more info on blanks.
+    if (includeBlanks) {
+
+        // Collect Contacts in the Contacts table including Contact specific fields.
+        query(
+            Table.CONTACTS, include.onlyContactsFields(), whereMatching.inContactsTable(),
+            // There may be columns in the where clause that may not be available in the Contacts
+            // table. This will result in an SQLiteException. Thus, we suppress it.
+            suppressDbExceptions = true,
+            processCursor = contactsMapper::processContactsCursor
+        )
+
+        // Collect RawContacts in the RawContacts table including RawContacts specific fields.
+        query(
+            Table.RAW_CONTACTS,
+            include.onlyRawContactFields(),
+            // There may be lingering RawContacts whose associated contact was already deleted.
+            // Such RawContacts have contact id column value as null.
+            if (whereMatching != NoWhere) {
+                whereMatching.inRawContactsTable() and Fields.RawContacts.ContactId.isNotNull()
+            } else {
+                Fields.RawContacts.ContactId.isNotNull()
+            },
+            // There may be columns in the where clause that may not be available in the RawContacts
+            // table. This will result in an SQLiteException. Thus, we suppress it.
+            suppressDbExceptions = true,
+            processCursor = contactsMapper::processRawContactsCursor
+        )
+    }
+
+    if (cancel()) {
+        return emptyList()
+    }
+
+    return contactsMapper
+        .map()
+        .sortedWith(orderBy)
+        .offsetAndLimit(offset, limit)
+        .toList()
 }
 
-private class QueryResolver(
-    private val contentResolver: ContentResolver,
-    private val cancel: () -> Boolean
+private fun ContentResolver.findContactIdsInRawContactsTable(
+    rawContactsWhere: Where, cancel: () -> Boolean
+): Set<Long> = query(
+    Table.RAW_CONTACTS,
+    Include(Fields.RawContacts.ContactId),
+    // There may be lingering RawContacts whose associated contact was already deleted.
+    // Such RawContacts have contact id column value as null.
+    rawContactsWhere and Fields.RawContacts.ContactId.isNotNull()
 ) {
-
-    fun resolve(
-        includeBlanks: Boolean,
-        rawContactsWhere: Where,
-        include: Include,
-        where: Where,
-        orderBy: CompoundOrderBy,
-        offset: Int,
-        limit: Int
-    ): List<Contact> {
-
-        var contactIds: Set<Long>? = null
-
-        if (rawContactsWhere != NoWhere) {
-            // Limit the contacts data to the set associated with the contacts found in the
-            // RawContacts table matching the rawContactsWhere.
-            contactIds = findContactIdsInRawContactsTable(rawContactsWhere)
+    mutableSetOf<Long>().apply {
+        while (it.moveToNext() && !cancel()) {
+            val contactId = it.rawContactsCursor().contactId
+            if (contactId != INVALID_ID) {
+                add(contactId)
+            }
         }
-
-        if (where != NoWhere) {
-            // Search for the contacts' ids in the data table.
-            contactIds = findContactIdsInDataTable(
-                if (contactIds != null) {
-                    where and (Fields.Contact.Id `in` contactIds)
-                } else {
-                    where
-                }
-            )
-        }
-
-        var contacts = if (includeBlanks) {
-            // Search for all contacts with the matching contactIds in the Data table.
-            // This will not include Contacts and RawContacts with no rows in the Data table.
-            findContactsInDataTableWithIds(contactIds, include)
-        } else {
-            // Create 3 functions in ContactsMapper; processContactsCursor, processRawContactsCursor, processDataCursor.
-            // Rename fromCursor to processDataCursor.
-            // TODO Collect Contacts from the Contacts table and include eligible fields.
-            // TODO Then, collect RawContacts from the RawContacts table.
-            // Finally, collect Data (and Contacts and RawContacts) from the Data table.
-            findContactsInDataTableWithIds(contactIds, include)
-        }
-
-        if (contactIds == null) {
-            // TODO Fix RawContacts with no Data rows not showing up.
-
-            // If contactIds is null, that means that rawContactsWhere and original parameter where
-            // are both NoWhere. This means this query should include contacts that have no rows in
-            // the Data table.
-            val contactIdsWithDataRows = contacts.map { it.id }.toSet()
-            val contactsWithNoDataRows =
-                // TODO Includes should also be applied here
-                findAllContactsInRawContactsTableNotIn(contactIdsWithDataRows)
-
-            contacts += contactsWithNoDataRows
-        }
-
-        return contacts
-            .sortedWith(orderBy)
-            .offsetAndLimit(offset, limit)
-            .toList()
     }
-
-    private fun findAllContactsInRawContactsTableNotIn(contactIds: Set<Long>): Sequence<Contact> =
-        findContactsInTable(
-            Table.RAW_CONTACTS,
-            // There may be lingering RawContacts whose associated contact was already deleted.
-            // Such RawContacts have contact id column value as null. We do not query the Contacts
-            // table because our mappers only work with the RawContacts (some attr) and Data tables.
-            Fields.RawContacts.ContactId.isNotNull()
-                    and (Fields.RawContacts.ContactId notIn contactIds),
-            // Luckily, the contacts id columns of the RawContacts table and Data table are the
-            // same. This allows us to reuse our contacts mapper (for getting the contact id).
-            Include(Fields.RawContacts.ContactId)
-        )
-
-    private fun findContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> =
-        findContactsInTable(
-            Table.RAW_CONTACTS,
-            // There may be lingering RawContacts whose associated contact was already deleted.
-            // Such RawContacts have contact id column value as null. We do not query the Contacts
-            // table because our mappers only work with the RawContacts (some attr) and Data tables.
-            rawContactsWhere and Fields.RawContacts.ContactId.isNotNull(),
-            // Luckily, the contacts id columns of the RawContacts table and Data table are the
-            // same. This allows us to reuse our contacts mapper (for getting the contact id).
-            Include(Fields.RawContacts.ContactId)
-        )
-            .map { it.id }
-            .toSet()
-
-    private fun findContactIdsInDataTable(where: Where): Set<Long> =
-        findContactsInTable(Table.DATA, where, Include(Fields.Contact.Id))
-            .map { it.id }
-            .toSet()
-
-    private fun findContactsInDataTableWithIds(
-        contactIds: Set<Long>?, include: Include
-    ): Sequence<Contact> {
-        if (contactIds != null && contactIds.isEmpty()) {
-            // This guard isn't necessary to get the correct result but it does save one query.
-            return emptySequence()
-        }
-
-        val where = if (contactIds != null) {
-            Fields.Contact.Id `in` contactIds
-        } else {
-            null
-        }
-
-        return findContactsInTable(Table.DATA, where, include)
-    }
-
-    private fun findContactsInTable(
-        table: Table, where: Where?, include: Include
-    ): Sequence<Contact> = contentResolver.query(table, include, where) { cursor ->
-
-        ContactsMapper(isProfile = false, cancel = cancel)
-            .processDataCursor(cursor)
-            .map()
-
-    } ?: emptySequence()
-}
+} ?: emptySet()
 
 private fun Sequence<Contact>.offsetAndLimit(offset: Int, limit: Int): Sequence<Contact> {
     // prevent index out of bounds by ensuring offset and limit are within bounds

@@ -7,7 +7,7 @@ internal class NameMapper(private val nameCursor: NameCursor) : EntityMapper<Nam
 
     override val value: Name
         get() = Name(
-            id = nameCursor.id,
+            id = nameCursor.dataId,
             rawContactId = nameCursor.rawContactId,
             contactId = nameCursor.contactId,
 

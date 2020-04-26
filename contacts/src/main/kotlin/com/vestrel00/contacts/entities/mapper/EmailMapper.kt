@@ -7,7 +7,7 @@ internal class EmailMapper(private val emailCursor: EmailCursor) : EntityMapper<
 
     override val value: Email
         get() = Email(
-            id = emailCursor.id,
+            id = emailCursor.dataId,
             rawContactId = emailCursor.rawContactId,
             contactId = emailCursor.contactId,
 
