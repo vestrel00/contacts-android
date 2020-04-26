@@ -431,13 +431,11 @@ private fun photoFileId(context: Context, contactId: Long): Long? = context.cont
     Include(Fields.Contacts.PhotoFileId),
     Fields.Contacts.Id equalTo contactId
 ) {
-    var photoFileId: Long? = null
-
     if (it.moveToNext()) {
-        photoFileId = it.contactsCursor().photoFileId
+        it.contactsCursor().photoFileId
+    } else {
+        null
     }
-
-    photoFileId
 }
 
 private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long =

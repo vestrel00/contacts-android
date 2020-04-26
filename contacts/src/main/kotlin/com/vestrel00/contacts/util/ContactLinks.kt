@@ -8,8 +8,8 @@ import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
-import com.vestrel00.contacts.entities.cursor.getInt
-import com.vestrel00.contacts.entities.cursor.getLong
+import com.vestrel00.contacts.entities.cursor.contactsCursor
+import com.vestrel00.contacts.entities.cursor.dataCursor
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.nameMapper
 import com.vestrel00.contacts.entities.operation.withValue
@@ -369,23 +369,18 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
         return INVALID_ID
     }
 
-    val cursor = context.contentResolver.query(
-        Table.DATA.uri,
-        arrayOf(Fields.Id.columnName),
-        "${(Fields.RawContact.Id equalTo nameRawContactId)
-                and (Fields.MimeType equalTo MimeType.NAME)}",
-        null,
-        null
-    )
-
-    var nameRowId: Long = INVALID_ID
-    if (cursor != null && cursor.moveToNext()) {
-        nameRowId = cursor.getLong(Fields.Id) ?: INVALID_ID
-
-        cursor.close()
-    }
-
-    return nameRowId
+    return context.contentResolver.query(
+        Table.DATA,
+        Include(Fields.Id),
+        (Fields.RawContact.Id equalTo nameRawContactId)
+                and (Fields.MimeType equalTo MimeType.NAME)
+    ) {
+        if (it.moveToNext()) {
+            it.dataCursor().dataId
+        } else {
+            INVALID_ID
+        }
+    } ?: INVALID_ID
 }
 
 /**
@@ -395,97 +390,77 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
  * [DisplayNameSources.STRUCTURED_NAME].
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-private fun nameRawContactId(context: Context, contactId: Long): Long {
-    val cursor = context.contentResolver.query(
-        Table.CONTACTS.uri,
-        Include(Fields.Contacts.DisplayNameSource, Fields.Contacts.NameRawContactId).columnNames,
-        "${Fields.Contacts.Id equalTo contactId}",
-        null,
-        null
-    )
+private fun nameRawContactId(context: Context, contactId: Long): Long =
+    context.contentResolver.query(
+        Table.CONTACTS,
+        Include(Fields.Contacts.DisplayNameSource, Fields.Contacts.NameRawContactId),
+        Fields.Contacts.Id equalTo contactId
+    ) {
+        var displayNameSource: Int = DisplayNameSources.UNDEFINED
+        var nameRawContactId: Long = INVALID_ID
 
-    var displayNameSource: Int = DisplayNameSources.UNDEFINED
-    var nameRawContactId: Long = INVALID_ID
+        if (it.moveToNext()) {
+            val contactsCursor = it.contactsCursor()
+            displayNameSource = contactsCursor.displayNameSource ?: DisplayNameSources.UNDEFINED
+            nameRawContactId = contactsCursor.nameRawContactId ?: INVALID_ID
+        }
 
-    if (cursor != null && cursor.moveToNext()) {
-        displayNameSource =
-            cursor.getInt(Fields.Contacts.DisplayNameSource) ?: DisplayNameSources.UNDEFINED
-        nameRawContactId = cursor.getLong(Fields.Contacts.NameRawContactId) ?: INVALID_ID
-
-        cursor.close()
-    }
-
-    return if (displayNameSource != DisplayNameSources.STRUCTURED_NAME) {
-        INVALID_ID
-    } else {
-        nameRawContactId
-    }
-}
+        if (displayNameSource != DisplayNameSources.STRUCTURED_NAME) {
+            INVALID_ID
+        } else {
+            nameRawContactId
+        }
+    } ?: INVALID_ID
 
 /**
  * Returns the RawContact IDs of the Contacts with the given [contactIds] in ascending order.
  */
-private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<Long> {
-    val cursor = context.contentResolver.query(
-        Table.RAW_CONTACTS.uri,
-        arrayOf(Fields.RawContacts.Id.columnName),
-        "${Fields.RawContacts.ContactId `in` contactIds}",
-        null,
+private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<Long> =
+    context.contentResolver.query(
+        Table.RAW_CONTACTS,
+        Include(Fields.RawContacts.Id),
+        Fields.RawContacts.ContactId `in` contactIds,
         Fields.RawContacts.Id.columnName
-    )
+    ) {
 
-    return mutableListOf<Long>().apply {
-        if (cursor != null) {
-            val rawContactsCursor = cursor.rawContactsCursor()
-            while (cursor.moveToNext()) {
+        mutableListOf<Long>().apply {
+            val rawContactsCursor = it.rawContactsCursor()
+            while (it.moveToNext()) {
                 val rawContactId = rawContactsCursor.rawContactId
                 if (rawContactId != INVALID_ID) {
                     add(rawContactId)
                 }
             }
-            cursor.close()
         }
-    }
-}
+    } ?: emptyList()
 
 private fun nameWithId(context: Context, nameRowId: Long): Name? {
     if (nameRowId == INVALID_ID) {
         return null
     }
 
-    val cursor = context.contentResolver.query(
-        Table.DATA.uri,
-        Include(Fields.Required).columnNames,
-        "${Fields.Id equalTo nameRowId}",
-        null,
-        null
-    )
-
-    var name: Name? = null
-    if (cursor != null && cursor.moveToNext()) {
-        name = cursor.nameMapper().value
-
-        cursor.close()
+    return context.contentResolver.query(
+        Table.DATA,
+        Include(Fields.Required),
+        Fields.Id equalTo nameRowId
+    ) {
+        if (it.moveToNext()) {
+            it.nameMapper().value
+        } else {
+            null
+        }
     }
-
-    return name
 }
 
-private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? {
-    val cursor = context.contentResolver.query(
-        Table.RAW_CONTACTS.uri,
-        arrayOf(Fields.RawContacts.ContactId.columnName),
-        "${Fields.RawContacts.Id equalTo rawContactId}",
-        null,
-        null
-    )
-
-    var contactId: Long? = null
-    if (cursor != null) {
-        contactId = cursor.rawContactsCursor().contactId
-
-        cursor.close()
+private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? =
+    context.contentResolver.query(
+        Table.RAW_CONTACTS,
+        Include(Fields.RawContacts.ContactId),
+        Fields.RawContacts.Id equalTo rawContactId
+    ) {
+        if (it.moveToNext()) {
+            it.rawContactsCursor().contactId
+        } else {
+            null
+        }
     }
-
-    return contactId
-}

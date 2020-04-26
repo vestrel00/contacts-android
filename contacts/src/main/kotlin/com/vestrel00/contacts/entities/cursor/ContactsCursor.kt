@@ -1,7 +1,9 @@
 package com.vestrel00.contacts.entities.cursor
 
+import android.annotation.TargetApi
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.INVALID_ID
 import java.util.*
@@ -19,6 +21,13 @@ internal class ContactsCursor(private val cursor: Cursor) : ContactIdCursor {
 
     val displayName: String?
         get() = cursor.getString(Fields.Contacts.DisplayName)
+
+    val displayNameSource: Int?
+        get() = cursor.getInt(Fields.Contacts.DisplayNameSource)
+
+    val nameRawContactId: Long?
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        get() = cursor.getLong(Fields.Contacts.NameRawContactId)
 
     val lastUpdatedTimestamp: Date?
         get() = cursor.getDate(Fields.Contacts.LastUpdatedTimestamp)

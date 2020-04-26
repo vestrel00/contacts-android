@@ -334,6 +334,13 @@ internal class ContactsFields : FieldSet(UNKNOWN) {
 
     val DisplayName = AbstractField(Contacts.DISPLAY_NAME_PRIMARY, mimeType)
 
+    // Do not include in fields.
+    val DisplayNameSource = AbstractField(Contacts.DISPLAY_NAME_SOURCE, mimeType)
+
+    // Do not include in fields.
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    val NameRawContactId = AbstractField(Contacts.NAME_RAW_CONTACT_ID, mimeType)
+
     val LastUpdatedTimestamp = AbstractField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
 
     val PhotoUri = AbstractField(Contacts.PHOTO_URI, mimeType)
@@ -341,11 +348,6 @@ internal class ContactsFields : FieldSet(UNKNOWN) {
     val PhotoThumbnailUri = AbstractField(Contacts.PHOTO_THUMBNAIL_URI, mimeType)
 
     val PhotoFileId = AbstractField(Contacts.PHOTO_FILE_ID, mimeType)
-
-    val DisplayNameSource = AbstractField(Contacts.DISPLAY_NAME_SOURCE, mimeType)
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    val NameRawContactId = AbstractField(Contacts.NAME_RAW_CONTACT_ID, mimeType)
 
     override val fields = setOf(
         Id, DisplayName, LastUpdatedTimestamp, PhotoUri, PhotoThumbnailUri, PhotoFileId
