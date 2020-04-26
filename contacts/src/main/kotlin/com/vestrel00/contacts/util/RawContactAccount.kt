@@ -39,24 +39,23 @@ internal fun accountForRawContactWithId(rawContactId: Long, context: Context): A
         return null
     }
 
-    val cursor = context.contentResolver.query(
+    return context.contentResolver.query(
         Table.RAW_CONTACTS.uri,
-        Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType).columnNames,
-        "${Fields.RawContacts.Id equalTo rawContactId}",
-        null,
-        null
-    )
+        Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType),
+        Fields.RawContacts.Id equalTo rawContactId
+    ) {
+        var account: Account? = null
 
-    if (cursor != null && cursor.moveToNext()) {
-        val rawContactsCursor = cursor.rawContactsCursor()
-        val accountName = rawContactsCursor.accountName
-        val accountType = rawContactsCursor.accountType
+        if (it.moveToNext()) {
+            val rawContactsCursor = it.rawContactsCursor()
+            val accountName = rawContactsCursor.accountName
+            val accountType = rawContactsCursor.accountType
 
-        if (accountName != null && accountType != null) {
-            return Account(accountName, accountType)
+            if (accountName != null && accountType != null) {
+                account = Account(accountName, accountType)
+            }
         }
-    }
-    cursor?.close()
 
-    return null
+        account
+    }
 }

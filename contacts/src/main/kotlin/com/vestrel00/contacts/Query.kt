@@ -517,7 +517,7 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
     rawContactsWhere and Fields.RawContacts.ContactId.isNotNull()
 ) {
     mutableSetOf<Long>().apply {
-        while (it.moveToNext() && !cancel()) {
+        while (!cancel() && it.moveToNext()) {
             val contactId = it.rawContactsCursor().contactId
             if (contactId != INVALID_ID) {
                 add(contactId)
