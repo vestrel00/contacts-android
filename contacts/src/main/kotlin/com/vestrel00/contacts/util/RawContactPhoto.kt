@@ -11,6 +11,7 @@ import android.provider.ContactsContract
 import android.provider.ContactsContract.RawContacts
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableRawContact
@@ -398,22 +399,17 @@ private fun photoInputStream(context: Context, rawContactId: Long): InputStream?
         return null
     }
 
-    val cursor = context.contentResolver.query(
-        Table.DATA.uri,
-        arrayOf(Fields.Photo.PhotoFileId.columnName),
-        "${(Fields.RawContact.Id equalTo rawContactId)
-                and (Fields.MimeType equalTo MimeType.PHOTO)}",
-        null,
-        null
-    )
-
-    val photoFileId = if (cursor != null && cursor.moveToNext()) {
-        cursor.photoCursor().photoFileId
-    } else {
-        null
+    val photoFileId = context.contentResolver.query(
+        Table.DATA,
+        Include(Fields.Photo.PhotoFileId),
+        (Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo MimeType.PHOTO)
+    ) {
+        if (it.moveToNext()) {
+            it.photoCursor().photoFileId
+        } else {
+            null
+        }
     }
-
-    cursor?.close()
 
     if (photoFileId != null) {
         val photoUri =
@@ -436,23 +432,20 @@ private fun photoThumbnailInputStream(context: Context, rawContactId: Long): Inp
         return null
     }
 
-    val cursor = context.contentResolver.query(
-        Table.DATA.uri,
-        arrayOf(Fields.Photo.PhotoThumbnail.columnName),
-        "${(Fields.RawContact.Id equalTo rawContactId)
-                and (Fields.MimeType equalTo MimeType.PHOTO)}",
-        null,
-        null
-    )
+    return context.contentResolver.query(
+        Table.DATA,
+        Include(Fields.Photo.PhotoThumbnail),
+        (Fields.RawContact.Id equalTo rawContactId)
+                and (Fields.MimeType equalTo MimeType.PHOTO)
+    ) {
+        val photoThumbnail: ByteArray? = if (it.moveToNext()) {
+            it.photoCursor().photoThumbnail
+        } else {
+            null
+        }
 
-    var photoThumbnail: ByteArray? = null
-    if (cursor != null && cursor.moveToNext()) {
-        photoThumbnail = cursor.photoCursor().photoThumbnail
-
-        cursor.close()
+        if (photoThumbnail != null) ByteArrayInputStream(photoThumbnail) else null
     }
-
-    return if (photoThumbnail != null) ByteArrayInputStream(photoThumbnail) else null
 }
 
 internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
