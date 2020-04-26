@@ -6,10 +6,7 @@ import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType.*
 import com.vestrel00.contacts.entities.RawContact
 import com.vestrel00.contacts.entities.TempRawContact
-import com.vestrel00.contacts.entities.cursor.contactsCursor
-import com.vestrel00.contacts.entities.cursor.dataCursor
-import com.vestrel00.contacts.entities.cursor.mimeTypeCursor
-import com.vestrel00.contacts.entities.cursor.rawContactsCursor
+import com.vestrel00.contacts.entities.cursor.*
 
 /**
  * Returns a list of [Contact]s from the given cursor, which assumed to have been retrieved from the
@@ -46,11 +43,10 @@ internal class ContactsMapper(
      * This will not close the given [cursor].
      */
     fun processContactsCursor(cursor: Cursor): ContactsMapper = apply {
-        cursor.moveToPosition(-1)
-
         // Use the Contacts cursor to retrieve the contactId.
         val contactsCursor = cursor.contactsCursor()
 
+        cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
             val contactId = contactsCursor.contactId
 
@@ -67,11 +63,10 @@ internal class ContactsMapper(
      * This will not close the given [cursor].
      */
     fun processRawContactsCursor(cursor: Cursor): ContactsMapper = apply {
-        cursor.moveToPosition(-1)
-
         // Use the RawContacts cursor to retrieve the rawContactId.
         val rawContactsCursor = cursor.rawContactsCursor()
 
+        cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
             val rawContactId = rawContactsCursor.rawContactId
 
@@ -88,13 +83,12 @@ internal class ContactsMapper(
      * This will not close the given [cursor].
      */
     fun processDataCursor(cursor: Cursor): ContactsMapper = apply {
-        cursor.moveToPosition(-1)
-
         // Changing the cursor position also changes the values returned by the mappers.
         val dataCursor = cursor.dataCursor()
         val contactMapper = cursor.contactMapper(dataCursor, isProfile)
         val tempRawContactMapper = cursor.tempRawContactMapper(dataCursor, isProfile)
 
+        cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
 
             // Collect contacts.
@@ -107,10 +101,10 @@ internal class ContactsMapper(
             // Collect the RawContacts and update them.
             // Use the Data cursor to retrieve the rawContactId.
             val rawContactId = dataCursor.rawContactId
-            if (rawContactId != INVALID_ID && !rawContactsMap.containsKey(rawContactId)) {
-                val rawContact = tempRawContactMapper.value
-                rawContactsMap[rawContactId] = rawContact
-                cursor.updateRawContact(rawContact)
+            if (rawContactId != INVALID_ID) {
+                rawContactsMap.getOrPut(rawContactId) { tempRawContactMapper.value }.also {
+                    cursor.updateRawContact(it)
+                }
             }
         }
     }

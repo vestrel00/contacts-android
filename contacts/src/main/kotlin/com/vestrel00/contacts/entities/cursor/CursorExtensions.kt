@@ -65,3 +65,7 @@ internal fun Cursor.getDate(field: AbstractField): Date? {
     val dateMillis = getLong(field)
     return if (dateMillis != null && dateMillis > 0) Date(dateMillis) else null
 }
+
+internal fun Cursor.resetPosition() {
+    moveToPosition(-1)
+}
