@@ -48,23 +48,17 @@ private fun rawContactOptions(rawContactId: Long, context: Context): Options {
         return Options()
     }
 
-    val cursor = context.contentResolver.query(
-        Table.RAW_CONTACTS.uri,
-        Include(Fields.Options).columnNames,
-        "${(Fields.RawContacts.Id equalTo rawContactId)}",
-        null,
-        null
-    )
-
-    if (cursor != null && cursor.moveToNext()) {
-        val options = cursor.optionsMapper().value
-
-        cursor.close()
-
-        return options
-    }
-
-    return Options()
+    return context.contentResolver.query(
+        Table.RAW_CONTACTS,
+        Include(Fields.Options),
+        Fields.RawContacts.Id equalTo rawContactId
+    ) {
+        if (it.moveToNext()) {
+            it.optionsMapper().value
+        } else {
+            Options()
+        }
+    } ?: Options()
 }
 
 /**

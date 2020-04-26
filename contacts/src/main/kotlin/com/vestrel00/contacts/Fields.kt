@@ -487,6 +487,8 @@ class NoteFields : FieldSet(MimeType.NOTE) {
 
 class OptionsFields : FieldSet(UNKNOWN) {
 
+    internal val Id = AbstractField(Data._ID, mimeType)
+
     @JvmField
     val Starred = AbstractField(Data.STARRED, mimeType)
 
@@ -503,7 +505,7 @@ class OptionsFields : FieldSet(UNKNOWN) {
     val SendToVoicemail = AbstractField(Data.SEND_TO_VOICEMAIL, mimeType)
 
     override val fields = setOf(
-        Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
+        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
     )
 }
 

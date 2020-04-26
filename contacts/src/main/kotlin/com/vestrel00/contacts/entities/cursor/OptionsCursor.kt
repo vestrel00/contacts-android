@@ -15,7 +15,7 @@ import java.util.*
 internal class OptionsCursor(private val cursor: Cursor) {
 
     val id: Long
-        get() = cursor.getLong(Fields.Id) ?: INVALID_ID
+        get() = cursor.getLong(Fields.Options.Id) ?: INVALID_ID
 
     val starred: Boolean?
         get() = cursor.getBoolean(Fields.Options.Starred)
