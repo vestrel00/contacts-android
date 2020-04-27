@@ -4,13 +4,11 @@ import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.*
 import android.content.ContentResolver
 import android.database.Cursor
-import com.vestrel00.contacts.AbstractField
-import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.Where
+import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
-import com.vestrel00.contacts.entities.cursor.getLong
+import com.vestrel00.contacts.entities.cursor.dataCursor
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.equalTo
+import com.vestrel00.contacts.util.query
 
 private val TABLE_URI = Table.DATA.uri
 
@@ -93,11 +91,10 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             val validEntitiesMap = entities.toValidEntitiesMap().toMutableMap()
 
             // Query for all rows in the database.
-            val cursor = contentResolver.dataRowIdsFor(rawContactId)
-
-            if (cursor != null) { // I like this better than cursor?.let { cursor ->
-                while (cursor.moveToNext()) {
-                    val dataRowId = cursor.getLong(Fields.Id)!!
+            contentResolver.dataRowIdsFor(rawContactId) {
+                val dataCursor = it.dataCursor()
+                while (it.moveToNext()) {
+                    val dataRowId = dataCursor.dataId
 
                     val entity = validEntitiesMap.remove(dataRowId)
                     val operation = if (entity != null && !entity.isBlank()) {
@@ -111,7 +108,6 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
                     }
                     add(operation)
                 }
-                cursor.close()
             }
 
             // Insert all remaining data rows in the valid entities that is not in the cursor.
@@ -144,17 +140,16 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      */
     fun updateInsertOrDelete(
         entity: T?, rawContactId: Long, contentResolver: ContentResolver
-    ):
-            ContentProviderOperation =
+    ): ContentProviderOperation =
         if (entity != null && !entity.isBlank()) {
-            // Entity contains some data. Query for the row.
-            val cursor = contentResolver.dataRowIdsFor(rawContactId)
-
-            var dataRowId = INVALID_ID
-            if (cursor != null && cursor.moveToNext()) {
-                dataRowId = cursor.getLong(Fields.Id)!!
-            }
-            cursor?.close()
+            // Entity contains some data. Query for the (first) row.
+            val dataRowId = contentResolver.dataRowIdsFor(rawContactId) {
+                if (it.moveToNext()) {
+                    it.dataCursor().dataId
+                } else {
+                    INVALID_ID
+                }
+            } ?: INVALID_ID
 
             if (dataRowId == INVALID_ID) {
                 // Row does not exist. Insert.
@@ -227,11 +222,12 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     /**
      * Provides the [Cursor] to the data rows of type [T] of the [RawContact] with [rawContactId].
      */
-    private fun ContentResolver.dataRowIdsFor(rawContactId: Long): Cursor? = query(
+    private fun <T> ContentResolver.dataRowIdsFor(
+        rawContactId: Long, processCursor: (Cursor) -> T
+    ) = query(
         TABLE_URI,
-        arrayOf(Fields.Id.columnName),
-        "${selection(rawContactId)}",
-        null,
-        null
+        Include(Fields.Id),
+        selection(rawContactId),
+        processCursor = processCursor
     )
 }

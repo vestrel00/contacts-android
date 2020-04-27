@@ -302,6 +302,10 @@ private class DoesNotContain(field: AbstractField, value: String) : NotLike(fiel
 
 private class JoinedWhere(whereString: String) : Where(whereString)
 
+// TODO Delete this?
+/**
+ * A non-null representation of a null where.
+ */
 internal object NoWhere : Where("")
 
 private fun Any?.toSqlString(): String = when (this) {
