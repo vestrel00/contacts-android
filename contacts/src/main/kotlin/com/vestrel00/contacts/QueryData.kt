@@ -9,6 +9,7 @@ import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.query
 
 /**
  * Queries the Contacts data table and returns one or more contact data matching the search
@@ -441,61 +442,49 @@ private class QueryDataResolver(
             // Limit the data to the set associated with the RawContacts found in the RawContacts
             // table matching the rawContactsWhere.
             val rawContactIds = findRawContactIdsInRawContactsTable(rawContactsWhere)
-            val inRawContactIds = Fields.RawContact.Id `in` rawContactIds
-            dataWhere = dataWhere and inRawContactIds
+            dataWhere = dataWhere and (Fields.RawContact.Id `in` rawContactIds)
         }
 
         if (where != NoWhere) {
             dataWhere = if (dataWhere != NoWhere) dataWhere and where else where
         }
 
-        val cursor = contentResolver.query(
-            mimeType.contentUri(),
-            include.columnNames,
-            if (dataWhere != NoWhere) "$dataWhere" else null,
-            null,
-            "$orderBy LIMIT $limit OFFSET $offset"
-        )
-
-        return mutableListOf<T>().apply {
-            if (cursor != null) {
-                val entityMapper = cursor.entityMapperFor<T>(mimeType)
-                while (cursor.moveToNext()) {
+        return contentResolver.query(
+            mimeType.contentUri(), include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
+        ) {
+            mutableListOf<T>().apply {
+                val entityMapper = it.entityMapperFor<T>(mimeType)
+                while (!cancel() && it.moveToNext()) {
                     add(entityMapper.value)
-
-                    if (cancel()) {
-                        // Return empty list if cancelled to ensure only correct data set is returned.
-                        clear()
-                        break
-                    }
                 }
-                cursor.close()
+
+                // Ensure only complete data sets are returned.
+                if (cancel()) {
+                    clear()
+                }
             }
-        }
+        } ?: emptyList()
     }
 
-    private fun findRawContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> {
-        val cursor = contentResolver.query(
-            Table.RAW_CONTACTS.uri,
-            arrayOf(Fields.RawContacts.Id.columnName),
-            "$rawContactsWhere",
-            null,
-            null
-        )
-
-        return mutableSetOf<Long>().apply {
-            if (cursor != null) {
-                val rawContactsCursor = cursor.rawContactsCursor()
-                while (cursor.moveToNext()) {
+    private fun findRawContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> =
+        contentResolver.query(
+            Table.RAW_CONTACTS, Include(Fields.RawContacts.Id), rawContactsWhere
+        ) {
+            mutableSetOf<Long>().apply {
+                val rawContactsCursor = it.rawContactsCursor()
+                while (!cancel() && it.moveToNext()) {
                     val rawContactId = rawContactsCursor.rawContactId
                     if (rawContactId != INVALID_ID) {
                         add(rawContactId)
                     }
                 }
-                cursor.close()
+
+                // Ensure only complete data sets are returned.
+                if (cancel()) {
+                    clear()
+                }
             }
-        }
-    }
+        } ?: emptySet()
 }
 
 // See the developer notes in the QueryData interface documentation.
