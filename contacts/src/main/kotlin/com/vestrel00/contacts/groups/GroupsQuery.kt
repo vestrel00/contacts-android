@@ -7,6 +7,7 @@ import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Group
 import com.vestrel00.contacts.entities.mapper.groupMapper
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.query
 
 /**
  * Queries on the groups table.
@@ -199,34 +200,19 @@ private class GroupsQueryImpl(
             return emptyList()
         }
 
-        val groups = mutableListOf<Group>()
+        return contentResolver.query(Table.GROUPS, Include(Fields.Groups), where) {
+            mutableListOf<Group>().apply {
+                val groupMapper = it.groupMapper()
+                while (!cancel() && it.moveToNext()) {
+                    add(groupMapper.value)
+                }
 
-        val where = where
-        val cursor = contentResolver.query(
-            Table.GROUPS.uri,
-            Include(Fields.Groups).columnNames,
-            if (where == NoWhere) null else "$where",
-            null,
-            null
-        )
-
-        if (cursor != null) {
-            val groupMapper = cursor.groupMapper()
-
-            while (cursor.moveToNext()) {
-                val group = groupMapper.value
-                groups.add(group)
-
+                // Ensure only complete data set is returned.
                 if (cancel()) {
-                    // Return empty list if cancelled to ensure only correct data set is returned.
-                    return emptyList()
+                    clear()
                 }
             }
-
-            cursor.close()
-        }
-
-        return groups
+        } ?: emptyList()
     }
 
     override fun findFirst(): Group? = findFirst { false }

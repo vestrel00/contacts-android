@@ -17,7 +17,7 @@ internal fun Cursor.emailMapper(): EntityMapper<Email> = EmailMapper(emailCursor
 
 internal fun Cursor.eventMapper(): EntityMapper<Event> = EventMapper(eventCursor())
 
-internal fun Cursor.groupMapper(): EntityMapper<Group> = GroupMapper(groupCursor())
+internal fun Cursor.groupMapper(): EntityMapper<Group> = GroupMapper(groupsCursor())
 
 internal fun Cursor.groupMembershipMapper(): EntityMapper<GroupMembership> =
     GroupMembershipMapper(groupMembershipCursor())
