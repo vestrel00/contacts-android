@@ -149,6 +149,15 @@ fun MutableContact.removeAddress(address: MutableAddress, byReference: Boolean =
 }
 
 /**
+ * Removes all [addresses] from all of the [MutableContact.rawContacts].
+ */
+fun MutableContact.removeAllAddresses() {
+    for (rawContact in rawContacts) {
+        rawContact.addresses.clear()
+    }
+}
+
+/**
  * Sequence of companies from all [rawContacts] ordered by the [MutableCompany.company].
  */
 fun MutableContact.companies(): Sequence<MutableCompany> = rawContacts
@@ -196,6 +205,15 @@ fun MutableContact.removeEmail(email: MutableEmail, byReference: Boolean = false
 }
 
 /**
+ * Removes all [emails] from all of the [MutableContact.rawContacts].
+ */
+fun MutableContact.removeAllEmails() {
+    for (rawContact in rawContacts) {
+        rawContact.emails.clear()
+    }
+}
+
+/**
  * Sequence of events from all [rawContacts] ordered by the [MutableEvent.date].
  */
 fun MutableContact.events(): Sequence<MutableEvent> = rawContacts
@@ -222,6 +240,15 @@ fun MutableContact.addEvent(event: MutableEvent) {
 fun MutableContact.removeEvent(event: MutableEvent, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.events.removeAll(event, byReference)
+    }
+}
+
+/**
+ * Removes all [events] from all of the [MutableContact.rawContacts].
+ */
+fun MutableContact.removeAllEvents() {
+    for (rawContact in rawContacts) {
+        rawContact.events.clear()
     }
 }
 
@@ -256,6 +283,15 @@ fun MutableContact.addIm(im: MutableIm) {
 fun MutableContact.removeIm(im: MutableIm, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.ims.removeAll(im, byReference)
+    }
+}
+
+/**
+ * Removes all [ims] from all of the [MutableContact.rawContacts].
+ */
+fun MutableContact.removeAllIms() {
+    for (rawContact in rawContacts) {
+        rawContact.ims.clear()
     }
 }
 
@@ -343,6 +379,15 @@ fun MutableContact.removePhone(phone: MutablePhone, byReference: Boolean = false
     }
 }
 
+/**
+ * Removes all [phones] from all of the [MutableContact.rawContacts].
+ */
+fun MutableContact.removeAllPhones() {
+    for (rawContact in rawContacts) {
+        rawContact.phones.clear()
+    }
+}
+
 // Photo intentionally left out because a Contact and associated RawContacts have independent
 // Photos.
 
@@ -374,6 +419,15 @@ fun MutableContact.addRelation(relation: MutableRelation) {
 fun MutableContact.removeRelation(relation: MutableRelation, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.relations.removeAll(relation, byReference)
+    }
+}
+
+/**
+ * Removes all [relations] from all of the [MutableContact.rawContacts].
+ */
+fun MutableContact.removeAllRelations() {
+    for (rawContact in rawContacts) {
+        rawContact.relations.clear()
     }
 }
 
@@ -426,6 +480,15 @@ fun MutableContact.removeWebsite(website: MutableWebsite, byReference: Boolean =
 }
 
 /**
+ * Removes all [websites] from all of the [MutableContact.rawContacts].
+ */
+fun MutableContact.removeAllWebsites() {
+    for (rawContact in rawContacts) {
+        rawContact.websites.clear()
+    }
+}
+
+/**
  * Removes all instances of the given [instance] from [this] collectiomn.
  *
  * By default, all **structurally equal (same content but maybe different objects)** instances will
@@ -433,7 +496,7 @@ fun MutableContact.removeWebsite(website: MutableWebsite, byReference: Boolean =
  * (same object)**.
  */
 @JvmOverloads
-fun <T> MutableCollection<T>.removeAll(instance: T, byReference: Boolean = false) {
+fun <T : Entity> MutableCollection<T>.removeAll(instance: T, byReference: Boolean = false) {
     if (byReference) {
         removeAll { it === instance }
     } else {
