@@ -313,6 +313,7 @@ private fun Any?.toSqlString(): String = when (this) {
     null -> "NULL"
     is Boolean -> if (this) "1" else "0"
     is String -> DatabaseUtils.sqlEscapeString(this)
+    is Array<*> -> this.asSequence().toSqlString()
     is Collection<*> -> this.asSequence().toSqlString()
     is Sequence<*> -> this.map { it?.toSqlString() }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
