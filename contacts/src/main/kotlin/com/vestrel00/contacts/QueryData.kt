@@ -10,6 +10,7 @@ import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.query
+import com.vestrel00.contacts.util.toRawContactsWhere
 
 /**
  * Queries the Contacts data table and returns one or more contact data matching the search
@@ -77,19 +78,24 @@ interface QueryData {
     /**
      * Limits this query to only search for data associated with the given accounts.
      *
-     * If no accounts are specified, then all data from all accounts are searched.
+     * If no accounts are specified (this function is not called or called with no Accounts), then
+     * all data from all accounts are searched.
+     *
+     * A null [Account] may be provided here, which results in data belonging to RawContacts with no
+     * associated Account to be included in the search. RawContacts without an associated account
+     * are considered local or device-only contacts, which are not synced.
      */
-    fun accounts(vararg accounts: Account): QueryData
+    fun accounts(vararg accounts: Account?): QueryData
 
     /**
      * See [QueryData.accounts]
      */
-    fun accounts(accounts: Collection<Account>): QueryData
+    fun accounts(accounts: Collection<Account?>): QueryData
 
     /**
      * See [QueryData.accounts]
      */
-    fun accounts(accounts: Sequence<Account>): QueryData
+    fun accounts(accounts: Sequence<Account?>): QueryData
 
     /**
      * Includes the given set of [fields] in the resulting data object(s).
@@ -271,22 +277,13 @@ private class QueryDataImpl(
         """.trimIndent()
     }
 
-    override fun accounts(vararg accounts: Account): QueryData = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account?): QueryData = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account>): QueryData =
+    override fun accounts(accounts: Collection<Account?>): QueryData =
         accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account>): QueryData = apply {
-        rawContactsWhere = if (accounts.count() == 0) {
-            DEFAULT_RAW_CONTACTS_WHERE
-        } else {
-            // This will resolve to null if the count is 0. DEFAULT_RAW_CONTACTS_WHERE is null.
-            // Therefore, this is the only statement required here. However, this way reads better.
-            accounts.whereOr { account ->
-                (Fields.RawContacts.AccountName equalToIgnoreCase account.name)
-                    .and(Fields.RawContacts.AccountType equalToIgnoreCase account.type)
-            }
-        }
+    override fun accounts(accounts: Sequence<Account?>): QueryData = apply {
+        rawContactsWhere = accounts.toRawContactsWhere()
     }
 
     override fun include(vararg fields: Field): QueryData = include(fields.asSequence())

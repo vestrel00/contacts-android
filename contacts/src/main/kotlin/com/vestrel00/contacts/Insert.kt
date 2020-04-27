@@ -105,9 +105,9 @@ interface Insert {
     /**
      * All of the raw contacts that are inserted on [commit] will belong to the given [account].
      *
-     * If not provided or if an incorrect account is provided, the raw contacts inserted here
-     * will not be associated with an account. RawContacts inserted without an associated account
-     * are considered local or device-only contacts, which are not sync'ed.
+     * If not provided, or null is provided, or if an incorrect account is provided, the raw
+     * contacts inserted here will not be associated with an account. RawContacts inserted without
+     * an associated account are considered local or device-only contacts, which are not synced.
      */
     fun forAccount(account: Account?): Insert
 

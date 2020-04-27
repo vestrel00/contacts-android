@@ -152,7 +152,7 @@ Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
 **Local Contacts / RawContacts**
 
 RawContacts inserted without an associated account are considered local or device-only contacts,
-which are not sync'ed.
+which are not synced.
 
 **Account addition, Lollipop (API 22) and below**
 
@@ -728,10 +728,10 @@ the device may contribute a single raw contact representing the user's personal 
 that source."
 
 In other words, 1 account can have 1 profile RawContact. Whether or not profile RawContacts
-associated to an Account can be carried over and sync'ed across devices and users is up to the
+associated to an Account can be carried over and synced across devices and users is up to the
 Contacts Provider / Sync provider for that Account.
 
-> From my experience, profile RawContacts associated to an Account is not carried over / sync'ed
+> From my experience, profile RawContacts associated to an Account is not carried over / synced
 > across devices or users.
 
 // TODO Try inserting a RawContact for every single Account.

@@ -9,6 +9,7 @@ import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.util.query
+import com.vestrel00.contacts.util.toRawContactsWhere
 
 /**
  * Queries the Contacts, RawContacts, and Data tables and returns the one and only profile
@@ -60,19 +61,24 @@ interface ProfileQuery {
      * Contact returned will not contain data that belongs to other accounts not specified in
      * [accounts].
      *
-     * If no accounts are specified, then all RawContacts and associated data are included.
+     * If no accounts are specified (this function is not called or called with no Accounts), then
+     * all RawContacts and associated data are included in the search.
+     *
+     * A null [Account] may be provided here, which results in RawContacts with no associated
+     * Account to be included in the search. RawContacts without an associated account are
+     * considered local or device-only contacts, which are not synced.
      */
-    fun accounts(vararg accounts: Account): ProfileQuery
+    fun accounts(vararg accounts: Account?): ProfileQuery
 
     /**
      * See [ProfileQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account>): ProfileQuery
+    fun accounts(accounts: Collection<Account?>): ProfileQuery
 
     /**
      * See [ProfileQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account>): ProfileQuery
+    fun accounts(accounts: Sequence<Account?>): ProfileQuery
 
     /**
      * Includes the given set of [fields] in the resulting contact object.
@@ -161,22 +167,13 @@ private class ProfileQueryImpl(
         """.trimIndent()
     }
 
-    override fun accounts(vararg accounts: Account): ProfileQuery = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account?): ProfileQuery = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account>): ProfileQuery =
+    override fun accounts(accounts: Collection<Account?>): ProfileQuery =
         accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account>): ProfileQuery = apply {
-        rawContactsWhere = if (accounts.count() == 0) {
-            DEFAULT_RAW_CONTACTS_WHERE
-        } else {
-            // This will resolve to null if the count is 0. DEFAULT_RAW_CONTACTS_WHERE is null.
-            // Therefore, this is the only statement required here. However, this way reads better.
-            accounts.whereOr { account ->
-                (Fields.RawContacts.AccountName equalToIgnoreCase account.name)
-                    .and(Fields.RawContacts.AccountType equalToIgnoreCase account.type)
-            }
-        }
+    override fun accounts(accounts: Sequence<Account?>): ProfileQuery = apply {
+        rawContactsWhere = accounts.toRawContactsWhere()
     }
 
     override fun include(vararg fields: Field): ProfileQuery = include(fields.asSequence())

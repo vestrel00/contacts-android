@@ -77,16 +77,36 @@ infix fun AbstractField.doesNotContain(value: String): Where = DoesNotContain(th
 // Non-infix convenience functions
 
 /**
- * Note that there is no function for "isNull" or "isNullOrEmpty". This API does not provide these
- * functions because Data rows for null values may not exist.
+ * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
+ * making misleading queries.
+ *
+ * Removing a piece of existing data results in the deletion of the row in the Data table if that
+ * row no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is
+ * the behavior of the native Android Contacts app. Therefore, querying for null fields is not
+ * possible. For example, there may be no Data rows that exist where the email address is null.
+ * Thus, a query to search for all contacts with null email address may return 0 contacts even if
+ * there are some contacts without email addresses.
  */
-fun AbstractField.isNotNull(): Where = IsNot(this, null)
+fun AbstractField.isNotNull(): Where = IsNotNull(this)
 
 /**
- * Note that there is no function for "isNull" or "isNullOrEmpty". This API does not provide these
- * functions because Data rows for null values may not exist.
+ * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
+ * making misleading queries.
+ *
+ * Removing a piece of existing data results in the deletion of the row in the Data table if that
+ * row no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is
+ * the behavior of the native Android Contacts app. Therefore, querying for null fields is not
+ * possible. For example, there may be no Data rows that exist where the email address is null.
+ * Thus, a query to search for all contacts with null email address may return 0 contacts even if
+ * there are some contacts without email addresses.
  */
-fun AbstractField.isNotNullOrEmpty(): Where = this.isNotNull() and IsNot(this, "")
+fun AbstractField.isNotNullOrEmpty(): Where = isNotNull() and notEqualTo("")
+
+/**
+ * Keep this function internal. Do not expose to consumers. Read the docs on [isNotNull] or
+ * [isNotNullOrEmpty].
+ */
+internal fun AbstractField.isNull(): Where = IsNull(this)
 
 // Collection convenience functions
 
@@ -127,14 +147,14 @@ fun AbstractField.isNotNullOrEmpty(): Where = this.isNotNull() and IsNot(this, "
  * ```
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Collection<T>.whereOr(where: (T) -> Where): Where? =
+infix fun <T : Any?> Collection<T>.whereOr(where: (T) -> Where): Where? =
     asSequence().joinWhere(where, "OR")
 
 /**
  * See [whereOr].
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Sequence<T>.whereOr(where: (T) -> Where): Where? = joinWhere(where, "OR")
+infix fun <T : Any?> Sequence<T>.whereOr(where: (T) -> Where): Where? = joinWhere(where, "OR")
 
 /**
  * Transforms each item in this collection to a [Where] and combines them with the "AND" operator.
@@ -166,14 +186,14 @@ infix fun <T : Any> Sequence<T>.whereOr(where: (T) -> Where): Where? = joinWhere
  * // (display_name NOT LIKE 'letter%%') AND (data1 NOT LIKE 'letter%%' <omitted for brevity>)
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Collection<T>.whereAnd(where: (T) -> Where): Where? =
+infix fun <T : Any?> Collection<T>.whereAnd(where: (T) -> Where): Where? =
     asSequence().joinWhere(where, "AND")
 
 /**
  * See [whereAnd].
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Sequence<T>.whereAnd(where: (T) -> Where): Where? = joinWhere(where, "AND")
+infix fun <T : Any?> Sequence<T>.whereAnd(where: (T) -> Where): Where? = joinWhere(where, "AND")
 
 /**
  * See [whereOr].
@@ -186,7 +206,7 @@ infix fun FieldSet.whereOr(where: (AbstractField) -> Where): Where? = fields.whe
 infix fun FieldSet.whereAnd(where: (AbstractField) -> Where): Where? = fields.whereAnd(where)
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
-private fun <T : Any> Sequence<T>.joinWhere(where: (T) -> Where, separator: String): Where? {
+private fun <T : Any?> Sequence<T>.joinWhere(where: (T) -> Where, separator: String): Where? {
     if (count() == 0) {
         return null
     }
@@ -287,7 +307,8 @@ private class GreaterThanOrEqual(field: AbstractField, value: Any) :
 private class LessThan(field: AbstractField, value: Any) : Where(where(field, "<", value))
 private class LessThanOrEqual(field: AbstractField, value: Any) : Where(where(field, "<=", value))
 
-private class IsNot(field: AbstractField, value: Any?) : Where(where(field, "IS NOT", value))
+private class IsNull(field: AbstractField) : Where(where(field, "IS", null))
+private class IsNotNull(field: AbstractField) : Where(where(field, "IS NOT", null))
 
 private class In(field: AbstractField, values: Sequence<Any>) : Where(where(field, "IN", values))
 private class NotIn(field: AbstractField, values: Sequence<Any>) :

@@ -1,6 +1,6 @@
 ## TODO
 
-1. Support local account query. Account objects can not be created with null account name or type.
+1. Support local account query in sample; add a "local" option in Accounts sample activity.
 2. Migrate local account to a remote account and vice versa.
 
 3. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
