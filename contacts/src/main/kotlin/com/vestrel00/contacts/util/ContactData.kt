@@ -17,8 +17,8 @@ fun Contact.addresses(): Sequence<Address> = rawContacts
  */
 fun Contact.companies(): Sequence<Company> = rawContacts
     .asSequence()
-    .filter { it.company != null }
-    .map { it.company!! }
+    .map { it.company }
+    .filterNotNull()
     .sortedBy { it.company }
 
 /**
@@ -54,8 +54,8 @@ fun Contact.ims(): Sequence<Im> = rawContacts
  */
 fun Contact.names(): Sequence<Name> = rawContacts
     .asSequence()
-    .filter { it.name != null }
-    .map { it.name!! }
+    .map { it.name }
+    .filterNotNull()
     .sortedBy { it.displayName }
 
 /**
@@ -63,8 +63,8 @@ fun Contact.names(): Sequence<Name> = rawContacts
  */
 fun Contact.nicknames(): Sequence<Nickname> = rawContacts
     .asSequence()
-    .filter { it.nickname != null }
-    .map { it.nickname!! }
+    .map { it.nickname }
+    .filterNotNull()
     .sortedBy { it.name }
 
 /**
@@ -72,8 +72,8 @@ fun Contact.nicknames(): Sequence<Nickname> = rawContacts
  */
 fun Contact.notes(): Sequence<Note> = rawContacts
     .asSequence()
-    .filter { it.note != null }
-    .map { it.note!! }
+    .map { it.note }
+    .filterNotNull()
     .sortedBy { it.note }
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
@@ -103,8 +103,8 @@ fun Contact.relations(): Sequence<Relation> = rawContacts
  */
 fun Contact.sipAddresses(): Sequence<SipAddress> = rawContacts
     .asSequence()
-    .filter { it.sipAddress != null }
-    .map { it.sipAddress!! }
+    .map { it.sipAddress }
+    .filterNotNull()
     .sortedBy { it.sipAddress }
 
 /**
@@ -162,8 +162,8 @@ fun MutableContact.removeAllAddresses() {
  */
 fun MutableContact.companies(): Sequence<MutableCompany> = rawContacts
     .asSequence()
-    .filter { it.company != null }
-    .map { it.company!! }
+    .map { it.company }
+    .filterNotNull()
     .sortedBy { it.company }
 
 /**
@@ -300,8 +300,8 @@ fun MutableContact.removeAllIms() {
  */
 fun MutableContact.names(): Sequence<MutableName> = rawContacts
     .asSequence()
-    .filter { it.name != null }
-    .map { it.name!! }
+    .map { it.name }
+    .filterNotNull()
     .sortedBy { it.displayName }
 
 /**
@@ -317,8 +317,8 @@ fun MutableContact.setName(name: MutableName?) {
  */
 fun MutableContact.nicknames(): Sequence<MutableNickname> = rawContacts
     .asSequence()
-    .filter { it.nickname != null }
-    .map { it.nickname!! }
+    .map { it.nickname }
+    .filterNotNull()
     .sortedBy { it.name }
 
 /**
@@ -334,8 +334,8 @@ fun MutableContact.setNickname(nickname: MutableNickname?) {
  */
 fun MutableContact.notes(): Sequence<MutableNote> = rawContacts
     .asSequence()
-    .filter { it.note != null }
-    .map { it.note!! }
+    .map { it.note }
+    .filterNotNull()
     .sortedBy { it.note }
 
 /**
@@ -437,8 +437,8 @@ fun MutableContact.removeAllRelations() {
  */
 fun MutableContact.sipAddresses(): Sequence<MutableSipAddress> = rawContacts
     .asSequence()
-    .filter { it.sipAddress != null }
-    .map { it.sipAddress!! }
+    .map { it.sipAddress }
+    .filterNotNull()
     .sortedBy { it.sipAddress }
 
 /**

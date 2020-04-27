@@ -3,7 +3,10 @@ package com.vestrel00.contacts.util
 import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.entities.*
+import com.vestrel00.contacts.entities.Contact
+import com.vestrel00.contacts.entities.MutableContact
+import com.vestrel00.contacts.entities.MutableOptions
+import com.vestrel00.contacts.entities.Options
 import com.vestrel00.contacts.entities.operation.OptionsOperation
 
 /**
@@ -62,8 +65,8 @@ fun MutableContact.updateOptions(
     context: Context, update: MutableOptions.() -> Unit
 ): Boolean = updateOptions(id, options, update, context)
 
-private fun setOptions(contactId: Long, options: MutableOptions, context: Context): Boolean {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == INVALID_ID) {
+private fun setOptions(contactId: Long?, options: MutableOptions, context: Context): Boolean {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
         return false
     }
 
@@ -84,7 +87,7 @@ private fun setOptions(contactId: Long, options: MutableOptions, context: Contex
 }
 
 private fun updateOptions(
-    contactId: Long,
+    contactId: Long?,
     optionsOptional: Options?,
     update: MutableOptions.() -> Unit,
     context: Context

@@ -4,7 +4,6 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
@@ -152,10 +151,10 @@ interface Query {
      * There is no workaround for this because the [ContentResolver.query] function only takes in
      * an array of column names.
      *
-     * ## IMPORTANT!!!
+     * ## IMPORTANT
      *
      * Do not perform updates on contacts returned by a query where all fields are not included as
-     * it will result in data loss!!
+     * it will result in data loss!
      */
     fun include(vararg fields: Field): Query
 
@@ -521,10 +520,7 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
 ) {
     mutableSetOf<Long>().apply {
         while (!cancel() && it.moveToNext()) {
-            val contactId = it.rawContactsCursor().contactId
-            if (contactId != INVALID_ID) {
-                add(contactId)
-            }
+            it.rawContactsCursor().contactId?.let(::add)
         }
     }
 } ?: emptySet()

@@ -91,8 +91,8 @@ private class GroupsDeleteImpl(
     override fun groups(groups: Collection<Group>): GroupsDelete = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<Group>): GroupsDelete = apply {
-        // Do not add system groups to the delete queue!
-        groupIds.addAll(groups.filter { !it.readOnly }.map { it.id })
+        // Do not add readOnly groups to the delete queue!
+        groupIds.addAll(groups.filter { !it.readOnly }.map { it.id }.filterNotNull())
     }
 
     override fun commit(): GroupsDelete.Result {
@@ -130,8 +130,8 @@ private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolea
 
     override val isSuccessful: Boolean by lazy { groupIdsResultMap.all { it.value } }
 
-    override fun isSuccessful(group: Group): Boolean =
-        groupIdsResultMap.getOrElse(group.id) { false }
+    override fun isSuccessful(group: Group): Boolean = group.id != null
+            && groupIdsResultMap.getOrElse(group.id) { false }
 }
 
 private object GroupsDeleteFailed : GroupsDelete.Result {

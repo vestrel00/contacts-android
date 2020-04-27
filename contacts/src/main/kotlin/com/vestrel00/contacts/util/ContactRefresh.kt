@@ -25,9 +25,15 @@ import com.vestrel00.contacts.equalTo
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Contact.refresh(context: Context, cancel: () -> Boolean = { false }): Contact? = Query(context)
-    .where(Fields.Contact.Id equalTo id)
-    .findFirst(cancel)
+fun Contact.refresh(context: Context, cancel: () -> Boolean = { false }): Contact? {
+    if (id == null) {
+        return this
+    }
+
+    return Query(context)
+        .where(Fields.Contact.Id equalTo id)
+        .findFirst(cancel)
+}
 
 /**
  * This will return [this] same instance if it does not have a valid ID, which means it is a contact
@@ -42,7 +48,7 @@ fun Contact.refresh(context: Context, cancel: () -> Boolean = { false }): Contac
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun MutableContact.refresh(context: Context, cancel: () -> Boolean = { false }): MutableContact? {
-    if (!hasValidId()) {
+    if (id == null) {
         return this
     }
 

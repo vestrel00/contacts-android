@@ -9,11 +9,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Im internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override val isPrimary: Boolean,
 
@@ -84,11 +84,11 @@ data class Im internal constructor(
 @Parcelize
 data class MutableIm internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override var isPrimary: Boolean,
 
@@ -115,7 +115,7 @@ data class MutableIm internal constructor(
     override val mimeType: MimeType = MimeType.IM
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, INVALID_ID, false, false,
+        null, null, null, false, false,
         null, null, null
     )
 

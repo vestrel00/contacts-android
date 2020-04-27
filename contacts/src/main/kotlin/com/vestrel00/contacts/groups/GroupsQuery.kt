@@ -171,8 +171,9 @@ private class GroupsQueryImpl(
 
             if (groupIds.isNotEmpty()) {
                 // Limit the query to the given set of ids.
-                where = if (where != null) {
-                    where!! and (Fields.Groups.Id `in` groupIds)
+                val currentWhere = where // to avoid lint errors or force unwrapping
+                where = if (currentWhere != null) {
+                    currentWhere and (Fields.Groups.Id `in` groupIds)
                 } else {
                     Fields.Groups.Id `in` groupIds
                 }

@@ -113,11 +113,7 @@ private class GroupsUpdateImpl(
         groups(groups.asSequence())
 
     override fun groups(groups: Sequence<MutableGroup?>): GroupsUpdate = apply {
-        val existingGroups = groups
-            .filter { it != null && it.hasValidId() && !it.readOnly }
-            .map { it!! }
-
-        this.groups.addAll(existingGroups)
+        this.groups.addAll(groups.filterNotNull())
     }
 
     override fun commit(): GroupsUpdate.Result {
@@ -127,13 +123,15 @@ private class GroupsUpdateImpl(
 
         val results = mutableMapOf<Long, Boolean>()
         for (group in groups) {
-            results[group.id] = updateGroup(group)
+            if (group.id != null && !group.readOnly) {
+                results[group.id] = updateGroup(group)
+            }
         }
         return GroupsUpdateResult(results)
     }
 
     private fun updateGroup(group: MutableGroup): Boolean {
-        val operation = GroupOperation().update(group)
+        val operation = GroupOperation().update(group) ?: return false
 
         /*
          * Atomically update the group row.
@@ -155,8 +153,8 @@ private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolea
 
     override val isSuccessful: Boolean by lazy { groupIdsResultMap.all { it.value } }
 
-    override fun isSuccessful(group: MutableGroup): Boolean =
-        groupIdsResultMap.getOrElse(group.id) { false }
+    override fun isSuccessful(group: MutableGroup): Boolean = group.id != null
+            && groupIdsResultMap.getOrElse(group.id) { false }
 }
 
 private object GroupsUpdateFailed : GroupsUpdate.Result {

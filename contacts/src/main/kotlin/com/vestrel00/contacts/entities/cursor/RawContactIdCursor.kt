@@ -12,5 +12,5 @@ package com.vestrel00.contacts.entities.cursor
  * This inherits from [ContactIdCursor] because these cursors also have access to the Contact Id.
  */
 internal interface RawContactIdCursor : ContactIdCursor {
-    val rawContactId: Long
+    val rawContactId: Long?
 }

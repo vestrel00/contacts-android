@@ -178,8 +178,7 @@ private class UpdateImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<MutableRawContact>): Update = apply {
-        val existingRawContacts = rawContacts.filter { it.hasValidId() }
-        this.rawContacts.addAll(existingRawContacts)
+        this.rawContacts.addAll(rawContacts)
     }
 
     override fun contacts(vararg contacts: MutableContact): Update =
@@ -207,14 +206,18 @@ private class UpdateImpl(
         val notBlankRawContacts = rawContacts.asSequence().filter { !it.isBlank() }
         val notBlankRawContactsResults = mutableMapOf<Long, Boolean>()
         for (rawContact in notBlankRawContacts) {
-            notBlankRawContactsResults[rawContact.id] = updateRawContact(rawContact)
+            if (rawContact.id != null) {
+                notBlankRawContactsResults[rawContact.id] = updateRawContact(rawContact)
+            }
         }
 
         val blankRawContacts = rawContacts.asSequence().filter { it.isBlank() }
         val blankRawContactsResults = mutableMapOf<Long, Boolean>()
         for (rawContact in blankRawContacts) {
-            blankRawContactsResults[rawContact.id] =
-                deleteRawContactWithId(rawContact.id, context.contentResolver)
+            if (rawContact.id != null) {
+                blankRawContactsResults[rawContact.id] =
+                    deleteRawContactWithId(rawContact.id, context.contentResolver)
+            }
         }
 
         return UpdateResult(notBlankRawContactsResults + blankRawContactsResults)
@@ -224,7 +227,9 @@ private class UpdateImpl(
         val results = mutableMapOf<Long, Boolean>()
 
         for (rawContact in rawContacts) {
-            results[rawContact.id] = updateRawContact(rawContact)
+            if (rawContact.id != null) {
+                results[rawContact.id] = updateRawContact(rawContact)
+            }
         }
 
         return UpdateResult(results)
@@ -240,6 +245,10 @@ private class UpdateImpl(
      * if it does not yet exist.
      */
     private fun updateRawContact(rawContact: MutableRawContact): Boolean {
+        if (rawContact.id == null) {
+            return false
+        }
+
         val operations = arrayListOf<ContentProviderOperation>()
         val contentResolver = context.contentResolver
 
@@ -343,8 +352,8 @@ private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean
         return true
     }
 
-    private fun isSuccessful(rawContactId: Long): Boolean =
-        rawContactIdsResultMap.getOrElse(rawContactId) { false }
+    private fun isSuccessful(rawContactId: Long?): Boolean = rawContactId != null
+            && rawContactIdsResultMap.getOrElse(rawContactId) { false }
 }
 
 private object UpdateFailed : Update.Result {

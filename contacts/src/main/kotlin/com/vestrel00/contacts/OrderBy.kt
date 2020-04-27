@@ -427,3 +427,22 @@ private fun Int?.compareTo(other: Int?): Int {
         0
     }
 }
+
+/**
+ * Compares [this] nullable long to the [other] nullable long.
+ *
+ * If both [this] and [other] are not null, then a comparison is done on both. Otherwise, this
+ * returns a positive integer if [this] is null and [other] is not null. Returns a negative integer
+ * if [this] is not null and [other] is null. Returns 0 if both [this] and [other] are null.
+ */
+private fun Long?.compareTo(other: Long?): Int {
+    return if (this != null && other != null) {
+        compareTo(other)
+    } else if (this == null && other != null) {
+        1
+    } else if (this != null && other == null) {
+        -1
+    } else {
+        0
+    }
+}

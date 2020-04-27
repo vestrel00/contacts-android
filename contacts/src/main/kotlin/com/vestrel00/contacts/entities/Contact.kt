@@ -25,7 +25,7 @@ data class Contact internal constructor(
      *
      * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
      */
-    override val id: Long,
+    override val id: Long?,
 
     /**
      * True if this contact represents the user's personal profile entry.
@@ -119,10 +119,8 @@ data class MutableContact internal constructor(
 
     /**
      * See [Contact.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
-    override val id: Long,
+    override val id: Long?,
 
     /**
      * See [Contact.isProfile].

@@ -31,9 +31,9 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     abstract fun setData(data: T, setValue: (field: AbstractField, value: Any?) -> Unit)
 
     /**
-     * Returns a [ContentProviderOperation] for adding [it]'s properties to the insert operation.
-     * This assumes that this will be used in a batch of operations where the first operation is the
-     * insertion of a new RawContact.
+     * Returns a [ContentProviderOperation] for adding the [entity] properties to the insert
+     * operation.  This assumes that this will be used in a batch of operations where the first
+     * operation is the insertion of a new RawContact.
      *
      * Returns null if [entity] is blank.
      */
@@ -88,13 +88,25 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
         if (!entitiesAreAllBlank(entities)) {
             // Get all entities with a valid Id, which means they are (or have been) in the DB.
-            val validEntitiesMap = entities.toValidEntitiesMap().toMutableMap()
+            val validEntitiesMap = mutableMapOf<Long, T>().apply {
+                for (entity in entities) {
+                    val entityId = entity.id
+                    if (entityId != null) {
+                        put(entityId, entity)
+                    }
+                }
+            }
 
             // Query for all rows in the database.
             contentResolver.dataRowIdsFor(rawContactId) {
                 val dataCursor = it.dataCursor()
                 while (it.moveToNext()) {
-                    val dataRowId = dataCursor.dataId
+                    // There should never be a null Data row Id unless there is a programming error
+                    // such as not including the id column in the query. We should technically
+                    // force unwrap here. However, the Android ecosystem is huge and I wouldn't
+                    // rule out null ids. #NO-TRUST.
+                    // FIXME Parameterize strategy for consumers; fail hard or fail silently?
+                    val dataRowId = dataCursor.dataId ?: continue
 
                     val entity = validEntitiesMap.remove(dataRowId)
                     val operation = if (entity != null && !entity.isBlank()) {
@@ -114,14 +126,14 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             // Valid entities have a valid id, which means they are already in the DB. In this case,
             // The entity may have been deleted in another app or another entity belonging to a
             // different contact is included here. Blank entities are not inserted.
-            for (entity in validEntitiesMap.values.filter { !it.isBlank() }) {
+            for (entity in validEntitiesMap.values.asSequence().filter { !it.isBlank() }) {
                 add(insertDataRow(entity, rawContactId))
             }
 
             // Insert all invalid entities.
             // Invalid entities have an invalid id, which means they are newly created entities
             // that are not yet in the DB. Blank entities are not inserted.
-            val invalidEntities = entities.toInvalidEntities()
+            val invalidEntities = entities.asSequence().filter { it.id == null }
             for (entity in invalidEntities.filter { !it.isBlank() }) {
                 add(insertDataRow(entity, rawContactId))
             }
@@ -143,20 +155,20 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     ): ContentProviderOperation =
         if (entity != null && !entity.isBlank()) {
             // Entity contains some data. Query for the (first) row.
-            val dataRowId = contentResolver.dataRowIdsFor(rawContactId) {
+            val dataRowId: Long? = contentResolver.dataRowIdsFor(rawContactId) {
                 if (it.moveToNext()) {
                     it.dataCursor().dataId
                 } else {
-                    INVALID_ID
+                    null
                 }
-            } ?: INVALID_ID
+            }
 
-            if (dataRowId == INVALID_ID) {
-                // Row does not exist. Insert.
-                insertDataRow(entity, rawContactId)
-            } else {
+            if (dataRowId != null) {
                 // Row exists. Update.
                 updateDataRow(entity, dataRowId)
+            } else {
+                // Row does not exist. Insert.
+                insertDataRow(entity, rawContactId)
             }
         } else {
             // Entity contains no data. Delete.

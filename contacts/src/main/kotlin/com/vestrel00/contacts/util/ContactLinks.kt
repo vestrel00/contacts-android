@@ -110,7 +110,7 @@ fun Contact.link(context: Context, contacts: Collection<Contact>): ContactLinkRe
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun Contact.link(context: Context, contacts: Sequence<Contact>): ContactLinkResult =
-    link(context, id, contacts.map { it.id })
+    link(context, id, contacts.map { it.id }.filterNotNull())
 
 /**
  * See [Contact.link].
@@ -131,21 +131,21 @@ fun MutableContact.link(context: Context, contacts: Collection<MutableContact>):
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableContact.link(context: Context, contacts: Sequence<MutableContact>): ContactLinkResult =
-    link(context, id, contacts.map { it.id })
+    link(context, id, contacts.map { it.id }.filterNotNull())
 
 /**
  * Links the RawContacts of all the given [contactIds]. The [mainContactId] will be used as the
  * first choice in display name resolution.
  */
-private fun link(context: Context, mainContactId: Long, contactIds: Sequence<Long>):
+private fun link(context: Context, mainContactId: Long?, contactIds: Sequence<Long>):
         ContactLinkResult {
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || mainContactId == INVALID_ID) {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || mainContactId == null) {
         return ContactLinkFailed
     }
 
     val sortedContactIds = contactIds
-        .filter { it != mainContactId && it != INVALID_ID }
+        .filter { it != mainContactId }
         .sortedBy { it }
         .toMutableList()
 
@@ -183,11 +183,14 @@ private fun link(context: Context, mainContactId: Long, contactIds: Sequence<Lon
     }
 
     // Link succeeded. Set the default name.
-    val name = nameWithId(context, nameRowIdToUseAsDefault)
-    name?.setAsDefault(context)
+    val name = if (nameRowIdToUseAsDefault != null) {
+        nameWithId(context, nameRowIdToUseAsDefault)?.apply {
+            setAsDefault(context)
+        }
+    } else null
 
     // Get the new Contact id of the RawContacts from the queried name. If no name is found,
-    // query it.
+    // then use the contact id of the first RawContact.
     val contactId = name?.contactId ?: contactIdOfRawContact(context, sortedRawContactIds.first())
 
     return ContactLinkSuccess(contactId)
@@ -246,8 +249,8 @@ fun MutableContact.unlink(context: Context): ContactUnlinkResult = unlink(contex
 /**
  * Unlinks (separates) the RawContacts of the given [contactId].
  */
-private fun unlink(context: Context, contactId: Long): ContactUnlinkResult {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == INVALID_ID) {
+private fun unlink(context: Context, contactId: Long?): ContactUnlinkResult {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
         return ContactUnlinkFailed
     }
 
@@ -333,21 +336,21 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
  * row of the raw contact specified by NAME_RAW_CONTACT_ID. If not found, repeat this process for
  * all subsequent contacts until a name row is found.
  *
- * Returns [INVALID_ID] if no name row is found or if the API version this is running on is less
- * than 21 (Lollipop).
+ * Returns null if no name row is found or if the API version this is running on is less than
+ * 21 (Lollipop).
  */
-private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Long {
+private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Long? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
         // Contacts.NAME_RAW_CONTACT_ID is not available
-        return INVALID_ID
+        return null
     }
 
-    var nameRowIdToUseAsDefault = INVALID_ID
+    var nameRowIdToUseAsDefault: Long? = null
 
     for (contactId in contactIds) {
         nameRowIdToUseAsDefault = nameRawContactIdStructuredNameId(context, contactId)
 
-        if (nameRowIdToUseAsDefault != INVALID_ID) {
+        if (nameRowIdToUseAsDefault != null) {
             break
         }
     }
@@ -359,15 +362,11 @@ private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Lo
  * Returns the structured name row ID of the RawContact referenced by the
  * [Contacts.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
  *
- * Returns [INVALID_ID] if the [Contacts.DISPLAY_NAME_SOURCE] is not
- * [DisplayNameSources.STRUCTURED_NAME] or if the name row is not found.
+ * Returns null if the [Contacts.DISPLAY_NAME_SOURCE] is not [DisplayNameSources.STRUCTURED_NAME] or
+ * if the name row is not found.
  */
-private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long): Long {
-    val nameRawContactId = nameRawContactId(context, contactId)
-
-    if (nameRawContactId == INVALID_ID) {
-        return INVALID_ID
-    }
+private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long): Long? {
+    val nameRawContactId = nameRawContactId(context, contactId) ?: return null
 
     return context.contentResolver.query(
         Table.DATA,
@@ -378,39 +377,38 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
         if (it.moveToNext()) {
             it.dataCursor().dataId
         } else {
-            INVALID_ID
+            null
         }
-    } ?: INVALID_ID
+    }
 }
 
 /**
  * Returns the [Contacts.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
  *
- * Returns [INVALID_ID] if the [Contacts.DISPLAY_NAME_SOURCE] is not
- * [DisplayNameSources.STRUCTURED_NAME].
+ * Returns null if the [Contacts.DISPLAY_NAME_SOURCE] is not [DisplayNameSources.STRUCTURED_NAME].
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-private fun nameRawContactId(context: Context, contactId: Long): Long =
+private fun nameRawContactId(context: Context, contactId: Long): Long? =
     context.contentResolver.query(
         Table.CONTACTS,
         Include(Fields.Contacts.DisplayNameSource, Fields.Contacts.NameRawContactId),
         Fields.Contacts.Id equalTo contactId
     ) {
         var displayNameSource: Int = DisplayNameSources.UNDEFINED
-        var nameRawContactId: Long = INVALID_ID
+        var nameRawContactId: Long? = null
 
         if (it.moveToNext()) {
             val contactsCursor = it.contactsCursor()
             displayNameSource = contactsCursor.displayNameSource ?: DisplayNameSources.UNDEFINED
-            nameRawContactId = contactsCursor.nameRawContactId ?: INVALID_ID
+            nameRawContactId = contactsCursor.nameRawContactId
         }
 
         if (displayNameSource != DisplayNameSources.STRUCTURED_NAME) {
-            INVALID_ID
+            null
         } else {
             nameRawContactId
         }
-    } ?: INVALID_ID
+    }
 
 /**
  * Returns the RawContact IDs of the Contacts with the given [contactIds] in ascending order.
@@ -426,29 +424,20 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
         mutableListOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()
             while (it.moveToNext()) {
-                val rawContactId = rawContactsCursor.rawContactId
-                if (rawContactId != INVALID_ID) {
-                    add(rawContactId)
-                }
+                rawContactsCursor.rawContactId?.let(::add)
             }
         }
     } ?: emptyList()
 
-private fun nameWithId(context: Context, nameRowId: Long): Name? {
-    if (nameRowId == INVALID_ID) {
-        return null
-    }
-
-    return context.contentResolver.query(
-        Table.DATA,
-        Include(Fields.Required),
-        Fields.Id equalTo nameRowId
-    ) {
-        if (it.moveToNext()) {
-            it.nameMapper().value
-        } else {
-            null
-        }
+private fun nameWithId(context: Context, nameRowId: Long): Name? = context.contentResolver.query(
+    Table.DATA,
+    Include(Fields.Required),
+    Fields.Id equalTo nameRowId
+) {
+    if (it.moveToNext()) {
+        it.nameMapper().value
+    } else {
+        null
     }
 }
 

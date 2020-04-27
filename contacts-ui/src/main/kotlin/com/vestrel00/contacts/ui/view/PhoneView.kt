@@ -188,7 +188,7 @@ class PhoneView @JvmOverloads constructor(
     private inner class OnPhoneTypeSelectedListener : AdapterView.OnItemSelectedListener {
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            val phoneType = typesAdapter.getItem(position)!!
+            val phoneType = typesAdapter.getItem(position) ?: return
             if (phoneType.type == Phone.Type.CUSTOM) {
                 // If generic custom type is selected, show an input prompt for custom type label.
                 if (!phoneType.userCustomType) {

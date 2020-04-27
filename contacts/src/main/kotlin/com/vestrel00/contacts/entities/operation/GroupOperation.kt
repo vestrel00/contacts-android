@@ -24,10 +24,14 @@ internal class GroupOperation {
         // .withValue(Fields.Group.AutoAdd, it.autoAdd.toSqlValue())
         .build()
 
-    fun update(group: MutableGroup): ContentProviderOperation = newUpdate(TABLE_URI)
-        .withSelection("${Fields.Groups.Id equalTo group.id}", null)
-        .withValue(Fields.Groups.Title, group.title)
-        .build()
+    fun update(group: MutableGroup): ContentProviderOperation? = if (group.id != null) {
+        newUpdate(TABLE_URI)
+            .withSelection("${Fields.Groups.Id equalTo group.id}", null)
+            .withValue(Fields.Groups.Title, group.title)
+            .build()
+    } else {
+        null
+    }
 
     fun delete(groupId: Long): ContentProviderOperation = newDelete(TABLE_URI)
         .withSelection("${Fields.Groups.Id equalTo groupId}", null)

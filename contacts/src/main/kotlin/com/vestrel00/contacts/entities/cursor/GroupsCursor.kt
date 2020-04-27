@@ -3,7 +3,6 @@ package com.vestrel00.contacts.entities.cursor
 import android.accounts.Account
 import android.database.Cursor
 import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.entities.INVALID_ID
 
 /**
  * Retrieves [Fields.Groups] data from the given [cursor].
@@ -13,8 +12,8 @@ import com.vestrel00.contacts.entities.INVALID_ID
  */
 internal class GroupsCursor(private val cursor: Cursor) {
 
-    val id: Long
-        get() = cursor.getLong(Fields.Groups.Id) ?: INVALID_ID
+    val id: Long?
+        get() = cursor.getLong(Fields.Groups.Id)
 
     val title: String
         get() = cursor.getString(Fields.Groups.Title) ?: "Null"

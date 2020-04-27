@@ -99,8 +99,10 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
                 val group = accountGroups.getValue(it.groupId)
                 !group.isDefaultGroup
             }
-            .forEach { groupMembership ->
-                add(deleteDataRowWithId(groupMembership.id))
+            .map { it.id }
+            .filterNotNull()
+            .forEach { groupMembershipId ->
+                add(deleteDataRowWithId(groupMembershipId))
             }
     }
 

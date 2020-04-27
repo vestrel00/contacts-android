@@ -166,9 +166,9 @@ class ContactsActivity : BaseActivity() {
 
     private inner class OnContactClickListener : AdapterView.OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            val contact = searchResults[position]
+            val contactId = searchResults[position].id ?: return
             // TODO Show contact details instead of edit
-            EditContactDetailsActivity.editContactDetails(this@ContactsActivity, contact.id)
+            EditContactDetailsActivity.editContactDetails(this@ContactsActivity, contactId)
         }
     }
 }

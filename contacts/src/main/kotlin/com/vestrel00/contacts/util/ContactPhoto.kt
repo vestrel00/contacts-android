@@ -11,7 +11,6 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.entities.cursor.contactsCursor
@@ -370,13 +369,9 @@ fun MutableContact.photoThumbnailBitmapDrawable(context: Context): BitmapDrawabl
 // HELPERS
 
 private fun setContactPhoto(
-    context: Context, contactId: Long, defaultRawContactId: Long?, photoBytes: ByteArray
+    context: Context, contactId: Long?, defaultRawContactId: Long?, photoBytes: ByteArray
 ): Boolean {
-    if (
-        !ContactsPermissions(context).canInsertUpdateDelete()
-        || contactId == INVALID_ID
-        || defaultRawContactId == INVALID_ID
-    ) {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
         return false
     }
 
@@ -389,8 +384,8 @@ private fun setContactPhoto(
         rawContactIdWithPhotoFileId(context, photoFileId)
     } else {
         // No photo exists for the Contact or any of its associated RawContacts. Use the
-        // defaultRawContactId.
-        defaultRawContactId ?: INVALID_ID
+        // defaultRawContactId or fail if also not available.
+        defaultRawContactId
     }
 
     return setRawContactPhoto(context, rawContactId, photoBytes)
@@ -398,8 +393,8 @@ private fun setContactPhoto(
 
 
 // Removing the photo data rows does the trick!
-private fun removeContactPhoto(context: Context, contactId: Long): Boolean {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == INVALID_ID) {
+private fun removeContactPhoto(context: Context, contactId: Long?): Boolean {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
         return false
     }
 
@@ -438,23 +433,21 @@ private fun photoFileId(context: Context, contactId: Long): Long? = context.cont
     }
 }
 
-private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long =
+private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long? =
     context.contentResolver.query(
         Table.DATA,
         Include(Fields.RawContact.Id),
         Fields.Photo.PhotoFileId equalTo photoFileId
     ) {
-        var rawContactId: Long = INVALID_ID
-
         if (it.moveToNext()) {
-            rawContactId = it.photoCursor().rawContactId
+            it.photoCursor().rawContactId
+        } else {
+            null
         }
+    }
 
-        rawContactId
-    } ?: INVALID_ID
-
-private fun photoUriInputStream(context: Context, contactId: Long): InputStream? {
-    if (!ContactsPermissions(context).canQuery() || contactId == INVALID_ID) {
+private fun photoUriInputStream(context: Context, contactId: Long?): InputStream? {
+    if (!ContactsPermissions(context).canQuery() || contactId == null) {
         return null
     }
 
@@ -472,8 +465,8 @@ private fun photoUriInputStream(context: Context, contactId: Long): InputStream?
     }
 }
 
-private fun photoThumbnailUriInputStream(context: Context, contactId: Long): InputStream? {
-    if (!ContactsPermissions(context).canQuery() || contactId == INVALID_ID) {
+private fun photoThumbnailUriInputStream(context: Context, contactId: Long?): InputStream? {
+    if (!ContactsPermissions(context).canQuery() || contactId == null) {
         return null
     }
 

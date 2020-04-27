@@ -206,7 +206,7 @@ internal fun Where.inContactsTable(): Where = ContactsTableWhere(
     toString()
         .replace(Fields.RawContacts.ContactId.columnName, Fields.Contacts.Id.columnName)
         // Technically, Fields.RawContacts.ContactId and Fields.Contact.Id have the same columnName.
-        // For the sake of OCD, I'm performing this redundant replacement =) SUE ME!!!
+        // For the sake of OCD, I'm performing this redundant replacement =) SUE ME!
         .replace(Fields.Contact.Id.columnName, Fields.Contacts.Id.columnName)
 )
 

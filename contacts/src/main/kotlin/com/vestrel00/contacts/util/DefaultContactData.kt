@@ -7,7 +7,6 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
-import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -37,15 +36,23 @@ fun Sequence<DataEntity>.default(): DataEntity? = firstOrNull { it.isDefault() }
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun DataEntity.setAsDefault(context: Context): Boolean {
+    val dataId = id
+    val rawContactId = rawContactId
+    val contactId = contactId
+
     if (!ContactsPermissions(context).canInsertUpdateDelete()
-        || id == INVALID_ID
-        || rawContactId == INVALID_ID
-        || contactId == INVALID_ID
+        || dataId == null
+        || rawContactId == null
+        || contactId == null
     ) {
         return false
     }
 
-    val operations = arrayListOf(clearPrimary(), clearSuperPrimary(), setPrimaryAndSuperPrimary())
+    val operations = arrayListOf(
+        clearPrimary(rawContactId),
+        clearSuperPrimary(contactId),
+        setPrimaryAndSuperPrimary(dataId)
+    )
 
     // Perform this single operation in a batch to be consistent with the other CRUD functions.
     try {
@@ -86,14 +93,17 @@ fun DataEntity.setAsDefault(context: Context): Boolean {
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun DataEntity.clearDefault(context: Context): Boolean {
+    val rawContactId = rawContactId
+    val contactId = contactId
+
     if (!ContactsPermissions(context).canInsertUpdateDelete()
-        || rawContactId == INVALID_ID
-        || contactId == INVALID_ID
+        || rawContactId == null
+        || contactId == null
     ) {
         return false
     }
 
-    val operations = arrayListOf(clearPrimary(), clearSuperPrimary())
+    val operations = arrayListOf(clearPrimary(rawContactId), clearSuperPrimary(contactId))
 
     // Perform this single operation in a batch to be consistent with the other CRUD functions.
     try {
@@ -111,13 +121,14 @@ fun DataEntity.clearDefault(context: Context): Boolean {
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.clearPrimary(): ContentProviderOperation = newUpdate(TABLE_URI)
-    .withSelection(
-        "${(Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo mimeType)}",
-        null
-    )
-    .withValue(Fields.IsPrimary, 0)
-    .build()
+private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
+    newUpdate(TABLE_URI)
+        .withSelection(
+            "${(Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo mimeType)}",
+            null
+        )
+        .withValue(Fields.IsPrimary, 0)
+        .build()
 
 /**
  * Provides the operation to set all super primary data rows with the same [DataEntity.mimeType]
@@ -125,21 +136,22 @@ private fun DataEntity.clearPrimary(): ContentProviderOperation = newUpdate(TABL
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.clearSuperPrimary(): ContentProviderOperation = newUpdate(TABLE_URI)
-    .withSelection(
-        "${(Fields.Contact.Id equalTo contactId) and (Fields.MimeType equalTo mimeType)}",
-        null
-    )
-    .withValue(Fields.IsSuperPrimary, 0)
-    .build()
+private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
+    newUpdate(TABLE_URI)
+        .withSelection(
+            "${(Fields.Contact.Id equalTo contactId) and (Fields.MimeType equalTo mimeType)}",
+            null
+        )
+        .withValue(Fields.IsSuperPrimary, 0)
+        .build()
 
 /**
  * Provides the operation to set this data row as the primary and super primary.
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.setPrimaryAndSuperPrimary(): ContentProviderOperation = newUpdate(TABLE_URI)
-    .withSelection("${Fields.Id equalTo id}", null)
+private fun setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation = newUpdate(TABLE_URI)
+    .withSelection("${Fields.Id equalTo dataId}", null)
     .withValue(Fields.IsPrimary, 1)
     .withValue(Fields.IsSuperPrimary, 1)
     .build()

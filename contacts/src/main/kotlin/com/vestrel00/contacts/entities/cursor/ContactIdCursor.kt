@@ -11,5 +11,5 @@ package com.vestrel00.contacts.entities.cursor
  * This should be used when using a cursor that could have been from the any of the above tables.
  */
 internal interface ContactIdCursor {
-    val contactId: Long
+    val contactId: Long?
 }

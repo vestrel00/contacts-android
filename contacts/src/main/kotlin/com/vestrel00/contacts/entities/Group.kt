@@ -11,7 +11,7 @@ data class Group internal constructor(
     /**
      * The id of this row in the Groups table.
      */
-    override val id: Long,
+    override val id: Long?,
 
     /**
      * The display title of this group.
@@ -126,10 +126,8 @@ data class MutableGroup internal constructor(
 
     /**
      * See [Group.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
-    override val id: Long,
+    override val id: Long?,
 
     /**
      * See [Group.title].
@@ -165,7 +163,7 @@ data class MutableGroup internal constructor(
 ) : Entity, Parcelable {
 
     constructor(title: String, account: Account) : this(
-        INVALID_ID, title, false, false, false, account
+        null, title, false, false, false, account
     )
 
     /**

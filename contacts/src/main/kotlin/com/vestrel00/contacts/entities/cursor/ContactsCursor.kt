@@ -5,7 +5,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.entities.INVALID_ID
 import java.util.*
 
 /**
@@ -16,8 +15,8 @@ import java.util.*
  */
 internal class ContactsCursor(private val cursor: Cursor) : ContactIdCursor {
 
-    override val contactId: Long
-        get() = cursor.getLong(Fields.Contacts.Id) ?: INVALID_ID
+    override val contactId: Long?
+        get() = cursor.getLong(Fields.Contacts.Id)
 
     val displayName: String?
         get() = cursor.getString(Fields.Contacts.DisplayName)

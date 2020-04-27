@@ -31,14 +31,14 @@ data class RawContact internal constructor(
      *
      * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
      */
-    override val id: Long,
+    override val id: Long?,
 
     /**
      * The ID of the [Contact] that this [RawContact] is associated with.
      *
      * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
      */
-    val contactId: Long,
+    val contactId: Long?,
 
     /**
      * True if this raw contact belongs to the user's personal profile entry.
@@ -148,17 +148,13 @@ data class MutableRawContact internal constructor(
 
     /**
      * See [RawContact.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
-    override val id: Long,
+    override val id: Long?,
 
     /**
      * See [RawContact.contactId].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
-    val contactId: Long,
+    val contactId: Long?,
 
     /**
      * See [RawContact.isProfile].
@@ -239,7 +235,7 @@ data class MutableRawContact internal constructor(
 ) : Entity, Parcelable {
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, false, mutableListOf(), null, mutableListOf(), mutableListOf(),
+        null, null, false, mutableListOf(), null, mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, mutableListOf(),
         mutableListOf(), null, mutableListOf()
     )
@@ -258,9 +254,11 @@ data class MutableRawContact internal constructor(
  */
 internal data class TempRawContact constructor(
 
-    override val id: Long,
-    val contactId: Long,
+    override val id: Long?,
+    val contactId: Long?,
+
     val isProfile: Boolean,
+
     var addresses: MutableList<Address>,
     var company: Company?,
     var emails: MutableList<Email>,

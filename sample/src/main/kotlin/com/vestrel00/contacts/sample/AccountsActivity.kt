@@ -28,8 +28,7 @@ class AccountsActivity : BaseActivity() {
                 val isChecked = checkedItemPositions.valueAt(i)
 
                 if (isChecked) {
-                    val account = accountsAdapter.getItem(position)
-                    selectedAccounts.add(account!!)
+                    accountsAdapter.getItem(position)?.let(selectedAccounts::add)
                 }
             }
 

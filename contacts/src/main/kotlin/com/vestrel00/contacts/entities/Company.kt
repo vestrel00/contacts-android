@@ -7,11 +7,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Company internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override val isPrimary: Boolean,
 
@@ -86,11 +86,11 @@ data class Company internal constructor(
 @Parcelize
 data class MutableCompany internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override var isPrimary: Boolean,
 
@@ -137,7 +137,7 @@ data class MutableCompany internal constructor(
     override val mimeType: MimeType = MimeType.COMPANY
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, INVALID_ID, false, false, null, null,
+        null, null, null, false, false, null, null,
         null, null, null, null, null
     )
 

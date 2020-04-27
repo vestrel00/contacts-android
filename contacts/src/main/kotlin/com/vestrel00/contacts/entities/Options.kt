@@ -14,7 +14,7 @@ data class Options internal constructor(
      * The columns here technically belong to the Contacts table but are accessible via joins in the
      * RawContacts and Data table.
      */
-    override val id: Long,
+    override val id: Long?,
 
     // Contact and RawContacts have distinct Options. Therefore, there is no reference to a
     // rawContactId here because this option may belong to a Contact rather than a RawContact.
@@ -57,7 +57,7 @@ data class Options internal constructor(
 
 ) : Entity, Parcelable {
 
-    internal constructor() : this(INVALID_ID, null, null, null, null, null)
+    internal constructor() : this(null, null, null, null, null, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         starred, timesContacted, lastTimeContacted, customRingtone, sendToVoicemail
@@ -82,10 +82,8 @@ data class MutableOptions internal constructor(
 
     /**
      * See [Options.id].
-     *
-     * This may be an INVALID_ID if not retrieved from the DB via a query.
      */
-    override val id: Long,
+    override val id: Long?,
 
     /**
      * See [Options.starred].
@@ -114,7 +112,7 @@ data class MutableOptions internal constructor(
 
 ) : Entity, Parcelable {
 
-    constructor() : this(INVALID_ID, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         starred, timesContacted, lastTimeContacted, customRingtone, sendToVoicemail

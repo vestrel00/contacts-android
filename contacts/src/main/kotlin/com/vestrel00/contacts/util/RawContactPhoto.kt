@@ -12,7 +12,6 @@ import android.provider.ContactsContract.RawContacts
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
-import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.RawContact
@@ -338,9 +337,9 @@ fun MutableRawContact.photoThumbnailBitmapDrawable(context: Context): BitmapDraw
  * documentation.
  */
 internal fun setRawContactPhoto(
-    context: Context, rawContactId: Long, photoBytes: ByteArray
+    context: Context, rawContactId: Long?, photoBytes: ByteArray
 ): Boolean {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == INVALID_ID) {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
         return false
     }
 
@@ -351,23 +350,28 @@ internal fun setRawContactPhoto(
             RawContacts.DisplayPhoto.CONTENT_DIRECTORY
         )
 
-        val fd = context.contentResolver.openAssetFileDescriptor(photoUri, "rw")!!
-        val os = fd.createOutputStream()
+        // Didn't want to force unwrap because I'm trying to keep the codebase free of it.
+        // I wanted to fold the if-return using ?: but it results in a lint error about unreachable
+        // code (it's not unreachable).
+        val fd = context.contentResolver.openAssetFileDescriptor(photoUri, "rw")
+        if (fd != null) {
+            val os = fd.createOutputStream()
 
-        os.write(photoBytes)
+            os.write(photoBytes)
 
-        os.close()
-        fd.close()
+            os.close()
+            fd.close()
 
-        isSuccessful = true
+            isSuccessful = true
+        }
     } finally {
         return isSuccessful
     }
 }
 
 // Removing the photo data row does the trick!
-private fun removeRawContactPhoto(context: Context, rawContactId: Long): Boolean {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == INVALID_ID) {
+private fun removeRawContactPhoto(context: Context, rawContactId: Long?): Boolean {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
         return false
     }
 
@@ -394,8 +398,8 @@ private fun removeRawContactPhoto(context: Context, rawContactId: Long): Boolean
     return true
 }
 
-private fun photoInputStream(context: Context, rawContactId: Long): InputStream? {
-    if (!ContactsPermissions(context).canQuery() || rawContactId == INVALID_ID) {
+private fun photoInputStream(context: Context, rawContactId: Long?): InputStream? {
+    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
         return null
     }
 
@@ -427,8 +431,8 @@ private fun photoInputStream(context: Context, rawContactId: Long): InputStream?
     return null
 }
 
-private fun photoThumbnailInputStream(context: Context, rawContactId: Long): InputStream? {
-    if (!ContactsPermissions(context).canQuery() || rawContactId == INVALID_ID) {
+private fun photoThumbnailInputStream(context: Context, rawContactId: Long?): InputStream? {
+    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
         return null
     }
 

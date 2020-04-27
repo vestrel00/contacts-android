@@ -6,7 +6,6 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.util.query
@@ -93,10 +92,10 @@ interface ProfileQuery {
      * included. There is no workaround for this because the [ContentResolver.query] function only
      * takes in an array of column names.
      *
-     * ## IMPORTANT!!!
+     * ## IMPORTANT
      *
      * Do not perform updates on contacts returned by a query where all fields are not included as
-     * it will result in data loss!!
+     * it will result in data loss!
      */
     fun include(vararg fields: Field): ProfileQuery
 
@@ -245,10 +244,7 @@ private fun ContentResolver.rawContactIds(
     mutableSetOf<String>().apply {
         val rawContactsCursor = it.rawContactsCursor()
         while (!cancel() && it.moveToNext()) {
-            val rawContactId = rawContactsCursor.rawContactId
-            if (rawContactId != INVALID_ID) {
-                add("$rawContactId")
-            }
+            rawContactsCursor.rawContactId?.let { add("$it") }
         }
 
         // Ensure incomplete data sets are not returned.

@@ -2,7 +2,6 @@ package com.vestrel00.contacts.entities.mapper
 
 import android.database.Cursor
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MimeType.*
 import com.vestrel00.contacts.entities.RawContact
 import com.vestrel00.contacts.entities.TempRawContact
@@ -50,7 +49,7 @@ internal class ContactsMapper(
         while (!cancel() && cursor.moveToNext()) {
             val contactId = contactsCursor.contactId
 
-            if (contactId != INVALID_ID && !contactsMap.containsKey(contactId)) {
+            if (contactId != null && !contactsMap.containsKey(contactId)) {
                 contactsMap[contactId] =
                     cursor.contactMapper(contactsCursor, isProfile).value
             }
@@ -70,7 +69,7 @@ internal class ContactsMapper(
         while (!cancel() && cursor.moveToNext()) {
             val rawContactId = rawContactsCursor.rawContactId
 
-            if (rawContactId != INVALID_ID && !rawContactsMap.containsKey(rawContactId)) {
+            if (rawContactId != null && !rawContactsMap.containsKey(rawContactId)) {
                 rawContactsMap[rawContactId] =
                     cursor.tempRawContactMapper(rawContactsCursor, isProfile).value
             }
@@ -94,14 +93,14 @@ internal class ContactsMapper(
             // Collect contacts.
             // Use the Data cursor to retrieve the contactId.
             val contactId = dataCursor.contactId
-            if (contactId != INVALID_ID && !contactsMap.containsKey(contactId)) {
+            if (contactId != null && !contactsMap.containsKey(contactId)) {
                 contactsMap[contactId] = contactMapper.value
             }
 
             // Collect the RawContacts and update them.
             // Use the Data cursor to retrieve the rawContactId.
             val rawContactId = dataCursor.rawContactId
-            if (rawContactId != INVALID_ID) {
+            if (rawContactId != null) {
                 rawContactsMap.getOrPut(rawContactId) { tempRawContactMapper.value }.also {
                     cursor.updateRawContact(it)
                 }
@@ -115,6 +114,8 @@ internal class ContactsMapper(
         // Map contact id to set of raw contacts.
         val contactRawMap = mutableMapOf<Long, MutableList<RawContact>>()
         for (tempRawContact in rawContactsMap.values) {
+            if (tempRawContact.contactId == null) continue
+
             val rawContacts = contactRawMap.getOrPut(tempRawContact.contactId) {
                 mutableListOf()
             }
@@ -127,7 +128,11 @@ internal class ContactsMapper(
         }
 
         return contactsMap.values.asSequence().map { contact ->
-            val rawContacts = contactRawMap.getOrElse(contact.id) { emptyList<RawContact>() }
+            val rawContacts = if (contact.id != null) {
+                contactRawMap.getOrElse(contact.id) { emptyList<RawContact>() }
+            } else {
+                emptyList()
+            }
 
             // The data class copy function comes in handy here.
             // Sort RawContacts by id as specified by RawContact.id.

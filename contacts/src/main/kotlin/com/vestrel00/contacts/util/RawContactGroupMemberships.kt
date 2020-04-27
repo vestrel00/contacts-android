@@ -2,12 +2,11 @@ package com.vestrel00.contacts.util
 
 import com.vestrel00.contacts.entities.Group
 import com.vestrel00.contacts.entities.GroupMembership
-import com.vestrel00.contacts.entities.INVALID_ID
 
 fun Group.toGroupMembership(): GroupMembership = GroupMembership(
-    id = INVALID_ID,
-    rawContactId = INVALID_ID,
-    contactId = INVALID_ID,
+    id = null,
+    rawContactId = null,
+    contactId = null,
     groupId = id,
     isPrimary = false,
     isSuperPrimary = false

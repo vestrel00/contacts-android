@@ -10,11 +10,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Phone internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override val isPrimary: Boolean,
 
@@ -30,7 +30,7 @@ data class Phone internal constructor(
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
      *
-     * This should be null if the [type] is not [Type.CUSTOM]!!!
+     * This should be null if the [type] is not [Type.CUSTOM]!
      *
      * Use [Type.typeLabel] to get the display name of the type.
      */
@@ -136,11 +136,11 @@ data class Phone internal constructor(
 @Parcelize
 data class MutablePhone internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override var isPrimary: Boolean,
 
@@ -172,7 +172,7 @@ data class MutablePhone internal constructor(
     override val mimeType: MimeType = MimeType.PHONE
 
     constructor() : this(
-        INVALID_ID, INVALID_ID, INVALID_ID, false, false,
+        null, null, null, false, false,
         null, null, null, null
     )
 

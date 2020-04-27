@@ -7,11 +7,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Website internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override val isPrimary: Boolean,
 
@@ -47,11 +47,11 @@ data class Website internal constructor(
 @Parcelize
 data class MutableWebsite internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override var isPrimary: Boolean,
 
@@ -67,7 +67,7 @@ data class MutableWebsite internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.WEBSITE
 
-    constructor() : this(INVALID_ID, INVALID_ID, INVALID_ID, false, false, null)
+    constructor() : this(null, null, null, false, false, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(url)
 }

@@ -480,10 +480,7 @@ private class QueryDataResolver(
             mutableSetOf<Long>().apply {
                 val rawContactsCursor = it.rawContactsCursor()
                 while (!cancel() && it.moveToNext()) {
-                    val rawContactId = rawContactsCursor.rawContactId
-                    if (rawContactId != INVALID_ID) {
-                        add(rawContactId)
-                    }
+                    rawContactsCursor.rawContactId?.let(::add)
                 }
 
                 // Ensure only complete data sets are returned.

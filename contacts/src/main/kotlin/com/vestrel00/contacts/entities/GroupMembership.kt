@@ -8,11 +8,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class GroupMembership internal constructor(
 
-    override val id: Long,
+    override val id: Long?,
 
-    override val rawContactId: Long,
+    override val rawContactId: Long?,
 
-    override val contactId: Long,
+    override val contactId: Long?,
 
     override val isPrimary: Boolean,
 
@@ -24,7 +24,7 @@ data class GroupMembership internal constructor(
      *
      * This is a read-only attribute, which is ignored for insert, update, and delete functions.
      */
-    val groupId: Long
+    val groupId: Long?
 
 ) : DataEntity, Parcelable {
 

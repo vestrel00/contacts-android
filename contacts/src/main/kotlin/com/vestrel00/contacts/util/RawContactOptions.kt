@@ -5,7 +5,10 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
-import com.vestrel00.contacts.entities.*
+import com.vestrel00.contacts.entities.MutableOptions
+import com.vestrel00.contacts.entities.MutableRawContact
+import com.vestrel00.contacts.entities.Options
+import com.vestrel00.contacts.entities.RawContact
 import com.vestrel00.contacts.entities.mapper.optionsMapper
 import com.vestrel00.contacts.entities.operation.OptionsOperation
 import com.vestrel00.contacts.entities.table.Table
@@ -43,8 +46,8 @@ fun RawContact.options(context: Context): Options = rawContactOptions(id, contex
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableRawContact.options(context: Context): Options = rawContactOptions(id, context)
 
-private fun rawContactOptions(rawContactId: Long, context: Context): Options {
-    if (!ContactsPermissions(context).canQuery() || rawContactId == INVALID_ID) {
+private fun rawContactOptions(rawContactId: Long?, context: Context): Options {
+    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
         return Options()
     }
 
@@ -117,8 +120,8 @@ fun MutableRawContact.updateOptions(
     context: Context, update: MutableOptions.() -> Unit
 ): Boolean = updateOptions(id, options(context), update, context)
 
-private fun setOptions(rawContactId: Long, options: MutableOptions, context: Context): Boolean {
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == INVALID_ID) {
+private fun setOptions(rawContactId: Long?, options: MutableOptions, context: Context): Boolean {
+    if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
         return false
     }
 
@@ -139,7 +142,7 @@ private fun setOptions(rawContactId: Long, options: MutableOptions, context: Con
 }
 
 private fun updateOptions(
-    rawContactId: Long,
+    rawContactId: Long?,
     options: Options,
     update: MutableOptions.() -> Unit,
     context: Context

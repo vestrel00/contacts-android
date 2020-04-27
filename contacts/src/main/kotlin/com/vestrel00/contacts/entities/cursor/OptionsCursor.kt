@@ -3,7 +3,6 @@ package com.vestrel00.contacts.entities.cursor
 import android.database.Cursor
 import android.net.Uri
 import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.entities.INVALID_ID
 import java.util.*
 
 /**
@@ -14,8 +13,8 @@ import java.util.*
  */
 internal class OptionsCursor(private val cursor: Cursor) {
 
-    val id: Long
-        get() = cursor.getLong(Fields.Options.Id) ?: INVALID_ID
+    val id: Long?
+        get() = cursor.getLong(Fields.Options.Id)
 
     val starred: Boolean?
         get() = cursor.getBoolean(Fields.Options.Starred)

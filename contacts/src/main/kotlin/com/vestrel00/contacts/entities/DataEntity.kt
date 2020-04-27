@@ -8,12 +8,12 @@ interface DataEntity : Entity {
     /**
      * The id of the [RawContact] that this data entity is associated with.
      */
-    val rawContactId: Long
+    val rawContactId: Long?
 
     /**
      * The id of the [Contact] that this data entity is associated with.
      */
-    val contactId: Long
+    val contactId: Long?
 
     /**
      * The type of data.

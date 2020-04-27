@@ -7,5 +7,5 @@ package com.vestrel00.contacts.entities.cursor
  * and RawContact Id.
  */
 internal interface DataIdCursor : RawContactIdCursor {
-    val dataId: Long
+    val dataId: Long?
 }

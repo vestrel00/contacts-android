@@ -340,9 +340,8 @@ private class InsertResult(private val rawContactMap: Map<MutableRawContact, Lon
     Insert.Result {
 
     override val rawContactIds: List<Long> by lazy {
-        rawContactMap.asSequence()
-            .filter { it.value != null }
-            .map { it.value!! }
+        rawContactMap.values.asSequence()
+            .filterNotNull()
             .toList()
     }
 

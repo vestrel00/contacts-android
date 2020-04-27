@@ -135,7 +135,7 @@ private class DeleteImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<RawContact>): Delete = apply {
-        this.rawContacts.addAll(rawContacts.filter { it.hasValidId() })
+        this.rawContacts.addAll(rawContacts)
     }
 
     override fun contacts(vararg contacts: Contact): Delete = contacts(contacts.asSequence())
@@ -143,7 +143,7 @@ private class DeleteImpl(
     override fun contacts(contacts: Collection<Contact>): Delete = contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<Contact>): Delete = apply {
-        this.contacts.addAll(contacts.filter { it.hasValidId() })
+        this.contacts.addAll(contacts)
     }
 
     override fun commit(): Delete.Result {
@@ -153,13 +153,17 @@ private class DeleteImpl(
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
         for (rawContact in rawContacts) {
-            rawContactsResult[rawContact.id] =
-                deleteRawContactWithId(rawContact.id, contentResolver)
+            if (rawContact.id != null) {
+                rawContactsResult[rawContact.id] =
+                    deleteRawContactWithId(rawContact.id, contentResolver)
+            }
         }
 
         val contactsResults = mutableMapOf<Long, Boolean>()
         for (contact in contacts) {
-            contactsResults[contact.id] = deleteContactWithId(contact.id, contentResolver)
+            if (contact.id != null) {
+                contactsResults[contact.id] = deleteContactWithId(contact.id, contentResolver)
+            }
         }
 
         return DeleteResult(rawContactsResult, contactsResults)
@@ -205,11 +209,11 @@ private class DeleteResult(
         rawContactIdsResultMap.all { it.value } && contactIdsResultMap.all { it.value }
     }
 
-    override fun isSuccessful(rawContact: RawContact): Boolean =
-        rawContactIdsResultMap.getOrElse(rawContact.id) { false }
+    override fun isSuccessful(rawContact: RawContact): Boolean = rawContact.id != null
+            && rawContactIdsResultMap.getOrElse(rawContact.id) { false }
 
-    override fun isSuccessful(contact: Contact): Boolean =
-        contactIdsResultMap.getOrElse(contact.id) { false }
+    override fun isSuccessful(contact: Contact): Boolean = contact.id != null
+            && contactIdsResultMap.getOrElse(contact.id) { false }
 }
 
 private object DeleteFailed : Delete.Result {

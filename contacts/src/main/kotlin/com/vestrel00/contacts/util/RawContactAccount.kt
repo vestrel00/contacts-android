@@ -5,7 +5,6 @@ import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
-import com.vestrel00.contacts.entities.INVALID_ID
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.RawContact
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
@@ -34,8 +33,8 @@ fun RawContact.account(context: Context): Account? = accountForRawContactWithId(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun MutableRawContact.account(context: Context): Account? = accountForRawContactWithId(id, context)
 
-internal fun accountForRawContactWithId(rawContactId: Long, context: Context): Account? {
-    if (!ContactsPermissions(context).canQuery() || rawContactId == INVALID_ID) {
+internal fun accountForRawContactWithId(rawContactId: Long?, context: Context): Account? {
+    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
         return null
     }
 
