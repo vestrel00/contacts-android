@@ -71,4 +71,5 @@ internal fun <T : Entity> Collection<T>.toValidEntitiesMap(): Map<Long, T> = asS
 internal fun <T : Entity> Collection<T>.toInvalidEntities(): Collection<T> =
     filter { !it.hasValidId() }
 
+// TODO Delete this ?
 internal const val INVALID_ID: Long = -1L

@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.database.SQLException
 import android.net.Uri
 import com.vestrel00.contacts.Include
-import com.vestrel00.contacts.NoWhere
 import com.vestrel00.contacts.Where
 import com.vestrel00.contacts.entities.table.Table
 
@@ -47,7 +46,7 @@ internal fun <T> ContentResolver.query(
         query(
             contentUri,
             include.columnNames,
-            if (where != null && where != NoWhere) "$where" else null,
+            where?.toString(),
             null,
             sortOrder
         )

@@ -252,9 +252,9 @@ private class QueryDataImpl(
     private val permissions: ContactsPermissions,
     private val queryResolverFactory: QueryDataResolverFactory,
 
-    private var rawContactsWhere: Where = DEFAULT_RAW_CONTACTS_WHERE,
+    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE,
-    private var where: Where = DEFAULT_WHERE,
+    private var where: Where? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
@@ -280,6 +280,8 @@ private class QueryDataImpl(
         rawContactsWhere = if (accounts.count() == 0) {
             DEFAULT_RAW_CONTACTS_WHERE
         } else {
+            // This will resolve to null if the count is 0. DEFAULT_RAW_CONTACTS_WHERE is null.
+            // Therefore, this is the only statement required here. However, this way reads better.
             accounts.whereOr { account ->
                 (Fields.RawContacts.AccountName equalToIgnoreCase account.name)
                     .and(Fields.RawContacts.AccountType equalToIgnoreCase account.type)
@@ -300,6 +302,7 @@ private class QueryDataImpl(
     }
 
     override fun where(where: Where?): QueryData = apply {
+        // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
 
@@ -407,9 +410,9 @@ private class QueryDataImpl(
     }
 
     private companion object {
-        val DEFAULT_RAW_CONTACTS_WHERE = NoWhere
+        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
         val DEFAULT_INCLUDE = Include(Fields.All)
-        val DEFAULT_WHERE = NoWhere
+        val DEFAULT_WHERE: Where? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -428,9 +431,9 @@ private class QueryDataResolver(
 
     fun <T : DataEntity> resolveEntities(
         mimeType: MimeType,
-        rawContactsWhere: Where,
+        rawContactsWhere: Where?,
         include: Include,
-        where: Where,
+        where: Where?,
         orderBy: CompoundOrderBy,
         offset: Int,
         limit: Int
@@ -438,15 +441,19 @@ private class QueryDataResolver(
 
         var dataWhere = mimeType.dataWhere()
 
-        if (rawContactsWhere != NoWhere) {
+        if (rawContactsWhere != null) {
             // Limit the data to the set associated with the RawContacts found in the RawContacts
             // table matching the rawContactsWhere.
             val rawContactIds = findRawContactIdsInRawContactsTable(rawContactsWhere)
-            dataWhere = dataWhere and (Fields.RawContact.Id `in` rawContactIds)
+            dataWhere = if (dataWhere != null) {
+                dataWhere and (Fields.RawContact.Id `in` rawContactIds)
+            } else {
+                Fields.RawContact.Id `in` rawContactIds
+            }
         }
 
-        if (where != NoWhere) {
-            dataWhere = if (dataWhere != NoWhere) dataWhere and where else where
+        if (where != null) {
+            dataWhere = if (dataWhere != null) dataWhere and where else where
         }
 
         return contentResolver.query(
@@ -488,8 +495,8 @@ private class QueryDataResolver(
 }
 
 // See the developer notes in the QueryData interface documentation.
-private fun MimeType.dataWhere(): Where = when (this) {
-    MimeType.PHONE, MimeType.EMAIL, MimeType.ADDRESS -> NoWhere
+private fun MimeType.dataWhere(): Where? = when (this) {
+    MimeType.PHONE, MimeType.EMAIL, MimeType.ADDRESS -> null
     else -> Fields.MimeType equalTo this
 }
 

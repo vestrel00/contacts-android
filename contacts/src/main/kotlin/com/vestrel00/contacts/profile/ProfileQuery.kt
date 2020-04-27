@@ -151,7 +151,7 @@ private class ProfileQueryImpl(
     private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
 
-    private var rawContactsWhere: Where = DEFAULT_RAW_CONTACTS_WHERE,
+    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE
 ) : ProfileQuery {
 
@@ -171,6 +171,8 @@ private class ProfileQueryImpl(
         rawContactsWhere = if (accounts.count() == 0) {
             DEFAULT_RAW_CONTACTS_WHERE
         } else {
+            // This will resolve to null if the count is 0. DEFAULT_RAW_CONTACTS_WHERE is null.
+            // Therefore, this is the only statement required here. However, this way reads better.
             accounts.whereOr { account ->
                 (Fields.RawContacts.AccountName equalToIgnoreCase account.name)
                     .and(Fields.RawContacts.AccountType equalToIgnoreCase account.type)
@@ -201,14 +203,14 @@ private class ProfileQueryImpl(
     }
 
     private companion object {
-        val DEFAULT_RAW_CONTACTS_WHERE = NoWhere
+        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
         val DEFAULT_INCLUDE = Include(Fields.All)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
     }
 }
 
 private fun ContentResolver.resolve(
-    rawContactsWhere: Where, include: Include, cancel: () -> Boolean
+    rawContactsWhere: Where?, include: Include, cancel: () -> Boolean
 ): Contact? {
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
@@ -234,7 +236,7 @@ private fun ContentResolver.resolve(
 }
 
 private fun ContentResolver.rawContactIds(
-    rawContactsWhere: Where, cancel: () -> Boolean
+    rawContactsWhere: Where?, cancel: () -> Boolean
 ): Set<String> = query(
     ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
     Include(Fields.RawContacts.Id),

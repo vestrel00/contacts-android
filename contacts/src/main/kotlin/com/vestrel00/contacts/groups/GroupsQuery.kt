@@ -159,9 +159,9 @@ private class GroupsQueryImpl(
     private var groupIds: Set<Long> = emptySet()
 ) : GroupsQuery {
 
-    private val where: Where
+    private val where: Where?
         get() {
-            var where: Where = NoWhere
+            var where: Where? = null
 
             account?.let {
                 // Limit the query to the given account.
@@ -171,8 +171,8 @@ private class GroupsQueryImpl(
 
             if (groupIds.isNotEmpty()) {
                 // Limit the query to the given set of ids.
-                where = if (where != NoWhere) {
-                    where and (Fields.Groups.Id `in` groupIds)
+                where = if (where != null) {
+                    where!! and (Fields.Groups.Id `in` groupIds)
                 } else {
                     Fields.Groups.Id `in` groupIds
                 }

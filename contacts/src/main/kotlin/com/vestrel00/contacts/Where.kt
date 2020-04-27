@@ -120,14 +120,14 @@ fun AbstractField.isNotNullOrEmpty(): Where = this.isNotNull() and IsNot(this, "
  * ```
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Collection<T>.whereOr(where: (T) -> Where): Where =
-    asSequence().where(where, "OR")
+infix fun <T : Any> Collection<T>.whereOr(where: (T) -> Where): Where? =
+    asSequence().joinWhere(where, "OR")
 
 /**
  * See [whereOr].
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Sequence<T>.whereOr(where: (T) -> Where): Where = where(where, "OR")
+infix fun <T : Any> Sequence<T>.whereOr(where: (T) -> Where): Where? = joinWhere(where, "OR")
 
 /**
  * Transforms each item in this collection to a [Where] and combines them with the "AND" operator.
@@ -159,29 +159,29 @@ infix fun <T : Any> Sequence<T>.whereOr(where: (T) -> Where): Where = where(wher
  * // (display_name NOT LIKE 'letter%%') AND (data1 NOT LIKE 'letter%%' <omitted for brevity>)
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Collection<T>.whereAnd(where: (T) -> Where): Where =
-    asSequence().where(where, "AND")
+infix fun <T : Any> Collection<T>.whereAnd(where: (T) -> Where): Where? =
+    asSequence().joinWhere(where, "AND")
 
 /**
  * See [whereAnd].
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Any> Sequence<T>.whereAnd(where: (T) -> Where): Where = where(where, "AND")
+infix fun <T : Any> Sequence<T>.whereAnd(where: (T) -> Where): Where? = joinWhere(where, "AND")
 
 /**
  * See [whereOr].
  */
-infix fun FieldSet.whereOr(where: (AbstractField) -> Where): Where = fields.whereOr(where)
+infix fun FieldSet.whereOr(where: (AbstractField) -> Where): Where? = fields.whereOr(where)
 
 /**
  * See [whereAnd].
  */
-infix fun FieldSet.whereAnd(where: (AbstractField) -> Where): Where = fields.whereAnd(where)
+infix fun FieldSet.whereAnd(where: (AbstractField) -> Where): Where? = fields.whereAnd(where)
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
-private fun <T : Any> Sequence<T>.where(where: (T) -> Where, separator: String): Where {
+private fun <T : Any> Sequence<T>.joinWhere(where: (T) -> Where, separator: String): Where? {
     if (count() == 0) {
-        return NoWhere
+        return null
     }
 
     val whereString = joinToString(" $separator ") { "(${where(it)})" }
@@ -301,12 +301,6 @@ private class DoesNotEndWith(field: AbstractField, value: String) : NotLike(fiel
 private class DoesNotContain(field: AbstractField, value: String) : NotLike(field, "%%$value%%")
 
 private class JoinedWhere(whereString: String) : Where(whereString)
-
-// TODO Delete this?
-/**
- * A non-null representation of a null where.
- */
-internal object NoWhere : Where("")
 
 private fun Any?.toSqlString(): String = when (this) {
     null -> "NULL"

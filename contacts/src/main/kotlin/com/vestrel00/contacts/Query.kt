@@ -299,9 +299,9 @@ private class QueryImpl(
     private val contentResolver: ContentResolver,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
-    private var rawContactsWhere: Where = DEFAULT_RAW_CONTACTS_WHERE,
+    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE,
-    private var where: Where = DEFAULT_WHERE,
+    private var where: Where? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
@@ -331,6 +331,8 @@ private class QueryImpl(
         rawContactsWhere = if (accounts.count() == 0) {
             DEFAULT_RAW_CONTACTS_WHERE
         } else {
+            // This will resolve to null if the count is 0. DEFAULT_RAW_CONTACTS_WHERE is null.
+            // Therefore, this is the only statement required here. However, this way reads better.
             accounts.whereOr { account ->
                 (Fields.RawContacts.AccountName equalToIgnoreCase account.name)
                     .and(Fields.RawContacts.AccountType equalToIgnoreCase account.type)
@@ -351,6 +353,7 @@ private class QueryImpl(
     }
 
     override fun where(where: Where?): Query = apply {
+        // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
 
@@ -404,10 +407,10 @@ private class QueryImpl(
 
     private companion object {
         const val DEFAULT_INCLUDE_BLANKS = true
-        val DEFAULT_RAW_CONTACTS_WHERE = NoWhere
+        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
         val DEFAULT_INCLUDE = Include(Fields.All)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
-        val DEFAULT_WHERE = NoWhere
+        val DEFAULT_WHERE: Where? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Contact.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -416,9 +419,9 @@ private class QueryImpl(
 
 private fun ContentResolver.resolve(
     includeBlanks: Boolean,
-    rawContactsWhere: Where,
+    rawContactsWhere: Where?,
     include: Include,
-    where: Where,
+    where: Where?,
     orderBy: CompoundOrderBy,
     offset: Int,
     limit: Int,
@@ -427,7 +430,7 @@ private fun ContentResolver.resolve(
 
     var contactIdsMatchingSelectedAccounts: Set<Long>? = null
 
-    if (rawContactsWhere != NoWhere) {
+    if (rawContactsWhere != null) {
         // Limit the contacts data to the set associated with the contacts found in the
         // RawContacts table matching the rawContactsWhere.
         contactIdsMatchingSelectedAccounts =
@@ -446,7 +449,7 @@ private fun ContentResolver.resolve(
 
     // Formulate the where clause that will be used for Data table, and possible Contacts and
     // RawContacts table queries.
-    val whereMatching = if (where != NoWhere) {
+    val whereMatching = if (where != null) {
         if (contactIdsMatchingSelectedAccounts != null) {
             where and (Fields.Contact.Id `in` contactIdsMatchingSelectedAccounts)
         } else {
@@ -456,7 +459,7 @@ private fun ContentResolver.resolve(
         if (contactIdsMatchingSelectedAccounts != null) {
             Fields.Contact.Id `in` contactIdsMatchingSelectedAccounts
         } else {
-            NoWhere
+            null
         }
     }
 
@@ -471,7 +474,7 @@ private fun ContentResolver.resolve(
 
         // Collect Contacts in the Contacts table including Contact specific fields.
         query(
-            Table.CONTACTS, include.onlyContactsFields(), whereMatching.inContactsTable(),
+            Table.CONTACTS, include.onlyContactsFields(), whereMatching?.inContactsTable(),
             // There may be columns in the where clause that may not be available in the Contacts
             // table. This will result in an SQLiteException. Thus, we suppress it.
             suppressDbExceptions = true,
@@ -484,7 +487,7 @@ private fun ContentResolver.resolve(
             include.onlyRawContactFields(),
             // There may be lingering RawContacts whose associated contact was already deleted.
             // Such RawContacts have contact id column value as null.
-            if (whereMatching != NoWhere) {
+            if (whereMatching != null) {
                 whereMatching.inRawContactsTable() and Fields.RawContacts.ContactId.isNotNull()
             } else {
                 Fields.RawContacts.ContactId.isNotNull()
