@@ -55,6 +55,12 @@ import com.vestrel00.contacts.entities.operation.GroupOperation
 interface GroupsInsert {
 
     /**
+     * Adds a new [MutableGroup] to the insert queue, which will be inserted on [commit].
+     * The new instance is created with the given [title] and [account].
+     */
+    fun group(title: String, account: Account): GroupsInsert
+
+    /**
      * Adds the given [groups] to the insert queue, which will be inserted on [commit].
      * Duplicates (groups with identical attributes to already added groups) are ignored.
      */
@@ -129,6 +135,9 @@ private class GroupsInsertImpl(
     private val permissions: ContactsPermissions,
     private val groups: MutableSet<MutableGroup> = mutableSetOf()
 ) : GroupsInsert {
+
+    override fun group(title: String, account: Account): GroupsInsert =
+        groups(MutableGroup(title, account))
 
     override fun groups(vararg groups: MutableGroup): GroupsInsert =
         groups(groups.asSequence())

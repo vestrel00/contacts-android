@@ -49,21 +49,18 @@ import com.vestrel00.contacts.entities.table.Table
  * In Kotlin,
  *
  * ```kotlin
- * val rawContact = MutableRawContact().apply {
- *      name = MutableName().apply {
- *          givenName = "john"
- *          familyName = "doe"
- *      }
- *      emails.add(MutableEmail().apply {
- *          type = Email.Type.HOME
- *          address = "john@doe.com"
- *      })
- * }
- *
- *
  * val result = insert
  *      .forAccount(account)
- *      .rawContacts(rawContact)
+ *      .rawContact {
+ *          name = MutableName().apply {
+ *              givenName = "john"
+ *              familyName = "doe"
+ *          }
+ *          emails.add(MutableEmail().apply {
+ *              type = Email.Type.HOME
+ *              address = "john@doe.com"
+ *          })
+ *      }
  *      .commit()
  * ```
  *
@@ -113,6 +110,14 @@ interface Insert {
      * are considered local or device-only contacts, which are not sync'ed.
      */
     fun forAccount(account: Account?): Insert
+
+    /**
+     * Adds a new [MutableRawContact] to the insert queue, which will be inserted on [commit].
+     * The new instance is configured by the [configureRawContact] function.
+     *
+     * Existing RawContacts are allowed to be inserted to facilitate "duplication".
+     */
+    fun rawContact(configureRawContact: MutableRawContact.() -> Unit): Insert
 
     /**
      * Adds the given [rawContacts] to the insert queue, which will be inserted on [commit].
@@ -196,6 +201,9 @@ private class InsertImpl(
     override fun forAccount(account: Account?): Insert = apply {
         this.account = account
     }
+
+    override fun rawContact(configureRawContact: MutableRawContact.() -> Unit): Insert =
+        rawContacts(MutableRawContact().apply(configureRawContact))
 
     override fun rawContacts(vararg rawContacts: MutableRawContact): Insert =
         rawContacts(rawContacts.asSequence())

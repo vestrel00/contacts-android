@@ -1,8 +1,5 @@
 ## TODO
 
-1. Implement; `Insert.rawContact((MutableRawContact) -> Unit)`
-2. Implement; `GroupsInsert.group((MutableGroup) -> Unit)`
-
 3. What happens when inserting a new RawContact with an invalid account?
     - Comment out the check for a valid account in insert.
     - Update DEV_NOTES Data Required section with the findings.
