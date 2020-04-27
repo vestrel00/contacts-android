@@ -106,6 +106,13 @@ fun AbstractField.isNotNullOrEmpty(): Where = this.isNotNull() and IsNot(this, "
  * // (display_name LIKE 'a%%') OR (display_name LIKE 'b%%') OR (display_name LIKE 'c%%')
  * ```
  *
+ * Another, more useful example is a where starting with a number;
+ *
+ * ```
+ * val whereStartsWithNumber = (0..9).asSequence()
+ *      .whereOr { Fields.Contact.DisplayName startsWith "$it" }
+ * ```
+ *
  * This may also be applied to a collection of [AbstractField]s. For example,
  *
  * ```

@@ -1,25 +1,21 @@
 ## TODO
 
-3. What happens when inserting a new RawContact with an invalid account?
-    - Comment out the check for a valid account in insert.
-    - Update DEV_NOTES Data Required section with the findings.
+1. Support local account query. Account objects can not be created with null account name or type.
+2. Migrate local account to a remote account and vice versa.
 
-4. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
+3. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
     - Read-only like GroupMemberships. Update relevant util functions.
     - Add Photo entity to Contact (delete the block comment about photos) and RawContact.
 
-5. Support local account query. Account objects can not be created with null account name or type.
-6. Migrate local account to a remote account and vice versa.
-
-7. Setup user profile
+4. Setup user profile
     - Insert, Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly.
     - See TODOs in DEV_NOTES.
 
-8. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
+5. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
-9. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-10. Add Copyright to all non-sample files.
+6. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+7. Add Copyright to all non-sample files.
 
 ----------------------------------------------------------------------------------------------------
 
