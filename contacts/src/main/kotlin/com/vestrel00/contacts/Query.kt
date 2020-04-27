@@ -467,8 +467,6 @@ private fun ContentResolver.resolve(
     // Collect Contacts, RawContacts, and Data from the Data table.
     query(Table.DATA, include, whereMatching, processCursor = contactsMapper::processDataCursor)
 
-    // If includeBlanks is true, blank Contacts/RawContacts will not be included in the Data
-    // table query. Read the function documentation of includeBlanks for more info on blanks.
     if (includeBlanks) {
 
         // Collect Contacts in the Contacts table including Contact specific fields.
