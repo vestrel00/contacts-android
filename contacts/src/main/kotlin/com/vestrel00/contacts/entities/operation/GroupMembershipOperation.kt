@@ -14,6 +14,7 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.util.account
 import com.vestrel00.contacts.util.accountForRawContactWithId
+import com.vestrel00.contacts.util.query
 
 internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>() {
 
@@ -49,8 +50,9 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
     }
 
     /**
-     * Provides the [ContentProviderOperation] for updating, inserting, or deleting the
-     * [groupMemberships] data row(s) of the raw contact with the given [rawContactId].
+     * Provides the [ContentProviderOperation] for inserting or deleting the [groupMemberships] data
+     * row(s) of the raw contact with the given [rawContactId]. A group membership cannot be updated
+     * because it only contains an immutable reference to the group id.
      *
      * [GroupMembership]s that do not belong to the given [account] will be ignored. Also,
      * memberships to default groups are never deleted.
@@ -64,13 +66,12 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
         // Groups must always be associated with an account. No account, no group operation.
         val account = accountForRawContactWithId(rawContactId, context) ?: return emptyList()
         val accountGroups = Groups().query(context).account(account).find()
-            .asSequence()
-            .associateBy { it.id } // This is the same as GroupMembership.groupId.
-            .toMutableMap()
+            // This is the same as GroupMembership.groupId.
+            .associateBy { it.id }
 
-        val groupMembershipsInDB = getGroupMembershipsInDB(rawContactId, context.contentResolver)
+        val groupMembershipsInDB = context.contentResolver.getGroupMembershipsInDB(rawContactId)
             .asSequence()
-            // There should'nt exist any memberships in the DB that does not belong to the same
+            // There should not exist any memberships in the DB that does not belong to the same
             // account. Just in case though...
             .filter { accountGroups[it.groupId] != null }
             .associateBy { it.groupId }
@@ -95,7 +96,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
         groupMembershipsInDB.values
             .asSequence()
             .filter {
-                val group = accountGroups[it.groupId]!! // This unwrap is safe here.
+                val group = accountGroups.getValue(it.groupId)
                 !group.isDefaultGroup
             }
             .forEach { groupMembership ->
@@ -103,28 +104,18 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
             }
     }
 
-    private fun getGroupMembershipsInDB(
-        rawContactId: Long,
-        contentResolver: ContentResolver
-    ): MutableList<GroupMembership> = mutableListOf<GroupMembership>().apply {
+    private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long):
+            List<GroupMembership> = query(Table.DATA, INCLUDE, selection(rawContactId)) {
 
-        val cursor = contentResolver.query(
-            Table.DATA.uri,
-            INCLUDE,
-            "${selection(rawContactId)}",
-            null,
-            null
-        )
-        if (cursor != null) {
-            val groupMembershipMapper = cursor.groupMembershipMapper()
-            while (cursor.moveToNext()) {
+        mutableListOf<GroupMembership>().apply {
+            val groupMembershipMapper = it.groupMembershipMapper()
+            while (it.moveToNext()) {
                 add(groupMembershipMapper.value)
             }
-            cursor.close()
         }
-    }
+    } ?: emptyList()
 
     private companion object {
-        private val INCLUDE = Include(Fields.Id, Fields.GroupMembership.GroupId).columnNames
+        private val INCLUDE = Include(Fields.Id, Fields.GroupMembership.GroupId)
     }
 }
