@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.entities
 
-import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -114,7 +113,7 @@ data class Contact internal constructor(
     val photoThumbnailUri: Uri?
      */
 
-) : ContactEntity, Parcelable {
+) : ContactEntity {
 
     // We only care about the contents of the RawContacts
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
@@ -168,7 +167,7 @@ data class MutableContact internal constructor(
      */
     val options: Options?
 
-) : ContactEntity, Parcelable {
+) : ContactEntity {
 
     // We only care about the contents of the RawContacts
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)

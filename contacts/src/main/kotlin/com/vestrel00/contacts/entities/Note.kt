@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.entities
 
-import android.os.Parcelable
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
@@ -22,7 +21,7 @@ data class Note internal constructor(
      */
     val note: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NOTE
@@ -59,7 +58,7 @@ data class MutableNote internal constructor(
      */
     var note: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NOTE

@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.entities
 
 import android.accounts.Account
-import android.os.Parcelable
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
@@ -74,7 +73,7 @@ data class Group internal constructor(
      */
     val account: Account
 
-) : Entity, Parcelable {
+) : Entity {
 
     /**
      * The default group is a system group that has [autoAdd] set to true. A system group is a
@@ -160,7 +159,7 @@ data class MutableGroup internal constructor(
      */
     val account: Account
 
-) : Entity, Parcelable {
+) : Entity {
 
     constructor(title: String, account: Account) : this(
         null, title, false, false, false, account

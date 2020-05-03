@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.entities
 
-import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Event.Type
 import kotlinx.android.parcel.IgnoredOnParcel
@@ -48,7 +47,7 @@ data class Event internal constructor(
      */
     val date: Date?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EVENT
@@ -113,7 +112,7 @@ data class MutableEvent internal constructor(
      */
     var date: Date?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EVENT

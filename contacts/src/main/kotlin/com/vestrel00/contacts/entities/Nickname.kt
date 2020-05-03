@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.entities
 
-import android.os.Parcelable
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
@@ -25,7 +24,7 @@ data class Nickname internal constructor(
      */
     val name: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NICKNAME
@@ -62,7 +61,7 @@ data class MutableNickname internal constructor(
      */
     var name: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NICKNAME

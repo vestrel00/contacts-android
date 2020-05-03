@@ -1,9 +1,11 @@
 package com.vestrel00.contacts.entities
 
+import android.os.Parcelable
+
 /**
  * Type of all entities provided in this library.
  */
-interface Entity {
+interface Entity : Parcelable {
 
     /**
      * The ID of this entity (row) in the table it belongs to.

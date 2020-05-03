@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.entities
 
-import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Im.Protocol
 import kotlinx.android.parcel.IgnoredOnParcel
@@ -37,7 +36,7 @@ data class Im internal constructor(
      */
     val data: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.IM
@@ -109,7 +108,7 @@ data class MutableIm internal constructor(
      */
     var data: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.IM

@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.entities
 
 import android.content.res.Resources
-import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Phone.Type
 import kotlinx.android.parcel.IgnoredOnParcel
@@ -53,7 +52,7 @@ data class Phone internal constructor(
      */
     val normalizedNumber: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.PHONE
@@ -166,7 +165,7 @@ data class MutablePhone internal constructor(
      */
     var normalizedNumber: String?
 
-) : DataEntity, Parcelable {
+) : DataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.PHONE

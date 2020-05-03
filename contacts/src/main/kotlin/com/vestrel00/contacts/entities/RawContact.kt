@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.entities
 
-import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 // TODO Update all utils and other classes to use this instead of entire RawContact / MutableRawContact classes.
@@ -119,7 +118,7 @@ data class RawContact internal constructor(
      */
     val websites: List<Website>
 
-) : RawContactEntity, Parcelable {
+) : RawContactEntity {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         company, name, nickname, note, sipAddress
@@ -253,7 +252,7 @@ data class MutableRawContact internal constructor(
      */
     var websites: MutableList<MutableWebsite>
 
-) : RawContactEntity, Parcelable {
+) : RawContactEntity {
 
     constructor() : this(
         null, null, false, mutableListOf(), null, mutableListOf(), mutableListOf(),
@@ -273,6 +272,7 @@ data class MutableRawContact internal constructor(
  *
  * Used internally to optimize cursor to contact mappings.
  */
+@Parcelize
 internal data class TempRawContact constructor(
 
     override val id: Long?,

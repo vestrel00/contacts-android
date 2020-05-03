@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.entities
 
 import android.net.Uri
-import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -55,7 +54,7 @@ data class Options internal constructor(
      */
     val sendToVoicemail: Boolean?
 
-) : Entity, Parcelable {
+) : Entity {
 
     internal constructor() : this(null, null, null, null, null, null)
 
@@ -110,7 +109,7 @@ data class MutableOptions internal constructor(
      */
     var sendToVoicemail: Boolean?
 
-) : Entity, Parcelable {
+) : Entity {
 
     constructor() : this(null, null, null, null, null, null)
 
