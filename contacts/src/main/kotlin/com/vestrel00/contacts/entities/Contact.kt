@@ -7,18 +7,18 @@ import java.util.*
 /**
  * [Entity] in the Contacts table.
  */
-interface ContactEntity : Entity {
+sealed class ContactEntity: Entity {
     /**
      * The id of the Contacts row this represents.
      *
      * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
      */
-    override val id: Long?
+    abstract override val id: Long?
 
     /**
      * True if this contact represents the user's personal profile entry.
      */
-    val isProfile: Boolean
+    abstract val isProfile: Boolean
 
     /**
      * A list of [RawContactEntity]s that are associated with this contact.
@@ -30,7 +30,7 @@ interface ContactEntity : Entity {
      * Note that this list may not include all raw contacts that are actually associated with this
      * contact depending on query filters.
      */
-    val rawContacts: List<RawContactEntity>
+    abstract val rawContacts: List<RawContactEntity>
 }
 
 /**
@@ -113,7 +113,7 @@ data class Contact internal constructor(
     val photoThumbnailUri: Uri?
      */
 
-) : ContactEntity {
+) : ContactEntity() {
 
     // We only care about the contents of the RawContacts
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
@@ -167,7 +167,7 @@ data class MutableContact internal constructor(
      */
     val options: Options?
 
-) : ContactEntity {
+) : ContactEntity() {
 
     // We only care about the contents of the RawContacts
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)

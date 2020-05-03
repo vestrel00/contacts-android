@@ -6,25 +6,25 @@ import kotlinx.android.parcel.Parcelize
 /**
  * [Entity] in the RawContacts table.
  */
-interface RawContactEntity : Entity {
+sealed class RawContactEntity : Entity {
     /**
      * The id of the RawContacts row this represents.
      *
      * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
      */
-    override val id: Long?
+    abstract override val id: Long?
 
     /**
      * The ID of the [Contact] that this [RawContact] is associated with.
      *
      * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
      */
-    val contactId: Long?
+    abstract val contactId: Long?
 
     /**
      * True if this raw contact belongs to the user's personal profile entry.
      */
-    val isProfile: Boolean
+    abstract val isProfile: Boolean
 }
 
 /**
@@ -118,7 +118,7 @@ data class RawContact internal constructor(
      */
     val websites: List<Website>
 
-) : RawContactEntity {
+) : RawContactEntity() {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         company, name, nickname, note, sipAddress
@@ -252,7 +252,7 @@ data class MutableRawContact internal constructor(
      */
     var websites: MutableList<MutableWebsite>
 
-) : RawContactEntity {
+) : RawContactEntity() {
 
     constructor() : this(
         null, null, false, mutableListOf(), null, mutableListOf(), mutableListOf(),
@@ -293,7 +293,7 @@ internal data class TempRawContact constructor(
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>
 
-) : RawContactEntity {
+) : RawContactEntity() {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         company, name, nickname, note, sipAddress
