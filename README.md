@@ -3,7 +3,7 @@
 1. Migrate local account to a remote account and vice versa.
 
 2. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
-    - Read-only like GroupMemberships. Update relevant util functions.
+    - Read-only like GroupMemberships. Update relevant util functions and AccountsRawContactsAssociations
     - Add Photo entity to Contact (delete the block comment about photos) and RawContact.
 
 3. Setup user profile

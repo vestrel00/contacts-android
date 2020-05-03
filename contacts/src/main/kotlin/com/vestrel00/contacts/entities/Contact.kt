@@ -4,6 +4,36 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+// TODO Update all utils and other classes to use this instead of entire Contact / MutableContact classes.
+/**
+ * [Entity] in the Contacts table.
+ */
+interface ContactEntity : Entity {
+    /**
+     * The id of the Contacts row this represents.
+     *
+     * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
+     */
+    override val id: Long?
+
+    /**
+     * True if this contact represents the user's personal profile entry.
+     */
+    val isProfile: Boolean
+
+    /**
+     * A list of [RawContactEntity]s that are associated with this contact.
+     *
+     * This list is sorted by [RawContactEntity.id], which seems to be the sort order used by the
+     * native Contacts app when displaying the linked RawContacts and when inserting new data for a
+     * Contact with multiple linked RawContacts.
+     *
+     * Note that this list may not include all raw contacts that are actually associated with this
+     * contact depending on query filters.
+     */
+    val rawContacts: List<RawContactEntity>
+}
+
 /**
  * Contains contact data and [rawContacts] that are associated with this contact.
  *
@@ -21,28 +51,19 @@ import java.util.*
 data class Contact internal constructor(
 
     /**
-     * The unique ID of this [Contact].
-     *
-     * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
+     * See [ContactEntity.id].
      */
     override val id: Long?,
 
     /**
-     * True if this contact represents the user's personal profile entry.
+     * See [ContactEntity.isProfile]
      */
-    val isProfile: Boolean,
+    override val isProfile: Boolean,
 
     /**
-     * A list of [RawContact]s that are associated with this contact.
-     *
-     * This list is sorted by [RawContact.id], which seems to be the sort order used by the native
-     * Contacts app when displaying the linked RawContacts and when inserting new data for a Contact
-     * with multiple linked RawContacts.
-     *
-     * Note that this list may not include all raw contacts that are actually associated with this
-     * contact depending on query filters.
+     * See [ContactEntity.rawContacts]
      */
-    val rawContacts: List<RawContact>,
+    override val rawContacts: List<RawContact>,
 
     /**
      * The standard text shown as the contact's display name, based on the best available
@@ -93,7 +114,7 @@ data class Contact internal constructor(
     val photoThumbnailUri: Uri?
      */
 
-) : Entity, Parcelable {
+) : ContactEntity, Parcelable {
 
     // We only care about the contents of the RawContacts
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
@@ -125,15 +146,12 @@ data class MutableContact internal constructor(
     /**
      * See [Contact.isProfile].
      */
-    val isProfile: Boolean,
+    override val isProfile: Boolean,
 
     /**
-     * Contains a list of **mutable** raw contacts (sorted by [MutableRawContact.id]) though the
-     * list containing them is immutable.
-     *
      * See [Contact.rawContacts].
      */
-    val rawContacts: List<MutableRawContact>,
+    override val rawContacts: List<MutableRawContact>,
 
     /**
      * See [Contact.displayName].
@@ -150,7 +168,7 @@ data class MutableContact internal constructor(
      */
     val options: Options?
 
-) : Entity, Parcelable {
+) : ContactEntity, Parcelable {
 
     // We only care about the contents of the RawContacts
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)

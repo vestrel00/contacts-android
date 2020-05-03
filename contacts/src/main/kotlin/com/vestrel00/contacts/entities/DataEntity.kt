@@ -6,6 +6,11 @@ package com.vestrel00.contacts.entities
 interface DataEntity : Entity {
 
     /**
+     * The id of the Data row this represents.
+     */
+    override val id: Long?
+
+    /**
      * The id of the [RawContact] that this data entity is associated with.
      */
     val rawContactId: Long?

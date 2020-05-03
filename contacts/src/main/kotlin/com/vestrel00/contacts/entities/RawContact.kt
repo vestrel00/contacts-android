@@ -3,6 +3,31 @@ package com.vestrel00.contacts.entities
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
+// TODO Update all utils and other classes to use this instead of entire RawContact / MutableRawContact classes.
+/**
+ * [Entity] in the RawContacts table.
+ */
+interface RawContactEntity : Entity {
+    /**
+     * The id of the RawContacts row this represents.
+     *
+     * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
+     */
+    override val id: Long?
+
+    /**
+     * The ID of the [Contact] that this [RawContact] is associated with.
+     *
+     * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
+     */
+    val contactId: Long?
+
+    /**
+     * True if this raw contact belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+}
+
 /**
  * Contact data specific to an [android.accounts.Account].
  *
@@ -27,23 +52,19 @@ import kotlinx.android.parcel.Parcelize
 data class RawContact internal constructor(
 
     /**
-     * The unique ID of this [RawContact].
-     *
-     * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
+     * See [RawContactEntity.id].
      */
     override val id: Long?,
 
     /**
-     * The ID of the [Contact] that this [RawContact] is associated with.
-     *
-     * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
+     * See [RawContactEntity.contactId].
      */
-    val contactId: Long?,
+    override val contactId: Long?,
 
     /**
-     * True if this raw contact belongs to the user's personal profile entry.
+     * See [RawContactEntity.isProfile].
      */
-    val isProfile: Boolean,
+    override val isProfile: Boolean,
 
     /**
      * An immutable list of addresses.
@@ -98,7 +119,7 @@ data class RawContact internal constructor(
      */
     val websites: List<Website>
 
-) : Entity, Parcelable {
+) : RawContactEntity, Parcelable {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         company, name, nickname, note, sipAddress
@@ -154,12 +175,12 @@ data class MutableRawContact internal constructor(
     /**
      * See [RawContact.contactId].
      */
-    val contactId: Long?,
+    override val contactId: Long?,
 
     /**
      * See [RawContact.isProfile].
      */
-    val isProfile: Boolean,
+    override val isProfile: Boolean,
 
     /**
      * Mutable version of [RawContact.addresses].
@@ -232,7 +253,7 @@ data class MutableRawContact internal constructor(
      */
     var websites: MutableList<MutableWebsite>
 
-) : Entity, Parcelable {
+) : RawContactEntity, Parcelable {
 
     constructor() : this(
         null, null, false, mutableListOf(), null, mutableListOf(), mutableListOf(),
@@ -255,9 +276,8 @@ data class MutableRawContact internal constructor(
 internal data class TempRawContact constructor(
 
     override val id: Long?,
-    val contactId: Long?,
-
-    val isProfile: Boolean,
+    override val contactId: Long?,
+    override val isProfile: Boolean,
 
     var addresses: MutableList<Address>,
     var company: Company?,
@@ -273,7 +293,7 @@ internal data class TempRawContact constructor(
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>
 
-) : Entity {
+) : RawContactEntity {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         company, name, nickname, note, sipAddress
