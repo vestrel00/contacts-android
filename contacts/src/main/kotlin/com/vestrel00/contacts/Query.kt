@@ -12,9 +12,10 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 import kotlin.math.min
 
 /**
- * Queries the Contacts data table and returns one or more contacts matching the search criteria.
+ * Queries the Contacts Provider tables and returns one or more contacts matching the search
+ * criteria.
  *
- * To query specific types of data (e.g. emails, phones, etc), use [QueryData].
+ * To query specific types of data (e.g. emails, phones, etc), use DataQuery.
  *
  * ## Permissions
  *
@@ -70,7 +71,7 @@ import kotlin.math.min
  *
  * ## Developer Notes
  *
- * Unlike [QueryData], this API is unable to use the ORDER BY, LIMIT, and OFFSET functions of a raw
+ * Unlike DataQuery, this API is unable to use the ORDER BY, LIMIT, and OFFSET functions of a raw
  * database query. The Android contacts **data table** uses generic column names (e.g. data1, data2,
  * ...) using the column 'mimetype' to distinguish the type of data in that generic column. For
  * example, the column name of [NameFields.DisplayName] is the same as
@@ -88,7 +89,7 @@ import kotlin.math.min
  *
  * With that said, Kotlin's Flow or reactive frameworks like RxJava and Java 8 Streams cannot really
  * be supported. We cannot emit complete contact instances and still honor ORDER BY, LIMIT, and
- * OFFSET functions. Although, it is possible for [QueryData] as queries are limited to a single
+ * OFFSET functions. Although, it is possible for DataQuery as queries are limited to a single
  * mimetype.
  */
 interface Query {

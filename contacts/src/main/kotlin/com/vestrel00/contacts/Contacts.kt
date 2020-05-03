@@ -1,11 +1,12 @@
 package com.vestrel00.contacts
 
 import android.content.Context
+import com.vestrel00.contacts.data.Data
 import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.profile.Profile
 
 /**
- * Provides new [Query], [Insert], [Update], [Delete], [Groups], and [Profile] instances.
+ * Provides new [Query], [Insert], [Update], [Delete], [Data], [Groups], and [Profile] instances.
  *
  * ## Permissions
  *
@@ -14,15 +15,19 @@ import com.vestrel00.contacts.profile.Profile
  * [update], and [delete].
  *
  * Use [permissions] convenience functions to check for required permissions. The same permissions
- * apply to [Groups].
+ * apply to [Data], [Groups], and [Profile].
+ *
+ * ## Data
+ *
+ * For data-specific operations, use [data].
  *
  * ## Groups
  *
- * For group management, use [groups].
+ * For group operations, use [groups].
  *
  * ## Profile
  *
- * For user profile management, use [profile].
+ * For user profile operations, use [profile].
  */
 interface Contacts {
 
@@ -30,11 +35,6 @@ interface Contacts {
      * Returns a new [Query] instance.
      */
     fun query(context: Context): Query
-
-    /**
-     * Returns a new [QueryData] instance.
-     */
-    fun queryData(context: Context): QueryData
 
     /**
      * Returns a new [Insert] instance.
@@ -50,6 +50,11 @@ interface Contacts {
      * Returns a new [Delete] instance.
      */
     fun delete(context: Context): Delete
+
+    /**
+     * Returns a new [Data] instance.
+     */
+    fun data(): Data
 
     /**
      * Returns a new [Groups] instance.
@@ -78,13 +83,13 @@ private class ContactsImpl : Contacts {
 
     override fun query(context: Context) = Query(context)
 
-    override fun queryData(context: Context) = QueryData(context)
-
     override fun insert(context: Context) = Insert(context)
 
     override fun update(context: Context) = Update(context)
 
     override fun delete(context: Context) = Delete(context)
+
+    override fun data(): Data = Data()
 
     override fun groups() = Groups()
 

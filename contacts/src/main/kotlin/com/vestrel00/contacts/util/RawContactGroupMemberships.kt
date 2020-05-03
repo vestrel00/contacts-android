@@ -17,3 +17,9 @@ fun Collection<Group>.toGroupMemberships(): List<GroupMembership> = map { it.toG
 fun Collection<Group>.defaultGroup(): Group? = firstOrNull { it.isDefaultGroup }
 
 fun Collection<Group>.favoritesGroup(): Group? = firstOrNull { it.isFavoritesGroup }
+
+fun Sequence<Group>.toGroupMemberships(): Sequence<GroupMembership> = map { it.toGroupMembership() }
+
+fun Sequence<Group>.defaultGroup(): Group? = firstOrNull { it.isDefaultGroup }
+
+fun Sequence<Group>.favoritesGroup(): Group? = firstOrNull { it.isFavoritesGroup }

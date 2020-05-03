@@ -4,7 +4,7 @@ import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 
 /**
- * Creates a new [GroupsQuery], [GroupsInsert], and [GroupsUpdate] instances.
+ * Provides new [GroupsQuery], [GroupsInsert], and [GroupsUpdate] instances.
  *
  * ## Permissions
  *

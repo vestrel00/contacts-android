@@ -8,7 +8,7 @@ import com.vestrel00.contacts.*
  *
  * If the sequence is empty, returns null.
  */
-internal fun Sequence<Account?>.toRawContactsWhere(): Where? = distinct() // don't allow duplicates
+internal fun Sequence<Account?>.toRawContactsWhere(): Where? = distinct() // get rid of duplicates
     .whereOr { account ->
         if (account != null) {
             (Fields.RawContacts.AccountName equalToIgnoreCase account.name) and

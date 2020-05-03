@@ -1,6 +1,7 @@
-package com.vestrel00.contacts.async
+package com.vestrel00.contacts.async.data
 
-import com.vestrel00.contacts.QueryData
+import com.vestrel00.contacts.async.ASYNC_DISPATCHER
+import com.vestrel00.contacts.data.DataQuery
 import com.vestrel00.contacts.entities.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -11,9 +12,9 @@ import kotlinx.coroutines.withContext
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.addresses].
+ * See [DataQuery.addresses].
  */
-suspend fun QueryData.addressesAsync(): List<Address> =
+suspend fun DataQuery.addressesAsync(): List<Address> =
     withContext(ASYNC_DISPATCHER) { addresses { !isActive } }
 
 /**
@@ -22,9 +23,9 @@ suspend fun QueryData.addressesAsync(): List<Address> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.companies].
+ * See [DataQuery.companies].
  */
-suspend fun QueryData.companiesAsync(): List<Company> =
+suspend fun DataQuery.companiesAsync(): List<Company> =
     withContext(ASYNC_DISPATCHER) { companies { !isActive } }
 
 /**
@@ -33,9 +34,9 @@ suspend fun QueryData.companiesAsync(): List<Company> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.emails].
+ * See [DataQuery.emails].
  */
-suspend fun QueryData.emailsAsync(): List<Email> =
+suspend fun DataQuery.emailsAsync(): List<Email> =
     withContext(ASYNC_DISPATCHER) { emails { !isActive } }
 
 /**
@@ -44,9 +45,9 @@ suspend fun QueryData.emailsAsync(): List<Email> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.events].
+ * See [DataQuery.events].
  */
-suspend fun QueryData.eventsAsync(): List<Event> =
+suspend fun DataQuery.eventsAsync(): List<Event> =
     withContext(ASYNC_DISPATCHER) { events { !isActive } }
 
 /**
@@ -55,9 +56,9 @@ suspend fun QueryData.eventsAsync(): List<Event> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.groupMemberships].
+ * See [DataQuery.groupMemberships].
  */
-suspend fun QueryData.groupMembershipsAsync(): List<GroupMembership> =
+suspend fun DataQuery.groupMembershipsAsync(): List<GroupMembership> =
     withContext(ASYNC_DISPATCHER) { groupMemberships { !isActive } }
 
 /**
@@ -66,9 +67,9 @@ suspend fun QueryData.groupMembershipsAsync(): List<GroupMembership> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.ims].
+ * See [DataQuery.ims].
  */
-suspend fun QueryData.imsAsync(): List<Im> = withContext(ASYNC_DISPATCHER) { ims { !isActive } }
+suspend fun DataQuery.imsAsync(): List<Im> = withContext(ASYNC_DISPATCHER) { ims { !isActive } }
 
 /**
  * Suspends the current coroutine, performs the query operation in background, then returns the
@@ -76,9 +77,9 @@ suspend fun QueryData.imsAsync(): List<Im> = withContext(ASYNC_DISPATCHER) { ims
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.names].
+ * See [DataQuery.names].
  */
-suspend fun QueryData.namesAsync(): List<Name> =
+suspend fun DataQuery.namesAsync(): List<Name> =
     withContext(ASYNC_DISPATCHER) { names { !isActive } }
 
 /**
@@ -87,9 +88,9 @@ suspend fun QueryData.namesAsync(): List<Name> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.nicknames].
+ * See [DataQuery.nicknames].
  */
-suspend fun QueryData.nicknamesAsync(): List<Nickname> =
+suspend fun DataQuery.nicknamesAsync(): List<Nickname> =
     withContext(ASYNC_DISPATCHER) { nicknames { !isActive } }
 
 /**
@@ -98,9 +99,9 @@ suspend fun QueryData.nicknamesAsync(): List<Nickname> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.notes].
+ * See [DataQuery.notes].
  */
-suspend fun QueryData.notesAsync(): List<Note> =
+suspend fun DataQuery.notesAsync(): List<Note> =
     withContext(ASYNC_DISPATCHER) { notes { !isActive } }
 
 /**
@@ -109,9 +110,9 @@ suspend fun QueryData.notesAsync(): List<Note> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.phones].
+ * See [DataQuery.phones].
  */
-suspend fun QueryData.phonesAsync(): List<Phone> =
+suspend fun DataQuery.phonesAsync(): List<Phone> =
     withContext(ASYNC_DISPATCHER) { phones { !isActive } }
 
 /**
@@ -120,9 +121,9 @@ suspend fun QueryData.phonesAsync(): List<Phone> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.relations].
+ * See [DataQuery.relations].
  */
-suspend fun QueryData.relationsAsync(): List<Relation> =
+suspend fun DataQuery.relationsAsync(): List<Relation> =
     withContext(ASYNC_DISPATCHER) { relations { !isActive } }
 
 /**
@@ -131,9 +132,9 @@ suspend fun QueryData.relationsAsync(): List<Relation> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.sipAddresses].
+ * See [DataQuery.sipAddresses].
  */
-suspend fun QueryData.sipAddressesAsync(): List<SipAddress> =
+suspend fun DataQuery.sipAddressesAsync(): List<SipAddress> =
     withContext(ASYNC_DISPATCHER) { sipAddresses { !isActive } }
 
 /**
@@ -142,7 +143,7 @@ suspend fun QueryData.sipAddressesAsync(): List<SipAddress> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [QueryData.websites].
+ * See [DataQuery.websites].
  */
-suspend fun QueryData.websitesAsync(): List<Website> =
+suspend fun DataQuery.websitesAsync(): List<Website> =
     withContext(ASYNC_DISPATCHER) { websites { !isActive } }

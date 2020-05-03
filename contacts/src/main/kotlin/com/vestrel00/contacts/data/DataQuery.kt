@@ -1,10 +1,11 @@
-package com.vestrel00.contacts
+package com.vestrel00.contacts.data
 
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
+import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
@@ -42,7 +43,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * In Kotlin,
  *
  * ```kotlin
- * val addresses : List<Address> = queryData.
+ * val addresses : List<Address> = dataQuery.
  *      .accounts(account)
  *      .include(Fields.Address.FormattedAddress)
  *      .where((Fields.Address.Country equalTo "US") and (Fields.Address.PostCode startsWith "78"))
@@ -73,7 +74,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * these CONTENT_URIs probably results in shorter search times since it only has to look through a
  * subset of data instead of the entire data table.
  */
-interface QueryData {
+interface DataQuery {
 
     /**
      * Limits this query to only search for data associated with the given accounts.
@@ -85,17 +86,17 @@ interface QueryData {
      * associated Account to be included in the search. RawContacts without an associated account
      * are considered local or device-only contacts, which are not synced.
      */
-    fun accounts(vararg accounts: Account?): QueryData
+    fun accounts(vararg accounts: Account?): DataQuery
 
     /**
-     * See [QueryData.accounts]
+     * See [DataQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account?>): QueryData
+    fun accounts(accounts: Collection<Account?>): DataQuery
 
     /**
-     * See [QueryData.accounts]
+     * See [DataQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account?>): QueryData
+    fun accounts(accounts: Sequence<Account?>): DataQuery
 
     /**
      * Includes the given set of [fields] in the resulting data object(s).
@@ -108,17 +109,17 @@ interface QueryData {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      */
-    fun include(vararg fields: Field): QueryData
+    fun include(vararg fields: Field): DataQuery
 
     /**
-     * See [QueryData.include].
+     * See [DataQuery.include].
      */
-    fun include(fields: Collection<Field>): QueryData
+    fun include(fields: Collection<Field>): DataQuery
 
     /**
-     * See [QueryData.include].
+     * See [DataQuery.include].
      */
-    fun include(fields: Sequence<Field>): QueryData
+    fun include(fields: Sequence<Field>): DataQuery
 
     /**
      * Filters the returned data matching the criteria defined by the [where].
@@ -128,7 +129,7 @@ interface QueryData {
      *
      * If not specified or null, then all data is returned, limited by [limit].
      */
-    fun where(where: Where?): QueryData
+    fun where(where: Where?): DataQuery
 
     /**
      * Orders the returned data using one or more [orderBy]s.
@@ -141,31 +142,31 @@ interface QueryData {
      *
      * If not specified, then data is ordered by ID in ascending order.
      */
-    fun orderBy(vararg orderBy: OrderBy): QueryData
+    fun orderBy(vararg orderBy: OrderBy): DataQuery
 
     /**
-     * See [QueryData.orderBy].
+     * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy>): QueryData
+    fun orderBy(orderBy: Collection<OrderBy>): DataQuery
 
     /**
-     * See [QueryData.orderBy].
+     * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy>): QueryData
+    fun orderBy(orderBy: Sequence<OrderBy>): DataQuery
 
     /**
      * Skips results 0 to [offset] (excluding the offset).
      *
      * If not specified, offset value of 0 is used.
      */
-    fun offset(offset: Int): QueryData
+    fun offset(offset: Int): DataQuery
 
     /**
      * Limits the maximum number of returned data to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
      */
-    fun limit(limit: Int): QueryData
+    fun limit(limit: Int): DataQuery
 
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun addresses(): List<Address>
@@ -249,14 +250,14 @@ interface QueryData {
 }
 
 @Suppress("FunctionName")
-internal fun QueryData(context: Context): QueryData = QueryDataImpl(
+internal fun DataQuery(context: Context): DataQuery = DataQueryImpl(
     ContactsPermissions(context),
-    QueryDataResolverFactory(context.contentResolver)
+    context.contentResolver
 )
 
-private class QueryDataImpl(
+private class DataQueryImpl(
     private val permissions: ContactsPermissions,
-    private val queryResolverFactory: QueryDataResolverFactory,
+    private val contentResolver: ContentResolver,
 
     private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE,
@@ -264,7 +265,7 @@ private class QueryDataImpl(
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
-) : QueryData {
+) : DataQuery {
 
     override fun toString(): String {
         return """
@@ -277,37 +278,37 @@ private class QueryDataImpl(
         """.trimIndent()
     }
 
-    override fun accounts(vararg accounts: Account?): QueryData = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account?): DataQuery = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account?>): QueryData =
+    override fun accounts(accounts: Collection<Account?>): DataQuery =
         accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account?>): QueryData = apply {
+    override fun accounts(accounts: Sequence<Account?>): DataQuery = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: Field): QueryData = include(fields.asSequence())
+    override fun include(vararg fields: Field): DataQuery = include(fields.asSequence())
 
-    override fun include(fields: Collection<Field>): QueryData = include(fields.asSequence())
+    override fun include(fields: Collection<Field>): DataQuery = include(fields.asSequence())
 
-    override fun include(fields: Sequence<Field>): QueryData = apply {
+    override fun include(fields: Sequence<Field>): DataQuery = apply {
         include = if (fields.count() == 0) {
             DEFAULT_INCLUDE
         } else {
-            Include(fields + Fields.Required.fields.asSequence())
+            Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
     }
 
-    override fun where(where: Where?): QueryData = apply {
+    override fun where(where: Where?): DataQuery = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy): QueryData = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy): DataQuery = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>): QueryData = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy>): DataQuery = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy>): QueryData = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy>): DataQuery = apply {
         this.orderBy = if (orderBy.count() == 0) {
             DEFAULT_ORDER_BY
         } else {
@@ -319,7 +320,7 @@ private class QueryDataImpl(
         }
     }
 
-    override fun offset(offset: Int): QueryData = apply {
+    override fun offset(offset: Int): DataQuery = apply {
         this.offset = if (offset >= 0) {
             offset
         } else {
@@ -327,7 +328,7 @@ private class QueryDataImpl(
         }
     }
 
-    override fun limit(limit: Int): QueryData = apply {
+    override fun limit(limit: Int): DataQuery = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
@@ -401,14 +402,15 @@ private class QueryDataImpl(
             return emptyList()
         }
 
-        return queryResolverFactory
-            .resolver(cancel)
-            .resolveEntities(mimeType, rawContactsWhere, include, where, orderBy, offset, limit)
+        return contentResolver.resolveEntities(
+            mimeType, rawContactsWhere, include, where, orderBy, offset, limit, cancel
+        )
     }
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
         val DEFAULT_INCLUDE = Include(Fields.All)
+        val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
         val DEFAULT_WHERE: Where? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
@@ -416,79 +418,72 @@ private class QueryDataImpl(
     }
 }
 
-private class QueryDataResolverFactory(private val contentResolver: ContentResolver) {
-    fun resolver(cancel: () -> Boolean): QueryDataResolver =
-        QueryDataResolver(contentResolver, cancel)
-}
 
-private class QueryDataResolver(
-    private val contentResolver: ContentResolver,
-    private val cancel: () -> Boolean
-) {
+private fun <T : DataEntity> ContentResolver.resolveEntities(
+    mimeType: MimeType,
+    rawContactsWhere: Where?,
+    include: Include,
+    where: Where?,
+    orderBy: CompoundOrderBy,
+    offset: Int,
+    limit: Int,
+    cancel: () -> Boolean
+): List<T> {
 
-    fun <T : DataEntity> resolveEntities(
-        mimeType: MimeType,
-        rawContactsWhere: Where?,
-        include: Include,
-        where: Where?,
-        orderBy: CompoundOrderBy,
-        offset: Int,
-        limit: Int
-    ): List<T> {
+    var dataWhere = mimeType.dataWhere()
 
-        var dataWhere = mimeType.dataWhere()
-
-        if (rawContactsWhere != null) {
-            // Limit the data to the set associated with the RawContacts found in the RawContacts
-            // table matching the rawContactsWhere.
-            val rawContactIds = findRawContactIdsInRawContactsTable(rawContactsWhere)
-            dataWhere = if (dataWhere != null) {
-                dataWhere and (Fields.RawContact.Id `in` rawContactIds)
-            } else {
-                Fields.RawContact.Id `in` rawContactIds
-            }
+    if (rawContactsWhere != null) {
+        // Limit the data to the set associated with the RawContacts found in the RawContacts
+        // table matching the rawContactsWhere.
+        val rawContactIds = findRawContactIdsInRawContactsTable(rawContactsWhere, cancel)
+        dataWhere = if (dataWhere != null) {
+            dataWhere and (Fields.RawContact.Id `in` rawContactIds)
+        } else {
+            Fields.RawContact.Id `in` rawContactIds
         }
-
-        if (where != null) {
-            dataWhere = if (dataWhere != null) dataWhere and where else where
-        }
-
-        return contentResolver.query(
-            mimeType.contentUri(), include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
-        ) {
-            mutableListOf<T>().apply {
-                val entityMapper = it.entityMapperFor<T>(mimeType)
-                while (!cancel() && it.moveToNext()) {
-                    add(entityMapper.value)
-                }
-
-                // Ensure only complete data sets are returned.
-                if (cancel()) {
-                    clear()
-                }
-            }
-        } ?: emptyList()
     }
 
-    private fun findRawContactIdsInRawContactsTable(rawContactsWhere: Where): Set<Long> =
-        contentResolver.query(
-            Table.RAW_CONTACTS, Include(Fields.RawContacts.Id), rawContactsWhere
-        ) {
-            mutableSetOf<Long>().apply {
-                val rawContactsCursor = it.rawContactsCursor()
-                while (!cancel() && it.moveToNext()) {
-                    rawContactsCursor.rawContactId?.let(::add)
-                }
+    if (where != null) {
+        dataWhere = if (dataWhere != null) dataWhere and where else where
+    }
 
-                // Ensure only complete data sets are returned.
-                if (cancel()) {
-                    clear()
-                }
+    return query(
+        mimeType.contentUri(), include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
+    ) {
+        mutableListOf<T>().apply {
+            val entityMapper = it.entityMapperFor<T>(mimeType)
+            while (!cancel() && it.moveToNext()) {
+                add(entityMapper.value)
             }
-        } ?: emptySet()
+
+            // Ensure only complete data sets are returned.
+            if (cancel()) {
+                clear()
+            }
+        }
+    } ?: emptyList()
 }
 
-// See the developer notes in the QueryData interface documentation.
+private fun ContentResolver.findRawContactIdsInRawContactsTable(
+    rawContactsWhere: Where, cancel: () -> Boolean
+): Set<Long> =
+    query(
+        Table.RAW_CONTACTS, Include(Fields.RawContacts.Id), rawContactsWhere
+    ) {
+        mutableSetOf<Long>().apply {
+            val rawContactsCursor = it.rawContactsCursor()
+            while (!cancel() && it.moveToNext()) {
+                rawContactsCursor.rawContactId?.let(::add)
+            }
+
+            // Ensure only complete data sets are returned.
+            if (cancel()) {
+                clear()
+            }
+        }
+    } ?: emptySet()
+
+// See the developer notes in the DataQuery interface documentation.
 private fun MimeType.dataWhere(): Where? = when (this) {
     MimeType.PHONE, MimeType.EMAIL, MimeType.ADDRESS -> null
     else -> Fields.MimeType equalTo this
