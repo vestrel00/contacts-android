@@ -24,7 +24,8 @@ import kotlinx.coroutines.launch
 
 class ContactsActivity : BaseActivity() {
 
-    private var selectedAccounts = emptyList<Account>()
+    // The null Account is the "Local Account".
+    private var selectedAccounts = emptyList<Account?>()
     private var queryJob: Job? = null
 
     private val queryText: String

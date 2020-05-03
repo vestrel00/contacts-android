@@ -16,11 +16,14 @@ import kotlinx.coroutines.launch
  */
 class AccountsActivity : BaseActivity() {
 
-    private lateinit var accountsAdapter: ArrayAdapter<Account>
+    // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.
+    // Therefore, we maintain the List<Account?> separately so that we can retrieve the selected
+    // Accounts via the checked item position. The null Account is the "Local Account".
+    private lateinit var accountsAdapter: ArrayAdapter<String>
+    private val selectableAccounts = mutableListOf<Account?>()
 
-    private val selectedAccounts: List<Account>
-        get() {
-            val selectedAccounts = mutableListOf<Account>()
+    private val selectedAccounts: List<Account?>
+        get() = mutableListOf<Account?>().apply {
 
             val checkedItemPositions = accountsListView.checkedItemPositions
             for (i in 0 until checkedItemPositions.size()) {
@@ -28,13 +31,12 @@ class AccountsActivity : BaseActivity() {
                 val isChecked = checkedItemPositions.valueAt(i)
 
                 if (isChecked) {
-                    accountsAdapter.getItem(position)?.let(selectedAccounts::add)
+                    // The ListView, ArrayAdapter, and selectableAccounts all have the same list of
+                    // accounts in the same indices.
+                    add(selectableAccounts[position])
                 }
             }
-
-            return selectedAccounts
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,20 +62,34 @@ class AccountsActivity : BaseActivity() {
         accountsListView.choiceMode = intent.choiceMode()
 
         launch {
+            addLocalAccount()
             addAllAccounts()
             checkSelectedAccounts()
         }
     }
 
+    private fun addLocalAccount() {
+        selectableAccounts.add(null)
+        accountsAdapter.add("Local Account")
+    }
+
     private suspend fun addAllAccounts() {
-        val accounts = Accounts().allAccountsWithPermission(this)
-        accountsAdapter.addAll(accounts)
+        val allAccounts = Accounts().allAccountsWithPermission(this)
+        selectableAccounts.addAll(allAccounts)
+        accountsAdapter.addAll(allAccounts.map { account ->
+            """
+                |${account.name}
+                |${account.type}
+            """.trimMargin()
+        })
     }
 
     private fun checkSelectedAccounts() {
         for (account in intent.selectedAccounts()) {
-            val itemPosition = accountsAdapter.getPosition(account)
+            val itemPosition = selectableAccounts.indexOf(account)
             if (itemPosition > -1) {
+                // The ListView, ArrayAdapter, and selectableAccounts all have the same list of
+                // accounts in the same indices.
                 accountsListView.setItemChecked(itemPosition, true)
             }
         }
@@ -82,7 +98,7 @@ class AccountsActivity : BaseActivity() {
     companion object {
 
         fun selectAccounts(
-            activity: Activity, multipleChoice: Boolean, selectedAccounts: ArrayList<Account>
+            activity: Activity, multipleChoice: Boolean, selectedAccounts: ArrayList<Account?>
         ) {
             val intent = Intent(activity, AccountsActivity::class.java).apply {
                 putExtra(
@@ -97,7 +113,7 @@ class AccountsActivity : BaseActivity() {
 
         fun onSelectAccountsResult(
             requestCode: Int, resultCode: Int, data: Intent?,
-            processSelectedAccounts: (selectedAccounts: List<Account>) -> Unit
+            processSelectedAccounts: (selectedAccounts: List<Account?>) -> Unit
         ) {
             if (requestCode != REQUEST_SELECT_ACCOUNTS || resultCode != RESULT_OK ||
                 data == null
@@ -110,7 +126,7 @@ class AccountsActivity : BaseActivity() {
 
         private fun Intent.choiceMode(): Int = getIntExtra(CHOICE_MODE, CHOICE_MODE_NONE)
 
-        private fun Intent.selectedAccounts(): List<Account> =
+        private fun Intent.selectedAccounts(): List<Account?> =
             getParcelableArrayListExtra(SELECTED_ACCOUNTS)
 
         private const val REQUEST_SELECT_ACCOUNTS = 101
@@ -118,4 +134,3 @@ class AccountsActivity : BaseActivity() {
         private const val SELECTED_ACCOUNTS = "selectedAccounts"
     }
 }
-
