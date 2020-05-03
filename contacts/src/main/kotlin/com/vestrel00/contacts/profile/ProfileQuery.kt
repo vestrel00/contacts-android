@@ -84,7 +84,7 @@ interface ProfileQuery {
      * Includes the given set of [fields] in the resulting contact object.
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to the required fields, which are always included.
+     * fields will be included in addition to [Fields.Required], which are always included.
      *
      * Fields that are included will not guarantee non-null attributes in the returned contact
      * object instances.

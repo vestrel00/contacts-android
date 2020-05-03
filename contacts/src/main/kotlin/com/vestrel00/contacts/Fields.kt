@@ -127,9 +127,16 @@ object Fields {
     @JvmField
     val Website = WebsiteFields()
 
-    internal val Required = Required()
+    /**
+     * All of the required fields that are always included in every query. This is only useful for
+     * specifying includes.
+     */
+    @JvmField
+    val Required = RequiredFields()
 
     /**
+     * All fields that may be included in a query. This is only useful for specifying includes.
+     *
      * Be careful with using this for queries. This field set includes the following fields, which
      * may lead to unintentional query matches (especially when matching numbers);
      *
@@ -145,11 +152,25 @@ object Fields {
     val All = AllFields()
 
     /**
-     * Same as [All] except this is safe for matching in queries. This is useful for matching text
-     * that the user is typing in a search field.
+     * Same as [All] except this is safe for matching in queries. This is useful in creating where
+     * clauses that matches text that the user is typing in a search field.
      */
     @JvmField
     val AllForMatching = AllForMatchingFields()
+}
+
+/**
+ * All of the Data table fields required when constructing Data entities retrieved from a Query.
+ */
+class RequiredFields : FieldSet(UNKNOWN) {
+    override val fields: Set<AbstractField> = setOf(
+        Fields.Id,
+        Fields.Contact.Id,
+        Fields.RawContact.Id,
+        Fields.IsPrimary,
+        Fields.IsSuperPrimary,
+        Fields.MimeType
+    )
 }
 
 class AllFields : FieldSet(UNKNOWN) {
@@ -202,20 +223,6 @@ class AllForMatchingFields : FieldSet(UNKNOWN) {
         addAll(Fields.SipAddress.fields)
         addAll(Fields.Website.fields)
     }.toSet()
-}
-
-/**
- * All of the Data table fields required when constructing Data entities retrieved from a Query.
- */
-internal class Required : FieldSet(UNKNOWN) {
-    override val fields: Set<AbstractField> = setOf(
-        Fields.Id,
-        Fields.Contact.Id,
-        Fields.RawContact.Id,
-        Fields.IsPrimary,
-        Fields.IsSuperPrimary,
-        Fields.MimeType
-    )
 }
 
 class AddressFields : FieldSet(MimeType.ADDRESS) {

@@ -31,10 +31,6 @@ import android.content.Context
  * ```
  *
  * Use [permissions] to check for required permission.
- *
- * ## Thread Safety
- *
- * All functions here are safe to call in the Main / UI thread.
  */
 interface Accounts {
 
