@@ -11,7 +11,6 @@ import com.karumi.dexter.listener.single.CompositePermissionListener
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener
 import com.karumi.dexter.listener.single.PermissionListener
 import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.accounts.Accounts
 import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -23,7 +22,7 @@ import kotlin.coroutines.suspendCoroutine
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun ContactsPermissions.requestQueryPermission(activity: Activity): Boolean =
+suspend fun requestQueryPermission(activity: Activity): Boolean =
     requestContactsPermission(ContactsPermissions.READ_PERMISSION, activity)
 
 /**
@@ -33,9 +32,9 @@ suspend fun ContactsPermissions.requestQueryPermission(activity: Activity): Bool
  *
  * Returns true if permissions are granted. False otherwise.
  */
-suspend fun ContactsPermissions.requestInsertUpdateDeletePermission(activity: Activity): Boolean =
+suspend fun requestInsertUpdateDeletePermission(activity: Activity): Boolean =
     requestContactsPermission(ContactsPermissions.WRITE_PERMISSION, activity)
-            && Accounts().permissions(activity).requestGetAccountsPermission(activity)
+            && requestGetAccountsPermission(activity)
 
 private suspend fun requestContactsPermission(permission: String, activity: Activity): Boolean =
     requestPermission(

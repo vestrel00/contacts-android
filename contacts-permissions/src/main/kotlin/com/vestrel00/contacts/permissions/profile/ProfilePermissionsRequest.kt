@@ -15,7 +15,7 @@ import com.vestrel00.contacts.profile.ProfileQuery
 suspend fun Profile.queryWithPermission(activity: Activity): ProfileQuery {
     val permissions = permissions(activity)
     if (!permissions.canQuery()) {
-        permissions.requestQueryPermission(activity)
+        requestQueryPermission(activity)
     }
 
     return query(activity)

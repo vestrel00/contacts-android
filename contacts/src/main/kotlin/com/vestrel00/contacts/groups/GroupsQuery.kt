@@ -17,17 +17,6 @@ import com.vestrel00.contacts.util.query
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
  * examples for brevity. All queries will return an empty list if the permission is not granted.
  *
- * ## Filtering
- *
- * Given the nature of groups, this library makes an assumption that there are not that many groups.
- * Typical users usually have less than 10. Even those in large companies, have less than 100 (?)
- * groups. This assumption means that the query function of groups need not be as extensive (or at
- * all) as Contacts Query. Filter, order, offset, and limit functions are left to consumers to
- * implement if they wish.
- *
- * Furthermore, groups operations should usually be tied per account, which limits the amount of
- * groups even further. Are there company accounts that has over thousands of groups?
- *
  * ## Usage
  *
  * To get all groups for a given account;
@@ -39,6 +28,13 @@ import com.vestrel00.contacts.util.query
  *      .account(account)
  *      .find()
  * ```
+ * ## Filtering
+ *
+ * Given the nature of groups, this library makes an assumption that there are not that many groups
+ * **per Account**. Typical Accounts usually have less than 10. Even those in large companies, have
+ * less than 100 (?) groups. This assumption means that the query function of groups need not be as
+ * extensive (or at all) as Contacts Query. Filter, order, offset, and limit functions are left to
+ * consumers to implement if they wish.
  *
  * ## Developer notes
  *

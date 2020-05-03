@@ -18,7 +18,7 @@ import com.vestrel00.contacts.permissions.requestQueryPermission
 suspend fun Groups.queryWithPermission(activity: Activity): GroupsQuery {
     val permissions = permissions(activity)
     if (!permissions.canQuery()) {
-        permissions.requestQueryPermission(activity)
+        requestQueryPermission(activity)
     }
 
     return query(activity)
@@ -35,7 +35,7 @@ suspend fun Groups.queryWithPermission(activity: Activity): GroupsQuery {
 suspend fun Groups.insertWithPermission(activity: Activity): GroupsInsert {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        permissions.requestInsertUpdateDeletePermission(activity)
+        requestInsertUpdateDeletePermission(activity)
     }
 
     return insert(activity)
@@ -52,7 +52,7 @@ suspend fun Groups.insertWithPermission(activity: Activity): GroupsInsert {
 suspend fun Groups.updateWithPermission(activity: Activity): GroupsUpdate {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        permissions.requestInsertUpdateDeletePermission(activity)
+        requestInsertUpdateDeletePermission(activity)
     }
 
     return update(activity)

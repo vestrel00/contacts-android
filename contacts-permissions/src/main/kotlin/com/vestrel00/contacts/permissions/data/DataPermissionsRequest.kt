@@ -15,7 +15,7 @@ import com.vestrel00.contacts.permissions.requestQueryPermission
 suspend fun Data.queryWithPermission(activity: Activity): DataQuery {
     val permissions = permissions(activity)
     if (!permissions.canQuery()) {
-        permissions.requestQueryPermission(activity)
+        requestQueryPermission(activity)
     }
 
     return query(activity)

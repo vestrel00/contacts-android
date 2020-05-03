@@ -11,7 +11,7 @@ import com.vestrel00.contacts.entities.GroupMembership
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.mapper.groupMembershipMapper
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.groups.Groups
+import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.util.account
 import com.vestrel00.contacts.util.accountForRawContactWithId
 import com.vestrel00.contacts.util.query
@@ -35,7 +35,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
         context: Context
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
 
-        val accountGroups = Groups().query(context).account(account).find()
+        val accountGroups = GroupsQuery(context).account(account).find()
             .asSequence()
             .associateBy { it.id }
             .toMutableMap()
@@ -65,7 +65,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
 
         // Groups must always be associated with an account. No account, no group operation.
         val account = accountForRawContactWithId(rawContactId, context) ?: return emptyList()
-        val accountGroups = Groups().query(context).account(account).find()
+        val accountGroups = GroupsQuery(context).account(account).find()
             // This is the same as GroupMembership.groupId.
             .associateBy { it.id }
 

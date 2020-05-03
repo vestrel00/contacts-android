@@ -4,7 +4,7 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.provider.ContactsContract
-import com.vestrel00.contacts.accounts.Accounts
+import com.vestrel00.contacts.accounts.AccountsQuery
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 import com.vestrel00.contacts.entities.table.Table
@@ -180,13 +180,13 @@ interface Insert {
 @Suppress("FunctionName")
 internal fun Insert(context: Context): Insert = InsertImpl(
     context,
-    Accounts(),
+    AccountsQuery(context),
     ContactsPermissions(context)
 )
 
 private class InsertImpl(
     private val context: Context,
-    private val accounts: Accounts,
+    private val accountsQuery: AccountsQuery,
     private val permissions: ContactsPermissions,
 
     private var allowBlanks: Boolean = false,
@@ -241,7 +241,7 @@ private class InsertImpl(
      */
     private fun setAccountToNullIfNotValid() {
         account?.let {
-            val allAccounts = accounts.allAccounts(context)
+            val allAccounts = accountsQuery.allAccounts()
 
             if (!allAccounts.contains(it)) {
                 account = null

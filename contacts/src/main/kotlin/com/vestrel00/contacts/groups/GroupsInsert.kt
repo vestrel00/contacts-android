@@ -1,10 +1,11 @@
 package com.vestrel00.contacts.groups
 
 import android.accounts.Account
+import android.content.ContentResolver
 import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.accounts.Accounts
+import com.vestrel00.contacts.accounts.AccountsQuery
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.operation.GroupOperation
 
@@ -124,14 +125,14 @@ interface GroupsInsert {
 
 @Suppress("FunctionName")
 internal fun GroupsInsert(context: Context): GroupsInsert = GroupsInsertImpl(
-    context,
-    Accounts(),
+    context.contentResolver,
+    AccountsQuery(context),
     ContactsPermissions(context)
 )
 
 private class GroupsInsertImpl(
-    private val context: Context,
-    private val accounts: Accounts,
+    private val contentResolver: ContentResolver,
+    private val accountsQuery: AccountsQuery,
     private val permissions: ContactsPermissions,
     private val groups: MutableSet<MutableGroup> = mutableSetOf()
 ) : GroupsInsert {
@@ -150,7 +151,7 @@ private class GroupsInsertImpl(
     }
 
     override fun commit(): GroupsInsert.Result {
-        val accounts = accounts.allAccounts(context)
+        val accounts = accountsQuery.allAccounts()
         if (accounts.isEmpty() || groups.isEmpty() || !permissions.canInsertUpdateDelete()) {
             return GroupsInsertFailed
         }
@@ -175,7 +176,7 @@ private class GroupsInsertImpl(
          * Perform this single operation in a batch to be consistent with the other CRUD functions.
          */
         val results = try {
-            context.contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
+            contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
         } catch (exception: Exception) {
             null
         }

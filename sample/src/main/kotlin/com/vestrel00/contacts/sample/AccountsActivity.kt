@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView.*
 import com.vestrel00.contacts.accounts.Accounts
-import com.vestrel00.contacts.permissions.accounts.allAccountsWithPermission
+import com.vestrel00.contacts.permissions.accounts.queryWithPermission
 import kotlinx.android.synthetic.main.activity_accounts.*
 import kotlinx.coroutines.launch
 
@@ -74,7 +74,7 @@ class AccountsActivity : BaseActivity() {
     }
 
     private suspend fun addAllAccounts() {
-        val allAccounts = Accounts().allAccountsWithPermission(this)
+        val allAccounts = Accounts().queryWithPermission(this).allAccounts()
         selectableAccounts.addAll(allAccounts)
         accountsAdapter.addAll(allAccounts.map { account ->
             """
