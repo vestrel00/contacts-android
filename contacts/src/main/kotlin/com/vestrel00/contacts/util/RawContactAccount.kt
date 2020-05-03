@@ -11,6 +11,8 @@ import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
+// GET ACCOUNT
+
 /**
  * Queries the RawContacts table and returns the [Account] this [RawContact] belongs to.
  *
@@ -43,18 +45,30 @@ internal fun accountForRawContactWithId(rawContactId: Long?, context: Context): 
         Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType),
         Fields.RawContacts.Id equalTo rawContactId
     ) {
-        var account: Account? = null
-
         if (it.moveToNext()) {
             val rawContactsCursor = it.rawContactsCursor()
             val accountName = rawContactsCursor.accountName
             val accountType = rawContactsCursor.accountType
 
             if (accountName != null && accountType != null) {
-                account = Account(accountName, accountType)
+                Account(accountName, accountType)
+            } else {
+                null
             }
+        } else {
+            null
         }
-
-        account
     }
 }
+
+// SET ACCOUNT
+
+// TODO Implement; Account.associateRawContacts and (Mutable)RawContact.associateWithAccount
+// Contacts Provider automatically creates a group membership to the default group of the target Account when the account changes.
+//     - This occurs even if the group membership already exists resulting in duplicates.
+// Contacts Provider DOES NOT delete existing group memberships when the account changes.
+//     - This has to be done manually to prevent duplicates to the default group.
+// For Lollipop (API 22) and below, the Contacts Provider sets null accounts to non-null asynchronously.
+//     - Just add a note about this behavior.
+// Update DEV_NOTES data required and groups / group membership sections.
+

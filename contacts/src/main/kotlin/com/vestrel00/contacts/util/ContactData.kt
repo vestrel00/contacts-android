@@ -2,7 +2,7 @@ package com.vestrel00.contacts.util
 
 import com.vestrel00.contacts.entities.*
 
-// Contact
+// region Contact
 
 /**
  * Sequence of addresses from all [rawContacts] ordered by the [Address.formattedAddress].
@@ -115,7 +115,9 @@ fun Contact.websites(): Sequence<Website> = rawContacts
     .flatMap { it.websites.asSequence() }
     .sortedBy { it.url }
 
-// MutableContact
+// endregion
+
+// region MutableContact
 
 /**
  * Sequence of addresses from all [rawContacts] ordered by the
@@ -487,6 +489,8 @@ fun MutableContact.removeAllWebsites() {
         rawContact.websites.clear()
     }
 }
+
+// endregion
 
 /**
  * Removes all instances of the given [instance] from [this] collectiomn.

@@ -15,7 +15,7 @@ import com.vestrel00.contacts.entities.mapper.nameMapper
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 
-// LINK
+// region LINK
 
 /**
  * Links (keep together) [this] Contact with the given [contacts]. This will aggregate all
@@ -221,7 +221,9 @@ private object ContactLinkFailed : ContactLinkResult {
     override val isSuccessful: Boolean = false
 }
 
-// UNLINK
+// endregion
+
+// region UNLINK
 
 /**
  * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [Contact] for each
@@ -301,7 +303,9 @@ private object ContactUnlinkFailed : ContactUnlinkResult {
     override val isSuccessful: Boolean = false
 }
 
-// HELPER
+// endregion
+
+// region HELPER
 
 /**
  * Provides the operations to ensure that all or the given raw contacts are kept together
@@ -453,3 +457,5 @@ private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? =
             null
         }
     }
+
+// endregion

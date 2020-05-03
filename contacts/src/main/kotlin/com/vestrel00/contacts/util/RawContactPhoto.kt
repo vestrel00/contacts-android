@@ -22,110 +22,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
-// SET PHOTO
-
-/**
- * Sets the photo of this [RawContact]. If a photo already exists, it will be overwritten.
- * The Contacts Provider automatically creates a downsized version of this as the thumbnail.
- *
- * If this [RawContact] is the only one that make up a [com.vestrel00.contacts.entities.Contact],
- * then the photo set here will also be used by the Contacts Provider as the contact photo.
- * Otherwise, it may or may not be the photo picked by the Contacts Provider as the contact photo.
- *
- * Returns true if the operation succeeds.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
-    setRawContactPhoto(context, id, photoBytes)
-
-/**
- * See [RawContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
-    setPhoto(context, photoInputStream.readBytes())
-
-/**
- * See [RawContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
-    setPhoto(context, photoBitmap.bytes())
-
-/**
- * See [RawContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
-    setPhoto(context, photoDrawable.bitmap.bytes())
-
-/**
- * See [RawContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
-    setRawContactPhoto(context, id, photoBytes)
-
-/**
- * See [MutableRawContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
-    setPhoto(context, photoInputStream.readBytes())
-
-/**
- * See [MutableRawContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
-    setPhoto(context, photoBitmap.bytes())
-
-/**
- * See [MutableRawContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
-    setPhoto(context, photoDrawable.bitmap.bytes())
-
-// REMOVE PHOTO
-
-/**
- * Removes the photo of this [RawContact], if one exists.
- *
- * If this [RawContact] is the only one that make up a [com.vestrel00.contacts.entities.Contact],
- * then the contact photo will also be removed. Otherwise, it may or may not affect the contact
- * photo.
- *
- * Returns true if the operation succeeds.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.removePhoto(context: Context): Boolean = removeRawContactPhoto(context, id)
-
-/**
- * See [RawContact.removePhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.removePhoto(context: Context): Boolean = removeRawContactPhoto(context, id)
-
-// GET PHOTO
+// region GET PHOTO
 
 /**
  * Returns the full-sized photo as an [InputStream]. Returns null if a photo has not yet been set.
@@ -226,7 +123,48 @@ fun MutableRawContact.photoBitmapDrawable(context: Context): BitmapDrawable? =
         BitmapDrawable(context.resources, it)
     }
 
-// GET PHOTO THUMBNAIL
+private fun photoInputStream(context: Context, rawContactId: Long?): InputStream? {
+    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
+        return null
+    }
+
+    val photoFileId = context.contentResolver.query(
+        Table.DATA,
+        Include(Fields.Photo.PhotoFileId),
+        (Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo MimeType.PHOTO)
+    ) {
+        if (it.moveToNext()) {
+            it.photoCursor().photoFileId
+        } else {
+            null
+        }
+    }
+
+    if (photoFileId != null) {
+        val photoUri =
+            ContentUris.withAppendedId(ContactsContract.DisplayPhoto.CONTENT_URI, photoFileId)
+
+        var inputStream: InputStream? = null
+        try {
+            val fd = context.contentResolver.openAssetFileDescriptor(photoUri, "r")
+            inputStream = fd?.createInputStream()
+        } finally {
+            return inputStream
+        }
+    }
+
+    return null
+}
+
+internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
+    val t = block(this)
+    close()
+    return t
+}
+
+// endregion
+
+// region GET PHOTO THUMBNAIL
 
 /**
  * Returns the photo thumbnail as an [InputStream]. Returns null if a photo has not yet been set.
@@ -330,7 +268,102 @@ fun MutableRawContact.photoThumbnailBitmapDrawable(context: Context): BitmapDraw
         BitmapDrawable(context.resources, it)
     }
 
-// HELPERS
+private fun photoThumbnailInputStream(context: Context, rawContactId: Long?): InputStream? {
+    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
+        return null
+    }
+
+    return context.contentResolver.query(
+        Table.DATA,
+        Include(Fields.Photo.PhotoThumbnail),
+        (Fields.RawContact.Id equalTo rawContactId)
+                and (Fields.MimeType equalTo MimeType.PHOTO)
+    ) {
+        val photoThumbnail: ByteArray? = if (it.moveToNext()) {
+            it.photoCursor().photoThumbnail
+        } else {
+            null
+        }
+
+        if (photoThumbnail != null) ByteArrayInputStream(photoThumbnail) else null
+    }
+}
+
+// endregion
+
+// region SET PHOTO
+
+/**
+ * Sets the photo of this [RawContact]. If a photo already exists, it will be overwritten.
+ * The Contacts Provider automatically creates a downsized version of this as the thumbnail.
+ *
+ * If this [RawContact] is the only one that make up a [com.vestrel00.contacts.entities.Contact],
+ * then the photo set here will also be used by the Contacts Provider as the contact photo.
+ * Otherwise, it may or may not be the photo picked by the Contacts Provider as the contact photo.
+ *
+ * Returns true if the operation succeeds.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
+    setRawContactPhoto(context, id, photoBytes)
+
+/**
+ * See [RawContact.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
+    setPhoto(context, photoInputStream.readBytes())
+
+/**
+ * See [RawContact.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
+    setPhoto(context, photoBitmap.bytes())
+
+/**
+ * See [RawContact.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
+    setPhoto(context, photoDrawable.bitmap.bytes())
+
+/**
+ * See [RawContact.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun MutableRawContact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
+    setRawContactPhoto(context, id, photoBytes)
+
+/**
+ * See [MutableRawContact.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun MutableRawContact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
+    setPhoto(context, photoInputStream.readBytes())
+
+/**
+ * See [MutableRawContact.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun MutableRawContact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
+    setPhoto(context, photoBitmap.bytes())
+
+/**
+ * See [MutableRawContact.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun MutableRawContact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
+    setPhoto(context, photoDrawable.bitmap.bytes())
 
 /**
  * The function body is mostly taken from the sample code from the [RawContacts.DisplayPhoto] class
@@ -369,6 +402,43 @@ internal fun setRawContactPhoto(
     }
 }
 
+internal fun Bitmap.bytes(): ByteArray {
+    val outputStream = ByteArrayOutputStream()
+    compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+    return outputStream.toByteArray()
+}
+
+// endregion
+
+// region REMOVE PHOTO
+
+/**
+ * Removes the photo of this [RawContact], if one exists.
+ *
+ * If this [RawContact] is the only one that make up a [com.vestrel00.contacts.entities.Contact],
+ * then the contact photo will also be removed. Otherwise, it may or may not affect the contact
+ * photo.
+ *
+ * Returns true if the operation succeeds.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContact.removePhoto(context: Context): Boolean = removeRawContactPhoto(context, id)
+
+/**
+ * See [RawContact.removePhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun MutableRawContact.removePhoto(context: Context): Boolean = removeRawContactPhoto(context, id)
+
 // Removing the photo data row does the trick!
 private fun removeRawContactPhoto(context: Context, rawContactId: Long?): Boolean {
     if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
@@ -398,68 +468,4 @@ private fun removeRawContactPhoto(context: Context, rawContactId: Long?): Boolea
     return true
 }
 
-private fun photoInputStream(context: Context, rawContactId: Long?): InputStream? {
-    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
-        return null
-    }
-
-    val photoFileId = context.contentResolver.query(
-        Table.DATA,
-        Include(Fields.Photo.PhotoFileId),
-        (Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo MimeType.PHOTO)
-    ) {
-        if (it.moveToNext()) {
-            it.photoCursor().photoFileId
-        } else {
-            null
-        }
-    }
-
-    if (photoFileId != null) {
-        val photoUri =
-            ContentUris.withAppendedId(ContactsContract.DisplayPhoto.CONTENT_URI, photoFileId)
-
-        var inputStream: InputStream? = null
-        try {
-            val fd = context.contentResolver.openAssetFileDescriptor(photoUri, "r")
-            inputStream = fd?.createInputStream()
-        } finally {
-            return inputStream
-        }
-    }
-
-    return null
-}
-
-private fun photoThumbnailInputStream(context: Context, rawContactId: Long?): InputStream? {
-    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
-        return null
-    }
-
-    return context.contentResolver.query(
-        Table.DATA,
-        Include(Fields.Photo.PhotoThumbnail),
-        (Fields.RawContact.Id equalTo rawContactId)
-                and (Fields.MimeType equalTo MimeType.PHOTO)
-    ) {
-        val photoThumbnail: ByteArray? = if (it.moveToNext()) {
-            it.photoCursor().photoThumbnail
-        } else {
-            null
-        }
-
-        if (photoThumbnail != null) ByteArrayInputStream(photoThumbnail) else null
-    }
-}
-
-internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
-    val t = block(this)
-    close()
-    return t
-}
-
-internal fun Bitmap.bytes(): ByteArray {
-    val outputStream = ByteArrayOutputStream()
-    compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-    return outputStream.toByteArray()
-}
+// endregion
