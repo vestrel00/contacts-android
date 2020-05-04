@@ -4,10 +4,10 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.provider.ContactsContract
-import com.vestrel00.contacts.accounts.AccountsQuery
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.nullIfNotInSystem
 
 /**
  * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
@@ -180,13 +180,11 @@ interface Insert {
 @Suppress("FunctionName")
 internal fun Insert(context: Context): Insert = InsertImpl(
     context,
-    AccountsQuery(context),
     ContactsPermissions(context)
 )
 
 private class InsertImpl(
     private val context: Context,
-    private val accountsQuery: AccountsQuery,
     private val permissions: ContactsPermissions,
 
     private var allowBlanks: Boolean = false,
@@ -220,7 +218,8 @@ private class InsertImpl(
             return InsertFailed
         }
 
-        setAccountToNullIfNotValid()
+        // This ensures that a valid account is used. Otherwise, null is used.
+        account = account?.nullIfNotInSystem(context)
 
         val results = mutableMapOf<MutableRawContact, Long?>()
 
@@ -234,19 +233,6 @@ private class InsertImpl(
             results[rawContact] = insertRawContactForAccount(account, rawContact)
         }
         return InsertResult(results)
-    }
-
-    /**
-     * This ensures that a valid account is used. Otherwise, the [account] is set to null.
-     */
-    private fun setAccountToNullIfNotValid() {
-        account?.let {
-            val allAccounts = accountsQuery.allAccounts()
-
-            if (!allAccounts.contains(it)) {
-                account = null
-            }
-        }
     }
 
     /**
