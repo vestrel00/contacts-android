@@ -23,17 +23,6 @@ suspend fun DataQuery.addressesAsync(): List<Address> =
  *
  * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
  *
- * See [DataQuery.companies].
- */
-suspend fun DataQuery.companiesAsync(): List<Company> =
-    withContext(ASYNC_DISPATCHER) { companies { !isActive } }
-
-/**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
- *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
- *
  * See [DataQuery.emails].
  */
 suspend fun DataQuery.emailsAsync(): List<Email> =
@@ -103,6 +92,17 @@ suspend fun DataQuery.nicknamesAsync(): List<Nickname> =
  */
 suspend fun DataQuery.notesAsync(): List<Note> =
     withContext(ASYNC_DISPATCHER) { notes { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the query operation in background, then returns the
+ * control flow to the calling coroutine scope.
+ *
+ * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.organizations].
+ */
+suspend fun DataQuery.organizationsAsync(): List<Organization> =
+    withContext(ASYNC_DISPATCHER) { organizations { !isActive } }
 
 /**
  * Suspends the current coroutine, performs the query operation in background, then returns the

@@ -6,8 +6,6 @@ import com.vestrel00.contacts.entities.cursor.*
 
 internal fun Cursor.addressMapper(): EntityMapper<Address> = AddressMapper(addressCursor())
 
-internal fun Cursor.companyMapper(): EntityMapper<Company> = CompanyMapper(companyCursor())
-
 internal fun Cursor.contactMapper(
     contactIdCursor: ContactIdCursor, isProfile: Boolean
 ): EntityMapper<Contact> =
@@ -31,6 +29,9 @@ internal fun Cursor.nicknameMapper(): EntityMapper<Nickname> = NicknameMapper(ni
 internal fun Cursor.noteMapper(): EntityMapper<Note> = NoteMapper(noteCursor())
 
 internal fun Cursor.optionsMapper(): EntityMapper<Options> = OptionsMapper(optionsCursor())
+
+internal fun Cursor.organizationMapper(): EntityMapper<Organization> =
+    OrganizationMapper(organizationCursor())
 
 internal fun Cursor.phoneMapper(): EntityMapper<Phone> = PhoneMapper(phoneCursor())
 

@@ -249,8 +249,32 @@ fun RawContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawa
  * documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean {
-    val rawContactId = id
+fun RawContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
+    setRawContactPhoto(context, id, photoBytes)
+
+/**
+ * See [RawContactEntity.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContactEntity.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
+    setPhoto(context, photoInputStream.readBytes())
+
+/**
+ * See [RawContactEntity.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContactEntity.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
+    setPhoto(context, photoBitmap.bytes())
+
+/**
+ * See [RawContactEntity.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
+    setPhoto(context, photoDrawable.bitmap.bytes())
+
+internal fun setRawContactPhoto(context: Context, rawContactId: Long?, photoBytes: ByteArray):
+        Boolean {
 
     if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
         return false
@@ -281,27 +305,6 @@ fun RawContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean 
         return isSuccessful
     }
 }
-
-/**
- * See [RawContactEntity.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
-    setPhoto(context, photoInputStream.readBytes())
-
-/**
- * See [RawContactEntity.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
-    setPhoto(context, photoBitmap.bytes())
-
-/**
- * See [RawContactEntity.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
-    setPhoto(context, photoDrawable.bitmap.bytes())
 
 internal fun Bitmap.bytes(): ByteArray {
     val outputStream = ByteArrayOutputStream()

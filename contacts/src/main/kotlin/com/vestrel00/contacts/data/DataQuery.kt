@@ -177,12 +177,6 @@ interface DataQuery {
     fun addresses(cancel: () -> Boolean): List<Address>
 
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun companies(): List<Company>
-
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun companies(cancel: () -> Boolean): List<Company>
-
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun emails(): List<Email>
 
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
@@ -223,6 +217,12 @@ interface DataQuery {
 
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun notes(cancel: () -> Boolean): List<Note>
+
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun organizations(): List<Organization>
+
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun organizations(cancel: () -> Boolean): List<Organization>
 
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun phones(): List<Phone>
@@ -345,10 +345,6 @@ private class DataQueryImpl(
 
     override fun addresses(cancel: () -> Boolean): List<Address> = resolve(MimeType.ADDRESS, cancel)
 
-    override fun companies(): List<Company> = companies { false }
-
-    override fun companies(cancel: () -> Boolean): List<Company> = resolve(MimeType.COMPANY, cancel)
-
     override fun emails(): List<Email> = emails { false }
 
     override fun emails(cancel: () -> Boolean): List<Email> = resolve(MimeType.EMAIL, cancel)
@@ -378,6 +374,11 @@ private class DataQueryImpl(
     override fun notes(): List<Note> = notes { false }
 
     override fun notes(cancel: () -> Boolean): List<Note> = resolve(MimeType.NOTE, cancel)
+
+    override fun organizations(): List<Organization> = organizations { false }
+
+    override fun organizations(cancel: () -> Boolean): List<Organization> =
+        resolve(MimeType.ORGANIZATION, cancel)
 
     override fun phones(): List<Phone> = phones { false }
 
@@ -417,7 +418,6 @@ private class DataQueryImpl(
         const val DEFAULT_OFFSET = 0
     }
 }
-
 
 private fun <T : DataEntity> ContentResolver.resolveEntities(
     mimeType: MimeType,

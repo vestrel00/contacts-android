@@ -20,8 +20,6 @@ internal class TempRawContactMapper(
 
             addresses = mutableListOf(),
 
-            company = null,
-
             emails = mutableListOf(),
 
             events = mutableListOf(),
@@ -36,6 +34,8 @@ internal class TempRawContactMapper(
 
             note = null,
 
+            organization = null,
+            
             phones = mutableListOf(),
 
             relations = mutableListOf(),

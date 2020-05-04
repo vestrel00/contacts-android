@@ -61,9 +61,6 @@ object Fields {
     internal val AggregationExceptions = AggregationExceptionsFields()
 
     @JvmField
-    val Company = CompanyFields()
-
-    @JvmField
     val Contact = ContactFields()
 
     // Do not add this to AllFields as this is a different table from the Data table.
@@ -105,6 +102,9 @@ object Fields {
 
     @JvmField
     val Options = OptionsFields()
+
+    @JvmField
+    val Organization = OrganizationFields()
 
     @JvmField
     val Phone = PhoneFields()
@@ -176,7 +176,6 @@ class RequiredFields : FieldSet(UNKNOWN) {
 class AllFields : FieldSet(UNKNOWN) {
     override val fields: Set<AbstractField> = mutableSetOf<AbstractField>().apply {
         addAll(Fields.Address.fields)
-        addAll(Fields.Company.fields)
         addAll(Fields.Contact.fields)
         addAll(Fields.Email.fields)
         addAll(Fields.Event.fields)
@@ -190,6 +189,7 @@ class AllFields : FieldSet(UNKNOWN) {
         addAll(Fields.Nickname.fields)
         addAll(Fields.Note.fields)
         addAll(Fields.Options.fields)
+        addAll(Fields.Organization.fields)
         addAll(Fields.Phone.fields)
         addAll(Fields.RawContact.fields)
         addAll(Fields.Relation.fields)
@@ -202,7 +202,6 @@ class AllFields : FieldSet(UNKNOWN) {
 class AllForMatchingFields : FieldSet(UNKNOWN) {
     override val fields: Set<AbstractField> = mutableSetOf<AbstractField>().apply {
         addAll(Fields.Address.fields.asSequence().minus(Fields.Address.Type))
-        addAll(Fields.Company.fields)
         add(Fields.Contact.DisplayName)
         addAll(Fields.Email.fields.asSequence().minus(Fields.Email.Type))
         addAll(Fields.Event.fields.asSequence().minus(Fields.Event.Type))
@@ -216,6 +215,7 @@ class AllForMatchingFields : FieldSet(UNKNOWN) {
         addAll(Fields.Nickname.fields)
         addAll(Fields.Note.fields)
         // addAll(Fields.Options.fields)
+        addAll(Fields.Organization.fields)
         addAll(Fields.Phone.fields.asSequence().minus(Fields.Phone.Type))
         // addAll(Fields.RawContact.fields)
         addAll(Fields.Relation.fields.asSequence().minus(Fields.Relation.Type))
@@ -280,35 +280,6 @@ internal class AggregationExceptionsFields : FieldSet(UNKNOWN) {
     val RawContactId2 = AbstractField(AggregationExceptions.RAW_CONTACT_ID2, mimeType)
 
     override val fields = setOf(Type, RawContactId1, RawContactId2)
-}
-
-class CompanyFields : FieldSet(MimeType.COMPANY) {
-
-    @JvmField
-    val Company = AbstractField(CommonDataKinds.Organization.COMPANY, mimeType)
-
-    @JvmField
-    val Title = AbstractField(CommonDataKinds.Organization.TITLE, mimeType)
-
-    @JvmField
-    val Department = AbstractField(CommonDataKinds.Organization.DEPARTMENT, mimeType)
-
-    @JvmField
-    val JobDescription = AbstractField(CommonDataKinds.Organization.JOB_DESCRIPTION, mimeType)
-
-    @JvmField
-    val OfficeLocation = AbstractField(CommonDataKinds.Organization.OFFICE_LOCATION, mimeType)
-
-    @JvmField
-    val Symbol = AbstractField(CommonDataKinds.Organization.SYMBOL, mimeType)
-
-    @JvmField
-    val PhoneticName = AbstractField(CommonDataKinds.Organization.PHONETIC_NAME, mimeType)
-
-    override val fields = setOf(
-        Company, Title, Department, JobDescription, OfficeLocation,
-        Symbol, PhoneticName
-    )
 }
 
 class ContactFields : FieldSet(UNKNOWN) {
@@ -513,6 +484,34 @@ class OptionsFields : FieldSet(UNKNOWN) {
 
     override val fields = setOf(
         Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
+    )
+}
+
+class OrganizationFields : FieldSet(MimeType.ORGANIZATION) {
+
+    @JvmField
+    val Company = AbstractField(CommonDataKinds.Organization.COMPANY, mimeType)
+
+    @JvmField
+    val Title = AbstractField(CommonDataKinds.Organization.TITLE, mimeType)
+
+    @JvmField
+    val Department = AbstractField(CommonDataKinds.Organization.DEPARTMENT, mimeType)
+
+    @JvmField
+    val JobDescription = AbstractField(CommonDataKinds.Organization.JOB_DESCRIPTION, mimeType)
+
+    @JvmField
+    val OfficeLocation = AbstractField(CommonDataKinds.Organization.OFFICE_LOCATION, mimeType)
+
+    @JvmField
+    val Symbol = AbstractField(CommonDataKinds.Organization.SYMBOL, mimeType)
+
+    @JvmField
+    val PhoneticName = AbstractField(CommonDataKinds.Organization.PHONETIC_NAME, mimeType)
+
+    override val fields = setOf(
+        Company, Title, Department, JobDescription, OfficeLocation, Symbol, PhoneticName
     )
 }
 

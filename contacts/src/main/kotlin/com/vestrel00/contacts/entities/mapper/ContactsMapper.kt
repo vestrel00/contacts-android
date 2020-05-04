@@ -147,7 +147,6 @@ internal class ContactsMapper(
         // that each cursor row provides.
         when (mimeTypeCursor().mimeType) {
             ADDRESS -> rawContact.addresses.add(addressMapper().value)
-            COMPANY -> rawContact.company = companyMapper().value
             EMAIL -> rawContact.emails.add(emailMapper().value)
             EVENT -> rawContact.events.add(eventMapper().value)
             GROUP_MEMBERSHIP -> rawContact.groupMemberships.add(groupMembershipMapper().value)
@@ -155,6 +154,7 @@ internal class ContactsMapper(
             NAME -> rawContact.name = nameMapper().value
             NICKNAME -> rawContact.nickname = nicknameMapper().value
             NOTE -> rawContact.note = noteMapper().value
+            ORGANIZATION -> rawContact.organization = organizationMapper().value
             PHONE -> rawContact.phones.add(phoneMapper().value)
             RELATION -> rawContact.relations.add(relationMapper().value)
             SIP_ADDRESS -> rawContact.sipAddress = sipAddressMapper().value

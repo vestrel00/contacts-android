@@ -4,7 +4,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Company internal constructor(
+data class Organization internal constructor(
 
     override val id: Long?,
 
@@ -57,13 +57,13 @@ data class Company internal constructor(
 ) : DataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.COMPANY
+    override val mimeType: MimeType = MimeType.ORGANIZATION
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
         company, title, department, jobDescription, officeLocation, symbol, phoneticName
     )
 
-    fun toMutableCompany() = MutableCompany(
+    fun toMutableOrganization() = MutableOrganization(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -83,7 +83,7 @@ data class Company internal constructor(
 }
 
 @Parcelize
-data class MutableCompany internal constructor(
+data class MutableOrganization internal constructor(
 
     override val id: Long?,
 
@@ -96,44 +96,44 @@ data class MutableCompany internal constructor(
     override var isSuperPrimary: Boolean,
 
     /**
-     * See [Company.company].
+     * See [Organization.company].
      */
     var company: String?,
 
     /**
-     * See [Company.title].
+     * See [Organization.title].
      */
     var title: String?,
 
     /**
-     * See [Company.department].
+     * See [Organization.department].
      */
     var department: String?,
 
     /**
-     * See [Company.jobDescription].
+     * See [Organization.jobDescription].
      */
     var jobDescription: String?,
 
     /**
-     * See [Company.officeLocation].
+     * See [Organization.officeLocation].
      */
     var officeLocation: String?,
 
     /**
-     * See [Company.symbol].
+     * See [Organization.symbol].
      */
     var symbol: String?,
 
     /**
-     * See [Company.phoneticName].
+     * See [Organization.phoneticName].
      */
     var phoneticName: String?
 
 ) : DataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.COMPANY
+    override val mimeType: MimeType = MimeType.ORGANIZATION
 
     constructor() : this(
         null, null, null, false, false, null, null,

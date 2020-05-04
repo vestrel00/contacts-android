@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.entities.cursor
 
+import android.accounts.Account
 import android.database.Cursor
 import com.vestrel00.contacts.Fields
 
@@ -22,4 +23,16 @@ internal class RawContactsCursor(private val cursor: Cursor) : RawContactIdCurso
 
     val accountType: String?
         get() = cursor.getString(Fields.RawContacts.AccountType)
+
+}
+
+internal fun RawContactsCursor.account(): Account? {
+    val name = accountName
+    val type = accountType
+
+    return if (name != null && type != null) {
+        Account(name, type)
+    } else {
+        null
+    }
 }

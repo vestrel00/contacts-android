@@ -127,29 +127,6 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
             it.country
         }
 
-        // COMPANY
-        Fields.Company.Company -> lhs.companies().compareTo(ignoreCase, rhs.companies()) {
-            it.company
-        }
-        Fields.Company.Title -> lhs.companies().compareTo(ignoreCase, rhs.companies()) {
-            it.title
-        }
-        Fields.Company.Department -> lhs.companies().compareTo(ignoreCase, rhs.companies()) {
-            it.department
-        }
-        Fields.Company.JobDescription -> lhs.companies().compareTo(ignoreCase, rhs.companies()) {
-            it.jobDescription
-        }
-        Fields.Company.OfficeLocation -> lhs.companies().compareTo(ignoreCase, rhs.companies()) {
-            it.officeLocation
-        }
-        Fields.Company.Symbol -> lhs.companies().compareTo(ignoreCase, rhs.companies()) {
-            it.symbol
-        }
-        Fields.Company.PhoneticName -> lhs.companies().compareTo(ignoreCase, rhs.companies()) {
-            it.phoneticName
-        }
-
         // CONTACT
         Fields.Contact.Id -> lhs.id.compareTo(rhs.id)
         Fields.Contact.DisplayName -> lhs.displayName.compareTo(ignoreCase, rhs.displayName)
@@ -251,6 +228,29 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
             lhs.options?.customRingtone.compareTo(rhs.options?.customRingtone)
         Fields.Options.SendToVoicemail ->
             lhs.options?.sendToVoicemail.compareTo(rhs.options?.sendToVoicemail)
+
+        // ORGANIZATION
+        Fields.Organization.Company -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+            it.company
+        }
+        Fields.Organization.Title -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+            it.title
+        }
+        Fields.Organization.Department -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+            it.department
+        }
+        Fields.Organization.JobDescription -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+            it.jobDescription
+        }
+        Fields.Organization.OfficeLocation -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+            it.officeLocation
+        }
+        Fields.Organization.Symbol -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+            it.symbol
+        }
+        Fields.Organization.PhoneticName -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+            it.phoneticName
+        }
 
         // PHONE
         Fields.Phone.Type -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {

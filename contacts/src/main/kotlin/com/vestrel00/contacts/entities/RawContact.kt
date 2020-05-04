@@ -69,8 +69,6 @@ data class RawContact internal constructor(
      */
     val addresses: List<Address>,
 
-    val company: Company?,
-
     /**
      * An immutable list of emails.
      */
@@ -97,8 +95,10 @@ data class RawContact internal constructor(
 
     val note: Note?,
 
-    // Use the ContactOptions extension functions to get/set options.
+    // Use the RawContactOptions extension functions to get/set options.
     // The Data table contains the options columns for Contacts, not for RawContacts.
+
+    val organization: Organization?,
 
     /**
      * An immutable list of phones.
@@ -120,7 +120,7 @@ data class RawContact internal constructor(
 ) : RawContactEntity() {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        company, name, nickname, note, sipAddress
+        name, nickname, note, organization, sipAddress
     ) && entitiesAreAllBlank(
         addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
@@ -132,8 +132,6 @@ data class RawContact internal constructor(
         isProfile = isProfile,
 
         addresses = addresses.asSequence().map { it.toMutableAddress() }.toMutableList(),
-
-        company = company?.toMutableCompany(),
 
         emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList(),
 
@@ -148,6 +146,8 @@ data class RawContact internal constructor(
         nickname = nickname?.toMutableNickname(),
 
         note = note?.toMutableNote(),
+
+        organization = organization?.toMutableOrganization(),
 
         phones = phones.asSequence().map { it.toMutablePhone() }.toMutableList(),
 
@@ -184,11 +184,6 @@ data class MutableRawContact internal constructor(
      * Mutable version of [RawContact.addresses].
      */
     var addresses: MutableList<MutableAddress>,
-
-    /**
-     * Mutable version of [RawContact.company].
-     */
-    var company: MutableCompany?,
 
     /**
      * Mutable version of [RawContact.emails].
@@ -232,6 +227,11 @@ data class MutableRawContact internal constructor(
     // Use the ContactOptions extension functions to get/set options.
 
     /**
+     * Mutable version of [RawContact.organization].
+     */
+    var organization: MutableOrganization?,
+
+    /**
      * Mutable version of [RawContact.phones].
      */
     var phones: MutableList<MutablePhone>,
@@ -254,13 +254,13 @@ data class MutableRawContact internal constructor(
 ) : RawContactEntity() {
 
     constructor() : this(
-        null, null, false, mutableListOf(), null, mutableListOf(), mutableListOf(),
-        mutableListOf(), mutableListOf(), null, null, null, mutableListOf(),
-        mutableListOf(), null, mutableListOf()
+        null, null, false, mutableListOf(), mutableListOf(), mutableListOf(),
+        mutableListOf(), mutableListOf(), null, null, null, null,
+        mutableListOf(), mutableListOf(), null, mutableListOf()
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        company, name, nickname, note, sipAddress
+        name, nickname, note, organization, sipAddress
     ) && entitiesAreAllBlank(
         addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
@@ -279,7 +279,6 @@ internal data class TempRawContact constructor(
     override val isProfile: Boolean,
 
     var addresses: MutableList<Address>,
-    var company: Company?,
     var emails: MutableList<Email>,
     var events: MutableList<Event>,
     var groupMemberships: MutableList<GroupMembership>,
@@ -287,6 +286,7 @@ internal data class TempRawContact constructor(
     var name: Name?,
     var nickname: Nickname?,
     var note: Note?,
+    var organization: Organization?,
     var phones: MutableList<Phone>,
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
@@ -295,7 +295,7 @@ internal data class TempRawContact constructor(
 ) : RawContactEntity() {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        company, name, nickname, note, sipAddress
+        name, nickname, note, organization, sipAddress
     ) && entitiesAreAllBlank(
         addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
@@ -307,8 +307,6 @@ internal data class TempRawContact constructor(
         isProfile = isProfile,
 
         addresses = addresses.toList(),
-
-        company = company,
 
         emails = emails.toList(),
 
@@ -323,6 +321,8 @@ internal data class TempRawContact constructor(
         nickname = nickname,
 
         note = note,
+
+        organization = organization,
 
         phones = phones.toList(),
 

@@ -252,36 +252,35 @@ private class UpdateImpl(
         val operations = arrayListOf<ContentProviderOperation>()
         val contentResolver = context.contentResolver
 
-        val addressOperations = AddressOperation().updateInsertOrDelete(
-            rawContact.addresses, rawContact.id, contentResolver
-        )
-        operations.addAll(addressOperations)
-
-        operations.add(
-            CompanyOperation().updateInsertOrDelete(
-                rawContact.company, rawContact.id, contentResolver
+        operations.addAll(
+            AddressOperation().updateInsertOrDelete(
+                rawContact.addresses, rawContact.id, contentResolver
             )
         )
 
-        val emailOperations = EmailOperation().updateInsertOrDelete(
-            rawContact.emails, rawContact.id, contentResolver
+        operations.addAll(
+            EmailOperation().updateInsertOrDelete(
+                rawContact.emails, rawContact.id, contentResolver
+            )
         )
-        operations.addAll(emailOperations)
 
-        val eventOperations = EventOperation().updateInsertOrDelete(
-            rawContact.events, rawContact.id, contentResolver
+        operations.addAll(
+            EventOperation().updateInsertOrDelete(
+                rawContact.events, rawContact.id, contentResolver
+            )
         )
-        operations.addAll(eventOperations)
 
-        val groupMembershipOperations = GroupMembershipOperation().updateInsertOrDelete(
-            rawContact.groupMemberships, rawContact.id, context
+        operations.addAll(
+            GroupMembershipOperation().updateInsertOrDelete(
+                rawContact.groupMemberships, rawContact.id, context
+            )
         )
-        operations.addAll(groupMembershipOperations)
 
-        val imOperations = ImOperation().updateInsertOrDelete(
-            rawContact.ims, rawContact.id, contentResolver
+        operations.addAll(
+            ImOperation().updateInsertOrDelete(
+                rawContact.ims, rawContact.id, contentResolver
+            )
         )
-        operations.addAll(imOperations)
 
         operations.add(
             NameOperation().updateInsertOrDelete(
@@ -301,15 +300,23 @@ private class UpdateImpl(
             )
         )
 
-        val phoneOperations = PhoneOperation().updateInsertOrDelete(
-            rawContact.phones, rawContact.id, contentResolver
+        operations.add(
+            OrganizationOperation().updateInsertOrDelete(
+                rawContact.organization, rawContact.id, contentResolver
+            )
         )
-        operations.addAll(phoneOperations)
 
-        val relationOperations = RelationOperation().updateInsertOrDelete(
-            rawContact.relations, rawContact.id, contentResolver
+        operations.addAll(
+            PhoneOperation().updateInsertOrDelete(
+                rawContact.phones, rawContact.id, contentResolver
+            )
         )
-        operations.addAll(relationOperations)
+
+        operations.addAll(
+            RelationOperation().updateInsertOrDelete(
+                rawContact.relations, rawContact.id, contentResolver
+            )
+        )
 
         operations.add(
             SipAddressOperation().updateInsertOrDelete(
@@ -317,10 +324,11 @@ private class UpdateImpl(
             )
         )
 
-        val websiteOperations = WebsiteOperation().updateInsertOrDelete(
-            rawContact.websites, rawContact.id, contentResolver
+        operations.addAll(
+            WebsiteOperation().updateInsertOrDelete(
+                rawContact.websites, rawContact.id, contentResolver
+            )
         )
-        operations.addAll(websiteOperations)
 
         /*
          * Atomically update all of the associated Data rows. All of the above operations will

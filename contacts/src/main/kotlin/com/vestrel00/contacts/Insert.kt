@@ -274,10 +274,6 @@ private class InsertImpl(
 
         operations.addAll(AddressOperation().insert(rawContact.addresses))
 
-        rawContact.company?.let {
-            CompanyOperation().insert(it)?.let(operations::add)
-        }
-
         operations.addAll(EmailOperation().insert(rawContact.emails))
 
         operations.addAll(EventOperation().insert(rawContact.events))
@@ -304,6 +300,10 @@ private class InsertImpl(
 
         rawContact.note?.let {
             NoteOperation().insert(it)?.let(operations::add)
+        }
+
+        rawContact.organization?.let {
+            OrganizationOperation().insert(it)?.let(operations::add)
         }
 
         operations.addAll(PhoneOperation().insert(rawContact.phones))

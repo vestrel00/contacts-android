@@ -8,7 +8,6 @@ import com.vestrel00.contacts.entities.MimeType
 internal fun <T : DataEntity> Cursor.entityMapperFor(mimeType: MimeType): EntityMapper<T> =
     when (mimeType) {
         MimeType.ADDRESS -> addressMapper()
-        MimeType.COMPANY -> companyMapper()
         MimeType.EMAIL -> emailMapper()
         MimeType.EVENT -> eventMapper()
         MimeType.GROUP_MEMBERSHIP -> groupMembershipMapper()
@@ -16,6 +15,7 @@ internal fun <T : DataEntity> Cursor.entityMapperFor(mimeType: MimeType): Entity
         MimeType.NAME -> nameMapper()
         MimeType.NICKNAME -> nicknameMapper()
         MimeType.NOTE -> noteMapper()
+        MimeType.ORGANIZATION -> organizationMapper()
         MimeType.PHONE -> phoneMapper()
         MimeType.RELATION -> relationMapper()
         MimeType.SIP_ADDRESS -> sipAddressMapper()

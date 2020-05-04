@@ -13,15 +13,6 @@ fun Contact.addresses(): Sequence<Address> = rawContacts
     .sortedBy { it.formattedAddress }
 
 /**
- * Sequence of companies from all [rawContacts] ordered by the [Company.company].
- */
-fun Contact.companies(): Sequence<Company> = rawContacts
-    .asSequence()
-    .map { it.company }
-    .filterNotNull()
-    .sortedBy { it.company }
-
-/**
  * Sequence of emails from all [rawContacts] ordered by the [Email.address].
  */
 fun Contact.emails(): Sequence<Email> = rawContacts
@@ -78,6 +69,15 @@ fun Contact.notes(): Sequence<Note> = rawContacts
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
 // Options.
+
+/**
+ * Sequence of organizations from all [rawContacts] ordered by the [Organization.company].
+ */
+fun Contact.organizations(): Sequence<Organization> = rawContacts
+    .asSequence()
+    .map { it.organization }
+    .filterNotNull()
+    .sortedBy { it.company }
 
 /**
  * Sequence of phones from all [rawContacts] ordered by the [Phone.number].
@@ -157,23 +157,6 @@ fun MutableContact.removeAllAddresses() {
     for (rawContact in rawContacts) {
         rawContact.addresses.clear()
     }
-}
-
-/**
- * Sequence of companies from all [rawContacts] ordered by the [MutableCompany.company].
- */
-fun MutableContact.companies(): Sequence<MutableCompany> = rawContacts
-    .asSequence()
-    .map { it.company }
-    .filterNotNull()
-    .sortedBy { it.company }
-
-/**
- * Sets the [RawContact.company] of the first [RawContact] in [MutableContact.rawContacts] sorted by
- * the [RawContact.id].
- */
-fun MutableContact.setCompany(company: MutableCompany?) {
-    rawContacts.firstOrNull()?.company = company
 }
 
 /**
@@ -350,6 +333,23 @@ fun MutableContact.setNote(note: MutableNote?) {
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
 // Options.
+
+/**
+ * Sequence of organizations from all [rawContacts] ordered by the [MutableOrganization.company].
+ */
+fun MutableContact.organizations(): Sequence<MutableOrganization> = rawContacts
+    .asSequence()
+    .map { it.organization }
+    .filterNotNull()
+    .sortedBy { it.company }
+
+/**
+ * Sets the [RawContact.organization] of the first [RawContact] in [MutableContact.rawContacts]
+ * sorted by the [RawContact.id].
+ */
+fun MutableContact.setOrganization(organization: MutableOrganization?) {
+    rawContacts.firstOrNull()?.organization = organization
+}
 
 /**
  * Sequence of phones from all [rawContacts] ordered by the [MutablePhone.number].
