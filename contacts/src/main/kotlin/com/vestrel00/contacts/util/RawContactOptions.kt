@@ -6,16 +6,15 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.MutableOptions
-import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.Options
-import com.vestrel00.contacts.entities.RawContact
+import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.mapper.optionsMapper
 import com.vestrel00.contacts.entities.operation.OptionsOperation
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
 /**
- * Returns the [Options] of this [RawContact].
+ * Returns the [Options] of this [RawContactEntity].
  *
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
@@ -30,23 +29,9 @@ import com.vestrel00.contacts.equalTo
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.options(context: Context): Options = rawContactOptions(id, context)
+fun RawContactEntity.options(context: Context): Options {
+    val rawContactId = id
 
-/**
- * See [RawContact.options].
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.READ_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.options(context: Context): Options = rawContactOptions(id, context)
-
-private fun rawContactOptions(rawContactId: Long?, context: Context): Options {
     if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
         return Options()
     }
@@ -65,7 +50,7 @@ private fun rawContactOptions(rawContactId: Long?, context: Context): Options {
 }
 
 /**
- * Updates this [RawContact.options] with the given [options].
+ * Updates this [RawContactEntity.options] with the given [options].
  *
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
@@ -81,46 +66,9 @@ private fun rawContactOptions(rawContactId: Long?, context: Context): Options {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.setOptions(context: Context, options: MutableOptions): Boolean =
-    setOptions(id, options, context)
+fun RawContactEntity.setOptions(context: Context, options: MutableOptions): Boolean {
+    val rawContactId = id
 
-/**
- * Updates this [RawContact.options] in [update]. If this contact has null options, a new blank
- * options will be used in [update].
- *
- * Note that changes to the options of a RawContact may affect the options of the parent Contact.
- * On the other hand, changes to the options of the parent Contact will be propagated to all child
- * RawContact options.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContact.updateOptions(context: Context, update: MutableOptions.() -> Unit): Boolean =
-    updateOptions(id, options(context), update, context)
-
-/**
- * See [RawContact.setOptions].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.setOptions(context: Context, options: MutableOptions): Boolean =
-    setOptions(id, options, context)
-
-/**
- * See [RawContact.updateOptions].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableRawContact.updateOptions(
-    context: Context, update: MutableOptions.() -> Unit
-): Boolean = updateOptions(id, options(context), update, context)
-
-private fun setOptions(rawContactId: Long?, options: MutableOptions, context: Context): Boolean {
     if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
         return false
     }
@@ -141,13 +89,26 @@ private fun setOptions(rawContactId: Long?, options: MutableOptions, context: Co
     return true
 }
 
-private fun updateOptions(
-    rawContactId: Long?,
-    options: Options,
-    update: MutableOptions.() -> Unit,
-    context: Context
-): Boolean {
-    val mutableOptions = options.toMutableOptions()
+/**
+ * Updates this [RawContactEntity.options] in [update]. If this contact has null options, a new
+ * blank options will be used in [update].
+ *
+ * Note that changes to the options of a RawContact may affect the options of the parent Contact.
+ * On the other hand, changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun RawContactEntity.updateOptions(context: Context, update: MutableOptions.() -> Unit): Boolean {
+    val mutableOptions = options(context).toMutableOptions()
     mutableOptions.update()
-    return setOptions(rawContactId, mutableOptions, context)
+    return setOptions(context, mutableOptions)
 }
