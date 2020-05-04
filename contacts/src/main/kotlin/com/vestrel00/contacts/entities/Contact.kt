@@ -3,7 +3,7 @@ package com.vestrel00.contacts.entities
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-// TODO Update all utils and other classes to use this instead of entire Contact / MutableContact classes.
+// TODO Update all utils to use this instead of entire Contact / MutableContact classes.
 /**
  * [Entity] in the Contacts table.
  */

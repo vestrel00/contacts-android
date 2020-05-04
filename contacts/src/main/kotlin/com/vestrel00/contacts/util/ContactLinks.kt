@@ -7,7 +7,10 @@ import android.os.Build
 import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import com.vestrel00.contacts.*
-import com.vestrel00.contacts.entities.*
+import com.vestrel00.contacts.entities.ContactEntity
+import com.vestrel00.contacts.entities.MimeType
+import com.vestrel00.contacts.entities.Name
+import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.entities.cursor.dataCursor
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
@@ -81,7 +84,7 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * ## Contact Display Name Resolution does not work for APIs below 21 (pre-Lollipop)!
  *
- * This library is unable to control the [Contact.displayName] resolution for APIs below 21. Linking
+ * This library is unable to control the Contact displayName resolution for APIs below 21. Linking
  * and unlinking will still work but the Contact display name is left for the Contacts Provider.
  *
  * See the "Contact Display Name and Default Name Rows" section in the DEV_NOTES for more details.
@@ -95,56 +98,30 @@ import com.vestrel00.contacts.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.link(context: Context, vararg contacts: Contact): ContactLinkResult =
+fun ContactEntity.link(context: Context, vararg contacts: ContactEntity): ContactLinkResult =
     link(context, contacts.asSequence())
 
 /**
- * See [Contact.link].
+ * See [ContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.link(context: Context, contacts: Collection<Contact>): ContactLinkResult =
+fun ContactEntity.link(context: Context, contacts: Collection<ContactEntity>): ContactLinkResult =
     link(context, contacts.asSequence())
 
 /**
- * See [Contact.link].
+ * See [ContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.link(context: Context, contacts: Sequence<Contact>): ContactLinkResult =
-    link(context, id, contacts.map { it.id }.filterNotNull())
-
-/**
- * See [Contact.link].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.link(context: Context, vararg contacts: MutableContact): ContactLinkResult =
-    link(context, contacts.asSequence())
-
-/**
- * See [Contact.link].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.link(context: Context, contacts: Collection<MutableContact>): ContactLinkResult =
-    link(context, contacts.asSequence())
-
-/**
- * See [Contact.link].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.link(context: Context, contacts: Sequence<MutableContact>): ContactLinkResult =
-    link(context, id, contacts.map { it.id }.filterNotNull())
-
-/**
- * Links the RawContacts of all the given [contactIds]. The [mainContactId] will be used as the
- * first choice in display name resolution.
- */
-private fun link(context: Context, mainContactId: Long?, contactIds: Sequence<Long>):
-        ContactLinkResult {
+fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): ContactLinkResult {
+    val mainContactId = id
 
     if (!ContactsPermissions(context).canInsertUpdateDelete() || mainContactId == null) {
         return ContactLinkFailed
     }
 
-    val sortedContactIds = contactIds
+    val sortedContactIds = contacts
+        .map { it.id }
+        .filterNotNull()
         .filter { it != mainContactId }
         .sortedBy { it }
         .toMutableList()
@@ -199,7 +176,8 @@ private fun link(context: Context, mainContactId: Long?, contactIds: Sequence<Lo
 interface ContactLinkResult {
 
     /**
-     * The parent [Contact.id] for all of the linked RawContacts. Null if [isSuccessful] is false.
+     * The parent [ContactEntity.id] for all of the linked RawContacts. Null if [isSuccessful] is
+     * false.
      */
     val contactId: Long?
 
@@ -226,8 +204,8 @@ private object ContactLinkFailed : ContactLinkResult {
 // region UNLINK
 
 /**
- * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [Contact] for each
- * [Contact.rawContacts].
+ * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [ContactEntity] for each
+ * [ContactEntity.rawContacts].
  *
  * This does nothing / fails if there is only one RawContact associated with [this].
  *
@@ -240,18 +218,9 @@ private object ContactLinkFailed : ContactLinkResult {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.unlink(context: Context): ContactUnlinkResult = unlink(context, id)
+fun ContactEntity.unlink(context: Context): ContactUnlinkResult {
+    val contactId = id
 
-/**
- * See [Contact.unlink].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.unlink(context: Context): ContactUnlinkResult = unlink(context, id)
-
-/**
- * Unlinks (separates) the RawContacts of the given [contactId].
- */
-private fun unlink(context: Context, contactId: Long?): ContactUnlinkResult {
     if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
         return ContactUnlinkFailed
     }
@@ -281,7 +250,7 @@ private fun unlink(context: Context, contactId: Long?): ContactUnlinkResult {
 interface ContactUnlinkResult {
 
     /**
-     * The list of [RawContact.id] that have been unlinked. Empty if [isSuccessful] is false.
+     * The list of [RawContactEntity.id] that have been unlinked. Empty if [isSuccessful] is false.
      */
     val rawContactIds: List<Long>
 
