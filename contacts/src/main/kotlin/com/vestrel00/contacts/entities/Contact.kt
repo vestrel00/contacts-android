@@ -7,7 +7,7 @@ import java.util.*
 /**
  * [Entity] in the Contacts table.
  */
-sealed class ContactEntity: Entity {
+sealed class ContactEntity : Entity {
     /**
      * The id of the Contacts row this represents.
      *
@@ -31,6 +31,55 @@ sealed class ContactEntity: Entity {
      * contact depending on query filters.
      */
     abstract val rawContacts: List<RawContactEntity>
+
+    /**
+     * The standard text shown as the contact's display name, based on the best available
+     * information for the contact (for example, it might be the email address if the name is not
+     * available). This may be null if the Contacts Provider cannot find a suitable display name
+     * source to use.
+     *
+     * This is a read-only attribute as the Contacts Provider automatically sets this value.
+     * This is ignored for insert, update, and delete functions.
+     */
+    abstract val displayName: String?
+
+    /**
+     * Timestamp of when this contact was last updated. This includes updates to all data associated
+     * with this contact including raw contacts. Any modification (including deletes and inserts) of
+     * underlying contact data are also reflected in this timestamp.
+     *
+     * This is a read-only attribute as the Contacts Provider automatically sets this value.
+     * This is ignored for insert, update, and delete functions.
+     */
+    abstract val lastUpdatedTimestamp: Date?
+
+    /**
+     * Contains options for this contact and all of the [RawContact]s associated with it (not
+     * limited to the [rawContacts] in this instance).
+     *
+     * Changes to the options of a RawContact may affect the options of the parent Contact. On the
+     * other hand, changes to the options of the parent Contact will be propagated to all child
+     * RawContact options.
+     *
+     * Use the ContactOptions extension functions to modify options.
+     */
+    abstract val options: Options?
+
+    /* Intentionally not including these to ensure consumers obtain Contact photos the same way that
+     * RawContact photos are obtained. The ContactPhoto extension functions ensures that only the
+     * most up-to-date photos are exposed to consumers.
+
+     * The uri to the full-sized image of this contact. This full sized image is from the associated
+     * [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this photo
+     * belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
+    val photoUri: Uri?,
+
+     * The uri to the thumbnail-sized version of the [photoUri]. This thumbnail image is from the
+     * associated [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this
+     * photo belongs to is not guaranteed to be in the [rawContacts] list depending on query
+     * filters.
+    val photoThumbnailUri: Uri?
+     */
 }
 
 /**
@@ -55,63 +104,31 @@ data class Contact internal constructor(
     override val id: Long?,
 
     /**
-     * See [ContactEntity.isProfile]
+     * See [ContactEntity.isProfile].
      */
     override val isProfile: Boolean,
 
     /**
-     * See [ContactEntity.rawContacts]
+     * See [ContactEntity.rawContacts].
+     *
+     * Notice that the type is [RawContact] instead of [RawContactEntity].
      */
     override val rawContacts: List<RawContact>,
 
     /**
-     * The standard text shown as the contact's display name, based on the best available
-     * information for the contact (for example, it might be the email address if the name is not
-     * available). This may be null if the Contacts Provider cannot find a suitable display name
-     * source to use.
-     *
-     * This is a read-only attribute as the Contacts Provider automatically sets this value.
-     * This is ignored for insert, update, and delete functions.
+     * See [ContactEntity.displayName].
      */
-    val displayName: String?,
+    override val displayName: String?,
 
     /**
-     * Timestamp of when this contact was last updated. This includes updates to all data associated
-     * with this contact including raw contacts. Any modification (including deletes and inserts) of
-     * underlying contact data are also reflected in this timestamp.
-     *
-     * This is a read-only attribute as the Contacts Provider automatically sets this value.
-     * This is ignored for insert, update, and delete functions.
+     * See [ContactEntity.lastUpdatedTimestamp].
      */
-    val lastUpdatedTimestamp: Date?,
+    override val lastUpdatedTimestamp: Date?,
 
     /**
-     * Contains options for this contact and all of the [RawContact]s associated with it (not
-     * limited to the [rawContacts] in this instance).
-     *
-     * Changes to the options of a RawContact may affect the options of the parent Contact. On the
-     * other hand, changes to the options of the parent Contact will be propagated to all child
-     * RawContact options.
-     *
-     * Use the ContactOptions extension functions to modify options.
+     * See [ContactEntity.options].
      */
-    val options: Options?
-
-    /* Intentionally not including these to ensure consumers obtain Contact photos the same way that
-     * RawContact photos are obtained. The ContactPhoto extension functions ensures that only the
-     * most up-to-date photos are exposed to consumers.
-
-     * The uri to the full-sized image of this contact. This full sized image is from the associated
-     * [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this photo
-     * belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
-    val photoUri: Uri?,
-
-     * The uri to the thumbnail-sized version of the [photoUri]. This thumbnail image is from the
-     * associated [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this
-     * photo belongs to is not guaranteed to be in the [rawContacts] list depending on query
-     * filters.
-    val photoThumbnailUri: Uri?
-     */
+    override val options: Options?
 
 ) : ContactEntity() {
 
@@ -132,7 +149,8 @@ data class Contact internal constructor(
 }
 
 /**
- * A mutable [Contact].
+ * A mutable [Contact]. Well, nothing is really mutable here except for the [MutableRawContact] in
+ * the immutable [rawContacts] list.
  */
 @Parcelize
 data class MutableContact internal constructor(
@@ -149,23 +167,25 @@ data class MutableContact internal constructor(
 
     /**
      * See [Contact.rawContacts].
+     *
+     * Notice that the type is [MutableRawContact] instead of [RawContactEntity].
      */
     override val rawContacts: List<MutableRawContact>,
 
     /**
      * See [Contact.displayName].
      */
-    val displayName: String?,
+    override val displayName: String?,
 
     /**
      * See [Contact.lastUpdatedTimestamp].
      */
-    val lastUpdatedTimestamp: Date?,
+    override val lastUpdatedTimestamp: Date?,
 
     /**
      * See [Contact.options].
      */
-    val options: Options?
+    override val options: Options?
 
 ) : ContactEntity() {
 
