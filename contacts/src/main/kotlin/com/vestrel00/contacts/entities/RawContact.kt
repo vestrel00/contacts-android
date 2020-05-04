@@ -2,7 +2,6 @@ package com.vestrel00.contacts.entities
 
 import kotlinx.android.parcel.Parcelize
 
-// TODO Update all utils to use this instead of entire RawContact / MutableRawContact classes.
 /**
  * [Entity] in the RawContacts table.
  */
