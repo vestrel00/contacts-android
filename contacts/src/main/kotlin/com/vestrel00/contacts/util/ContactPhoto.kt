@@ -10,9 +10,8 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
-import com.vestrel00.contacts.entities.Contact
+import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.MimeType
-import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.table.Table
@@ -25,8 +24,8 @@ import java.io.InputStream
  * Returns the full-sized photo as an [InputStream]. Returns null if a photo has not yet been set.
  *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters.
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters.
  *
  * The stream should be closed after use.
  *
@@ -39,103 +38,9 @@ import java.io.InputStream
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoInputStream(context: Context): InputStream? = photoUriInputStream(context, id)
+fun ContactEntity.photoInputStream(context: Context): InputStream? {
+    val contactId = id
 
-/**
- * Returns the full-sized photo as a [ByteArray]. Returns null if a photo has not yet been set.
- *
- * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.READ_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoBytes(context: Context): ByteArray? = photoInputStream(context)?.apply {
-    it.readBytes()
-}
-
-/**
- * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
- *
- * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters..
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.READ_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoBitmap(context: Context): Bitmap? = photoInputStream(context)?.apply {
-    BitmapFactory.decodeStream(it)
-}
-
-/**
- * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
- *
- * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.READ_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoBitmapDrawable(context: Context): BitmapDrawable? =
-    photoInputStream(context)?.apply {
-        BitmapDrawable(context.resources, it)
-    }
-
-/**
- * See [Contact.photoInputStream].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoInputStream(context: Context): InputStream? =
-    photoUriInputStream(context, id)
-
-/**
- * See [Contact.photoBytes].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoBytes(context: Context): ByteArray? =
-    photoInputStream(context)?.apply {
-        it.readBytes()
-    }
-
-/**
- * See [Contact.photoBitmap].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoBitmap(context: Context): Bitmap? = photoInputStream(context)?.apply {
-    BitmapFactory.decodeStream(it)
-}
-
-/**
- * See [Contact.photoBitmapDrawable].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoBitmapDrawable(context: Context): BitmapDrawable? =
-    photoInputStream(context)?.apply {
-        BitmapDrawable(context.resources, it)
-    }
-
-private fun photoUriInputStream(context: Context, contactId: Long?): InputStream? {
     if (!ContactsPermissions(context).canQuery() || contactId == null) {
         return null
     }
@@ -153,6 +58,67 @@ private fun photoUriInputStream(context: Context, contactId: Long?): InputStream
         uriInputStream(context, photoUri)
     }
 }
+
+/**
+ * Returns the full-sized photo as a [ByteArray]. Returns null if a photo has not yet been set.
+ *
+ * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.READ_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.photoBytes(context: Context): ByteArray? = photoInputStream(context)?.apply {
+    it.readBytes()
+}
+
+/**
+ * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
+ *
+ * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters..
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.READ_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.photoBitmap(context: Context): Bitmap? = photoInputStream(context)?.apply {
+    BitmapFactory.decodeStream(it)
+}
+
+/**
+ * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ *
+ * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.READ_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.photoBitmapDrawable(context: Context): BitmapDrawable? =
+    photoInputStream(context)?.apply {
+        BitmapDrawable(context.resources, it)
+    }
 
 private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
     if (uri == null) {
@@ -176,8 +142,8 @@ private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
  * Returns the photo thumbnail as an [InputStream]. Returns null if a photo has not yet been set.
  *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters.
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters.
  *
  * The stream should be closed after use.
  *
@@ -190,109 +156,9 @@ private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoThumbnailInputStream(context: Context): InputStream? =
-    photoThumbnailUriInputStream(context, id)
+fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
+    val contactId = id
 
-/**
- * Returns the photo thumbnail as a [ByteArray]. Returns null if a photo has not yet been set.
- *
- * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters.
- *
- * The stream should be closed after use.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.READ_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoThumbnailBytes(context: Context): ByteArray? =
-    photoThumbnailInputStream(context)?.apply {
-        it.readBytes()
-    }
-
-/**
- * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
- *
- * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.READ_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoThumbnailBitmap(context: Context): Bitmap? =
-    photoThumbnailInputStream(context)?.apply {
-        BitmapFactory.decodeStream(it)
-    }
-
-/**
- * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
- *
- * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
- * by the Contacts Provider, which may not be in the list of [Contact.rawContacts] depending on
- * query filters.
- *
- * ## Permissions
- *
- * This requires the [ContactsPermissions.READ_PERMISSION].
- *
- * ## Thread Safety
- *
- * This should be called in a background thread to avoid blocking the UI thread.
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable? =
-    photoThumbnailInputStream(context)?.apply {
-        BitmapDrawable(context.resources, it)
-    }
-
-/**
- * See [Contact.photoThumbnailInputStream].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoThumbnailInputStream(context: Context): InputStream? =
-    photoThumbnailUriInputStream(context, id)
-
-/**
- * See [Contact.photoThumbnailBytes].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoThumbnailBytes(context: Context): ByteArray? =
-    photoThumbnailInputStream(context)?.apply {
-        it.readBytes()
-    }
-
-/**
- * See [Contact.photoThumbnailBitmap].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoThumbnailBitmap(context: Context): Bitmap? =
-    photoThumbnailInputStream(context)?.apply {
-        BitmapFactory.decodeStream(it)
-    }
-
-/**
- * See [Contact.photoThumbnailBitmapDrawable].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable? =
-    photoThumbnailInputStream(context)?.apply {
-        BitmapDrawable(context.resources, it)
-    }
-
-private fun photoThumbnailUriInputStream(context: Context, contactId: Long?): InputStream? {
     if (!ContactsPermissions(context).canQuery() || contactId == null) {
         return null
     }
@@ -311,19 +177,84 @@ private fun photoThumbnailUriInputStream(context: Context, contactId: Long?): In
     }
 }
 
+/**
+ * Returns the photo thumbnail as a [ByteArray]. Returns null if a photo has not yet been set.
+ *
+ * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters.
+ *
+ * The stream should be closed after use.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.READ_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.photoThumbnailBytes(context: Context): ByteArray? =
+    photoThumbnailInputStream(context)?.apply {
+        it.readBytes()
+    }
+
+/**
+ * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
+ *
+ * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.READ_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.photoThumbnailBitmap(context: Context): Bitmap? =
+    photoThumbnailInputStream(context)?.apply {
+        BitmapFactory.decodeStream(it)
+    }
+
+/**
+ * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ *
+ * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
+ * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
+ * on query filters.
+ *
+ * ## Permissions
+ *
+ * This requires the [ContactsPermissions.READ_PERMISSION].
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable? =
+    photoThumbnailInputStream(context)?.apply {
+        BitmapDrawable(context.resources, it)
+    }
+
 // endregion
 
 // region SET PHOTO
 
 /**
- * Sets the photo of this [Contact] (and the [com.vestrel00.contacts.entities.RawContact] that the
- * Contacts Provider has chosen to hold the primary photo). If a photo already exists, it will be
- * overwritten. The Contacts Provider automatically creates a downsized version of this as the
+ * Sets the photo of this [ContactEntity] (and the [com.vestrel00.contacts.entities.RawContact] that
+ * the Contacts Provider has chosen to hold the primary photo). If a photo already exists, it will
+ * be overwritten. The Contacts Provider automatically creates a downsized version of this as the
  * thumbnail.
  *
  * If a photo has not yet been set and the Contacts Provider has not yet chosen the RawContact that
  * will be used as the primary photo holder, then this will use the first RawContact in the list of
- * [Contact.rawContacts].
+ * [ContactEntity.rawContacts].
  *
  * Returns true if the operation succeeds.
  *
@@ -342,61 +273,9 @@ private fun photoThumbnailUriInputStream(context: Context, contactId: Long?): In
  * [ContactsContract.RawContacts.DisplayPhoto] class documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
-    setContactPhoto(context, id, rawContacts.firstOrNull()?.id, photoBytes)
+fun ContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean {
+    val contactId = id
 
-/**
- * See [Contact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
-    setPhoto(context, photoInputStream.readBytes())
-
-/**
- * See [Contact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
-    setPhoto(context, photoBitmap.bytes())
-
-/**
- * See [Contact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
-    setPhoto(context, photoDrawable.bitmap.bytes())
-
-/**
- * See [Contact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
-    setContactPhoto(context, id, rawContacts.firstOrNull()?.id, photoBytes)
-
-/**
- * See [MutableContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
-    setPhoto(context, photoInputStream.readBytes())
-
-/**
- * See [MutableContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
-    setPhoto(context, photoBitmap.bytes())
-
-/**
- * See [MutableContact.setPhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
-    setPhoto(context, photoDrawable.bitmap.bytes())
-
-private fun setContactPhoto(
-    context: Context, contactId: Long?, defaultRawContactId: Long?, photoBytes: ByteArray
-): Boolean {
     if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
         return false
     }
@@ -410,12 +289,33 @@ private fun setContactPhoto(
         rawContactIdWithPhotoFileId(context, photoFileId)
     } else {
         // No photo exists for the Contact or any of its associated RawContacts. Use the
-        // defaultRawContactId or fail if also not available.
-        defaultRawContactId
+        // first RawContact as the default or fail if also not available.
+        rawContacts.firstOrNull()?.id
     }
 
     return setRawContactPhoto(context, rawContactId, photoBytes)
 }
+
+/**
+ * See [ContactEntity.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
+    setPhoto(context, photoInputStream.readBytes())
+
+/**
+ * See [ContactEntity.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
+    setPhoto(context, photoBitmap.bytes())
+
+/**
+ * See [ContactEntity.setPhoto].
+ */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+fun ContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
+    setPhoto(context, photoDrawable.bitmap.bytes())
 
 private fun photoFileId(context: Context, contactId: Long): Long? = context.contentResolver.query(
     Table.CONTACTS,
@@ -447,7 +347,7 @@ private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Lo
 // region REMOVE PHOTO
 
 /**
- * Removes the photos of all the RawContacts associated with this [Contact], if any exists.
+ * Removes the photos of all the RawContacts associated with this [ContactEntity], if any exists.
  *
  * Returns true if the operation succeeds.
  *
@@ -464,16 +364,9 @@ private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Lo
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun Contact.removePhoto(context: Context): Boolean = removeContactPhoto(context, id)
+fun ContactEntity.removePhoto(context: Context): Boolean {
+    val contactId = id
 
-/**
- * See [Contact.removePhoto].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun MutableContact.removePhoto(context: Context): Boolean = removeContactPhoto(context, id)
-
-// Removing the photo data rows does the trick!
-private fun removeContactPhoto(context: Context, contactId: Long?): Boolean {
     if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
         return false
     }
