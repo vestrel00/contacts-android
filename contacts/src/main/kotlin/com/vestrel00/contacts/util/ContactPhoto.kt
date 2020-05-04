@@ -27,7 +27,7 @@ import java.io.InputStream
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
  *
- * The stream should be closed after use.
+ * It is up to the caller to close the [InputStream].
  *
  * ## Permissions
  *
@@ -145,7 +145,7 @@ private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
  *
- * The stream should be closed after use.
+ * It is up to the caller to close the [InputStream].
  *
  * ## Permissions
  *

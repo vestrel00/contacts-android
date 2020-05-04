@@ -17,15 +17,17 @@ import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.util.nullIfNotInSystem
 import com.vestrel00.contacts.util.query
 
-// TODO
+// TODO Update DEV_NOTES data required and groups / group membership sections.
 // Contacts Provider automatically creates a group membership to the default group of the target Account when the account changes.
 //     - This occurs even if the group membership already exists resulting in duplicates.
 // Contacts Provider DOES NOT delete existing group memberships when the account changes.
 //     - This has to be done manually to prevent duplicates to the default group.
 // For Lollipop (API 22) and below, the Contacts Provider sets null accounts to non-null asynchronously.
 //     - Just add a note about this behavior.
-// Update DEV_NOTES data required and groups / group membership sections.
 
+/**
+ * TODO
+ */
 interface AccountsRawContactsAssociations {
 
     // region GET ACCOUNTS
@@ -350,15 +352,8 @@ private class AccountsResultImpl(
     private val rawContactIdsResultMap: Map<Long, Account?>
 ) : AccountsRawContactsAssociations.AccountsResult {
 
-    override fun accountFor(rawContact: RawContactEntity): Account? {
-        val rawContactId = rawContact.id
-
-        return if (rawContactId != null) {
-            accountFor(rawContactId)
-        } else {
-            null
-        }
-    }
+    override fun accountFor(rawContact: RawContactEntity): Account? =
+        rawContact.id?.let(::accountFor)
 
     override fun accountFor(rawContactId: Long): Account? = rawContactIdsResultMap[rawContactId]
 }

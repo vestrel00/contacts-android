@@ -26,7 +26,7 @@ import java.io.InputStream
 /**
  * Returns the full-sized photo as an [InputStream]. Returns null if a photo has not yet been set.
  *
- * The stream should be closed after use.
+ * It is up to the caller to close the [InputStream].
  *
  * ## Permissions
  *
@@ -134,7 +134,7 @@ internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
 /**
  * Returns the photo thumbnail as an [InputStream]. Returns null if a photo has not yet been set.
  *
- * The stream should be closed after use.
+ * It is up to the caller to close the [InputStream].
  *
  * ## Permissions
  *
