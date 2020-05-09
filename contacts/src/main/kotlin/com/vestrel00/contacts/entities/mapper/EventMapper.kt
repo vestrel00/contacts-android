@@ -32,23 +32,17 @@ internal class EventMapper(private val eventCursor: EventCursor) : EntityMapper<
          * and less than inequality queries! Was this coincidence or did the Android team choose
          * this format on purpose =)
          */
-        fun dateFromString(dateStr: String?): Date? = if (dateStr != null) {
+        fun dateFromString(dateStr: String?): Date? = dateStr?.let {
             try {
-                DATE_FORMAT.parse(dateStr)
+                DATE_FORMAT.parse(it)
             } catch (pe: ParseException) {
                 null
             }
-        } else {
-            null
         }
 
         /**
          * Outputs the [date] as a string with format [DATE_FORMAT].
          */
-        fun dateToString(date: Date?): String? = if (date != null) {
-            DATE_FORMAT.format(date)
-        } else {
-            null
-        }
+        fun dateToString(date: Date?): String? = date?.let(DATE_FORMAT::format)
     }
 }

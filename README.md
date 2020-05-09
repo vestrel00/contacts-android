@@ -1,20 +1,21 @@
 ## TODO
 
 1. Migrate local account to a remote account and vice versa.
+2. Add function to commit all operations in one go with a boolean result in Update and Delete interfaces.
 
-2. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
+3. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
     - Read-only like GroupMemberships. Update relevant util functions and AccountsRawContactsAssociations
     - Add Photo entity to Contact (delete the block comment about photos) and RawContact.
 
-3. Setup user profile
+4. Setup user profile
     - Insert, Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly.
     - See TODOs in DEV_NOTES.
 
-4. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
+5. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
-5. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-6. Add Copyright to all non-sample files.
+6. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+7. Add Copyright to all non-sample files.
 
 ----------------------------------------------------------------------------------------------------
 

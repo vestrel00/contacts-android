@@ -7,13 +7,12 @@ import android.content.Context
 import com.vestrel00.contacts.AbstractField
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
+import com.vestrel00.contacts.accounts.accountForRawContactWithId
 import com.vestrel00.contacts.entities.GroupMembership
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.mapper.groupMembershipMapper
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.GroupsQuery
-import com.vestrel00.contacts.util.account
-import com.vestrel00.contacts.util.accountForRawContactWithId
 import com.vestrel00.contacts.util.query
 
 internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>() {
@@ -64,7 +63,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
 
         // Groups must always be associated with an account. No account, no group operation.
-        val account = accountForRawContactWithId(rawContactId, context) ?: return emptyList()
+        val account = accountForRawContactWithId(context, rawContactId) ?: return emptyList()
         val accountGroups = GroupsQuery(context).account(account).find()
             // This is the same as GroupMembership.groupId.
             .associateBy { it.id }

@@ -164,7 +164,7 @@ fun RawContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
             null
         }
 
-        if (photoThumbnail != null) ByteArrayInputStream(photoThumbnail) else null
+        photoThumbnail?.let(::ByteArrayInputStream)
     }
 }
 

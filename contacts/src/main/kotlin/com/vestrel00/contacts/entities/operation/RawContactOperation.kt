@@ -33,7 +33,7 @@ internal class RawContactOperation(private val contentUri: Uri) {
      * Deleting all of the RawContact rows matching the Contacts._ID will result in the automatic
      * deletion of the Contacts row and associated Data rows.
      */
-    fun deleteContact(contactId: Long): ContentProviderOperation = newDelete(contentUri)
+    fun deleteRawContactsWithContactId(contactId: Long): ContentProviderOperation = newDelete(contentUri)
         .withSelection("${Fields.RawContacts.ContactId equalTo contactId}", null)
         .build()
 }

@@ -157,27 +157,8 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
 
     // region GET ACCOUNTS
 
-    override fun accountFor(rawContact: RawContactEntity): Account? {
-        val rawContactId = rawContact.id
-
-        return if (rawContactId == null) {
-            null
-        } else {
-            context.contentResolver.query(
-                Table.RAW_CONTACTS,
-                Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType),
-                Fields.RawContacts.Id equalTo rawContactId
-            ) {
-                if (it.moveToNext()) {
-                    it.rawContactsCursor().account()
-                } else {
-                    null
-                }
-            }
-            // ?.nullIfInvalid(context) we are trusting that the Contacts Provider does not keep
-            // removed Accounts
-        }
-    }
+    override fun accountFor(rawContact: RawContactEntity): Account? =
+        rawContact.id?.let { accountForRawContactWithId(context, it) }
 
     override fun accountsFor(vararg rawContacts: RawContactEntity) =
         accountsFor(rawContacts.asSequence())
@@ -239,7 +220,7 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
     ): Boolean {
 
         // A valid account is required for associations.
-        val validAccount = account.nullIfNotInSystem(context) ?: return false
+        account.nullIfNotInSystem(context) ?: return false
 
         // Only existing RawContacts can be associated with an Account.
         val nonNullRawContactIds = rawContacts.map { it.id }.filterNotNull()
@@ -327,6 +308,19 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
 
     // endregion
 }
+
+internal fun accountForRawContactWithId(context: Context, rawContactId: Long): Account? =
+    context.contentResolver.query(
+        Table.RAW_CONTACTS,
+        Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType),
+        Fields.RawContacts.Id equalTo rawContactId
+    ) { cursor ->
+        if (cursor.moveToNext()) {
+            cursor.rawContactsCursor().account()
+        } else {
+            null
+        }
+    }
 
 private fun Context.updateRawContactsAccounts(
     rawContactIds: Sequence<Long>, account: Account

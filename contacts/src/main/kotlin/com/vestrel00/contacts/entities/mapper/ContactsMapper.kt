@@ -99,8 +99,7 @@ internal class ContactsMapper(
 
             // Collect the RawContacts and update them.
             // Use the Data cursor to retrieve the rawContactId.
-            val rawContactId = dataCursor.rawContactId
-            if (rawContactId != null) {
+            dataCursor.rawContactId?.let { rawContactId ->
                 rawContactsMap.getOrPut(rawContactId) { tempRawContactMapper.value }.also {
                     cursor.updateRawContact(it)
                 }

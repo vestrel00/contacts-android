@@ -186,7 +186,8 @@ internal fun deleteRawContactWithId(rawContactId: Long, contentResolver: Content
 }
 
 internal fun deleteContactWithId(contactId: Long, contentResolver: ContentResolver): Boolean {
-    val operation = RawContactOperation(Table.RAW_CONTACTS.uri).deleteContact(contactId)
+    val operation = RawContactOperation(Table.RAW_CONTACTS.uri)
+        .deleteRawContactsWithContactId(contactId)
 
     /*
      * Perform this single operation in a batch to be consistent with the other CRUD functions.

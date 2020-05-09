@@ -160,11 +160,11 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
     }
 
     // Link succeeded. Set the default name.
-    val name = if (nameRowIdToUseAsDefault != null) {
-        nameWithId(context, nameRowIdToUseAsDefault)?.apply {
+    val name = nameRowIdToUseAsDefault?.let {
+        nameWithId(context, it)?.apply {
             setAsDefault(context)
         }
-    } else null
+    }
 
     // Get the new Contact id of the RawContacts from the queried name. If no name is found,
     // then use the contact id of the first RawContact.
