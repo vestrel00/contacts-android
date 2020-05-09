@@ -124,8 +124,8 @@ internal fun Delete(context: Context): Delete = DeleteImpl(
 private class DeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val rawContacts: MutableSet<RawContactEntity> = mutableSetOf(),
-    private val contacts: MutableSet<ContactEntity> = mutableSetOf()
+    private val rawContactIds: MutableSet<Long> = mutableSetOf(),
+    private val contactIds: MutableSet<Long> = mutableSetOf()
 ) : Delete {
 
     override fun rawContacts(vararg rawContacts: RawContactEntity): Delete =
@@ -135,7 +135,7 @@ private class DeleteImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<RawContactEntity>): Delete = apply {
-        this.rawContacts.addAll(rawContacts)
+        this.rawContactIds.addAll(rawContacts.map { it.id }.filterNotNull())
     }
 
     override fun contacts(vararg contacts: ContactEntity): Delete = contacts(contacts.asSequence())
@@ -144,27 +144,25 @@ private class DeleteImpl(
         contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<ContactEntity>): Delete = apply {
-        this.contacts.addAll(contacts)
+        this.contactIds.addAll(contacts.map { it.id }.filterNotNull())
     }
 
     override fun commit(): Delete.Result {
-        if ((contacts.isEmpty() && rawContacts.isEmpty()) || !permissions.canInsertUpdateDelete()) {
+        if ((contactIds.isEmpty() && rawContactIds.isEmpty())
+            || !permissions.canInsertUpdateDelete()
+        ) {
             return DeleteFailed
         }
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
-        for (rawContact in rawContacts) {
-            rawContact.id?.let { rawContactId ->
-                rawContactsResult[rawContactId] =
-                    deleteRawContactWithId(rawContactId, contentResolver)
-            }
+        for (rawContactId in rawContactIds) {
+            rawContactsResult[rawContactId] =
+                deleteRawContactWithId(rawContactId, contentResolver)
         }
 
         val contactsResults = mutableMapOf<Long, Boolean>()
-        for (contact in contacts) {
-            contact.id?.let { contactId ->
-                contactsResults[contactId] = deleteContactWithId(contactId, contentResolver)
-            }
+        for (contactId in contactIds) {
+            contactsResults[contactId] = deleteContactWithId(contactId, contentResolver)
         }
 
         return DeleteResult(rawContactsResult, contactsResults)
