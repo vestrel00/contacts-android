@@ -48,6 +48,10 @@ interface DataDelete {
 
     /**
      * Adds the given [data] to the delete queue, which will be deleted on [commit].
+     *
+     * Only existing [data] that have been retrieved via a query will be added to the delete queue.
+     * Those that have been manually created via a constructor will be ignored and result in a
+     * failed operation.
      */
     fun data(vararg data: DataEntity): DataDelete
 
@@ -102,7 +106,7 @@ private class DataDeleteImpl(
     override fun data(data: Collection<DataEntity>): DataDelete = data(data.asSequence())
 
     override fun data(data: Sequence<DataEntity>): DataDelete = apply {
-        dataIds.addAll(data.map { it.id }.filterNotNull())
+        dataIds.addAll(data.map { it.id ?: INVALID_ID })
     }
 
     override fun commit(): DataDelete.Result {
@@ -112,10 +116,19 @@ private class DataDeleteImpl(
 
         val dataIdsResultMap = mutableMapOf<Long, Boolean>()
         for (dataId in dataIds) {
-            dataIdsResultMap[dataId] = contentResolver.deleteDataWithId(dataId)
+            dataIdsResultMap[dataId] = if (dataId == INVALID_ID) {
+                false
+            } else {
+                contentResolver.deleteDataWithId(dataId)
+            }
         }
 
         return DataDeleteResult(dataIdsResultMap)
+    }
+
+    private companion object {
+        // A failed entry in the results so that Result.isSuccessful returns false.
+        const val INVALID_ID = -1L
     }
 }
 

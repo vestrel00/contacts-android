@@ -35,8 +35,7 @@ internal interface GroupsDelete {
     /**
      * Adds the given [groups] to the delete queue, which will be deleted on [commit].
      *
-     * System groups, which have [Group.readOnly] set to true, cannot be deleted and are ignored
-     * here.
+     * Read-only groups will be ignored and result in a failed operation.
      */
     fun groups(vararg groups: Group): GroupsDelete
 
@@ -91,8 +90,7 @@ private class GroupsDeleteImpl(
     override fun groups(groups: Collection<Group>): GroupsDelete = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<Group>): GroupsDelete = apply {
-        // Do not add readOnly groups to the delete queue!
-        groupIds.addAll(groups.filter { !it.readOnly }.map { it.id }.filterNotNull())
+        groupIds.addAll(groups.map { it.id ?: INVALID_ID })
     }
 
     override fun commit(): GroupsDelete.Result {
@@ -102,27 +100,36 @@ private class GroupsDeleteImpl(
 
         val results = mutableMapOf<Long, Boolean>()
         for (groupId in groupIds) {
-            results[groupId] = deleteGroupWithId(groupId)
+            results[groupId] = if (groupId == INVALID_ID) {
+                false
+            } else {
+                contentResolver.deleteGroupWithId(groupId)
+            }
         }
         return GroupsDeleteResult(results)
     }
 
-    private fun deleteGroupWithId(groupId: Long): Boolean {
-        val operation = GroupOperation().delete(groupId)
-
-        /*
-         * Atomically delete the group row.
-         *
-         * Perform this single operation in a batch to be consistent with the other CRUD functions.
-         */
-        try {
-            contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-        } catch (exception: Exception) {
-            return false
-        }
-
-        return true
+    private companion object {
+        // A failed entry in the results so that Result.isSuccessful returns false.
+        const val INVALID_ID = -1L
     }
+}
+
+private fun ContentResolver.deleteGroupWithId(groupId: Long): Boolean {
+    val operation = GroupOperation().delete(groupId)
+
+    /*
+     * Atomically delete the group row.
+     *
+     * Perform this single operation in a batch to be consistent with the other CRUD functions.
+     */
+    try {
+        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
+    } catch (exception: Exception) {
+        return false
+    }
+
+    return true
 }
 
 private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolean>) :

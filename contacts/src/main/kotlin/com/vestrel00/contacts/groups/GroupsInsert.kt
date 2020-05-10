@@ -159,43 +159,43 @@ private class GroupsInsertImpl(
         val results = mutableMapOf<MutableGroup, Long?>()
         for (group in groups) {
             results[group] = if (accounts.contains(group.account)) {
-                insertGroup(group)
+                contentResolver.insertGroup(group)
             } else {
                 null
             }
         }
         return GroupsInsertResult(results)
     }
+}
 
-    private fun insertGroup(group: MutableGroup): Long? {
-        val operation = GroupOperation().insert(group)
+private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
+    val operation = GroupOperation().insert(group)
 
-        /*
-         * Atomically insert the group row.
-         *
-         * Perform this single operation in a batch to be consistent with the other CRUD functions.
-         */
-        val results = try {
-            contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-        } catch (exception: Exception) {
-            null
-        }
+    /*
+     * Atomically insert the group row.
+     *
+     * Perform this single operation in a batch to be consistent with the other CRUD functions.
+     */
+    val results = try {
+        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
+    } catch (exception: Exception) {
+        null
+    }
 
-        /*
-         * The ContentProviderResult[0] contains the first result of the batch, which is the
-         * GroupOperation. The uri contains the Groups._ID as the last path segment.
-         *
-         * E.G. "content://com.android.contacts/groups/18"
-         * In this case, 18 is the Groups._ID.
-         *
-         * It is formed by the Contacts Provider using
-         * Uri.withAppendedPath(ContactsContract.Groups.CONTENT_URI, "18")
-         */
-        return results?.firstOrNull()?.let { result ->
-            val groupUri = result.uri
-            val groupId = groupUri.lastPathSegment?.toLongOrNull()
-            groupId
-        }
+    /*
+     * The ContentProviderResult[0] contains the first result of the batch, which is the
+     * GroupOperation. The uri contains the Groups._ID as the last path segment.
+     *
+     * E.G. "content://com.android.contacts/groups/18"
+     * In this case, 18 is the Groups._ID.
+     *
+     * It is formed by the Contacts Provider using
+     * Uri.withAppendedPath(ContactsContract.Groups.CONTENT_URI, "18")
+     */
+    return results?.firstOrNull()?.let { result ->
+        val groupUri = result.uri
+        val groupId = groupUri.lastPathSegment?.toLongOrNull()
+        groupId
     }
 }
 

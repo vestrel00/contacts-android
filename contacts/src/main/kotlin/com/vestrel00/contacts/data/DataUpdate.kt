@@ -42,7 +42,11 @@ interface DataUpdate {
     /**
      * Adds the given [data] to the update queue, which will be updated on [commit].
      *
-     * Blank data ([MutableDataEntity.isBlank] will be deleted.
+     * Blank data ([MutableDataEntity.isBlank] will be deleted instead.
+     *
+     * Only existing [data] that have been retrieved via a query will be added to the update queue.
+     * Those that have been manually created via a constructor will be ignored and result in a
+     * failed operation.
      */
     fun data(vararg data: MutableDataEntity): DataUpdate
 
@@ -58,8 +62,6 @@ interface DataUpdate {
 
     /**
      * Updates the [MutableDataEntity]s in the queue (added via [data]) and returns the [Result].
-     *
-     * Blank data ([MutableDataEntity.isBlank] will be deleted instead.
      *
      * ## Thread Safety
      *
@@ -112,9 +114,16 @@ private class DataUpdateImpl(
             val dataId = data.id
             if (dataId != null) {
                 results[dataId] = contentResolver.updateData(data)
+            } else {
+                results[INVALID_ID] = false
             }
         }
         return DataUpdateResult(results)
+    }
+
+    private companion object {
+        // A failed entry in the results so that Result.isSuccessful returns false.
+        const val INVALID_ID = -1L
     }
 }
 

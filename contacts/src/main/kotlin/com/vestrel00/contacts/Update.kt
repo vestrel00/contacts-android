@@ -70,7 +70,8 @@ interface Update {
     /**
      * If [deleteBlanks] is set to true, then updating blank RawContacts
      * ([MutableRawContact.isBlank]) or blank Contacts ([MutableContact.isBlank]) will result in
-     * their deletion. Otherwise, blanks will not be deleted. This flag is set to true by default.
+     * their deletion. Otherwise, blanks will not be deleted and will result in a failed operation.
+     * This flag is set to true by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
@@ -83,7 +84,8 @@ interface Update {
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
      *
      * Only existing [rawContacts] that have been retrieved via a query will be added to the
-     * update queue. Those that have been manually created via a constructor will be ignored.
+     * update queue. Those that have been manually created via a constructor will be ignored and
+     * result in a failed operation.
      */
     fun rawContacts(vararg rawContacts: MutableRawContact): Update
 
@@ -195,153 +197,132 @@ private class UpdateImpl(
             return UpdateFailed
         }
 
-        return if (deleteBlanks) {
-            commitDeletingBlanks()
-        } else {
-            commitNotDeletingBlanks()
-        }
-    }
-
-    private fun commitDeletingBlanks(): UpdateResult {
-        val notBlankRawContacts = rawContacts.asSequence().filter { !it.isBlank() }
-        val notBlankRawContactsResults = mutableMapOf<Long, Boolean>()
-        for (rawContact in notBlankRawContacts) {
-            if (rawContact.id != null) {
-                notBlankRawContactsResults[rawContact.id] = updateRawContact(rawContact)
-            }
-        }
-
-        val blankRawContacts = rawContacts.asSequence().filter { it.isBlank() }
-        val blankRawContactsResults = mutableMapOf<Long, Boolean>()
-        for (rawContact in blankRawContacts) {
-            if (rawContact.id != null) {
-                blankRawContactsResults[rawContact.id] =
-                    context.contentResolver.deleteRawContactWithId(rawContact.id)
-            }
-        }
-
-        return UpdateResult(notBlankRawContactsResults + blankRawContactsResults)
-    }
-
-    private fun commitNotDeletingBlanks(): UpdateResult {
         val results = mutableMapOf<Long, Boolean>()
-
         for (rawContact in rawContacts) {
             if (rawContact.id != null) {
-                results[rawContact.id] = updateRawContact(rawContact)
+                results[rawContact.id] = if (rawContact.isBlank() && deleteBlanks) {
+                    context.contentResolver.deleteRawContactWithId(rawContact.id)
+                } else {
+                    context.updateRawContact(rawContact)
+                }
+            } else {
+                results[INVALID_ID] = false
             }
         }
-
         return UpdateResult(results)
     }
 
-    /**
-     * Updates a raw contact's data rows.
-     *
-     * If a raw contact attribute is null or the attribute's values are all null, then the
-     * corresponding data row (if any) will be deleted.
-     *
-     * If only some of a raw contact's attribute's values are null, then a data row will be created
-     * if it does not yet exist.
-     */
-    private fun updateRawContact(rawContact: MutableRawContact): Boolean {
-        if (rawContact.id == null) {
-            return false
-        }
-
-        val operations = arrayListOf<ContentProviderOperation>()
-        val contentResolver = context.contentResolver
-
-        operations.addAll(
-            AddressOperation().updateInsertOrDelete(
-                rawContact.addresses, rawContact.id, contentResolver
-            )
-        )
-
-        operations.addAll(
-            EmailOperation().updateInsertOrDelete(
-                rawContact.emails, rawContact.id, contentResolver
-            )
-        )
-
-        operations.addAll(
-            EventOperation().updateInsertOrDelete(
-                rawContact.events, rawContact.id, contentResolver
-            )
-        )
-
-        operations.addAll(
-            GroupMembershipOperation().updateInsertOrDelete(
-                rawContact.groupMemberships, rawContact.id, context
-            )
-        )
-
-        operations.addAll(
-            ImOperation().updateInsertOrDelete(
-                rawContact.ims, rawContact.id, contentResolver
-            )
-        )
-
-        operations.add(
-            NameOperation().updateInsertOrDelete(
-                rawContact.name, rawContact.id, contentResolver
-            )
-        )
-
-        operations.add(
-            NicknameOperation().updateInsertOrDelete(
-                rawContact.nickname, rawContact.id, contentResolver
-            )
-        )
-
-        operations.add(
-            NoteOperation().updateInsertOrDelete(
-                rawContact.note, rawContact.id, contentResolver
-            )
-        )
-
-        operations.add(
-            OrganizationOperation().updateInsertOrDelete(
-                rawContact.organization, rawContact.id, contentResolver
-            )
-        )
-
-        operations.addAll(
-            PhoneOperation().updateInsertOrDelete(
-                rawContact.phones, rawContact.id, contentResolver
-            )
-        )
-
-        operations.addAll(
-            RelationOperation().updateInsertOrDelete(
-                rawContact.relations, rawContact.id, contentResolver
-            )
-        )
-
-        operations.add(
-            SipAddressOperation().updateInsertOrDelete(
-                rawContact.sipAddress, rawContact.id, contentResolver
-            )
-        )
-
-        operations.addAll(
-            WebsiteOperation().updateInsertOrDelete(
-                rawContact.websites, rawContact.id, contentResolver
-            )
-        )
-
-        /*
-         * Atomically update all of the associated Data rows. All of the above operations will
-         * either succeed or fail.
-         */
-        try {
-            contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
-        } catch (exception: Exception) {
-            return false
-        }
-
-        return true
+    private companion object {
+        // A failed entry in the results so that Result.isSuccessful returns false.
+        const val INVALID_ID = -1L
     }
+}
+
+/**
+ * Updates a raw contact's data rows.
+ *
+ * If a raw contact attribute is null or the attribute's values are all null, then the
+ * corresponding data row (if any) will be deleted.
+ *
+ * If only some of a raw contact's attribute's values are null, then a data row will be created
+ * if it does not yet exist.
+ */
+private fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
+    if (rawContact.id == null) {
+        return false
+    }
+
+    val operations = arrayListOf<ContentProviderOperation>()
+
+    operations.addAll(
+        AddressOperation().updateInsertOrDelete(
+            rawContact.addresses, rawContact.id, contentResolver
+        )
+    )
+
+    operations.addAll(
+        EmailOperation().updateInsertOrDelete(
+            rawContact.emails, rawContact.id, contentResolver
+        )
+    )
+
+    operations.addAll(
+        EventOperation().updateInsertOrDelete(
+            rawContact.events, rawContact.id, contentResolver
+        )
+    )
+
+    operations.addAll(
+        GroupMembershipOperation().updateInsertOrDelete(
+            rawContact.groupMemberships, rawContact.id, this
+        )
+    )
+
+    operations.addAll(
+        ImOperation().updateInsertOrDelete(
+            rawContact.ims, rawContact.id, contentResolver
+        )
+    )
+
+    operations.add(
+        NameOperation().updateInsertOrDelete(
+            rawContact.name, rawContact.id, contentResolver
+        )
+    )
+
+    operations.add(
+        NicknameOperation().updateInsertOrDelete(
+            rawContact.nickname, rawContact.id, contentResolver
+        )
+    )
+
+    operations.add(
+        NoteOperation().updateInsertOrDelete(
+            rawContact.note, rawContact.id, contentResolver
+        )
+    )
+
+    operations.add(
+        OrganizationOperation().updateInsertOrDelete(
+            rawContact.organization, rawContact.id, contentResolver
+        )
+    )
+
+    operations.addAll(
+        PhoneOperation().updateInsertOrDelete(
+            rawContact.phones, rawContact.id, contentResolver
+        )
+    )
+
+    operations.addAll(
+        RelationOperation().updateInsertOrDelete(
+            rawContact.relations, rawContact.id, contentResolver
+        )
+    )
+
+    operations.add(
+        SipAddressOperation().updateInsertOrDelete(
+            rawContact.sipAddress, rawContact.id, contentResolver
+        )
+    )
+
+    operations.addAll(
+        WebsiteOperation().updateInsertOrDelete(
+            rawContact.websites, rawContact.id, contentResolver
+        )
+    )
+
+    /*
+     * Atomically update all of the associated Data rows. All of the above operations will
+     * either succeed or fail.
+     */
+    try {
+        contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
+    } catch (exception: Exception) {
+        return false
+    }
+
+    return true
 }
 
 private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {

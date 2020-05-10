@@ -40,6 +40,9 @@ interface Delete {
     /**
      * Adds the given [rawContacts] to the delete queue, which will be deleted on [commit].
      *
+     * RawContacts that have not yet been inserted ([RawContactEntity.id] is null) will be ignored
+     * and result in a failed operation.
+     *
      * ## IMPORTANT
      *
      * Deleting all [RawContactEntity]s of a [ContactEntity] will result in the deletion of the
@@ -60,6 +63,9 @@ interface Delete {
 
     /**
      * Adds the given [contacts] to the delete queue, which will be deleted on [commit].
+     *
+     * Contacts that have not yet been inserted ([ContactEntity.id] is null) will be ignored and
+     * result in a failed operation.
      *
      * ## IMPORTANT
      *
@@ -135,7 +141,7 @@ private class DeleteImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<RawContactEntity>): Delete = apply {
-        rawContactIds.addAll(rawContacts.map { it.id }.filterNotNull())
+        rawContactIds.addAll(rawContacts.map { it.id ?: INVALID_ID })
     }
 
     override fun contacts(vararg contacts: ContactEntity): Delete = contacts(contacts.asSequence())
@@ -144,7 +150,7 @@ private class DeleteImpl(
         contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<ContactEntity>): Delete = apply {
-        contactIds.addAll(contacts.map { it.id }.filterNotNull())
+        contactIds.addAll(contacts.map { it.id ?: INVALID_ID })
     }
 
     override fun commit(): Delete.Result {
@@ -156,16 +162,28 @@ private class DeleteImpl(
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
         for (rawContactId in rawContactIds) {
-            rawContactsResult[rawContactId] =
+            rawContactsResult[rawContactId] = if (rawContactId == INVALID_ID) {
+                false
+            } else {
                 contentResolver.deleteRawContactWithId(rawContactId)
+            }
         }
 
         val contactsResults = mutableMapOf<Long, Boolean>()
         for (contactId in contactIds) {
-            contactsResults[contactId] = contentResolver.deleteContactWithId(contactId)
+            contactsResults[contactId] = if (contactId == INVALID_ID) {
+                false
+            } else {
+                contentResolver.deleteContactWithId(contactId)
+            }
         }
 
         return DeleteResult(rawContactsResult, contactsResults)
+    }
+
+    private companion object {
+        // A failed entry in the results so that Result.isSuccessful returns false.
+        const val INVALID_ID = -1L
     }
 }
 

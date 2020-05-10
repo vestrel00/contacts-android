@@ -92,8 +92,8 @@ interface Insert {
 
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([MutableRawContact.isBlank]) will
-     * will be inserted. Otherwise, blanks will not be inserted. This flag is set to false by
-     * default.
+     * will be inserted. Otherwise, blanks will not be inserted and will result in a failed
+     * operation. This flag is set to false by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
@@ -222,111 +222,108 @@ private class InsertImpl(
         account = account?.nullIfNotInSystem(context)
 
         val results = mutableMapOf<MutableRawContact, Long?>()
-
-        val rawContactsToInsert = if (allowBlanks) {
-            rawContacts.asSequence()
-        } else {
-            rawContacts.asSequence().filter { !it.isBlank() }
-        }
-
-        for (rawContact in rawContactsToInsert) {
-            results[rawContact] = insertRawContactForAccount(account, rawContact)
+        for (rawContact in rawContacts) {
+            results[rawContact] = if (rawContact.isBlank()) {
+                null
+            } else {
+                context.insertRawContactForAccount(account, rawContact)
+            }
         }
         return InsertResult(results)
     }
+}
 
-    /**
-     * Inserts a new RawContacts row and any non-null Data rows. A Contacts row is automatically
-     * created by the Contacts Provider and is associated with the new RawContacts and Data rows.
+/**
+ * Inserts a new RawContacts row and any non-null Data rows. A Contacts row is automatically
+ * created by the Contacts Provider and is associated with the new RawContacts and Data rows.
+ *
+ * Contact rows should not be manually created because the Contacts Provider and other sync
+ * providers may consolidate multiple RawContacts and associated Data rows to a single Contacts
+ * row.
+ */
+private fun Context.insertRawContactForAccount(
+    account: Account?,
+    rawContact: MutableRawContact
+): Long? {
+    val operations = arrayListOf<ContentProviderOperation>()
+
+    /*
+     * Like with the native Android Contacts app, a new RawContact row is created for each new
+     * raw contact.
      *
-     * Contact rows should not be manually created because the Contacts Provider and other sync
-     * providers may consolidate multiple RawContacts and associated Data rows to a single Contacts
-     * row.
+     * This needs to be the first operation in the batch as it will be used by all subsequent
+     * Data table insert operations.
      */
-    private fun insertRawContactForAccount(
-        account: Account?,
-        rawContact: MutableRawContact
-    ): Long? {
-        val operations = arrayListOf<ContentProviderOperation>()
+    operations.add(RawContactOperation(Table.RAW_CONTACTS.uri).insert(account))
 
-        /*
-         * Like with the native Android Contacts app, a new RawContact row is created for each new
-         * raw contact.
-         *
-         * This needs to be the first operation in the batch as it will be used by all subsequent
-         * Data table insert operations.
-         */
-        operations.add(RawContactOperation(Table.RAW_CONTACTS.uri).insert(account))
+    operations.addAll(AddressOperation().insert(rawContact.addresses))
 
-        operations.addAll(AddressOperation().insert(rawContact.addresses))
+    operations.addAll(EmailOperation().insert(rawContact.emails))
 
-        operations.addAll(EmailOperation().insert(rawContact.emails))
+    operations.addAll(EventOperation().insert(rawContact.events))
 
-        operations.addAll(EventOperation().insert(rawContact.events))
+    // The account can only be null if there are no available accounts. In this case, it should
+    // not be possible for consumers to obtain group memberships unless they have saved them
+    // as parcelables and then restored them after the accounts have been removed.
+    // Still we should have this null check just in case.
+    if (account != null) {
+        operations.addAll(
+            GroupMembershipOperation().insert(rawContact.groupMemberships, account, this)
+        )
+    }
 
-        // The account can only be null if there are no available accounts. In this case, it should
-        // not be possible for consumers to obtain group memberships unless they have saved them
-        // as parcelables and then restored them after the accounts have been removed.
-        // Still we should have this null check just in case.
-        if (account != null) {
-            operations.addAll(
-                GroupMembershipOperation().insert(rawContact.groupMemberships, account, context)
-            )
-        }
+    operations.addAll(ImOperation().insert(rawContact.ims))
 
-        operations.addAll(ImOperation().insert(rawContact.ims))
+    rawContact.name?.let {
+        NameOperation().insert(it)?.let(operations::add)
+    }
 
-        rawContact.name?.let {
-            NameOperation().insert(it)?.let(operations::add)
-        }
+    rawContact.nickname?.let {
+        NicknameOperation().insert(it)?.let(operations::add)
+    }
 
-        rawContact.nickname?.let {
-            NicknameOperation().insert(it)?.let(operations::add)
-        }
+    rawContact.note?.let {
+        NoteOperation().insert(it)?.let(operations::add)
+    }
 
-        rawContact.note?.let {
-            NoteOperation().insert(it)?.let(operations::add)
-        }
+    rawContact.organization?.let {
+        OrganizationOperation().insert(it)?.let(operations::add)
+    }
 
-        rawContact.organization?.let {
-            OrganizationOperation().insert(it)?.let(operations::add)
-        }
+    operations.addAll(PhoneOperation().insert(rawContact.phones))
 
-        operations.addAll(PhoneOperation().insert(rawContact.phones))
+    operations.addAll(RelationOperation().insert(rawContact.relations))
 
-        operations.addAll(RelationOperation().insert(rawContact.relations))
+    rawContact.sipAddress?.let {
+        SipAddressOperation().insert(it)?.let(operations::add)
+    }
 
-        rawContact.sipAddress?.let {
-            SipAddressOperation().insert(it)?.let(operations::add)
-        }
+    operations.addAll(WebsiteOperation().insert(rawContact.websites))
 
-        operations.addAll(WebsiteOperation().insert(rawContact.websites))
+    /*
+     * Atomically create the RawContact row and all of the associated Data rows. All of the
+     * above operations will either succeed or fail.
+     */
+    val results = try {
+        contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
+    } catch (exception: Exception) {
+        null
+    }
 
-        /*
-         * Atomically create the RawContact row and all of the associated Data rows. All of the
-         * above operations will either succeed or fail.
-         */
-        val results = try {
-            context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
-        } catch (exception: Exception) {
-            null
-        }
-
-        /*
-         * The ContentProviderResult[0] contains the first result of the batch, which is the
-         * RawContactOperation. The uri contains the RawContact._ID as the last path segment.
-         *
-         * E.G. "content://com.android.contacts/raw_contacts/18"
-         * In this case, 18 is the RawContacts._ID.
-         *
-         * It is formed by the Contacts Provider using
-         * Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, "18")
-         */
-        return results?.firstOrNull()?.let { result ->
-            val rawContactUri = result.uri
-            val rawContactId = rawContactUri.lastPathSegment?.toLongOrNull()
-            rawContactId
-        }
+    /*
+     * The ContentProviderResult[0] contains the first result of the batch, which is the
+     * RawContactOperation. The uri contains the RawContact._ID as the last path segment.
+     *
+     * E.G. "content://com.android.contacts/raw_contacts/18"
+     * In this case, 18 is the RawContacts._ID.
+     *
+     * It is formed by the Contacts Provider using
+     * Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, "18")
+     */
+    return results?.firstOrNull()?.let { result ->
+        val rawContactUri = result.uri
+        val rawContactId = rawContactUri.lastPathSegment?.toLongOrNull()
+        rawContactId
     }
 }
 

@@ -51,12 +51,18 @@ interface GroupsUpdate {
      * Adds the given [groups] to the update queue, which will be updated on [commit].
      *
      * Only existing [groups] that have been retrieved via a query will be added to the update
-     * queue. Those that have been manually created via a constructor will be ignored.
+     * queue. Those that have been manually created via a constructor will be ignored and result
+     * in a failed operation.
      *
      * ## Null [MutableGroup]s
      *
-     * Null groups are ignored. The only reason null is allowed to be passed here is for consumer
-     * convenience because the group's `toMutable` returns null if the `readOnly` property is true.
+     * Null groups are ignored and result in a failed operation. The only reason null is allowed to
+     * be passed here is for consumer convenience because the group's `toMutable` returns null if
+     * the `readOnly` property is true.
+     *
+     * ## Read-only [MutableGroup]s
+     *
+     * Read-only groups will be ignored and result in a failed operation.
      */
     fun groups(vararg groups: MutableGroup?): GroupsUpdate
 
@@ -103,7 +109,7 @@ internal fun GroupsUpdate(context: Context): GroupsUpdate = GroupsUpdateImpl(
 private class GroupsUpdateImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val groups: MutableSet<MutableGroup> = mutableSetOf()
+    private val groups: MutableSet<MutableGroup?> = mutableSetOf()
 ) : GroupsUpdate {
 
     override fun groups(vararg groups: MutableGroup?): GroupsUpdate =
@@ -113,7 +119,7 @@ private class GroupsUpdateImpl(
         groups(groups.asSequence())
 
     override fun groups(groups: Sequence<MutableGroup?>): GroupsUpdate = apply {
-        this.groups.addAll(groups.filterNotNull())
+        this.groups.addAll(groups)
     }
 
     override fun commit(): GroupsUpdate.Result {
@@ -123,11 +129,22 @@ private class GroupsUpdateImpl(
 
         val results = mutableMapOf<Long, Boolean>()
         for (group in groups) {
-            if (group.id != null && !group.readOnly) {
-                results[group.id] = contentResolver.updateGroup(group)
+            if (group?.id != null) {
+                results[group.id] = if (group.readOnly) {
+                    false
+                } else {
+                    contentResolver.updateGroup(group)
+                }
+            } else {
+                results[INVALID_ID] = false
             }
         }
         return GroupsUpdateResult(results)
+    }
+
+    private companion object {
+        // A failed entry in the results so that Result.isSuccessful returns false.
+        const val INVALID_ID = -1L
     }
 }
 
