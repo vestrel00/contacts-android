@@ -12,7 +12,6 @@ internal fun newUpdate(table: Table): Builder = ContentProviderOperation.newUpda
 
 internal fun newDelete(table: Table): Builder = ContentProviderOperation.newDelete(table.uri)
 
-// TODO Use this throughout the codebase
 internal fun Builder.withSelection(where: Where?): Builder =
     withSelection(where?.toString(), null)
 

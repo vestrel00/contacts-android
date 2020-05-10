@@ -25,12 +25,12 @@ internal class GroupOperation {
 
     fun update(group: MutableGroup): ContentProviderOperation? = group.id?.let { groupId ->
         newUpdate(TABLE)
-            .withSelection("${Fields.Groups.Id equalTo groupId}", null)
+            .withSelection(Fields.Groups.Id equalTo groupId)
             .withValue(Fields.Groups.Title, group.title)
             .build()
     }
 
     fun delete(groupId: Long): ContentProviderOperation = newDelete(TABLE)
-        .withSelection("${Fields.Groups.Id equalTo groupId}", null)
+        .withSelection(Fields.Groups.Id equalTo groupId)
         .build()
 }

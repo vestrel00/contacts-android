@@ -7,6 +7,7 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
 import com.vestrel00.contacts.entities.operation.newUpdate
+import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -124,8 +125,8 @@ fun DataEntity.clearDefault(context: Context): Boolean {
 private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
     newUpdate(TABLE)
         .withSelection(
-            "${(Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo mimeType)}",
-            null
+            (Fields.RawContact.Id equalTo rawContactId)
+                    and (Fields.MimeType equalTo mimeType)
         )
         .withValue(Fields.IsPrimary, 0)
         .build()
@@ -139,8 +140,8 @@ private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperatio
 private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
     newUpdate(TABLE)
         .withSelection(
-            "${(Fields.Contact.Id equalTo contactId) and (Fields.MimeType equalTo mimeType)}",
-            null
+            (Fields.Contact.Id equalTo contactId)
+                    and (Fields.MimeType equalTo mimeType)
         )
         .withValue(Fields.IsSuperPrimary, 0)
         .build()
@@ -151,7 +152,7 @@ private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperat
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
 private fun setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation = newUpdate(TABLE)
-    .withSelection("${Fields.Id equalTo dataId}", null)
+    .withSelection(Fields.Id equalTo dataId)
     .withValue(Fields.IsPrimary, 1)
     .withValue(Fields.IsSuperPrimary, 1)
     .build()

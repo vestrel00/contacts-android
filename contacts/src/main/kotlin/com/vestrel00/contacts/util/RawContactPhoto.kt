@@ -15,6 +15,7 @@ import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
+import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import java.io.ByteArrayInputStream
@@ -344,9 +345,8 @@ fun RawContactEntity.removePhoto(context: Context): Boolean {
 
     val deleteRawContactPhotoOperation = newDelete(Table.DATA)
         .withSelection(
-            "${(Fields.RawContact.Id equalTo rawContactId)
-                    and (Fields.MimeType equalTo MimeType.PHOTO)}",
-            null
+            (Fields.RawContact.Id equalTo rawContactId)
+                    and (Fields.MimeType equalTo MimeType.PHOTO)
         )
         .build()
 

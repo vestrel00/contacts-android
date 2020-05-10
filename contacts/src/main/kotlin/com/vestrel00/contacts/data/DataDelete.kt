@@ -7,6 +7,7 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
 import com.vestrel00.contacts.entities.operation.newDelete
+import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -118,7 +119,7 @@ private class DataDeleteImpl(
 
 private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean {
     val operation = newDelete(Table.DATA)
-        .withSelection("${Fields.Id equalTo dataId}", null)
+        .withSelection(Fields.Id equalTo dataId)
         .build()
 
     // Perform this single operation in a batch to be consistent with the other CRUD functions.

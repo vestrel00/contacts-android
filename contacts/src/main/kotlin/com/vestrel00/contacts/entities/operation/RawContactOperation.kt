@@ -26,7 +26,7 @@ internal class RawContactOperation(private val contentUri: Uri) {
         .build()
 
     fun deleteRawContact(rawContactId: Long): ContentProviderOperation = newDelete(contentUri)
-        .withSelection("${Fields.RawContacts.Id equalTo rawContactId}", null)
+        .withSelection(Fields.RawContacts.Id equalTo rawContactId)
         .build()
 
     /*
@@ -35,6 +35,6 @@ internal class RawContactOperation(private val contentUri: Uri) {
      */
     fun deleteRawContactsWithContactId(contactId: Long): ContentProviderOperation =
         newDelete(contentUri)
-            .withSelection("${Fields.RawContacts.ContactId equalTo contactId}", null)
+            .withSelection(Fields.RawContacts.ContactId equalTo contactId)
             .build()
 }

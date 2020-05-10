@@ -12,6 +12,7 @@ import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.account
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.operation.newUpdate
+import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -327,7 +328,7 @@ private fun Context.updateRawContactsAccounts(
     rawContactIds: Sequence<Long>, account: Account
 ): Boolean {
     val operation = newUpdate(Table.RAW_CONTACTS)
-        .withSelection("${Fields.RawContacts.Id `in` rawContactIds}", null)
+        .withSelection(Fields.RawContacts.Id `in` rawContactIds)
         .withValue(Fields.RawContacts.AccountName, account.name)
         .withValue(Fields.RawContacts.AccountType, account.type)
         .build()

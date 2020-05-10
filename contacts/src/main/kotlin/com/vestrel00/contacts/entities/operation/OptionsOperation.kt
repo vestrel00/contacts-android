@@ -15,14 +15,14 @@ internal class OptionsOperation {
 
     fun updateContactOptions(contactId: Long, options: MutableOptions): ContentProviderOperation =
         newUpdate(Table.CONTACTS)
-            .withSelection("${Fields.Id equalTo contactId}", null)
+            .withSelection(Fields.Id equalTo contactId)
             .withOptions(options)
             .build()
 
     fun updateRawContactOptions(
         rawContactId: Long, options: MutableOptions
     ): ContentProviderOperation = newUpdate(Table.RAW_CONTACTS)
-        .withSelection("${Fields.Id equalTo rawContactId}", null)
+        .withSelection(Fields.Id equalTo rawContactId)
         .withOptions(options)
         .build()
 }

@@ -203,7 +203,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      */
     private fun updateDataRow(entity: T, dataRowId: Long): ContentProviderOperation {
         val operation = newUpdate(TABLE)
-            .withSelection("${Fields.Id equalTo dataRowId}", null)
+            .withSelection(Fields.Id equalTo dataRowId)
 
         setData(entity) { field, dataValue ->
             // Intentionally allow to update values to null.
@@ -219,7 +219,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      */
     private fun deleteDataRows(rawContactId: Long): ContentProviderOperation =
         newDelete(TABLE)
-            .withSelection("${selection(rawContactId)}", null)
+            .withSelection(selection(rawContactId))
             .build()
 
     /**
@@ -227,7 +227,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      */
     protected fun deleteDataRowWithId(dataRowId: Long): ContentProviderOperation =
         newDelete(TABLE)
-            .withSelection("${Fields.Id equalTo dataRowId}", null)
+            .withSelection(Fields.Id equalTo dataRowId)
             .build()
 
     /**
