@@ -1,20 +1,19 @@
 package com.vestrel00.contacts.entities.operation
 
 import android.content.ContentProviderOperation
-import android.content.ContentProviderOperation.*
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
-private val TABLE_URI = Table.GROUPS.uri
+private val TABLE = Table.GROUPS
 
 /**
  * Builds [ContentProviderOperation]s for [Table.GROUPS].
  */
 internal class GroupOperation {
 
-    fun insert(group: MutableGroup): ContentProviderOperation = newInsert(TABLE_URI)
+    fun insert(group: MutableGroup): ContentProviderOperation = newInsert(TABLE)
         .withValue(Fields.Groups.Title, group.title)
         .withValue(Fields.Groups.AccountName, group.account.name)
         .withValue(Fields.Groups.AccountType, group.account.type)
@@ -25,13 +24,13 @@ internal class GroupOperation {
         .build()
 
     fun update(group: MutableGroup): ContentProviderOperation? = group.id?.let { groupId ->
-        newUpdate(TABLE_URI)
+        newUpdate(TABLE)
             .withSelection("${Fields.Groups.Id equalTo groupId}", null)
             .withValue(Fields.Groups.Title, group.title)
             .build()
     }
 
-    fun delete(groupId: Long): ContentProviderOperation = newDelete(TABLE_URI)
+    fun delete(groupId: Long): ContentProviderOperation = newDelete(TABLE)
         .withSelection("${Fields.Groups.Id equalTo groupId}", null)
         .build()
 }

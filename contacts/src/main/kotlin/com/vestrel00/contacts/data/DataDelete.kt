@@ -1,12 +1,12 @@
 package com.vestrel00.contacts.data
 
-import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -117,7 +117,7 @@ private class DataDeleteImpl(
 }
 
 private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean {
-    val operation = ContentProviderOperation.newDelete(Table.DATA.uri)
+    val operation = newDelete(Table.DATA)
         .withSelection("${Fields.Id equalTo dataId}", null)
         .build()
 

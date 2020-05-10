@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.util
 
-import android.content.ContentProviderOperation
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -14,6 +13,7 @@ import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.entities.cursor.photoCursor
+import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import java.io.InputStream
@@ -371,7 +371,7 @@ fun ContactEntity.removePhoto(context: Context): Boolean {
         return false
     }
 
-    val deleteContactPhotosOperation = ContentProviderOperation.newDelete(Table.DATA.uri)
+    val deleteContactPhotosOperation = newDelete(Table.DATA)
         .withSelection(
             "${(Fields.Contact.Id equalTo contactId)
                     and (Fields.MimeType equalTo MimeType.PHOTO)}",

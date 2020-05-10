@@ -15,6 +15,7 @@ import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.entities.cursor.dataCursor
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.nameMapper
+import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 
@@ -292,7 +293,7 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
             val rawContactId1 = sortedRawContactIds[i]
             val rawContactId2 = sortedRawContactIds[j]
 
-            val operation = ContentProviderOperation.newUpdate(Table.AGGREGATION_EXCEPTIONS.uri)
+            val operation = newUpdate(Table.AGGREGATION_EXCEPTIONS)
                 .withValue(Fields.AggregationExceptions.Type, type)
                 .withValue(Fields.AggregationExceptions.RawContactId1, rawContactId1)
                 .withValue(Fields.AggregationExceptions.RawContactId2, rawContactId2)

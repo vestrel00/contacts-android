@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.entities.operation
 
 import android.content.ContentProviderOperation
-import android.content.ContentProviderOperation.*
 import android.content.ContentResolver
 import android.database.Cursor
 import com.vestrel00.contacts.*
@@ -10,7 +9,7 @@ import com.vestrel00.contacts.entities.cursor.dataCursor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.query
 
-private val TABLE_URI = Table.DATA.uri
+private val TABLE = Table.DATA
 
 /**
  * Builds [ContentProviderOperation]s for [Table.DATA].
@@ -42,7 +41,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             return null
         }
 
-        val operation = newInsert(TABLE_URI)
+        val operation = newInsert(TABLE)
 
         setData(entity) { field, dataValue ->
             if (dataValue.isNotNullOrBlank()) {
@@ -180,7 +179,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      * [entity]) for the given [RawContact] with [rawContactId].
      */
     protected fun insertDataRow(entity: T, rawContactId: Long): ContentProviderOperation {
-        val operation = newInsert(TABLE_URI)
+        val operation = newInsert(TABLE)
             // The Contacts Provider automatically sets the value of the CONTACT_ID and prohibits
             // us from setting it manually by failing the insert operation with an exception if
             // the CONTACT_ID is provided. After all, the Contacts Provider has exclusive rights
@@ -203,7 +202,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      * [entity]) with the given [dataRowId].
      */
     private fun updateDataRow(entity: T, dataRowId: Long): ContentProviderOperation {
-        val operation = newUpdate(TABLE_URI)
+        val operation = newUpdate(TABLE)
             .withSelection("${Fields.Id equalTo dataRowId}", null)
 
         setData(entity) { field, dataValue ->
@@ -219,7 +218,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      * [RawContact] with [rawContactId].
      */
     private fun deleteDataRows(rawContactId: Long): ContentProviderOperation =
-        newDelete(TABLE_URI)
+        newDelete(TABLE)
             .withSelection("${selection(rawContactId)}", null)
             .build()
 
@@ -227,7 +226,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      * Provides the [ContentProviderOperation] for deleting the data row with the given [dataRowId].
      */
     protected fun deleteDataRowWithId(dataRowId: Long): ContentProviderOperation =
-        newDelete(TABLE_URI)
+        newDelete(TABLE)
             .withSelection("${Fields.Id equalTo dataRowId}", null)
             .build()
 
@@ -237,7 +236,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     private fun <T> ContentResolver.dataRowIdsFor(
         rawContactId: Long, processCursor: (Cursor) -> T
     ) = query(
-        TABLE_URI,
+        TABLE,
         Include(Fields.Id),
         selection(rawContactId),
         processCursor = processCursor

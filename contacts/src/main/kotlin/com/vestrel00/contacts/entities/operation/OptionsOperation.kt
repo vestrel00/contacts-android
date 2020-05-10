@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.entities.operation
 
 import android.content.ContentProviderOperation
-import android.content.ContentProviderOperation.newUpdate
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MutableOptions
 import com.vestrel00.contacts.entities.table.Table
@@ -15,14 +14,14 @@ import com.vestrel00.contacts.equalTo
 internal class OptionsOperation {
 
     fun updateContactOptions(contactId: Long, options: MutableOptions): ContentProviderOperation =
-        newUpdate(Table.CONTACTS.uri)
+        newUpdate(Table.CONTACTS)
             .withSelection("${Fields.Id equalTo contactId}", null)
             .withOptions(options)
             .build()
 
     fun updateRawContactOptions(
         rawContactId: Long, options: MutableOptions
-    ): ContentProviderOperation = newUpdate(Table.RAW_CONTACTS.uri)
+    ): ContentProviderOperation = newUpdate(Table.RAW_CONTACTS)
         .withSelection("${Fields.Id equalTo rawContactId}", null)
         .withOptions(options)
         .build()

@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.accounts
 
 import android.accounts.Account
-import android.content.ContentProviderOperation
 import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.Fields
@@ -12,6 +11,7 @@ import com.vestrel00.contacts.data.DataQuery
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.account
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
+import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -326,7 +326,7 @@ internal fun accountForRawContactWithId(context: Context, rawContactId: Long): A
 private fun Context.updateRawContactsAccounts(
     rawContactIds: Sequence<Long>, account: Account
 ): Boolean {
-    val operation = ContentProviderOperation.newUpdate(Table.RAW_CONTACTS.uri)
+    val operation = newUpdate(Table.RAW_CONTACTS)
         .withSelection("${Fields.RawContacts.Id `in` rawContactIds}", null)
         .withValue(Fields.RawContacts.AccountName, account.name)
         .withValue(Fields.RawContacts.AccountType, account.type)

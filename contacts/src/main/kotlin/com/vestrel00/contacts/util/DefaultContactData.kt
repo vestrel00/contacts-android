@@ -1,12 +1,12 @@
 package com.vestrel00.contacts.util
 
 import android.content.ContentProviderOperation
-import android.content.ContentProviderOperation.newUpdate
 import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -122,7 +122,7 @@ fun DataEntity.clearDefault(context: Context): Boolean {
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
 private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
-    newUpdate(TABLE_URI)
+    newUpdate(TABLE)
         .withSelection(
             "${(Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo mimeType)}",
             null
@@ -137,7 +137,7 @@ private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperatio
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
 private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
-    newUpdate(TABLE_URI)
+    newUpdate(TABLE)
         .withSelection(
             "${(Fields.Contact.Id equalTo contactId) and (Fields.MimeType equalTo mimeType)}",
             null
@@ -150,10 +150,10 @@ private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperat
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation = newUpdate(TABLE_URI)
+private fun setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation = newUpdate(TABLE)
     .withSelection("${Fields.Id equalTo dataId}", null)
     .withValue(Fields.IsPrimary, 1)
     .withValue(Fields.IsSuperPrimary, 1)
     .build()
 
-private val TABLE_URI = Table.DATA.uri
+private val TABLE = Table.DATA
