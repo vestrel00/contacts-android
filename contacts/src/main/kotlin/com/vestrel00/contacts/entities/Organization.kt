@@ -130,7 +130,7 @@ data class MutableOrganization internal constructor(
      */
     var phoneticName: String?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ORGANIZATION

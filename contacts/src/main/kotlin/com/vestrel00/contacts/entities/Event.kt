@@ -112,7 +112,7 @@ data class MutableEvent internal constructor(
      */
     var date: Date?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EVENT

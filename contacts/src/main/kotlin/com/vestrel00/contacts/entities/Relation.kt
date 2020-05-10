@@ -109,7 +109,7 @@ data class MutableRelation internal constructor(
      */
     var name: String?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.RELATION

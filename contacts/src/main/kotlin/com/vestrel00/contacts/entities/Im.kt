@@ -108,7 +108,7 @@ data class MutableIm internal constructor(
      */
     var data: String?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.IM

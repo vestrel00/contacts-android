@@ -17,6 +17,10 @@ import com.vestrel00.contacts.equalTo
  * Note that deleting data will not remove it from existing RawContact instances. The RawContact
  * instances must be refreshed to get the most up-to-date data.
  *
+ * Deleting data that has already been deleted may return a successful result. However, no delete
+ * actually occurred in the Content Provider Data table because the data row no longer existed.
+ * This also applies to data that has not yet been inserted.
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
@@ -42,7 +46,6 @@ import com.vestrel00.contacts.equalTo
  */
 interface DataDelete {
 
-
     /**
      * Adds the given [data] to the delete queue, which will be deleted on [commit].
      */
@@ -57,7 +60,6 @@ interface DataDelete {
      * See [DataDelete.data].
      */
     fun data(data: Sequence<DataEntity>): DataDelete
-
 
     /**
      * Deletes the [DataEntity]s in the queue (added via [data]) and returns the [Result].

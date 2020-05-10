@@ -56,3 +56,8 @@ interface DataEntity : Entity {
      */
     fun isDefault(): Boolean = isSuperPrimary
 }
+
+/**
+ * A [DataEntity] that is mutable.
+ */
+interface MutableDataEntity : DataEntity

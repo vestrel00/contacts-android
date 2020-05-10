@@ -8,7 +8,7 @@ import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.operation.GroupOperation
 
 /**
- * Updates one or more groups' rows in the groups table.
+ * Updates one or more groups rows in the groups table.
  *
  * ## Permissions
  *
@@ -124,28 +124,28 @@ private class GroupsUpdateImpl(
         val results = mutableMapOf<Long, Boolean>()
         for (group in groups) {
             if (group.id != null && !group.readOnly) {
-                results[group.id] = updateGroup(group)
+                results[group.id] = contentResolver.updateGroup(group)
             }
         }
         return GroupsUpdateResult(results)
     }
+}
 
-    private fun updateGroup(group: MutableGroup): Boolean {
-        val operation = GroupOperation().update(group) ?: return false
+private fun ContentResolver.updateGroup(group: MutableGroup): Boolean {
+    val operation = GroupOperation().update(group) ?: return false
 
-        /*
-         * Atomically update the group row.
-         *
-         * Perform this single operation in a batch to be consistent with the other CRUD functions.
-         */
-        try {
-            contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-        } catch (exception: Exception) {
-            return false
-        }
-
-        return true
+    /*
+     * Atomically update the group row.
+     *
+     * Perform this single operation in a batch to be consistent with the other CRUD functions.
+     */
+    try {
+        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
+    } catch (exception: Exception) {
+        return false
     }
+
+    return true
 }
 
 private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolean>) :

@@ -1,5 +1,8 @@
 ## TODO
 
+0. Fix Result.isSuccessful not including filtered out items (null ids or blanks). Update documentation
+0. Create extension function for usages of applyBatch
+0. Create extension function for cursor; if (it.moveToNext()) do() else null -> it.getNextOrNull() { do() }
 1. Migrate local account to a remote account and vice versa.
 2. Add function to commit all operations in one go with a boolean result in Update and Delete interfaces.
 

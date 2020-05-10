@@ -158,7 +158,7 @@ data class MutableName internal constructor(
      */
     var phoneticFamilyName: String?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NAME

@@ -34,4 +34,4 @@ data class GroupMembership internal constructor(
 }
 
 // NOTE. The GroupMembership class intentionally does not have a mutable version unlike the other
-// entities. Manage the group memberships via the RawContactGroupMemberships extension functions.
+// entities. Manage group memberships via the RawContactGroupMemberships extension functions.

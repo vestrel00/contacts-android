@@ -45,7 +45,8 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
 
         setData(entity) { field, dataValue ->
             if (dataValue.isNotNullOrBlank()) {
-                // Do not insert null or blank values, same as the native Android Contacts app.
+                // No need to insert null values. Empty values are treated the same as null, same as
+                // the native Android Contacts app.
                 operation.withValue(field, dataValue)
             }
         }
@@ -104,7 +105,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
                     // such as not including the id column in the query. We should technically
                     // force unwrap here. However, the Android ecosystem is huge and I wouldn't
                     // rule out null ids. #NO-TRUST.
-                    // FIXME Parameterize strategy for consumers; fail hard or fail silently?
+                    // FIXME? Parameterize strategy for consumers; fail hard or fail silently?
                     val dataRowId = dataCursor.dataId ?: continue
 
                     val entity = validEntitiesMap.remove(dataRowId)
@@ -123,8 +124,8 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
 
             // Insert all remaining data rows in the valid entities that is not in the cursor.
             // Valid entities have a valid id, which means they are already in the DB. In this case,
-            // The entity may have been deleted in another app or another entity belonging to a
-            // different contact is included here. Blank entities are not inserted.
+            // The entity may have been deleted or another entity belonging to a different contact
+            // is included here. Blank entities are not inserted.
             for (entity in validEntitiesMap.values.asSequence().filter { !it.isBlank() }) {
                 add(insertDataRow(entity, rawContactId))
             }
@@ -180,16 +181,13 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      */
     protected fun insertDataRow(entity: T, rawContactId: Long): ContentProviderOperation {
         val operation = newInsert(TABLE)
-            // The Contacts Provider automatically sets the value of the CONTACT_ID and prohibits
-            // us from setting it manually by failing the insert operation with an exception if
-            // the CONTACT_ID is provided. After all, the Contacts Provider has exclusive rights
-            // with deciding how the RawContacts are associated with Contacts.
             .withValue(Fields.RawContact.Id, rawContactId)
             .withValue(Fields.MimeType, mimeType.value)
 
         setData(entity) { field, dataValue ->
             if (dataValue.isNotNullOrBlank()) {
-                // Do not insert null or blank values, same as the native Android Contacts app.
+                // No need to insert null values. Empty values are treated the same as null, same as
+                // the native Android Contacts app.
                 operation.withValue(field, dataValue)
             }
         }
@@ -199,7 +197,26 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
 
     /**
      * Provides the [ContentProviderOperation] for updating the data row (represented by the
+     * [entity]). If the [entity] is blank, it will be deleted instead.  Returns null if the
+     * [entity] has a null ID.
+     *
+     * Use this function for updating an existing data row. If the data row no longer exists in the
+     * DB, the operation will fail.
+     */
+    internal fun updateDataRowOrDeleteIfBlank(entity: T): ContentProviderOperation? =
+        entity.id?.let { entityId ->
+            if (entity.isBlank()) {
+                deleteDataRowWithId(entityId)
+            } else {
+                updateDataRow(entity, entityId)
+            }
+        }
+
+    /**
+     * Provides the [ContentProviderOperation] for updating the data row (represented by the
      * [entity]) with the given [dataRowId].
+     *
+     * Note that this function does not check if the [entity] is blank.
      */
     private fun updateDataRow(entity: T, dataRowId: Long): ContentProviderOperation {
         val operation = newUpdate(TABLE)

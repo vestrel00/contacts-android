@@ -188,7 +188,7 @@ data class MutableAddress internal constructor(
      */
     var country: String?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ADDRESS

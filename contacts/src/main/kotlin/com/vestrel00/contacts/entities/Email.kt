@@ -99,7 +99,7 @@ data class MutableEmail internal constructor(
      */
     var address: String?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EMAIL

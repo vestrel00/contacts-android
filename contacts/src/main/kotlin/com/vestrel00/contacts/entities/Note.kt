@@ -58,7 +58,7 @@ data class MutableNote internal constructor(
      */
     var note: String?
 
-) : DataEntity {
+) : MutableDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NOTE
