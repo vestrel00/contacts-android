@@ -135,7 +135,7 @@ private class DeleteImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<RawContactEntity>): Delete = apply {
-        this.rawContactIds.addAll(rawContacts.map { it.id }.filterNotNull())
+        rawContactIds.addAll(rawContacts.map { it.id }.filterNotNull())
     }
 
     override fun contacts(vararg contacts: ContactEntity): Delete = contacts(contacts.asSequence())
@@ -144,7 +144,7 @@ private class DeleteImpl(
         contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<ContactEntity>): Delete = apply {
-        this.contactIds.addAll(contacts.map { it.id }.filterNotNull())
+        contactIds.addAll(contacts.map { it.id }.filterNotNull())
     }
 
     override fun commit(): Delete.Result {
@@ -157,26 +157,24 @@ private class DeleteImpl(
         val rawContactsResult = mutableMapOf<Long, Boolean>()
         for (rawContactId in rawContactIds) {
             rawContactsResult[rawContactId] =
-                deleteRawContactWithId(rawContactId, contentResolver)
+                contentResolver.deleteRawContactWithId(rawContactId)
         }
 
         val contactsResults = mutableMapOf<Long, Boolean>()
         for (contactId in contactIds) {
-            contactsResults[contactId] = deleteContactWithId(contactId, contentResolver)
+            contactsResults[contactId] = contentResolver.deleteContactWithId(contactId)
         }
 
         return DeleteResult(rawContactsResult, contactsResults)
     }
 }
 
-internal fun deleteRawContactWithId(rawContactId: Long, contentResolver: ContentResolver): Boolean {
+internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean {
     val operation = RawContactOperation(Table.RAW_CONTACTS.uri).deleteRawContact(rawContactId)
 
-    /*
-     * Perform this single operation in a batch to be consistent with the other CRUD functions.
-     */
+    // Perform this single operation in a batch to be consistent with the other CRUD functions.
     try {
-        contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
+        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
     } catch (exception: Exception) {
         return false
     }
@@ -184,15 +182,13 @@ internal fun deleteRawContactWithId(rawContactId: Long, contentResolver: Content
     return true
 }
 
-internal fun deleteContactWithId(contactId: Long, contentResolver: ContentResolver): Boolean {
+private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean {
     val operation = RawContactOperation(Table.RAW_CONTACTS.uri)
         .deleteRawContactsWithContactId(contactId)
 
-    /*
-     * Perform this single operation in a batch to be consistent with the other CRUD functions.
-     */
+    // Perform this single operation in a batch to be consistent with the other CRUD functions.
     try {
-        contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
+        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
     } catch (exception: Exception) {
         return false
     }

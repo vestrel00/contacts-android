@@ -216,7 +216,7 @@ private class UpdateImpl(
         for (rawContact in blankRawContacts) {
             if (rawContact.id != null) {
                 blankRawContactsResults[rawContact.id] =
-                    deleteRawContactWithId(rawContact.id, context.contentResolver)
+                    context.contentResolver.deleteRawContactWithId(rawContact.id)
             }
         }
 

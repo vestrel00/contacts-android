@@ -7,6 +7,7 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.`in`
+import com.vestrel00.contacts.data.DataDelete
 import com.vestrel00.contacts.data.DataQuery
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.account
@@ -235,7 +236,7 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
 
         if (result) {
             // Delete the group memberships that existed before the update.
-            // TODO Implement DeleteData and UpdateData (+ async and permissions extensions)
+            DataDelete(context).data(groupMemberships).commit()
         }
 
         return result

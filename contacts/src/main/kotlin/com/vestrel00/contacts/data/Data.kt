@@ -3,6 +3,7 @@ package com.vestrel00.contacts.data
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 
+// TODO Implement DataUpdate
 /**
  * Provides new [DataQuery], [DataUpdate], and [DataDelete] instances.
  *
@@ -22,6 +23,11 @@ interface Data {
     fun query(context: Context): DataQuery
 
     /**
+     * Returns a new [DataDelete] instance.
+     */
+    fun delete(context: Context): DataDelete
+
+    /**
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
@@ -34,6 +40,8 @@ internal fun Data(): Data = DataImpl()
 private class DataImpl : Data {
 
     override fun query(context: Context) = DataQuery(context)
+
+    override fun delete(context: Context) = DataDelete(context)
 
     override fun permissions(context: Context) = ContactsPermissions(context)
 }
