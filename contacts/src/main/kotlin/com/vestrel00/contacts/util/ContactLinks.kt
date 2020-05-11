@@ -13,6 +13,7 @@ import com.vestrel00.contacts.entities.Name
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.entities.cursor.dataCursor
+import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.nameMapper
 import com.vestrel00.contacts.entities.operation.newUpdate
@@ -338,11 +339,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
         (Fields.RawContact.Id equalTo nameRawContactId)
                 and (Fields.MimeType equalTo MimeType.NAME)
     ) {
-        if (it.moveToNext()) {
-            it.dataCursor().dataId
-        } else {
-            null
-        }
+        it.getNextOrNull { it.dataCursor().dataId }
     }
 }
 
@@ -361,7 +358,7 @@ private fun nameRawContactId(context: Context, contactId: Long): Long? =
         var displayNameSource: Int = DisplayNameSources.UNDEFINED
         var nameRawContactId: Long? = null
 
-        if (it.moveToNext()) {
+        it.getNextOrNull {
             val contactsCursor = it.contactsCursor()
             displayNameSource = contactsCursor.displayNameSource ?: DisplayNameSources.UNDEFINED
             nameRawContactId = contactsCursor.nameRawContactId
@@ -398,11 +395,7 @@ private fun nameWithId(context: Context, nameRowId: Long): Name? = context.conte
     Include(Fields.Required),
     Fields.Id equalTo nameRowId
 ) {
-    if (it.moveToNext()) {
-        it.nameMapper().value
-    } else {
-        null
-    }
+    it.getNextOrNull { it.nameMapper().value }
 }
 
 private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? =
@@ -411,11 +404,7 @@ private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? =
         Include(Fields.RawContacts.ContactId),
         Fields.RawContacts.Id equalTo rawContactId
     ) {
-        if (it.moveToNext()) {
-            it.rawContactsCursor().contactId
-        } else {
-            null
-        }
+        it.getNextOrNull { it.rawContactsCursor().contactId }
     }
 
 // endregion

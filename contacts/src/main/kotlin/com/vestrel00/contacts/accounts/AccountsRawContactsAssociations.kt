@@ -10,6 +10,7 @@ import com.vestrel00.contacts.data.DataDelete
 import com.vestrel00.contacts.data.DataQuery
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.account
+import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
@@ -319,12 +320,8 @@ internal fun accountForRawContactWithId(context: Context, rawContactId: Long): A
         Table.RAW_CONTACTS,
         Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType),
         Fields.RawContacts.Id equalTo rawContactId
-    ) { cursor ->
-        if (cursor.moveToNext()) {
-            cursor.rawContactsCursor().account()
-        } else {
-            null
-        }
+    ) {
+        it.getNextOrNull { it.rawContactsCursor().account() }
     }
 
 private fun ContentResolver.updateRawContactsAccounts(

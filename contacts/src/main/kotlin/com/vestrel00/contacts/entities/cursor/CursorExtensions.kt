@@ -5,6 +5,8 @@ import android.net.Uri
 import com.vestrel00.contacts.AbstractField
 import java.util.*
 
+// region GET
+
 /*
  * This should be used for all retrievals of ints, longs, and everything else (including strings).
  *
@@ -66,6 +68,10 @@ internal fun Cursor.getDate(field: AbstractField): Date? {
     return if (dateMillis != null && dateMillis > 0) Date(dateMillis) else null
 }
 
+// endregion
+
 internal fun Cursor.resetPosition() {
     moveToPosition(-1)
 }
+
+internal fun <T> Cursor.getNextOrNull(next: () -> T?): T? = if (moveToNext()) next() else null

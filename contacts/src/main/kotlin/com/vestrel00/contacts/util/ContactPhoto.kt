@@ -12,6 +12,7 @@ import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.cursor.contactsCursor
+import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
@@ -51,11 +52,7 @@ fun ContactEntity.photoInputStream(context: Context): InputStream? {
         Include(Fields.Contacts.PhotoUri),
         Fields.Contacts.Id equalTo contactId
     ) {
-        var photoUri: Uri? = null
-        if (it.moveToNext()) {
-            photoUri = it.contactsCursor().photoUri
-        }
-
+        val photoUri = it.getNextOrNull { it.contactsCursor().photoUri }
         uriInputStream(context, photoUri)
     }
 }
@@ -169,11 +166,7 @@ fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
         Include(Fields.Contacts.PhotoThumbnailUri),
         Fields.Contacts.Id equalTo contactId
     ) {
-        var photoThumbnailUri: Uri? = null
-        if (it.moveToNext()) {
-            photoThumbnailUri = it.contactsCursor().photoThumbnailUri
-        }
-
+        val photoThumbnailUri = it.getNextOrNull { it.contactsCursor().photoThumbnailUri }
         uriInputStream(context, photoThumbnailUri)
     }
 }
@@ -323,11 +316,7 @@ private fun photoFileId(context: Context, contactId: Long): Long? = context.cont
     Include(Fields.Contacts.PhotoFileId),
     Fields.Contacts.Id equalTo contactId
 ) {
-    if (it.moveToNext()) {
-        it.contactsCursor().photoFileId
-    } else {
-        null
-    }
+    it.getNextOrNull { it.contactsCursor().photoFileId }
 }
 
 private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long? =
@@ -336,11 +325,7 @@ private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Lo
         Include(Fields.RawContact.Id),
         Fields.Photo.PhotoFileId equalTo photoFileId
     ) {
-        if (it.moveToNext()) {
-            it.photoCursor().rawContactId
-        } else {
-            null
-        }
+        it.getNextOrNull { it.photoCursor().rawContactId }
     }
 
 // endregion

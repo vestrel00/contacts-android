@@ -6,6 +6,7 @@ import android.database.Cursor
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.dataCursor
+import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.query
 
@@ -156,11 +157,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
         if (entity != null && !entity.isBlank()) {
             // Entity contains some data. Query for the (first) row.
             val dataRowId: Long? = contentResolver.dataRowIdsFor(rawContactId) {
-                if (it.moveToNext()) {
-                    it.dataCursor().dataId
-                } else {
-                    null
-                }
+                it.getNextOrNull { it.dataCursor().dataId }
             }
 
             if (dataRowId != null) {

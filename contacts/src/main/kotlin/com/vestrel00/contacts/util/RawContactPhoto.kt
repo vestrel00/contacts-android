@@ -13,6 +13,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
+import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
@@ -50,11 +51,7 @@ fun RawContactEntity.photoInputStream(context: Context): InputStream? {
         Include(Fields.Photo.PhotoFileId),
         (Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo MimeType.PHOTO)
     ) {
-        if (it.moveToNext()) {
-            it.photoCursor().photoFileId
-        } else {
-            null
-        }
+        it.getNextOrNull { it.photoCursor().photoFileId }
     }
 
     if (photoFileId != null) {
@@ -159,12 +156,7 @@ fun RawContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
         (Fields.RawContact.Id equalTo rawContactId)
                 and (Fields.MimeType equalTo MimeType.PHOTO)
     ) {
-        val photoThumbnail: ByteArray? = if (it.moveToNext()) {
-            it.photoCursor().photoThumbnail
-        } else {
-            null
-        }
-
+        val photoThumbnail = it.getNextOrNull { it.photoCursor().photoThumbnail }
         photoThumbnail?.let(::ByteArrayInputStream)
     }
 }
