@@ -44,14 +44,14 @@ internal class ContactsMapper(
     fun processContactsCursor(cursor: Cursor): ContactsMapper = apply {
         // Use the Contacts cursor to retrieve the contactId.
         val contactsCursor = cursor.contactsCursor()
+        val contactMapper = cursor.contactMapper(contactsCursor, isProfile)
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
             val contactId = contactsCursor.contactId
 
             if (contactId != null && !contactsMap.containsKey(contactId)) {
-                contactsMap[contactId] =
-                    cursor.contactMapper(contactsCursor, isProfile).value
+                contactsMap[contactId] = contactMapper.value
             }
         }
     }
@@ -64,14 +64,14 @@ internal class ContactsMapper(
     fun processRawContactsCursor(cursor: Cursor): ContactsMapper = apply {
         // Use the RawContacts cursor to retrieve the rawContactId.
         val rawContactsCursor = cursor.rawContactsCursor()
+        val tempRawContactMapper = cursor.tempRawContactMapper(rawContactsCursor, isProfile)
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
             val rawContactId = rawContactsCursor.rawContactId
 
             if (rawContactId != null && !rawContactsMap.containsKey(rawContactId)) {
-                rawContactsMap[rawContactId] =
-                    cursor.tempRawContactMapper(rawContactsCursor, isProfile).value
+                rawContactsMap[rawContactId] = tempRawContactMapper.value
             }
         }
     }

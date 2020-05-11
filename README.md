@@ -1,6 +1,6 @@
 ## TODO
 
-1. Migrate local account to a remote account and vice versa.
+1. Migrate local account to a remote account and vice versa + withPermission and async
 2. Add function to commit all operations in one go with a boolean result in Update and Delete interfaces.
 
 3. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.

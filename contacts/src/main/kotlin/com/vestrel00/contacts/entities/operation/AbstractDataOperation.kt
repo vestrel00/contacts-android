@@ -127,15 +127,20 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
             // Valid entities have a valid id, which means they are already in the DB. In this case,
             // The entity may have been deleted or another entity belonging to a different contact
             // is included here. Blank entities are not inserted.
-            for (entity in validEntitiesMap.values.asSequence().filter { !it.isBlank() }) {
+            val nonBlankValidEntities =
+                validEntitiesMap.values.asSequence().filter { !it.isBlank() }
+
+            for (entity in nonBlankValidEntities) {
                 add(insertDataRow(entity, rawContactId))
             }
 
             // Insert all invalid entities.
             // Invalid entities have an invalid id, which means they are newly created entities
             // that are not yet in the DB. Blank entities are not inserted.
-            val invalidEntities = entities.asSequence().filter { it.id == null }
-            for (entity in invalidEntities.filter { !it.isBlank() }) {
+            val nonBlankInvalidEntities =
+                entities.asSequence().filter { it.id == null && !it.isBlank() }
+
+            for (entity in nonBlankInvalidEntities) {
                 add(insertDataRow(entity, rawContactId))
             }
         } else {
