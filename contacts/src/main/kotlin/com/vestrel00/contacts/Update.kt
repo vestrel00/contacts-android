@@ -2,10 +2,10 @@ package com.vestrel00.contacts
 
 import android.content.ContentProviderOperation
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
+import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Updates one or more raw contacts' rows in the data table.
@@ -316,13 +316,7 @@ private fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
      * Atomically update all of the associated Data rows. All of the above operations will
      * either succeed or fail.
      */
-    try {
-        contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
+    return contentResolver.applyBatch(operations) != null
 }
 
 private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {

@@ -2,11 +2,11 @@ package com.vestrel00.contacts
 
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.operation.RawContactOperation
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Deletes one or more raw contacts or contacts from the contacts table. All associated raw contacts
@@ -187,32 +187,17 @@ private class DeleteImpl(
     }
 }
 
-internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean {
-    val operation = RawContactOperation(Table.RAW_CONTACTS.uri).deleteRawContact(rawContactId)
+internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean =
+    applyBatch(
+        RawContactOperation(Table.RAW_CONTACTS.uri)
+            .deleteRawContact(rawContactId)
+    ) != null
 
-    // Perform this single operation in a batch to be consistent with the other CRUD functions.
-    try {
-        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
-}
-
-private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean {
-    val operation = RawContactOperation(Table.RAW_CONTACTS.uri)
-        .deleteRawContactsWithContactId(contactId)
-
-    // Perform this single operation in a batch to be consistent with the other CRUD functions.
-    try {
-        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
-}
+private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
+    applyBatch(
+        RawContactOperation(Table.RAW_CONTACTS.uri)
+            .deleteRawContactsWithContactId(contactId)
+    ) != null
 
 private class DeleteResult(
     private val rawContactIdsResultMap: Map<Long, Boolean>,

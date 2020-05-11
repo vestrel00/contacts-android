@@ -343,26 +343,14 @@ fun RawContactEntity.removePhoto(context: Context): Boolean {
         return false
     }
 
-    val deleteRawContactPhotoOperation = newDelete(Table.DATA)
-        .withSelection(
-            (Fields.RawContact.Id equalTo rawContactId)
-                    and (Fields.MimeType equalTo MimeType.PHOTO)
-        )
-        .build()
-
-    // Delete returns the number of rows deleted, which doesn't indicate if the delete operation
-    // succeeded or not because there may have not been a row to delete. Therefore, we use
-    // applyBatch instead, which should indicate success or failure via exception throwing.
-    try {
-        context.contentResolver.applyBatch(
-            ContactsContract.AUTHORITY,
-            arrayListOf(deleteRawContactPhotoOperation)
-        )
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
+    return context.contentResolver.applyBatch(
+        newDelete(Table.DATA)
+            .withSelection(
+                (Fields.RawContact.Id equalTo rawContactId)
+                        and (Fields.MimeType equalTo MimeType.PHOTO)
+            )
+            .build()
+    ) != null
 }
 
 // endregion

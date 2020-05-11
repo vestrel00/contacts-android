@@ -3,11 +3,11 @@ package com.vestrel00.contacts.groups
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.accounts.AccountsQuery
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.operation.GroupOperation
+import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Inserts one or more user groups into the groups table.
@@ -169,18 +169,7 @@ private class GroupsInsertImpl(
 }
 
 private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
-    val operation = GroupOperation().insert(group)
-
-    /*
-     * Atomically insert the group row.
-     *
-     * Perform this single operation in a batch to be consistent with the other CRUD functions.
-     */
-    val results = try {
-        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        null
-    }
+    val results = applyBatch(GroupOperation().insert(group))
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the

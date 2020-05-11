@@ -1,8 +1,8 @@
 package com.vestrel00.contacts.accounts
 
 import android.accounts.Account
+import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.`in`
@@ -16,6 +16,7 @@ import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
+import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.nullIfNotInSystem
 import com.vestrel00.contacts.util.query
 
@@ -233,7 +234,9 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
             .where(Fields.RawContact.Id `in` nonNullRawContactIds)
             .groupMemberships()
 
-        val result = context.updateRawContactsAccounts(nonNullRawContactIds, account)
+        val result = context.contentResolver.updateRawContactsAccounts(
+            nonNullRawContactIds, account
+        )
 
         if (result) {
             // Delete the group memberships that existed before the update.
@@ -324,24 +327,15 @@ internal fun accountForRawContactWithId(context: Context, rawContactId: Long): A
         }
     }
 
-private fun Context.updateRawContactsAccounts(
+private fun ContentResolver.updateRawContactsAccounts(
     rawContactIds: Sequence<Long>, account: Account
-): Boolean {
-    val operation = newUpdate(Table.RAW_CONTACTS)
+): Boolean = applyBatch(
+    newUpdate(Table.RAW_CONTACTS)
         .withSelection(Fields.RawContacts.Id `in` rawContactIds)
         .withValue(Fields.RawContacts.AccountName, account.name)
         .withValue(Fields.RawContacts.AccountType, account.type)
         .build()
-
-    // Perform this single operation in a batch to be consistent with the other CRUD functions.
-    try {
-        contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
-}
+) != null
 
 private class AccountsResultImpl(
     override val accounts: List<Account?>,

@@ -147,18 +147,13 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
 
     val nameRowIdToUseAsDefault = nameRowIdToUseAsDefault(context, prioritizedContactIds)
 
-    try {
-        // Note that the result uri is null. There is no meaningful information we can get here.
-        context.contentResolver.applyBatch(
-            AUTHORITY,
-            aggregateExceptionsOperations(
-                sortedRawContactIds,
-                AggregationExceptions.TYPE_KEEP_TOGETHER
-            )
+    // Note that the result uri is null. There is no meaningful information we can get here.
+    context.contentResolver.applyBatch(
+        aggregateExceptionsOperations(
+            sortedRawContactIds,
+            AggregationExceptions.TYPE_KEEP_TOGETHER
         )
-    } catch (exception: Exception) {
-        return ContactLinkFailed
-    }
+    ) ?: return ContactLinkFailed
 
     // Link succeeded. Set the default name.
     val name = nameRowIdToUseAsDefault?.let {
@@ -233,17 +228,12 @@ fun ContactEntity.unlink(context: Context): ContactUnlinkResult {
         return ContactUnlinkFailed
     }
 
-    try {
-        context.contentResolver.applyBatch(
-            AUTHORITY,
-            aggregateExceptionsOperations(
-                sortedRawContactIds,
-                AggregationExceptions.TYPE_KEEP_SEPARATE
-            )
+    context.contentResolver.applyBatch(
+        aggregateExceptionsOperations(
+            sortedRawContactIds,
+            AggregationExceptions.TYPE_KEEP_SEPARATE
         )
-    } catch (exception: Exception) {
-        return ContactUnlinkFailed
-    }
+    ) ?: return ContactUnlinkFailed
 
     return ContactUnlinkSuccess(sortedRawContactIds)
 }

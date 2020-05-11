@@ -2,7 +2,6 @@ package com.vestrel00.contacts.util
 
 import android.content.ContentProviderOperation
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
@@ -49,20 +48,11 @@ fun DataEntity.setAsDefault(context: Context): Boolean {
         return false
     }
 
-    val operations = arrayListOf(
+    return context.contentResolver.applyBatch(
         clearPrimary(rawContactId),
         clearSuperPrimary(contactId),
         setPrimaryAndSuperPrimary(dataId)
-    )
-
-    // Perform this single operation in a batch to be consistent with the other CRUD functions.
-    try {
-        context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
+    ) != null
 }
 
 /**
@@ -104,16 +94,10 @@ fun DataEntity.clearDefault(context: Context): Boolean {
         return false
     }
 
-    val operations = arrayListOf(clearPrimary(rawContactId), clearSuperPrimary(contactId))
-
-    // Perform this single operation in a batch to be consistent with the other CRUD functions.
-    try {
-        context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
+    return context.contentResolver.applyBatch(
+        clearPrimary(rawContactId),
+        clearSuperPrimary(contactId)
+    ) != null
 }
 
 /**

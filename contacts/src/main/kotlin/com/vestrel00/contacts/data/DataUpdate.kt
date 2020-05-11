@@ -2,10 +2,10 @@ package com.vestrel00.contacts.data
 
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.MutableDataEntity
 import com.vestrel00.contacts.entities.operation.updateOperation
+import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Updates one or more data rows in the data table.
@@ -127,22 +127,8 @@ private class DataUpdateImpl(
     }
 }
 
-private fun ContentResolver.updateData(data: MutableDataEntity): Boolean {
-    val operation = data.updateOperation() ?: return false
-
-    /*
-     * Atomically update the data row.
-     *
-     * Perform this single operation in a batch to be consistent with the other CRUD functions.
-     */
-    try {
-        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
-}
+private fun ContentResolver.updateData(data: MutableDataEntity): Boolean =
+    data.updateOperation()?.let { applyBatch(it) } != null
 
 private class DataUpdateResult(private val dataIdsResultMao: Map<Long, Boolean>) :
     DataUpdate.Result {

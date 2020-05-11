@@ -2,10 +2,10 @@ package com.vestrel00.contacts.groups
 
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.operation.GroupOperation
+import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Updates one or more groups rows in the groups table.
@@ -148,22 +148,8 @@ private class GroupsUpdateImpl(
     }
 }
 
-private fun ContentResolver.updateGroup(group: MutableGroup): Boolean {
-    val operation = GroupOperation().update(group) ?: return false
-
-    /*
-     * Atomically update the group row.
-     *
-     * Perform this single operation in a batch to be consistent with the other CRUD functions.
-     */
-    try {
-        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
-}
+private fun ContentResolver.updateGroup(group: MutableGroup): Boolean =
+    GroupOperation().update(group)?.let { applyBatch(it) } != null
 
 private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsUpdate.Result {

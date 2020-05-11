@@ -1,13 +1,18 @@
 package com.vestrel00.contacts.util
 
 import android.annotation.SuppressLint
+import android.content.ContentProviderOperation
+import android.content.ContentProviderResult
 import android.content.ContentResolver
 import android.database.Cursor
 import android.database.SQLException
 import android.net.Uri
+import android.provider.ContactsContract
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.Where
 import com.vestrel00.contacts.entities.table.Table
+
+// region QUERY
 
 // Not inlining these as they just add too many lines of code and are most likely only used in one
 // time transactions (not in loops).
@@ -67,3 +72,20 @@ internal fun <T> ContentResolver.query(
 
     return result
 }
+
+// endregion
+
+// region APPLY BATCH
+
+internal fun ContentResolver.applyBatch(vararg operations: ContentProviderOperation):
+        Array<ContentProviderResult>? = applyBatch(arrayListOf(*operations))
+
+internal fun ContentResolver.applyBatch(operations: ArrayList<ContentProviderOperation>):
+        Array<ContentProviderResult>? =
+    try {
+        applyBatch(ContactsContract.AUTHORITY, operations)
+    } catch (exception: Exception) {
+        null
+    }
+
+// endregion

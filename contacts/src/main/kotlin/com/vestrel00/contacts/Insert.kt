@@ -3,10 +3,10 @@ package com.vestrel00.contacts
 import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.nullIfNotInSystem
 
 /**
@@ -304,11 +304,7 @@ private fun Context.insertRawContactForAccount(
      * Atomically create the RawContact row and all of the associated Data rows. All of the
      * above operations will either succeed or fail.
      */
-    val results = try {
-        contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
-    } catch (exception: Exception) {
-        null
-    }
+    val results = contentResolver.applyBatch(operations)
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the

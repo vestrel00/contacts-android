@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.util
 
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.MutableOptions
@@ -31,20 +30,9 @@ fun ContactEntity.setOptions(context: Context, options: MutableOptions): Boolean
         return false
     }
 
-    val operation = OptionsOperation().updateContactOptions(contactId, options)
-
-    /*
-     * Update the ContactOptionsColumns of the Contact row matching the Contacts._ID.
-     *
-     * Perform this single operation in a batch to be consistent with the other CRUD functions.
-     */
-    try {
-        context.contentResolver.applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
+    return context.contentResolver.applyBatch(
+        OptionsOperation().updateContactOptions(contactId, options)
+    ) != null
 }
 
 /**

@@ -2,7 +2,6 @@ package com.vestrel00.contacts.data
 
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.DataEntity
@@ -10,6 +9,7 @@ import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
+import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Deletes one or more data the Data table.
@@ -132,20 +132,11 @@ private class DataDeleteImpl(
     }
 }
 
-private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean {
-    val operation = newDelete(Table.DATA)
+private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean = applyBatch(
+    newDelete(Table.DATA)
         .withSelection(Fields.Id equalTo dataId)
         .build()
-
-    // Perform this single operation in a batch to be consistent with the other CRUD functions.
-    try {
-        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
-}
+) != null
 
 private class DataDeleteResult(
     private val dataIdsResultMap: Map<Long, Boolean>

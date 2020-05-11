@@ -2,10 +2,10 @@ package com.vestrel00.contacts.groups
 
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.Group
 import com.vestrel00.contacts.entities.operation.GroupOperation
+import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Deletes one or more groups from the groups table.
@@ -115,22 +115,8 @@ private class GroupsDeleteImpl(
     }
 }
 
-private fun ContentResolver.deleteGroupWithId(groupId: Long): Boolean {
-    val operation = GroupOperation().delete(groupId)
-
-    /*
-     * Atomically delete the group row.
-     *
-     * Perform this single operation in a batch to be consistent with the other CRUD functions.
-     */
-    try {
-        applyBatch(ContactsContract.AUTHORITY, arrayListOf(operation))
-    } catch (exception: Exception) {
-        return false
-    }
-
-    return true
-}
+private fun ContentResolver.deleteGroupWithId(groupId: Long): Boolean =
+    applyBatch(GroupOperation().delete(groupId)) != null
 
 private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsDelete.Result {
