@@ -157,6 +157,9 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
     ) ?: return ContactLinkFailed
 
     // Link succeeded. Set the default name.
+    // This operation is not batched with the aggregateExceptionsOperations because there may not be
+    // any name to set as default. Plus, we use a reference to the name row with updated contactId
+    // after the link / aggregation.
     val name = nameRowIdToUseAsDefault?.let {
         nameWithId(context, it)?.apply {
             setAsDefault(context)

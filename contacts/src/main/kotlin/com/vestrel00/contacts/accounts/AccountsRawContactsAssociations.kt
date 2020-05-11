@@ -6,12 +6,12 @@ import android.content.Context
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.`in`
-import com.vestrel00.contacts.data.DataDelete
-import com.vestrel00.contacts.data.DataQuery
+import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.account
 import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
+import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
@@ -39,12 +39,20 @@ interface AccountsRawContactsAssociations {
     /**
      * Returns the [Account] for the given [rawContact]. Returns null if the [rawContact] is a local
      * RawContact, which is not associated with any account.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun accountFor(rawContact: RawContactEntity): Account?
 
     /**
      * Returns the [AccountsResult] for the given [rawContacts].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun accountsFor(vararg rawContacts: RawContactEntity): AccountsResult
@@ -65,16 +73,33 @@ interface AccountsRawContactsAssociations {
 
     // region ASSOCIATE
 
+    /**
+     * Associates the given [rawContacts] with the given [account].
+     *
+     * RawContacts that were already associated with an Account will no longer be associated with
+     * that Account if this call succeeds. Existing group memberships will be deleted. A group
+     * membership to the default group of the given [Account] will be created automatically by the
+     * Contacts Provider upon successful operation.
+     *
+     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
+     * have been manually created via a constructor will be ignored.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContacts(
         account: Account, vararg rawContacts: RawContactEntity
     ): Boolean
 
+    /**
+     * See [associateAccountWithRawContacts].
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContacts(
         account: Account, rawContacts: Collection<RawContactEntity>
     ): Boolean
 
+    /**
+     * See [associateAccountWithRawContacts].
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContacts(
         account: Account, rawContacts: Sequence<RawContactEntity>
@@ -211,6 +236,7 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
     // endregion
 
     // region ASSOCIATE
+
     override fun associateAccountWithRawContacts(
         account: Account, vararg rawContacts: RawContactEntity
     ) = associateAccountWithRawContacts(account, rawContacts.asSequence())
@@ -223,28 +249,17 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean {
 
-        // A valid account is required for associations.
-        account.nullIfNotInSystem(context) ?: return false
-
         // Only existing RawContacts can be associated with an Account.
         val nonNullRawContactIds = rawContacts.map { it.id }.filterNotNull()
 
-        // First, get all of the existing group memberships so we may delete them later.
-        val groupMemberships = DataQuery(context)
-            .include(Fields.Required)
-            .where(Fields.RawContact.Id `in` nonNullRawContactIds)
-            .groupMemberships()
-
-        val result = context.contentResolver.updateRawContactsAccounts(
-            nonNullRawContactIds, account
-        )
-
-        if (result) {
-            // Delete the group memberships that existed before the update.
-            DataDelete(context).data(groupMemberships).commit()
+        if (nonNullRawContactIds.count() == 0) {
+            return false
         }
 
-        return result
+        // A valid account is required for associations.
+        account.nullIfNotInSystem(context) ?: return false
+
+        return context.contentResolver.updateRawContactsAccounts(nonNullRawContactIds, account)
     }
 
     override fun associateAccountWithLocalRawContacts(account: Account): Boolean {
@@ -324,9 +339,22 @@ internal fun accountForRawContactWithId(context: Context, rawContactId: Long): A
         it.getNextOrNull { it.rawContactsCursor().account() }
     }
 
+/**
+ * Deletes existing group memberships in the Data table of the given [rawContactIds] and then
+ * updates the sync columns in the RawContacts table with the given [account]. These two operations
+ * are done in a batch so either both succeed or both fail.
+ */
 private fun ContentResolver.updateRawContactsAccounts(
     rawContactIds: Sequence<Long>, account: Account
 ): Boolean = applyBatch(
+    // First delete existing group memberships.
+    newDelete(Table.DATA)
+        .withSelection(
+            (Fields.RawContact.Id `in` rawContactIds)
+                    and (Fields.MimeType equalTo MimeType.GROUP_MEMBERSHIP)
+        )
+        .build(),
+    // Then update the sync columns.
     newUpdate(Table.RAW_CONTACTS)
         .withSelection(Fields.RawContacts.Id `in` rawContactIds)
         .withValue(Fields.RawContacts.AccountName, account.name)
