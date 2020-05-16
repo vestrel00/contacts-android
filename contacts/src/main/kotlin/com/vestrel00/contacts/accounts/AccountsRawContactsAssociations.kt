@@ -3,14 +3,11 @@ package com.vestrel00.contacts.accounts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
+import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
-import com.vestrel00.contacts.entities.cursor.account
-import com.vestrel00.contacts.entities.cursor.getNextOrNull
-import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
@@ -19,7 +16,6 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.nullIfNotInSystem
-import com.vestrel00.contacts.util.query
 
 // TODO Update DEV_NOTES data required and groups / group membership sections.
 // Contacts Provider automatically creates a group membership to the default group of the target Account when the account changes.
@@ -34,43 +30,6 @@ import com.vestrel00.contacts.util.query
  */
 interface AccountsRawContactsAssociations {
 
-    // region GET ACCOUNTS
-
-    /**
-     * Returns the [Account] for the given [rawContact]. Returns null if the [rawContact] is a local
-     * RawContact, which is not associated with any account.
-     *
-     * ## Thread Safety
-     *
-     * This should be called in a background thread to avoid blocking the UI thread.
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountFor(rawContact: RawContactEntity): Account?
-
-    /**
-     * Returns the [AccountsResult] for the given [rawContacts].
-     *
-     * ## Thread Safety
-     *
-     * This should be called in a background thread to avoid blocking the UI thread.
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(vararg rawContacts: RawContactEntity): AccountsResult
-
-    /**
-     * See [accountsFor].
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Collection<RawContactEntity>): AccountsResult
-
-    /**
-     * See [accountsFor].
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Sequence<RawContactEntity>): AccountsResult
-
-    // endregion
-
     // region ASSOCIATE
 
     /**
@@ -83,6 +42,15 @@ interface AccountsRawContactsAssociations {
      *
      * Only existing RawContacts that have been retrieved via a query will be processed. Those that
      * have been manually created via a constructor will be ignored.
+     *
+     * ## Permissions
+     *
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+     * [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContacts(
@@ -155,85 +123,21 @@ interface AccountsRawContactsAssociations {
     fun dissociateRawContactsFromAllAccounts(): Boolean
 
     // endregion
-
-    interface AccountsResult {
-
-        /**
-         * The list of [Account]s retrieved in the same order as the given list of
-         * [RawContactEntity].
-         */
-        val accounts: List<Account?>
-
-        /**
-         * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
-         */
-        fun accountFor(rawContact: RawContactEntity): Account?
-
-        /**
-         * The [Account] retrieved for the [RawContactEntity] with [rawContactId]. Null if no
-         * Account or retrieval failed.
-         */
-        fun accountFor(rawContactId: Long): Account?
-    }
 }
 
 @Suppress("FunctionName")
 internal fun AccountsRawContactsAssociations(context: Context): AccountsRawContactsAssociations =
-    AccountsRawContactsAssociationsImpl(context)
+    AccountsRawContactsAssociationsImpl(
+        context,
+        AccountsPermissions(context),
+        ContactsPermissions(context)
+    )
 
-private class AccountsRawContactsAssociationsImpl(private val context: Context) :
-    AccountsRawContactsAssociations {
-
-    // region GET ACCOUNTS
-
-    override fun accountFor(rawContact: RawContactEntity): Account? =
-        rawContact.id?.let { accountForRawContactWithId(context, it) }
-
-    override fun accountsFor(vararg rawContacts: RawContactEntity) =
-        accountsFor(rawContacts.asSequence())
-
-    override fun accountsFor(rawContacts: Collection<RawContactEntity>) =
-        accountsFor(rawContacts.asSequence())
-
-    override fun accountsFor(rawContacts: Sequence<RawContactEntity>):
-            AccountsRawContactsAssociations.AccountsResult {
-
-        val rawContactIds = rawContacts.map { it.id }
-        val nonNullRawContactIds = rawContactIds.filterNotNull()
-
-        val rawContactIdsResultMap = mutableMapOf<Long, Account?>().apply {
-            // Only perform the query if there is at least one nonNullRawContactId
-            if (nonNullRawContactIds.count() == 0) {
-                return@apply
-            }
-
-            // Get all rows in nonNullRawContactIds.
-            context.contentResolver.query(
-                Table.RAW_CONTACTS,
-                Include(Fields.RawContacts),
-                Fields.RawContacts.Id `in` nonNullRawContactIds
-            ) {
-                val rawContactsCursor = it.rawContactsCursor()
-                while (it.moveToNext()) {
-                    val rawContactId = rawContactsCursor.rawContactId
-                    if (rawContactId != null) {
-                        put(rawContactId, rawContactsCursor.account())
-                    }
-                }
-            }
-        }
-
-        // Build the parameter-in-order list with nullable Accounts.
-        val accounts = mutableListOf<Account?>().apply {
-            for (rawContactId in rawContactIds) {
-                add(rawContactIdsResultMap[rawContactId])
-            }
-        }
-
-        return AccountsResultImpl(accounts, rawContactIdsResultMap)
-    }
-
-    // endregion
+private class AccountsRawContactsAssociationsImpl(
+    private val context: Context,
+    private val accountsPermissions: AccountsPermissions,
+    private val contactsPermissions: ContactsPermissions
+) : AccountsRawContactsAssociations {
 
     // region ASSOCIATE
 
@@ -248,6 +152,10 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
     override fun associateAccountWithRawContacts(
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean {
+
+        if (!accountsPermissions.canGetAccounts() || !contactsPermissions.canInsertUpdateDelete()) {
+            return false
+        }
 
         // Only existing RawContacts can be associated with an Account.
         val nonNullRawContactIds = rawContacts.map { it.id }.filterNotNull()
@@ -330,15 +238,6 @@ private class AccountsRawContactsAssociationsImpl(private val context: Context) 
     // endregion
 }
 
-internal fun accountForRawContactWithId(context: Context, rawContactId: Long): Account? =
-    context.contentResolver.query(
-        Table.RAW_CONTACTS,
-        Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType),
-        Fields.RawContacts.Id equalTo rawContactId
-    ) {
-        it.getNextOrNull { it.rawContactsCursor().account() }
-    }
-
 /**
  * Deletes existing group memberships in the Data table of the given [rawContactIds] and then
  * updates the sync columns in the RawContacts table with the given [account]. These two operations
@@ -361,14 +260,3 @@ private fun ContentResolver.updateRawContactsAccounts(
         .withValue(Fields.RawContacts.AccountType, account.type)
         .build()
 ) != null
-
-private class AccountsResultImpl(
-    override val accounts: List<Account?>,
-    private val rawContactIdsResultMap: Map<Long, Account?>
-) : AccountsRawContactsAssociations.AccountsResult {
-
-    override fun accountFor(rawContact: RawContactEntity): Account? =
-        rawContact.id?.let(::accountFor)
-
-    override fun accountFor(rawContactId: Long): Account? = rawContactIdsResultMap[rawContactId]
-}

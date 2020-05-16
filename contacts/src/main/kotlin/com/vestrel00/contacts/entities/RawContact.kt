@@ -266,6 +266,23 @@ data class MutableRawContact internal constructor(
     )
 }
 
+// TODO Add util function: BlankRawContact.toRawContact + async (reuse RawContactRefresh.findFirstRawContactWithId)
+/**
+ * A blank [RawContactEntity] that contains no data (e.g. email, phone). This only contains critical
+ * information for performing RawContact operations.
+ */
+@Parcelize
+data class BlankRawContact internal constructor(
+    override val id: Long?,
+    override val contactId: Long?,
+    override val isProfile: Boolean,
+
+    val displayName: String?
+) : RawContactEntity() {
+
+    override fun isBlank(): Boolean = true
+}
+
 /**
  * A temporary holder of immutable entities in mutable lists / attribute.
  *

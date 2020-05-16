@@ -6,6 +6,11 @@ import com.vestrel00.contacts.entities.cursor.*
 
 internal fun Cursor.addressMapper(): EntityMapper<Address> = AddressMapper(addressCursor())
 
+internal fun Cursor.blankRawContactMapper(
+    rawContactIdCursor: RawContactIdCursor, isProfile: Boolean
+): EntityMapper<BlankRawContact> =
+    BlankRawContactMapper(rawContactsCursor(), rawContactIdCursor, isProfile)
+
 internal fun Cursor.contactMapper(
     contactIdCursor: ContactIdCursor, isProfile: Boolean
 ): EntityMapper<Contact> =

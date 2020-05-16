@@ -2,6 +2,10 @@ package com.vestrel00.contacts.util
 
 import com.vestrel00.contacts.entities.*
 
+// Dev note: I thought about adding functions that return a List instead of a Sequence for Java
+// consumer convenience. Java consumers should still be able to use or convert Sequences easily so
+// I decided not to add more lines of code.
+
 // region Contact
 
 /**

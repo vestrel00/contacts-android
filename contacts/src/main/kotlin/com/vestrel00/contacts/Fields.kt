@@ -33,7 +33,7 @@ abstract class FieldSet internal constructor(
 }
 
 /**
- * Contains all Contact Data table [Field]s, including columns from other tables that are joined.
+ * Contains all Data table [Field]s, including columns from other tables that are joined.
  *
  * These are mainly used for queries.
  */
@@ -63,6 +63,7 @@ object Fields {
     @JvmField
     val Contact = ContactFields()
 
+    // TODO remove from this object and make it an object
     // Do not add this to AllFields as this is a different table from the Data table.
     internal val Contacts = ContactsFields()
 
@@ -115,6 +116,7 @@ object Fields {
     @JvmField
     val RawContact = RawContactFields()
 
+    // TODO remove from this object and make it an object
     // Do not add this to AllFields as this is a different table from the Data table.
     internal val RawContacts = RawContactsFields()
 
@@ -560,11 +562,13 @@ internal class RawContactsFields : FieldSet(UNKNOWN) {
 
     val ContactId = AbstractField(RawContacts.CONTACT_ID, mimeType)
 
+    val DisplayName = AbstractField(RawContacts.DISPLAY_NAME_PRIMARY, mimeType)
+
     val AccountName = AbstractField(RawContacts.ACCOUNT_NAME, mimeType)
 
     val AccountType = AbstractField(RawContacts.ACCOUNT_TYPE, mimeType)
 
-    override val fields = setOf(Id, ContactId, AccountName, AccountType)
+    override val fields = setOf(Id, ContactId, DisplayName, AccountName, AccountType)
 }
 
 class RelationFields : FieldSet(MimeType.RELATION) {

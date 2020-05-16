@@ -37,20 +37,10 @@ import com.vestrel00.contacts.util.applyBatch
  *
  * To insert a group with the title "Best Friends" for the given account;
  *
- * In Kotlin,
- *
  * ```kotlin
  * val result = groupsInsert
  *      .groups(MutableGroup("Best Friends", account))
  *      .commit()
- * ```
- *
- * In Java,
- *
- * ```java
- * GroupsInsert.Result result = groupsInsert
- *      .groups(new MutableGroup("Best Friends", account))
- *      .commit();
  * ```
  */
 interface GroupsInsert {

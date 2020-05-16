@@ -48,11 +48,6 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  *      .include(Name, Address)
  *      .find();
  * ```
- *
- * ## Note
- *
- * All functions here are safe to call in the Main / UI thread EXCEPT for [find], which should be
- * called in a worker thread in order to prevent blocking the UI.
  */
 interface ProfileQuery {
 

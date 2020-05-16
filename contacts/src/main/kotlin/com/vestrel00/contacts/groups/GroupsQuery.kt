@@ -21,19 +21,18 @@ import com.vestrel00.contacts.util.query
  *
  * To get all groups for a given account;
  *
- * In Kotlin and Java,
- *
  * ```kotlin
  * val groups = groupsQuery
  *      .account(account)
  *      .find()
  * ```
- * ## Filtering
+ *
+ * ## Where, orderBy, offset, and limit
  *
  * Given the nature of groups, this library makes an assumption that there are not that many groups
  * **per Account**. Typical Accounts usually have less than 10. Even those in large companies, have
  * less than 100 (?) groups. This assumption means that the query function of groups need not be as
- * extensive (or at all) as Contacts Query. Filter, order, offset, and limit functions are left to
+ * extensive (or at all) as other Queries. Where, orderBy, offset, and limit functions are left to
  * consumers to implement if they wish.
  *
  * ## Developer notes

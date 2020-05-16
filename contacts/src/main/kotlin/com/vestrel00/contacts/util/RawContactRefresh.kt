@@ -24,17 +24,10 @@ import com.vestrel00.contacts.equalTo
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): RawContact? {
-    if (id == null) {
-        return this
+fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): RawContact? =
+    id?.let { rawContactId ->
+        context.findFirstRawContactWithId(rawContactId, cancel)
     }
-    
-    return Query(context)
-        .where(Fields.RawContact.Id equalTo id)
-        .findFirst(cancel)
-        ?.rawContacts
-        ?.firstOrNull()
-}
 
 /**
  * This will return [this] same instance if it does not have a valid ID, which means it is a raw
@@ -50,15 +43,15 @@ fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): Raw
 @JvmOverloads
 fun MutableRawContact.refresh(
     context: Context, cancel: () -> Boolean = { false }
-): MutableRawContact? {
-    if (id == null) {
-        return this
-    }
-
-    return Query(context)
-        .where(Fields.RawContact.Id equalTo id)
-        .findFirst(cancel)
-        ?.rawContacts
-        ?.firstOrNull()
+): MutableRawContact? = id?.let { rawContactId ->
+    context
+        .findFirstRawContactWithId(rawContactId, cancel)
         ?.toMutableRawContact()
 }
+
+private fun Context.findFirstRawContactWithId(rawContactId: Long, cancel: () -> Boolean):
+        RawContact? = Query(this)
+    .where(Fields.RawContact.Id equalTo rawContactId)
+    .findFirst(cancel)
+    ?.rawContacts
+    ?.firstOrNull()

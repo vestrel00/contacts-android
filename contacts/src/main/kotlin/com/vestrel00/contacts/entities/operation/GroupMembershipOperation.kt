@@ -63,7 +63,8 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
 
         // Groups must always be associated with an account. No account, no group operation.
-        val account = accountForRawContactWithId(context, rawContactId) ?: return emptyList()
+        val account = context.contentResolver
+            .accountForRawContactWithId(rawContactId) ?: return emptyList()
         val accountGroups = GroupsQuery(context).account(account).find()
             // This is the same as GroupMembership.groupId.
             .associateBy { it.id }

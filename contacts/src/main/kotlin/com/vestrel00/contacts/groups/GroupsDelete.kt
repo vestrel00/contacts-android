@@ -22,8 +22,6 @@ import com.vestrel00.contacts.util.applyBatch
  *
  * To delete the given groups;
  *
- * In Kotlin and Java,
- *
  * ```kotlin
  * groupsDelete
  *      .groups(groups)

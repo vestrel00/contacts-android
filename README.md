@@ -1,6 +1,7 @@
 ## TODO
 
 1. Migrate local account to a remote account and vice versa + withPermission and async
+    - Verify everything in the accounts package!
 2. Add function to commit all operations in one go with a boolean result in Update and Delete interfaces.
 
 3. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
@@ -15,7 +16,7 @@
 5. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
 6. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-7. Add Copyright to all non-sample files.
+7. Add Copyright to all files.
 
 ----------------------------------------------------------------------------------------------------
 
