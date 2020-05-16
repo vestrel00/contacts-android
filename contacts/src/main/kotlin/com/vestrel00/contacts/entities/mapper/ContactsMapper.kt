@@ -113,11 +113,10 @@ internal class ContactsMapper(
         // Map contact id to set of raw contacts.
         val contactRawMap = mutableMapOf<Long, MutableList<RawContact>>()
         for (tempRawContact in rawContactsMap.values) {
+            // There shouldn't be any RawContacts that make it here with null contactId.
             if (tempRawContact.contactId == null) continue
 
-            val rawContacts = contactRawMap.getOrPut(tempRawContact.contactId) {
-                mutableListOf()
-            }
+            val rawContacts = contactRawMap.getOrPut(tempRawContact.contactId) { mutableListOf() }
             rawContacts.add(tempRawContact.toRawContact())
 
             if (cancel()) {
@@ -127,16 +126,29 @@ internal class ContactsMapper(
         }
 
         return contactsMap.values.asSequence().map { contact ->
-            val rawContacts = if (contact.id != null) {
-                contactRawMap.getOrElse(contact.id) { emptyList<RawContact>() }
-            } else {
-                emptyList()
-            }
+            // Make sure to remove the entry in contactRawMap as it is processed.
+            val rawContacts = contact.id?.let(contactRawMap::remove) ?: emptyList<RawContact>()
 
             // The data class copy function comes in handy here.
             // Sort RawContacts by id as specified by RawContact.id.
             contact.copy(rawContacts = rawContacts.sortedBy { it.id })
-        }
+        }.plus(
+            // There may be remaining RawContacts in contactRawMap that did not have a parent
+            // Contact that has been collected. This may occur in queries where matching only
+            // RawContact id. Blank RawContacts will not have any matches in the Data table and
+            // Contacts table. However, there will be a match in the RawContacts table. The
+            // processRawContactsCursor, only collects RawContacts.
+            contactRawMap.asSequence().map {
+                Contact(
+                    id = it.key,
+                    isProfile = isProfile,
+                    rawContacts = it.value.sortedBy { it.id },
+                    displayName = null,
+                    lastUpdatedTimestamp = null,
+                    options = null
+                )
+            }
+        )
     }
 
     private fun Cursor.updateRawContact(rawContact: TempRawContact) {

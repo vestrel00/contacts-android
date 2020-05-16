@@ -51,6 +51,7 @@ fun MutableRawContact.refresh(
 
 private fun Context.findFirstRawContactWithId(rawContactId: Long, cancel: () -> Boolean):
         RawContact? = Query(this)
+    .includeBlanks(true)
     .where(Fields.RawContact.Id equalTo rawContactId)
     .findFirst(cancel)
     ?.rawContacts

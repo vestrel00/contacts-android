@@ -469,18 +469,18 @@ private fun ContentResolver.resolve(
     // whereMatching and collect the Contacts and RawContacts there, there may be RawContacts that
     // are not included in the resulting Contact objects because it did not have any rows that
     // matched whereMatching.
-    val contactIdsMatched = findContactIdsInDataTable(whereMatching, cancel)
+    val contactIdsMatchedInDataTable = findContactIdsInDataTable(whereMatching, cancel)
 
     // Collect Contacts, RawContacts, and Data from the Data table.
-    if (contactIdsMatched.isNotEmpty()) {
+    if (contactIdsMatchedInDataTable.isNotEmpty()) {
         query(
-            Table.DATA, include, Fields.Contact.Id `in` contactIdsMatched,
+            Table.DATA, include, Fields.Contact.Id `in` contactIdsMatchedInDataTable,
             processCursor = contactsMapper::processDataCursor
         )
     }
 
     // It does not matter if contactIdsMatched is empty. It only means that there are no matches in
-    // the Data table. We may still be able to match blanks.
+    // the Data table. We may still be able to match blanks in the Contacts and RawContacts tables.
     if (includeBlanks) {
 
         // Collect Contacts in the Contacts table including Contact specific fields.
@@ -491,6 +491,9 @@ private fun ContentResolver.resolve(
             suppressDbExceptions = true,
             processCursor = contactsMapper::processContactsCursor
         )
+
+        // TODO fix only one RawContact is included in the aggregate Contact where both RawContacts are blank
+        // and where uses RawContact.Id equalTo
 
         // Collect RawContacts in the RawContacts table including RawContacts specific fields.
         query(

@@ -106,7 +106,6 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
                     // such as not including the id column in the query. We should technically
                     // force unwrap here. However, the Android ecosystem is huge and I wouldn't
                     // rule out null ids. #NO-TRUST.
-                    // FIXME? Parameterize strategy for consumers; fail hard or fail silently?
                     val dataRowId = dataCursor.dataId ?: continue
 
                     val entity = validEntitiesMap.remove(dataRowId)
