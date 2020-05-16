@@ -10,6 +10,7 @@ import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
 
@@ -292,7 +293,7 @@ private class DataQueryImpl(
     override fun include(fields: Collection<Field>): DataQuery = include(fields.asSequence())
 
     override fun include(fields: Sequence<Field>): DataQuery = apply {
-        include = if (fields.count() == 0) {
+        include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
@@ -309,7 +310,7 @@ private class DataQueryImpl(
     override fun orderBy(orderBy: Collection<OrderBy>): DataQuery = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Sequence<OrderBy>): DataQuery = apply {
-        this.orderBy = if (orderBy.count() == 0) {
+        this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
             CompoundOrderBy(orderBy.toSet())

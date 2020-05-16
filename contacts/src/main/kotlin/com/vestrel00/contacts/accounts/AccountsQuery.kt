@@ -10,6 +10,7 @@ import com.vestrel00.contacts.entities.cursor.account
 import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 
 /**
@@ -209,7 +210,7 @@ private class AccountsQueryImpl(
 
         val rawContactIdsResultMap = mutableMapOf<Long, Account?>().apply {
             // Only perform the query if there is at least one nonNullRawContactId
-            if (nonNullRawContactIds.count() == 0) {
+            if (nonNullRawContactIds.isEmpty()) {
                 return@apply
             }
 

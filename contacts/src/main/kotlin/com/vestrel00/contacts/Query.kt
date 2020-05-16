@@ -8,6 +8,7 @@ import com.vestrel00.contacts.entities.cursor.contactCursor
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
 import kotlin.math.min
@@ -344,7 +345,7 @@ private class QueryImpl(
     override fun include(fields: Collection<Field>): Query = include(fields.asSequence())
 
     override fun include(fields: Sequence<Field>): Query = apply {
-        include = if (fields.count() == 0) {
+        include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
@@ -361,7 +362,7 @@ private class QueryImpl(
     override fun orderBy(orderBy: Collection<OrderBy>): Query = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Sequence<OrderBy>): Query = apply {
-        this.orderBy = if (orderBy.count() == 0) {
+        this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
             CompoundOrderBy(orderBy.toSet())
@@ -556,10 +557,6 @@ private fun ContentResolver.findContactIdsInDataTable(
 } ?: emptySet()
 
 private fun List<Contact>.offsetAndLimit(offset: Int, limit: Int): List<Contact> {
-    // The call to count may be expensive as it traverses the sequence, invoking all of the
-    // intermediate functions. E.G. sequence.map { do1() }.map { do2() }.count() will invoke both
-    // do functions once during traversal. Therefore, one must be careful in putting logic in
-    // sequence functions that contain side effects that affect outside state.
     val start = min(offset, size)
     val end = min(start + limit, size)
 

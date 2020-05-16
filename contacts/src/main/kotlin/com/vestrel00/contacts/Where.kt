@@ -3,6 +3,7 @@ package com.vestrel00.contacts
 import android.database.DatabaseUtils
 import com.vestrel00.contacts.entities.Entity
 import com.vestrel00.contacts.entities.MimeType
+import com.vestrel00.contacts.util.isEmpty
 import java.util.*
 
 // TODO TEST
@@ -207,7 +208,7 @@ infix fun FieldSet.whereAnd(where: (AbstractField) -> Where): Where? = fields.wh
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
 private fun <T : Any?> Sequence<T>.joinWhere(where: (T) -> Where, separator: String): Where? {
-    if (count() == 0) {
+    if (isEmpty()) {
         return null
     }
 

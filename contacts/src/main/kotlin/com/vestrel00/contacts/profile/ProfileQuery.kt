@@ -8,6 +8,7 @@ import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
+import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
 
@@ -176,7 +177,7 @@ private class ProfileQueryImpl(
     override fun include(fields: Collection<Field>): ProfileQuery = include(fields.asSequence())
 
     override fun include(fields: Sequence<Field>): ProfileQuery = apply {
-        include = if (fields.count() == 0) {
+        include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)

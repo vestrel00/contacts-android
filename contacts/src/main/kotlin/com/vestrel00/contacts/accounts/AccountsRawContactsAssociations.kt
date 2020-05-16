@@ -15,6 +15,7 @@ import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.nullIfNotInSystem
 
 // TODO Update DEV_NOTES data required and groups / group membership sections.
@@ -160,7 +161,7 @@ private class AccountsRawContactsAssociationsImpl(
         // Only existing RawContacts can be associated with an Account.
         val nonNullRawContactIds = rawContacts.map { it.id }.filterNotNull()
 
-        if (nonNullRawContactIds.count() == 0) {
+        if (nonNullRawContactIds.isEmpty()) {
             return false
         }
 
