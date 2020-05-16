@@ -330,6 +330,8 @@ private fun Sequence<String?>.compareTo(ignoreCase: Boolean, other: Sequence<Str
         }
     }
 
+    // The call to count may be expensive as it traverses the sequence, invoking all of the
+    // intermediate functions.
     return other.count() - this.count()
 }
 

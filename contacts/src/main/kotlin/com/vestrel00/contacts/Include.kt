@@ -6,6 +6,8 @@ internal fun Include(vararg fields: Field): Include = Include(fields.asSequence(
 internal class Include(fields: Sequence<Field>) {
 
     val fields: Set<AbstractField> by lazy(LazyThreadSafetyMode.NONE) {
+        // Couldn't find a clean way of writing this as fields.map... because of the varying types.
+        // We don't always have to use map or flatMap =)
         mutableSetOf<AbstractField>().apply {
             for (field in fields) {
                 when (field) {
@@ -17,6 +19,10 @@ internal class Include(fields: Sequence<Field>) {
     }
 
     val columnNames: Array<out String> by lazy(LazyThreadSafetyMode.NONE) {
+        // The call toSet is important because it gets rid of duplicates. We can also call
+        // distinct() but then we can't call toTypedArray after it. And no, this is not more
+        // expensive than calling distinct, it is actually cheaper. Distinct uses a HashSet
+        // internally in addition to extra computations.
         this.fields.asSequence().map { it.columnName }.toSet().toTypedArray()
     }
 

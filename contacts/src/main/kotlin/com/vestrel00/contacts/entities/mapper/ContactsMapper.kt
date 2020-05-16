@@ -107,7 +107,14 @@ internal class ContactsMapper(
         }
     }
 
-    fun map(): Sequence<Contact> {
+    /*
+     * This used to return a Sequence but I found that it was more CPU and memory intensive.
+     * This is especially true if callers of this function call Sequence.count(), which invokes
+     * all of the intermediate functions during traversal producing unwanted side effects.
+     *
+     * This returns a mutable list instead of immutable so that it may be sorted in-place.
+     */
+    fun map(): MutableList<Contact> {
         sortRawContactsDataLists()
 
         // Map contact id to set of raw contacts.
@@ -120,35 +127,45 @@ internal class ContactsMapper(
             rawContacts.add(tempRawContact.toRawContact())
 
             if (cancel()) {
-                // Return empty sequence if cancelled to ensure only correct data set is returned.
-                return emptySequence()
+                // Return empty list if cancelled to ensure only correct data set is returned.
+                return mutableListOf()
             }
         }
 
-        return contactsMap.values.asSequence().map { contact ->
+        val contactList = mutableListOf<Contact>()
+
+        // Add all of the Contacts in the contactsMap.
+        for (contact in contactsMap.values) {
             // Make sure to remove the entry in contactRawMap as it is processed.
             val rawContacts = contact.id?.let(contactRawMap::remove) ?: emptyList<RawContact>()
 
             // The data class copy function comes in handy here.
-            // Sort RawContacts by id as specified by RawContact.id.
-            contact.copy(rawContacts = rawContacts.sortedBy { it.id })
-        }.plus(
-            // There may be remaining RawContacts in contactRawMap that did not have a parent
-            // Contact that has been collected. This may occur in queries where matching only
-            // RawContact id. Blank RawContacts will not have any matches in the Data table and
-            // Contacts table. However, there will be a match in the RawContacts table. The
-            // processRawContactsCursor, only collects RawContacts.
-            contactRawMap.asSequence().map {
+            contactList.add(contact.copy(rawContacts = rawContacts.sortedBy { it.id }))
+
+            if (cancel()) {
+                break
+            }
+        }
+
+        // Add all of the remaining RawContacts in contactRawMap without a parent Contact.
+        for (entry in contactRawMap) {
+            contactList.add(
                 Contact(
-                    id = it.key,
+                    id = entry.key,
                     isProfile = isProfile,
-                    rawContacts = it.value.sortedBy { it.id },
+                    rawContacts = entry.value.sortedBy { it.id },
                     displayName = null,
                     lastUpdatedTimestamp = null,
                     options = null
                 )
+            )
+
+            if (cancel()) {
+                break
             }
-        )
+        }
+
+        return if (cancel()) mutableListOf() else contactList
     }
 
     private fun Cursor.updateRawContact(rawContact: TempRawContact) {

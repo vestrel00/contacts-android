@@ -433,7 +433,7 @@ private fun ContentResolver.resolve(
         // Limit the contacts data to the set associated with the contacts found in the
         // RawContacts table matching the rawContactsWhere.
         contactIdsMatchingSelectedAccounts =
-            findContactIdsInRawContactsTable(rawContactsWhere, cancel)
+            findContactIdsInRawContactsTable(rawContactsWhere, cancel, false)
     }
 
     // If contactIdsMatchingSelectedAccounts is null, then rawContactsWhere is NoWhere.
@@ -497,7 +497,10 @@ private fun ContentResolver.resolve(
         // fixes issues like only one RawContact is included in the aggregate Contact where both
         // child RawContacts are blank when matching RawContact by id.
         val contactIdsMatchedInRawContactsTable = findContactIdsInRawContactsTable(
-            whereMatching?.inRawContactsTable(), cancel
+            whereMatching?.inRawContactsTable(), cancel,
+            // There may be columns in the where clause that may not be available in the RawContacts
+            // table. This will result in an SQLiteException. Thus, we suppress it.
+            suppressDbExceptions = true
         )
 
         // Collect RawContacts in the RawContacts table including RawContacts specific fields.
@@ -505,9 +508,6 @@ private fun ContentResolver.resolve(
             Table.RAW_CONTACTS,
             include.onlyRawContactFields(),
             Fields.RawContacts.ContactId `in` contactIdsMatchedInRawContactsTable,
-            // There may be columns in the where clause that may not be available in the RawContacts
-            // table. This will result in an SQLiteException. Thus, we suppress it.
-            suppressDbExceptions = true,
             processCursor = contactsMapper::processRawContactsCursor
         )
     }
@@ -516,15 +516,13 @@ private fun ContentResolver.resolve(
         return emptyList()
     }
 
-    return contactsMapper
-        .map()
-        .sortedWith(orderBy)
+    return contactsMapper.map()
+        .apply { sortWith(orderBy) }
         .offsetAndLimit(offset, limit)
-        .toList()
 }
 
 private fun ContentResolver.findContactIdsInRawContactsTable(
-    rawContactsWhere: Where?, cancel: () -> Boolean
+    rawContactsWhere: Where?, cancel: () -> Boolean, suppressDbExceptions: Boolean
 ): Set<Long> = query(
     Table.RAW_CONTACTS,
     Include(Fields.RawContacts.ContactId),
@@ -534,7 +532,8 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
         rawContactsWhere and Fields.RawContacts.ContactId.isNotNull()
     } else {
         Fields.RawContacts.ContactId.isNotNull()
-    }
+    },
+    suppressDbExceptions = suppressDbExceptions
 ) {
     mutableSetOf<Long>().apply {
         while (!cancel() && it.moveToNext()) {
@@ -556,9 +555,11 @@ private fun ContentResolver.findContactIdsInDataTable(
     contactIds
 } ?: emptySet()
 
-private fun Sequence<Contact>.offsetAndLimit(offset: Int, limit: Int): Sequence<Contact> {
-    // prevent index out of bounds by ensuring offset and limit are within bounds
-    val size = count()
+private fun List<Contact>.offsetAndLimit(offset: Int, limit: Int): List<Contact> {
+    // The call to count may be expensive as it traverses the sequence, invoking all of the
+    // intermediate functions. E.G. sequence.map { do1() }.map { do2() }.count() will invoke both
+    // do functions once during traversal. Therefore, one must be careful in putting logic in
+    // sequence functions that contain side effects that affect outside state.
     val start = min(offset, size)
     val end = min(start + limit, size)
 
