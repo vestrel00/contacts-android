@@ -492,20 +492,19 @@ private fun ContentResolver.resolve(
             processCursor = contactsMapper::processContactsCursor
         )
 
-        // TODO fix only one RawContact is included in the aggregate Contact where both RawContacts are blank
-        // and where uses RawContact.Id equalTo
+        // There may be one or more blank RawContacts that belong to the same aggregate Contact.
+        // Therefore, just like in the Data table query, we must first get the Contact ids. This
+        // fixes issues like only one RawContact is included in the aggregate Contact where both
+        // child RawContacts are blank when matching RawContact by id.
+        val contactIdsMatchedInRawContactsTable = findContactIdsInRawContactsTable(
+            whereMatching?.inRawContactsTable(), cancel
+        )
 
         // Collect RawContacts in the RawContacts table including RawContacts specific fields.
         query(
             Table.RAW_CONTACTS,
             include.onlyRawContactFields(),
-            // There may be lingering RawContacts whose associated contact was already deleted.
-            // Such RawContacts have contact id column value as null.
-            if (whereMatching != null) {
-                whereMatching.inRawContactsTable() and Fields.RawContacts.ContactId.isNotNull()
-            } else {
-                Fields.RawContacts.ContactId.isNotNull()
-            },
+            Fields.RawContacts.ContactId `in` contactIdsMatchedInRawContactsTable,
             // There may be columns in the where clause that may not be available in the RawContacts
             // table. This will result in an SQLiteException. Thus, we suppress it.
             suppressDbExceptions = true,
@@ -525,13 +524,17 @@ private fun ContentResolver.resolve(
 }
 
 private fun ContentResolver.findContactIdsInRawContactsTable(
-    rawContactsWhere: Where, cancel: () -> Boolean
+    rawContactsWhere: Where?, cancel: () -> Boolean
 ): Set<Long> = query(
     Table.RAW_CONTACTS,
     Include(Fields.RawContacts.ContactId),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.
-    rawContactsWhere and Fields.RawContacts.ContactId.isNotNull()
+    if (rawContactsWhere != null) {
+        rawContactsWhere and Fields.RawContacts.ContactId.isNotNull()
+    } else {
+        Fields.RawContacts.ContactId.isNotNull()
+    }
 ) {
     mutableSetOf<Long>().apply {
         while (!cancel() && it.moveToNext()) {
