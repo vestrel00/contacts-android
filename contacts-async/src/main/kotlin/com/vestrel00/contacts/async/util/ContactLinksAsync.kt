@@ -18,8 +18,7 @@ import kotlinx.coroutines.withContext
 suspend fun ContactEntity.linkAsync(
     context: Context,
     vararg contacts: ContactEntity
-): ContactLinkResult =
-    withContext(ASYNC_DISPATCHER) { link(context, contacts.asSequence()) }
+): ContactLinkResult = linkAsync(context, contacts.asSequence())
 
 
 /**
@@ -31,8 +30,7 @@ suspend fun ContactEntity.linkAsync(
 suspend fun ContactEntity.linkAsync(
     context: Context,
     contacts: Collection<ContactEntity>
-): ContactLinkResult =
-    withContext(ASYNC_DISPATCHER) { link(context, contacts.asSequence()) }
+): ContactLinkResult = linkAsync(context, contacts.asSequence())
 
 /**
  * Suspends the current coroutine, links the contacts, then returns the control flow to the calling
@@ -43,8 +41,25 @@ suspend fun ContactEntity.linkAsync(
 suspend fun ContactEntity.linkAsync(
     context: Context,
     contacts: Sequence<ContactEntity>
-): ContactLinkResult =
-    withContext(ASYNC_DISPATCHER) { link(context, contacts) }
+): ContactLinkResult = withContext(ASYNC_DISPATCHER) { link(context, contacts) }
+
+/**
+ * Suspends the current coroutine, links the contacts, then returns the control flow to the calling
+ * coroutine scope.
+ *
+ * See [ContactEntity.link].
+ */
+suspend fun Collection<ContactEntity>.linkAsync(context: Context): ContactLinkResult =
+    asSequence().linkAsync(context)
+
+/**
+ * Suspends the current coroutine, links the contacts, then returns the control flow to the calling
+ * coroutine scope.
+ *
+ * See [ContactEntity.link].
+ */
+suspend fun Sequence<ContactEntity>.linkAsync(context: Context): ContactLinkResult =
+    withContext(ASYNC_DISPATCHER) { link(context) }
 
 /**
  * Suspends the current coroutine, unlinks the contact, then returns the control flow to the calling

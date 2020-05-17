@@ -21,6 +21,7 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
         arrayOf(
             ContactsContract.RawContacts._ID,
             ContactsContract.RawContacts.CONTACT_ID,
+            ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
             ContactsContract.RawContacts.ACCOUNT_NAME,
             ContactsContract.RawContacts.ACCOUNT_TYPE,
             ContactsContract.RawContacts.STARRED,
@@ -40,18 +41,20 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
         // Use getString instead of getLong, getInt, etc so that the value could be null.
         val id = cursor.getString(0)
         val contactId = cursor.getString(1)
-        val name = cursor.getString(2)
-        val type = cursor.getString(3)
+        val displayName = cursor.getString(2)
+        val name = cursor.getString(3)
+        val type = cursor.getString(4)
 
-        val starred = cursor.getString(4)
-        val timesContacted = cursor.getString(5)
-        val lastTimeContacted = cursor.getString(6)
-        val customRingtone = cursor.getString(7)
-        val sendToVoicemail = cursor.getString(8)
+        val starred = cursor.getString(5)
+        val timesContacted = cursor.getString(6)
+        val lastTimeContacted = cursor.getString(7)
+        val customRingtone = cursor.getString(8)
+        val sendToVoicemail = cursor.getString(9)
 
         log(
             """
-                RawContact id: $id, contactId: $contactId, accountName: $name, accountType: $type,
+                RawContact id: $id, contactId: $contactId, displayName: $displayName, 
+                 accountName: $name, accountType: $type,
                  starred: $starred, timesContacted: $timesContacted, 
                  lastTimeContacted: $lastTimeContacted, customRingtone: $customRingtone, 
                  sendToVoicemail: $sendToVoicemail

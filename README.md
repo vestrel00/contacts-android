@@ -1,7 +1,7 @@
 ## TODO
 
 1. Migrate local account to a remote account and vice versa + withPermission and async
-    - Verify everything in the accounts package!
+    - Test everything in the accounts package and make sure withPermission and async exist!
 2. Add function to commit all operations in one go with a boolean result in Update and Delete interfaces.
 
 3. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.

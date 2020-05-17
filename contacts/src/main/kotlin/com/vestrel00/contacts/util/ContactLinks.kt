@@ -173,6 +173,29 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
     return ContactLinkSuccess(contactId)
 }
 
+/**
+ * Links the first Contact in this collection with the rest in the collection.
+ *
+ * See [ContactEntity.link].
+ */
+fun Collection<ContactEntity>.link(context: Context): ContactLinkResult = asSequence().link(context)
+
+/**
+ * Links the first Contact in this sequence with the rest in the sequence.
+ *
+ * See [ContactEntity.link].
+ */
+fun Sequence<ContactEntity>.link(context: Context): ContactLinkResult {
+    val mainContact = firstOrNull()
+    val contacts = filterIndexed { index, _ -> index > 0 }
+
+    return if (mainContact != null && contacts.isNotEmpty()) {
+        mainContact.link(context, contacts)
+    } else {
+        ContactLinkFailed
+    }
+}
+
 interface ContactLinkResult {
 
     /**

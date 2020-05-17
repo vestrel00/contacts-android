@@ -22,11 +22,8 @@ import com.vestrel00.contacts.groups.GroupsQuery
 @JvmOverloads
 fun GroupsInsert.Result.group(
     context: Context, group: MutableGroup, cancel: () -> Boolean = { false }
-): Group? {
-
-    val groupId = groupId(group) ?: return null
-
-    return GroupsQuery(context).withIds(groupId).findFirst(cancel)
+): Group? = groupId(group)?.let { groupId ->
+    GroupsQuery(context).withIds(groupId).findFirst(cancel)
 }
 
 /**
@@ -43,11 +40,9 @@ fun GroupsInsert.Result.group(
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun GroupsInsert.Result.groups(context: Context, cancel: () -> Boolean = { false }): List<Group> {
-
+fun GroupsInsert.Result.groups(context: Context, cancel: () -> Boolean = { false }): List<Group> =
     if (groupIds.isEmpty()) {
-        return emptyList()
+        emptyList()
+    } else {
+        GroupsQuery(context).withIds(groupIds).find(cancel)
     }
-
-    return GroupsQuery(context).withIds(groupIds).find(cancel)
-}

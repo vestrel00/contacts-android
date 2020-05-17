@@ -507,7 +507,7 @@ private fun ContentResolver.resolve(
         // Collect RawContacts in the RawContacts table including RawContacts specific fields.
         query(
             Table.RAW_CONTACTS,
-            include.onlyRawContactFields(),
+            include.onlyRawContactsFields(),
             RawContactsFields.ContactId `in` contactIdsMatchedInRawContactsTable,
             processCursor = contactsMapper::processRawContactsCursor
         )

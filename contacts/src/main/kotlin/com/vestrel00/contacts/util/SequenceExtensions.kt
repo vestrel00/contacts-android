@@ -1,7 +1,7 @@
 package com.vestrel00.contacts.util
 
 /**
- * True if there is at least one item in the sequence.
+ * True if the sequence emits no elements.
  *
  * This is a cheaper version of using `[Sequence.count] == 0` for checking if a sequence is empty.
  * Unlike [Sequence.count], this will not execute sequence functions that may not affect the number
@@ -103,3 +103,11 @@ package com.vestrel00.contacts.util
  * sequence increases.
  */
 internal fun Sequence<*>.isEmpty(): Boolean = !iterator().hasNext()
+
+/**
+ * True if the sequence emits at least one element.
+ *
+ * This is a cheaper version of using `[Sequence.count] > 0` for checking if a sequence is not
+ * empty. For more info, see [isEmpty].
+ */
+internal fun Sequence<*>.isNotEmpty(): Boolean = iterator().hasNext()

@@ -22,12 +22,8 @@ import com.vestrel00.contacts.equalTo
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun ContactLinkResult.contact(context: Context, cancel: () -> Boolean = { false }): Contact? {
-
-    val contactId = contactId ?: return null
-
-    return Query(context).where(Fields.Contact.Id equalTo contactId).findFirst(cancel)
-}
+fun ContactLinkResult.contact(context: Context, cancel: () -> Boolean = { false }): Contact? =
+    contactId?.let { Query(context).where(Fields.Contact.Id equalTo it).findFirst(cancel) }
 
 /**
  * Returns all of the [Contact]s that are associated with each of the unlinked RawContacts.
@@ -45,12 +41,9 @@ fun ContactLinkResult.contact(context: Context, cancel: () -> Boolean = { false 
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun ContactUnlinkResult.contacts(context: Context, cancel: () -> Boolean = { false }):
-        List<Contact> {
-
-    if (rawContactIds.isEmpty()) {
-        return emptyList()
-    }
-
-    return Query(context).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
+        List<Contact> = if (rawContactIds.isEmpty()) {
+    emptyList()
+} else {
+    Query(context).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
 }
 

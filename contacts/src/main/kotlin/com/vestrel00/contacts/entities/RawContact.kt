@@ -64,6 +64,8 @@ data class RawContact internal constructor(
      */
     override val isProfile: Boolean,
 
+    // The Data table contains the display name for Contacts, not for RawContacts.
+
     /**
      * An immutable list of addresses.
      */
@@ -180,6 +182,8 @@ data class MutableRawContact internal constructor(
      */
     override val isProfile: Boolean,
 
+    // The Data table contains the display name for Contacts, not for RawContacts.
+
     /**
      * Mutable version of [RawContact.addresses].
      */
@@ -224,7 +228,8 @@ data class MutableRawContact internal constructor(
      */
     var note: MutableNote?,
 
-    // Use the ContactOptions extension functions to get/set options.
+    // Use the RawContactOptions extension functions to get/set options.
+    // The Data table contains the options columns for Contacts, not for RawContacts.
 
     /**
      * Mutable version of [RawContact.organization].
@@ -276,6 +281,12 @@ data class BlankRawContact internal constructor(
     override val contactId: Long?,
     override val isProfile: Boolean,
 
+    /**
+     * The RawContact's display name, which may be different from the parent Contact's display name
+     * if it is made up of more than one RawContact.
+     */
+    // This can only be retrieved from RawContacts table queries. The Data table contains the
+    // display name for Contacts, not for RawContacts.
     val displayName: String?
 ) : RawContactEntity() {
 

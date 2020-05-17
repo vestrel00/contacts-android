@@ -14,6 +14,9 @@ import com.vestrel00.contacts.equalTo
  * This is useful for getting the latest contact data after performing an update. This may return
  * null if the [Contact] no longer exists.
  *
+ * Returns itself if the [Contact.id] is null, indicating that this Contact instance has not yet
+ * been inserted to the DB.
+ *
  * ## Permissions
  *
  * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
@@ -25,20 +28,14 @@ import com.vestrel00.contacts.equalTo
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Contact.refresh(context: Context, cancel: () -> Boolean = { false }): Contact? {
+fun Contact.refresh(context: Context, cancel: () -> Boolean = { false }): Contact? =
     if (id == null) {
-        return this
+        this
+    } else {
+        context.findFirstContactWithId(id, cancel)
     }
 
-    return Query(context)
-        .where(Fields.Contact.Id equalTo id)
-        .findFirst(cancel)
-}
-
 /**
- * This will return [this] same instance if it does not have a valid ID, which means it is a contact
- * that does not yet exist in the DB.
- *
  * See [Contact.refresh].
  *
  * ## Thread Safety
@@ -47,13 +44,14 @@ fun Contact.refresh(context: Context, cancel: () -> Boolean = { false }): Contac
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun MutableContact.refresh(context: Context, cancel: () -> Boolean = { false }): MutableContact? {
+fun MutableContact.refresh(context: Context, cancel: () -> Boolean = { false }): MutableContact? =
     if (id == null) {
-        return this
+        this
+    } else {
+        context.findFirstContactWithId(id, cancel)?.toMutableContact()
     }
 
-    return Query(context)
-        .where(Fields.Contact.Id equalTo id)
+private fun Context.findFirstContactWithId(contactId: Long, cancel: () -> Boolean): Contact? =
+    Query(this)
+        .where(Fields.Contact.Id equalTo contactId)
         .findFirst(cancel)
-        ?.toMutableContact()
-}

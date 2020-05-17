@@ -241,8 +241,8 @@ Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted
 Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
 
 #### RawContacts table
-RawContact id: 30, contactId: 32, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-RawContact id: 31, contactId: 33, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
 
 #### Data table
 Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
@@ -262,8 +262,8 @@ When Contact **X** links/merges/joins Contact **Y**, the tables becomes;
 Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
 
 #### RawContacts table
-RawContact id: 30, contactId: 32, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-RawContact id: 31, contactId: 33, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
 
 #### Data table
 Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
@@ -299,6 +299,8 @@ For more info on Contact display name resolution, read the **Contact Display Nam
 Rows** section.
 
 > Note that display name resolution is different for APIs below 21 (pre-lollipop).
+
+The display name of the RawContacts remain the same.
 
 The Groups table remains unmodified.
 
@@ -541,7 +543,7 @@ including the `ContactsColumns` are appended to each row in the query. This mean
 rows belonging to the same Contact.
 
 The `ContactOptionsColumns` values joined with the Data table are the values of the Contact, not
-the RawContact that the Data row belongs to!
+the RawContact that the Data row belongs to! The same applies to the "display_name".
 
 #### Data Updates
 

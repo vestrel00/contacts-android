@@ -13,6 +13,9 @@ import com.vestrel00.contacts.equalTo
  * This is useful for getting the latest contact data after performing an update. This may return
  * null if the [RawContact] no longer exists.
  *
+ * Returns itself if the [RawContact.id] is null, indicating that this RawContact instance has not
+ * yet been inserted to the DB.
+ *
  * ## Permissions
  *
  * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
@@ -25,14 +28,13 @@ import com.vestrel00.contacts.equalTo
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): RawContact? =
-    id?.let { rawContactId ->
-        context.findFirstRawContactWithId(rawContactId, cancel)
+    if (id == null) {
+        this
+    } else {
+        context.findFirstRawContactWithId(id, cancel)
     }
 
 /**
- * This will return [this] same instance if it does not have a valid ID, which means it is a raw
- * contact that does not yet exist in the DB.
- *
  * See [RawContact.refresh].
  *
  * ## Thread Safety
@@ -43,10 +45,10 @@ fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): Raw
 @JvmOverloads
 fun MutableRawContact.refresh(
     context: Context, cancel: () -> Boolean = { false }
-): MutableRawContact? = id?.let { rawContactId ->
-    context
-        .findFirstRawContactWithId(rawContactId, cancel)
-        ?.toMutableRawContact()
+): MutableRawContact? = if (id == null) {
+    this
+} else {
+    context.findFirstRawContactWithId(id, cancel)?.toMutableRawContact()
 }
 
 internal fun Context.findFirstRawContactWithId(rawContactId: Long, cancel: () -> Boolean):

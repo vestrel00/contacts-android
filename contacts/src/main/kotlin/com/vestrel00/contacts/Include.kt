@@ -44,7 +44,7 @@ internal fun Include.onlyContactsFields() = Include(
 /**
  * Returns a new instance of [Include] where only RawContacts fields in [this] are included.
  */
-internal fun Include.onlyRawContactFields() = Include(
+internal fun Include.onlyRawContactsFields() = Include(
     // Contacts.Id belong to the Contacts table. Contact.Id belongs to the Data table.
     // RawContacts.Id belong to the RawContacts table. RawContact.Id belongs to the Data table.
     // So we just add the Contacts.Id and RawContacts.Id since they are required anyways.
