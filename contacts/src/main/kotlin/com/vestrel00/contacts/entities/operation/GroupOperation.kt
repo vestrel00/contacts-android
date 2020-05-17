@@ -1,7 +1,7 @@
 package com.vestrel00.contacts.entities.operation
 
 import android.content.ContentProviderOperation
-import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.GroupsFields
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -14,9 +14,9 @@ private val TABLE = Table.GROUPS
 internal class GroupOperation {
 
     fun insert(group: MutableGroup): ContentProviderOperation = newInsert(TABLE)
-        .withValue(Fields.Groups.Title, group.title)
-        .withValue(Fields.Groups.AccountName, group.account.name)
-        .withValue(Fields.Groups.AccountType, group.account.type)
+        .withValue(GroupsFields.Title, group.title)
+        .withValue(GroupsFields.AccountName, group.account.name)
+        .withValue(GroupsFields.AccountType, group.account.type)
         // Setting favorites and auto add has no effect. The Contacts Provider will routinely set
         // them to false for all user-created groups.
         // .withValue(Fields.Group.Favorites, it.favorites.toSqlValue())
@@ -25,12 +25,12 @@ internal class GroupOperation {
 
     fun update(group: MutableGroup): ContentProviderOperation? = group.id?.let { groupId ->
         newUpdate(TABLE)
-            .withSelection(Fields.Groups.Id equalTo groupId)
-            .withValue(Fields.Groups.Title, group.title)
+            .withSelection(GroupsFields.Id equalTo groupId)
+            .withValue(GroupsFields.Title, group.title)
             .build()
     }
 
     fun delete(groupId: Long): ContentProviderOperation = newDelete(TABLE)
-        .withSelection(Fields.Groups.Id equalTo groupId)
+        .withSelection(GroupsFields.Id equalTo groupId)
         .build()
 }

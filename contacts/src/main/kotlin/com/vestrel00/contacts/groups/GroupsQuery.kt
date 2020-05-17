@@ -160,17 +160,17 @@ private class GroupsQueryImpl(
 
             account?.let {
                 // Limit the query to the given account.
-                where = (Fields.Groups.AccountName equalTo it.name) and
-                        (Fields.Groups.AccountType equalTo it.type)
+                where = (GroupsFields.AccountName equalTo it.name) and
+                        (GroupsFields.AccountType equalTo it.type)
             }
 
             if (groupIds.isNotEmpty()) {
                 // Limit the query to the given set of ids.
                 val currentWhere = where // to avoid lint errors or force unwrapping
                 where = if (currentWhere != null) {
-                    currentWhere and (Fields.Groups.Id `in` groupIds)
+                    currentWhere and (GroupsFields.Id `in` groupIds)
                 } else {
-                    Fields.Groups.Id `in` groupIds
+                    GroupsFields.Id `in` groupIds
                 }
             }
 
@@ -196,7 +196,7 @@ private class GroupsQueryImpl(
             return emptyList()
         }
 
-        return contentResolver.query(Table.GROUPS, Include(Fields.Groups), where) {
+        return contentResolver.query(Table.GROUPS, Include(GroupsFields), where) {
             mutableListOf<Group>().apply {
                 val groupMapper = it.groupMapper()
                 while (!cancel() && it.moveToNext()) {

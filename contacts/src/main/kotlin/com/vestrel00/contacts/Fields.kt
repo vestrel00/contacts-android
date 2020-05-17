@@ -66,10 +66,6 @@ object Fields {
     @JvmField
     val Event = EventFields()
 
-    // TODO remove from this object and make it an object
-    // Do not add this to AllFields as this is a different table from the Data table.
-    internal val Groups = GroupsFields()
-
     @JvmField
     val GroupMembership = GroupMembershipFields()
 
@@ -351,7 +347,7 @@ class EventFields : FieldSet(MimeType.EVENT) {
 /**
  * Fields for Groups table operations.
  */
-internal class GroupsFields : FieldSet(UNKNOWN) {
+internal object GroupsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(Groups._ID, mimeType)
 
