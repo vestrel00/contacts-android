@@ -57,10 +57,6 @@ object Fields {
     @JvmField
     val Address = AddressFields()
 
-    // TODO remove from this object and make it an object
-    // Do not add this to AllFields as this is a different table from the Data table.
-    internal val AggregationExceptions = AggregationExceptionsFields()
-
     @JvmField
     val Contact = ContactFields()
 
@@ -268,7 +264,7 @@ class AddressFields : FieldSet(MimeType.ADDRESS) {
 /**
  * Fields for AggregationExceptions table operations.
  */
-internal class AggregationExceptionsFields : FieldSet(UNKNOWN) {
+internal object AggregationExceptionsFields : FieldSet(UNKNOWN) {
 
     val Type = AbstractField(AggregationExceptions.TYPE, mimeType)
 

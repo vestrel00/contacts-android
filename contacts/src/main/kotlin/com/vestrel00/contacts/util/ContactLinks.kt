@@ -288,9 +288,9 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
             val rawContactId2 = sortedRawContactIds[j]
 
             val operation = newUpdate(Table.AGGREGATION_EXCEPTIONS)
-                .withValue(Fields.AggregationExceptions.Type, type)
-                .withValue(Fields.AggregationExceptions.RawContactId1, rawContactId1)
-                .withValue(Fields.AggregationExceptions.RawContactId2, rawContactId2)
+                .withValue(AggregationExceptionsFields.Type, type)
+                .withValue(AggregationExceptionsFields.RawContactId1, rawContactId1)
+                .withValue(AggregationExceptionsFields.RawContactId2, rawContactId2)
                 .build()
 
             add(operation)
