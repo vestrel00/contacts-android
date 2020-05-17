@@ -2,10 +2,10 @@ package com.vestrel00.contacts.entities.cursor
 
 import android.accounts.Account
 import android.database.Cursor
-import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.RawContactsFields
 
 /**
- * Retrieves [Fields.RawContacts] data from the given [cursor].
+ * Retrieves [RawContactsFields] data from the given [cursor].
  *
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
@@ -13,19 +13,19 @@ import com.vestrel00.contacts.Fields
 internal class RawContactsCursor(private val cursor: Cursor) : RawContactIdCursor {
 
     override val contactId: Long?
-        get() = cursor.getLong(Fields.RawContacts.ContactId)
+        get() = cursor.getLong(RawContactsFields.ContactId)
 
     override val rawContactId: Long?
-        get() = cursor.getLong(Fields.RawContacts.Id)
+        get() = cursor.getLong(RawContactsFields.Id)
 
     val displayName: String?
-        get() = cursor.getString(Fields.RawContacts.DisplayName)
+        get() = cursor.getString(RawContactsFields.DisplayName)
 
     val accountName: String?
-        get() = cursor.getString(Fields.RawContacts.AccountName)
+        get() = cursor.getString(RawContactsFields.AccountName)
 
     val accountType: String?
-        get() = cursor.getString(Fields.RawContacts.AccountType)
+        get() = cursor.getString(RawContactsFields.AccountType)
 
 }
 

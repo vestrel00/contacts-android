@@ -232,8 +232,8 @@ private fun <T : Any?> Sequence<T>.joinWhere(where: (T) -> Where, separator: Str
  */
 internal fun Where.inContactsTable(): Where = ContactsTableWhere(
     toString()
-        .replace(Fields.RawContacts.ContactId.columnName, ContactsFields.Id.columnName)
-        // Technically, Fields.RawContacts.ContactId and Fields.Contact.Id have the same columnName.
+        .replace(RawContactsFields.ContactId.columnName, ContactsFields.Id.columnName)
+        // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
         // For the sake of OCD, I'm performing this redundant replacement =) SUE ME!
         .replace(Fields.Contact.Id.columnName, ContactsFields.Id.columnName)
 )
@@ -251,7 +251,7 @@ private class ContactsTableWhere(whereString: String) : Where(whereString)
  * table will remain.
  */
 internal fun Where.inRawContactsTable(): Where = RawContactsTableWhere(
-    toString().replace(Fields.RawContact.Id.columnName, Fields.RawContacts.Id.columnName)
+    toString().replace(Fields.RawContact.Id.columnName, RawContactsFields.Id.columnName)
 )
 
 private class RawContactsTableWhere(whereString: String) : Where(whereString)

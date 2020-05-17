@@ -469,7 +469,7 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
     rawContactsWhere: Where, cancel: () -> Boolean
 ): Set<Long> =
     query(
-        Table.RAW_CONTACTS, Include(Fields.RawContacts.Id), rawContactsWhere
+        Table.RAW_CONTACTS, Include(RawContactsFields.Id), rawContactsWhere
     ) {
         mutableSetOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()

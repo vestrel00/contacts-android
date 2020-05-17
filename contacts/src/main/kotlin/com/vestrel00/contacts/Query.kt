@@ -508,7 +508,7 @@ private fun ContentResolver.resolve(
         query(
             Table.RAW_CONTACTS,
             include.onlyRawContactFields(),
-            Fields.RawContacts.ContactId `in` contactIdsMatchedInRawContactsTable,
+            RawContactsFields.ContactId `in` contactIdsMatchedInRawContactsTable,
             processCursor = contactsMapper::processRawContactsCursor
         )
     }
@@ -526,13 +526,13 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
     rawContactsWhere: Where?, cancel: () -> Boolean, suppressDbExceptions: Boolean
 ): Set<Long> = query(
     Table.RAW_CONTACTS,
-    Include(Fields.RawContacts.ContactId),
+    Include(RawContactsFields.ContactId),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.
     if (rawContactsWhere != null) {
-        rawContactsWhere and Fields.RawContacts.ContactId.isNotNull()
+        rawContactsWhere and RawContactsFields.ContactId.isNotNull()
     } else {
-        Fields.RawContacts.ContactId.isNotNull()
+        RawContactsFields.ContactId.isNotNull()
     },
     suppressDbExceptions = suppressDbExceptions
 ) {

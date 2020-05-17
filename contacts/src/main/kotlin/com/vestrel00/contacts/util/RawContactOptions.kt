@@ -1,9 +1,7 @@
 package com.vestrel00.contacts.util
 
 import android.content.Context
-import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.Include
+import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MutableOptions
 import com.vestrel00.contacts.entities.Options
 import com.vestrel00.contacts.entities.RawContactEntity
@@ -11,7 +9,6 @@ import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.mapper.optionsMapper
 import com.vestrel00.contacts.entities.operation.OptionsOperation
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.equalTo
 
 /**
  * Returns the [Options] of this [RawContactEntity].
@@ -39,7 +36,7 @@ fun RawContactEntity.options(context: Context): Options {
     return context.contentResolver.query(
         Table.RAW_CONTACTS,
         Include(Fields.Options),
-        Fields.RawContacts.Id equalTo rawContactId
+        RawContactsFields.Id equalTo rawContactId
     ) {
         it.getNextOrNull { it.optionsMapper().value }
     } ?: Options()

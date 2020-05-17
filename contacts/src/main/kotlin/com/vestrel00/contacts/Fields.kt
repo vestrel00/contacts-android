@@ -106,10 +106,6 @@ object Fields {
     @JvmField
     val RawContact = RawContactFields()
 
-    // TODO remove from this object and make it an object
-    // Do not add this to AllFields as this is a different table from the Data table.
-    internal val RawContacts = RawContactsFields()
-
     @JvmField
     val Relation = RelationFields()
 
@@ -532,7 +528,7 @@ class RawContactFields : FieldSet(UNKNOWN) {
 /**
  * Fields for RawContacts table operations.
  */
-internal class RawContactsFields : FieldSet(UNKNOWN) {
+internal object RawContactsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(RawContacts._ID, mimeType)
 

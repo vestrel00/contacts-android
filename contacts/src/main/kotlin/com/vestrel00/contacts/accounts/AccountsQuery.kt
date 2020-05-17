@@ -217,8 +217,8 @@ private class AccountsQueryImpl(
             // Get all rows in nonNullRawContactIds.
             contentResolver.query(
                 Table.RAW_CONTACTS,
-                Include(Fields.RawContacts),
-                Fields.RawContacts.Id `in` nonNullRawContactIds
+                Include(RawContactsFields),
+                RawContactsFields.Id `in` nonNullRawContactIds
             ) {
                 val rawContactsCursor = it.rawContactsCursor()
                 while (!cancel() && it.moveToNext()) {
@@ -257,8 +257,8 @@ private class AccountsQueryImpl(
 
 internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Account? = query(
     Table.RAW_CONTACTS,
-    Include(Fields.RawContacts.AccountName, Fields.RawContacts.AccountType),
-    Fields.RawContacts.Id equalTo rawContactId
+    Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
+    RawContactsFields.Id equalTo rawContactId
 ) {
     it.getNextOrNull { it.rawContactsCursor().account() }
 }

@@ -48,9 +48,9 @@ internal fun Include.onlyRawContactFields() = Include(
     // Contacts.Id belong to the Contacts table. Contact.Id belongs to the Data table.
     // RawContacts.Id belong to the RawContacts table. RawContact.Id belongs to the Data table.
     // So we just add the Contacts.Id and RawContacts.Id since they are required anyways.
-    Fields.RawContacts.fields
+    RawContactsFields.fields
         .intersect(fields)
         .asSequence()
         .plus(ContactsFields.Id)
-        .plus(Fields.RawContacts.Id)
+        .plus(RawContactsFields.Id)
 )

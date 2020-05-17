@@ -3,9 +3,7 @@ package com.vestrel00.contacts.accounts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
-import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.`in`
+import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.operation.newDelete
@@ -13,7 +11,6 @@ import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.nullIfNotInSystem
@@ -256,8 +253,8 @@ private fun ContentResolver.updateRawContactsAccounts(
         .build(),
     // Then update the sync columns.
     newUpdate(Table.RAW_CONTACTS)
-        .withSelection(Fields.RawContacts.Id `in` rawContactIds)
-        .withValue(Fields.RawContacts.AccountName, account.name)
-        .withValue(Fields.RawContacts.AccountType, account.type)
+        .withSelection(RawContactsFields.Id `in` rawContactIds)
+        .withValue(RawContactsFields.AccountName, account.name)
+        .withValue(RawContactsFields.AccountType, account.type)
         .build()
 ) != null

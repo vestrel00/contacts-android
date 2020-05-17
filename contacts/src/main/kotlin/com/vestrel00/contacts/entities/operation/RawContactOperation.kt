@@ -5,7 +5,7 @@ import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentProviderOperation.newInsert
 import android.net.Uri
-import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.RawContactsFields
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -21,12 +21,12 @@ internal class RawContactOperation(private val contentUri: Uri) {
          * account becomes available (or is already available), Android will automatically update
          * the RawContact name and type to an existing Account.
          */
-        .withValue(Fields.RawContacts.AccountName, rawContactAccount?.name)
-        .withValue(Fields.RawContacts.AccountType, rawContactAccount?.type)
+        .withValue(RawContactsFields.AccountName, rawContactAccount?.name)
+        .withValue(RawContactsFields.AccountType, rawContactAccount?.type)
         .build()
 
     fun deleteRawContact(rawContactId: Long): ContentProviderOperation = newDelete(contentUri)
-        .withSelection(Fields.RawContacts.Id equalTo rawContactId)
+        .withSelection(RawContactsFields.Id equalTo rawContactId)
         .build()
 
     /*
@@ -35,6 +35,6 @@ internal class RawContactOperation(private val contentUri: Uri) {
      */
     fun deleteRawContactsWithContactId(contactId: Long): ContentProviderOperation =
         newDelete(contentUri)
-            .withSelection(Fields.RawContacts.ContactId equalTo contactId)
+            .withSelection(RawContactsFields.ContactId equalTo contactId)
             .build()
 }

@@ -231,7 +231,7 @@ private fun ContentResolver.rawContactIds(
     rawContactsWhere: Where?, cancel: () -> Boolean
 ): Set<String> = query(
     ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
-    Include(Fields.RawContacts.Id),
+    Include(RawContactsFields.Id),
     rawContactsWhere
 ) {
     mutableSetOf<String>().apply {

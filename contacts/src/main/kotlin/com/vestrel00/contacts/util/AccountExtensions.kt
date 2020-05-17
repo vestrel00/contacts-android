@@ -27,10 +27,10 @@ internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
 internal fun Sequence<Account?>.toRawContactsWhere(): Where? = distinct() // get rid of duplicates
     .whereOr { account ->
         if (account != null) {
-            (Fields.RawContacts.AccountName equalToIgnoreCase account.name) and
-                    (Fields.RawContacts.AccountType equalToIgnoreCase account.type)
+            (RawContactsFields.AccountName equalToIgnoreCase account.name) and
+                    (RawContactsFields.AccountType equalToIgnoreCase account.type)
         } else {
-            Fields.RawContacts.AccountName.isNull() and
-                    Fields.RawContacts.AccountType.isNull()
+            RawContactsFields.AccountName.isNull() and
+                    RawContactsFields.AccountType.isNull()
         }
     }
