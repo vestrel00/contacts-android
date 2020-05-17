@@ -6,9 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.provider.ContactsContract
-import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.Include
+import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.cursor.contactsCursor
@@ -17,7 +15,6 @@ import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.equalTo
 import java.io.InputStream
 
 // region GET PHOTO
@@ -49,8 +46,8 @@ fun ContactEntity.photoInputStream(context: Context): InputStream? {
 
     return context.contentResolver.query(
         Table.CONTACTS,
-        Include(Fields.Contacts.PhotoUri),
-        Fields.Contacts.Id equalTo contactId
+        Include(ContactsFields.PhotoUri),
+        ContactsFields.Id equalTo contactId
     ) {
         val photoUri = it.getNextOrNull { it.contactsCursor().photoUri }
         uriInputStream(context, photoUri)
@@ -163,8 +160,8 @@ fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
 
     return context.contentResolver.query(
         Table.CONTACTS,
-        Include(Fields.Contacts.PhotoThumbnailUri),
-        Fields.Contacts.Id equalTo contactId
+        Include(ContactsFields.PhotoThumbnailUri),
+        ContactsFields.Id equalTo contactId
     ) {
         val photoThumbnailUri = it.getNextOrNull { it.contactsCursor().photoThumbnailUri }
         uriInputStream(context, photoThumbnailUri)
@@ -313,8 +310,8 @@ fun ContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boo
 
 private fun photoFileId(context: Context, contactId: Long): Long? = context.contentResolver.query(
     Table.CONTACTS,
-    Include(Fields.Contacts.PhotoFileId),
-    Fields.Contacts.Id equalTo contactId
+    Include(ContactsFields.PhotoFileId),
+    ContactsFields.Id equalTo contactId
 ) {
     it.getNextOrNull { it.contactsCursor().photoFileId }
 }

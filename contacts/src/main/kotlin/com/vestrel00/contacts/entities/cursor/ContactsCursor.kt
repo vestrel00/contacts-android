@@ -4,11 +4,11 @@ import android.annotation.TargetApi
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
-import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.ContactsFields
 import java.util.*
 
 /**
- * Retrieves [Fields.Contacts] data from the given [cursor].
+ * Retrieves [ContactsFields] data from the given [cursor].
  *
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
@@ -16,30 +16,30 @@ import java.util.*
 internal class ContactsCursor(private val cursor: Cursor) : ContactIdCursor {
 
     override val contactId: Long?
-        get() = cursor.getLong(Fields.Contacts.Id)
+        get() = cursor.getLong(ContactsFields.Id)
 
     val displayName: String?
-        get() = cursor.getString(Fields.Contacts.DisplayName)
+        get() = cursor.getString(ContactsFields.DisplayName)
 
     val displayNameSource: Int?
-        get() = cursor.getInt(Fields.Contacts.DisplayNameSource)
+        get() = cursor.getInt(ContactsFields.DisplayNameSource)
 
     val nameRawContactId: Long?
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        get() = cursor.getLong(Fields.Contacts.NameRawContactId)
+        get() = cursor.getLong(ContactsFields.NameRawContactId)
 
     val lastUpdatedTimestamp: Date?
-        get() = cursor.getDate(Fields.Contacts.LastUpdatedTimestamp)
+        get() = cursor.getDate(ContactsFields.LastUpdatedTimestamp)
 
     val photoUri: Uri?
-        get() = cursor.getUri(Fields.Contacts.PhotoUri)
+        get() = cursor.getUri(ContactsFields.PhotoUri)
 
     val photoThumbnailUri: Uri?
-        get() = cursor.getUri(Fields.Contacts.PhotoThumbnailUri)
+        get() = cursor.getUri(ContactsFields.PhotoThumbnailUri)
 
     val photoFileId: Long?
         get() {
-            val value = cursor.getLong(Fields.Contacts.PhotoFileId)
+            val value = cursor.getLong(ContactsFields.PhotoFileId)
             // Sometimes the value will be zero instead of null but 0 is not a valid photo file id.
             return if (value != null && value > 0) value else null
         }

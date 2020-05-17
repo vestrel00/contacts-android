@@ -57,15 +57,12 @@ object Fields {
     @JvmField
     val Address = AddressFields()
 
+    // TODO remove from this object and make it an object
     // Do not add this to AllFields as this is a different table from the Data table.
     internal val AggregationExceptions = AggregationExceptionsFields()
 
     @JvmField
     val Contact = ContactFields()
-
-    // TODO remove from this object and make it an object
-    // Do not add this to AllFields as this is a different table from the Data table.
-    internal val Contacts = ContactsFields()
 
     @JvmField
     val Email = EmailFields()
@@ -73,6 +70,7 @@ object Fields {
     @JvmField
     val Event = EventFields()
 
+    // TODO remove from this object and make it an object
     // Do not add this to AllFields as this is a different table from the Data table.
     internal val Groups = GroupsFields()
 
@@ -267,11 +265,8 @@ class AddressFields : FieldSet(MimeType.ADDRESS) {
     )
 }
 
-/*
- * This and all of its fields are used for the AggregationsExceptions table operations!
- *
- * This is technically not the most correct place to put this but it is the simplest and most
- * convenient place.
+/**
+ * Fields for AggregationExceptions table operations.
  */
 internal class AggregationExceptionsFields : FieldSet(UNKNOWN) {
 
@@ -300,15 +295,10 @@ class ContactFields : FieldSet(UNKNOWN) {
     override val fields = setOf(Id, DisplayName, LastUpdatedTimestamp)
 }
 
-/*
- * This and all of its fields are used for the Contacts table operations!
- *
- * All of these fields except the Id are actually accessible in Data table queries via joins.
- *
- * This is technically not the most correct place to put this but it is the simplest and most
- * convenient place.
+/**
+ * Fields for Contacts table operations.
  */
-internal class ContactsFields : FieldSet(UNKNOWN) {
+internal object ContactsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(Contacts._ID, mimeType)
 
@@ -362,11 +352,8 @@ class EventFields : FieldSet(MimeType.EVENT) {
     override val fields = setOf(Type, Label, Date)
 }
 
-/*
- * This and all of its fields are used for the Groups table operations!
- *
- * This is technically not the most correct place to put this but it is the simplest and most
- * convenient place.
+/**
+ * Fields for Groups table operations.
  */
 internal class GroupsFields : FieldSet(UNKNOWN) {
 
@@ -550,11 +537,8 @@ class RawContactFields : FieldSet(UNKNOWN) {
     override val fields = setOf(Id)
 }
 
-/*
- * This and all of its fields are used for the RawContacts table operations!
- *
- * This is technically not the most correct place to put this but it is the simplest and most
- * convenient place.
+/**
+ * Fields for RawContacts table operations.
  */
 internal class RawContactsFields : FieldSet(UNKNOWN) {
 

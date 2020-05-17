@@ -35,10 +35,10 @@ internal class Include(fields: Sequence<Field>) {
 internal fun Include.onlyContactsFields() = Include(
     // Contacts.Id belong to the Contacts table. Contact.Id belongs to the Data table.
     // So we just add the Contacts.Id since it is required anyways.
-    Fields.Contacts.fields
+    ContactsFields.fields
         .intersect(fields)
         .asSequence()
-        .plus(Fields.Contacts.Id)
+        .plus(ContactsFields.Id)
 )
 
 /**
@@ -51,6 +51,6 @@ internal fun Include.onlyRawContactFields() = Include(
     Fields.RawContacts.fields
         .intersect(fields)
         .asSequence()
-        .plus(Fields.Contacts.Id)
+        .plus(ContactsFields.Id)
         .plus(Fields.RawContacts.Id)
 )

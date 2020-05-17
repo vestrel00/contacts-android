@@ -355,8 +355,8 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
 private fun nameRawContactId(context: Context, contactId: Long): Long? =
     context.contentResolver.query(
         Table.CONTACTS,
-        Include(Fields.Contacts.DisplayNameSource, Fields.Contacts.NameRawContactId),
-        Fields.Contacts.Id equalTo contactId
+        Include(ContactsFields.DisplayNameSource, ContactsFields.NameRawContactId),
+        ContactsFields.Id equalTo contactId
     ) {
         var displayNameSource: Int = DisplayNameSources.UNDEFINED
         var nameRawContactId: Long? = null
