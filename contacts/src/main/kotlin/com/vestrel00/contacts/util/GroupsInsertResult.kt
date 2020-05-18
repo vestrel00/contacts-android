@@ -1,8 +1,11 @@
 package com.vestrel00.contacts.util
 
 import android.content.Context
+import com.vestrel00.contacts.GroupsFields
+import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.Group
 import com.vestrel00.contacts.entities.MutableGroup
+import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.groups.GroupsInsert
 import com.vestrel00.contacts.groups.GroupsQuery
 
@@ -23,7 +26,7 @@ import com.vestrel00.contacts.groups.GroupsQuery
 fun GroupsInsert.Result.group(
     context: Context, group: MutableGroup, cancel: () -> Boolean = { false }
 ): Group? = groupId(group)?.let { groupId ->
-    GroupsQuery(context).withIds(groupId).findFirst(cancel)
+    GroupsQuery(context).where(GroupsFields.Id equalTo groupId).find(cancel).firstOrNull()
 }
 
 /**
@@ -44,5 +47,5 @@ fun GroupsInsert.Result.groups(context: Context, cancel: () -> Boolean = { false
     if (groupIds.isEmpty()) {
         emptyList()
     } else {
-        GroupsQuery(context).withIds(groupIds).find(cancel)
+        GroupsQuery(context).where(GroupsFields.Id `in` groupIds).find(cancel)
     }

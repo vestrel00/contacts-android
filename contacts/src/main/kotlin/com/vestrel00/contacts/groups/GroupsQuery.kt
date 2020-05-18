@@ -7,7 +7,9 @@ import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Group
 import com.vestrel00.contacts.entities.mapper.groupMapper
 import com.vestrel00.contacts.entities.table.Table
+import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
+import com.vestrel00.contacts.util.toRawContactsWhere
 
 /**
  * Queries on the groups table.
@@ -19,21 +21,18 @@ import com.vestrel00.contacts.util.query
  *
  * ## Usage
  *
- * To get all groups for a given account;
+ * Here is an example query that returns the first 5 [Groups]s, skipping the first 2, where the
+ * group's title starts with "a", ordered by the group title in ascending order (ignoring case).
  *
  * ```kotlin
  * val groups = groupsQuery
- *      .account(account)
+ *      .accounts(account)
+ *      .where(GroupsFields.Title startsWith "a")
+ *      .orderBy(GroupsFields.Title.asc())
+ *      .limit(5)
+ *      .offset(2)
  *      .find()
  * ```
- *
- * ## Where, orderBy, offset, and limit
- *
- * Given the nature of groups, this library makes an assumption that there are not that many groups
- * **per Account**. Typical Accounts usually have less than 10. Even those in large companies, have
- * less than 100 (?) groups. This assumption means that the query function of groups need not be as
- * extensive (or at all) as other Queries. Where, orderBy, offset, and limit functions are left to
- * consumers to implement if they wish.
  *
  * ## Developer notes
  *
@@ -45,45 +44,83 @@ import com.vestrel00.contacts.util.query
 interface GroupsQuery {
 
     /**
-     * Limits the group(s) returned by this query to groups belonging to the given [account].
-     */
-    fun account(account: Account): GroupsQuery
-
-    /**
-     * Limits the group(s) returned by this query to groups that match the given [groupIds].
-     */
-    fun withIds(vararg groupIds: Long): GroupsQuery
-
-    /**
-     * See [GroupsQuery.withIds].
-     */
-    fun withIds(groupIds: Collection<Long>): GroupsQuery
-
-    /**
-     * See [GroupsQuery.withIds].
-     */
-    fun withIds(groupIds: Sequence<Long>): GroupsQuery
-
-    /**
-     * Returns the list of [Group]s belonging to the [Account] specified in [account] that match IDs
-     * specified in [withIds].
+     * Limits the group(s) returned by this query to groups belonging to the given [accounts].
      *
-     * If no [Account] or ID is provided, then this will return all [Groups] from all available
-     * [Account]s.
+     * If no accounts are specified (this function is not called or called with no Accounts), then
+     * all Groups are included in the search.
+     *
+     * A null Account may not be provided here because groups may only exist with an Account.
+     *
+     * You may also use [where] in conjunction with [GroupsFields.AccountName] and
+     * [GroupsFields.AccountType] for a more flexible search.
+     */
+    fun accounts(vararg accounts: Account): GroupsQuery
+
+    /**
+     * See [GroupsQuery.accounts].
+     */
+    fun accounts(accounts: Collection<Account>): GroupsQuery
+
+    /**
+     * See [GroupsQuery.accounts].
+     */
+    fun accounts(accounts: Sequence<Account>): GroupsQuery
+
+    /**
+     * Filters the returned [Group]s matching the criteria defined by the [where]. If not specified
+     * or null, then all [Group]s are returned, limited by [limit].
+     *
+     * Use [GroupsFields] to construct the [where].
+     */
+    fun where(where: Where?): GroupsQuery
+
+    /**
+     * Orders the returned [Group]s using one or more [orderBy]s. If not specified, then groups
+     * are ordered by ID in ascending order.
+     *
+     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase`
+     * as an optional parameter.
+     *
+     * Use [GroupsFields] to construct the [orderBy].
+     */
+    fun orderBy(vararg orderBy: OrderBy): GroupsQuery
+
+    /**
+     * See [GroupsQuery.orderBy].
+     */
+    fun orderBy(orderBy: Collection<OrderBy>): GroupsQuery
+
+    /**
+     * See [GroupsQuery.orderBy].
+     */
+    fun orderBy(orderBy: Sequence<OrderBy>): GroupsQuery
+
+    /**
+     * Limits the maximum number of returned [Group]s to the given [limit].
+     *
+     * If not specified, limit value of [Int.MAX_VALUE] is used.
+     */
+    fun limit(limit: Int): GroupsQuery
+
+    /**
+     * Skips results 0 to [offset] (excluding the offset).
+     *
+     * If not specified, offset value of 0 is used.
+     */
+    fun offset(offset: Int): GroupsQuery
+
+    /**
+     * Returns the [GroupsList]s matching the preceding query options.
      *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): List<Group>
+    fun find(): GroupsList
 
     /**
-     * Returns the list of [Group]s belonging to the [Account] specified in [account] that match IDs
-     * specified in [withIds].
-     *
-     * If no [Account] or ID is provided, then this will return all [Groups] from all available
-     * [Account]s.
+     * Returns the [GroupsList]s matching the preceding query options.
      *
      * ## Cancellation
      *
@@ -100,44 +137,30 @@ interface GroupsQuery {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): List<Group>
-    fun find(cancel: () -> Boolean): List<Group>
+    fun find(cancel: () -> Boolean): GroupsList
 
     /**
-     * Returns the first [Group] belonging to the [Account] specified in [account] that match IDs
-     * specified in [withIds].
+     * The combined list of [Group]s from the specified Accounts ordered by [orderBy].
      *
-     * If no [Account] or ID is provided, then this will return all [Groups] from all available
-     * [Account]s.
+     * The [offset] and [limit] functions applies to this list.
      *
-     * ## Thread Safety
+     * Use [from], to get the list of Groups for a specific Account.
      *
-     * This should be called in a background thread to avoid blocking the UI thread.
+     * ## Developer notes
+     *
+     * We technically did not need this custom interface. We could just use the generic List<Group>
+     * and created extension functions for it. However, this is more Java-friendly. Furthermore, it
+     * gives us the flexibility to add more stuff to it without any overhead.
      */
-    fun findFirst(): Group?
+    interface GroupsList : List<Group> {
 
-    /**
-     * Returns the first [Group] belonging to the [Account] specified in [account] that match IDs
-     * specified in [withIds].
-     *
-     * If no [Account] or ID is provided, then this will return all [Groups] from all available
-     * [Account]s.
-     *
-     * ## Cancellation
-     *
-     * The number of group data found may take more than a few milliseconds to process. Therefore,
-     * cancellation is supported while the groups list is being built. To cancel at any time, the
-     * [cancel] function should return true.
-     *
-     * This is useful when running this function in a background thread or coroutine.
-     *
-     * ## Thread Safety
-     *
-     * This should be called in a background thread to avoid blocking the UI thread.
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    // @JvmOverloads cannot be used in interface methods...
-    // fun findFirst(cancel: () -> Boolean = { false }): Group?
-    fun findFirst(cancel: () -> Boolean): Group?
+        /**
+         * The list of [Group]s from the specified [account] ordered by [orderBy].
+         *
+         * The [offset] and [limit] functions DOES NOT apply to this list.
+         */
+        fun from(account: Account): List<Group>
+    }
 }
 
 @Suppress("FunctionName")
@@ -150,68 +173,124 @@ private class GroupsQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
 
-    private var account: Account? = null,
-    private var groupIds: Set<Long> = emptySet()
+    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
+    private var where: Where? = DEFAULT_WHERE,
+    private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
+    private var limit: Int = DEFAULT_LIMIT,
+    private var offset: Int = DEFAULT_OFFSET
 ) : GroupsQuery {
 
-    private val where: Where?
-        get() {
-            var where: Where? = null
+    override fun toString(): String {
+        return """
+            rawContactsWhere = $rawContactsWhere
+            where = $where
+            orderBy = $orderBy
+            limit = $limit
+            offset = $offset
+        """.trimIndent()
+    }
 
-            account?.let {
-                // Limit the query to the given account.
-                where = (GroupsFields.AccountName equalTo it.name) and
-                        (GroupsFields.AccountType equalTo it.type)
-            }
+    override fun accounts(vararg accounts: Account): GroupsQuery = accounts(accounts.asSequence())
 
-            if (groupIds.isNotEmpty()) {
-                // Limit the query to the given set of ids.
-                val currentWhere = where // to avoid lint errors or force unwrapping
-                where = if (currentWhere != null) {
-                    currentWhere and (GroupsFields.Id `in` groupIds)
-                } else {
-                    GroupsFields.Id `in` groupIds
-                }
-            }
+    override fun accounts(accounts: Collection<Account>): GroupsQuery =
+        accounts(accounts.asSequence())
 
-            return where
+    override fun accounts(accounts: Sequence<Account>): GroupsQuery = apply {
+        rawContactsWhere = accounts.toRawContactsWhere()
+    }
+
+    override fun where(where: Where?): GroupsQuery = apply {
+        // Yes, I know DEFAULT_WHERE is null. This reads better though.
+        this.where = where ?: DEFAULT_WHERE
+    }
+
+    override fun orderBy(vararg orderBy: OrderBy): GroupsQuery = orderBy(orderBy.asSequence())
+
+    override fun orderBy(orderBy: Collection<OrderBy>): GroupsQuery = orderBy(orderBy.asSequence())
+
+    override fun orderBy(orderBy: Sequence<OrderBy>): GroupsQuery = apply {
+        this.orderBy = if (orderBy.isEmpty()) {
+            DEFAULT_ORDER_BY
+        } else {
+            CompoundOrderBy(orderBy.toSet())
         }
-
-    override fun account(account: Account): GroupsQuery = apply {
-        this.account = account
     }
 
-    override fun withIds(vararg groupIds: Long): GroupsQuery = withIds(groupIds.asSequence())
-
-    override fun withIds(groupIds: Collection<Long>): GroupsQuery = withIds(groupIds.asSequence())
-
-    override fun withIds(groupIds: Sequence<Long>): GroupsQuery = apply {
-        this.groupIds = groupIds.toSet()
+    override fun limit(limit: Int): GroupsQuery = apply {
+        this.limit = if (limit > 0) {
+            limit
+        } else {
+            throw IllegalArgumentException("Limit must be greater than 0")
+        }
     }
 
-    override fun find(): List<Group> = find { false }
+    override fun offset(offset: Int): GroupsQuery = apply {
+        this.offset = if (offset >= 0) {
+            offset
+        } else {
+            throw IllegalArgumentException("Offset must be greater than or equal to 0")
+        }
+    }
 
-    override fun find(cancel: () -> Boolean): List<Group> {
+    override fun find(): GroupsQuery.GroupsList = find { false }
+
+    override fun find(cancel: () -> Boolean): GroupsQuery.GroupsList =
         if (!permissions.canQuery()) {
-            return emptyList()
+            GroupsListImpl()
+        } else {
+            contentResolver.resolve(
+                rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
+            )
         }
 
-        return contentResolver.query(Table.GROUPS, Include(GroupsFields), where) {
-            mutableListOf<Group>().apply {
-                val groupMapper = it.groupMapper()
-                while (!cancel() && it.moveToNext()) {
-                    add(groupMapper.value)
-                }
+    companion object {
+        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
+        val INCLUDE = Include(GroupsFields)
+        val DEFAULT_WHERE: Where? = null
+        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(GroupsFields.Id.asc()))
+        const val DEFAULT_LIMIT = Int.MAX_VALUE
+        const val DEFAULT_OFFSET = 0
+    }
+}
 
-                // Ensure only complete data set is returned.
-                if (cancel()) {
-                    clear()
-                }
-            }
-        } ?: emptyList()
+private fun ContentResolver.resolve(
+    rawContactsWhere: Where?,
+    include: Include,
+    where: Where?,
+    orderBy: CompoundOrderBy,
+    limit: Int,
+    offset: Int,
+    cancel: () -> Boolean
+): GroupsQuery.GroupsList = query(
+    Table.GROUPS,
+    include,
+    if (rawContactsWhere != null) {
+        if (where != null) {
+            rawContactsWhere and where
+        } else {
+            rawContactsWhere
+        }
+    } else {
+        where
+    },
+    sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
+) {
+    val groupsList = GroupsListImpl()
+    val groupMapper = it.groupMapper()
+
+    while (!cancel() && it.moveToNext()) {
+        groupsList.add(groupMapper.value)
     }
 
-    override fun findFirst(): Group? = findFirst { false }
+    // Ensure incomplete data sets are not returned.
+    if (cancel()) {
+        groupsList.clear()
+    }
 
-    override fun findFirst(cancel: () -> Boolean): Group? = find(cancel).firstOrNull()
+    groupsList
+} ?: GroupsListImpl()
+
+private class GroupsListImpl : ArrayList<Group>(), GroupsQuery.GroupsList {
+
+    override fun from(account: Account): List<Group> = filter { it.account == account }
 }
