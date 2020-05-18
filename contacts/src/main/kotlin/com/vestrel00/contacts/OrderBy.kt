@@ -44,20 +44,25 @@ fun Collection<AbstractField>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): C
 
 sealed class OrderBy(
     internal val field: AbstractField,
-    private val order: String
+    private val order: String,
+    protected val ignoreCase: Boolean
 ) : Comparator<Contact> {
 
-    override fun toString(): String = "${field.columnName} $order"
+    override fun toString(): String = if (ignoreCase) {
+        "${field.columnName} COLLATE NOCASE $order"
+    } else {
+        "${field.columnName} $order"
+    }
 }
 
-private class Ascending(field: AbstractField, private val ignoreCase: Boolean) :
-    OrderBy(field, "ASC") {
+private class Ascending(field: AbstractField, ignoreCase: Boolean) :
+    OrderBy(field, "ASC", ignoreCase) {
 
     override fun compare(lhs: Contact, rhs: Contact): Int = field.compare(lhs, rhs, ignoreCase)
 }
 
-private class Descending(field: AbstractField, private val ignoreCase: Boolean) :
-    OrderBy(field, "DESC") {
+private class Descending(field: AbstractField, ignoreCase: Boolean) :
+    OrderBy(field, "DESC", ignoreCase) {
 
     override fun compare(lhs: Contact, rhs: Contact): Int = -field.compare(lhs, rhs, ignoreCase)
 }
@@ -230,25 +235,46 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
             lhs.options?.sendToVoicemail.compareTo(rhs.options?.sendToVoicemail)
 
         // ORGANIZATION
-        Fields.Organization.Company -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+        Fields.Organization.Company -> lhs.organizations().compareTo(
+            ignoreCase,
+            rhs.organizations()
+        ) {
             it.company
         }
-        Fields.Organization.Title -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+        Fields.Organization.Title -> lhs.organizations().compareTo(
+            ignoreCase,
+            rhs.organizations()
+        ) {
             it.title
         }
-        Fields.Organization.Department -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+        Fields.Organization.Department -> lhs.organizations().compareTo(
+            ignoreCase,
+            rhs.organizations()
+        ) {
             it.department
         }
-        Fields.Organization.JobDescription -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+        Fields.Organization.JobDescription -> lhs.organizations().compareTo(
+            ignoreCase,
+            rhs.organizations()
+        ) {
             it.jobDescription
         }
-        Fields.Organization.OfficeLocation -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+        Fields.Organization.OfficeLocation -> lhs.organizations().compareTo(
+            ignoreCase,
+            rhs.organizations()
+        ) {
             it.officeLocation
         }
-        Fields.Organization.Symbol -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+        Fields.Organization.Symbol -> lhs.organizations().compareTo(
+            ignoreCase,
+            rhs.organizations()
+        ) {
             it.symbol
         }
-        Fields.Organization.PhoneticName -> lhs.organizations().compareTo(ignoreCase, rhs.organizations()) {
+        Fields.Organization.PhoneticName -> lhs.organizations().compareTo(
+            ignoreCase,
+            rhs.organizations()
+        ) {
             it.phoneticName
         }
 
