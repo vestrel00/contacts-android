@@ -156,18 +156,18 @@ interface DataQuery {
     fun orderBy(orderBy: Sequence<OrderBy>): DataQuery
 
     /**
-     * Skips results 0 to [offset] (excluding the offset).
-     *
-     * If not specified, offset value of 0 is used.
-     */
-    fun offset(offset: Int): DataQuery
-
-    /**
      * Limits the maximum number of returned data to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
      */
     fun limit(limit: Int): DataQuery
+
+    /**
+     * Skips results 0 to [offset] (excluding the offset).
+     *
+     * If not specified, offset value of 0 is used.
+     */
+    fun offset(offset: Int): DataQuery
 
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun addresses(): List<Address>
@@ -321,19 +321,19 @@ private class DataQueryImpl(
         }
     }
 
-    override fun offset(offset: Int): DataQuery = apply {
-        this.offset = if (offset >= 0) {
-            offset
-        } else {
-            throw IllegalArgumentException("Offset must be greater than or equal to 0")
-        }
-    }
-
     override fun limit(limit: Int): DataQuery = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
             throw IllegalArgumentException("Limit must be greater than 0")
+        }
+    }
+
+    override fun offset(offset: Int): DataQuery = apply {
+        this.offset = if (offset >= 0) {
+            offset
+        } else {
+            throw IllegalArgumentException("Offset must be greater than or equal to 0")
         }
     }
 
@@ -404,8 +404,8 @@ private class DataQueryImpl(
             return emptyList()
         }
 
-        return contentResolver.resolveEntities(
-            mimeType, rawContactsWhere, include, where, orderBy, offset, limit, cancel
+        return contentResolver.resolve(
+            mimeType, rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
     }
 
@@ -420,14 +420,14 @@ private class DataQueryImpl(
     }
 }
 
-private fun <T : DataEntity> ContentResolver.resolveEntities(
+private fun <T : DataEntity> ContentResolver.resolve(
     mimeType: MimeType,
     rawContactsWhere: Where?,
     include: Include,
     where: Where?,
     orderBy: CompoundOrderBy,
-    offset: Int,
     limit: Int,
+    offset: Int,
     cancel: () -> Boolean
 ): List<T> {
 

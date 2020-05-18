@@ -223,18 +223,18 @@ interface Query {
     fun orderBy(orderBy: Sequence<OrderBy>): Query
 
     /**
-     * Skips results 0 to [offset] (excluding the offset).
-     *
-     * If not specified, offset value of 0 is used.
-     */
-    fun offset(offset: Int): Query
-
-    /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
      */
     fun limit(limit: Int): Query
+
+    /**
+     * Skips results 0 to [offset] (excluding the offset).
+     *
+     * If not specified, offset value of 0 is used.
+     */
+    fun offset(offset: Int): Query
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -299,13 +299,13 @@ interface Query {
 
 @Suppress("FunctionName")
 internal fun Query(context: Context): Query = QueryImpl(
-    ContactsPermissions(context),
-    context.contentResolver
+    context.contentResolver,
+    ContactsPermissions(context)
 )
 
 private class QueryImpl(
-    private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
+    private val permissions: ContactsPermissions,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -373,19 +373,19 @@ private class QueryImpl(
         }
     }
 
-    override fun offset(offset: Int): Query = apply {
-        this.offset = if (offset >= 0) {
-            offset
-        } else {
-            throw IllegalArgumentException("Offset must be greater than or equal to 0")
-        }
-    }
-
     override fun limit(limit: Int): Query = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
             throw IllegalArgumentException("Limit must be greater than 0")
+        }
+    }
+
+    override fun offset(offset: Int): Query = apply {
+        this.offset = if (offset >= 0) {
+            offset
+        } else {
+            throw IllegalArgumentException("Offset must be greater than or equal to 0")
         }
     }
 
@@ -397,7 +397,7 @@ private class QueryImpl(
         }
 
         return contentResolver.resolve(
-            includeBlanks, rawContactsWhere, include, where, orderBy, offset, limit, cancel
+            includeBlanks, rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
     }
 
@@ -423,8 +423,8 @@ private fun ContentResolver.resolve(
     include: Include,
     where: Where?,
     orderBy: CompoundOrderBy,
-    offset: Int,
     limit: Int,
+    offset: Int,
     cancel: () -> Boolean
 ): List<Contact> {
 
@@ -519,7 +519,7 @@ private fun ContentResolver.resolve(
 
     return contactsMapper.map()
         .apply { sortWith(orderBy) }
-        .offsetAndLimit(offset, limit)
+        .limitAndOffset(limit, offset)
 }
 
 private fun ContentResolver.findContactIdsInRawContactsTable(
@@ -556,7 +556,7 @@ private fun ContentResolver.findContactIdsInDataTable(
     contactIds
 } ?: emptySet()
 
-private fun List<Contact>.offsetAndLimit(offset: Int, limit: Int): List<Contact> {
+private fun List<Contact>.limitAndOffset(limit: Int, offset: Int): List<Contact> {
     val start = min(offset, size)
     val end = min(start + limit, size)
 

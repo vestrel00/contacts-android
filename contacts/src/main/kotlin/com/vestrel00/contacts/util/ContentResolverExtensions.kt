@@ -18,7 +18,12 @@ import com.vestrel00.contacts.entities.table.Table
 // time transactions (not in loops).
 
 internal fun <T> ContentResolver.query(
-    table: Table, include: Include, where: Where?, sortOrder: String? = null,
+    table: Table, include: Include, where: Where?,
+
+    /**
+     * The sort order, which may also be appended with the LIMIT and OFFSET.
+     */
+    sortOrder: String? = null,
 
     /**
      * If true, SQLiteExceptions will be caught instead of crashing the app and returns a null
@@ -34,7 +39,12 @@ internal fun <T> ContentResolver.query(
 
 @SuppressLint("Recycle")
 internal fun <T> ContentResolver.query(
-    contentUri: Uri, include: Include, where: Where?, sortOrder: String? = null,
+    contentUri: Uri, include: Include, where: Where?,
+
+    /**
+     * The sort order, which may also be appended with the LIMIT and OFFSET.
+     */
+    sortOrder: String? = null,
 
     /**
      * If true, SQLiteExceptions will be caught instead of crashing the app and returns a null
