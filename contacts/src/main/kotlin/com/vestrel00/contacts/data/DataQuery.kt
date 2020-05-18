@@ -169,83 +169,369 @@ interface DataQuery {
      */
     fun offset(offset: Int): DataQuery
 
+    /**
+     * The list of [Address]es.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun addresses(): List<Address>
 
+    /**
+     * The list of [Address]es.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
     // fun addresses(cancel: () -> Boolean = { false }): List<Address>
     fun addresses(cancel: () -> Boolean): List<Address>
 
+    /**
+     * The list of [Email]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun emails(): List<Email>
 
+    /**
+     * The list of [Email]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun emails(cancel: () -> Boolean): List<Email>
 
+    /**
+     * The list of [Event]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun events(): List<Event>
 
+    /**
+     * The list of [Event]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun events(cancel: () -> Boolean): List<Event>
 
+    /**
+     * The list of [GroupMembership]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun groupMemberships(): List<GroupMembership>
 
+    /**
+     * The list of [GroupMembership]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun groupMemberships(cancel: () -> Boolean): List<GroupMembership>
 
+    /**
+     * The list of [Im]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun ims(): List<Im>
 
+    /**
+     * The list of [Im]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun ims(cancel: () -> Boolean): List<Im>
 
+    /**
+     * The list of [Name]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun names(): List<Name>
 
+    /**
+     * The list of [Name]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun names(cancel: () -> Boolean): List<Name>
 
+    /**
+     * The list of [Nickname]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun nicknames(): List<Nickname>
 
+    /**
+     * The list of [Nickname]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun nicknames(cancel: () -> Boolean): List<Nickname>
 
+    /**
+     * The list of [Note]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun notes(): List<Note>
 
+    /**
+     * The list of [Note]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun notes(cancel: () -> Boolean): List<Note>
 
+    /**
+     * The list of [Organization]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun organizations(): List<Organization>
 
+    /**
+     * The list of [Organization]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun organizations(cancel: () -> Boolean): List<Organization>
 
+    /**
+     * The list of [Phone]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun phones(): List<Phone>
 
+    /**
+     * The list of [Phone]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun phones(cancel: () -> Boolean): List<Phone>
 
+    /**
+     * The list of [Relation]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun relations(): List<Relation>
 
+    /**
+     * The list of [Relation]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun relations(cancel: () -> Boolean): List<Relation>
 
+    /**
+     * The list of [SipAddress]es.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun sipAddresses(): List<SipAddress>
 
+    /**
+     * The list of [SipAddress]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun sipAddresses(cancel: () -> Boolean): List<SipAddress>
 
+    /**
+     * The list of [Website]s.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun websites(): List<Website>
 
+    /**
+     * The list of [Website]s.
+     *
+     * ## Cancellation
+     *
+     * The number of RawContacts processed may be large, which results in this operation to take a
+     * while. Therefore, cancellation is supported while the RawContacts list is being built. To
+     * cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun websites(cancel: () -> Boolean): List<Website>
 }
