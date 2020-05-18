@@ -143,7 +143,7 @@ interface Query {
     fun accounts(accounts: Sequence<Account?>): Query
 
     /**
-     * Includes the given set of [fields] in the resulting contact object(s).
+     * Includes the given set of [fields] from [Fields] in the resulting contact object(s).
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
      * fields will be included in addition to [Fields.Required], which are always included.
@@ -179,11 +179,12 @@ interface Query {
     fun include(fields: Sequence<Field>): Query
 
     /**
-     * Filters the returned [Contact]s matching the criteria defined by the [where].
+     * Filters the returned [Contact]s matching the criteria defined by the [where]. If not
+     * specified or null, then all [Contact]s are returned, limited by [limit].
      *
-     * If not specified or null, then all [Contact]s are returned, limited by [limit].
+     * Use [Fields] to construct the [where].
      *
-     * **Read this part if you are a Contacts Provider expert**
+     * ## Read this part if you are a Contacts Provider expert
      *
      * This where clause is only used to query the Data table. Some contacts do not have any Data
      * table rows (see [includeBlanks]). However, this library exposes some fields that belong to
@@ -200,7 +201,8 @@ interface Query {
     fun where(where: Where?): Query
 
     /**
-     * Orders the returned [Contact]s using one or more [orderBy]s.
+     * Orders the returned [Contact]s using one or more [orderBy]s. If not specified, then contacts
+     * are ordered by ID in ascending order.
      *
      * This will throw an [IllegalArgumentException] if ordering by a field that is not included in
      * the query.
@@ -208,7 +210,7 @@ interface Query {
      * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase`
      * as an optional parameter.
      *
-     * If not specified, then contacts are ordered by ID in ascending order.
+     * Use [Fields] to construct the [orderBy].
      */
     fun orderBy(vararg orderBy: OrderBy): Query
 

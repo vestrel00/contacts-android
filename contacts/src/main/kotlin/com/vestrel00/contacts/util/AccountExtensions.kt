@@ -20,13 +20,15 @@ internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
     if (accounts.contains(this)) this else null
 
 /**
- * Uses [whereOr] to form a where clause that matches any of the given [Account]s.
+ * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This may be used
+ * for queries in the RawContacts and Groups tables.
  *
  * If the sequence is empty, returns null.
  */
 internal fun Sequence<Account?>.toRawContactsWhere(): Where? = distinct() // get rid of duplicates
     .whereOr { account ->
         if (account != null) {
+            // RawContactsFields and GroupsFields AccountName and AccountType are the same.
             (RawContactsFields.AccountName equalToIgnoreCase account.name) and
                     (RawContactsFields.AccountType equalToIgnoreCase account.type)
         } else {

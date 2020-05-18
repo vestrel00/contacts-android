@@ -100,7 +100,7 @@ interface DataQuery {
     fun accounts(accounts: Sequence<Account?>): DataQuery
 
     /**
-     * Includes the given set of [fields] in the resulting data object(s).
+     * Includes the given set of [fields] from [Fields] in the resulting data object(s).
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
      * fields will be included in addition to [Fields.Required], which are always included.
@@ -129,19 +129,19 @@ interface DataQuery {
      * number starts with 555 will produce no results. Think about it =)
      *
      * If not specified or null, then all data is returned, limited by [limit].
+     *
+     * Use [Fields] to construct the [where].
      */
     fun where(where: Where?): DataQuery
 
     /**
-     * Orders the returned data using one or more [orderBy]s.
-     *
-     * This will throw an [IllegalArgumentException] if ordering by a field that is not included in
-     * the query. Read the **LIMITATIONS** section in the class doc to learn more.
+     * Orders the returned data using one or more [orderBy]s. If not specified, then data is ordered
+     * by ID in ascending order.
      *
      * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase`
      * as an optional parameter.
      *
-     * If not specified, then data is ordered by ID in ascending order.
+     * Use [Fields] to construct the [orderBy].
      */
     fun orderBy(vararg orderBy: OrderBy): DataQuery
 
@@ -602,9 +602,14 @@ private class DataQueryImpl(
             CompoundOrderBy(orderBy.toSet())
         }
 
+        /*
+        There is no need for this check because custom ordering is not used. The orderBy simply
+        gets passed to the query function as a string.
+
         if (!this.orderBy.allFieldsAreContainedIn(include.fields)) {
             throw IllegalArgumentException("Order by fields must be included in the query")
         }
+         */
     }
 
     override fun limit(limit: Int): DataQuery = apply {

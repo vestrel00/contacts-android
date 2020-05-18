@@ -343,7 +343,7 @@ class EventFields : FieldSet(MimeType.EVENT) {
 /**
  * Fields for Groups table operations.
  */
-internal object GroupsFields : FieldSet(UNKNOWN) {
+object GroupsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(Groups._ID, mimeType)
 
@@ -355,8 +355,10 @@ internal object GroupsFields : FieldSet(UNKNOWN) {
 
     val AutoAdd = AbstractField(Groups.AUTO_ADD, mimeType)
 
+    // From protected SyncColumns
     val AccountName = AbstractField(Groups.ACCOUNT_NAME, mimeType)
 
+    // From protected SyncColumns
     val AccountType = AbstractField(Groups.ACCOUNT_TYPE, mimeType)
 
     override val fields = setOf(Id, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
@@ -536,8 +538,10 @@ internal object RawContactsFields : FieldSet(UNKNOWN) {
 
     val DisplayName = AbstractField(RawContacts.DISPLAY_NAME_PRIMARY, mimeType)
 
+    // From protected SyncColumns
     val AccountName = AbstractField(RawContacts.ACCOUNT_NAME, mimeType)
 
+    // From protected SyncColumns
     val AccountType = AbstractField(RawContacts.ACCOUNT_TYPE, mimeType)
 
     override val fields = setOf(Id, ContactId, DisplayName, AccountName, AccountType)
