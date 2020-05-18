@@ -42,6 +42,12 @@ fun Collection<AbstractField>.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Co
 fun Collection<AbstractField>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy> =
     asSequence().map { it.desc(ignoreCase) }.toSet()
 
+/**
+ * Serves two different purposes;
+ *
+ * 1. As a [Comparator] of [Contact]s.
+ * 2. As the ORDER BY value string in Contacts Provider queries.
+ */
 sealed class OrderBy(
     internal val field: AbstractField,
     private val order: String,
@@ -67,6 +73,9 @@ private class Descending(field: AbstractField, ignoreCase: Boolean) :
     override fun compare(lhs: Contact, rhs: Contact): Int = -field.compare(lhs, rhs, ignoreCase)
 }
 
+/**
+ * A set of one or more [OrderBy].
+ */
 internal class CompoundOrderBy(private val orderBys: Set<OrderBy>) : Comparator<Contact> {
 
     fun allFieldsAreContainedIn(fieldSet: Set<AbstractField>): Boolean {
@@ -97,6 +106,9 @@ internal class CompoundOrderBy(private val orderBys: Set<OrderBy>) : Comparator<
     }
 }
 
+/**
+ * Compares [Contact] values corresponding to [AbstractField]s defined in [Fields].
+ */
 private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int {
 
     return when (this) {
@@ -138,7 +150,6 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
         // PhotoUri and PhotoThumbnailUri are excluded.
         Fields.Contact.LastUpdatedTimestamp ->
             lhs.lastUpdatedTimestamp.compareTo(rhs.lastUpdatedTimestamp)
-        // IsProfile is left out as it is not meant for queries
 
         // EMAIL
         Fields.Email.Type -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
@@ -162,12 +173,9 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
             it.date?.time.toString()
         }
 
-        // GROUP intentionally excluded because they are not meant to be used for queries.
-        // These OrderBys only apply to Data table fields.
-
         // GROUP MEMBERSHIP intentionally excluded because they should never be combined.
 
-        // ID (data row ID) intentionally excluded because they are not meant to be used for queries
+        // ID (data row ID) intentionally excluded.
 
         // IM
         Fields.Im.Protocol -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
@@ -180,9 +188,9 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
             it.data
         }
 
-        // Primary and super primary intentionally excluded because it is per data entity instance.
+        // Primary and super primary intentionally excluded.
 
-        // MIMETYPE intentionally excluded because they are not meant to be used for queries.
+        // MIMETYPE intentionally excluded.
 
         // NAME
         Fields.Name.DisplayName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
@@ -292,7 +300,7 @@ private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolea
             it.normalizedNumber
         }
 
-        // RAW CONTACT intentionally excluded because they are not meant to be used for queries.
+        // RAW CONTACT intentionally excluded.
 
         // RELATION
         Fields.Relation.Type -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
