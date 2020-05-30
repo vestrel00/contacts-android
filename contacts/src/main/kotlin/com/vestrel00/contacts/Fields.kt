@@ -100,7 +100,6 @@ object Fields {
     @JvmField
     val Phone = PhoneFields()
 
-    // Do not add Photo to AllFields even though it is part of the Data table.
     internal val Photo = PhotoFields()
 
     @JvmField
@@ -179,6 +178,7 @@ class AllFields : FieldSet(UNKNOWN) {
         addAll(Fields.Options.fields)
         addAll(Fields.Organization.fields)
         addAll(Fields.Phone.fields)
+        addAll(Fields.Photo.fields)
         addAll(Fields.RawContact.fields)
         addAll(Fields.Relation.fields)
         addAll(Fields.Required.fields)
@@ -205,6 +205,7 @@ class AllForMatchingFields : FieldSet(UNKNOWN) {
         // addAll(Fields.Options.fields)
         addAll(Fields.Organization.fields)
         addAll(Fields.Phone.fields.asSequence().minus(Fields.Phone.Type))
+        // addAll(Fields.Photo.fields)
         // addAll(Fields.RawContact.fields)
         addAll(Fields.Relation.fields.asSequence().minus(Fields.Relation.Type))
         // addAll(Fields.Required.fields)
