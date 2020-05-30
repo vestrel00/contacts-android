@@ -3,147 +3,300 @@ package com.vestrel00.contacts.async.data
 import com.vestrel00.contacts.async.ASYNC_DISPATCHER
 import com.vestrel00.contacts.data.DataQuery
 import com.vestrel00.contacts.entities.*
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
+
+// region WITH CONTEXT
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.addresses].
  */
-suspend fun DataQuery.addressesAsync(): List<Address> =
-    withContext(ASYNC_DISPATCHER) { addresses { !isActive } }
+suspend fun DataQuery.addressesWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        List<Address> = withContext(context) { addresses { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.emails].
  */
-suspend fun DataQuery.emailsAsync(): List<Email> =
-    withContext(ASYNC_DISPATCHER) { emails { !isActive } }
+suspend fun DataQuery.emailsWithContext(context: CoroutineContext = ASYNC_DISPATCHER): List<Email> =
+    withContext(context) { emails { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.events].
  */
-suspend fun DataQuery.eventsAsync(): List<Event> =
-    withContext(ASYNC_DISPATCHER) { events { !isActive } }
+suspend fun DataQuery.eventsWithContext(context: CoroutineContext = ASYNC_DISPATCHER): List<Event> =
+    withContext(context) { events { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.groupMemberships].
  */
-suspend fun DataQuery.groupMembershipsAsync(): List<GroupMembership> =
-    withContext(ASYNC_DISPATCHER) { groupMemberships { !isActive } }
+suspend fun DataQuery.groupMembershipsWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        List<GroupMembership> = withContext(context) { groupMemberships { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.ims].
  */
-suspend fun DataQuery.imsAsync(): List<Im> = withContext(ASYNC_DISPATCHER) { ims { !isActive } }
+suspend fun DataQuery.imsWithContext(context: CoroutineContext = ASYNC_DISPATCHER): List<Im> =
+    withContext(context) { ims { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.names].
  */
-suspend fun DataQuery.namesAsync(): List<Name> =
-    withContext(ASYNC_DISPATCHER) { names { !isActive } }
+suspend fun DataQuery.namesWithContext(context: CoroutineContext = ASYNC_DISPATCHER): List<Name> =
+    withContext(context) { names { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.nicknames].
  */
-suspend fun DataQuery.nicknamesAsync(): List<Nickname> =
-    withContext(ASYNC_DISPATCHER) { nicknames { !isActive } }
+suspend fun DataQuery.nicknamesWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        List<Nickname> = withContext(context) { nicknames { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.notes].
  */
-suspend fun DataQuery.notesAsync(): List<Note> =
-    withContext(ASYNC_DISPATCHER) { notes { !isActive } }
+suspend fun DataQuery.notesWithContext(context: CoroutineContext = ASYNC_DISPATCHER): List<Note> =
+    withContext(context) { notes { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.organizations].
  */
-suspend fun DataQuery.organizationsAsync(): List<Organization> =
-    withContext(ASYNC_DISPATCHER) { organizations { !isActive } }
+suspend fun DataQuery.organizationsWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        List<Organization> = withContext(context) { organizations { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.phones].
  */
-suspend fun DataQuery.phonesAsync(): List<Phone> =
-    withContext(ASYNC_DISPATCHER) { phones { !isActive } }
+suspend fun DataQuery.phonesWithContext(context: CoroutineContext = ASYNC_DISPATCHER): List<Phone> =
+    withContext(context) { phones { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.relations].
  */
-suspend fun DataQuery.relationsAsync(): List<Relation> =
-    withContext(ASYNC_DISPATCHER) { relations { !isActive } }
+suspend fun DataQuery.relationsWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        List<Relation> = withContext(context) { relations { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.sipAddresses].
  */
-suspend fun DataQuery.sipAddressesAsync(): List<SipAddress> =
-    withContext(ASYNC_DISPATCHER) { sipAddresses { !isActive } }
+suspend fun DataQuery.sipAddressesWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        List<SipAddress> = withContext(context) { sipAddresses { !isActive } }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [DataQuery.websites].
  */
-suspend fun DataQuery.websitesAsync(): List<Website> =
-    withContext(ASYNC_DISPATCHER) { websites { !isActive } }
+suspend fun DataQuery.websitesWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        List<Website> = withContext(context) { websites { !isActive } }
+
+// endregion
+
+// region ASYNC
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.addresses].
+ */
+fun DataQuery.addressesAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<List<Address>> = CoroutineScope(context).async { addresses { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.emails].
+ */
+fun DataQuery.emailsAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Email>> =
+    CoroutineScope(context).async { emails { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.events].
+ */
+fun DataQuery.eventsAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Event>> =
+    CoroutineScope(context).async { events { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.groupMemberships].
+ */
+fun DataQuery.groupMembershipsAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<List<GroupMembership>> =
+    CoroutineScope(context).async { groupMemberships { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.ims].
+ */
+fun DataQuery.imsAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Im>> =
+    CoroutineScope(context).async { ims { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.names].
+ */
+fun DataQuery.namesAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Name>> =
+    CoroutineScope(context).async { names { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.nicknames].
+ */
+fun DataQuery.nicknamesAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<List<Nickname>> = CoroutineScope(context).async { nicknames { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.notes].
+ */
+fun DataQuery.notesAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Note>> =
+    CoroutineScope(context).async { notes { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.organizations].
+ */
+fun DataQuery.organizationsAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<List<Organization>> = CoroutineScope(context).async { organizations { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.phones].
+ */
+fun DataQuery.phonesAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Phone>> =
+    CoroutineScope(context).async { phones { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.relations].
+ */
+fun DataQuery.relationsAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<List<Relation>> = CoroutineScope(context).async { relations { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.sipAddresses].
+ */
+fun DataQuery.sipAddressesAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<List<SipAddress>> = CoroutineScope(context).async { sipAddresses { !isActive } }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [DataQuery.websites].
+ */
+fun DataQuery.websitesAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<List<Website>> = CoroutineScope(context).async { websites { !isActive } }
+
+// endregion

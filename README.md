@@ -1,15 +1,6 @@
 ## TODO
 
-Refactor async methods to withContext. Then creat async functions.
-
-See https://blog.mindorks.com/kotlin-withcontext-vs-async-await
-
-E.g. commitAsync and commitWithContext
-E.g. findAsync and findWithContext
-E.g. setPhotoAsync and setPhotoWithContext
-
-
-0. Implement these;
+0. Implement these (+ withContext and async functions!);
     - GroupToGroupMembership
     - GroupMembershipToGroup
     - DataRefresh

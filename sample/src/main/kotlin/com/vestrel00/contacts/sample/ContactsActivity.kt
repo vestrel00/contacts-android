@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.vestrel00.contacts.*
-import com.vestrel00.contacts.async.findAsync
+import com.vestrel00.contacts.async.findWithContext
 import com.vestrel00.contacts.debug.logContactsProviderTables
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.permissions.queryWithPermission
@@ -120,7 +120,7 @@ class ContactsActivity : BaseActivity() {
                 // scrolled to the very bottom of the list for brevity. Consumers can figure it out.
                 .offset(0)  // offset is 0 if offset function is not called
                 .limit(Int.MAX_VALUE) // limit is Int.MAX_VALUE if limit function is not called
-                .findAsync()
+                .findWithContext()
 
             setContactsAdapterItems()
 

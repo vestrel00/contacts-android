@@ -7,9 +7,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.widget.ImageView
-import com.vestrel00.contacts.async.util.photoBitmapDrawableAsync
-import com.vestrel00.contacts.async.util.removePhotoAsync
-import com.vestrel00.contacts.async.util.setPhotoAsync
+import com.vestrel00.contacts.async.util.photoBitmapDrawableWithContext
+import com.vestrel00.contacts.async.util.removePhotoWithContext
+import com.vestrel00.contacts.async.util.setPhotoWithContext
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.sample.R
 import com.vestrel00.contacts.ui.util.onPhotoPicked
@@ -106,16 +106,16 @@ class PhotoView @JvmOverloads constructor(
         }
 
         return if (photoDrawable != null) {
-            contact.setPhotoAsync(context, photoDrawable)
+            contact.setPhotoWithContext(context, photoDrawable)
         } else {
-            contact.removePhotoAsync(context)
+            contact.removePhotoWithContext(context)
         }
     }
 
     private fun setPhotoDrawableFromContact() {
         setContactPhotoJob?.cancel()
         setContactPhotoJob = launch {
-            setPhotoDrawable(contact?.photoBitmapDrawableAsync(context))
+            setPhotoDrawable(contact?.photoBitmapDrawableWithContext(context))
         }
     }
 
@@ -130,6 +130,7 @@ class PhotoView @JvmOverloads constructor(
             scaleType = ScaleType.FIT_CENTER
 
             val placeHolderImageDrawable = withContext(Dispatchers.IO) {
+                @Suppress("Deprecation")
                 context.resources.getDrawable(R.drawable.placeholder_photo)
             }
             setImageDrawable(placeHolderImageDrawable)

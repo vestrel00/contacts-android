@@ -4,51 +4,112 @@ import android.accounts.Account
 import com.vestrel00.contacts.accounts.AccountsQuery
 import com.vestrel00.contacts.async.ASYNC_DISPATCHER
 import com.vestrel00.contacts.entities.RawContactEntity
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
+// region WITH CONTEXT
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
- *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
  * See [AccountsQuery.accountFor].
  */
-suspend fun AccountsQuery.accountForAsync(rawContact: RawContactEntity): Account? =
-    withContext(ASYNC_DISPATCHER) { accountFor(rawContact) }
+suspend fun AccountsQuery.accountForWithContext(
+    rawContact: RawContactEntity,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Account? = withContext(context) { accountFor(rawContact) }
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [AccountsQuery.accountsFor].
  */
-suspend fun AccountsQuery.accountsForAsync(vararg rawContacts: RawContactEntity):
-        AccountsQuery.AccountsList = accountsForAsync(rawContacts.asSequence())
+suspend fun AccountsQuery.accountsForWithContext(
+    vararg rawContacts: RawContactEntity,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): AccountsQuery.AccountsList = accountsForWithContext(rawContacts.asSequence(), context)
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [AccountsQuery.accountsFor].
  */
-suspend fun AccountsQuery.accountsForAsync(rawContacts: Collection<RawContactEntity>):
-        AccountsQuery.AccountsList = accountsForAsync(rawContacts.asSequence())
+suspend fun AccountsQuery.accountsForWithContext(
+    rawContacts: Collection<RawContactEntity>,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): AccountsQuery.AccountsList = accountsForWithContext(rawContacts.asSequence(), context)
 
 /**
- * Suspends the current coroutine, performs the query operation in background, then returns the
- * control flow to the calling coroutine scope.
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
  *
- * Automatically gets cancelled if the parent coroutine scope / job is cancelled.
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [AccountsQuery.accountsFor].
  */
-suspend fun AccountsQuery.accountsForAsync(rawContacts: Sequence<RawContactEntity>):
-        AccountsQuery.AccountsList = withContext(ASYNC_DISPATCHER) {
-    accountsFor(rawContacts) { !isActive }
-}
+suspend fun AccountsQuery.accountsForWithContext(
+    rawContacts: Sequence<RawContactEntity>,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): AccountsQuery.AccountsList = withContext(context) { accountsFor(rawContacts) { !isActive } }
+
+// endregion
+
+// region ASYNC
+
+/**
+ * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
+ * returns the [Deferred] result.
+ *
+ * See [AccountsQuery.accountFor].
+ */
+fun AccountsQuery.accountForAsync(
+    rawContact: RawContactEntity,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<Account?> = CoroutineScope(context).async { accountFor(rawContact) }
+
+/**
+ * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
+ * returns the [Deferred] result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [AccountsQuery.accountsFor].
+ */
+fun AccountsQuery.accountsForAsync(
+    vararg rawContacts: RawContactEntity,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<AccountsQuery.AccountsList> = accountsForAsync(rawContacts.asSequence(), context)
+
+/**
+ * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
+ * returns the [Deferred] result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [AccountsQuery.accountsFor].
+ */
+fun AccountsQuery.accountsForAsync(
+    rawContacts: Collection<RawContactEntity>,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<AccountsQuery.AccountsList> = accountsForAsync(rawContacts.asSequence(), context)
+
+/**
+ * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
+ * returns the [Deferred] result.
+ *
+ * Computations automatically stops if the parent coroutine scope / job is cancelled.
+ *
+ * See [AccountsQuery.accountsFor].
+ */
+fun AccountsQuery.accountsForAsync(
+    rawContacts: Sequence<RawContactEntity>,
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<AccountsQuery.AccountsList> = CoroutineScope(context).async { accountsFor(rawContacts) }
+
+// endregion

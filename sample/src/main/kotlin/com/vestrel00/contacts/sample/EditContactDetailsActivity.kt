@@ -9,8 +9,8 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.vestrel00.contacts.Contacts
 import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.async.commitAsync
-import com.vestrel00.contacts.async.findFirstAsync
+import com.vestrel00.contacts.async.commitWithContext
+import com.vestrel00.contacts.async.findFirstWithContext
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.permissions.queryWithPermission
@@ -30,7 +30,8 @@ class EditContactDetailsActivity : BaseActivity() {
         val activity: Activity = this@EditContactDetailsActivity
         launch {
             if (!fetchContact()) {
-                Toast.makeText(activity, R.string.edit_contact_details_fetch_error, LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.edit_contact_details_fetch_error, LENGTH_SHORT)
+                    .show()
                 finish()
                 return@launch
             }
@@ -66,7 +67,7 @@ class EditContactDetailsActivity : BaseActivity() {
     private suspend fun fetchContact(): Boolean {
         val result = Contacts().queryWithPermission(this)
             .where(Fields.Contact.Id equalTo intent.contactId())
-            .findFirstAsync()
+            .findFirstWithContext()
 
         if (result != null) {
             contact = result.toMutableContact()
@@ -102,7 +103,7 @@ class EditContactDetailsActivity : BaseActivity() {
         // Save changes.
         val contactSaveResult = Contacts().updateWithPermission(this)
             .contacts(contact)
-            .commitAsync()
+            .commitWithContext()
 
         // Save photo.
         val photoSaveSuccess = photoView.saveContactPhoto()
