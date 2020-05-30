@@ -96,45 +96,46 @@ interface AccountsQuery {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean): Result
+    // @JvmOverloads cannot be used in interface methods...
+    // fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean = { false })
+    fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Collection<RawContactEntity>, cancel: () -> Boolean): Result
+    fun accountsFor(rawContacts: Collection<RawContactEntity>, cancel: () -> Boolean): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(vararg rawContacts: RawContactEntity): Result
+    fun accountsFor(vararg rawContacts: RawContactEntity): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Sequence<RawContactEntity>): Result
+    fun accountsFor(rawContacts: Sequence<RawContactEntity>): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean): Result
+    fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Collection<RawContactEntity>): Result
+    fun accountsFor(rawContacts: Collection<RawContactEntity>): AccountsList
 
-    interface Result {
-
-        /**
-         * The list of [Account]s retrieved in the same order as the given list of
-         * [RawContactEntity].
-         */
-        val accounts: List<Account?>
+    /**
+     * The list of [Account]s retrieved in the same order as the given list of [RawContactEntity].
+     *
+     * This list allows for null [Account]s to accommodate for local RawContacts.
+     */
+    interface AccountsList : List<Account?> {
 
         /**
          * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
@@ -199,16 +200,16 @@ private class AccountsQueryImpl(
         accountsFor(rawContacts) { false }
 
     override fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean):
-            AccountsQuery.Result {
+            AccountsQuery.AccountsList {
 
         if (!contactsPermissions.canQuery()) {
-            return AccountsQueryResult(emptyList(), emptyMap())
+            return AccountsListImpl(emptyMap())
         }
 
         val rawContactIds = rawContacts.map { it.id }
         val nonNullRawContactIds = rawContactIds.filterNotNull()
 
-        val rawContactIdsResultMap = mutableMapOf<Long, Account?>().apply {
+        val rawContactIdAccountMap = mutableMapOf<Long, Account?>().apply {
             // Only perform the query if there is at least one nonNullRawContactId
             if (nonNullRawContactIds.isEmpty()) {
                 return@apply
@@ -235,10 +236,10 @@ private class AccountsQueryImpl(
             }
         }
 
-        // Build the parameter-in-order list with nullable Accounts.
-        val accounts = mutableListOf<Account?>().apply {
+        return AccountsListImpl(rawContactIdAccountMap).apply {
+            // Build the parameter-in-order list with nullable Accounts.
             for (rawContactId in rawContactIds) {
-                add(rawContactIdsResultMap[rawContactId])
+                add(rawContactIdAccountMap[rawContactId])
 
                 if (cancel()) {
                     break
@@ -250,8 +251,6 @@ private class AccountsQueryImpl(
                 clear()
             }
         }
-
-        return AccountsQueryResult(accounts, rawContactIdsResultMap)
     }
 }
 
@@ -263,13 +262,11 @@ internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Acc
     it.getNextOrNull { it.rawContactsCursor().account() }
 }
 
-private class AccountsQueryResult(
-    override val accounts: List<Account?>,
-    private val rawContactIdsResultMap: Map<Long, Account?>
-) : AccountsQuery.Result {
+private class AccountsListImpl(internal val rawContactIdAccountMap: Map<Long, Account?>) :
+    ArrayList<Account?>(), AccountsQuery.AccountsList {
 
     override fun accountFor(rawContact: RawContactEntity): Account? =
         rawContact.id?.let(::accountFor)
 
-    override fun accountFor(rawContactId: Long): Account? = rawContactIdsResultMap[rawContactId]
+    override fun accountFor(rawContactId: Long): Account? = rawContactIdAccountMap[rawContactId]
 }

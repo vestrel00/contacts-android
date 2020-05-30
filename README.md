@@ -1,10 +1,22 @@
 ## TODO
 
+Refactor async methods to withContext. Then creat async functions.
+
+See https://blog.mindorks.com/kotlin-withcontext-vs-async-await
+
+E.g. commitAsync and commitWithContext
+E.g. findAsync and findWithContext
+E.g. setPhotoAsync and setPhotoWithContext
+
+
 0. Implement these;
+    - GroupToGroupMembership
+    - GroupMembershipToGroup
     - DataRefresh
     - DataRawContact
     - DataContact
     - RawContactContact
+
 1. Migrate local account to a remote account and vice versa + withPermission and async
     - Test everything in the accounts package and make sure withPermission and async exist!
 2. Add function to commit all operations in one go with a boolean result in Update and Delete interfaces.

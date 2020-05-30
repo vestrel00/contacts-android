@@ -27,7 +27,7 @@ suspend fun AccountsQuery.accountForAsync(rawContact: RawContactEntity): Account
  * See [AccountsQuery.accountsFor].
  */
 suspend fun AccountsQuery.accountsForAsync(vararg rawContacts: RawContactEntity):
-        AccountsQuery.Result = accountsForAsync(rawContacts.asSequence())
+        AccountsQuery.AccountsList = accountsForAsync(rawContacts.asSequence())
 
 /**
  * Suspends the current coroutine, performs the query operation in background, then returns the
@@ -38,7 +38,7 @@ suspend fun AccountsQuery.accountsForAsync(vararg rawContacts: RawContactEntity)
  * See [AccountsQuery.accountsFor].
  */
 suspend fun AccountsQuery.accountsForAsync(rawContacts: Collection<RawContactEntity>):
-        AccountsQuery.Result = accountsForAsync(rawContacts.asSequence())
+        AccountsQuery.AccountsList = accountsForAsync(rawContacts.asSequence())
 
 /**
  * Suspends the current coroutine, performs the query operation in background, then returns the
@@ -49,6 +49,6 @@ suspend fun AccountsQuery.accountsForAsync(rawContacts: Collection<RawContactEnt
  * See [AccountsQuery.accountsFor].
  */
 suspend fun AccountsQuery.accountsForAsync(rawContacts: Sequence<RawContactEntity>):
-        AccountsQuery.Result = withContext(ASYNC_DISPATCHER) {
+        AccountsQuery.AccountsList = withContext(ASYNC_DISPATCHER) {
     accountsFor(rawContacts) { !isActive }
 }

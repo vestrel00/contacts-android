@@ -136,7 +136,7 @@ interface GroupsQuery {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): List<Group>
+    // fun find(cancel: () -> Boolean = { false }): GroupsList
     fun find(cancel: () -> Boolean): GroupsList
 
     /**
