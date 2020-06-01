@@ -6,14 +6,13 @@ import android.content.Context
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
+import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.util.applyBatch
-import com.vestrel00.contacts.util.isEmpty
-import com.vestrel00.contacts.util.nullIfNotInSystem
+import com.vestrel00.contacts.util.*
 
 // TODO Update DEV_NOTES data required and groups / group membership sections.
 // Contacts Provider automatically creates a group membership to the default group of the target Account when the account changes.
@@ -35,11 +34,14 @@ interface AccountsRawContactsAssociationsUpdate {
      *
      * RawContacts that were already associated with an Account will no longer be associated with
      * that Account if this call succeeds. Existing group memberships will be deleted. A group
-     * membership to the default group of the given [Account] will be created automatically by the
+     * membership to the default group of the given [account] will be created automatically by the
      * Contacts Provider upon successful operation.
      *
      * Only existing RawContacts that have been retrieved via a query will be processed. Those that
      * have been manually created via a constructor will be ignored.
+     *
+     * This operation will fail if the given [account] is not in the system or if no existing
+     * RawContacts are provided.
      *
      * ## Permissions
      *
@@ -71,19 +73,70 @@ interface AccountsRawContactsAssociationsUpdate {
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean
 
+    /**
+     * Associates all local RawContacts with the given [account].
+     *
+     * Local RawContacts are those that are not associated with any Account. A group membership to
+     * the default group of the given [account] will be created automatically by the Contacts
+     * Provider upon successful operation.
+     *
+     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
+     * have been manually created via a constructor will be ignored.
+     *
+     * This operation will fail if the given [account] is not in the system.
+     *
+     * ## Permissions
+     *
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+     * [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithLocalRawContacts(account: Account): Boolean
 
+    /**
+     * Associates / transfers the RawContacts associated with the [srcAccounts] to the [dstAccount].
+     *
+     * RawContacts associated with the [srcAccounts] will no longer be associated with those
+     * Accounts if this call succeeds. Existing group memberships will be deleted. A group
+     * membership to the default group of the given [dstAccount] will be created automatically by
+     * the Contacts Provider upon successful operation.
+     *
+     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
+     * have been manually created via a constructor will be ignored.
+     *
+     * This operation will fail if the given [dstAccount] is not in the system or if no
+     * [srcAccounts] are provided. In the case where there are no associated RawContacts with any
+     * of the [srcAccounts], this operation succeeds.
+     *
+     * ## Permissions
+     *
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+     * [ContactsPermissions.WRITE_PERMISSION].
+     * 
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContactsFromAccounts(
         dstAccount: Account, vararg srcAccounts: Account
     ): Boolean
 
+    /**
+     * See [associateAccountWithRawContactsFromAccounts].
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContactsFromAccounts(
         dstAccount: Account, srcAccounts: Collection<Account>
     ): Boolean
 
+    /**
+     * See [associateAccountWithRawContactsFromAccounts].
+     */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContactsFromAccounts(
         dstAccount: Account, srcAccounts: Sequence<Account>
@@ -166,28 +219,49 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     }
 
     override fun associateAccountWithLocalRawContacts(account: Account): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (!permissions.canUpdateRawContactsAssociations()) {
+            return false
+        }
+
+        // A valid account is required for associations.
+        account.nullIfNotInSystem(context) ?: return false
+
+        return context.contentResolver.updateLocalRawContactsAccounts(account)
     }
 
     override fun associateAccountWithRawContactsFromAccounts(
         dstAccount: Account,
         vararg srcAccounts: Account
-    ): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    ): Boolean = associateAccountWithRawContactsFromAccounts(dstAccount, srcAccounts.asSequence())
 
     override fun associateAccountWithRawContactsFromAccounts(
         dstAccount: Account,
         srcAccounts: Collection<Account>
-    ): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    ): Boolean = associateAccountWithRawContactsFromAccounts(dstAccount, srcAccounts.asSequence())
 
     override fun associateAccountWithRawContactsFromAccounts(
         dstAccount: Account,
         srcAccounts: Sequence<Account>
     ): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (!permissions.canUpdateRawContactsAssociations() || srcAccounts.isEmpty()) {
+            return false
+        }
+
+        // A valid account is required for associations.
+        dstAccount.nullIfNotInSystem(context) ?: return false
+
+        val rawContactIdsFromSrcAccounts =
+            context.contentResolver.rawContactIdsAssociatedWithAccounts(srcAccounts)
+
+        // Succeed if there are no RawContacts from the source Accounts.
+        if (rawContactIdsFromSrcAccounts.isEmpty()) {
+            return true
+        }
+
+        return context.contentResolver.updateRawContactsAccounts(
+            rawContactIdsFromSrcAccounts,
+            dstAccount
+        )
     }
 
     override fun associateAccountWithRawContactsFromAllAccounts(dstAccount: Account): Boolean {
@@ -233,6 +307,10 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     // endregion
 }
 
+private fun ContentResolver.updateRawContactsAccounts(
+    rawContactIds: Set<Long>, account: Account
+): Boolean = updateRawContactsAccounts(rawContactIds.asSequence(), account)
+
 /**
  * Deletes existing group memberships in the Data table of the given [rawContactIds] and then
  * updates the sync columns in the RawContacts table with the given [account]. These two operations
@@ -255,3 +333,34 @@ private fun ContentResolver.updateRawContactsAccounts(
         .withValue(RawContactsFields.AccountType, account.type)
         .build()
 ) != null
+
+private fun ContentResolver.updateLocalRawContactsAccounts(account: Account): Boolean = applyBatch(
+    // No need to delete existing group memberships because local RawContacts are not associated
+    // with an Account and therefore do not have any group memberships.
+
+    // Update the sync columns of RawContacts without an associated Account. This does not include
+    // RawContacts associated with invalid Accounts.
+    newUpdate(Table.RAW_CONTACTS)
+        .withSelection(
+            RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull()
+        )
+        .withValue(RawContactsFields.AccountName, account.name)
+        .withValue(RawContactsFields.AccountType, account.type)
+        .build()
+) != null
+
+private fun ContentResolver.rawContactIdsAssociatedWithAccounts(accounts: Sequence<Account>):
+        Set<Long> = query(
+    Table.RAW_CONTACTS,
+    Include(RawContactsFields.Id),
+    accounts.toRawContactsWhere()
+) {
+    val rawContactIds = mutableSetOf<Long>()
+    val rawContactsCursor = it.rawContactsCursor()
+
+    while (it.moveToNext()) {
+        rawContactsCursor.rawContactId?.let(rawContactIds::add)
+    }
+
+    rawContactIds
+} ?: emptySet()
