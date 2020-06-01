@@ -14,11 +14,15 @@ import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.*
 
+// TODO verify that Contacts that have been transferred to another Account are sync'ed.
+// Transferring Contact A of Account X to Account Y results in the removal of Contact A from
+// Account X and the addition to Account Y.
+
 // TODO Update DEV_NOTES data required and groups / group membership sections.
 // Contacts Provider automatically creates a group membership to the default group of the target Account when the account changes.
 //     - This occurs even if the group membership already exists resulting in duplicates.
 // Contacts Provider DOES NOT delete existing group memberships when the account changes.
-//     - This has to be done manually to prevent duplicates to the default group.
+//     - This has to be done manually to prevent duplicates.
 // For Lollipop (API 22) and below, the Contacts Provider sets null accounts to non-null asynchronously.
 //     - Just add a note about this behavior.
 
@@ -116,7 +120,7 @@ interface AccountsRawContactsAssociationsUpdate {
      *
      * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
      * [ContactsPermissions.WRITE_PERMISSION].
-     * 
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
