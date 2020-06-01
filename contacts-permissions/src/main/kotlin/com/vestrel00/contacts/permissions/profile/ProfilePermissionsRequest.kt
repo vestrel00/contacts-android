@@ -2,7 +2,7 @@ package com.vestrel00.contacts.permissions.profile
 
 import android.app.Activity
 import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.permissions.requestQueryPermission
+import com.vestrel00.contacts.permissions.requestReadPermission
 import com.vestrel00.contacts.profile.Profile
 import com.vestrel00.contacts.profile.ProfileQuery
 
@@ -15,7 +15,7 @@ import com.vestrel00.contacts.profile.ProfileQuery
 suspend fun Profile.queryWithPermission(activity: Activity): ProfileQuery {
     val permissions = permissions(activity)
     if (!permissions.canQuery()) {
-        requestQueryPermission(activity)
+        requestReadPermission(activity)
     }
 
     return query(activity)

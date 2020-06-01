@@ -128,7 +128,7 @@ interface DataQuery {
      * Be careful what fields are used in this where. Querying for all addresses where the phone
      * number starts with 555 will produce no results. Think about it =)
      *
-     * If not specified or null, then all data is returned, limited by [limit].
+     * If not specified or null, then all data is returned.
      *
      * Use [Fields] to construct the [where].
      */
@@ -138,8 +138,8 @@ interface DataQuery {
      * Orders the returned data using one or more [orderBy]s. If not specified, then data is ordered
      * by ID in ascending order.
      *
-     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase`
-     * as an optional parameter.
+     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase` as an
+     * optional parameter.
      *
      * Use [Fields] to construct the [orderBy].
      */

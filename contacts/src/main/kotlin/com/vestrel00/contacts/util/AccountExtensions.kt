@@ -8,6 +8,10 @@ import com.vestrel00.contacts.accounts.AccountsQuery
 /**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
  * itself. Otherwise, returns null.
+ *
+ * ## Permissions
+ *
+ * Requires [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
 internal fun Account.nullIfNotInSystem(context: Context): Account? =
     nullIfNotIn(AccountsQuery(context).allAccounts())

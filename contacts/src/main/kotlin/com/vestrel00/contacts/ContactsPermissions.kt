@@ -6,11 +6,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Process
 import com.vestrel00.contacts.ContactsPermissions.Companion.READ_PERMISSION
 import com.vestrel00.contacts.ContactsPermissions.Companion.WRITE_PERMISSION
-import com.vestrel00.contacts.accounts.AccountsPermissions
-
-@Suppress("FunctionName")
-internal fun ContactsPermissions(context: Context): ContactsPermissions =
-    ContactsPermissionsImpl(context, AccountsPermissions(context))
+import com.vestrel00.contacts.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
 
 /**
  * Provides functions for checking required permissions.
@@ -23,8 +19,7 @@ interface ContactsPermissions {
     fun canQuery(): Boolean
 
     /**
-     * Returns true if [WRITE_PERMISSION] and [AccountsPermissions.GET_ACCOUNTS_PERMISSION] are
-     * granted.
+     * Returns true if [WRITE_PERMISSION] and [GET_ACCOUNTS_PERMISSION] are granted.
      */
     fun canInsertUpdateDelete(): Boolean
 
@@ -34,15 +29,18 @@ interface ContactsPermissions {
     }
 }
 
+@Suppress("FunctionName")
+internal fun ContactsPermissions(context: Context): ContactsPermissions =
+    ContactsPermissionsImpl(context)
+
 private class ContactsPermissionsImpl(
-    private val context: Context,
-    private val accountsPermissions: AccountsPermissions
+    private val context: Context
 ) : ContactsPermissions {
 
-    override fun canQuery() = context.isPermissionGrantedFor(READ_PERMISSION)
+    override fun canQuery(): Boolean = context.isPermissionGrantedFor(READ_PERMISSION)
 
-    override fun canInsertUpdateDelete() =
-        context.isPermissionGrantedFor(WRITE_PERMISSION) && accountsPermissions.canGetAccounts()
+    override fun canInsertUpdateDelete(): Boolean = context.isPermissionGrantedFor(WRITE_PERMISSION)
+            && context.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
 }
 
 // [ANDROID X] Same as ContextCompat.checkSelfPermission, which we are not using to avoid having

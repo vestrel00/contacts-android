@@ -10,39 +10,9 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.CompositePermissionListener
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener
 import com.karumi.dexter.listener.single.PermissionListener
-import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
-/**
- * Requests the [ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until the
- * user either grants or denies the permission request.
- *
- * Returns true if permission is granted. False otherwise.
- */
-suspend fun requestQueryPermission(activity: Activity): Boolean =
-    requestContactsPermission(ContactsPermissions.READ_PERMISSION, activity)
-
-/**
- * Requests the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION]. The current
- * coroutine is suspended until the user either grants or denies the permissions request.
- *
- * Returns true if permissions are granted. False otherwise.
- */
-suspend fun requestInsertUpdateDeletePermission(activity: Activity): Boolean =
-    requestContactsPermission(ContactsPermissions.WRITE_PERMISSION, activity)
-            && requestGetAccountsPermission(activity)
-
-private suspend fun requestContactsPermission(permission: String, activity: Activity): Boolean =
-    requestPermission(
-        permission,
-        activity,
-        R.string.contacts_request_permission_title,
-        R.string.contacts_request_permission_description
-    )
 
 internal suspend fun requestPermission(
     permission: String,

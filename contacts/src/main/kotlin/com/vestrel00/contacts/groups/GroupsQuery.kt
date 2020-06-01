@@ -21,8 +21,9 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  *
  * ## Usage
  *
- * Here is an example query that returns the first 5 [Groups]s, skipping the first 2, where the
- * group's title starts with "a", ordered by the group title in ascending order (ignoring case).
+ * Here is an example query that returns the first 5 [Groups]s in the account, skipping the first 2,
+ * where the group's title starts with "a", ordered by the group title in ascending order
+ * (ignoring case).
  *
  * ```kotlin
  * val groups = groupsQuery
@@ -68,7 +69,7 @@ interface GroupsQuery {
 
     /**
      * Filters the returned [Group]s matching the criteria defined by the [where]. If not specified
-     * or null, then all [Group]s are returned, limited by [limit].
+     * or null, then all [Group]s are returned.
      *
      * Use [GroupsFields] to construct the [where].
      */
@@ -78,8 +79,8 @@ interface GroupsQuery {
      * Orders the returned [Group]s using one or more [orderBy]s. If not specified, then groups
      * are ordered by ID in ascending order.
      *
-     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase`
-     * as an optional parameter.
+     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase` as an
+     * optional parameter.
      *
      * Use [GroupsFields] to construct the [orderBy].
      */
@@ -110,7 +111,7 @@ interface GroupsQuery {
     fun offset(offset: Int): GroupsQuery
 
     /**
-     * Returns the [GroupsList]s matching the preceding query options.
+     * Returns the [GroupsList] matching the preceding query options.
      *
      * ## Thread Safety
      *
@@ -120,7 +121,7 @@ interface GroupsQuery {
     fun find(): GroupsList
 
     /**
-     * Returns the [GroupsList]s matching the preceding query options.
+     * Returns the [GroupsList] matching the preceding query options.
      *
      * ## Cancellation
      *
@@ -145,12 +146,6 @@ interface GroupsQuery {
      * The [offset] and [limit] functions applies to this list.
      *
      * Use [from], to get the list of Groups for a specific Account.
-     *
-     * ## Developer notes
-     *
-     * We technically did not need this custom interface. We could just use the generic List<Group>
-     * and created extension functions for it. However, this is more Java-friendly. Furthermore, it
-     * gives us the flexibility to add more stuff to it without any overhead.
      */
     interface GroupsList : List<Group> {
 

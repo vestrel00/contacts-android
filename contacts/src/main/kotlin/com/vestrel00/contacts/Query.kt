@@ -207,8 +207,8 @@ interface Query {
      * This will throw an [IllegalArgumentException] if ordering by a field that is not included in
      * the query.
      *
-     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase`
-     * as an optional parameter.
+     * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase` as an
+     * optional parameter.
      *
      * Use [Fields] to construct the [orderBy].
      */

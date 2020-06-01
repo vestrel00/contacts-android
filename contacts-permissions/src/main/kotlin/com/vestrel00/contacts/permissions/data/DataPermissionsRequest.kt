@@ -6,7 +6,8 @@ import com.vestrel00.contacts.data.Data
 import com.vestrel00.contacts.data.DataDelete
 import com.vestrel00.contacts.data.DataQuery
 import com.vestrel00.contacts.data.DataUpdate
-import com.vestrel00.contacts.permissions.requestQueryPermission
+import com.vestrel00.contacts.permissions.requestReadPermission
+import com.vestrel00.contacts.permissions.requestWritePermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
@@ -17,24 +18,22 @@ import com.vestrel00.contacts.permissions.requestQueryPermission
 suspend fun Data.queryWithPermission(activity: Activity): DataQuery {
     val permissions = permissions(activity)
     if (!permissions.canQuery()) {
-        requestQueryPermission(activity)
+        requestReadPermission(activity)
     }
 
     return query(activity)
 }
 
 /**
- * If [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
- * granted, suspends the current coroutine, requests for the permissions, and then returns a new
- * [DataUpdate] instance.
+ * If [ContactsPermissions.WRITE_PERMISSION] is not yet  granted, suspends the current coroutine,
+ * requests for the permissions, and then returns a new [DataUpdate] instance.
  *
- * If permissions are already granted, then immediately returns a new [DataUpdate] instance.
+ * If permission is already granted, then immediately returns a new [DataUpdate] instance.
  */
 suspend fun Data.updateWithPermission(activity: Activity): DataUpdate {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        requestQueryPermission(activity)
+        requestWritePermission(activity)
     }
 
     return update(activity)
@@ -51,7 +50,7 @@ suspend fun Data.updateWithPermission(activity: Activity): DataUpdate {
 suspend fun Data.deleteWithPermission(activity: Activity): DataDelete {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        requestQueryPermission(activity)
+        requestWritePermission(activity)
     }
 
     return delete(activity)

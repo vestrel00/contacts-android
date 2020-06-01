@@ -2,6 +2,7 @@ package com.vestrel00.contacts.permissions
 
 import android.app.Activity
 import com.vestrel00.contacts.*
+import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
@@ -12,7 +13,7 @@ import com.vestrel00.contacts.*
 suspend fun Contacts.queryWithPermission(activity: Activity): Query {
     val permissions = permissions(activity)
     if (!permissions.canQuery()) {
-        requestQueryPermission(activity)
+        requestReadPermission(activity)
     }
 
     return query(activity)
@@ -29,7 +30,8 @@ suspend fun Contacts.queryWithPermission(activity: Activity): Query {
 suspend fun Contacts.insertWithPermission(activity: Activity): Insert {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        requestInsertUpdateDeletePermission(activity)
+        requestWritePermission(activity)
+        requestGetAccountsPermission(activity)
     }
 
     return insert(activity)
@@ -46,7 +48,8 @@ suspend fun Contacts.insertWithPermission(activity: Activity): Insert {
 suspend fun Contacts.updateWithPermission(activity: Activity): Update {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        requestInsertUpdateDeletePermission(activity)
+        requestWritePermission(activity)
+        requestGetAccountsPermission(activity)
     }
 
     return update(activity)
@@ -61,8 +64,35 @@ suspend fun Contacts.updateWithPermission(activity: Activity): Update {
 suspend fun Contacts.deleteWithPermission(activity: Activity): Delete {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        requestInsertUpdateDeletePermission(activity)
+        requestWritePermission(activity)
+        requestGetAccountsPermission(activity)
     }
 
     return delete(activity)
 }
+
+/**
+ * Requests the [ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until the
+ * user either grants or denies the permission request.
+ *
+ * Returns true if permission is granted. False otherwise.
+ */
+suspend fun requestReadPermission(activity: Activity): Boolean =
+    requestContactsPermission(ContactsPermissions.READ_PERMISSION, activity)
+
+/**
+ * Requests the [ContactsPermissions.WRITE_PERMISSION]. The current coroutine is suspended until
+ * the user either grants or denies the permissions request.
+ *
+ * Returns true if permission is granted. False otherwise.
+ */
+suspend fun requestWritePermission(activity: Activity): Boolean =
+    requestContactsPermission(ContactsPermissions.WRITE_PERMISSION, activity)
+
+private suspend fun requestContactsPermission(permission: String, activity: Activity): Boolean =
+    requestPermission(
+        permission,
+        activity,
+        R.string.contacts_request_permission_title,
+        R.string.contacts_request_permission_description
+    )

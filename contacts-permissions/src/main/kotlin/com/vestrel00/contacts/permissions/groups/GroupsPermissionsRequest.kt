@@ -6,8 +6,9 @@ import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.groups.GroupsInsert
 import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.groups.GroupsUpdate
-import com.vestrel00.contacts.permissions.requestInsertUpdateDeletePermission
-import com.vestrel00.contacts.permissions.requestQueryPermission
+import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
+import com.vestrel00.contacts.permissions.requestReadPermission
+import com.vestrel00.contacts.permissions.requestWritePermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
@@ -18,7 +19,7 @@ import com.vestrel00.contacts.permissions.requestQueryPermission
 suspend fun Groups.queryWithPermission(activity: Activity): GroupsQuery {
     val permissions = permissions(activity)
     if (!permissions.canQuery()) {
-        requestQueryPermission(activity)
+        requestReadPermission(activity)
     }
 
     return query(activity)
@@ -35,7 +36,8 @@ suspend fun Groups.queryWithPermission(activity: Activity): GroupsQuery {
 suspend fun Groups.insertWithPermission(activity: Activity): GroupsInsert {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        requestInsertUpdateDeletePermission(activity)
+        requestWritePermission(activity)
+        requestGetAccountsPermission(activity)
     }
 
     return insert(activity)
@@ -52,7 +54,8 @@ suspend fun Groups.insertWithPermission(activity: Activity): GroupsInsert {
 suspend fun Groups.updateWithPermission(activity: Activity): GroupsUpdate {
     val permissions = permissions(activity)
     if (!permissions.canInsertUpdateDelete()) {
-        requestInsertUpdateDeletePermission(activity)
+        requestWritePermission(activity)
+        requestGetAccountsPermission(activity)
     }
 
     return update(activity)

@@ -24,9 +24,9 @@ import com.vestrel00.contacts.util.nullIfNotInSystem
 //     - Just add a note about this behavior.
 
 /**
- * TODO
+ * TODO Documentation
  */
-interface AccountsRawContactsAssociations {
+interface AccountsRawContactsAssociationsUpdate {
 
     // region ASSOCIATE
 
@@ -124,18 +124,15 @@ interface AccountsRawContactsAssociations {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsRawContactsAssociations(context: Context): AccountsRawContactsAssociations =
-    AccountsRawContactsAssociationsImpl(
-        context,
-        AccountsPermissions(context),
-        ContactsPermissions(context)
-    )
+internal fun AccountsRawContactsAssociationsUpdate(context: Context):
+        AccountsRawContactsAssociationsUpdate = AccountsRawContactsAssociationsUpdateImpl(
+    context, AccountsPermissions(context)
+)
 
-private class AccountsRawContactsAssociationsImpl(
+private class AccountsRawContactsAssociationsUpdateImpl(
     private val context: Context,
-    private val accountsPermissions: AccountsPermissions,
-    private val contactsPermissions: ContactsPermissions
-) : AccountsRawContactsAssociations {
+    private val permissions: AccountsPermissions
+) : AccountsRawContactsAssociationsUpdate {
 
     // region ASSOCIATE
 
@@ -151,7 +148,7 @@ private class AccountsRawContactsAssociationsImpl(
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean {
 
-        if (!accountsPermissions.canGetAccounts() || !contactsPermissions.canInsertUpdateDelete()) {
+        if (!permissions.canUpdateRawContactsAssociations()) {
             return false
         }
 

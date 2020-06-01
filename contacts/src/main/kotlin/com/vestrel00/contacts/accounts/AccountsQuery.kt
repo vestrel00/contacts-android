@@ -16,6 +16,12 @@ import com.vestrel00.contacts.util.query
 /**
  * Retrieves [Account]s from the [AccountManager] or from the Contacts Provider RawContacts table.
  *
+ * ## Permissions
+ *
+ * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] OR [ContactsPermissions.READ_PERMISSION]
+ * (see function documentation) is assumed to have been granted already in these examples for
+ * brevity. All queries will return an empty list if the permission is not granted.
+ *
  * ## Usage
  *
  * Here is an example of how to get all accounts and get accounts with type "com.google".
@@ -77,7 +83,7 @@ interface AccountsQuery {
     fun accountFor(rawContact: RawContactEntity): Account?
 
     /**
-     * Returns the [Result] for the given [rawContacts].
+     * Returns the [AccountsList] for the given [rawContacts].
      *
      * ## Permissions
      *
@@ -154,31 +160,31 @@ interface AccountsQuery {
 internal fun AccountsQuery(context: Context): AccountsQuery = AccountsQueryImpl(
     context.contentResolver,
     AccountManager.get(context),
-    AccountsPermissions(context),
-    ContactsPermissions(context)
+    AccountsPermissions(context)
 )
 
 @SuppressWarnings("MissingPermission")
 private class AccountsQueryImpl(
     private val contentResolver: ContentResolver,
     private val accountManager: AccountManager,
-    private val accountsPermissions: AccountsPermissions,
-    private val contactsPermissions: ContactsPermissions
+    private val permissions: AccountsPermissions
 ) : AccountsQuery {
 
-    override fun allAccounts(): List<Account> = accounts {
+    override fun allAccounts(): List<Account> = if (!permissions.canQueryAccounts()) {
+        emptyList()
+    } else {
         accountManager.accounts.asList()
     }
 
-    override fun accountsWithType(type: String) = accounts {
-        accountManager.getAccountsByType(type).asList()
-    }
-
-    private inline fun accounts(accounts: () -> List<Account>): List<Account> =
-        if (!accountsPermissions.canGetAccounts()) emptyList() else accounts()
+    override fun accountsWithType(type: String): List<Account> =
+        if (!permissions.canQueryAccounts()) {
+            emptyList()
+        } else {
+            accountManager.getAccountsByType(type).asList()
+        }
 
     override fun accountFor(rawContact: RawContactEntity): Account? =
-        if (!contactsPermissions.canQuery()) {
+        if (!permissions.canQueryAccounts()) {
             null
         } else {
             rawContact.id?.let(contentResolver::accountForRawContactWithId)
@@ -202,7 +208,7 @@ private class AccountsQueryImpl(
     override fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean):
             AccountsQuery.AccountsList {
 
-        if (!contactsPermissions.canQuery()) {
+        if (!permissions.canQueryAccounts()) {
             return AccountsListImpl(emptyMap())
         }
 
@@ -262,7 +268,7 @@ internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Acc
     it.getNextOrNull { it.rawContactsCursor().account() }
 }
 
-private class AccountsListImpl(internal val rawContactIdAccountMap: Map<Long, Account?>) :
+private class AccountsListImpl(private val rawContactIdAccountMap: Map<Long, Account?>) :
     ArrayList<Account?>(), AccountsQuery.AccountsList {
 
     override fun accountFor(rawContact: RawContactEntity): Account? =

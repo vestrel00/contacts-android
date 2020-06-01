@@ -531,7 +531,7 @@ class RawContactFields : FieldSet(UNKNOWN) {
 /**
  * Fields for RawContacts table operations.
  */
-internal object RawContactsFields : FieldSet(UNKNOWN) {
+object RawContactsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(RawContacts._ID, mimeType)
 
