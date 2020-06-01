@@ -68,6 +68,10 @@ interface DataDelete {
     /**
      * Deletes the [DataEntity]s in the queue (added via [data]) and returns the [Result].
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.

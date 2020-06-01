@@ -79,6 +79,11 @@ interface GroupsUpdate {
     /**
      * Updates the [MutableGroup]s in the queue (added via [groups]) and returns the [Result].
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION] and
+     * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.

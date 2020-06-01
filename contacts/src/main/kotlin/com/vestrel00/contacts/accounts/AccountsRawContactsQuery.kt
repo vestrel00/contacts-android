@@ -115,6 +115,10 @@ interface AccountsRawContactsQuery {
     /**
      * Returns the [BlankRawContactsList] matching the preceding query options.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -124,6 +128,10 @@ interface AccountsRawContactsQuery {
 
     /**
      * Returns the [BlankRawContactsList] matching the preceding query options.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *

@@ -241,6 +241,10 @@ interface Query {
     /**
      * Returns a list of [Contact]s matching the preceding query options.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -250,6 +254,10 @@ interface Query {
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -271,6 +279,10 @@ interface Query {
     /**
      * Returns the first [Contact] matching the preceding query options.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -280,6 +292,10 @@ interface Query {
 
     /**
      * Returns the first [Contact] matching the preceding query options.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *

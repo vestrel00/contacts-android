@@ -113,6 +113,10 @@ interface GroupsQuery {
     /**
      * Returns the [GroupsList] matching the preceding query options.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -122,6 +126,10 @@ interface GroupsQuery {
 
     /**
      * Returns the [GroupsList] matching the preceding query options.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *

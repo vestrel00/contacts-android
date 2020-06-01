@@ -88,6 +88,10 @@ interface Delete {
      * Deletes the [ContactEntity]s and [RawContactEntity]s in the queue (added via [contacts] and
      * [rawContacts]) and returns the [Result].
      *
+     * ## Permissions
+     *
+     * Requires the [ContactsPermissions.WRITE_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.

@@ -172,6 +172,10 @@ interface DataQuery {
     /**
      * The list of [Address]es.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -181,6 +185,10 @@ interface DataQuery {
 
     /**
      * The list of [Address]es.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -202,6 +210,10 @@ interface DataQuery {
     /**
      * The list of [Email]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -211,6 +223,10 @@ interface DataQuery {
 
     /**
      * The list of [Email]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -230,6 +246,10 @@ interface DataQuery {
     /**
      * The list of [Event]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -239,6 +259,10 @@ interface DataQuery {
 
     /**
      * The list of [Event]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -258,6 +282,10 @@ interface DataQuery {
     /**
      * The list of [GroupMembership]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -267,6 +295,10 @@ interface DataQuery {
 
     /**
      * The list of [GroupMembership]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -286,6 +318,10 @@ interface DataQuery {
     /**
      * The list of [Im]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -295,6 +331,10 @@ interface DataQuery {
 
     /**
      * The list of [Im]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -314,6 +354,10 @@ interface DataQuery {
     /**
      * The list of [Name]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -323,6 +367,10 @@ interface DataQuery {
 
     /**
      * The list of [Name]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -342,6 +390,10 @@ interface DataQuery {
     /**
      * The list of [Nickname]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -351,6 +403,10 @@ interface DataQuery {
 
     /**
      * The list of [Nickname]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -370,6 +426,10 @@ interface DataQuery {
     /**
      * The list of [Note]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -379,6 +439,10 @@ interface DataQuery {
 
     /**
      * The list of [Note]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -398,6 +462,10 @@ interface DataQuery {
     /**
      * The list of [Organization]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -407,6 +475,10 @@ interface DataQuery {
 
     /**
      * The list of [Organization]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -426,6 +498,10 @@ interface DataQuery {
     /**
      * The list of [Phone]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -435,6 +511,10 @@ interface DataQuery {
 
     /**
      * The list of [Phone]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -454,6 +534,10 @@ interface DataQuery {
     /**
      * The list of [Relation]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -463,6 +547,10 @@ interface DataQuery {
 
     /**
      * The list of [Relation]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -482,6 +570,10 @@ interface DataQuery {
     /**
      * The list of [SipAddress]es.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -491,6 +583,10 @@ interface DataQuery {
 
     /**
      * The list of [SipAddress]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *
@@ -510,6 +606,10 @@ interface DataQuery {
     /**
      * The list of [Website]s.
      *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -519,6 +619,10 @@ interface DataQuery {
 
     /**
      * The list of [Website]s.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.READ_PERMISSION].
      *
      * ## Cancellation
      *

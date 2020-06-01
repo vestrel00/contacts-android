@@ -77,6 +77,11 @@ interface GroupsInsert {
      * This does nothing if there are no available accounts or no groups are in the insert queue or
      * if insert permission has not been granted. An empty map will be returned in this case.
      *
+     * ## Permissions
+     *
+     * The [ContactsPermissions.WRITE_PERMISSION] and
+     * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
