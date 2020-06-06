@@ -169,7 +169,8 @@ RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
 
 RawContacts inserted without an associated account will automatically get assigned to an account if
 there are any available. This may take a few seconds, whenever the Contacts Provider decides to do
-it.
+it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
+back to an Account.
 
 **Account addition, Marshmallow (API 23) and above**
 
@@ -180,6 +181,63 @@ becomes available.
 
 Removing the Account will delete all of the associated rows in the Contact, RawContact, and 
 Data tables. This includes user Profile data in those tables.
+
+**SyncColumns modifications**
+
+This library supports modifying the `SyncColumns.ACCOUNT_NAME` and `SyncColumns.ACCOUNT_TYPE` of the
+RawContacts table in some cases only. In some cases does not work as intended and produces unwanted
+side-effects. It probably has something to do with syncing with remote servers and local Account /
+sync data not matching up similar to errors on network requests if the system time does not match
+network time.
+
+The motivation behind changing the Account columns of the RawContacts table rows is that it would
+allow users to;
+
+- Associate local RawContacts (those that are not associated with an Account) to an Account,
+  allowing syncing between devices.
+- Dissociate RawContacts from their Account such that they remain local to the device and not synced
+  between devices.
+- Transfer RawContacts from one Account to another.
+
+When modifying the SyncColumns directly, the first works as intended. The second works with some
+unwanted side-effects. The third does not work at all and produces unwanted side-effects.
+
+These are the behaviors that I have found;
+
+- Associating local RawContact A to Account X.
+    - Works as intended.
+    - RawContact A is now associated with Account X and is synced across devices.
+- Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
+    - Partially works with some unwanted-side effects.
+    - Dissociates RawContact A from the device but not other devices.
+    - RawContact A is no longer visible in the native Contacts app UNLESS it retains the group
+      membership to at least the default group from an Account.
+    - At this point, RawContact A is a local contact. Changes to this local RawContact A will not be
+      synced across devices.
+    - If RawContact A is updated in another device and synced up to the server, then a syncing
+      side-effect occurs because the RawContact A in the device is different from the RawContact A
+      in the server. This causes the Contacts Provider to create another RawContact, resulting in a
+      "duplicate". The two RawContact As may get aggregated to the same Contact depending on how
+      similar they are.
+    - If local RawContact A is re-associated back to Account X, it will still no longer be synced.
+- Associating RawContact A from original Account X to Account Y.
+    - Does not work and have bad side-effects.
+    - No change in other devices.
+    - For Lollipop (API 22) and below, RawContact A is no longer visible in the native Contacts app
+      and syncing Account Y in system settings fails.
+    - For Marshmallow (API 23) and above, RawContact A is no longer visible in the native Contacts
+      app. RawContact A is automatically deleted locally at some point by the Contacts Provider.
+      Syncing Account Y in system settings succeeds.
+
+Given that associating originally local RawContacts to an Account is the only thing that actually
+works, it is the only function that will be exposed to consumers.
+
+If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
+RawContact associated with the desired Account and then delete the original RawContact. Same idea
+can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
+implement some functions in this library that does these things? We won't for now because the native
+Contacts app does not support these functions anyways. It can always be implemented later if the
+community really wants.
 
 #### RawContacts; Deletion
 
@@ -714,6 +772,9 @@ query the `Profile.CONTENT_URI`. To get profile RawContacts table rows, query th
 `Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
 `RawContacts.Data.CONTENT_DIRECTORY`.
 
+These profile table rows have special IDs that differ from regular rows.
+See `ContactsContract.isProfileId`.
+
 Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
 associated Contacts and Data table rows will automatically be deleted.
 
@@ -735,6 +796,9 @@ Contacts Provider / Sync provider for that Account.
 
 > From my experience, profile RawContacts associated to an Account is not carried over / synced
 > across devices or users.
+
+Creating / setting up the profile in the native Contacts app results in the creation of a local
+RawContact (not associated with an Account) even if there are available Accounts.
 
 // TODO Try inserting a RawContact for every single Account.
 // TODO Try inserting two RawContacts for the same Account.

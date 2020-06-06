@@ -1,12 +1,14 @@
 ## TODO
 
 - Local RawContacts may have a group membership to a default system group.
-    - The native Contacts app does not have an edit option for RawContacts that have no group membership
-      to the default group, though edits can still be made in other ways. Instead, an option to "Add to contacts"
-      is shown that adds a membership to a default group but does not associate the RawContact to the Account
-      that owns the group. The edit UI does not show the group membership field.
-    - TODO what happens when there are two accounts when adding a membership to the "My Contacts" group?
-    - Either just document this or add functionality to support it.
+    - The native Contacts app may not have an edit option for newly inserted RawContacts that have no group membership
+      to the default group when an Account is available. Edits can still be made in other ways. Instead, an option
+      to "Add to contacts" is shown that adds a membership to a default group but does not associate the RawContact
+      to the Account that owns the group. The edit UI does not show the group membership field.
+        - Wierdly, this only occurs when there is exactly only one Account. If there are no Account or there are two
+          or more Accounts, then this does not occur.
+        - Does not occur for a Contact with a RawContact that has a group membership AND a RawContact that has no group membership.
+    - Document this in DEV_NOTES and relevant files.
 
 - Remove return type on delegate functions to reduce line length.
     - grep --include="*kt" -r "vararg" .
@@ -141,6 +143,11 @@ Most, if not all, of these upcoming features are the missing components required
 native Android Contacts app from the ground up. In other words, each of these features allow 
 consumers to implement a specific part of the native Android Contacts app.
 
+1. Blocked phone numbers.
+    - The Android 7.0 release introduces a BlockedNumberProvider content provider that stores a list
+      of phone numbers the user has specified should not be able to contact them via telephony
+      communications (calls, SMS, MMS).
+    - See https://source.android.com/devices/tech/connect/block-numbers
 1. SIM card query, insert, update, and delete.
     - Enables importing from and exporting to SIM card.
     - Query will definitely be possible. I'm not sure if insert, update, and delete operations
@@ -149,15 +156,3 @@ consumers to implement a specific part of the native Android Contacts app.
     - Enables import from and export to .VCF file.
     - Enables sharing a contact.
     - Dev note: search ContactsContract for "vcard".
-    
-## Features that will not be implemented
-
-This library aims to provide functions to read from and write to the Contacts Provider. Only 
-functions that are directly related to the manipulation of Contacts Provider data are provided in
-this library. Therefore, these features will not be implemented here.
-
-1. Blocking phone numbers.
-    - The Android 7.0 release introduces a BlockedNumberProvider content provider that stores a list
-      of phone numbers the user has specified should not be able to contact them via telephony 
-      communications (calls, SMS, MMS).
-    - See https://source.android.com/devices/tech/connect/block-numbers
