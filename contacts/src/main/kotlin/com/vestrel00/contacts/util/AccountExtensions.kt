@@ -6,6 +6,24 @@ import com.vestrel00.contacts.*
 import com.vestrel00.contacts.accounts.AccountsQuery
 
 /**
+ * Returns true if [this] is in the list of all accounts in the system.
+ *
+ * ## Permissions
+ *
+ * Requires [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ */
+internal fun Account.isInSystem(context: Context): Boolean = nullIfNotInSystem(context) != null
+
+/**
+ * Returns true if [this] is NOT in the list of all accounts in the system.
+ *
+ * ## Permissions
+ *
+ * Requires [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ */
+internal fun Account.isNotInSystem(context: Context): Boolean = !isInSystem(context)
+
+/**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
  * itself. Otherwise, returns null.
  *
