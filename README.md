@@ -1,6 +1,12 @@
 ## TODO
 
-- Migrate local account to a remote account and vice versa + withPermission and async (AccountsRawContactsAssociationsUpdate)
+- Local RawContacts may have a group membership to a default system group.
+    - The native Contacts app does not have an edit option for RawContacts that have no group membership
+      to the default group, though edits can still be made in other ways. Instead, an option to "Add to contacts"
+      is shown that adds a membership to a default group but does not associate the RawContact to the Account
+      that owns the group. The edit UI does not show the group membership field.
+    - TODO what happens when there are two accounts when adding a membership to the "My Contacts" group?
+    - Either just document this or add functionality to support it.
 
 - Remove return type on delegate functions to reduce line length.
     - grep --include="*kt" -r "vararg" .
@@ -33,6 +39,7 @@
 
 3. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
+    - `ContactsColumns.IN_VISIBLE_GROUP`
 4. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
 5. Add Copyright to all files.
 

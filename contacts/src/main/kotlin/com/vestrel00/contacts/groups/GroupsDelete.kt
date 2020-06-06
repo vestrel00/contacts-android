@@ -11,7 +11,7 @@ import com.vestrel00.contacts.util.applyBatch
  * Deletes one or more groups from the groups table.
  *
  * FIXME? Expose this to consumers? For more details, see the DEV_NOTES "Groups; Deletion" section.
- * Marked as internal until it can be exposed to consumers.
+ * Marked as internal until it can be exposed to consumers (if ever).
  *
  * ## Permissions
  *

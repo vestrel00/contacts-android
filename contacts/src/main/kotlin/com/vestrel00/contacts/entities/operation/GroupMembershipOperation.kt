@@ -53,8 +53,8 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
      * row(s) of the raw contact with the given [rawContactId]. A group membership cannot be updated
      * because it only contains an immutable reference to the group id.
      *
-     * [GroupMembership]s that do not belong to the given [account] will be ignored. Also,
-     * memberships to default groups are never deleted.
+     * [GroupMembership]s that do not belong to the Account associated with the [rawContactId] will
+     * be ignored. Also, memberships to default groups are never deleted.
      */
     fun updateInsertOrDelete(
         groupMemberships: Collection<GroupMembership>,
