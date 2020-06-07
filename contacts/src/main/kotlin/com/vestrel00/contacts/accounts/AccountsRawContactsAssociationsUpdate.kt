@@ -1,6 +1,7 @@
 package com.vestrel00.contacts.accounts
 
 import android.accounts.Account
+import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.*
@@ -14,22 +15,7 @@ import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.*
 
-// TODO verify that Contacts that have been transferred to another Account are sync'ed.
-// Transferring Contact A of Account X to Account Y results in the removal of Contact A from
-// Account X and the addition to Account Y.
-// - Dissociating RawContact A from device X does not dissociate RawContact A from other devices.
-//   - RawContact A is no longer visible in the native Contacts app.
-// - Associating RawContact A from original Account X to Account Y results in;
-//     - No change in other devices.
-//     - For Lollipop (API 22) and below, RawContact A is no longer visible in the native Contacts
-//       app and syncing Account Y in system settings fails.
-//     - For Marshmallow (API 23) and above, RawContact A is no longer visible in the native
-//       Contacts app. RawContact A is automatically deleted locally at some point by the Contacts
-//       Provider. Syncing Account Y in system settings succeeds.
-//     - In short, changing the Account manually will either result in syncing issues or unwanted
-//       side effects.
-
-// TODO Update DEV_NOTES data required and groups / group membership sections.
+// TODO Update DEV_NOTES data required and groups / group membership / SyncColumns modifications sections.
 // Contacts Provider automatically creates a group membership to the default group of the target Account when the account changes.
 //     - This occurs even if the group membership already exists resulting in duplicates.
 // Contacts Provider DOES NOT delete existing group memberships when the account changes.
@@ -38,8 +24,9 @@ import com.vestrel00.contacts.util.*
 //     - Just add a note about this behavior.
 //     - The Contacts Provider keeps performing this check routinely.
 
+// TODO Only expose the associateAccountWithAllLocalRawContacts and associateAccountWithLocalRawContacts (needs to be implemented).
 /**
- * TODO Documentation
+ * TODO Documentation see DEV_NOTES **SyncColumns modifications**.
  */
 interface AccountsRawContactsAssociationsUpdate {
 
@@ -88,30 +75,6 @@ interface AccountsRawContactsAssociationsUpdate {
     fun associateAccountWithRawContacts(
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean
-
-    /**
-     * Associates all local RawContacts with the given [account].
-     *
-     * Local RawContacts are those that are not associated with any Account. A group membership to
-     * the default group of the given [account] will be created automatically by the Contacts
-     * Provider upon successful operation.
-     *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
-     *
-     * This operation will fail if the given [account] is not in the system.
-     *
-     * ## Permissions
-     *
-     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
-     * [ContactsPermissions.WRITE_PERMISSION].
-     *
-     * ## Thread Safety
-     *
-     * This should be called in a background thread to avoid blocking the UI thread.
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun associateAccountWithLocalRawContacts(account: Account): Boolean
 
     /**
      * Associates / transfers the RawContacts associated with the [srcAccounts] to the [dstAccount].
@@ -203,6 +166,30 @@ interface AccountsRawContactsAssociationsUpdate {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithAllRawContacts(dstAccount: Account): Boolean
 
+    /**
+     * Associates all local RawContacts with the given [account].
+     *
+     * Local RawContacts are those that are not associated with any Account. A group membership to
+     * the default group of the given [account] will be created automatically by the Contacts
+     * Provider upon successful operation.
+     *
+     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
+     * have been manually created via a constructor will be ignored.
+     *
+     * This operation will fail if the given [account] is not in the system.
+     *
+     * ## Permissions
+     *
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+     * [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun associateAccountWithAllLocalRawContacts(account: Account): Boolean
+
     // endregion
 
     // region DISSOCIATE
@@ -211,7 +198,7 @@ interface AccountsRawContactsAssociationsUpdate {
      * Dissociates the given [rawContacts] from associations with any Account.
      *
      * RawContacts that were already associated with an Account will no longer be associated with
-     * that Account if this call succeeds. Existing group memberships will be deleted. RawContacts
+     * that Account if this call succeeds. Existing group memberships will be retained. RawContacts
      * not associated with an Account are local to the device.
      *
      * Only existing RawContacts that have been retrieved via a query will be processed. Those that
@@ -247,7 +234,7 @@ interface AccountsRawContactsAssociationsUpdate {
      * Dissociates the RawContacts associated with any of the given [accounts].
      *
      * RawContacts associated with any of the [accounts] will no longer be associated with those
-     * Accounts if this call succeeds. Existing group memberships will be deleted. RawContacts
+     * Accounts if this call succeeds. Existing group memberships will be retained. RawContacts
      * not associated with an Account are local to the device.
      *
      * In the case where there are no associated RawContacts with any of the [accounts], this
@@ -281,7 +268,7 @@ interface AccountsRawContactsAssociationsUpdate {
      * Dissociates the RawContacts associated with any Account.
      *
      * RawContacts associated with any Account will no longer be associated with those Accounts if
-     * this call succeeds. Existing group memberships will be deleted. RawContacts not associated
+     * this call succeeds. Existing group memberships will be retained. RawContacts not associated
      * with an Account are local to the device.
      *
      * In the case where there are no associated RawContacts with any Account, this operation
@@ -335,11 +322,6 @@ private class AccountsRawContactsAssociationsUpdateImpl(
                 && account.isInSystem(context)
                 && context.contentResolver.updateRawContactsAccount(account, nonNullRawContactIds)
     }
-
-    override fun associateAccountWithLocalRawContacts(account: Account): Boolean =
-        permissions.canUpdateRawContactsAssociations()
-                && account.isInSystem(context)
-                && context.contentResolver.updateLocalRawContactsAccounts(account)
 
     override fun associateAccountWithRawContactsFromAccounts(
         dstAccount: Account,
@@ -399,6 +381,22 @@ private class AccountsRawContactsAssociationsUpdateImpl(
             RawContactsFields.ContactId.isNotNull()
         )
 
+    override fun associateAccountWithAllLocalRawContacts(account: Account): Boolean {
+        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(context)) {
+            return false
+        }
+
+        val localRawContactIds = context.contentResolver.rawContactIdsWhere(
+            RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull()
+        )
+
+        // Succeed if there are no local RawContacts.
+        // Using the || operator here is important because if it is true, then the update does
+        // not occur. If && is used instead, the update will occur even if it is true.
+        return localRawContactIds.isEmpty() || context.contentResolver
+            .updateRawContactsAccount(account, localRawContactIds)
+    }
+
     // endregion
 
     // region DISSOCIATE
@@ -442,9 +440,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     override fun dissociateRawContactsFromAllAccounts() =
         permissions.canUpdateRawContactsAssociations()
                 && context.contentResolver.updateRawContactsAccount(
-            null,
-            // Delete all group memberships.
-            Fields.MimeType equalTo MimeType.GROUP_MEMBERSHIP,
+            null, null,
             // Dissociate all existing RawContacts.
             RawContactsFields.ContactId.isNotNull()
         )
@@ -469,35 +465,32 @@ private fun ContentResolver.updateRawContactsAccount(
  * Deletes existing group memberships in the Data table matching [dataWhere] and then updates the
  * sync columns in the RawContacts table matching [rawContactsWhere] with the given [account]. These
  * two operations are done in a batch so either both succeed or both fail.
+ *
+ * If [account] is null, then no delete operation will be done in the Data table because group
+ * memberships to at least the default group must be retained. Otherwise, the RawContacts will not
+ * be part of a visible group resulting in these RawContacts to not show up in the native Contacts
+ * app.
  */
 private fun ContentResolver.updateRawContactsAccount(
-    account: Account?, dataWhere: Where, rawContactsWhere: Where
+    account: Account?, dataWhere: Where?, rawContactsWhere: Where
 ): Boolean = applyBatch(
-    // First delete existing group memberships.
-    newDelete(Table.DATA)
-        .withSelection(dataWhere)
-        .build(),
-    // Then update the sync columns.
-    newUpdate(Table.RAW_CONTACTS)
-        .withSelection(rawContactsWhere)
-        .withValue(RawContactsFields.AccountName, account?.name)
-        .withValue(RawContactsFields.AccountType, account?.type)
-        .build()
-) != null
+    arrayListOf<ContentProviderOperation>().apply {
+        // First delete existing group memberships.
+        if (account != null && dataWhere != null) {
+            newDelete(Table.DATA)
+                .withSelection(dataWhere)
+                .build()
+                .let(::add)
+        }
 
-private fun ContentResolver.updateLocalRawContactsAccounts(account: Account): Boolean = applyBatch(
-    // No need to delete existing group memberships because local RawContacts are not associated
-    // with an Account and therefore do not have any group memberships.
-
-    // Update the sync columns of RawContacts without an associated Account. This does not include
-    // RawContacts associated with invalid Accounts.
-    newUpdate(Table.RAW_CONTACTS)
-        .withSelection(
-            RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull()
-        )
-        .withValue(RawContactsFields.AccountName, account.name)
-        .withValue(RawContactsFields.AccountType, account.type)
-        .build()
+        // Then update the sync columns.
+        newUpdate(Table.RAW_CONTACTS)
+            .withSelection(rawContactsWhere)
+            .withValue(RawContactsFields.AccountName, account?.name)
+            .withValue(RawContactsFields.AccountType, account?.type)
+            .build()
+            .let(::add)
+    }
 ) != null
 
 private fun ContentResolver.rawContactIdsWhere(where: Where?):
