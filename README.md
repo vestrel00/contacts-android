@@ -16,7 +16,7 @@
       instead of fun accounts(vararg accounts: Account?): AccountsQuery = accounts(accounts.asSequence())
 
 - Lower minSdkVersion
-- Add commitAll to update and delete functions.
+- Add commitInOneTransaction to delete functions.
 
 - Implement these (+ withContext and async functions!);
     - GroupToGroupMembership
@@ -43,7 +43,8 @@
     - SettingsColumns? (group visible / invisible)
     - `ContactsColumns.IN_VISIBLE_GROUP`
 4. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-5. Add Copyright to all files.
+5. Add extension functions for insert, update, delete, etc?
+6. Add Copyright to all files.
 
 ----------------------------------------------------------------------------------------------------
 
