@@ -179,8 +179,8 @@ becomes available.
 
 **Account removal**
 
-Removing the Account will delete all of the associated rows in the Contact, RawContact, and 
-Data tables. This includes user Profile data in those tables.
+Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
+Groups tables. This includes user Profile data in those tables.
 
 **SyncColumns modifications**
 
@@ -238,6 +238,14 @@ can be used to transform an Account-associated RawContact to a local RawContact.
 implement some functions in this library that does these things? We won't for now because the native
 Contacts app does not support these functions anyways. It can always be implemented later if the
 community really wants.
+
+Here are some other things to note.
+
+1. The Contacts Provider automatically creates a group membership to the default group of the target
+   Account when the account changes. This occurs even if the group membership already exists
+   resulting in duplicates.
+2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
+   This has to be done manually to prevent duplicates.
 
 #### RawContacts; Deletion
 
@@ -676,12 +684,12 @@ address elements from the `FORMATTED_ADDRESS`.
 Contacts are assigned to one or more groups via the `GroupMembership`. It typically looks like this;
 
 ```
-Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1
-Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0
-Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0
-Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0
-Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0
-Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0
+Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
 `````
 
 The actual groups are in a separate table; Groups. Each group is associated with an Account. No

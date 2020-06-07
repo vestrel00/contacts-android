@@ -13,25 +13,126 @@ import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.util.*
+import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.isNotInSystem
+import com.vestrel00.contacts.util.query
 
-// TODO Update DEV_NOTES data required and groups / group membership / SyncColumns modifications sections.
-// Contacts Provider automatically creates a group membership to the default group of the target Account when the account changes.
-//     - This occurs even if the group membership already exists resulting in duplicates.
-// Contacts Provider DOES NOT delete existing group memberships when the account changes.
-//     - This has to be done manually to prevent duplicates.
-// For Lollipop (API 22) and below, the Contacts Provider sets null account references to non-null asynchronously.
-//     - Just add a note about this behavior.
-//     - The Contacts Provider keeps performing this check routinely.
-
-// TODO Only expose the associateAccountWithAllLocalRawContacts and associateAccountWithLocalRawContacts (needs to be implemented).
 /**
- * TODO Documentation see DEV_NOTES **SyncColumns modifications**.
+ * Updates RawContacts associations to Accounts.
+ *
+ * Due to certain limitations and behaviors imposed by the Contacts Provider, this only supports;
+ *
+ * - Associate local RawContacts (those that are not associated with an Account) to an Account,
+ *   allowing syncing between devices.
+ *
+ * This does not support;
+ *
+ * - Dissociate RawContacts from their Account such that they remain local to the device and not
+ *   synced between devices.
+ * - Transfer RawContacts from one Account to another.
+ *
+ * Although, there is a way to implement it if the community strongly desires these features.
+ *
+ * Read the **SyncColumns modifications** section of the DEV_NOTES for more details.
+ *
+ * ## Permissions
+ *
+ * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
+ * assumed to have been granted already in these examples for brevity. All updates will do nothing
+ * if these permissions are not granted.
+ *
+ * ## Usage
+ *
+ * To associate the given localRawContacts to the given account;
+ *
+ * ```kotlin
+ * val result = accountsRawContactsAssociationsUpdate
+ *      .associateAccountWithLocalRawContacts(account, localRawContacts)
+ *      .commit()
+ * ```
+ *
+ * To associate all local RawContacts to the given account;
+ *
+ * ```kotlin
+ * val result = accountsRawContactsAssociationsUpdate
+ *      .associateAccountWithAllLocalRawContacts(account)
+ *      .commit()
+ * ```
  */
 interface AccountsRawContactsAssociationsUpdate {
 
     // region ASSOCIATE
 
+    /**
+     * Associates the given **local** [rawContacts] with the given [account]. Local RawContacts are
+     * not associated with an Account. Non-local RawContacts will be filtered out and not be
+     * associated with the [account].
+     *
+     * A group membership to the default group of the given [account] will be created automatically
+     * by the Contacts Provider upon successful operation.
+     *
+     * Only existing local RawContacts that have been retrieved via a query will be processed. Those
+     * that have been manually created via a constructor will be ignored.
+     *
+     * This operation will fail if the given [account] is not in the system. In the case where there
+     * are no local RawContacts, this operation succeeds.
+     *
+     * ## Permissions
+     *
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+     * [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun associateAccountWithLocalRawContacts(
+        account: Account, vararg rawContacts: RawContactEntity
+    ): Boolean
+
+    /**
+     * See [associateAccountWithLocalRawContacts].
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun associateAccountWithLocalRawContacts(
+        account: Account, rawContacts: Collection<RawContactEntity>
+    ): Boolean
+
+    /**
+     * See [associateAccountWithLocalRawContacts].
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun associateAccountWithLocalRawContacts(
+        account: Account, rawContacts: Sequence<RawContactEntity>
+    ): Boolean
+
+    /**
+     * Associates all local RawContacts with the given [account].
+     *
+     * Local RawContacts are those that are not associated with any Account. A group membership to
+     * the default group of the given [account] will be created automatically by the Contacts
+     * Provider upon successful operation.
+     *
+     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
+     * have been manually created via a constructor will be ignored.
+     *
+     * This operation will fail if the given [account] is not in the system. In the case where there
+     * are no local RawContacts, this operation succeeds.
+     *
+     * ## Permissions
+     *
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+     * [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun associateAccountWithAllLocalRawContacts(account: Account): Boolean
+
+    /*
     /**
      * Associates the given [rawContacts] with the given [account].
      *
@@ -165,35 +266,13 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithAllRawContacts(dstAccount: Account): Boolean
-
-    /**
-     * Associates all local RawContacts with the given [account].
-     *
-     * Local RawContacts are those that are not associated with any Account. A group membership to
-     * the default group of the given [account] will be created automatically by the Contacts
-     * Provider upon successful operation.
-     *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
-     *
-     * This operation will fail if the given [account] is not in the system.
-     *
-     * ## Permissions
-     *
-     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
-     * [ContactsPermissions.WRITE_PERMISSION].
-     *
-     * ## Thread Safety
-     *
-     * This should be called in a background thread to avoid blocking the UI thread.
      */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun associateAccountWithAllLocalRawContacts(account: Account): Boolean
 
     // endregion
 
     // region DISSOCIATE
 
+    /*
     /**
      * Dissociates the given [rawContacts] from associations with any Account.
      *
@@ -285,6 +364,7 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun dissociateRawContactsFromAllAccounts(): Boolean
+     */
 
     // endregion
 }
@@ -302,6 +382,55 @@ private class AccountsRawContactsAssociationsUpdateImpl(
 
     // region ASSOCIATE
 
+    override fun associateAccountWithLocalRawContacts(
+        account: Account, vararg rawContacts: RawContactEntity
+    ) = associateAccountWithLocalRawContacts(account, rawContacts.asSequence())
+
+    override fun associateAccountWithLocalRawContacts(
+        account: Account, rawContacts: Collection<RawContactEntity>
+    ) = associateAccountWithLocalRawContacts(account, rawContacts.asSequence())
+
+    override fun associateAccountWithLocalRawContacts(
+        account: Account, rawContacts: Sequence<RawContactEntity>
+    ): Boolean {
+        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(context)) {
+            return false
+        }
+
+        val rawContactIds = rawContacts.map { it.id }.filterNotNull()
+        val localRawContactIds = context.contentResolver.rawContactIdsWhere(
+            // Not using and/or as infix because this formatting looks better in this case.
+            (RawContactsFields.Id `in` rawContactIds)
+                .and(
+                    RawContactsFields.AccountName.isNull()
+                        .or(RawContactsFields.AccountType.isNull())
+                )
+        )
+
+        // Succeed if there are no local RawContacts.
+        // Using the || operator here is important because if it is true, then the update does
+        // not occur. If && is used instead, the update will occur even if it is true.
+        return localRawContactIds.isEmpty() || context.contentResolver
+            .updateRawContactsAccount(account, localRawContactIds)
+    }
+
+    override fun associateAccountWithAllLocalRawContacts(account: Account): Boolean {
+        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(context)) {
+            return false
+        }
+
+        val localRawContactIds = context.contentResolver.rawContactIdsWhere(
+            RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull()
+        )
+
+        // Succeed if there are no local RawContacts.
+        // Using the || operator here is important because if it is true, then the update does
+        // not occur. If && is used instead, the update will occur even if it is true.
+        return localRawContactIds.isEmpty() || context.contentResolver
+            .updateRawContactsAccount(account, localRawContactIds)
+    }
+
+    /*
     override fun associateAccountWithRawContacts(
         account: Account, vararg rawContacts: RawContactEntity
     ) = associateAccountWithRawContacts(account, rawContacts.asSequence())
@@ -380,27 +509,13 @@ private class AccountsRawContactsAssociationsUpdateImpl(
             // Associate all existing RawContacts.
             RawContactsFields.ContactId.isNotNull()
         )
-
-    override fun associateAccountWithAllLocalRawContacts(account: Account): Boolean {
-        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(context)) {
-            return false
-        }
-
-        val localRawContactIds = context.contentResolver.rawContactIdsWhere(
-            RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull()
-        )
-
-        // Succeed if there are no local RawContacts.
-        // Using the || operator here is important because if it is true, then the update does
-        // not occur. If && is used instead, the update will occur even if it is true.
-        return localRawContactIds.isEmpty() || context.contentResolver
-            .updateRawContactsAccount(account, localRawContactIds)
-    }
+     */
 
     // endregion
 
     // region DISSOCIATE
 
+    /*
     override fun dissociateRawContacts(vararg rawContacts: RawContactEntity) =
         dissociateRawContacts(rawContacts.asSequence())
 
@@ -444,6 +559,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
             // Dissociate all existing RawContacts.
             RawContactsFields.ContactId.isNotNull()
         )
+     */
 
     // endregion
 }
