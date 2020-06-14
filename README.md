@@ -1,6 +1,5 @@
 ## TODO
 
-- Lower minSdkVersion
 - Add commitInOneTransaction to delete functions.
 
 - Implement these (+ withContext and async functions!);

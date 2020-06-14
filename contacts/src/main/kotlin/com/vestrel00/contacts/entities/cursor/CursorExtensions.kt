@@ -24,28 +24,11 @@ internal fun Cursor.getString(field: AbstractField): String? {
     }
 }
 
-internal fun Cursor.getInt(field: AbstractField): Int? {
-    val intStr = getString(field)
-    return try {
-        intStr?.toInt()
-    } catch (e: NumberFormatException) {
-        null
-    }
-}
+internal fun Cursor.getInt(field: AbstractField): Int? = getString(field)?.toIntOrNull()
 
-internal fun Cursor.getBoolean(field: AbstractField): Boolean? {
-    val int = getInt(field)
-    return int != null && int == 1
-}
+internal fun Cursor.getBoolean(field: AbstractField): Boolean? = getInt(field)?.let { it == 1 }
 
-internal fun Cursor.getLong(field: AbstractField): Long? {
-    val longStr = getString(field)
-    return try {
-        longStr?.toLong()
-    } catch (e: NumberFormatException) {
-        null
-    }
-}
+internal fun Cursor.getLong(field: AbstractField): Long? = getString(field)?.toLongOrNull()
 
 internal fun Cursor.getBlob(field: AbstractField): ByteArray? {
     val index = getColumnIndex(field.columnName)
