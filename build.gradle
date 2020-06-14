@@ -13,7 +13,7 @@ buildscript {
                                 sourceCompatibility: '1.7'
                         ],
                         android: [
-                                minSdk    : 14,
+                                minSdk    : 19,
                                 targetSdk : 28,
                                 compileSdk: 28,
 
