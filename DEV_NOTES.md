@@ -13,7 +13,7 @@ is just a wrapper around it.
 
 > A very sweet, sugary wrapper! Sugar. Spice. And everything nice. :D
 
-It is important to get familiar with the [official documentation of the Contact's Provider]{1]. 
+It is important to get familiar with the [official documentation of the Contact's Provider][1].
 
 Here is a summary;
 
@@ -744,6 +744,20 @@ Contacts that are not associated with an account do not have any group membershi
 these contacts may not have a membership to the favorites group, these contacts may still be
 "starred" (favortied) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is
 not dependent on the existence of a favorites group membership.
+
+#### Group memberships & Local RawContacts
+
+Local RawContacts may have a group membership to a default system group.
+
+The native Contacts app may not have an edit option for newly inserted RawContacts that have no
+group membership to the default group when an Account is available. Edits can still be made in other
+ways. Instead, an option to "Add to contacts" is shown that adds a membership to a default group but
+does not associate the RawContact to the Account that owns the group. The edit UI does not show the
+group membership field.
+
+Weirdly, this only occurs when there is exactly only one Account. If there are no Account or there
+are two or more Accounts, then this does not occur. Also, this does not occur for a Contact with a
+RawContact that has a group membership AND a RawContact that has no group membership.
 
 #### Groups; Deletion
 

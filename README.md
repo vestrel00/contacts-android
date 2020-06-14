@@ -1,15 +1,5 @@
 ## TODO
 
-- Local RawContacts may have a group membership to a default system group.
-    - The native Contacts app may not have an edit option for newly inserted RawContacts that have no group membership
-      to the default group when an Account is available. Edits can still be made in other ways. Instead, an option
-      to "Add to contacts" is shown that adds a membership to a default group but does not associate the RawContact
-      to the Account that owns the group. The edit UI does not show the group membership field.
-        - Wierdly, this only occurs when there is exactly only one Account. If there are no Account or there are two
-          or more Accounts, then this does not occur.
-        - Does not occur for a Contact with a RawContact that has a group membership AND a RawContact that has no group membership.
-    - Document this in DEV_NOTES and relevant files.
-
 - Remove return type on delegate functions to reduce line length.
     - grep --include="*kt" -r "vararg" .
     - E.G. fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
