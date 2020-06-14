@@ -5,8 +5,6 @@
     - DataContact
     - RawContactContact
 
-- Validate include, where, and orderBy arguments in queries.
-
 - Implement Contacts.search. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
 
 1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
