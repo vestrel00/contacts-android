@@ -171,18 +171,17 @@ private class ProfileQueryImpl(
         """.trimIndent()
     }
 
-    override fun accounts(vararg accounts: Account?): ProfileQuery = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account?>): ProfileQuery =
-        accounts(accounts.asSequence())
+    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): ProfileQuery = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: Field): ProfileQuery = include(fields.asSequence())
+    override fun include(vararg fields: Field) = include(fields.asSequence())
 
-    override fun include(fields: Collection<Field>): ProfileQuery = include(fields.asSequence())
+    override fun include(fields: Collection<Field>) = include(fields.asSequence())
 
     override fun include(fields: Sequence<Field>): ProfileQuery = apply {
         include = if (fields.isEmpty()) {

@@ -87,8 +87,8 @@ internal fun <T> ContentResolver.query(
 
 // region APPLY BATCH
 
-internal fun ContentResolver.applyBatch(vararg operations: ContentProviderOperation):
-        Array<ContentProviderResult>? = applyBatch(arrayListOf(*operations))
+internal fun ContentResolver.applyBatch(vararg operations: ContentProviderOperation) =
+    applyBatch(arrayListOf(*operations))
 
 internal fun ContentResolver.applyBatch(operations: ArrayList<ContentProviderOperation>):
         Array<ContentProviderResult>? =

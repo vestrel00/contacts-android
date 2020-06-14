@@ -105,9 +105,9 @@ private class DataDeleteImpl(
     private val dataIds: MutableSet<Long> = mutableSetOf()
 ) : DataDelete {
 
-    override fun data(vararg data: DataEntity): DataDelete = data(data.asSequence())
+    override fun data(vararg data: DataEntity) = data(data.asSequence())
 
-    override fun data(data: Collection<DataEntity>): DataDelete = data(data.asSequence())
+    override fun data(data: Collection<DataEntity>) = data(data.asSequence())
 
     override fun data(data: Sequence<DataEntity>): DataDelete = apply {
         dataIds.addAll(data.map { it.id ?: INVALID_ID })

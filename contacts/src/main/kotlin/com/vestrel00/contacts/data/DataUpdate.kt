@@ -98,9 +98,9 @@ private class DataUpdateImpl(
     private val data: MutableSet<MutableDataEntity> = mutableSetOf()
 ) : DataUpdate {
 
-    override fun data(vararg data: MutableDataEntity): DataUpdate = data(data.asSequence())
+    override fun data(vararg data: MutableDataEntity) = data(data.asSequence())
 
-    override fun data(data: Collection<MutableDataEntity>): DataUpdate = data(data.asSequence())
+    override fun data(data: Collection<MutableDataEntity>) = data(data.asSequence())
 
     override fun data(data: Sequence<MutableDataEntity>): DataUpdate = apply {
         this.data.addAll(data)

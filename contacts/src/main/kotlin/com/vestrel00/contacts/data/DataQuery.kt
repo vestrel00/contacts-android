@@ -669,18 +669,17 @@ private class DataQueryImpl(
         """.trimIndent()
     }
 
-    override fun accounts(vararg accounts: Account?): DataQuery = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account?>): DataQuery =
-        accounts(accounts.asSequence())
+    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): DataQuery = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: Field): DataQuery = include(fields.asSequence())
+    override fun include(vararg fields: Field) = include(fields.asSequence())
 
-    override fun include(fields: Collection<Field>): DataQuery = include(fields.asSequence())
+    override fun include(fields: Collection<Field>) = include(fields.asSequence())
 
     override fun include(fields: Sequence<Field>): DataQuery = apply {
         include = if (fields.isEmpty()) {
@@ -695,9 +694,9 @@ private class DataQueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy): DataQuery = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>): DataQuery = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy>) = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Sequence<OrderBy>): DataQuery = apply {
         this.orderBy = if (orderBy.isEmpty()) {

@@ -193,10 +193,9 @@ private class GroupsQueryImpl(
         """.trimIndent()
     }
 
-    override fun accounts(vararg accounts: Account): GroupsQuery = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account>): GroupsQuery =
-        accounts(accounts.asSequence())
+    override fun accounts(accounts: Collection<Account>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account>): GroupsQuery = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
@@ -207,9 +206,9 @@ private class GroupsQueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy): GroupsQuery = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>): GroupsQuery = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy>) = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Sequence<OrderBy>): GroupsQuery = apply {
         this.orderBy = if (orderBy.isEmpty()) {

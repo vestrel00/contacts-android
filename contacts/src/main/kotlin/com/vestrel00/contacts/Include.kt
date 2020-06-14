@@ -1,7 +1,7 @@
 package com.vestrel00.contacts
 
 @Suppress("FunctionName")
-internal fun Include(vararg fields: Field): Include = Include(fields.asSequence())
+internal fun Include(vararg fields: Field) = Include(fields.asSequence())
 
 internal class Include(fields: Sequence<Field>) {
 

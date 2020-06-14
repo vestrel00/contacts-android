@@ -100,14 +100,14 @@ import com.vestrel00.contacts.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(context: Context, vararg contacts: ContactEntity): ContactLinkResult =
+fun ContactEntity.link(context: Context, vararg contacts: ContactEntity) =
     link(context, contacts.asSequence())
 
 /**
  * See [ContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(context: Context, contacts: Collection<ContactEntity>): ContactLinkResult =
+fun ContactEntity.link(context: Context, contacts: Collection<ContactEntity>) =
     link(context, contacts.asSequence())
 
 /**

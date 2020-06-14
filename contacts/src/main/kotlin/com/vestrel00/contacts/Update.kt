@@ -178,20 +178,20 @@ private class UpdateImpl(
         this.deleteBlanks = deleteBlanks
     }
 
-    override fun rawContacts(vararg rawContacts: MutableRawContact): Update =
+    override fun rawContacts(vararg rawContacts: MutableRawContact) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Collection<MutableRawContact>): Update =
+    override fun rawContacts(rawContacts: Collection<MutableRawContact>) =
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<MutableRawContact>): Update = apply {
         this.rawContacts.addAll(rawContacts)
     }
 
-    override fun contacts(vararg contacts: MutableContact): Update =
+    override fun contacts(vararg contacts: MutableContact) =
         contacts(contacts.asSequence())
 
-    override fun contacts(contacts: Collection<MutableContact>): Update =
+    override fun contacts(contacts: Collection<MutableContact>) =
         contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<MutableContact>): Update =

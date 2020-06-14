@@ -87,9 +87,9 @@ private class GroupsDeleteImpl(
     private val groupIds: MutableSet<Long> = mutableSetOf()
 ) : GroupsDelete {
 
-    override fun groups(vararg groups: Group): GroupsDelete = groups(groups.asSequence())
+    override fun groups(vararg groups: Group) = groups(groups.asSequence())
 
-    override fun groups(groups: Collection<Group>): GroupsDelete = groups(groups.asSequence())
+    override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<Group>): GroupsDelete = apply {
         groupIds.addAll(groups.map { it.id ?: INVALID_ID })

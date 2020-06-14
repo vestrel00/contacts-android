@@ -135,11 +135,9 @@ private class GroupsInsertImpl(
     override fun group(title: String, account: Account): GroupsInsert =
         groups(MutableGroup(title, account))
 
-    override fun groups(vararg groups: MutableGroup): GroupsInsert =
-        groups(groups.asSequence())
+    override fun groups(vararg groups: MutableGroup) = groups(groups.asSequence())
 
-    override fun groups(groups: Collection<MutableGroup>): GroupsInsert =
-        groups(groups.asSequence())
+    override fun groups(groups: Collection<MutableGroup>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<MutableGroup>): GroupsInsert = apply {
         this.groups.addAll(groups)

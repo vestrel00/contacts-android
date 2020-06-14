@@ -25,8 +25,7 @@ suspend fun ContactEntity.linkWithContext(
     context: Context,
     vararg contacts: ContactEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): ContactLinkResult =
-    linkWithContext(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkWithContext(context, contacts.asSequence(), coroutineContext = coroutineContext)
 
 
 /**
@@ -39,8 +38,7 @@ suspend fun ContactEntity.linkWithContext(
     context: Context,
     contacts: Collection<ContactEntity>,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): ContactLinkResult =
-    linkWithContext(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkWithContext(context, contacts.asSequence(), coroutineContext = coroutineContext)
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -101,8 +99,7 @@ fun ContactEntity.linkAsync(
     context: Context,
     vararg contacts: ContactEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<ContactLinkResult> =
-    linkAsync(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkAsync(context, contacts.asSequence(), coroutineContext = coroutineContext)
 
 
 /**
@@ -115,8 +112,7 @@ fun ContactEntity.linkAsync(
     context: Context,
     contacts: Collection<ContactEntity>,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<ContactLinkResult> =
-    linkAsync(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkAsync(context, contacts.asSequence(), coroutineContext = coroutineContext)
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that

@@ -117,11 +117,9 @@ private class GroupsUpdateImpl(
     private val groups: MutableSet<MutableGroup?> = mutableSetOf()
 ) : GroupsUpdate {
 
-    override fun groups(vararg groups: MutableGroup?): GroupsUpdate =
-        groups(groups.asSequence())
+    override fun groups(vararg groups: MutableGroup?) = groups(groups.asSequence())
 
-    override fun groups(groups: Collection<MutableGroup?>): GroupsUpdate =
-        groups(groups.asSequence())
+    override fun groups(groups: Collection<MutableGroup?>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<MutableGroup?>): GroupsUpdate = apply {
         this.groups.addAll(groups)

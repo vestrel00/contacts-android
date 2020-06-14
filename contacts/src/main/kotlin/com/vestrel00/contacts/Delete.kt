@@ -138,19 +138,19 @@ private class DeleteImpl(
     private val contactIds: MutableSet<Long> = mutableSetOf()
 ) : Delete {
 
-    override fun rawContacts(vararg rawContacts: RawContactEntity): Delete =
+    override fun rawContacts(vararg rawContacts: RawContactEntity) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Collection<RawContactEntity>): Delete =
+    override fun rawContacts(rawContacts: Collection<RawContactEntity>) =
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<RawContactEntity>): Delete = apply {
         rawContactIds.addAll(rawContacts.map { it.id ?: INVALID_ID })
     }
 
-    override fun contacts(vararg contacts: ContactEntity): Delete = contacts(contacts.asSequence())
+    override fun contacts(vararg contacts: ContactEntity) = contacts(contacts.asSequence())
 
-    override fun contacts(contacts: Collection<ContactEntity>): Delete =
+    override fun contacts(contacts: Collection<ContactEntity>) =
         contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<ContactEntity>): Delete = apply {

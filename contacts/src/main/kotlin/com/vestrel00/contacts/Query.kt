@@ -350,17 +350,17 @@ private class QueryImpl(
         this.includeBlanks = includeBlanks
     }
 
-    override fun accounts(vararg accounts: Account?): Query = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account?>): Query = accounts(accounts.asSequence())
+    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): Query = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: Field): Query = include(fields.asSequence())
+    override fun include(vararg fields: Field) = include(fields.asSequence())
 
-    override fun include(fields: Collection<Field>): Query = include(fields.asSequence())
+    override fun include(fields: Collection<Field>) = include(fields.asSequence())
 
     override fun include(fields: Sequence<Field>): Query = apply {
         include = if (fields.isEmpty()) {
@@ -375,9 +375,9 @@ private class QueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy): Query = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>): Query = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy>) = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Sequence<OrderBy>): Query = apply {
         this.orderBy = if (orderBy.isEmpty()) {

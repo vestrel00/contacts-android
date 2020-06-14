@@ -1,10 +1,5 @@
 ## TODO
 
-- Remove return type on delegate functions to reduce line length.
-    - grep --include="*kt" -r "vararg" .
-    - E.G. fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
-      instead of fun accounts(vararg accounts: Account?): AccountsQuery = accounts(accounts.asSequence())
-
 - Lower minSdkVersion
 - Add commitInOneTransaction to delete functions.
 

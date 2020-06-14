@@ -30,7 +30,7 @@ suspend fun AccountsQuery.accountForWithContext(
 suspend fun AccountsQuery.accountsForWithContext(
     vararg rawContacts: RawContactEntity,
     context: CoroutineContext = ASYNC_DISPATCHER
-): AccountsQuery.AccountsList = accountsForWithContext(rawContacts.asSequence(), context)
+) = accountsForWithContext(rawContacts.asSequence(), context)
 
 /**
  * Suspends the current coroutine, performs the operation in the given [context], then returns the
@@ -43,7 +43,7 @@ suspend fun AccountsQuery.accountsForWithContext(
 suspend fun AccountsQuery.accountsForWithContext(
     rawContacts: Collection<RawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
-): AccountsQuery.AccountsList = accountsForWithContext(rawContacts.asSequence(), context)
+) = accountsForWithContext(rawContacts.asSequence(), context)
 
 /**
  * Suspends the current coroutine, performs the operation in the given [context], then returns the
@@ -84,7 +84,7 @@ fun AccountsQuery.accountForAsync(
 fun AccountsQuery.accountsForAsync(
     vararg rawContacts: RawContactEntity,
     context: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<AccountsQuery.AccountsList> = accountsForAsync(rawContacts.asSequence(), context)
+) = accountsForAsync(rawContacts.asSequence(), context)
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -97,7 +97,7 @@ fun AccountsQuery.accountsForAsync(
 fun AccountsQuery.accountsForAsync(
     rawContacts: Collection<RawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<AccountsQuery.AccountsList> = accountsForAsync(rawContacts.asSequence(), context)
+) = accountsForAsync(rawContacts.asSequence(), context)
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then

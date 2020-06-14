@@ -208,10 +208,10 @@ private class InsertImpl(
     override fun rawContact(configureRawContact: MutableRawContact.() -> Unit): Insert =
         rawContacts(MutableRawContact().apply(configureRawContact))
 
-    override fun rawContacts(vararg rawContacts: MutableRawContact): Insert =
+    override fun rawContacts(vararg rawContacts: MutableRawContact) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Collection<MutableRawContact>): Insert =
+    override fun rawContacts(rawContacts: Collection<MutableRawContact>) =
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<MutableRawContact>): Insert = apply {
