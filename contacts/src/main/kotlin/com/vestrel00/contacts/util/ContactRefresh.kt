@@ -12,7 +12,7 @@ import com.vestrel00.contacts.equalTo
  * [com.vestrel00.contacts.entities.RawContact]s.
  *
  * This is useful for getting the latest contact data after performing an update. This may return
- * null if the [Contact] no longer exists.
+ * null if the [Contact] no longer exists or if permission is not granted.
  *
  * Returns itself if the [Contact.id] is null, indicating that this Contact instance has not yet
  * been inserted to the DB.

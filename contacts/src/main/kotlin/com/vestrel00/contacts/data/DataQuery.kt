@@ -798,8 +798,11 @@ private class DataQueryImpl(
             return emptyList()
         }
 
-        return contentResolver.resolve(
-            mimeType, rawContactsWhere, include, where, orderBy, limit, offset, cancel
+        return contentResolver.resolveDataEntity(
+            mimeType, rawContactsWhere,
+            // Only include fields that are in the mimeType's fields.
+            include.onlyFieldsIn(mimeType.fields() + REQUIRED_INCLUDE_FIELDS),
+            where, orderBy, limit, offset, cancel
         )
     }
 
@@ -814,7 +817,7 @@ private class DataQueryImpl(
     }
 }
 
-private fun <T : DataEntity> ContentResolver.resolve(
+internal fun <T : DataEntity> ContentResolver.resolveDataEntity(
     mimeType: MimeType,
     rawContactsWhere: Where?,
     include: Include,

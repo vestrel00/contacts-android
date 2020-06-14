@@ -3,6 +3,9 @@ package com.vestrel00.contacts
 @Suppress("FunctionName")
 internal fun Include(vararg fields: Field) = Include(fields.asSequence())
 
+@Suppress("FunctionName")
+internal fun Include(fields: Collection<Field>) = Include(fields.asSequence())
+
 internal class Include(fields: Sequence<Field>) {
 
     val fields: Set<AbstractField> by lazy(LazyThreadSafetyMode.NONE) {
@@ -28,6 +31,13 @@ internal class Include(fields: Sequence<Field>) {
 
     override fun toString(): String = columnNames.joinToString(", ")
 }
+
+/**
+ * Returns a new instance of [Include] where only the given [fields] in [this] are included.
+ */
+internal fun Include.onlyFieldsIn(fields: Collection<AbstractField>) = Include(
+    fields.intersect(this.fields).asSequence()
+)
 
 /**
  * Returns a new instance of [Include] where only Contacts fields in [this] are included.

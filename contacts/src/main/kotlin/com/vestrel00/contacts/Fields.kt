@@ -152,11 +152,11 @@ object Fields {
 class RequiredFields : FieldSet(UNKNOWN) {
     override val fields: Set<AbstractField> = setOf(
         Fields.Id,
-        Fields.Contact.Id,
         Fields.RawContact.Id,
+        Fields.Contact.Id,
+        Fields.MimeType,
         Fields.IsPrimary,
-        Fields.IsSuperPrimary,
-        Fields.MimeType
+        Fields.IsSuperPrimary
     )
 }
 
@@ -325,6 +325,10 @@ class EmailFields : FieldSet(MimeType.EMAIL) {
     val Address = AbstractField(CommonDataKinds.Email.ADDRESS, mimeType)
 
     override val fields = setOf(Type, Label, Address)
+}
+
+internal object EmptyFieldSet : FieldSet(UNKNOWN) {
+    override val fields: Set<AbstractField> = emptySet()
 }
 
 class EventFields : FieldSet(MimeType.EVENT) {
