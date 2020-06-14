@@ -2,9 +2,8 @@ package com.vestrel00.contacts.async.util
 
 import android.content.Context
 import com.vestrel00.contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.entities.Group
-import com.vestrel00.contacts.entities.GroupMembership
-import com.vestrel00.contacts.util.group
+import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -14,11 +13,11 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [GroupMembership.group].
+ * See [DataEntity.refresh].
  */
-suspend fun GroupMembership.groupWithContext(
+suspend fun <T : DataEntity> T.refreshWithContext(
     context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Group? = withContext(coroutineContext) { group(context) { !isActive } }
+): T? = withContext(coroutineContext) { refresh(context) { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -26,8 +25,8 @@ suspend fun GroupMembership.groupWithContext(
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [GroupMembership.group].
+ * See [DataEntity.refresh].
  */
-fun GroupMembership.groupAsync(
+fun <T : DataEntity> T.refreshAsync(
     context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Group?> = CoroutineScope(coroutineContext).async { group(context) { !isActive } }
+): Deferred<T?> = CoroutineScope(coroutineContext).async { refresh(context) { !isActive } }
