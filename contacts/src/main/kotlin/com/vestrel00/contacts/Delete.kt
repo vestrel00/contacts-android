@@ -102,7 +102,7 @@ interface Delete {
 
     /**
      * Deletes the [ContactEntity]s and [RawContactEntity]s in the queue (added via [contacts] and
-     * [rawContacts]) in one transaction. Either ALL delete succeed or ALL fail.
+     * [rawContacts]) in one transaction. Either ALL deletes succeed or ALL fail.
      *
      * ## Permissions
      *

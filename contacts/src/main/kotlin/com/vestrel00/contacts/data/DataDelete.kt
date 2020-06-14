@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.DataEntity
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
@@ -79,6 +80,21 @@ interface DataDelete {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
+    /**
+     * Deletes the [DataEntity]s in the queue (added via [data]) in one transaction. Either ALL
+     * deletes succeed or ALL fail.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun commitInOneTransaction(): Boolean
+
     interface Result {
 
         /**
@@ -130,6 +146,10 @@ private class DataDeleteImpl(
         return DataDeleteResult(dataIdsResultMap)
     }
 
+    override fun commitInOneTransaction(): Boolean = dataIds.isNotEmpty()
+            && permissions.canInsertUpdateDelete()
+            && contentResolver.deleteDataRowsWithIds(dataIds)
+
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
@@ -139,6 +159,12 @@ private class DataDeleteImpl(
 private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean = applyBatch(
     newDelete(Table.DATA)
         .withSelection(Fields.Id equalTo dataId)
+        .build()
+) != null
+
+private fun ContentResolver.deleteDataRowsWithIds(dataIds: Collection<Long>): Boolean = applyBatch(
+    newDelete(Table.DATA)
+        .withSelection(Fields.Id `in` dataIds)
         .build()
 ) != null
 

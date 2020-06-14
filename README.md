@@ -1,7 +1,5 @@
 ## TODO
 
-- Add commitInOneTransaction to delete functions.
-
 - Implement these (+ withContext and async functions!);
     - GroupToGroupMembership
     - GroupMembershipToGroup

@@ -61,6 +61,21 @@ internal interface GroupsDelete {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
+    /**
+     * Deletes the [Group]s in the queue (added via [groups]) in one transaction. Either ALL deletes
+     * succeed or ALL fail.
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun commitInOneTransaction(): Boolean
+
     interface Result {
 
         /**
@@ -105,20 +120,21 @@ private class GroupsDeleteImpl(
             results[groupId] = if (groupId == INVALID_ID) {
                 false
             } else {
-                contentResolver.deleteGroupWithId(groupId)
+                contentResolver.applyBatch(GroupOperation().delete(groupId)) != null
             }
         }
         return GroupsDeleteResult(results)
     }
+
+    override fun commitInOneTransaction(): Boolean = groupIds.isNotEmpty()
+            && permissions.canInsertUpdateDelete()
+            && contentResolver.applyBatch(GroupOperation().delete(groupIds)) != null
 
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
     }
 }
-
-private fun ContentResolver.deleteGroupWithId(groupId: Long): Boolean =
-    applyBatch(GroupOperation().delete(groupId)) != null
 
 private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsDelete.Result {
