@@ -98,7 +98,7 @@ based on older versions; API Nougat and below.
 1. Review remaining TODOs and FIXMEs.
 2. Provide usage documentation in README and other places as needed.
 3. Update AS, Kotlin, Gradle, Dexter, and all other dependencies before releasing.
-4. Publish artifact AND write/publish medium blog to AndroidPub AND promote via AndroidWeekly.
+4. Publish artifact AND write/publish medium blog to ProAndroidDev AND promote via AndroidWeekly.
 5. Immediately setup Travis CI (free for public repos).
 
 ----------------------------------------------------------------------------------------------------
