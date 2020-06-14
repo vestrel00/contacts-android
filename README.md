@@ -1,7 +1,6 @@
 ## TODO
 
 - Implement these (+ withContext and async functions!);
-    - GroupToGroupMembership
     - GroupMembershipToGroup
     - DataRefresh
     - DataRawContact
