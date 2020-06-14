@@ -1,5 +1,6 @@
 package com.vestrel00.contacts
 
+import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.entities.ContactEntity
@@ -99,6 +100,21 @@ interface Delete {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
+    /**
+     * Deletes the [ContactEntity]s and [RawContactEntity]s in the queue (added via [contacts] and
+     * [rawContacts]) in one transaction. Either ALL delete succeed or ALL fail.
+     *
+     * ## Permissions
+     *
+     * Requires the [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun commitInOneTransaction(): Boolean
+
     interface Result {
 
         /**
@@ -183,6 +199,27 @@ private class DeleteImpl(
         }
 
         return DeleteResult(rawContactsResult, contactsResults)
+    }
+
+    override fun commitInOneTransaction(): Boolean {
+        if ((contactIds.isEmpty() && rawContactIds.isEmpty())
+            || !permissions.canInsertUpdateDelete()
+        ) {
+            return false
+        }
+
+        val rawContactOperation = RawContactOperation(Table.RAW_CONTACTS.uri)
+        val operations = arrayListOf<ContentProviderOperation>()
+
+        if (rawContactIds.isNotEmpty()) {
+            operations.add(rawContactOperation.deleteRawContacts(rawContactIds))
+        }
+
+        if (contactIds.isNotEmpty()) {
+            operations.add(rawContactOperation.deleteRawContactsWithContactIds(contactIds))
+        }
+
+        return contentResolver.applyBatch(operations) != null
     }
 
     private companion object {

@@ -24,3 +24,21 @@ suspend fun Delete.commitWithContext(context: CoroutineContext = ASYNC_DISPATCHE
  */
 fun Delete.commitAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<Delete.Result> =
     CoroutineScope(context).async { commit() }
+
+/**
+ * Suspends the current coroutine, performs the operation in the given [context], then returns the
+ * result.
+ *
+ * See [Delete.commitInOneTransaction].
+ */
+suspend fun Delete.commitInOneTransactionWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        Boolean = withContext(context) { commitInOneTransaction() }
+
+/**
+ * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
+ * returns the [Deferred] result.
+ *
+ * See [Delete.commitInOneTransaction].
+ */
+fun Delete.commitInOneTransactionAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<Boolean> = CoroutineScope(context).async { commitInOneTransaction() }

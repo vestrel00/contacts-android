@@ -6,6 +6,7 @@ import android.content.ContentProviderOperation.newDelete
 import android.content.ContentProviderOperation.newInsert
 import android.net.Uri
 import com.vestrel00.contacts.RawContactsFields
+import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -29,6 +30,11 @@ internal class RawContactOperation(private val contentUri: Uri) {
         .withSelection(RawContactsFields.Id equalTo rawContactId)
         .build()
 
+    fun deleteRawContacts(rawContactIds: Set<Long>): ContentProviderOperation =
+        newDelete(contentUri)
+            .withSelection(RawContactsFields.Id `in` rawContactIds)
+            .build()
+
     /*
      * Deleting all of the RawContact rows matching the Contacts._ID will result in the automatic
      * deletion of the Contacts row and associated Data rows.
@@ -36,5 +42,10 @@ internal class RawContactOperation(private val contentUri: Uri) {
     fun deleteRawContactsWithContactId(contactId: Long): ContentProviderOperation =
         newDelete(contentUri)
             .withSelection(RawContactsFields.ContactId equalTo contactId)
+            .build()
+
+    fun deleteRawContactsWithContactIds(contactIds: Set<Long>): ContentProviderOperation =
+        newDelete(contentUri)
+            .withSelection(RawContactsFields.ContactId `in` contactIds)
             .build()
 }
