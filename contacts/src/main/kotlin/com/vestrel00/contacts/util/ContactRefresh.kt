@@ -51,7 +51,7 @@ fun MutableContact.refresh(context: Context, cancel: () -> Boolean = { false }):
         context.findFirstContactWithId(id, cancel)?.toMutableContact()
     }
 
-private fun Context.findFirstContactWithId(contactId: Long, cancel: () -> Boolean): Contact? =
+internal fun Context.findFirstContactWithId(contactId: Long, cancel: () -> Boolean): Contact? =
     Query(this)
         .where(Fields.Contact.Id equalTo contactId)
         .findFirst(cancel)
