@@ -1,9 +1,5 @@
 ## TODO
 
-- Implement these (+ withContext and async functions!);
-    - DataContact
-    - RawContactContact
-
 - Implement Contacts.search. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
 
 1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
