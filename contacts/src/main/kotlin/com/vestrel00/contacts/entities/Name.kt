@@ -17,11 +17,33 @@ data class Name internal constructor(
     override val isSuperPrimary: Boolean,
 
     /**
-     * The name that should be used to display the contact.
+     * The name that should be used to display the (raw) contact.
      *
      * Unstructured component of the name should be consistent with its structured representation.
      *
-     * Note! This is automatically set the the Contacts Provider if null!
+     * This is automatically set by the Contacts Provider from the other name components (given,
+     * middle, family, etc) if inserted as null.
+     *
+     * ## [ContactEntity.displayName] vs [Name.displayName]
+     *
+     * The [ContactEntity.displayName] may be different than [Name.displayName]. If a [Name] in the
+     * Data table is not provided, then other kinds of data will be used as the Contact's display
+     * name. For example, if an [Email] is provided but no [Name] then the display name will be the
+     * email. When a [Name] is inserted, the Contacts Provider automatically updates the
+     * [ContactEntity.displayName].
+     *
+     * If data rows suitable to be a [ContactEntity.displayName] are not available, it will be null.
+     *
+     * Data suitable to be a Contacts row display name are;
+     *
+     * - [Organization]
+     * - [Email]
+     * - [Name]
+     * - [Nickname]
+     * - [Phone]
+     *
+     * The [ContactEntity.displayName] is automatically resolved by the Contacts Provider. It may
+     * not be manually modified.
      */
     val displayName: String?,
 

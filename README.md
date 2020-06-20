@@ -1,6 +1,7 @@
 ## TODO
 
 - Implement these (+ withContext and async functions!);
+    - Create ContactData list functions e.g. addressList, nameList, etc
     - DataRawContact
     - DataContact
     - RawContactContact

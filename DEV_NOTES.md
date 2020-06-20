@@ -60,7 +60,7 @@ The tables are connected the following way;
 
 #### Contacts; Display Name
 
-The Contacts display name may be different than the Data `StructuredName` display name! If a 
+The Contact's display name may be different than the Data `StructuredName` display name! If a
 structured name in the Data table is not provided, then other kinds of data will be used as the 
 `Contacts` row display name. For example, if an email is provided but no structured name then the
 display name will be the email. When a structured name is inserted, the Contacts Provider 
@@ -68,10 +68,10 @@ automatically updates the Contacts row display name.
 
 If no data rows suitable to be a display name are available, then the Contacts row display name will
 be null. Data suitable to be a Contacts row display name are enumerated in `DisplayNameSources`;
- 
-- company name
-- email address
+
+- email
 - nickname
+- organization
 - phone number
 - structured name
 
@@ -402,8 +402,8 @@ have multiple RawContacts (linked/merged/joined) in combined mode. However, it d
 individual RawContact Data rows in which case the groups field is displayed and editable.
 
 In the native Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
-set to true. This and all other "unique" mimetypes (company/organization) and non-unique mimetypes
-(email) per RawContact are shown only if they are not blank.
+set to true. This and all other "unique" mimetypes (organization) and non-unique mimetypes (email)
+per RawContact are shown only if they are not blank.
 
 #### AggregationExceptions table
 
@@ -476,10 +476,10 @@ mimetypes. Here is the list.
 
 **Unique mimetype per RawContact**
 
-- Company (Organization)
 - Name (StructuredName)
 - Nickname
 - Note
+- Organization
 - Photo
 - SipAddress
 
@@ -662,7 +662,7 @@ There are two scenarios where blanks may exist.
 
 The `DISPLAY_NAME` of the `StructuredName` row in the Data table is automatically set by the 
 Contacts Provider by combining the other name elements; `GIVEN_NAME`, `FAMILY_NAME`, etc. 
-For example, if given and family name is "vandolf" and "estrellado", then the display name 
+For example, if given and family name is "vandolf" and "estrellado", then the display name
 will be set to "vandolf estrellado".
 
 The inverse is also true. If the display name is provided but not the other elements 
