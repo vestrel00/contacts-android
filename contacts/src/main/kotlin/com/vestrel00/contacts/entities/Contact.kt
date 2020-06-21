@@ -67,6 +67,13 @@ sealed class ContactEntity : Entity {
     abstract val displayNamePrimary: String?
 
     /**
+     * An alternative representation of the display name, such as "family name first" instead of
+     * "given name first" for Western names. If an alternative is not available, the values should
+     * be the same as [displayNamePrimary].
+     */
+    abstract val displayNameAlt: String?
+
+    /**
      * Timestamp of when this contact was last updated. This includes updates to all data associated
      * with this contact including raw contacts. Any modification (including deletes and inserts) of
      * underlying contact data are also reflected in this timestamp.
@@ -144,6 +151,11 @@ data class Contact internal constructor(
     override val displayNamePrimary: String?,
 
     /**
+     * See [ContactEntity.displayNameAlt].
+     */
+    override val displayNameAlt: String?,
+
+    /**
      * See [ContactEntity.lastUpdatedTimestamp].
      */
     override val lastUpdatedTimestamp: Date?,
@@ -166,6 +178,7 @@ data class Contact internal constructor(
         rawContacts = rawContacts.map { it.toMutableRawContact() },
 
         displayNamePrimary = displayNamePrimary,
+        displayNameAlt = displayNameAlt,
         lastUpdatedTimestamp = lastUpdatedTimestamp,
         options = options
     )
@@ -179,34 +192,39 @@ data class Contact internal constructor(
 data class MutableContact internal constructor(
 
     /**
-     * See [Contact.id].
+     * See [ContactEntity.id].
      */
     override val id: Long?,
 
     /**
-     * See [Contact.isProfile].
+     * See [ContactEntity.isProfile].
      */
     override val isProfile: Boolean,
 
     /**
-     * See [Contact.rawContacts].
+     * See [ContactEntity.rawContacts].
      *
      * Notice that the type is [MutableRawContact] instead of [RawContactEntity].
      */
     override val rawContacts: List<MutableRawContact>,
 
     /**
-     * See [Contact.displayNamePrimary].
+     * See [ContactEntity.displayNamePrimary].
      */
     override val displayNamePrimary: String?,
 
     /**
-     * See [Contact.lastUpdatedTimestamp].
+     * See [ContactEntity.displayNameAlt].
+     */
+    override val displayNameAlt: String?,
+
+    /**
+     * See [ContactEntity.lastUpdatedTimestamp].
      */
     override val lastUpdatedTimestamp: Date?,
 
     /**
-     * See [Contact.options].
+     * See [ContactEntity.options].
      */
     override val options: Options?
 

@@ -21,6 +21,9 @@ internal class ContactsCursor(private val cursor: Cursor) : ContactIdCursor {
     val displayNamePrimary: String?
         get() = cursor.getString(ContactsFields.DisplayNamePrimary)
 
+    val displayNameAlt: String?
+        get() = cursor.getString(ContactsFields.DisplayNameAlt)
+
     val displayNameSource: Int?
         get() = cursor.getInt(ContactsFields.DisplayNameSource)
 

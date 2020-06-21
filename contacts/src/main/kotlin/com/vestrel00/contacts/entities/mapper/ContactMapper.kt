@@ -25,6 +25,7 @@ internal class ContactMapper(
 
             // These fields are accessible in both the Contacts and Data tables.
             displayNamePrimary = contactCursor.displayNamePrimary,
+            displayNameAlt = contactCursor.displayNameAlt,
             lastUpdatedTimestamp = contactCursor.lastUpdatedTimestamp,
 
             options = optionsMapper.value

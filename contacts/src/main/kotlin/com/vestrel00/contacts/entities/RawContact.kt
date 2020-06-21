@@ -282,12 +282,20 @@ data class BlankRawContact internal constructor(
     override val isProfile: Boolean,
 
     /**
-     * The RawContact's display name, which may be different from the parent Contact's display name
-     * if it is made up of more than one RawContact.
+     * The RawContact's display name (given name first), which may be different from the parent
+     * Contact's display name if it is made up of more than one RawContact.
      */
     // This can only be retrieved from RawContacts table queries. The Data table contains the
     // display name for Contacts, not for RawContacts.
-    val displayNamePrimary: String?
+    val displayNamePrimary: String?,
+
+    /**
+     * The RawContact's display name (family name first), which may be different from the parent
+     * Contact's display name if it is made up of more than one RawContact.
+     */
+    // This can only be retrieved from RawContacts table queries. The Data table contains the
+    // display name for Contacts, not for RawContacts.
+    val displayNameAlt: String?
 ) : RawContactEntity() {
 
     override fun isBlank(): Boolean = true

@@ -18,6 +18,9 @@ internal class ContactCursor(private val cursor: Cursor) : ContactIdCursor {
     val displayNamePrimary: String?
         get() = cursor.getString(Fields.Contact.DisplayNamePrimary)
 
+    val displayNameAlt: String?
+        get() = cursor.getString(Fields.Contact.DisplayNameAlt)
+
     val lastUpdatedTimestamp: Date?
         get() = cursor.getDate(Fields.Contact.LastUpdatedTimestamp)
 }

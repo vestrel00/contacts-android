@@ -155,6 +155,7 @@ internal class ContactsMapper(
                     isProfile = isProfile,
                     rawContacts = entry.value.sortedBy { it.id },
                     displayNamePrimary = null,
+                    displayNameAlt = null,
                     lastUpdatedTimestamp = null,
                     options = null
                 )

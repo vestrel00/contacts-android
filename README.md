@@ -1,6 +1,5 @@
 ## TODO
 
-- Add `ContactNameColumns.DISPLAY_NAME_ALTERNATIVE`.
 - Implement Contacts.search. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
     - Where replaced with term: String.
     - include use ContactFields
