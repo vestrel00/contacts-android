@@ -41,9 +41,8 @@ data class Event internal constructor(
      * the correct format required to match event dates.
      *
      * Unlike other dates in other entities in this library that are stored as milliseconds, these
-     * dates are stored in the Content Provider DB as strings in he format of yyyy-MM-dd
-     * (e.g. 2019-08-21). Therefore, in order to correctly perform queries with event dates in the
-     * where clause, the date value must first be converted using this function.
+     * dates are stored in the Content Provider DB as strings in the format of yyyy-MM-dd
+     * (e.g. 2019-08-21).
      */
     val date: Date?
 
