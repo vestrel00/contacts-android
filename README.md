@@ -1,6 +1,14 @@
 ## TODO
 
+- Add `ContactNameColumns.DISPLAY_NAME_ALTERNATIVE`.
+  - Rename `RawContactsFields|ContactFields|ContactsFields.DisplayName` to include "Primary".
 - Implement Contacts.search. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
+    - Where replaced with term: String.
+    - include and orderBy use ContactsFields
+    - limit and offset supported
+    - are blanks included?
+    - Contacts to display (accounts/groups)?
+      - (see native Contacts App pre Nougat and post Nougat)
 
 1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
     - Read-only like GroupMemberships. Update relevant util functions and AccountsRawContactsAssociations
@@ -23,8 +31,7 @@
 #### Complete sample app
 
 Build the sample app as simple as possible, referencing new and older versions to ensure all
-functionality is included (though may look different). Document that the sample app design is more 
-based on older versions; API Nougat and below.
+functionality is included (though may look different).
 
 - View Contact
     - Star (favorite) contact
@@ -62,23 +69,25 @@ based on older versions; API Nougat and below.
                 
 - View starred (favorites only) contacts
 
-- Set up user (my) profile
-    
 - No account & no contacts screen
     - Add account
 
-- Contacts to display
-    - All contacts
-    - ... account(s) ...
-    - Customize (Define custom view)
+- Settings (see native Contacts App pre Nougat and post Nougat)
+  - User profile
+  - Accounts
+  - Default account for new contacts
+    - Contacts to display
+        - All contacts
         - ... account(s) ...
-            - ... groups ... 
-                - Long press -> Remove sync group
-                - More groups... (Add sync group)
-                - All other contacts
-                
-- Manage accounts
-    
+        - Customize (Define custom view)
+            - ... account(s) ...
+                - ... groups ...
+                    - Long press -> Remove sync group
+                    - More groups... (Add sync group)
+                    - All other contacts
+  - Sort by first or last name
+  - Name format first name first or last name first
+
 ----------------------------------------------------------------------------------------------------
 
 #### Tidy up
@@ -121,8 +130,8 @@ consumers to implement a specific part of the native Android Contacts app.
       of phone numbers the user has specified should not be able to contact them via telephony
       communications (calls, SMS, MMS).
     - See https://source.android.com/devices/tech/connect/block-numbers
-1. SIM card query, insert, update, and delete.
-    - Enables importing from and exporting to SIM card.
+1. SIM card query, insert(?), update(?), and delete(?).
+    - Enables importing from and exporting(?) to SIM card.
     - Query will definitely be possible. I'm not sure if insert, update, and delete operations
       are possible. We will see.
 2. Contacts read/write .VCF file.
