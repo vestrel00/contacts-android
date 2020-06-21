@@ -15,8 +15,8 @@ internal class ContactCursor(private val cursor: Cursor) : ContactIdCursor {
     override val contactId: Long?
         get() = cursor.getLong(Fields.Contact.Id)
 
-    val displayName: String?
-        get() = cursor.getString(Fields.Contact.DisplayName)
+    val displayNamePrimary: String?
+        get() = cursor.getString(Fields.Contact.DisplayNamePrimary)
 
     val lastUpdatedTimestamp: Date?
         get() = cursor.getDate(Fields.Contact.LastUpdatedTimestamp)

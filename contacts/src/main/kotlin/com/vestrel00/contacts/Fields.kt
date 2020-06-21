@@ -190,7 +190,7 @@ class AllFields : FieldSet(UNKNOWN) {
 class AllForMatchingFields : FieldSet(UNKNOWN) {
     override val fields: Set<AbstractField> = mutableSetOf<AbstractField>().apply {
         addAll(Fields.Address.fields.asSequence().minus(Fields.Address.Type))
-        add(Fields.Contact.DisplayName)
+        add(Fields.Contact.DisplayNamePrimary)
         addAll(Fields.Email.fields.asSequence().minus(Fields.Email.Type))
         addAll(Fields.Event.fields.asSequence().minus(Fields.Event.Type))
         // addAll(Fields.GroupMembership.fields)
@@ -276,12 +276,12 @@ class ContactFields : FieldSet(UNKNOWN) {
     val Id = AbstractField(Data.CONTACT_ID, mimeType)
 
     @JvmField
-    val DisplayName = AbstractField(Data.DISPLAY_NAME_PRIMARY, mimeType)
+    val DisplayNamePrimary = AbstractField(Data.DISPLAY_NAME_PRIMARY, mimeType)
 
     @JvmField
     val LastUpdatedTimestamp = AbstractField(Data.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
 
-    override val fields = setOf(Id, DisplayName, LastUpdatedTimestamp)
+    override val fields = setOf(Id, DisplayNamePrimary, LastUpdatedTimestamp)
 }
 
 /**
@@ -291,7 +291,7 @@ internal object ContactsFields : FieldSet(UNKNOWN) {
 
     val Id = AbstractField(Contacts._ID, mimeType)
 
-    val DisplayName = AbstractField(Contacts.DISPLAY_NAME_PRIMARY, mimeType)
+    val DisplayNamePrimary = AbstractField(Contacts.DISPLAY_NAME_PRIMARY, mimeType)
 
     // Do not include in fields.
     val DisplayNameSource = AbstractField(Contacts.DISPLAY_NAME_SOURCE, mimeType)
@@ -309,7 +309,7 @@ internal object ContactsFields : FieldSet(UNKNOWN) {
     val PhotoFileId = AbstractField(Contacts.PHOTO_FILE_ID, mimeType)
 
     override val fields = setOf(
-        Id, DisplayName, LastUpdatedTimestamp, PhotoUri, PhotoThumbnailUri, PhotoFileId
+        Id, DisplayNamePrimary, LastUpdatedTimestamp, PhotoUri, PhotoThumbnailUri, PhotoFileId
     )
 }
 
@@ -541,7 +541,7 @@ object RawContactsFields : FieldSet(UNKNOWN) {
 
     val ContactId = AbstractField(RawContacts.CONTACT_ID, mimeType)
 
-    val DisplayName = AbstractField(RawContacts.DISPLAY_NAME_PRIMARY, mimeType)
+    val DisplayNamePrimary = AbstractField(RawContacts.DISPLAY_NAME_PRIMARY, mimeType)
 
     // From protected SyncColumns
     val AccountName = AbstractField(RawContacts.ACCOUNT_NAME, mimeType)
@@ -549,7 +549,7 @@ object RawContactsFields : FieldSet(UNKNOWN) {
     // From protected SyncColumns
     val AccountType = AbstractField(RawContacts.ACCOUNT_TYPE, mimeType)
 
-    override val fields = setOf(Id, ContactId, DisplayName, AccountName, AccountType)
+    override val fields = setOf(Id, ContactId, DisplayNamePrimary, AccountName, AccountType)
 }
 
 class RelationFields : FieldSet(MimeType.RELATION) {

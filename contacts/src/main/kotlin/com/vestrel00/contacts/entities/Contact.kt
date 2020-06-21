@@ -34,18 +34,24 @@ sealed class ContactEntity : Entity {
      * available). This may be null if the Contacts Provider cannot find a suitable display name
      * source to use.
      *
+     * The contacts provider is free to choose whatever representation makes most sense for its
+     * target market. For example in the default Android Open Source Project implementation, if the
+     * display name is based on the [Name] and the [Name] follows the Western full-name style, then
+     * this field contains the "given name first" version of the full name.
+     *
      * This is a read-only attribute as the Contacts Provider automatically sets this value.
      * This is ignored for insert, update, and delete functions.
      *
-     * ## [ContactEntity.displayName] vs [Name.displayName]
+     * ## [ContactEntity.displayNamePrimary] vs [Name.displayName]
      *
-     * The [ContactEntity.displayName] may be different than [Name.displayName]. If a [Name] in the
-     * Data table is not provided, then other kinds of data will be used as the Contact's display
-     * name. For example, if an [Email] is provided but no [Name] then the display name will be the
-     * email. When a [Name] is inserted, the Contacts Provider automatically updates the
-     * [ContactEntity.displayName].
+     * The [ContactEntity.displayNamePrimary] may be different than [Name.displayName]. If a [Name]
+     * in the Data table is not provided, then other kinds of data will be used as the Contact's
+     * display name. For example, if an [Email] is provided but no [Name] then the display name will
+     * be the email. When a [Name] is inserted, the Contacts Provider automatically updates the
+     * [ContactEntity.displayNamePrimary].
      *
-     * If data rows suitable to be a [ContactEntity.displayName] are not available, it will be null.
+     * If data rows suitable to be a [ContactEntity.displayNamePrimary] are not available, it will
+     * be null.
      *
      * Data suitable to be a Contacts row display name are;
      *
@@ -55,10 +61,10 @@ sealed class ContactEntity : Entity {
      * - [Nickname]
      * - [Phone]
      *
-     * The [ContactEntity.displayName] is automatically resolved by the Contacts Provider. It may
-     * not be manually modified.
+     * The [ContactEntity.displayNamePrimary] is automatically resolved by the Contacts Provider. It
+     * may not be manually modified.
      */
-    abstract val displayName: String?
+    abstract val displayNamePrimary: String?
 
     /**
      * Timestamp of when this contact was last updated. This includes updates to all data associated
@@ -133,9 +139,9 @@ data class Contact internal constructor(
     override val rawContacts: List<RawContact>,
 
     /**
-     * See [ContactEntity.displayName].
+     * See [ContactEntity.displayNamePrimary].
      */
-    override val displayName: String?,
+    override val displayNamePrimary: String?,
 
     /**
      * See [ContactEntity.lastUpdatedTimestamp].
@@ -159,7 +165,7 @@ data class Contact internal constructor(
 
         rawContacts = rawContacts.map { it.toMutableRawContact() },
 
-        displayName = displayName,
+        displayNamePrimary = displayNamePrimary,
         lastUpdatedTimestamp = lastUpdatedTimestamp,
         options = options
     )
@@ -190,9 +196,9 @@ data class MutableContact internal constructor(
     override val rawContacts: List<MutableRawContact>,
 
     /**
-     * See [Contact.displayName].
+     * See [Contact.displayNamePrimary].
      */
-    override val displayName: String?,
+    override val displayNamePrimary: String?,
 
     /**
      * See [Contact.lastUpdatedTimestamp].

@@ -130,7 +130,7 @@ class ContactsActivity : BaseActivity() {
 
     private fun setContactsAdapterItems() {
         val listOfContactNameAndEmails = searchResults.map { contact ->
-            val displayName = contact.displayName
+            val displayNamePrimary = contact.displayNamePrimary
 
             val emails = contact
                 .emails()
@@ -151,7 +151,7 @@ class ContactsActivity : BaseActivity() {
                 .joinToString(", ")
 
             """
-                |$displayName
+                |$displayNamePrimary
                 |$emails
                 |$phoneNumbers
             """.trimMargin()
@@ -175,7 +175,7 @@ class ContactsActivity : BaseActivity() {
 }
 
 private val SEARCH_FIELDS = setOf(
-    Fields.Contact.DisplayName,
+    Fields.Contact.DisplayNamePrimary,
     Fields.Email.Address,
     Fields.Phone.Number,
     Fields.Phone.NormalizedNumber

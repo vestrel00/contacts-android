@@ -1,10 +1,10 @@
 ## TODO
 
 - Add `ContactNameColumns.DISPLAY_NAME_ALTERNATIVE`.
-  - Rename `RawContactsFields|ContactFields|ContactsFields.DisplayName` to include "Primary".
 - Implement Contacts.search. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
     - Where replaced with term: String.
-    - include and orderBy use ContactsFields
+    - include use ContactFields
+    - orderBy use Contact(s)Fields
     - limit and offset supported
     - are blanks included?
     - Contacts to display (accounts/groups)?

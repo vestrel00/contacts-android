@@ -287,7 +287,7 @@ data class BlankRawContact internal constructor(
      */
     // This can only be retrieved from RawContacts table queries. The Data table contains the
     // display name for Contacts, not for RawContacts.
-    val displayName: String?
+    val displayNamePrimary: String?
 ) : RawContactEntity() {
 
     override fun isBlank(): Boolean = true

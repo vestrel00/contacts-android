@@ -24,7 +24,7 @@ internal class ContactMapper(
             rawContacts = emptyList(),
 
             // These fields are accessible in both the Contacts and Data tables.
-            displayName = contactCursor.displayName,
+            displayNamePrimary = contactCursor.displayNamePrimary,
             lastUpdatedTimestamp = contactCursor.lastUpdatedTimestamp,
 
             options = optionsMapper.value

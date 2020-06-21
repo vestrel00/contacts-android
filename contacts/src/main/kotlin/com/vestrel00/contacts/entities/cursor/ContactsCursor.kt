@@ -18,8 +18,8 @@ internal class ContactsCursor(private val cursor: Cursor) : ContactIdCursor {
     override val contactId: Long?
         get() = cursor.getLong(ContactsFields.Id)
 
-    val displayName: String?
-        get() = cursor.getString(ContactsFields.DisplayName)
+    val displayNamePrimary: String?
+        get() = cursor.getString(ContactsFields.DisplayNamePrimary)
 
     val displayNameSource: Int?
         get() = cursor.getInt(ContactsFields.DisplayNameSource)
