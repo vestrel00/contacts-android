@@ -888,6 +888,8 @@ private fun MimeType.dataWhere(): Where? = when (this) {
 }
 
 private fun MimeType.contentUri(): Uri = when (this) {
+    // I'm aware that CONTENT_FILTER_URI exist for PHONE and EMAIL. We are not using that here
+    // because it does not support a selection (where) clause.
     MimeType.PHONE -> ContactsContract.CommonDataKinds.Phone.CONTENT_URI
     MimeType.EMAIL -> ContactsContract.CommonDataKinds.Email.CONTENT_URI
     MimeType.ADDRESS -> ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI
