@@ -2,19 +2,26 @@
 
 ----------------------- Query refactor.
 
-1. Add type info to include, where, and orderBy for compilation checks in queries instead of runtime.
+1. Add type info to where and orderBy for compilation checks in queries instead of runtime.
 
-2. Only allow order by ContactsFields (and other Contact table fields like Options) like GeneralQuery.  
+2. Only allow order by ContactsFields (and other Contacts table fields like Options) in Query and GeneralQuery.  
    This may allow me to order by limit offset natively.
 
-3. If refactoring Query, we may be able to add Options to RawContact as a member instead of only
-   accessible via extension functions?
-4. Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
+3. Only allow order by GroupsFields in GroupsQuery.
 
-5. Refactor Where such that it gets resolved to a string lazily so that we can check if it only contains valid fields.
+4. Only allow order by RawContactsFields in AccountsRawContactsQuery.
+
+5. Only allow order by AbstractDataFields (or more specific ones?) in DataQuery.
+
+6. If refactoring Query, we may be able to add Options to RawContact as a member instead of only
+   accessible via extension functions?
+7. 
+8. Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
+
+9. Refactor Where such that it gets resolved to a string lazily so that we can check if it only contains valid fields.
    Implement a version of Where that is already resolved instead of lazily for consumers that pass in mutable objects such as mutable lists
 
-6. Ensure that OptionsFields are included (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
+10. Ensure that OptionsFields are included (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
 
 -------------------------------------------------------------------
 
