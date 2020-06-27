@@ -1,6 +1,6 @@
-include ':core'
 include ':async'
+include ':core'
 include ':debug'
 include ':permissions'
-include ':contacts-ui'
+include ':ui'
 include ':sample'

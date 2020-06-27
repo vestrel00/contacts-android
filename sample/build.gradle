@@ -38,7 +38,7 @@ dependencies {
     implementation project(':async')
     implementation project(':debug')
     implementation project(':permissions')
-    implementation project(':contacts-ui')
+    implementation project(':ui')
 
     implementation libraries.kotlin.coroutines
     implementation libraries.kotlin.coroutinesAndroid
