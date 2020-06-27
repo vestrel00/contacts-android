@@ -22,7 +22,7 @@ buildscript {
                         ]
                 ],
 
-                dexter: '5.0.0', // Used only by contacts-permission!
+                dexter: '5.0.0', // Used only by permissions module!
 
                 kotlin: [
                         core      : '1.3.61',
@@ -32,8 +32,7 @@ buildscript {
 
         // Notice that this library has a very minimal dependency list. Let's keep it that way =)
         libraries = [
-                // Used only by contacts-permissions module!
-                dexter: "com.karumi:dexter:$versions.dexter",
+                dexter: "com.karumi:dexter:$versions.dexter", // Used only by permissions module!
 
                 kotlin: [
                         standardLib      : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin.core",
