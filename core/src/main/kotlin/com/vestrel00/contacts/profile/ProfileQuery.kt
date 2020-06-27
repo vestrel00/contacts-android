@@ -6,7 +6,6 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.DataEntity
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.util.isEmpty
@@ -163,7 +162,7 @@ private class ProfileQueryImpl(
     private val contentResolver: ContentResolver,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include = DEFAULT_INCLUDE
+    private var include: Include<DataField> = DEFAULT_INCLUDE
 ) : ProfileQuery {
 
     override fun toString(): String {
@@ -205,13 +204,13 @@ private class ProfileQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE = Include(Fields.all)
+        val DEFAULT_INCLUDE = Include(Fields)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
     }
 }
 
 private fun ContentResolver.resolve(
-    rawContactsWhere: Where<RawContactsField>?, include: Include, cancel: () -> Boolean
+    rawContactsWhere: Where<RawContactsField>?, include: Include<DataField>, cancel: () -> Boolean
 ): Contact? {
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
@@ -219,7 +218,7 @@ private fun ContentResolver.resolve(
     val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
     for (rawContactId in rawContactIds) {
         // FIXME Remove this type after adding type to include
-        query<DataField, ContactsMapper> (
+        query<DataField, ContactsMapper>(
             ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
                 .appendEncodedPath(rawContactId)
                 .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)

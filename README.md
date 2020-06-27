@@ -2,11 +2,11 @@
 
 ----------------------- Query refactor.
 
-Revisit Includes, add Field generic type to it. Update ContentResolverExtensions and Query classes
 Make all operations an object
 Rename this and GroupOperation to be RawContactsOperation and GroupsOperation
 Add Field type to Cursors, update CursorFactory and ContentResolverExtensions
 Add Field type to Mappers, update EntityMapperFactory
+Add Field type to Operations
 
 1. Add type info to orderBy for compilation checks in queries instead of runtime.
 
@@ -23,8 +23,6 @@ Add Field type to Mappers, update EntityMapperFactory
    accessible via extension functions?
 
 7. Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
-
-8. Ensure that OptionsFields are included (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
 
 -------------------------------------------------------------------
 

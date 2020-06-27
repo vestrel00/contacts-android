@@ -260,7 +260,7 @@ private class AccountsRawContactsQueryImpl(
 
 private fun ContentResolver.resolve(
     rawContactsWhere: Where<RawContactsField>?,
-    include: Include,
+    include: Include<RawContactsField>,
     where: Where<RawContactsField>?,
     orderBy: CompoundOrderBy,
     limit: Int,

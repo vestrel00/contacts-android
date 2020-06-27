@@ -81,7 +81,7 @@ object Fields : FieldSet<DataField>() {
     val Address = AddressFields()
 
     @JvmField
-    val Contact = JoinedContactsFields()
+    val Contact = DataContactsFields()
 
     @JvmField
     val DataId = DataField(Data._ID)
@@ -116,7 +116,7 @@ object Fields : FieldSet<DataField>() {
     val Note = NoteFields()
 
     @JvmField
-    val Options = JoinedOptionsFields()
+    val Options = DataOptionsFields()
 
     @JvmField
     val Organization = OrganizationFields()
@@ -127,7 +127,7 @@ object Fields : FieldSet<DataField>() {
     internal val Photo = PhotoFields()
 
     @JvmField
-    val RawContact = JoinedRawContactsFields()
+    val RawContact = DataRawContactsFields()
 
     @JvmField
     val Relation = RelationFields()
@@ -147,7 +147,7 @@ object Fields : FieldSet<DataField>() {
      * - Types, e.g. [EmailFields.Type] (stored as integers in the DB)
      * - IDs, e.g. [JoinedContactsFields.Id] (stored as integers in the DB)
      * - [GroupMembershipFields] (stored as integers in the DB)
-     * - [JoinedOptionsFields]
+     * - [DataOptionsFields]
      *
      * This is safe for matching in queries. This is useful in creating where clauses that matches
      * text that the user is typing in a search field. For example, if the user is typing in some
@@ -165,7 +165,7 @@ object Fields : FieldSet<DataField>() {
      * - Types, e.g. [EmailFields.Type] (stored as integers in the DB)
      * - IDs, e.g. [JoinedContactsFields.Id] (stored as integers in the DB)
      * - [GroupMembershipFields] (stored as integers in the DB)
-     * - [JoinedOptionsFields]
+     * - [DataOptionsFields]
      *
      * Use [ForMatching] instead, which does not include the above fields.
      */
@@ -258,6 +258,61 @@ object DataFieldsForMatching : FieldSet<DataField>() {
 
 internal object EmptyDataFields : FieldSet<DataField>() {
     override val all: Set<DataField> = emptySet()
+}
+
+// endregion
+
+// region Joined Data Fields
+
+class DataContactsFields internal constructor() : FieldSet<DataField>() {
+
+    // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. This is only
+    // meant to be used for Data table operations.
+    @JvmField
+    val Id = DataField(Data.CONTACT_ID)
+
+    @JvmField
+    val DisplayNamePrimary = DataField(Data.DISPLAY_NAME_PRIMARY)
+
+    @JvmField
+    val DisplayNameAlt = DataField(Data.DISPLAY_NAME_ALTERNATIVE)
+
+    @JvmField
+    val LastUpdatedTimestamp = DataField(Data.CONTACT_LAST_UPDATED_TIMESTAMP)
+
+    override val all = setOf(Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp)
+}
+
+class DataOptionsFields internal constructor() : FieldSet<DataField>() {
+
+    internal val Id = DataField(Data._ID)
+
+    @JvmField
+    val Starred = DataField(Data.STARRED)
+
+    @JvmField
+    val TimesContacted = DataField(Data.TIMES_CONTACTED)
+
+    @JvmField
+    val LastTimeContacted = DataField(Data.LAST_TIME_CONTACTED)
+
+    @JvmField
+    val CustomRingtone = DataField(Data.CUSTOM_RINGTONE)
+
+    @JvmField
+    val SendToVoicemail = DataField(Data.SEND_TO_VOICEMAIL)
+
+    override val all = setOf(
+        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
+    )
+}
+
+class DataRawContactsFields internal constructor() : FieldSet<DataField>() {
+
+    @JvmField
+    val Id = DataField(Data.RAW_CONTACT_ID)
+
+    override val all = setOf(Id)
 }
 
 // endregion
@@ -498,60 +553,6 @@ class WebsiteFields internal constructor() : FieldSet<DataField>() {
 
 // endregion
 
-// region Joined Fields
-
-class JoinedContactsFields internal constructor() : FieldSet<DataField>() {
-
-    // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. This is only
-    // meant to be used for Data table operations.
-    @JvmField
-    val Id = DataField(Data.CONTACT_ID)
-
-    @JvmField
-    val DisplayNamePrimary = DataField(Data.DISPLAY_NAME_PRIMARY)
-
-    @JvmField
-    val DisplayNameAlt = DataField(Data.DISPLAY_NAME_ALTERNATIVE)
-
-    @JvmField
-    val LastUpdatedTimestamp = DataField(Data.CONTACT_LAST_UPDATED_TIMESTAMP)
-
-    override val all = setOf(Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp)
-}
-
-class JoinedOptionsFields internal constructor() : FieldSet<DataField>() {
-
-    internal val Id = DataField(Data._ID)
-
-    @JvmField
-    val Starred = DataField(Data.STARRED)
-
-    @JvmField
-    val TimesContacted = DataField(Data.TIMES_CONTACTED)
-
-    @JvmField
-    val LastTimeContacted = DataField(Data.LAST_TIME_CONTACTED)
-
-    @JvmField
-    val CustomRingtone = DataField(Data.CUSTOM_RINGTONE)
-
-    @JvmField
-    val SendToVoicemail = DataField(Data.SEND_TO_VOICEMAIL)
-
-    override val all = setOf(
-        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
-    )
-}
-
-class JoinedRawContactsFields internal constructor() : FieldSet<DataField>() {
-
-    val Id = DataField(Data.RAW_CONTACT_ID)
-
-    override val all = setOf(Id)
-}
-
-// endregion
-
 // endregion
 
 // region AggregationExceptions Table Fields
@@ -683,9 +684,42 @@ object RawContactsFields : FieldSet<RawContactsField>() {
     // From protected SyncColumns
     val AccountType = RawContactsField(RawContacts.ACCOUNT_TYPE)
 
-    override val all = setOf(
+    @JvmField
+    val Options = RawContactsOptionsFields()
+
+    override val all = mutableSetOf(
         Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType
+    ).apply {
+        addAll(Options.all)
+    }.toSet()
+}
+
+// Contains the same underlying column names as DataOptionsFields but with a different Field type.
+class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsField>() {
+
+    internal val Id = RawContactsField(RawContacts._ID)
+
+    @JvmField
+    val Starred = RawContactsField(Data.STARRED)
+
+    @JvmField
+    val TimesContacted = RawContactsField(Data.TIMES_CONTACTED)
+
+    @JvmField
+    val LastTimeContacted = RawContactsField(Data.LAST_TIME_CONTACTED)
+
+    @JvmField
+    val CustomRingtone = RawContactsField(Data.CUSTOM_RINGTONE)
+
+    @JvmField
+    val SendToVoicemail = RawContactsField(Data.SEND_TO_VOICEMAIL)
+
+    override val all = setOf(
+        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
     )
 }
 
 // endregion
+
+// TODO Ensure that Options Fields are included (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
+// Will need separate Options Fields, Cursors, Mappers, and Operations for each table (Contacts, RawContacts, Data).

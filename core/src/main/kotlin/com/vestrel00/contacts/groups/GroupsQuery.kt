@@ -259,7 +259,7 @@ private class GroupsQueryImpl(
 
 private fun ContentResolver.resolve(
     rawContactsWhere: Where<GroupsField>?,
-    include: Include,
+    include: Include<GroupsField>,
     where: Where<GroupsField>?,
     orderBy: CompoundOrderBy,
     limit: Int,

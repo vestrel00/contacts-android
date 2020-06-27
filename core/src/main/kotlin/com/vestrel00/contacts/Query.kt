@@ -330,7 +330,7 @@ private class QueryImpl(
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include = DEFAULT_INCLUDE,
+    private var include: Include<DataField> = DEFAULT_INCLUDE,
     private var where: Where<DataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -430,7 +430,7 @@ private class QueryImpl(
     private companion object {
         const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE = Include(Fields.all)
+        val DEFAULT_INCLUDE = Include(Fields)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
         val DEFAULT_WHERE: Where<DataField>? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Contact.Id.asc()))
@@ -442,7 +442,7 @@ private class QueryImpl(
 private fun ContentResolver.resolve(
     includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
-    include: Include,
+    include: Include<DataField>,
     where: Where<DataField>?,
     orderBy: CompoundOrderBy,
     limit: Int,

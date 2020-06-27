@@ -297,7 +297,7 @@ private fun <T : Field> where(lhs: Where<T>, operator: String, rhs: Where<T>): S
  *
  * ## Developer notes
  *
- * The type [T] is not exactly used in this class itself. Rather, it is used for adding type
+ * The type [T] is not exactly "used" in this class itself. Rather, it is used for adding type
  * restrictions when constructing instances at compile time. For example, this allows us to create a
  * function that takes in a Where of GroupsField. The caller of that function can then only provide
  * a Where composed of one or more GroupsField.

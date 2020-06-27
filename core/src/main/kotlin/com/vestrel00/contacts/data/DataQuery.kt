@@ -652,7 +652,7 @@ private class DataQueryImpl(
     private val contentResolver: ContentResolver,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include = DEFAULT_INCLUDE,
+    private var include: Include<DataField> = DEFAULT_INCLUDE,
     private var where: Where<DataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -809,7 +809,7 @@ private class DataQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE = Include(Fields.all)
+        val DEFAULT_INCLUDE = Include(Fields)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
         val DEFAULT_WHERE: Where<DataField>? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.DataId.asc()))
@@ -821,7 +821,7 @@ private class DataQueryImpl(
 internal fun <T : DataEntity> ContentResolver.resolveDataEntity(
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
-    include: Include,
+    include: Include<DataField>,
     where: Where<DataField>?,
     orderBy: CompoundOrderBy,
     limit: Int,
