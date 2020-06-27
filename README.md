@@ -1,7 +1,6 @@
 ## TODO
 
-- Implement Contacts.search. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
-    - Where replaced with term: String.
+- Implement Contacts.generalQuery. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
     - include use ContactFields
     - orderBy use Contact(s)Fields
     - limit and offset supported

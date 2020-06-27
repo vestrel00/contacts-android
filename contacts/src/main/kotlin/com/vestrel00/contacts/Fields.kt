@@ -296,28 +296,32 @@ class ContactFields : FieldSet(UNKNOWN) {
 /**
  * Fields for Contacts table operations.
  */
-internal object ContactsFields : FieldSet(UNKNOWN) {
+object ContactsFields : FieldSet(UNKNOWN) {
 
+    @JvmField
     val Id = AbstractField(Contacts._ID, mimeType)
 
+    @JvmField
     val DisplayNamePrimary = AbstractField(Contacts.DISPLAY_NAME_PRIMARY, mimeType)
 
+    @JvmField
     val DisplayNameAlt = AbstractField(Contacts.DISPLAY_NAME_ALTERNATIVE, mimeType)
 
     // Do not include in fields.
-    val DisplayNameSource = AbstractField(Contacts.DISPLAY_NAME_SOURCE, mimeType)
+    internal val DisplayNameSource = AbstractField(Contacts.DISPLAY_NAME_SOURCE, mimeType)
 
     // Do not include in fields.
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    val NameRawContactId = AbstractField(Contacts.NAME_RAW_CONTACT_ID, mimeType)
+    internal val NameRawContactId = AbstractField(Contacts.NAME_RAW_CONTACT_ID, mimeType)
 
+    @JvmField
     val LastUpdatedTimestamp = AbstractField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
 
-    val PhotoUri = AbstractField(Contacts.PHOTO_URI, mimeType)
+    internal val PhotoUri = AbstractField(Contacts.PHOTO_URI, mimeType)
 
-    val PhotoThumbnailUri = AbstractField(Contacts.PHOTO_THUMBNAIL_URI, mimeType)
+    internal val PhotoThumbnailUri = AbstractField(Contacts.PHOTO_THUMBNAIL_URI, mimeType)
 
-    val PhotoFileId = AbstractField(Contacts.PHOTO_FILE_ID, mimeType)
+    internal val PhotoFileId = AbstractField(Contacts.PHOTO_FILE_ID, mimeType)
 
     override val fields = setOf(
         Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,

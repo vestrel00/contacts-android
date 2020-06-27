@@ -17,6 +17,10 @@ import kotlin.math.min
  * Queries the Contacts Provider tables and returns one or more contacts matching the search
  * criteria. All RawContacts of matching Contacts are included in the resulting Contacts objects.
  *
+ * This provides a great deal of granularity and customizations when providing matching criteria
+ * via [where] at the cost of higher CPU and (temporary) memory usage. For a more efficient (but not
+ * as flexible) and more native Contacts app like query, use [GeneralQuery].
+ *
  * To query specific types of data (e.g. emails, phones, etc), use DataQuery.
  *
  * ## Permissions
@@ -39,7 +43,7 @@ import kotlin.math.min
  * import com.vestrel00.contacts.Fields.Name
  * import com.vestrel00.contacts.Fields.Address
  *
- * val contacts : List<Contact> = query.
+ * val contacts : List<Contact> = query
  *      .accounts(account)
  *      .include(Name, Address)
  *      .where((Name.DisplayName startsWith "john") and (Email.Address endsWith "gmail"))
@@ -73,34 +77,32 @@ import kotlin.math.min
  *
  * ## Developer Notes
  *
- * Unlike DataQuery, this API is unable to use the ORDER BY, LIMIT, and OFFSET functions of a raw
- * database query. The Android contacts **data table** uses generic column names (e.g. data1, data2,
- * ...) using the column 'mimetype' to distinguish the type of data in that generic column. For
- * example, the column name of [NameFields.DisplayName] is the same as
- * [AddressFields.FormattedAddress], which is 'data1'. This means that if you order by the display
- * name, you are also ordering by the formatted address and all other columns whose value is
- * 'data1'. This API works around this limitation by performing the ordering, limiting, and
- * offsetting manually after the contacts have been retrieved before returning it to the consumer.
+ * Unlike [GeneralQuery] which only supports ordering by Contacts table columns, this API supports
+ * ordering by Data table columns. In effect, this is unable to use the ORDER BY, LIMIT, and OFFSET
+ * functions of a raw database query and custom ordering is required.
+ *
+ * The Android contacts **data table** uses generic column names (e.g. data1, data2, ...) using the
+ * column 'mimetype' to distinguish the type of data in that generic column. For example, the column
+ * name of [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is
+ * 'data1'. This means that if you order by the display  name, you are also ordering by the
+ * formatted address and all other columns whose value is 'data1'. This API works around this
+ * limitation by performing the ordering, limiting, and offsetting manually after
+ * **all matching** contacts have been retrieved before returning it to the consumer.
+ *
  * Note that there is no workaround for the [include] function because the [ContentResolver.query]
  * function only takes in an array of column names.
  *
- * Each row in the data table consists of a piece of contact data (e.g. a phone number), its
- * mimetype, and the associated contact id. A row does not contain all of the data for a contact.
- * A contact in the **data table** may have 1 or more entries. Combined with generic column names,
- * this makes using the ORDER BY, LIMIT, and OFFSET functions of a raw database query impossible.
- *
  * With that said, Kotlin's Flow or reactive frameworks like RxJava and Java 8 Streams cannot really
  * be supported. We cannot emit complete contact instances and still honor ORDER BY, LIMIT, and
- * OFFSET functions. Although, it is possible for DataQuery as queries are limited to a single
- * mimetype.
+ * OFFSET functions. Although, it is possible for [GeneralQuery] and DataQuery.
  */
 interface Query {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts or blank
-     * Contacts ([Contact.isBlank]). Otherwise, blanks will not be included. This flag is set to
-     * true by default, which results in more database queries so setting this to false will
-     * increase performance, especially for large Contacts databases.
+     * Contacts ([Contact.isBlank]). Otherwise, blanks are not be included. This flag is set to true
+     * by default, which results in more database queries so setting this to false will increase
+     * performance, especially for large Contacts databases.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
@@ -111,7 +113,7 @@ interface Query {
      *
      * 1. Contact with RawContact(s) with no Data row(s).
      *     - In this case, the Contact is blank as well as its RawContact(s).
-     * 2. Contact that has RawContact with Data row(s) and a RawContact with no Data row.
+     * 2. Contact that has a RawContact with Data row(s) and a RawContact with no Data rows.
      *     - In this case, the Contact and the RawContact with Data row(s) are not blank but the
      *     RawContact with no Data row is blank.
      */
@@ -164,7 +166,7 @@ interface Query {
      * ## IMPORTANT
      *
      * Do not perform updates on contacts returned by a query where all fields are not included as
-     * it will result in data loss!
+     * it may result in data loss!
      */
     fun include(vararg fields: Field): Query
 
@@ -179,8 +181,8 @@ interface Query {
     fun include(fields: Sequence<Field>): Query
 
     /**
-     * Filters the returned [Contact]s matching the criteria defined by the [where]. If not
-     * specified or null, then all [Contact]s are returned, limited by [limit].
+     * Filters the [Contact]s matching the criteria defined by the [where]. If not specified or
+     * null, then all [Contact]s are returned, limited by [limit].
      *
      * Use [Fields] to construct the [where].
      *
