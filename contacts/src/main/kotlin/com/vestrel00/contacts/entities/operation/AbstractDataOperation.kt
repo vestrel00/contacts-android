@@ -221,7 +221,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      */
     private fun updateDataRow(entity: T, dataRowId: Long): ContentProviderOperation {
         val operation = newUpdate(TABLE)
-            .withSelection(Fields.Id equalTo dataRowId)
+            .withSelection(Fields.DataId equalTo dataRowId)
 
         setData(entity) { field, dataValue ->
             // Intentionally allow to update values to null.
@@ -245,7 +245,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
      */
     protected fun deleteDataRowWithId(dataRowId: Long): ContentProviderOperation =
         newDelete(TABLE)
-            .withSelection(Fields.Id equalTo dataRowId)
+            .withSelection(Fields.DataId equalTo dataRowId)
             .build()
 
     /**
@@ -255,7 +255,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
         rawContactId: Long, processCursor: (Cursor) -> T
     ) = query(
         TABLE,
-        Include(Fields.Id),
+        Include(Fields.DataId),
         selection(rawContactId),
         processCursor = processCursor
     )

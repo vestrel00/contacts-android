@@ -71,6 +71,9 @@ object Fields : FieldSet<AbstractDataField>() {
     val Contact = JoinedContactsFields()
 
     @JvmField
+    val DataId = DataField(Data._ID)
+    
+    @JvmField
     val Email = EmailFields()
 
     @JvmField
@@ -78,9 +81,6 @@ object Fields : FieldSet<AbstractDataField>() {
 
     @JvmField
     val GroupMembership = GroupMembershipFields()
-
-    // TODO rename to DataId and make public
-    internal val Id = DataField(Data._ID)
 
     @JvmField
     val Im = ImFields()
@@ -159,10 +159,10 @@ object Fields : FieldSet<AbstractDataField>() {
     override val all = mutableSetOf<AbstractDataField>().apply {
         addAll(Address.all)
         addAll(Contact.all)
+        add(DataId)
         addAll(Email.all)
         addAll(Event.all)
         addAll(GroupMembership.all)
-        add(Id)
         addAll(Im.all)
         add(IsPrimary)
         add(IsSuperPrimary)
@@ -203,7 +203,7 @@ val F = Fields
 
 object RequiredDataFields : FieldSet<AbstractDataField>() {
     override val all = setOf(
-        Fields.Id,
+        Fields.DataId,
         Fields.RawContact.Id,
         Fields.Contact.Id,
         Fields.MimeType,
@@ -220,10 +220,10 @@ object DataFieldsForMatching : FieldSet<AbstractDataField>() {
                 .minus(Fields.Contact.Id)
                 .minus(Fields.Contact.LastUpdatedTimestamp)
         )
+        // add(Fields.DataId)
         addAll(Fields.Email.all.asSequence().minus(Fields.Email.Type))
         addAll(Fields.Event.all.asSequence().minus(Fields.Event.Type))
         // addAll(Fields.GroupMembership.all)
-        // add(Fields.Id)
         addAll(Fields.Im.all.asSequence().minus(Fields.Im.Protocol))
         // add(Fields.IsPrimary)
         // add(Fields.IsSuperPrimary)

@@ -361,7 +361,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
 
     return context.contentResolver.query(
         Table.DATA,
-        Include(Fields.Id),
+        Include(Fields.DataId),
         (Fields.RawContact.Id equalTo nameRawContactId)
                 and (Fields.MimeType equalTo MimeType.NAME)
     ) {
@@ -419,7 +419,7 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
 private fun nameWithId(context: Context, nameRowId: Long): Name? = context.contentResolver.query(
     Table.DATA,
     Include(Fields.Required),
-    Fields.Id equalTo nameRowId
+    Fields.DataId equalTo nameRowId
 ) {
     it.getNextOrNull { it.nameMapper().value }
 }

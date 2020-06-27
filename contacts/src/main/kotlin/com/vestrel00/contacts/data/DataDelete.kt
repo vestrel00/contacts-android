@@ -158,13 +158,13 @@ private class DataDeleteImpl(
 
 private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean = applyBatch(
     newDelete(Table.DATA)
-        .withSelection(Fields.Id equalTo dataId)
+        .withSelection(Fields.DataId equalTo dataId)
         .build()
 ) != null
 
 private fun ContentResolver.deleteDataRowsWithIds(dataIds: Collection<Long>): Boolean = applyBatch(
     newDelete(Table.DATA)
-        .withSelection(Fields.Id `in` dataIds)
+        .withSelection(Fields.DataId `in` dataIds)
         .build()
 ) != null
 

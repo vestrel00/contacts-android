@@ -6,7 +6,7 @@ import com.vestrel00.contacts.Fields
 internal open class DataCursor(protected val cursor: Cursor) : DataIdCursor {
 
     override val dataId: Long?
-        get() = cursor.getLong(Fields.Id)
+        get() = cursor.getLong(Fields.DataId)
 
     override val rawContactId: Long?
         get() = cursor.getLong(Fields.RawContact.Id)

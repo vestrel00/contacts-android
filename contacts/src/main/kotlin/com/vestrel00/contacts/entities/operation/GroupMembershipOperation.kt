@@ -118,6 +118,6 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
     } ?: emptyList()
 
     private companion object {
-        private val INCLUDE = Include(Fields.Id, Fields.GroupMembership.GroupId)
+        private val INCLUDE = Include(Fields.DataId, Fields.GroupMembership.GroupId)
     }
 }

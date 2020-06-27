@@ -136,7 +136,7 @@ private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperat
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
 private fun setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation = newUpdate(TABLE)
-    .withSelection(Fields.Id equalTo dataId)
+    .withSelection(Fields.DataId equalTo dataId)
     .withValue(Fields.IsPrimary, 1)
     .withValue(Fields.IsSuperPrimary, 1)
     .build()

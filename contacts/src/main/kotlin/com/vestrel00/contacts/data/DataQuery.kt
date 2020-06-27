@@ -811,7 +811,7 @@ private class DataQueryImpl(
         val DEFAULT_INCLUDE = Include(Fields.all)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
         val DEFAULT_WHERE: Where? = null
-        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Id.asc()))
+        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.DataId.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
     }
