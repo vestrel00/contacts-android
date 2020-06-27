@@ -145,7 +145,8 @@ interface Query {
     fun accounts(accounts: Sequence<Account?>): Query
 
     /**
-     * Includes the given set of [fields] from [Fields] in the resulting contact object(s).
+     * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
+     * object(s).
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
      * fields will be included in addition to [Fields.Required], which are always included.
@@ -168,17 +169,17 @@ interface Query {
      * Do not perform updates on contacts returned by a query where all fields are not included as
      * it may result in data loss!
      */
-    fun include(vararg fields: Field): Query
+    fun include(vararg fields: AbstractDataField): Query
 
     /**
      * See [Query.include].
      */
-    fun include(fields: Collection<Field>): Query
+    fun include(fields: Collection<AbstractDataField>): Query
 
     /**
      * See [Query.include].
      */
-    fun include(fields: Sequence<Field>): Query
+    fun include(fields: Sequence<AbstractDataField>): Query
 
     /**
      * Filters the [Contact]s matching the criteria defined by the [where]. If not specified or
@@ -360,11 +361,11 @@ private class QueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: Field) = include(fields.asSequence())
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<Field>) = include(fields.asSequence())
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<Field>): Query = apply {
+    override fun include(fields: Sequence<AbstractDataField>): Query = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
