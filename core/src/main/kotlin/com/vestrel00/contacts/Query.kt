@@ -169,17 +169,17 @@ interface Query {
      * Do not perform updates on contacts returned by a query where all fields are not included as
      * it may result in data loss!
      */
-    fun include(vararg fields: AbstractDataField): Query
+    fun include(vararg fields: DataField): Query
 
     /**
      * See [Query.include].
      */
-    fun include(fields: Collection<AbstractDataField>): Query
+    fun include(fields: Collection<DataField>): Query
 
     /**
      * See [Query.include].
      */
-    fun include(fields: Sequence<AbstractDataField>): Query
+    fun include(fields: Sequence<DataField>): Query
 
     /**
      * Filters the [Contact]s matching the criteria defined by the [where]. If not specified or
@@ -201,7 +201,7 @@ interface Query {
      *
      * See [includeBlanks] for more info about blank Contacts and RawContacts.
      */
-    fun where(where: Where?): Query
+    fun where(where: Where<DataField>?): Query
 
     /**
      * Orders the returned [Contact]s using one or more [orderBy]s. If not specified, then contacts
@@ -329,9 +329,9 @@ private class QueryImpl(
     private val permissions: ContactsPermissions,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
-    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
+    private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE,
-    private var where: Where? = DEFAULT_WHERE,
+    private var where: Where<DataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
@@ -361,11 +361,11 @@ private class QueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+    override fun include(vararg fields: DataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+    override fun include(fields: Collection<DataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<AbstractDataField>): Query = apply {
+    override fun include(fields: Sequence<DataField>): Query = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
@@ -373,7 +373,7 @@ private class QueryImpl(
         }
     }
 
-    override fun where(where: Where?): Query = apply {
+    override fun where(where: Where<DataField>?): Query = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
@@ -429,10 +429,10 @@ private class QueryImpl(
 
     private companion object {
         const val DEFAULT_INCLUDE_BLANKS = true
-        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
+        val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_INCLUDE = Include(Fields.all)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
-        val DEFAULT_WHERE: Where? = null
+        val DEFAULT_WHERE: Where<DataField>? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Contact.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -441,9 +441,9 @@ private class QueryImpl(
 
 private fun ContentResolver.resolve(
     includeBlanks: Boolean,
-    rawContactsWhere: Where?,
+    rawContactsWhere: Where<RawContactsField>?,
     include: Include,
-    where: Where?,
+    where: Where<DataField>?,
     orderBy: CompoundOrderBy,
     limit: Int,
     offset: Int,
@@ -471,7 +471,7 @@ private fun ContentResolver.resolve(
 
     // Formulate the where clause that will be used for Data table, and possible Contacts and
     // RawContacts table queries.
-    val whereMatching: Where? = if (where != null) {
+    val whereMatching: Where<DataField>? = if (where != null) {
         if (contactIdsMatchingSelectedAccounts != null) {
             where and (Fields.Contact.Id `in` contactIdsMatchingSelectedAccounts)
         } else {
@@ -545,7 +545,7 @@ private fun ContentResolver.resolve(
 }
 
 private fun ContentResolver.findContactIdsInRawContactsTable(
-    rawContactsWhere: Where?, cancel: () -> Boolean, suppressDbExceptions: Boolean
+    rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
 ): Set<Long> = query(
     Table.RAW_CONTACTS,
     Include(RawContactsFields.ContactId),
@@ -566,7 +566,7 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
 } ?: emptySet()
 
 private fun ContentResolver.findContactIdsInDataTable(
-    where: Where?, cancel: () -> Boolean
+    where: Where<DataField>?, cancel: () -> Boolean
 ): Set<Long> = query(
     Table.DATA, Include(Fields.Contact.Id), where
 ) {

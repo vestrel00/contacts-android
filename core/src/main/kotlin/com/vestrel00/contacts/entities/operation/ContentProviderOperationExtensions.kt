@@ -12,7 +12,7 @@ internal fun newUpdate(table: Table): Builder = ContentProviderOperation.newUpda
 
 internal fun newDelete(table: Table): Builder = ContentProviderOperation.newDelete(table.uri)
 
-internal fun Builder.withSelection(where: Where?): Builder =
+internal fun Builder.withSelection(where: Where<*>?): Builder =
     withSelection(where?.toString(), null)
 
 internal fun Builder.withValue(field: Field, value: Any?): Builder =

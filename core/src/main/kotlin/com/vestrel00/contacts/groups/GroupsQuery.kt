@@ -9,7 +9,7 @@ import com.vestrel00.contacts.entities.mapper.groupMapper
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
-import com.vestrel00.contacts.util.toRawContactsWhere
+import com.vestrel00.contacts.util.toGroupsWhere
 
 /**
  * Queries on the groups table.
@@ -73,7 +73,7 @@ interface GroupsQuery {
      *
      * Use [GroupsFields] to construct the [where].
      */
-    fun where(where: Where?): GroupsQuery
+    fun where(where: Where<GroupsField>?): GroupsQuery
 
     /**
      * Orders the returned [Group]s using one or more [orderBy]s. If not specified, then groups
@@ -176,8 +176,10 @@ private class GroupsQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
 
-    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var where: Where? = DEFAULT_WHERE,
+    // The Groups table has access to the same sync columns as the RawContacts table, which provides
+    // the Account name and type.
+    private var rawContactsWhere: Where<GroupsField>? = DEFAULT_RAW_CONTACTS_WHERE,
+    private var where: Where<GroupsField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
@@ -198,10 +200,10 @@ private class GroupsQueryImpl(
     override fun accounts(accounts: Collection<Account>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account>): GroupsQuery = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toGroupsWhere()
     }
 
-    override fun where(where: Where?): GroupsQuery = apply {
+    override fun where(where: Where<GroupsField>?): GroupsQuery = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
@@ -246,9 +248,9 @@ private class GroupsQueryImpl(
         }
 
     companion object {
-        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
+        val DEFAULT_RAW_CONTACTS_WHERE: Where<GroupsField>? = null
         val INCLUDE = Include(GroupsFields)
-        val DEFAULT_WHERE: Where? = null
+        val DEFAULT_WHERE: Where<GroupsField>? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(GroupsFields.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -256,9 +258,9 @@ private class GroupsQueryImpl(
 }
 
 private fun ContentResolver.resolve(
-    rawContactsWhere: Where?,
+    rawContactsWhere: Where<GroupsField>?,
     include: Include,
-    where: Where?,
+    where: Where<GroupsField>?,
     orderBy: CompoundOrderBy,
     limit: Int,
     offset: Int,

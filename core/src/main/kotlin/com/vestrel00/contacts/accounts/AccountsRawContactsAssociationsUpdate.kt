@@ -588,7 +588,7 @@ private fun ContentResolver.updateRawContactsAccount(
  * app.
  */
 private fun ContentResolver.updateRawContactsAccount(
-    account: Account?, dataWhere: Where?, rawContactsWhere: Where
+    account: Account?, dataWhere: Where<DataField>?, rawContactsWhere: Where<RawContactsField>
 ): Boolean = applyBatch(
     arrayListOf<ContentProviderOperation>().apply {
         // First delete existing group memberships.
@@ -609,7 +609,7 @@ private fun ContentResolver.updateRawContactsAccount(
     }
 ) != null
 
-private fun ContentResolver.rawContactIdsWhere(where: Where?):
+private fun ContentResolver.rawContactIdsWhere(where: Where<RawContactsField>?):
         Set<Long> = query(Table.RAW_CONTACTS, Include(RawContactsFields.Id), where) {
     val rawContactIds = mutableSetOf<Long>()
     val rawContactsCursor = it.rawContactsCursor()

@@ -100,17 +100,17 @@ interface ProfileQuery {
      * Do not perform updates on contacts returned by a query where all fields are not included as
      * it will result in data loss!
      */
-    fun include(vararg fields: AbstractDataField): ProfileQuery
+    fun include(vararg fields: DataField): ProfileQuery
 
     /**
      * See [ProfileQuery.include].
      */
-    fun include(fields: Collection<AbstractDataField>): ProfileQuery
+    fun include(fields: Collection<DataField>): ProfileQuery
 
     /**
      * See [ProfileQuery.include].
      */
-    fun include(fields: Sequence<AbstractDataField>): ProfileQuery
+    fun include(fields: Sequence<DataField>): ProfileQuery
 
     /**
      * Returns the profile [Contact], if available.
@@ -161,7 +161,7 @@ private class ProfileQueryImpl(
     private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
 
-    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
+    private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE
 ) : ProfileQuery {
 
@@ -180,11 +180,11 @@ private class ProfileQueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+    override fun include(vararg fields: DataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+    override fun include(fields: Collection<DataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<AbstractDataField>): ProfileQuery = apply {
+    override fun include(fields: Sequence<DataField>): ProfileQuery = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
@@ -203,14 +203,14 @@ private class ProfileQueryImpl(
     }
 
     private companion object {
-        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
+        val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_INCLUDE = Include(Fields.all)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
     }
 }
 
 private fun ContentResolver.resolve(
-    rawContactsWhere: Where?, include: Include, cancel: () -> Boolean
+    rawContactsWhere: Where<RawContactsField>?, include: Include, cancel: () -> Boolean
 ): Contact? {
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
@@ -238,7 +238,7 @@ private fun ContentResolver.resolve(
 }
 
 private fun ContentResolver.rawContactIds(
-    rawContactsWhere: Where?, cancel: () -> Boolean
+    rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean
 ): Set<String> = query(
     ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
     Include(RawContactsFields.Id),

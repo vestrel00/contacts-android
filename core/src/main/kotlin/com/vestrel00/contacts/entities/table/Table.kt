@@ -5,6 +5,8 @@ import android.provider.ContactsContract
 
 /**
  * Defines all of the main [ContactsContract] tables.
+ *
+ * TODO Add field type to this and refactor ContentResolverExtensions.
  */
 internal enum class Table(val uri: Uri) {
 

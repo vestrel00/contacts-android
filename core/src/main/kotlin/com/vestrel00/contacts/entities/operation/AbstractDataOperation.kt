@@ -22,8 +22,8 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     /**
      * There [Where] clause used as the selection for queries, updates, and deletes.
      */
-    protected fun selection(rawContactId: Long): Where =
-        (Fields.MimeType equalTo mimeType.value) and (Fields.RawContact.Id equalTo rawContactId)
+    protected fun selection(rawContactId: Long): Where<DataField> =
+        (Fields.MimeType equalTo mimeType) and (Fields.RawContact.Id equalTo rawContactId)
 
     /**
      * Sets the [data] values into the operation via the provided [setValue] function.

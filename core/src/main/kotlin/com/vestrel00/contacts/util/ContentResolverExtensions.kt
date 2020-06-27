@@ -18,7 +18,7 @@ import com.vestrel00.contacts.entities.table.Table
 // time transactions (not in loops).
 
 internal fun <T> ContentResolver.query(
-    table: Table, include: Include, where: Where?,
+    table: Table, include: Include, where: Where<*>?,
 
     /**
      * The sort order, which may also be appended with the LIMIT and OFFSET.
@@ -39,7 +39,7 @@ internal fun <T> ContentResolver.query(
 
 @SuppressLint("Recycle")
 internal fun <T> ContentResolver.query(
-    contentUri: Uri, include: Include, where: Where?,
+    contentUri: Uri, include: Include, where: Where<*>?,
 
     /**
      * The sort order, which may also be appended with the LIMIT and OFFSET.

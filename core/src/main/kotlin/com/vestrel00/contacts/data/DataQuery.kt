@@ -111,17 +111,17 @@ interface DataQuery {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      */
-    fun include(vararg fields: AbstractDataField): DataQuery
+    fun include(vararg fields: DataField): DataQuery
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Collection<AbstractDataField>): DataQuery
+    fun include(fields: Collection<DataField>): DataQuery
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Sequence<AbstractDataField>): DataQuery
+    fun include(fields: Sequence<DataField>): DataQuery
 
     /**
      * Filters the returned data matching the criteria defined by the [where].
@@ -133,7 +133,7 @@ interface DataQuery {
      *
      * Use [Fields] to construct the [where].
      */
-    fun where(where: Where?): DataQuery
+    fun where(where: Where<DataField>?): DataQuery
 
     /**
      * Orders the returned data using one or more [orderBy]s. If not specified, then data is ordered
@@ -651,9 +651,9 @@ private class DataQueryImpl(
     private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
 
-    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
+    private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include = DEFAULT_INCLUDE,
-    private var where: Where? = DEFAULT_WHERE,
+    private var where: Where<DataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
@@ -678,11 +678,11 @@ private class DataQueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+    override fun include(vararg fields: DataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+    override fun include(fields: Collection<DataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<AbstractDataField>): DataQuery = apply {
+    override fun include(fields: Sequence<DataField>): DataQuery = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
@@ -690,7 +690,7 @@ private class DataQueryImpl(
         }
     }
 
-    override fun where(where: Where?): DataQuery = apply {
+    override fun where(where: Where<DataField>?): DataQuery = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
@@ -808,10 +808,10 @@ private class DataQueryImpl(
     }
 
     private companion object {
-        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
+        val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_INCLUDE = Include(Fields.all)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
-        val DEFAULT_WHERE: Where? = null
+        val DEFAULT_WHERE: Where<DataField>? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.DataId.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -820,9 +820,9 @@ private class DataQueryImpl(
 
 internal fun <T : DataEntity> ContentResolver.resolveDataEntity(
     mimeType: MimeType,
-    rawContactsWhere: Where?,
+    rawContactsWhere: Where<RawContactsField>?,
     include: Include,
-    where: Where?,
+    where: Where<DataField>?,
     orderBy: CompoundOrderBy,
     limit: Int,
     offset: Int,
@@ -864,7 +864,7 @@ internal fun <T : DataEntity> ContentResolver.resolveDataEntity(
 }
 
 private fun ContentResolver.findRawContactIdsInRawContactsTable(
-    rawContactsWhere: Where, cancel: () -> Boolean
+    rawContactsWhere: Where<RawContactsField>, cancel: () -> Boolean
 ): Set<Long> =
     query(
         Table.RAW_CONTACTS, Include(RawContactsFields.Id), rawContactsWhere
@@ -883,7 +883,7 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
     } ?: emptySet()
 
 // See the developer notes in the DataQuery interface documentation.
-private fun MimeType.dataWhere(): Where? = when (this) {
+private fun MimeType.dataWhere(): Where<DataField>? = when (this) {
     MimeType.PHONE, MimeType.EMAIL, MimeType.ADDRESS -> null
     else -> Fields.MimeType equalTo this
 }

@@ -161,17 +161,17 @@ interface GeneralQuery {
      * Do not perform updates on contacts returned by a query where all fields are not included as
      * it may result in data loss!
      */
-    fun include(vararg fields: AbstractDataField): GeneralQuery
+    fun include(vararg fields: DataField): GeneralQuery
 
     /**
      * See [GeneralQuery.include].
      */
-    fun include(fields: Collection<AbstractDataField>): GeneralQuery
+    fun include(fields: Collection<DataField>): GeneralQuery
 
     /**
      * See [GeneralQuery.include].
      */
-    fun include(fields: Sequence<AbstractDataField>): GeneralQuery
+    fun include(fields: Sequence<DataField>): GeneralQuery
 
     /**
      * Filters the [Contact]s matching the criteria defined by the [where]. If not specified or

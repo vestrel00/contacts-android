@@ -75,7 +75,7 @@ interface AccountsRawContactsQuery {
      *
      * Use [RawContactsFields] to construct the [where].
      */
-    fun where(where: Where?): AccountsRawContactsQuery
+    fun where(where: Where<RawContactsField>?): AccountsRawContactsQuery
 
     /**
      * Orders the returned [BlankRawContact]s using one or more [orderBy]s. If not specified, then
@@ -179,8 +179,8 @@ private class AccountsRawContactsQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: AccountsPermissions,
 
-    private var rawContactsWhere: Where? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var where: Where? = DEFAULT_WHERE,
+    private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
+    private var where: Where<RawContactsField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
@@ -204,7 +204,7 @@ private class AccountsRawContactsQueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun where(where: Where?): AccountsRawContactsQuery = apply {
+    override fun where(where: Where<RawContactsField>?): AccountsRawContactsQuery = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
@@ -249,9 +249,9 @@ private class AccountsRawContactsQueryImpl(
         }
 
     private companion object {
-        val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
+        val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val INCLUDE = Include(RawContactsFields)
-        val DEFAULT_WHERE: Where? = null
+        val DEFAULT_WHERE: Where<RawContactsField>? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(RawContactsFields.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -259,9 +259,9 @@ private class AccountsRawContactsQueryImpl(
 }
 
 private fun ContentResolver.resolve(
-    rawContactsWhere: Where?,
+    rawContactsWhere: Where<RawContactsField>?,
     include: Include,
-    where: Where?,
+    where: Where<RawContactsField>?,
     orderBy: CompoundOrderBy,
     limit: Int,
     offset: Int,

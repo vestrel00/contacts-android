@@ -96,7 +96,7 @@ class ContactsActivity : BaseActivity() {
         queryJob?.cancel()
         queryJob = launch {
             val queryText = queryText
-            val where: Where? = if (queryText.isEmpty()) {
+            val where = if (queryText.isEmpty()) {
                 null
             } else {
                 SEARCH_FIELDS whereOr { it contains queryText }

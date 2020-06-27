@@ -41,20 +41,48 @@ internal fun Account.nullIfNotInSystem(context: Context): Account? =
 internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
     if (accounts.contains(this)) this else null
 
+/*
+ * A note about toRawContactsWhere and toGroupsWhere.
+ *
+ * Yes, I know that the column names of RawContactsFields and GroupsFields AccountName and
+ * AccountType are the same. Two different functions exist that have outputs with the same
+ * underlying data for adding type to the Where.
+ *
+ * - Output of toRawContactsWhere may be combined with other RawContactsFields.
+ * - Output of toGroupsWhere may be combined with other GroupsFields.
+ */
+
 /**
- * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This may be used
- * for queries in the RawContacts and Groups tables.
+ * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
+ * in RawContacts table queries.
  *
  * If the sequence is empty, returns null.
  */
-internal fun Sequence<Account?>.toRawContactsWhere(): Where? = distinct() // get rid of duplicates
+internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? = distinct()
     .whereOr { account ->
         if (account != null) {
-            // RawContactsFields and GroupsFields AccountName and AccountType are the same.
             (RawContactsFields.AccountName equalToIgnoreCase account.name) and
                     (RawContactsFields.AccountType equalToIgnoreCase account.type)
         } else {
             RawContactsFields.AccountName.isNull() and
                     RawContactsFields.AccountType.isNull()
+        }
+    }
+
+/**
+ * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
+ * in Groups table queries.
+ *
+ * If the sequence is empty, returns null.
+ */
+internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct()
+    .whereOr { account ->
+        if (account != null) {
+            // RawContactsFields and GroupsFields AccountName and AccountType are the same.
+            (GroupsFields.AccountName equalToIgnoreCase account.name) and
+                    (GroupsFields.AccountType equalToIgnoreCase account.type)
+        } else {
+            GroupsFields.AccountName.isNull() and
+                    GroupsFields.AccountType.isNull()
         }
     }
