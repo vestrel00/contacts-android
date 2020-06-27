@@ -100,7 +100,8 @@ interface DataQuery {
     fun accounts(accounts: Sequence<Account?>): DataQuery
 
     /**
-     * Includes the given set of [fields] from [Fields] in the resulting data object(s).
+     * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
+     * object.
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
      * fields will be included in addition to [Fields.Required], which are always included.
@@ -110,17 +111,17 @@ interface DataQuery {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      */
-    fun include(vararg fields: Field): DataQuery
+    fun include(vararg fields: AbstractDataField): DataQuery
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Collection<Field>): DataQuery
+    fun include(fields: Collection<AbstractDataField>): DataQuery
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Sequence<Field>): DataQuery
+    fun include(fields: Sequence<AbstractDataField>): DataQuery
 
     /**
      * Filters the returned data matching the criteria defined by the [where].
@@ -677,11 +678,11 @@ private class DataQueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: Field) = include(fields.asSequence())
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<Field>) = include(fields.asSequence())
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<Field>): DataQuery = apply {
+    override fun include(fields: Sequence<AbstractDataField>): DataQuery = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
