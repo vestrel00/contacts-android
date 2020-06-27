@@ -8,41 +8,41 @@ import com.vestrel00.contacts.entities.*
 // region Contact
 
 /**
- * Sequence of addresses from all [rawContacts] ordered by the [Address.formattedAddress].
+ * Sequence of addresses from all [rawContacts] ordered by the [Address.id].
  */
 fun Contact.addresses(): Sequence<Address> = rawContacts
     .asSequence()
     .flatMap { it.addresses.asSequence() }
-    .sortedBy { it.formattedAddress }
+    .sortedBy { it.id }
 
 /**
- * List of addresses from all [rawContacts] ordered by the [Address.formattedAddress].
+ * List of addresses from all [rawContacts] ordered by the [Address.id].
  */
 fun Contact.addressList(): List<Address> = addresses().toList()
 
 /**
- * Sequence of emails from all [rawContacts] ordered by the [Email.address].
+ * Sequence of emails from all [rawContacts] ordered by the [Email.id].
  */
 fun Contact.emails(): Sequence<Email> = rawContacts
     .asSequence()
     .flatMap { it.emails.asSequence() }
-    .sortedBy { it.address }
+    .sortedBy { it.id }
 
 /**
- * List of emails from all [rawContacts] ordered by the [Email.address].
+ * List of emails from all [rawContacts] ordered by the [Email.id].
  */
 fun Contact.emailList(): List<Email> = emails().toList()
 
 /**
- * Sequence of events from all [rawContacts] ordered by the [Event.date].
+ * Sequence of events from all [rawContacts] ordered by the [Event.id].
  */
 fun Contact.events(): Sequence<Event> = rawContacts
     .asSequence()
     .flatMap { it.events.asSequence() }
-    .sortedBy { it.date }
+    .sortedBy { it.id }
 
 /**
- * List of events from all [rawContacts] ordered by the [Event.date].
+ * List of events from all [rawContacts] ordered by the [Event.id].
  */
 fun Contact.eventList(): List<Event> = events().toList()
 
@@ -51,57 +51,57 @@ fun Contact.eventList(): List<Event> = events().toList()
 // with more than one RawContact.
 
 /**
- * Sequence of Ims from all [rawContacts] ordered by the [Im.data].
+ * Sequence of Ims from all [rawContacts] ordered by the [Im.id].
  */
 fun Contact.ims(): Sequence<Im> = rawContacts
     .asSequence()
     .flatMap { it.ims.asSequence() }
-    .sortedBy { it.data }
+    .sortedBy { it.id }
 
 /**
- * List of Ims from all [rawContacts] ordered by the [Im.data].
+ * List of Ims from all [rawContacts] ordered by the [Im.id].
  */
 fun Contact.imList(): List<Im> = ims().toList()
 
 /**
- * Sequence of names from all [rawContacts] ordered by the [Name.displayName].
+ * Sequence of names from all [rawContacts] ordered by the [Name.id].
  */
 fun Contact.names(): Sequence<Name> = rawContacts
     .asSequence()
     .map { it.name }
     .filterNotNull()
-    .sortedBy { it.displayName }
+    .sortedBy { it.id }
 
 /**
- * List of names from all [rawContacts] ordered by the [Name.displayName].
+ * List of names from all [rawContacts] ordered by the [Name.id].
  */
 fun Contact.nameList(): List<Name> = names().toList()
 
 /**
- * Sequence of nicknames from all [rawContacts] ordered by the [Nickname.name].
+ * Sequence of nicknames from all [rawContacts] ordered by the [Nickname.id].
  */
 fun Contact.nicknames(): Sequence<Nickname> = rawContacts
     .asSequence()
     .map { it.nickname }
     .filterNotNull()
-    .sortedBy { it.name }
+    .sortedBy { it.id }
 
 /**
- * List of nicknames from all [rawContacts] ordered by the [Nickname.name].
+ * List of nicknames from all [rawContacts] ordered by the [Nickname.id].
  */
 fun Contact.nicknameList(): List<Nickname> = nicknames().toList()
 
 /**
- * Sequence of notes from all [rawContacts] ordered by the [Note.note].
+ * Sequence of notes from all [rawContacts] ordered by the [Note.id].
  */
 fun Contact.notes(): Sequence<Note> = rawContacts
     .asSequence()
     .map { it.note }
     .filterNotNull()
-    .sortedBy { it.note }
+    .sortedBy { it.id }
 
 /**
- * List of notes from all [rawContacts] ordered by the [Note.note].
+ * List of notes from all [rawContacts] ordered by the [Note.id].
  */
 fun Contact.noteList(): List<Note> = notes().toList()
 
@@ -109,29 +109,29 @@ fun Contact.noteList(): List<Note> = notes().toList()
 // Options.
 
 /**
- * Sequence of organizations from all [rawContacts] ordered by the [Organization.company].
+ * Sequence of organizations from all [rawContacts] ordered by the [Organization.id].
  */
 fun Contact.organizations(): Sequence<Organization> = rawContacts
     .asSequence()
     .map { it.organization }
     .filterNotNull()
-    .sortedBy { it.company }
+    .sortedBy { it.id }
 
 /**
- * List of organizations from all [rawContacts] ordered by the [Organization.company].
+ * List of organizations from all [rawContacts] ordered by the [Organization.id].
  */
 fun Contact.organizationList(): List<Organization> = organizations().toList()
 
 /**
- * Sequence of phones from all [rawContacts] ordered by the [Phone.number].
+ * Sequence of phones from all [rawContacts] ordered by the [Phone.id].
  */
 fun Contact.phones(): Sequence<Phone> = rawContacts
     .asSequence()
     .flatMap { it.phones.asSequence() }
-    .sortedBy { it.number }
+    .sortedBy { it.id }
 
 /**
- * List of phones from all [rawContacts] ordered by the [Phone.number].
+ * List of phones from all [rawContacts] ordered by the [Phone.id].
  */
 fun Contact.phoneList(): List<Phone> = phones().toList()
 
@@ -139,42 +139,42 @@ fun Contact.phoneList(): List<Phone> = phones().toList()
 // Photos.
 
 /**
- * Sequence of relations from all [rawContacts] ordered by the [Relation.name].
+ * Sequence of relations from all [rawContacts] ordered by the [Relation.id].
  */
 fun Contact.relations(): Sequence<Relation> = rawContacts
     .asSequence()
     .flatMap { it.relations.asSequence() }
-    .sortedBy { it.name }
+    .sortedBy { it.id }
 
 /**
- * List of relations from all [rawContacts] ordered by the [Relation.name].
+ * List of relations from all [rawContacts] ordered by the [Relation.id].
  */
 fun Contact.relationList(): List<Relation> = relations().toList()
 
 /**
- * Sequence of SIP addresses from all [rawContacts] ordered by the [SipAddress.sipAddress].
+ * Sequence of SIP addresses from all [rawContacts] ordered by the [SipAddress.id].
  */
 fun Contact.sipAddresses(): Sequence<SipAddress> = rawContacts
     .asSequence()
     .map { it.sipAddress }
     .filterNotNull()
-    .sortedBy { it.sipAddress }
+    .sortedBy { it.id }
 
 /**
- * List of SIP addresses from all [rawContacts] ordered by the [SipAddress.sipAddress].
+ * List of SIP addresses from all [rawContacts] ordered by the [SipAddress.id].
  */
 fun Contact.sipAddressList(): List<SipAddress> = sipAddresses().toList()
 
 /**
- * Sequence of websites from all [rawContacts] ordered by the [Website.url].
+ * Sequence of websites from all [rawContacts] ordered by the [Website.id].
  */
 fun Contact.websites(): Sequence<Website> = rawContacts
     .asSequence()
     .flatMap { it.websites.asSequence() }
-    .sortedBy { it.url }
+    .sortedBy { it.id }
 
 /**
- * List of websites from all [rawContacts] ordered by the [SipAddress.sipAddress].
+ * List of websites from all [rawContacts] ordered by the [Website.id].
  */
 fun Contact.websiteList(): List<Website> = websites().toList()
 
@@ -183,15 +183,15 @@ fun Contact.websiteList(): List<Website> = websites().toList()
 // region MutableContact
 
 /**
- * Sequence of addresses from all [rawContacts] ordered by the [MutableAddress.formattedAddress].
+ * Sequence of addresses from all [rawContacts] ordered by the [MutableAddress.id].
  */
 fun MutableContact.addresses(): Sequence<MutableAddress> = rawContacts
     .asSequence()
     .flatMap { it.addresses.asSequence() }
-    .sortedBy { it.formattedAddress }
+    .sortedBy { it.id }
 
 /**
- * List of addresses from all [rawContacts] ordered by the [MutableAddress.formattedAddress].
+ * List of addresses from all [rawContacts] ordered by the [MutableAddress.id].
  */
 fun MutableContact.addressList(): List<MutableAddress> = addresses().toList()
 
@@ -227,15 +227,15 @@ fun MutableContact.removeAllAddresses() {
 }
 
 /**
- * Sequence of emails from all [rawContacts] ordered by the [MutableEmail.address].
+ * Sequence of emails from all [rawContacts] ordered by the [MutableEmail.id].
  */
 fun MutableContact.emails(): Sequence<MutableEmail> = rawContacts
     .asSequence()
     .flatMap { it.emails.asSequence() }
-    .sortedBy { it.address }
+    .sortedBy { it.id }
 
 /**
- * List of emails from all [rawContacts] ordered by the [MutableEmail.address].
+ * List of emails from all [rawContacts] ordered by the [MutableEmail.id].
  */
 fun MutableContact.emailList(): List<MutableEmail> = emails().toList()
 
@@ -271,15 +271,15 @@ fun MutableContact.removeAllEmails() {
 }
 
 /**
- * Sequence of events from all [rawContacts] ordered by the [MutableEvent.date].
+ * Sequence of events from all [rawContacts] ordered by the [MutableEvent.id].
  */
 fun MutableContact.events(): Sequence<MutableEvent> = rawContacts
     .asSequence()
     .flatMap { it.events.asSequence() }
-    .sortedBy { it.date }
+    .sortedBy { it.id }
 
 /**
- * List of events from all [rawContacts] ordered by the [MutableEvent.date].
+ * List of events from all [rawContacts] ordered by the [MutableEvent.id].
  */
 fun MutableContact.eventList(): List<MutableEvent> = events().toList()
 
@@ -319,15 +319,15 @@ fun MutableContact.removeAllEvents() {
 // with more than one RawContact.
 
 /**
- * Sequence of Ims from all [rawContacts] ordered by the [MutableIm.data].
+ * Sequence of Ims from all [rawContacts] ordered by the [MutableIm.id].
  */
 fun MutableContact.ims(): Sequence<MutableIm> = rawContacts
     .asSequence()
     .flatMap { it.ims.asSequence() }
-    .sortedBy { it.data }
+    .sortedBy { it.id }
 
 /**
- * List of IMs from all [rawContacts] ordered by the [MutableIm.data].
+ * List of IMs from all [rawContacts] ordered by the [MutableIm.id].
  */
 fun MutableContact.imList(): List<MutableIm> = ims().toList()
 
@@ -363,16 +363,16 @@ fun MutableContact.removeAllIms() {
 }
 
 /**
- * Sequence of names from all [rawContacts] ordered by the [MutableName.displayName].
+ * Sequence of names from all [rawContacts] ordered by the [MutableName.id].
  */
 fun MutableContact.names(): Sequence<MutableName> = rawContacts
     .asSequence()
     .map { it.name }
     .filterNotNull()
-    .sortedBy { it.displayName }
+    .sortedBy { it.id }
 
 /**
- * List of names from all [rawContacts] ordered by the [MutableName.displayName].
+ * List of names from all [rawContacts] ordered by the [MutableName.id].
  */
 fun MutableContact.nameList(): List<MutableName> = names().toList()
 
@@ -385,16 +385,16 @@ fun MutableContact.setName(name: MutableName?) {
 }
 
 /**
- * Sequence of nicknames from all [rawContacts] ordered by the [MutableNickname.name].
+ * Sequence of nicknames from all [rawContacts] ordered by the [MutableNickname.id].
  */
 fun MutableContact.nicknames(): Sequence<MutableNickname> = rawContacts
     .asSequence()
     .map { it.nickname }
     .filterNotNull()
-    .sortedBy { it.name }
+    .sortedBy { it.id }
 
 /**
- * List of nicknames from all [rawContacts] ordered by the [MutableNickname.name].
+ * List of nicknames from all [rawContacts] ordered by the [MutableNickname.id].
  */
 fun MutableContact.nicknameList(): List<MutableNickname> = nicknames().toList()
 
@@ -407,16 +407,16 @@ fun MutableContact.setNickname(nickname: MutableNickname?) {
 }
 
 /**
- * Sequence of notes from all [rawContacts] ordered by the [MutableNote.note].
+ * Sequence of notes from all [rawContacts] ordered by the [MutableNote.id].
  */
 fun MutableContact.notes(): Sequence<MutableNote> = rawContacts
     .asSequence()
     .map { it.note }
     .filterNotNull()
-    .sortedBy { it.note }
+    .sortedBy { it.id }
 
 /**
- * List of notes from all [rawContacts] ordered by the [MutableNote.note].
+ * List of notes from all [rawContacts] ordered by the [MutableNote.id].
  */
 fun MutableContact.noteList(): List<MutableNote> = notes().toList()
 
@@ -432,16 +432,16 @@ fun MutableContact.setNote(note: MutableNote?) {
 // Options.
 
 /**
- * Sequence of organizations from all [rawContacts] ordered by the [MutableOrganization.company].
+ * Sequence of organizations from all [rawContacts] ordered by the [MutableOrganization.id].
  */
 fun MutableContact.organizations(): Sequence<MutableOrganization> = rawContacts
     .asSequence()
     .map { it.organization }
     .filterNotNull()
-    .sortedBy { it.company }
+    .sortedBy { it.id }
 
 /**
- * List of organizations from all [rawContacts] ordered by the [MutableOrganization.company].
+ * List of organizations from all [rawContacts] ordered by the [MutableOrganization.id].
  */
 fun MutableContact.organizationList(): List<MutableOrganization> = organizations().toList()
 
@@ -454,15 +454,15 @@ fun MutableContact.setOrganization(organization: MutableOrganization?) {
 }
 
 /**
- * Sequence of phones from all [rawContacts] ordered by the [MutablePhone.number].
+ * Sequence of phones from all [rawContacts] ordered by the [MutablePhone.id].
  */
 fun MutableContact.phones(): Sequence<MutablePhone> = rawContacts
     .asSequence()
     .flatMap { it.phones.asSequence() }
-    .sortedBy { it.number }
+    .sortedBy { it.id }
 
 /**
- * List of phones from all [rawContacts] ordered by the [MutablePhone.number].
+ * List of phones from all [rawContacts] ordered by the [MutablePhone.id].
  */
 fun MutableContact.phoneList(): List<MutablePhone> = phones().toList()
 
@@ -501,15 +501,15 @@ fun MutableContact.removeAllPhones() {
 // Photos.
 
 /**
- * Sequence of relations from all [rawContacts] ordered by the [MutableRelation.name].
+ * Sequence of relations from all [rawContacts] ordered by the [MutableRelation.id].
  */
 fun MutableContact.relations(): Sequence<MutableRelation> = rawContacts
     .asSequence()
     .flatMap { it.relations.asSequence() }
-    .sortedBy { it.name }
+    .sortedBy { it.id }
 
 /**
- * List of relations from all [rawContacts] ordered by the [MutableRelation.name].
+ * List of relations from all [rawContacts] ordered by the [MutableRelation.id].
  */
 fun MutableContact.relationList(): List<MutableRelation> = relations().toList()
 
@@ -546,16 +546,16 @@ fun MutableContact.removeAllRelations() {
 }
 
 /**
- * Sequence of SIP addresses from all [rawContacts] ordered by the [MutableSipAddress.sipAddress].
+ * Sequence of SIP addresses from all [rawContacts] ordered by the [MutableSipAddress.id].
  */
 fun MutableContact.sipAddresses(): Sequence<MutableSipAddress> = rawContacts
     .asSequence()
     .map { it.sipAddress }
     .filterNotNull()
-    .sortedBy { it.sipAddress }
+    .sortedBy { it.id }
 
 /**
- * List of SIP addresses from all [rawContacts] ordered by the [MutableSipAddress.sipAddress].
+ * List of SIP addresses from all [rawContacts] ordered by the [MutableSipAddress.id].
  */
 fun MutableContact.sipAddressList(): List<MutableSipAddress> = sipAddresses().toList()
 
@@ -568,15 +568,15 @@ fun MutableContact.setSipAddress(sipAddress: MutableSipAddress?) {
 }
 
 /**
- * Sequence of websites from all [rawContacts] ordered by the [MutableWebsite.url].
+ * Sequence of websites from all [rawContacts] ordered by the [MutableWebsite.id].
  */
 fun MutableContact.websites(): Sequence<MutableWebsite> = rawContacts
     .asSequence()
     .flatMap { it.websites.asSequence() }
-    .sortedBy { it.url }
+    .sortedBy { it.id }
 
 /**
- * List of websites from all [rawContacts] ordered by the [MutableWebsite.url].
+ * List of websites from all [rawContacts] ordered by the [MutableWebsite.id].
  */
 fun MutableContact.websiteList(): List<MutableWebsite> = websites().toList()
 

@@ -1,5 +1,7 @@
 ## TODO
 
+- Implement Where.regex. Can like take in a regex? Try matching phone numbers with spaces using like.
+
 - Implement Contacts.generalQuery. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
     - include use ContactFields
     - orderBy use Contact(s)Fields
