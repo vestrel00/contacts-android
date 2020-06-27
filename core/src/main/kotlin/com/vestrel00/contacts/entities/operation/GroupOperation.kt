@@ -7,10 +7,10 @@ import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
-private val TABLE = Table.GROUPS
+private val TABLE = Table.Groups
 
 /**
- * Builds [ContentProviderOperation]s for [Table.GROUPS].
+ * Builds [ContentProviderOperation]s for [Table.Groups].
  */
 internal class GroupOperation {
 

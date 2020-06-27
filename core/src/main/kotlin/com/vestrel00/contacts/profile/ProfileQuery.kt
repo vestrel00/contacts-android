@@ -6,6 +6,7 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Contact
+import com.vestrel00.contacts.entities.DataEntity
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.util.isEmpty
@@ -217,7 +218,8 @@ private fun ContentResolver.resolve(
     // Data table queries using profile uris only return user profile data.
     val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
     for (rawContactId in rawContactIds) {
-        query(
+        // FIXME Remove this type after adding type to include
+        query<DataField, ContactsMapper> (
             ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
                 .appendEncodedPath(rawContactId)
                 .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)

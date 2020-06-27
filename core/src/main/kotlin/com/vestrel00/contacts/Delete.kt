@@ -6,7 +6,6 @@ import android.content.Context
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.operation.RawContactOperation
-import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.applyBatch
 
 /**
@@ -208,7 +207,7 @@ private class DeleteImpl(
             return false
         }
 
-        val rawContactOperation = RawContactOperation(Table.RAW_CONTACTS.uri)
+        val rawContactOperation = RawContactOperation()
         val operations = arrayListOf<ContentProviderOperation>()
 
         if (rawContactIds.isNotEmpty()) {
@@ -230,14 +229,12 @@ private class DeleteImpl(
 
 internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean =
     applyBatch(
-        RawContactOperation(Table.RAW_CONTACTS.uri)
-            .deleteRawContact(rawContactId)
+        RawContactOperation().deleteRawContact(rawContactId)
     ) != null
 
 private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
     applyBatch(
-        RawContactOperation(Table.RAW_CONTACTS.uri)
-            .deleteRawContactsWithContactId(contactId)
+        RawContactOperation().deleteRawContactsWithContactId(contactId)
     ) != null
 
 private class DeleteResult(

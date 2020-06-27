@@ -2,36 +2,36 @@ package com.vestrel00.contacts.entities.table
 
 import android.net.Uri
 import android.provider.ContactsContract
+import com.vestrel00.contacts.*
 
 /**
- * Defines all of the main [ContactsContract] tables.
- *
- * TODO Add field type to this and refactor ContentResolverExtensions.
+ * Defines all of the main [ContactsContract] tables, types with [Field]s =)
  */
-internal enum class Table(val uri: Uri) {
+internal sealed class Table<T : Field>(val uri: Uri) {
 
     /**
      * See [ContactsContract.Contacts].
      */
-    CONTACTS(ContactsContract.Contacts.CONTENT_URI),
+    object Contacts : Table<ContactsField>(ContactsContract.Contacts.CONTENT_URI)
 
     /**
      * See [ContactsContract.RawContacts].
      */
-    RAW_CONTACTS(ContactsContract.RawContacts.CONTENT_URI),
+    object RawContacts : Table<RawContactsField>(ContactsContract.RawContacts.CONTENT_URI)
 
     /**
      * See [ContactsContract.Data].
      */
-    DATA(ContactsContract.Data.CONTENT_URI),
+    object Data : Table<DataField>(ContactsContract.Data.CONTENT_URI)
 
     /**
      * See [ContactsContract.Groups].
      */
-    GROUPS(ContactsContract.Groups.CONTENT_URI),
+    object Groups : Table<GroupsField>(ContactsContract.Groups.CONTENT_URI)
 
     /**
      * See [ContactsContract.AggregationExceptions].
      */
-    AGGREGATION_EXCEPTIONS(ContactsContract.AggregationExceptions.CONTENT_URI)
+    object AggregationExceptions :
+        Table<AggregationExceptionsField>(ContactsContract.AggregationExceptions.CONTENT_URI)
 }

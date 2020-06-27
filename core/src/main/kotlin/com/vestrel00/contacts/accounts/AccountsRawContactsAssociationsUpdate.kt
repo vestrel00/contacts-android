@@ -593,14 +593,14 @@ private fun ContentResolver.updateRawContactsAccount(
     arrayListOf<ContentProviderOperation>().apply {
         // First delete existing group memberships.
         if (account != null && dataWhere != null) {
-            newDelete(Table.DATA)
+            newDelete(Table.Data)
                 .withSelection(dataWhere)
                 .build()
                 .let(::add)
         }
 
         // Then update the sync columns.
-        newUpdate(Table.RAW_CONTACTS)
+        newUpdate(Table.RawContacts)
             .withSelection(rawContactsWhere)
             .withValue(RawContactsFields.AccountName, account?.name)
             .withValue(RawContactsFields.AccountType, account?.type)
@@ -610,7 +610,7 @@ private fun ContentResolver.updateRawContactsAccount(
 ) != null
 
 private fun ContentResolver.rawContactIdsWhere(where: Where<RawContactsField>?):
-        Set<Long> = query(Table.RAW_CONTACTS, Include(RawContactsFields.Id), where) {
+        Set<Long> = query(Table.RawContacts, Include(RawContactsFields.Id), where) {
     val rawContactIds = mutableSetOf<Long>()
     val rawContactsCursor = it.rawContactsCursor()
 

@@ -141,4 +141,4 @@ private fun setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation = 
     .withValue(Fields.IsSuperPrimary, 1)
     .build()
 
-private val TABLE = Table.DATA
+private val TABLE = Table.Data

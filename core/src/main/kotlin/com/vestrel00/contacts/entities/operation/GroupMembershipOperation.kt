@@ -107,7 +107,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
     }
 
     private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long):
-            List<GroupMembership> = query(Table.DATA, INCLUDE, selection(rawContactId)) {
+            List<GroupMembership> = query(Table.Data, INCLUDE, selection(rawContactId)) {
 
         mutableListOf<GroupMembership>().apply {
             val groupMembershipMapper = it.groupMembershipMapper()

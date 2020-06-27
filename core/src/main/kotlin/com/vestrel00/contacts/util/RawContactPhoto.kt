@@ -47,7 +47,7 @@ fun RawContactEntity.photoInputStream(context: Context): InputStream? {
     }
 
     val photoFileId = context.contentResolver.query(
-        Table.DATA,
+        Table.Data,
         Include(Fields.Photo.PhotoFileId),
         (Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo MimeType.PHOTO)
     ) {
@@ -151,7 +151,7 @@ fun RawContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
     }
 
     return context.contentResolver.query(
-        Table.DATA,
+        Table.Data,
         Include(Fields.Photo.PhotoThumbnail),
         (Fields.RawContact.Id equalTo rawContactId)
                 and (Fields.MimeType equalTo MimeType.PHOTO)
@@ -336,7 +336,7 @@ fun RawContactEntity.removePhoto(context: Context): Boolean {
     }
 
     return context.contentResolver.applyBatch(
-        newDelete(Table.DATA)
+        newDelete(Table.Data)
             .withSelection(
                 (Fields.RawContact.Id equalTo rawContactId)
                         and (Fields.MimeType equalTo MimeType.PHOTO)

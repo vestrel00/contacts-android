@@ -310,7 +310,7 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
             val rawContactId1 = sortedRawContactIds[i]
             val rawContactId2 = sortedRawContactIds[j]
 
-            val operation = newUpdate(Table.AGGREGATION_EXCEPTIONS)
+            val operation = newUpdate(Table.AggregationExceptions)
                 .withValue(AggregationExceptionsFields.Type, type)
                 .withValue(AggregationExceptionsFields.RawContactId1, rawContactId1)
                 .withValue(AggregationExceptionsFields.RawContactId2, rawContactId2)
@@ -360,7 +360,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
     val nameRawContactId = nameRawContactId(context, contactId) ?: return null
 
     return context.contentResolver.query(
-        Table.DATA,
+        Table.Data,
         Include(Fields.DataId),
         (Fields.RawContact.Id equalTo nameRawContactId)
                 and (Fields.MimeType equalTo MimeType.NAME)
@@ -377,7 +377,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 private fun nameRawContactId(context: Context, contactId: Long): Long? =
     context.contentResolver.query(
-        Table.CONTACTS,
+        Table.Contacts,
         Include(ContactsFields.DisplayNameSource, ContactsFields.NameRawContactId),
         ContactsFields.Id equalTo contactId
     ) {
@@ -402,12 +402,11 @@ private fun nameRawContactId(context: Context, contactId: Long): Long? =
  */
 private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<Long> =
     context.contentResolver.query(
-        Table.RAW_CONTACTS,
+        Table.RawContacts,
         Include(RawContactsFields.Id),
         RawContactsFields.ContactId `in` contactIds,
         RawContactsFields.Id.columnName
     ) {
-
         mutableListOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()
             while (it.moveToNext()) {
@@ -417,7 +416,7 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
     } ?: emptyList()
 
 private fun nameWithId(context: Context, nameRowId: Long): Name? = context.contentResolver.query(
-    Table.DATA,
+    Table.Data,
     Include(Fields.Required),
     Fields.DataId equalTo nameRowId
 ) {
@@ -426,7 +425,7 @@ private fun nameWithId(context: Context, nameRowId: Long): Name? = context.conte
 
 private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? =
     context.contentResolver.query(
-        Table.RAW_CONTACTS,
+        Table.RawContacts,
         Include(RawContactsFields.ContactId),
         RawContactsFields.Id equalTo rawContactId
     ) {

@@ -45,7 +45,7 @@ fun ContactEntity.photoInputStream(context: Context): InputStream? {
     }
 
     return context.contentResolver.query(
-        Table.CONTACTS,
+        Table.Contacts,
         Include(ContactsFields.PhotoUri),
         ContactsFields.Id equalTo contactId
     ) {
@@ -159,7 +159,7 @@ fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
     }
 
     return context.contentResolver.query(
-        Table.CONTACTS,
+        Table.Contacts,
         Include(ContactsFields.PhotoThumbnailUri),
         ContactsFields.Id equalTo contactId
     ) {
@@ -309,7 +309,7 @@ fun ContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boo
     setPhoto(context, photoDrawable.bitmap.bytes())
 
 private fun photoFileId(context: Context, contactId: Long): Long? = context.contentResolver.query(
-    Table.CONTACTS,
+    Table.Contacts,
     Include(ContactsFields.PhotoFileId),
     ContactsFields.Id equalTo contactId
 ) {
@@ -318,7 +318,7 @@ private fun photoFileId(context: Context, contactId: Long): Long? = context.cont
 
 private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long? =
     context.contentResolver.query(
-        Table.DATA,
+        Table.Data,
         Include(Fields.RawContact.Id),
         Fields.Photo.PhotoFileId equalTo photoFileId
     ) {
@@ -355,7 +355,7 @@ fun ContactEntity.removePhoto(context: Context): Boolean {
     }
 
     return context.contentResolver.applyBatch(
-        newDelete(Table.DATA)
+        newDelete(Table.Data)
             .withSelection(
                 (Fields.Contact.Id equalTo contactId)
                         and (Fields.MimeType equalTo MimeType.PHOTO)

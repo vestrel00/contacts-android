@@ -223,7 +223,7 @@ private class AccountsQueryImpl(
 
             // Get all rows in nonNullRawContactIds.
             contentResolver.query(
-                Table.RAW_CONTACTS,
+                Table.RawContacts,
                 Include(RawContactsFields),
                 RawContactsFields.Id `in` nonNullRawContactIds
             ) {
@@ -261,7 +261,7 @@ private class AccountsQueryImpl(
 }
 
 internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Account? = query(
-    Table.RAW_CONTACTS,
+    Table.RawContacts,
     Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
     RawContactsFields.Id equalTo rawContactId
 ) {

@@ -267,7 +267,7 @@ private fun ContentResolver.resolve(
     offset: Int,
     cancel: () -> Boolean
 ): AccountsRawContactsQuery.BlankRawContactsList = query(
-    Table.RAW_CONTACTS,
+    Table.RawContacts,
     include,
     if (rawContactsWhere != null) {
         if (where != null) {

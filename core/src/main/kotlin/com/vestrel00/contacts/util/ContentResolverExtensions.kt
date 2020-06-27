@@ -8,6 +8,7 @@ import android.database.Cursor
 import android.database.SQLException
 import android.net.Uri
 import android.provider.ContactsContract
+import com.vestrel00.contacts.Field
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.Where
 import com.vestrel00.contacts.entities.table.Table
@@ -17,8 +18,8 @@ import com.vestrel00.contacts.entities.table.Table
 // Not inlining these as they just add too many lines of code and are most likely only used in one
 // time transactions (not in loops).
 
-internal fun <T> ContentResolver.query(
-    table: Table, include: Include, where: Where<*>?,
+internal fun <T : Field, R> ContentResolver.query(
+    table: Table<T>, include: Include, where: Where<T>?,
 
     /**
      * The sort order, which may also be appended with the LIMIT and OFFSET.
@@ -34,12 +35,12 @@ internal fun <T> ContentResolver.query(
     /**
      * Function that processes the non-null cursor (if any rows have been matched).
      */
-    processCursor: (Cursor) -> T?
-): T? = query(table.uri, include, where, sortOrder, suppressDbExceptions, processCursor)
+    processCursor: (Cursor) -> R?
+): R? = query(table.uri, include, where, sortOrder, suppressDbExceptions, processCursor)
 
 @SuppressLint("Recycle")
-internal fun <T> ContentResolver.query(
-    contentUri: Uri, include: Include, where: Where<*>?,
+internal fun <T : Field, R> ContentResolver.query(
+    contentUri: Uri, include: Include, where: Where<T>?,
 
     /**
      * The sort order, which may also be appended with the LIMIT and OFFSET.
@@ -55,8 +56,8 @@ internal fun <T> ContentResolver.query(
     /**
      * Function that processes the non-null cursor (if any rows have been matched).
      */
-    processCursor: (Cursor) -> T?
-): T? {
+    processCursor: (Cursor) -> R?
+): R? {
     val cursor = try {
         query(
             contentUri,
@@ -73,7 +74,7 @@ internal fun <T> ContentResolver.query(
         }
     }
 
-    var result: T? = null
+    var result: R? = null
 
     if (cursor != null) {
         result = processCursor(cursor)

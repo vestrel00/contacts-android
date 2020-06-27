@@ -10,10 +10,10 @@ import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.query
 
-private val TABLE = Table.DATA
+private val TABLE = Table.Data
 
 /**
- * Builds [ContentProviderOperation]s for [Table.DATA].
+ * Builds [ContentProviderOperation]s for [Table.Data].
  */
 internal abstract class AbstractDataOperation<T : DataEntity> {
 

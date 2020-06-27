@@ -5,7 +5,6 @@ import android.content.ContentProviderOperation
 import android.content.Context
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
-import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.nullIfNotInSystem
 
@@ -259,7 +258,7 @@ private fun Context.insertRawContactForAccount(
      * This needs to be the first operation in the batch as it will be used by all subsequent
      * Data table insert operations.
      */
-    operations.add(RawContactOperation(Table.RAW_CONTACTS.uri).insert(account))
+    operations.add(RawContactOperation().insert(account))
 
     operations.addAll(AddressOperation().insert(rawContact.addresses))
 

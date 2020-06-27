@@ -266,7 +266,7 @@ private fun ContentResolver.resolve(
     offset: Int,
     cancel: () -> Boolean
 ): GroupsQuery.GroupsList = query(
-    Table.GROUPS,
+    Table.Groups,
     include,
     if (rawContactsWhere != null) {
         if (where != null) {

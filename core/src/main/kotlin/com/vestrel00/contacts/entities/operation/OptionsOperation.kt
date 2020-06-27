@@ -16,14 +16,14 @@ import com.vestrel00.contacts.equalTo
 internal class OptionsOperation {
 
     fun updateContactOptions(contactId: Long, options: MutableOptions): ContentProviderOperation =
-        newUpdate(Table.CONTACTS)
+        newUpdate(Table.Contacts)
             .withSelection(ContactsFields.Id equalTo contactId)
             .withOptions(options)
             .build()
 
     fun updateRawContactOptions(
         rawContactId: Long, options: MutableOptions
-    ): ContentProviderOperation = newUpdate(Table.RAW_CONTACTS)
+    ): ContentProviderOperation = newUpdate(Table.RawContacts)
         .withSelection(RawContactsFields.Id equalTo rawContactId)
         .withOptions(options)
         .build()

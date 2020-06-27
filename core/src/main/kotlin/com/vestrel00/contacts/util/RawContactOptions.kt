@@ -34,7 +34,7 @@ fun RawContactEntity.options(context: Context): Options {
     }
 
     return context.contentResolver.query(
-        Table.RAW_CONTACTS,
+        Table.RawContacts,
         Include(Fields.Options),
         RawContactsFields.Id equalTo rawContactId
     ) {

@@ -867,7 +867,7 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
     rawContactsWhere: Where<RawContactsField>, cancel: () -> Boolean
 ): Set<Long> =
     query(
-        Table.RAW_CONTACTS, Include(RawContactsFields.Id), rawContactsWhere
+        Table.RawContacts, Include(RawContactsFields.Id), rawContactsWhere
     ) {
         mutableSetOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()
@@ -894,5 +894,5 @@ private fun MimeType.contentUri(): Uri = when (this) {
     MimeType.PHONE -> ContactsContract.CommonDataKinds.Phone.CONTENT_URI
     MimeType.EMAIL -> ContactsContract.CommonDataKinds.Email.CONTENT_URI
     MimeType.ADDRESS -> ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI
-    else -> Table.DATA.uri
+    else -> Table.Data.uri
 }

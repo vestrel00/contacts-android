@@ -2,20 +2,19 @@ package com.vestrel00.contacts.entities.operation
 
 import android.accounts.Account
 import android.content.ContentProviderOperation
-import android.content.ContentProviderOperation.newDelete
-import android.content.ContentProviderOperation.newInsert
-import android.net.Uri
 import com.vestrel00.contacts.RawContactsFields
 import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
-/**
- * Builds [ContentProviderOperation]s for [Table.RAW_CONTACTS].
- */
-internal class RawContactOperation(private val contentUri: Uri) {
+private val TABLE = Table.RawContacts
 
-    fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(contentUri)
+/**
+ * Builds [ContentProviderOperation]s for [Table.RawContacts].
+ */
+internal class RawContactOperation {
+
+    fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(TABLE)
         /*
          * Passing in null account name and type is valid. It is the same behavior as the native
          * Android Contacts app when creating contacts when there are no available accounts. When an
@@ -26,12 +25,12 @@ internal class RawContactOperation(private val contentUri: Uri) {
         .withValue(RawContactsFields.AccountType, rawContactAccount?.type)
         .build()
 
-    fun deleteRawContact(rawContactId: Long): ContentProviderOperation = newDelete(contentUri)
+    fun deleteRawContact(rawContactId: Long): ContentProviderOperation = newDelete(TABLE)
         .withSelection(RawContactsFields.Id equalTo rawContactId)
         .build()
 
     fun deleteRawContacts(rawContactIds: Collection<Long>): ContentProviderOperation =
-        newDelete(contentUri)
+        newDelete(TABLE)
             .withSelection(RawContactsFields.Id `in` rawContactIds)
             .build()
 
@@ -40,12 +39,12 @@ internal class RawContactOperation(private val contentUri: Uri) {
      * deletion of the Contacts row and associated Data rows.
      */
     fun deleteRawContactsWithContactId(contactId: Long): ContentProviderOperation =
-        newDelete(contentUri)
+        newDelete(TABLE)
             .withSelection(RawContactsFields.ContactId equalTo contactId)
             .build()
 
     fun deleteRawContactsWithContactIds(contactIds: Collection<Long>): ContentProviderOperation =
-        newDelete(contentUri)
+        newDelete(TABLE)
             .withSelection(RawContactsFields.ContactId `in` contactIds)
             .build()
 }

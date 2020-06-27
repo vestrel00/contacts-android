@@ -497,7 +497,7 @@ private fun ContentResolver.resolve(
     // Collect Contacts, RawContacts, and Data from the Data table.
     if (contactIdsMatchedInDataTable.isNotEmpty()) {
         query(
-            Table.DATA, include, Fields.Contact.Id `in` contactIdsMatchedInDataTable,
+            Table.Data, include, Fields.Contact.Id `in` contactIdsMatchedInDataTable,
             processCursor = contactsMapper::processDataCursor
         )
     }
@@ -508,7 +508,7 @@ private fun ContentResolver.resolve(
 
         // Collect Contacts in the Contacts table including Contact specific fields.
         query(
-            Table.CONTACTS, include.onlyContactsFields(), whereMatching?.inContactsTable(),
+            Table.Contacts, include.onlyContactsFields(), whereMatching?.inContactsTable(),
             // There may be columns in the where clause that may not be available in the Contacts
             // table. This will result in an SQLiteException. Thus, we suppress it.
             suppressDbExceptions = true,
@@ -528,7 +528,7 @@ private fun ContentResolver.resolve(
 
         // Collect RawContacts in the RawContacts table including RawContacts specific fields.
         query(
-            Table.RAW_CONTACTS,
+            Table.RawContacts,
             include.onlyRawContactsFields(),
             RawContactsFields.ContactId `in` contactIdsMatchedInRawContactsTable,
             processCursor = contactsMapper::processRawContactsCursor
@@ -547,7 +547,7 @@ private fun ContentResolver.resolve(
 private fun ContentResolver.findContactIdsInRawContactsTable(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
 ): Set<Long> = query(
-    Table.RAW_CONTACTS,
+    Table.RawContacts,
     Include(RawContactsFields.ContactId),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.
@@ -568,7 +568,7 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
 private fun ContentResolver.findContactIdsInDataTable(
     where: Where<DataField>?, cancel: () -> Boolean
 ): Set<Long> = query(
-    Table.DATA, Include(Fields.Contact.Id), where
+    Table.Data, Include(Fields.Contact.Id), where
 ) {
     val contactIds = mutableSetOf<Long>()
     val contactCursor = it.contactCursor()
