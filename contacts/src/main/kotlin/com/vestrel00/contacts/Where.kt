@@ -342,5 +342,5 @@ private fun Any?.toSqlString(): String = when (this) {
     is Entity.Type -> value.toSqlString()
     is Date -> time.toSqlString()
     is MimeType -> value.toSqlString()
-    else -> this.toString()
+    else -> this.toString().toSqlString()
 }
