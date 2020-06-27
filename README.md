@@ -11,6 +11,7 @@ If refactoring Query, we may be able to add Options to RawContact as a member in
 Create more specific AbstractField. EG GroupField so that it can be used in GroupsQuery as a type check. Apply to all queries.
 This might be an opportunity to refactor Where such that it gets resolved to a string lazily so that we can check if it only contains valid fields.
 Implement a version of Where that is already resolved instead of lazily for consumers that pass in mutable objects such as mutable lists
+In other words: Add type info to include, where, and orderBy for compilation checks instead of runtime.
 
 Ensure that OptionsFields are allowed (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
 

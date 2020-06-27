@@ -20,7 +20,6 @@ sealed class Field
  *
  * All concrete implementations of this must be data classes or implement equals and hashCode.
  */
-// TODO Ensure that Include.fields (set) gets rid of duplicates!
 sealed class AbstractField : Field() {
     internal abstract val columnName: String
 
@@ -252,14 +251,15 @@ sealed class CommonDataFields : AbstractDataField() {
     internal abstract val mimeType: MimeType
 }
 
-internal object UnknownCommonDataFields: FieldSet<CommonDataFields>() {
+internal object UnknownCommonDataFields : FieldSet<CommonDataFields>() {
     override val all: Set<CommonDataFields> = emptySet()
 }
 
 data class AddressField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.ADDRESS
-) : CommonDataFields()
+}
 
 class AddressFields internal constructor() : FieldSet<AddressField>() {
 
@@ -301,9 +301,10 @@ class AddressFields internal constructor() : FieldSet<AddressField>() {
 }
 
 data class EmailField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.EMAIL
-) : CommonDataFields()
+}
 
 class EmailFields internal constructor() : FieldSet<EmailField>() {
 
@@ -320,9 +321,10 @@ class EmailFields internal constructor() : FieldSet<EmailField>() {
 }
 
 data class EventField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.EVENT
-) : CommonDataFields()
+}
 
 class EventFields internal constructor() : FieldSet<EventField>() {
 
@@ -339,9 +341,10 @@ class EventFields internal constructor() : FieldSet<EventField>() {
 }
 
 data class GroupMembershipField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP
-) : CommonDataFields()
+}
 
 class GroupMembershipFields internal constructor() : FieldSet<GroupMembershipField>() {
 
@@ -352,9 +355,10 @@ class GroupMembershipFields internal constructor() : FieldSet<GroupMembershipFie
 }
 
 data class ImField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.IM
-) : CommonDataFields()
+}
 
 class ImFields internal constructor() : FieldSet<ImField>() {
 
@@ -371,9 +375,10 @@ class ImFields internal constructor() : FieldSet<ImField>() {
 }
 
 data class NameField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.NAME
-) : CommonDataFields()
+}
 
 class NameFields internal constructor() : FieldSet<NameField>() {
 
@@ -413,9 +418,10 @@ class NameFields internal constructor() : FieldSet<NameField>() {
 }
 
 data class NicknameField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.NICKNAME
-) : CommonDataFields()
+}
 
 class NicknameFields internal constructor() : FieldSet<NicknameField>() {
 
@@ -426,9 +432,10 @@ class NicknameFields internal constructor() : FieldSet<NicknameField>() {
 }
 
 data class NoteField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.NOTE
-) : CommonDataFields()
+}
 
 class NoteFields internal constructor() : FieldSet<NoteField>() {
 
@@ -439,9 +446,10 @@ class NoteFields internal constructor() : FieldSet<NoteField>() {
 }
 
 data class OrganizationField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.ORGANIZATION
-) : CommonDataFields()
+}
 
 class OrganizationFields internal constructor() : FieldSet<OrganizationField>() {
 
@@ -472,9 +480,10 @@ class OrganizationFields internal constructor() : FieldSet<OrganizationField>() 
 }
 
 data class PhoneField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.PHONE
-) : CommonDataFields()
+}
 
 class PhoneFields internal constructor() : FieldSet<PhoneField>() {
 
@@ -494,9 +503,10 @@ class PhoneFields internal constructor() : FieldSet<PhoneField>() {
 }
 
 data class PhotoField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.PHOTO
-) : CommonDataFields()
+}
 
 internal class PhotoFields internal constructor() : FieldSet<PhotoField>() {
 
@@ -508,9 +518,10 @@ internal class PhotoFields internal constructor() : FieldSet<PhotoField>() {
 }
 
 data class RelationField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.RELATION
-) : CommonDataFields()
+}
 
 class RelationFields internal constructor() : FieldSet<RelationField>() {
 
@@ -527,9 +538,10 @@ class RelationFields internal constructor() : FieldSet<RelationField>() {
 }
 
 data class SipAddressField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.SIP_ADDRESS
-) : CommonDataFields()
+}
 
 class SipAddressFields internal constructor() : FieldSet<SipAddressField>() {
 
@@ -540,9 +552,10 @@ class SipAddressFields internal constructor() : FieldSet<SipAddressField>() {
 }
 
 data class WebsiteField internal constructor(
-    override val columnName: String,
+    override val columnName: String
+) : CommonDataFields() {
     override val mimeType: MimeType = MimeType.WEBSITE
-) : CommonDataFields()
+}
 
 class WebsiteFields internal constructor() : FieldSet<WebsiteField>() {
 
