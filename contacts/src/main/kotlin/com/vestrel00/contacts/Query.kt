@@ -428,8 +428,8 @@ private class QueryImpl(
     private companion object {
         const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
-        val DEFAULT_INCLUDE = Include(Fields.All)
-        val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
+        val DEFAULT_INCLUDE = Include(Fields.all)
+        val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
         val DEFAULT_WHERE: Where? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Contact.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE

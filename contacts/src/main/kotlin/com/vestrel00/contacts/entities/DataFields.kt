@@ -1,12 +1,12 @@
 package com.vestrel00.contacts.entities
 
-import com.vestrel00.contacts.AbstractField
-import com.vestrel00.contacts.EmptyFieldSet
+import com.vestrel00.contacts.CommonDataFields
 import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.UnknownCommonDataFields
 
-internal fun DataEntity.fields(): Set<AbstractField> = mimeType.fields()
+internal fun DataEntity.fields(): Set<CommonDataFields> = mimeType.fields()
 
-internal fun MimeType.fields(): Set<AbstractField> = when (this) {
+internal fun MimeType.fields(): Set<CommonDataFields> = when (this) {
     MimeType.ADDRESS -> Fields.Address
     MimeType.EMAIL -> Fields.Email
     MimeType.EVENT -> Fields.Event
@@ -21,5 +21,5 @@ internal fun MimeType.fields(): Set<AbstractField> = when (this) {
     MimeType.RELATION -> Fields.Relation
     MimeType.SIP_ADDRESS -> Fields.SipAddress
     MimeType.WEBSITE -> Fields.Website
-    MimeType.UNKNOWN -> EmptyFieldSet
-}.fields
+    MimeType.UNKNOWN -> UnknownCommonDataFields
+}.all

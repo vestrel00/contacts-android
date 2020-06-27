@@ -199,12 +199,12 @@ infix fun <T : Any?> Sequence<T>.whereAnd(where: (T) -> Where): Where? = joinWhe
 /**
  * See [whereOr].
  */
-infix fun FieldSet.whereOr(where: (AbstractField) -> Where): Where? = fields.whereOr(where)
+infix fun FieldSet<*>.whereOr(where: (AbstractField) -> Where): Where? = all.whereOr(where)
 
 /**
  * See [whereAnd].
  */
-infix fun FieldSet.whereAnd(where: (AbstractField) -> Where): Where? = fields.whereAnd(where)
+infix fun FieldSet<*>.whereAnd(where: (AbstractField) -> Where): Where? = all.whereAnd(where)
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
 private fun <T : Any?> Sequence<T>.joinWhere(where: (T) -> Where, separator: String): Where? {
@@ -278,7 +278,7 @@ private class RawContactsTableWhere(whereString: String) : Where(whereString)
  */
 private fun where(field: AbstractField, operator: String, value: Any?): String {
     var where = "${field.columnName} $operator ${value.toSqlString()}"
-    if (field.mimeType.value.isNotBlank()) {
+    if (field is CommonDataFields && field.mimeType.value.isNotBlank()) {
         where += " AND ${Fields.MimeType.columnName} = '${field.mimeType.value}'"
     }
     return where

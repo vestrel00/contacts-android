@@ -203,8 +203,8 @@ private class ProfileQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where? = null
-        val DEFAULT_INCLUDE = Include(Fields.All)
-        val REQUIRED_INCLUDE_FIELDS = Fields.Required.fields.asSequence()
+        val DEFAULT_INCLUDE = Include(Fields.all)
+        val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
     }
 }
 

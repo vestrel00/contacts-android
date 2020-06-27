@@ -15,7 +15,7 @@ internal class Include(fields: Sequence<Field>) {
             for (field in fields) {
                 when (field) {
                     is AbstractField -> add(field)
-                    is FieldSet -> addAll(field.fields)
+                    is FieldSet<*> -> addAll(field.all)
                 }
             }
         }
@@ -45,7 +45,7 @@ internal fun Include.onlyFieldsIn(fields: Collection<AbstractField>) = Include(
 internal fun Include.onlyContactsFields() = Include(
     // Contacts.Id belong to the Contacts table. Contact.Id belongs to the Data table.
     // So we just add the Contacts.Id since it is required anyways.
-    ContactsFields.fields
+    ContactsFields.all
         .intersect(fields)
         .asSequence()
         .plus(ContactsFields.Id)
@@ -58,7 +58,7 @@ internal fun Include.onlyRawContactsFields() = Include(
     // Contacts.Id belong to the Contacts table. Contact.Id belongs to the Data table.
     // RawContacts.Id belong to the RawContacts table. RawContact.Id belongs to the Data table.
     // So we just add the Contacts.Id and RawContacts.Id since they are required anyways.
-    RawContactsFields.fields
+    RawContactsFields.all
         .intersect(fields)
         .asSequence()
         .plus(ContactsFields.Id)

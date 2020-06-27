@@ -852,8 +852,7 @@ comes in handy here). The constructor is made internal so that consumers do not 
 to set read-only and private or internal variables such as `id` and `rawId`. 
 
 > FIXME? Make constructors public if Kotlin ever supports private setter for an attribute in the 
-> constructor. 
-> See https://discuss.kotlinlang.org/t/private-setter-for-var-in-primary-constructor/3640.
+> constructor. https://discuss.kotlinlang.org/t/private-setter-for-var-in-primary-constructor/3640
 
 HOWEVER! Consumers are still able to set read-only and private or internal variables though because 
 all `Entity` classes are data classes. Data classes provide a `copy` function that allows for 

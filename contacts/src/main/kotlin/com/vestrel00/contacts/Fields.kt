@@ -1,66 +1,75 @@
-@file:Suppress("PropertyName", "MemberVisibilityCanBePrivate", "unused")
+@file:Suppress("PropertyName")
 
 package com.vestrel00.contacts
 
 import android.annotation.TargetApi
 import android.os.Build
-import android.provider.BaseColumns
 import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import com.vestrel00.contacts.entities.MimeType
-import com.vestrel00.contacts.entities.MimeType.UNKNOWN
+
+// region Field Interfaces
 
 /**
- * Represents a database field(s) / column(s) that maps to a Contact attribute.
+ * Represents a database field(s) / column(s).
  */
 sealed class Field
 
 /**
- * Represents a database field / column that maps to a Contact attribute.
+ * Represents a database field / column.
+ *
+ * All concrete implementations of this must be data classes or implement equals and hashCode.
  */
-// It is important that this is a data class because its equals function is used.
-// Implement the equals and hashcode functions if removing the data qualifier!
-data class AbstractField internal constructor(
-    internal val columnName: String,
-    internal val mimeType: MimeType
-) : Field()
+// TODO Ensure that Include.fields (set) gets rid of duplicates!
+sealed class AbstractField : Field() {
+    internal abstract val columnName: String
+
+    // Force concrete implementations to implements equals and hashCode
+    abstract override fun equals(other: Any?): Boolean
+
+    abstract override fun hashCode(): Int
+}
 
 /**
  * Holds a set of [AbstractField]s.
  */
-abstract class FieldSet internal constructor(
-    internal val mimeType: MimeType
-) : Field() {
-    internal abstract val fields: Set<AbstractField>
+sealed class FieldSet<T : AbstractField> : Field() {
+    abstract val all: Set<T>
 }
 
-/**
- * Contains all Data table [Field]s, including columns from other tables that are joined.
- *
- * These are mainly used for queries.
- */
-object Fields {
 
-    /*
-     * ## Developer Notes
-     *
-     * This is not named "DataFields" for several reasons;
-     *
-     * 1. Consumers are only exposed Data table fields. There is no need for them to know the fields
-     *    of the other tables.
-     * 2. Fields is shorter than DataFields. This is important for keeping lines short.
-     *
-     * All of this is condensed inside one file / class for (Kotlin & Java) consumer convenience.
-     * The structure of this class and the Kotlin language features that are used here are to cater
-     * to both Java and Kotlin consumers, whilst still attempting to keep the code structured in
-     * a Kotlin-first fashion.
-     */
+// endregion
+
+// region Data Table Fields
+
+sealed class AbstractDataField : AbstractField()
+
+data class DataField internal constructor(override val columnName: String) : AbstractDataField()
+
+/**
+ * Contains all [Field]s (columns) that are accessible via the Data table with joins from the
+ * RawContacts and Contacts tables (ContactsContract.DataColumnsWithJoins).
+ *
+ * For a shorter name, use [F] (useful for Kotlin-ers).
+ *
+ * The real (more technically correct) name of this object is [DataFields]. The name "Fields" is
+ * used here so that Java consumers may be able to access these most commonly used fields using a
+ * shorter name than "DataFields".
+ *
+ * ## Developer Notes
+ *
+ * All fields declared within this object such as [Fields.Address] are classes, not objects, so that
+ * Java consumers may be able to access the fields within them. For example, if [AddressFields] is
+ * an object instead of a class, then [AddressFields.City] (and all other fields) will not be
+ * visible to Java consumers via this object.
+ */
+object Fields : FieldSet<AbstractDataField>() {
 
     @JvmField
     val Address = AddressFields()
 
     @JvmField
-    val Contact = ContactFields()
+    val Contact = JoinedContactsFields()
 
     @JvmField
     val Email = EmailFields()
@@ -71,18 +80,19 @@ object Fields {
     @JvmField
     val GroupMembership = GroupMembershipFields()
 
-    internal val Id = AbstractField(BaseColumns._ID, UNKNOWN)
+    // TODO rename to DataId and make public
+    internal val Id = DataField(Data._ID)
 
     @JvmField
     val Im = ImFields()
 
     @JvmField
-    val IsPrimary = AbstractField(Data.IS_PRIMARY, UNKNOWN)
+    val IsPrimary = DataField(Data.IS_PRIMARY)
 
     @JvmField
-    val IsSuperPrimary = AbstractField(Data.IS_SUPER_PRIMARY, UNKNOWN)
+    val IsSuperPrimary = DataField(Data.IS_SUPER_PRIMARY)
 
-    internal val MimeType = AbstractField(Data.MIMETYPE, UNKNOWN)
+    internal val MimeType = DataField(Data.MIMETYPE)
 
     @JvmField
     val Name = NameFields()
@@ -94,7 +104,7 @@ object Fields {
     val Note = NoteFields()
 
     @JvmField
-    val Options = OptionsFields()
+    val Options = JoinedOptionsFields()
 
     @JvmField
     val Organization = OrganizationFields()
@@ -105,7 +115,7 @@ object Fields {
     internal val Photo = PhotoFields()
 
     @JvmField
-    val RawContact = RawContactFields()
+    val RawContact = JoinedRawContactsFields()
 
     @JvmField
     val Relation = RelationFields()
@@ -116,43 +126,84 @@ object Fields {
     @JvmField
     val Website = WebsiteFields()
 
-    /**
-     * All of the required fields that are always included in every query. This is only useful for
-     * specifying includes.
-     */
     @JvmField
-    val Required = RequiredFields()
+    val Required = RequiredDataFields
 
     /**
-     * All fields that may be included in a query. This is only useful for specifying includes.
+     * Contains [Fields.all] excluding fields such as;
+     *
+     * - Types, e.g. [EmailFields.Type] (stored as integers in the DB)
+     * - IDs, e.g. [JoinedContactsFields.Id] (stored as integers in the DB)
+     * - [GroupMembershipFields] (stored as integers in the DB)
+     * - [JoinedOptionsFields]
+     *
+     * This is safe for matching in queries. This is useful in creating where clauses that matches
+     * text that the user is typing in a search field. For example, if the user is typing in some
+     * numbers trying to find a phone number, this will not match the above fields.
+     */
+    @JvmField
+    val ForMatching = DataFieldsForMatching
+
+    /**
+     * All fields that may be included in a query. This is useful for specifying includes.
      *
      * Be careful with using this for queries. This field set includes the following fields, which
      * may lead to unintentional query matches (especially when matching numbers);
      *
      * - Types, e.g. [EmailFields.Type] (stored as integers in the DB)
-     * - IDs, e.g. [ContactFields.Id] (stored as integers in the DB)
+     * - IDs, e.g. [JoinedContactsFields.Id] (stored as integers in the DB)
      * - [GroupMembershipFields] (stored as integers in the DB)
-     * - [OptionsFields]
+     * - [JoinedOptionsFields]
      *
-     * Use [AllForMatching] instead, which does not include the above fields.
+     * Use [ForMatching] instead, which does not include the above fields.
      */
-    // This needs to be defined at the bottom because it depends on all of the above
-    @JvmField
-    val All = AllFields()
-
-    /**
-     * Same as [All] except this is safe for matching in queries. This is useful in creating where
-     * clauses that matches text that the user is typing in a search field.
-     */
-    @JvmField
-    val AllForMatching = AllForMatchingFields()
+    override val all = mutableSetOf<AbstractDataField>().apply {
+        addAll(Address.all)
+        addAll(Contact.all)
+        addAll(Email.all)
+        addAll(Event.all)
+        addAll(GroupMembership.all)
+        add(Id)
+        addAll(Im.all)
+        add(IsPrimary)
+        add(IsSuperPrimary)
+        add(MimeType)
+        addAll(Name.all)
+        addAll(Nickname.all)
+        addAll(Note.all)
+        addAll(Options.all)
+        addAll(Organization.all)
+        addAll(Phone.all)
+        addAll(Photo.all)
+        addAll(RawContact.all)
+        addAll(Relation.all)
+        addAll(SipAddress.all)
+        addAll(Website.all)
+    }.toSet() // ensure that this is not modifiable at runtime
 }
 
 /**
- * All of the Data table fields required when constructing Data entities retrieved from a Query.
+ * The real name of [Fields].
+ *
+ * Java consumers are unable to access the members of the instance of this even with @JvmField.
+ * Therefore, this is for Kotlin-ers only =)
  */
-class RequiredFields : FieldSet(UNKNOWN) {
-    override val fields: Set<AbstractField> = setOf(
+// @JvmField
+val DataFields = Fields
+
+/**
+ * Shorthand for [Fields].
+ *
+ * Java consumers are unable to access the members of the instance of this even with @JvmField.
+ * Therefore, this is for Kotlin-ers only =)
+ */
+// @JvmField
+val F = Fields
+
+// region Composite Fields
+
+object RequiredDataFields : FieldSet<AbstractDataField>() {
+    override val all = setOf(
         Fields.Id,
         Fields.RawContact.Id,
         Fields.Contact.Id,
@@ -162,284 +213,198 @@ class RequiredFields : FieldSet(UNKNOWN) {
     )
 }
 
-class AllFields : FieldSet(UNKNOWN) {
-    override val fields: Set<AbstractField> = mutableSetOf<AbstractField>().apply {
-        addAll(Fields.Address.fields)
-        addAll(Fields.Contact.fields)
-        addAll(Fields.Email.fields)
-        addAll(Fields.Event.fields)
-        addAll(Fields.GroupMembership.fields)
-        add(Fields.Id)
-        addAll(Fields.Im.fields)
-        add(Fields.IsPrimary)
-        add(Fields.IsSuperPrimary)
-        add(Fields.MimeType)
-        addAll(Fields.Name.fields)
-        addAll(Fields.Nickname.fields)
-        addAll(Fields.Note.fields)
-        addAll(Fields.Options.fields)
-        addAll(Fields.Organization.fields)
-        addAll(Fields.Phone.fields)
-        addAll(Fields.Photo.fields)
-        addAll(Fields.RawContact.fields)
-        addAll(Fields.Relation.fields)
-        addAll(Fields.Required.fields)
-        addAll(Fields.SipAddress.fields)
-        addAll(Fields.Website.fields)
-    }.toSet()
-}
-
-class AllForMatchingFields : FieldSet(UNKNOWN) {
-    override val fields: Set<AbstractField> = mutableSetOf<AbstractField>().apply {
-        addAll(Fields.Address.fields.asSequence().minus(Fields.Address.Type))
+object DataFieldsForMatching : FieldSet<AbstractDataField>() {
+    override val all = mutableSetOf<AbstractDataField>().apply {
+        addAll(Fields.Address.all.asSequence().minus(Fields.Address.Type))
         addAll(
-            Fields.Contact.fields.asSequence()
+            Fields.Contact.all.asSequence()
                 .minus(Fields.Contact.Id)
                 .minus(Fields.Contact.LastUpdatedTimestamp)
         )
-        addAll(Fields.Email.fields.asSequence().minus(Fields.Email.Type))
-        addAll(Fields.Event.fields.asSequence().minus(Fields.Event.Type))
-        // addAll(Fields.GroupMembership.fields)
+        addAll(Fields.Email.all.asSequence().minus(Fields.Email.Type))
+        addAll(Fields.Event.all.asSequence().minus(Fields.Event.Type))
+        // addAll(Fields.GroupMembership.all)
         // add(Fields.Id)
-        addAll(Fields.Im.fields.asSequence().minus(Fields.Im.Protocol))
+        addAll(Fields.Im.all.asSequence().minus(Fields.Im.Protocol))
         // add(Fields.IsPrimary)
         // add(Fields.IsSuperPrimary)
         // add(Fields.MimeType)
-        addAll(Fields.Name.fields)
-        addAll(Fields.Nickname.fields)
-        addAll(Fields.Note.fields)
-        // addAll(Fields.Options.fields)
-        addAll(Fields.Organization.fields)
-        addAll(Fields.Phone.fields.asSequence().minus(Fields.Phone.Type))
-        // addAll(Fields.Photo.fields)
-        // addAll(Fields.RawContact.fields)
-        addAll(Fields.Relation.fields.asSequence().minus(Fields.Relation.Type))
-        // addAll(Fields.Required.fields)
-        addAll(Fields.SipAddress.fields)
-        addAll(Fields.Website.fields)
-    }.toSet()
+        addAll(Fields.Name.all)
+        addAll(Fields.Nickname.all)
+        addAll(Fields.Note.all)
+        // addAll(Fields.Options.all)
+        addAll(Fields.Organization.all)
+        addAll(Fields.Phone.all.asSequence().minus(Fields.Phone.Type))
+        // addAll(Fields.Photo.all)
+        // addAll(Fields.RawContact.all)
+        addAll(Fields.Relation.all.asSequence().minus(Fields.Relation.Type))
+        // addAll(Fields.Required.all)
+        addAll(Fields.SipAddress.all)
+        addAll(Fields.Website.all)
+    }.toSet() // ensure that this is not modifiable at runtime
 }
 
-class AddressFields : FieldSet(MimeType.ADDRESS) {
+// endregion
+
+// region Common Data Fields
+
+sealed class CommonDataFields : AbstractDataField() {
+    internal abstract val mimeType: MimeType
+}
+
+internal object UnknownCommonDataFields: FieldSet<CommonDataFields>() {
+    override val all: Set<CommonDataFields> = emptySet()
+}
+
+data class AddressField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.ADDRESS
+) : CommonDataFields()
+
+class AddressFields internal constructor() : FieldSet<AddressField>() {
 
     @JvmField
-    val Type = AbstractField(CommonDataKinds.StructuredPostal.TYPE, mimeType)
+    val Type = AddressField(CommonDataKinds.StructuredPostal.TYPE)
 
     @JvmField
-    val Label = AbstractField(CommonDataKinds.StructuredPostal.LABEL, mimeType)
+    val Label = AddressField(CommonDataKinds.StructuredPostal.LABEL)
 
     @JvmField
-    val FormattedAddress =
-        AbstractField(CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS, mimeType)
+    val FormattedAddress = AddressField(CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS)
 
     @JvmField
-    val Street = AbstractField(CommonDataKinds.StructuredPostal.STREET, mimeType)
+    val Street = AddressField(CommonDataKinds.StructuredPostal.STREET)
 
     @JvmField
-    val PoBox = AbstractField(CommonDataKinds.StructuredPostal.POBOX, mimeType)
+    val PoBox = AddressField(CommonDataKinds.StructuredPostal.POBOX)
 
     @JvmField
-    val Neighborhood = AbstractField(CommonDataKinds.StructuredPostal.NEIGHBORHOOD, mimeType)
+    val Neighborhood = AddressField(CommonDataKinds.StructuredPostal.NEIGHBORHOOD)
 
     @JvmField
-    val City = AbstractField(CommonDataKinds.StructuredPostal.CITY, mimeType)
+    val City = AddressField(CommonDataKinds.StructuredPostal.CITY)
 
     @JvmField
-    val Region = AbstractField(CommonDataKinds.StructuredPostal.REGION, mimeType)
+    val Region = AddressField(CommonDataKinds.StructuredPostal.REGION)
 
     @JvmField
-    val PostCode = AbstractField(CommonDataKinds.StructuredPostal.POSTCODE, mimeType)
+    val PostCode = AddressField(CommonDataKinds.StructuredPostal.POSTCODE)
 
     @JvmField
-    val Country = AbstractField(CommonDataKinds.StructuredPostal.COUNTRY, mimeType)
+    val Country = AddressField(CommonDataKinds.StructuredPostal.COUNTRY)
 
-    override val fields = setOf(
+    override val all = setOf(
         Type, Label, FormattedAddress,
         Street, PoBox, Neighborhood,
         City, Region, PostCode, Country
     )
 }
 
-/**
- * Fields for AggregationExceptions table operations.
- */
-internal object AggregationExceptionsFields : FieldSet(UNKNOWN) {
+data class EmailField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.EMAIL
+) : CommonDataFields()
 
-    val Type = AbstractField(AggregationExceptions.TYPE, mimeType)
+class EmailFields internal constructor() : FieldSet<EmailField>() {
 
-    val RawContactId1 = AbstractField(AggregationExceptions.RAW_CONTACT_ID1, mimeType)
+    @JvmField
+    val Type = EmailField(CommonDataKinds.Email.TYPE)
 
-    val RawContactId2 = AbstractField(AggregationExceptions.RAW_CONTACT_ID2, mimeType)
+    @JvmField
+    val Label = EmailField(CommonDataKinds.Email.LABEL)
 
-    override val fields = setOf(Type, RawContactId1, RawContactId2)
+    @JvmField
+    val Address = EmailField(CommonDataKinds.Email.ADDRESS)
+
+    override val all = setOf(Type, Label, Address)
 }
 
-class ContactFields : FieldSet(UNKNOWN) {
+data class EventField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.EVENT
+) : CommonDataFields()
 
-    // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. This is only
-    // meant to be used for Data table operations.
-    @JvmField
-    val Id = AbstractField(Data.CONTACT_ID, mimeType)
-
-    @JvmField
-    val DisplayNamePrimary = AbstractField(Data.DISPLAY_NAME_PRIMARY, mimeType)
+class EventFields internal constructor() : FieldSet<EventField>() {
 
     @JvmField
-    val DisplayNameAlt = AbstractField(Data.DISPLAY_NAME_ALTERNATIVE, mimeType)
+    val Type = EventField(CommonDataKinds.Event.TYPE)
 
     @JvmField
-    val LastUpdatedTimestamp = AbstractField(Data.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
+    val Label = EventField(CommonDataKinds.Event.LABEL)
 
-    override val fields = setOf(Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp)
+    @JvmField
+    val Date = EventField(CommonDataKinds.Event.START_DATE)
+
+    override val all = setOf(Type, Label, Date)
 }
 
-/**
- * Fields for Contacts table operations.
- */
-object ContactsFields : FieldSet(UNKNOWN) {
+data class GroupMembershipField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP
+) : CommonDataFields()
+
+class GroupMembershipFields internal constructor() : FieldSet<GroupMembershipField>() {
 
     @JvmField
-    val Id = AbstractField(Contacts._ID, mimeType)
+    val GroupId = GroupMembershipField(CommonDataKinds.GroupMembership.GROUP_ROW_ID)
 
-    @JvmField
-    val DisplayNamePrimary = AbstractField(Contacts.DISPLAY_NAME_PRIMARY, mimeType)
-
-    @JvmField
-    val DisplayNameAlt = AbstractField(Contacts.DISPLAY_NAME_ALTERNATIVE, mimeType)
-
-    // Do not include in fields.
-    internal val DisplayNameSource = AbstractField(Contacts.DISPLAY_NAME_SOURCE, mimeType)
-
-    // Do not include in fields.
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    internal val NameRawContactId = AbstractField(Contacts.NAME_RAW_CONTACT_ID, mimeType)
-
-    @JvmField
-    val LastUpdatedTimestamp = AbstractField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP, mimeType)
-
-    internal val PhotoUri = AbstractField(Contacts.PHOTO_URI, mimeType)
-
-    internal val PhotoThumbnailUri = AbstractField(Contacts.PHOTO_THUMBNAIL_URI, mimeType)
-
-    internal val PhotoFileId = AbstractField(Contacts.PHOTO_FILE_ID, mimeType)
-
-    override val fields = setOf(
-        Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
-        PhotoUri, PhotoThumbnailUri, PhotoFileId
-    )
+    override val all = setOf(GroupId)
 }
 
-class EmailFields : FieldSet(MimeType.EMAIL) {
+data class ImField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.IM
+) : CommonDataFields()
+
+class ImFields internal constructor() : FieldSet<ImField>() {
 
     @JvmField
-    val Type = AbstractField(CommonDataKinds.Email.TYPE, mimeType)
+    val Protocol = ImField(CommonDataKinds.Im.PROTOCOL)
 
     @JvmField
-    val Label = AbstractField(CommonDataKinds.Email.LABEL, mimeType)
+    val CustomProtocol = ImField(CommonDataKinds.Im.CUSTOM_PROTOCOL)
 
     @JvmField
-    val Address = AbstractField(CommonDataKinds.Email.ADDRESS, mimeType)
+    val Data = ImField(CommonDataKinds.Im.DATA)
 
-    override val fields = setOf(Type, Label, Address)
+    override val all = setOf(Protocol, CustomProtocol, Data)
 }
 
-internal object EmptyFieldSet : FieldSet(UNKNOWN) {
-    override val fields: Set<AbstractField> = emptySet()
-}
+data class NameField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.NAME
+) : CommonDataFields()
 
-class EventFields : FieldSet(MimeType.EVENT) {
-
-    @JvmField
-    val Type = AbstractField(CommonDataKinds.Event.TYPE, mimeType)
+class NameFields internal constructor() : FieldSet<NameField>() {
 
     @JvmField
-    val Label = AbstractField(CommonDataKinds.Event.LABEL, mimeType)
+    val DisplayName = NameField(CommonDataKinds.StructuredName.DISPLAY_NAME)
 
     @JvmField
-    val Date = AbstractField(CommonDataKinds.Event.START_DATE, mimeType)
-
-    override val fields = setOf(Type, Label, Date)
-}
-
-/**
- * Fields for Groups table operations.
- */
-object GroupsFields : FieldSet(UNKNOWN) {
-
-    val Id = AbstractField(Groups._ID, mimeType)
-
-    val Title = AbstractField(Groups.TITLE, mimeType)
-
-    val ReadOnly = AbstractField(Groups.GROUP_IS_READ_ONLY, mimeType)
-
-    val Favorites = AbstractField(Groups.FAVORITES, mimeType)
-
-    val AutoAdd = AbstractField(Groups.AUTO_ADD, mimeType)
-
-    // From protected SyncColumns
-    val AccountName = AbstractField(Groups.ACCOUNT_NAME, mimeType)
-
-    // From protected SyncColumns
-    val AccountType = AbstractField(Groups.ACCOUNT_TYPE, mimeType)
-
-    override val fields = setOf(Id, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
-}
-
-class GroupMembershipFields : FieldSet(MimeType.GROUP_MEMBERSHIP) {
+    val GivenName = NameField(CommonDataKinds.StructuredName.GIVEN_NAME)
 
     @JvmField
-    val GroupId = AbstractField(CommonDataKinds.GroupMembership.GROUP_ROW_ID, mimeType)
-
-    override val fields = setOf(GroupId)
-}
-
-class ImFields : FieldSet(MimeType.IM) {
+    val MiddleName = NameField(CommonDataKinds.StructuredName.MIDDLE_NAME)
 
     @JvmField
-    val Protocol = AbstractField(CommonDataKinds.Im.PROTOCOL, mimeType)
+    val FamilyName = NameField(CommonDataKinds.StructuredName.FAMILY_NAME)
 
     @JvmField
-    val CustomProtocol = AbstractField(CommonDataKinds.Im.CUSTOM_PROTOCOL, mimeType)
+    val Prefix = NameField(CommonDataKinds.StructuredName.PREFIX)
 
     @JvmField
-    val Data = AbstractField(CommonDataKinds.Im.DATA, mimeType)
-
-    override val fields = setOf(Protocol, CustomProtocol, Data)
-}
-
-class NameFields : FieldSet(MimeType.NAME) {
+    val Suffix = NameField(CommonDataKinds.StructuredName.SUFFIX)
 
     @JvmField
-    val DisplayName = AbstractField(CommonDataKinds.StructuredName.DISPLAY_NAME, mimeType)
+    val PhoneticGivenName = NameField(CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME)
 
     @JvmField
-    val GivenName = AbstractField(CommonDataKinds.StructuredName.GIVEN_NAME, mimeType)
+    val PhoneticMiddleName = NameField(CommonDataKinds.StructuredName.PHONETIC_MIDDLE_NAME)
 
     @JvmField
-    val MiddleName = AbstractField(CommonDataKinds.StructuredName.MIDDLE_NAME, mimeType)
+    val PhoneticFamilyName = NameField(CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME)
 
-    @JvmField
-    val FamilyName = AbstractField(CommonDataKinds.StructuredName.FAMILY_NAME, mimeType)
-
-    @JvmField
-    val Prefix = AbstractField(CommonDataKinds.StructuredName.PREFIX, mimeType)
-
-    @JvmField
-    val Suffix = AbstractField(CommonDataKinds.StructuredName.SUFFIX, mimeType)
-
-    @JvmField
-    val PhoneticGivenName =
-        AbstractField(CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME, mimeType)
-
-    @JvmField
-    val PhoneticMiddleName =
-        AbstractField(CommonDataKinds.StructuredName.PHONETIC_MIDDLE_NAME, mimeType)
-
-    @JvmField
-    val PhoneticFamilyName =
-        AbstractField(CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME, mimeType)
-
-    override val fields = setOf(
+    override val all = setOf(
         DisplayName,
         GivenName, MiddleName, FamilyName,
         Prefix, Suffix,
@@ -447,157 +412,339 @@ class NameFields : FieldSet(MimeType.NAME) {
     )
 }
 
-class NicknameFields : FieldSet(MimeType.NICKNAME) {
+data class NicknameField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.NICKNAME
+) : CommonDataFields()
+
+class NicknameFields internal constructor() : FieldSet<NicknameField>() {
 
     @JvmField
-    val Name = AbstractField(CommonDataKinds.Nickname.NAME, mimeType)
+    val Name = NicknameField(CommonDataKinds.Nickname.NAME)
 
-    override val fields = setOf(Name)
+    override val all = setOf(Name)
 }
 
-class NoteFields : FieldSet(MimeType.NOTE) {
+data class NoteField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.NOTE
+) : CommonDataFields()
+
+class NoteFields internal constructor() : FieldSet<NoteField>() {
 
     @JvmField
-    val Note = AbstractField(CommonDataKinds.Note.NOTE, mimeType)
+    val Note = NoteField(CommonDataKinds.Note.NOTE)
 
-    override val fields = setOf(Note)
+    override val all = setOf(Note)
 }
 
-class OptionsFields : FieldSet(UNKNOWN) {
+data class OrganizationField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.ORGANIZATION
+) : CommonDataFields()
 
-    internal val Id = AbstractField(Data._ID, mimeType)
-
-    @JvmField
-    val Starred = AbstractField(Data.STARRED, mimeType)
-
-    @JvmField
-    val TimesContacted = AbstractField(Data.TIMES_CONTACTED, mimeType)
+class OrganizationFields internal constructor() : FieldSet<OrganizationField>() {
 
     @JvmField
-    val LastTimeContacted = AbstractField(Data.LAST_TIME_CONTACTED, mimeType)
+    val Company = OrganizationField(CommonDataKinds.Organization.COMPANY)
 
     @JvmField
-    val CustomRingtone = AbstractField(Data.CUSTOM_RINGTONE, mimeType)
+    val Title = OrganizationField(CommonDataKinds.Organization.TITLE)
 
     @JvmField
-    val SendToVoicemail = AbstractField(Data.SEND_TO_VOICEMAIL, mimeType)
-
-    override val fields = setOf(
-        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
-    )
-}
-
-class OrganizationFields : FieldSet(MimeType.ORGANIZATION) {
+    val Department = OrganizationField(CommonDataKinds.Organization.DEPARTMENT)
 
     @JvmField
-    val Company = AbstractField(CommonDataKinds.Organization.COMPANY, mimeType)
+    val JobDescription = OrganizationField(CommonDataKinds.Organization.JOB_DESCRIPTION)
 
     @JvmField
-    val Title = AbstractField(CommonDataKinds.Organization.TITLE, mimeType)
+    val OfficeLocation = OrganizationField(CommonDataKinds.Organization.OFFICE_LOCATION)
 
     @JvmField
-    val Department = AbstractField(CommonDataKinds.Organization.DEPARTMENT, mimeType)
+    val Symbol = OrganizationField(CommonDataKinds.Organization.SYMBOL)
 
     @JvmField
-    val JobDescription = AbstractField(CommonDataKinds.Organization.JOB_DESCRIPTION, mimeType)
+    val PhoneticName = OrganizationField(CommonDataKinds.Organization.PHONETIC_NAME)
 
-    @JvmField
-    val OfficeLocation = AbstractField(CommonDataKinds.Organization.OFFICE_LOCATION, mimeType)
-
-    @JvmField
-    val Symbol = AbstractField(CommonDataKinds.Organization.SYMBOL, mimeType)
-
-    @JvmField
-    val PhoneticName = AbstractField(CommonDataKinds.Organization.PHONETIC_NAME, mimeType)
-
-    override val fields = setOf(
+    override val all = setOf(
         Company, Title, Department, JobDescription, OfficeLocation, Symbol, PhoneticName
     )
 }
 
-class PhoneFields : FieldSet(MimeType.PHONE) {
+data class PhoneField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.PHONE
+) : CommonDataFields()
+
+class PhoneFields internal constructor() : FieldSet<PhoneField>() {
 
     @JvmField
-    val Type = AbstractField(CommonDataKinds.Phone.TYPE, mimeType)
+    val Type = PhoneField(CommonDataKinds.Phone.TYPE)
 
     @JvmField
-    val Label = AbstractField(CommonDataKinds.Phone.LABEL, mimeType)
+    val Label = PhoneField(CommonDataKinds.Phone.LABEL)
 
     @JvmField
-    val Number = AbstractField(CommonDataKinds.Phone.NUMBER, mimeType)
+    val Number = PhoneField(CommonDataKinds.Phone.NUMBER)
 
     @JvmField
-    val NormalizedNumber = AbstractField(CommonDataKinds.Phone.NORMALIZED_NUMBER, mimeType)
+    val NormalizedNumber = PhoneField(CommonDataKinds.Phone.NORMALIZED_NUMBER)
 
-    override val fields = setOf(Type, Label, Number, NormalizedNumber)
+    override val all = setOf(Type, Label, Number, NormalizedNumber)
 }
 
-internal class PhotoFields : FieldSet(MimeType.PHOTO) {
+data class PhotoField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.PHOTO
+) : CommonDataFields()
 
-    val PhotoFileId = AbstractField(CommonDataKinds.Photo.PHOTO_FILE_ID, mimeType)
+internal class PhotoFields internal constructor() : FieldSet<PhotoField>() {
 
-    val PhotoThumbnail = AbstractField(CommonDataKinds.Photo.PHOTO, mimeType)
+    val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
 
-    override val fields = setOf(PhotoFileId, PhotoThumbnail)
+    val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
+
+    override val all = setOf(PhotoFileId, PhotoThumbnail)
 }
 
-class RawContactFields : FieldSet(UNKNOWN) {
+data class RelationField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.RELATION
+) : CommonDataFields()
 
-    val Id = AbstractField(Data.RAW_CONTACT_ID, mimeType)
+class RelationFields internal constructor() : FieldSet<RelationField>() {
 
-    override val fields = setOf(Id)
+    @JvmField
+    val Type = RelationField(CommonDataKinds.Relation.TYPE)
+
+    @JvmField
+    val Label = RelationField(CommonDataKinds.Relation.LABEL)
+
+    @JvmField
+    val Name = RelationField(CommonDataKinds.Relation.NAME)
+
+    override val all = setOf(Type, Label, Name)
 }
+
+data class SipAddressField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.SIP_ADDRESS
+) : CommonDataFields()
+
+class SipAddressFields internal constructor() : FieldSet<SipAddressField>() {
+
+    @JvmField
+    val SipAddress = SipAddressField(CommonDataKinds.SipAddress.SIP_ADDRESS)
+
+    override val all = setOf(SipAddress)
+}
+
+data class WebsiteField internal constructor(
+    override val columnName: String,
+    override val mimeType: MimeType = MimeType.WEBSITE
+) : CommonDataFields()
+
+class WebsiteFields internal constructor() : FieldSet<WebsiteField>() {
+
+    @JvmField
+    val Url = WebsiteField(CommonDataKinds.Website.URL)
+
+    override val all = setOf(Url)
+}
+
+// endregion
+
+// region Joined Fields
+
+data class JoinedDataField internal constructor(override val columnName: String) :
+    AbstractDataField()
+
+class JoinedContactsFields internal constructor() : FieldSet<JoinedDataField>() {
+
+    // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. This is only
+    // meant to be used for Data table operations.
+    @JvmField
+    val Id = JoinedDataField(Data.CONTACT_ID)
+
+    @JvmField
+    val DisplayNamePrimary = JoinedDataField(Data.DISPLAY_NAME_PRIMARY)
+
+    @JvmField
+    val DisplayNameAlt = JoinedDataField(Data.DISPLAY_NAME_ALTERNATIVE)
+
+    @JvmField
+    val LastUpdatedTimestamp = JoinedDataField(Data.CONTACT_LAST_UPDATED_TIMESTAMP)
+
+    override val all = setOf(Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp)
+}
+
+class JoinedOptionsFields internal constructor() : FieldSet<JoinedDataField>() {
+
+    internal val Id = JoinedDataField(Data._ID)
+
+    @JvmField
+    val Starred = JoinedDataField(Data.STARRED)
+
+    @JvmField
+    val TimesContacted = JoinedDataField(Data.TIMES_CONTACTED)
+
+    @JvmField
+    val LastTimeContacted = JoinedDataField(Data.LAST_TIME_CONTACTED)
+
+    @JvmField
+    val CustomRingtone = JoinedDataField(Data.CUSTOM_RINGTONE)
+
+    @JvmField
+    val SendToVoicemail = JoinedDataField(Data.SEND_TO_VOICEMAIL)
+
+    override val all = setOf(
+        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
+    )
+}
+
+class JoinedRawContactsFields internal constructor() : FieldSet<JoinedDataField>() {
+
+    val Id = JoinedDataField(Data.RAW_CONTACT_ID)
+
+    override val all = setOf(Id)
+}
+
+// endregion
+
+// endregion
+
+// region AggregationExceptions Table Fields
+
+data class AggregationExceptionsField internal constructor(override val columnName: String) :
+    AbstractField()
+
+/**
+ * Fields for AggregationExceptions table operations.
+ */
+internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsField>() {
+
+    val Type = AggregationExceptionsField(AggregationExceptions.TYPE)
+
+    val RawContactId1 = AggregationExceptionsField(AggregationExceptions.RAW_CONTACT_ID1)
+
+    val RawContactId2 = AggregationExceptionsField(AggregationExceptions.RAW_CONTACT_ID2)
+
+    override val all = setOf(Type, RawContactId1, RawContactId2)
+}
+
+// endregion
+
+// region Contacts Table Fields
+
+data class ContactsField internal constructor(override val columnName: String) : AbstractField()
+
+/**
+ * Fields for Contacts table operations.
+ */
+object ContactsFields : FieldSet<ContactsField>() {
+
+    @JvmField
+    val Id = ContactsField(Contacts._ID)
+
+    @JvmField
+    val DisplayNamePrimary = ContactsField(Contacts.DISPLAY_NAME_PRIMARY)
+
+    @JvmField
+    val DisplayNameAlt = ContactsField(Contacts.DISPLAY_NAME_ALTERNATIVE)
+
+    // Do not include in fields.
+    internal val DisplayNameSource = ContactsField(Contacts.DISPLAY_NAME_SOURCE)
+
+    // Do not include in fields.
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    internal val NameRawContactId = ContactsField(Contacts.NAME_RAW_CONTACT_ID)
+
+    @JvmField
+    val LastUpdatedTimestamp = ContactsField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP)
+
+    internal val PhotoUri = ContactsField(Contacts.PHOTO_URI)
+
+    internal val PhotoThumbnailUri = ContactsField(Contacts.PHOTO_THUMBNAIL_URI)
+
+    internal val PhotoFileId = ContactsField(Contacts.PHOTO_FILE_ID)
+
+    override val all = setOf(
+        Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
+        PhotoUri, PhotoThumbnailUri, PhotoFileId
+    )
+}
+
+// endregion
+
+// region Groups Table Fields
+
+data class GroupsField internal constructor(override val columnName: String) : AbstractField()
+
+/**
+ * Fields for Groups table operations.
+ */
+object GroupsFields : FieldSet<GroupsField>() {
+
+    @JvmField
+    val Id = GroupsField(Groups._ID)
+
+    @JvmField
+    val Title = GroupsField(Groups.TITLE)
+
+    @JvmField
+    val ReadOnly = GroupsField(Groups.GROUP_IS_READ_ONLY)
+
+    @JvmField
+    val Favorites = GroupsField(Groups.FAVORITES)
+
+    @JvmField
+    val AutoAdd = GroupsField(Groups.AUTO_ADD)
+
+    @JvmField
+    // From protected SyncColumns
+    val AccountName = GroupsField(Groups.ACCOUNT_NAME)
+
+    @JvmField
+    // From protected SyncColumns
+    val AccountType = GroupsField(Groups.ACCOUNT_TYPE)
+
+    override val all = setOf(Id, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
+}
+
+// endregion
+
+// region RawContacts Table Fields
+
+data class RawContactsField internal constructor(override val columnName: String) : AbstractField()
 
 /**
  * Fields for RawContacts table operations.
  */
-object RawContactsFields : FieldSet(UNKNOWN) {
+object RawContactsFields : FieldSet<RawContactsField>() {
 
-    val Id = AbstractField(RawContacts._ID, mimeType)
+    @JvmField
+    val Id = RawContactsField(RawContacts._ID)
 
-    val ContactId = AbstractField(RawContacts.CONTACT_ID, mimeType)
+    @JvmField
+    val ContactId = RawContactsField(RawContacts.CONTACT_ID)
 
-    val DisplayNamePrimary = AbstractField(RawContacts.DISPLAY_NAME_PRIMARY, mimeType)
+    @JvmField
+    val DisplayNamePrimary = RawContactsField(RawContacts.DISPLAY_NAME_PRIMARY)
 
-    val DisplayNameAlt = AbstractField(RawContacts.DISPLAY_NAME_ALTERNATIVE, mimeType)
+    @JvmField
+    val DisplayNameAlt = RawContactsField(RawContacts.DISPLAY_NAME_ALTERNATIVE)
 
+    @JvmField
     // From protected SyncColumns
-    val AccountName = AbstractField(RawContacts.ACCOUNT_NAME, mimeType)
+    val AccountName = RawContactsField(RawContacts.ACCOUNT_NAME)
 
+    @JvmField
     // From protected SyncColumns
-    val AccountType = AbstractField(RawContacts.ACCOUNT_TYPE, mimeType)
+    val AccountType = RawContactsField(RawContacts.ACCOUNT_TYPE)
 
-    override val fields = setOf(
+    override val all = setOf(
         Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType
     )
 }
 
-class RelationFields : FieldSet(MimeType.RELATION) {
-
-    @JvmField
-    val Type = AbstractField(CommonDataKinds.Relation.TYPE, mimeType)
-
-    @JvmField
-    val Label = AbstractField(CommonDataKinds.Relation.LABEL, mimeType)
-
-    @JvmField
-    val Name = AbstractField(CommonDataKinds.Relation.NAME, mimeType)
-
-    override val fields = setOf(Type, Label, Name)
-}
-
-class SipAddressFields : FieldSet(MimeType.SIP_ADDRESS) {
-
-    @JvmField
-    val SipAddress = AbstractField(CommonDataKinds.SipAddress.SIP_ADDRESS, mimeType)
-
-    override val fields = setOf(SipAddress)
-}
-
-class WebsiteFields : FieldSet(MimeType.WEBSITE) {
-
-    @JvmField
-    val Url = AbstractField(CommonDataKinds.Website.URL, mimeType)
-
-    override val fields = setOf(Url)
-}
+// endregion

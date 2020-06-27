@@ -1,6 +1,20 @@
 ## TODO
 
-- Implement Where.regex. Can like take in a regex? Try matching phone numbers with spaces using like.
+----------------------- Query refactor.
+
+Only allow order by ContactsFields (and other Contact table fields like Options) like GeneralQuery.  
+This may allow me to order by limit offset natively. If so, as a bonus, create util functions for  
+sorting collection or sequence of Contact objects using fields using CompoundOrderBy.
+
+If refactoring Query, we may be able to add Options to RawContact as a member instead of only accessible via extension functions!
+
+Create more specific AbstractField. EG GroupField so that it can be used in GroupsQuery as a type check. Apply to all queries.
+This might be an opportunity to refactor Where such that it gets resolved to a string lazily so that we can check if it only contains valid fields.
+Implement a version of Where that is already resolved instead of lazily for consumers that pass in mutable objects such as mutable lists
+
+Ensure that OptionsFields are allowed (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
+
+-------------------------------------------------------------------
 
 - Implement Contacts.generalQuery. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
     - include use ContactFields
@@ -9,6 +23,8 @@
     - are blanks included?
     - Contacts to display (accounts/groups)?
       - (see native Contacts App pre Nougat and post Nougat)
+
+- Implement Where.regex. Can like take in a regex? Try matching phone numbers with spaces using like.
 
 1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
     - Read-only like GroupMemberships. Update relevant util functions and AccountsRawContactsAssociations
