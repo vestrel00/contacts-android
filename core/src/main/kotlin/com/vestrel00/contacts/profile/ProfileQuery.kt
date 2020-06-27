@@ -77,7 +77,8 @@ interface ProfileQuery {
     fun accounts(accounts: Sequence<Account?>): ProfileQuery
 
     /**
-     * Includes the given set of [fields] in the resulting contact object.
+     * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
+     * object.
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
      * fields will be included in addition to [Fields.Required], which are always included.
@@ -99,17 +100,17 @@ interface ProfileQuery {
      * Do not perform updates on contacts returned by a query where all fields are not included as
      * it will result in data loss!
      */
-    fun include(vararg fields: Field): ProfileQuery
+    fun include(vararg fields: AbstractDataField): ProfileQuery
 
     /**
      * See [ProfileQuery.include].
      */
-    fun include(fields: Collection<Field>): ProfileQuery
+    fun include(fields: Collection<AbstractDataField>): ProfileQuery
 
     /**
      * See [ProfileQuery.include].
      */
-    fun include(fields: Sequence<Field>): ProfileQuery
+    fun include(fields: Sequence<AbstractDataField>): ProfileQuery
 
     /**
      * Returns the profile [Contact], if available.
@@ -179,11 +180,11 @@ private class ProfileQueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: Field) = include(fields.asSequence())
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<Field>) = include(fields.asSequence())
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<Field>): ProfileQuery = apply {
+    override fun include(fields: Sequence<AbstractDataField>): ProfileQuery = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
@@ -225,6 +226,8 @@ private fun ContentResolver.resolve(
             null,
             processCursor = contactsMapper::processDataCursor
         )
+
+        // FIXME? Blank RawContacts (no Data rows) are not included here...
 
         if (cancel()) {
             return null
