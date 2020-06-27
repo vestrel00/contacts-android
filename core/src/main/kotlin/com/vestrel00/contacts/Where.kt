@@ -227,7 +227,7 @@ private fun <T : Field, R : Any?> Sequence<R>.joinWhere(
 private class ContactsTableWhere(whereString: String) : Where<ContactsField>(whereString)
 
 /**
- * Converts [this] where clause to a where clause that is usable for the Contacts table.
+ * Converts [this] Data where clause to a where clause that is usable for the Contacts table.
  *
  * More specifically, this translates the following column names to work with the Contacts table;
  *
@@ -237,7 +237,7 @@ private class ContactsTableWhere(whereString: String) : Where<ContactsField>(whe
  * This does no translate anything else. So any fields used that does not exist in the Contacts
  * table will remain.
  */
-internal fun Where<*>.inContactsTable(): Where<ContactsField> = ContactsTableWhere(
+internal fun Where<DataField>.inContactsTable(): Where<ContactsField> = ContactsTableWhere(
     toString()
         .replace(RawContactsFields.ContactId.columnName, ContactsFields.Id.columnName)
         // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
@@ -248,7 +248,7 @@ internal fun Where<*>.inContactsTable(): Where<ContactsField> = ContactsTableWhe
 private class RawContactsTableWhere(whereString: String) : Where<RawContactsField>(whereString)
 
 /**
- * Converts [this] where clause to a where clause that is usable for the RawContacts table.
+ * Converts [this] Data where clause to a where clause that is usable for the RawContacts table.
  *
  * More specifically, this translates the following column names to work with the RawContacts table;
  *
@@ -257,7 +257,7 @@ private class RawContactsTableWhere(whereString: String) : Where<RawContactsFiel
  * This does no translate anything else. So any fields used that does not exist in the RawContacts
  * table will remain.
  */
-internal fun Where<*>.inRawContactsTable(): Where<RawContactsField> = RawContactsTableWhere(
+internal fun Where<DataField>.inRawContactsTable(): Where<RawContactsField> = RawContactsTableWhere(
     toString().replace(Fields.RawContact.Id.columnName, RawContactsFields.Id.columnName)
 )
 
