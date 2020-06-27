@@ -4,7 +4,7 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
-import com.vestrel00.contacts.AbstractField
+import com.vestrel00.contacts.Field
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.accounts.accountForRawContactWithId
@@ -20,7 +20,7 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
     override val mimeType = MimeType.GROUP_MEMBERSHIP
 
     override fun setData(
-        data: GroupMembership, setValue: (field: AbstractField, dataValue: Any?) -> Unit
+        data: GroupMembership, setValue: (field: Field, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.GroupMembership.GroupId, data.groupId)
     }

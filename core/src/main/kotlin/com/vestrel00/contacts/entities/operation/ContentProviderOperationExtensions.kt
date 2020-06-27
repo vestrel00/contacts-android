@@ -2,7 +2,7 @@ package com.vestrel00.contacts.entities.operation
 
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.Builder
-import com.vestrel00.contacts.AbstractField
+import com.vestrel00.contacts.Field
 import com.vestrel00.contacts.Where
 import com.vestrel00.contacts.entities.table.Table
 
@@ -15,5 +15,5 @@ internal fun newDelete(table: Table): Builder = ContentProviderOperation.newDele
 internal fun Builder.withSelection(where: Where?): Builder =
     withSelection(where?.toString(), null)
 
-internal fun Builder.withValue(field: AbstractField, value: Any?): Builder =
+internal fun Builder.withValue(field: Field, value: Any?): Builder =
     withValue(field.columnName, value)

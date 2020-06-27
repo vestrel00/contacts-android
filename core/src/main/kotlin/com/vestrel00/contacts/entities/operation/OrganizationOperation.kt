@@ -1,6 +1,6 @@
 package com.vestrel00.contacts.entities.operation
 
-import com.vestrel00.contacts.AbstractField
+import com.vestrel00.contacts.Field
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableOrganization
@@ -10,7 +10,7 @@ internal class OrganizationOperation : AbstractDataOperation<MutableOrganization
     override val mimeType = MimeType.ORGANIZATION
 
     override fun setData(
-        data: MutableOrganization, setValue: (field: AbstractField, dataValue: Any?) -> Unit
+        data: MutableOrganization, setValue: (field: Field, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Organization.Company, data.company)
         setValue(Fields.Organization.Title, data.title)

@@ -28,7 +28,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     /**
      * Sets the [data] values into the operation via the provided [setValue] function.
      */
-    abstract fun setData(data: T, setValue: (field: AbstractField, value: Any?) -> Unit)
+    abstract fun setData(data: T, setValue: (field: Field, value: Any?) -> Unit)
 
     /**
      * Returns a [ContentProviderOperation] for adding the [entity] properties to the insert

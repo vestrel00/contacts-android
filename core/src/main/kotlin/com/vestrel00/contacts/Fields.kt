@@ -11,16 +11,11 @@ import com.vestrel00.contacts.entities.MimeType
 // region Field Interfaces
 
 /**
- * Represents a database field(s) / column(s).
- */
-sealed class Field
-
-/**
  * Represents a database field / column.
  *
  * All concrete implementations of this must be data classes or implement equals and hashCode.
  */
-sealed class AbstractField : Field() {
+sealed class Field {
     internal abstract val columnName: String
 
     // Force concrete implementations to implements equals and hashCode
@@ -30,23 +25,22 @@ sealed class AbstractField : Field() {
 }
 
 /**
- * Holds a set of [AbstractField]s.
+ * Holds a set of [Field]s.
  */
-sealed class FieldSet<T : AbstractField> : Field() {
+sealed class FieldSet<T : Field> {
     abstract val all: Set<T>
 }
-
 
 // endregion
 
 // region Data Table Fields
 
-sealed class AbstractDataField : AbstractField()
+sealed class AbstractDataField : Field()
 
 data class DataField internal constructor(override val columnName: String) : AbstractDataField()
 
 /**
- * Contains all [Field]s (columns) that are accessible via the Data table with joins from the
+ * Contains all fields / columns that are accessible via the Data table with joins from the
  * RawContacts and Contacts tables (ContactsContract.DataColumnsWithJoins).
  *
  * For a shorter name, use [F] (useful for Kotlin-ers).
@@ -72,7 +66,7 @@ object Fields : FieldSet<AbstractDataField>() {
 
     @JvmField
     val DataId = DataField(Data._ID)
-    
+
     @JvmField
     val Email = EmailFields()
 
@@ -629,7 +623,7 @@ class JoinedRawContactsFields internal constructor() : FieldSet<JoinedDataField>
 // region AggregationExceptions Table Fields
 
 data class AggregationExceptionsField internal constructor(override val columnName: String) :
-    AbstractField()
+    Field()
 
 /**
  * Fields for AggregationExceptions table operations.
@@ -649,7 +643,7 @@ internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsFiel
 
 // region Contacts Table Fields
 
-data class ContactsField internal constructor(override val columnName: String) : AbstractField()
+data class ContactsField internal constructor(override val columnName: String) : Field()
 
 /**
  * Fields for Contacts table operations.
@@ -691,7 +685,7 @@ object ContactsFields : FieldSet<ContactsField>() {
 
 // region Groups Table Fields
 
-data class GroupsField internal constructor(override val columnName: String) : AbstractField()
+data class GroupsField internal constructor(override val columnName: String) : Field()
 
 /**
  * Fields for Groups table operations.
@@ -728,7 +722,7 @@ object GroupsFields : FieldSet<GroupsField>() {
 
 // region RawContacts Table Fields
 
-data class RawContactsField internal constructor(override val columnName: String) : AbstractField()
+data class RawContactsField internal constructor(override val columnName: String) : Field()
 
 /**
  * Fields for RawContacts table operations.

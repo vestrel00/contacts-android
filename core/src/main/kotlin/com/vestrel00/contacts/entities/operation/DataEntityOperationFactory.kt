@@ -5,7 +5,7 @@ import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableDataEntity
 
 /**
- * Returns a new [ContentProviderOperation] for updating [this]. Returns null if no operation
+ * Returns a new [ContentProviderOperation] for updating [this].
  */
 // This can be declared just as MutableDataEntity.updateOperation but this looks more consistent
 // with the other functions.

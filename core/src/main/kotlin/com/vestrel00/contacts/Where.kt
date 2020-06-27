@@ -16,64 +16,63 @@ import java.util.*
 /**
  * Note that string comparison is case-sensitive.
  */
-infix fun AbstractField.equalTo(value: Any): Where = EqualTo(this, value)
+infix fun Field.equalTo(value: Any): Where = EqualTo(this, value)
 
 /**
  * Note that string comparison is case-sensitive.
  */
-infix fun AbstractField.notEqualTo(value: Any): Where = NotEqualTo(this, value)
+infix fun Field.notEqualTo(value: Any): Where = NotEqualTo(this, value)
 
 /**
  * Note that string comparison is case-insensitive when within ASCII range.
  */
-infix fun AbstractField.equalToIgnoreCase(value: Any): Where = EqualToIgnoreCase(this, value)
+infix fun Field.equalToIgnoreCase(value: Any): Where = EqualToIgnoreCase(this, value)
 
 /**
  * Note that string comparison is case-insensitive when within ASCII range.
  */
-infix fun AbstractField.notEqualToIgnoreCase(value: Any): Where = NotEqualToIgnoreCase(this, value)
+infix fun Field.notEqualToIgnoreCase(value: Any): Where = NotEqualToIgnoreCase(this, value)
 
-infix fun AbstractField.greaterThan(value: Any): Where = GreaterThan(this, value)
-infix fun AbstractField.greaterThanOrEqual(value: Any): Where =
-    GreaterThanOrEqual(this, value)
+infix fun Field.greaterThan(value: Any): Where = GreaterThan(this, value)
+infix fun Field.greaterThanOrEqual(value: Any): Where = GreaterThanOrEqual(this, value)
 
-infix fun AbstractField.lessThan(value: Any): Where = LessThan(this, value)
-infix fun AbstractField.lessThanOrEqual(value: Any): Where = LessThanOrEqual(this, value)
+infix fun Field.lessThan(value: Any): Where = LessThan(this, value)
+infix fun Field.lessThanOrEqual(value: Any): Where = LessThanOrEqual(this, value)
 
-infix fun AbstractField.`in`(values: Collection<Any>): Where = In(this, values.asSequence())
-infix fun AbstractField.`in`(values: Sequence<Any>): Where = In(this, values)
-infix fun AbstractField.notIn(values: Collection<Any>): Where = NotIn(this, values.asSequence())
-infix fun AbstractField.notIn(values: Sequence<Any>): Where = NotIn(this, values)
-
-/**
- * Note that the value is case-insensitive when within ASCII range.
- */
-infix fun AbstractField.startsWith(value: String): Where = StartsWith(this, value)
+infix fun Field.`in`(values: Collection<Any>): Where = In(this, values.asSequence())
+infix fun Field.`in`(values: Sequence<Any>): Where = In(this, values)
+infix fun Field.notIn(values: Collection<Any>): Where = NotIn(this, values.asSequence())
+infix fun Field.notIn(values: Sequence<Any>): Where = NotIn(this, values)
 
 /**
  * Note that the value is case-insensitive when within ASCII range.
  */
-infix fun AbstractField.endsWith(value: String): Where = EndsWith(this, value)
+infix fun Field.startsWith(value: String): Where = StartsWith(this, value)
 
 /**
  * Note that the value is case-insensitive when within ASCII range.
  */
-infix fun AbstractField.contains(value: String): Where = Contains(this, value)
+infix fun Field.endsWith(value: String): Where = EndsWith(this, value)
 
 /**
  * Note that the value is case-insensitive when within ASCII range.
  */
-infix fun AbstractField.doesNotStartWith(value: String): Where = DoesNotStartWith(this, value)
+infix fun Field.contains(value: String): Where = Contains(this, value)
 
 /**
  * Note that the value is case-insensitive when within ASCII range.
  */
-infix fun AbstractField.doesNotEndWith(value: String): Where = DoesNotEndWith(this, value)
+infix fun Field.doesNotStartWith(value: String): Where = DoesNotStartWith(this, value)
 
 /**
  * Note that the value is case-insensitive when within ASCII range.
  */
-infix fun AbstractField.doesNotContain(value: String): Where = DoesNotContain(this, value)
+infix fun Field.doesNotEndWith(value: String): Where = DoesNotEndWith(this, value)
+
+/**
+ * Note that the value is case-insensitive when within ASCII range.
+ */
+infix fun Field.doesNotContain(value: String): Where = DoesNotContain(this, value)
 
 // Non-infix convenience functions
 
@@ -88,7 +87,7 @@ infix fun AbstractField.doesNotContain(value: String): Where = DoesNotContain(th
  * Thus, a query to search for all contacts with null email address may return 0 contacts even if
  * there are some contacts without email addresses.
  */
-fun AbstractField.isNotNull(): Where = IsNotNull(this)
+fun Field.isNotNull(): Where = IsNotNull(this)
 
 /**
  * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
@@ -101,13 +100,13 @@ fun AbstractField.isNotNull(): Where = IsNotNull(this)
  * Thus, a query to search for all contacts with null email address may return 0 contacts even if
  * there are some contacts without email addresses.
  */
-fun AbstractField.isNotNullOrEmpty(): Where = isNotNull() and notEqualTo("")
+fun Field.isNotNullOrEmpty(): Where = isNotNull() and notEqualTo("")
 
 /**
  * Keep this function internal. Do not expose to consumers. Read the docs on [isNotNull] or
  * [isNotNullOrEmpty].
  */
-internal fun AbstractField.isNull(): Where = IsNull(this)
+internal fun Field.isNull(): Where = IsNull(this)
 
 // Collection convenience functions
 
@@ -134,7 +133,7 @@ internal fun AbstractField.isNull(): Where = IsNull(this)
  *      .whereOr { Fields.Contact.DisplayName startsWith "$it" }
  * ```
  *
- * This may also be applied to a collection of [AbstractField]s. For example,
+ * This may also be applied to a collection of [Field]s. For example,
  *
  * ```
  * val fields = listOf(Fields.Contact.DisplayName, Fields.Email.Address)
@@ -174,7 +173,7 @@ infix fun <T : Any?> Sequence<T>.whereOr(where: (T) -> Where): Where? = joinWher
  * (display_name NOT LIKE 'a%%') AND (display_name NOT LIKE 'b%%') AND (display_name NOT LIKE 'c%%')
  * ```
  *
- * This may also be applied to a collection of [AbstractField]s. For example,
+ * This may also be applied to a collection of [Field]s. For example,
  *
  * ```
  * val fields = listOf(Fields.Contact.DisplayName, Fields.Email.Address)
@@ -199,12 +198,12 @@ infix fun <T : Any?> Sequence<T>.whereAnd(where: (T) -> Where): Where? = joinWhe
 /**
  * See [whereOr].
  */
-infix fun FieldSet<*>.whereOr(where: (AbstractField) -> Where): Where? = all.whereOr(where)
+infix fun FieldSet<*>.whereOr(where: (Field) -> Where): Where? = all.whereOr(where)
 
 /**
  * See [whereAnd].
  */
-infix fun FieldSet<*>.whereAnd(where: (AbstractField) -> Where): Where? = all.whereAnd(where)
+infix fun FieldSet<*>.whereAnd(where: (Field) -> Where): Where? = all.whereAnd(where)
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
 private fun <T : Any?> Sequence<T>.joinWhere(where: (T) -> Where, separator: String): Where? {
@@ -276,7 +275,7 @@ private class RawContactsTableWhere(whereString: String) : Where(whereString)
  *
  * The above will never match any row because 'johnson' = 'colorado' is never true.
  */
-private fun where(field: AbstractField, operator: String, value: Any?): String {
+private fun where(field: Field, operator: String, value: Any?): String {
     var where = "${field.columnName} $operator ${value.toSqlString()}"
     if (field is CommonDataFields && field.mimeType.value.isNotBlank()) {
         where += " AND ${Fields.MimeType.columnName} = '${field.mimeType.value}'"
@@ -298,36 +297,36 @@ sealed class Where(private val whereString: String) {
 private class And(lhs: Where, rhs: Where) : Where(where(lhs, "AND", rhs))
 private class Or(lhs: Where, rhs: Where) : Where(where(lhs, "OR", rhs))
 
-private class EqualTo(field: AbstractField, value: Any) : Where(where(field, "=", value))
-private class NotEqualTo(field: AbstractField, value: Any) : Where(where(field, "!=", value))
+private class EqualTo(field: Field, value: Any) : Where(where(field, "=", value))
+private class NotEqualTo(field: Field, value: Any) : Where(where(field, "!=", value))
 
-private class GreaterThan(field: AbstractField, value: Any) : Where(where(field, ">", value))
-private class GreaterThanOrEqual(field: AbstractField, value: Any) :
+private class GreaterThan(field: Field, value: Any) : Where(where(field, ">", value))
+private class GreaterThanOrEqual(field: Field, value: Any) :
     Where(where(field, ">=", value))
 
-private class LessThan(field: AbstractField, value: Any) : Where(where(field, "<", value))
-private class LessThanOrEqual(field: AbstractField, value: Any) : Where(where(field, "<=", value))
+private class LessThan(field: Field, value: Any) : Where(where(field, "<", value))
+private class LessThanOrEqual(field: Field, value: Any) : Where(where(field, "<=", value))
 
-private class IsNull(field: AbstractField) : Where(where(field, "IS", null))
-private class IsNotNull(field: AbstractField) : Where(where(field, "IS NOT", null))
+private class IsNull(field: Field) : Where(where(field, "IS", null))
+private class IsNotNull(field: Field) : Where(where(field, "IS NOT", null))
 
-private class In(field: AbstractField, values: Sequence<Any>) : Where(where(field, "IN", values))
-private class NotIn(field: AbstractField, values: Sequence<Any>) :
+private class In(field: Field, values: Sequence<Any>) : Where(where(field, "IN", values))
+private class NotIn(field: Field, values: Sequence<Any>) :
     Where(where(field, "NOT IN", values))
 
-private open class Like(field: AbstractField, value: Any) : Where(where(field, "LIKE", value))
-private open class NotLike(field: AbstractField, value: Any) :
+private open class Like(field: Field, value: Any) : Where(where(field, "LIKE", value))
+private open class NotLike(field: Field, value: Any) :
     Where(where(field, "NOT LIKE", value))
 
-private class EqualToIgnoreCase(field: AbstractField, value: Any) : Like(field, "$value")
-private class StartsWith(field: AbstractField, value: String) : Like(field, "$value%%")
-private class EndsWith(field: AbstractField, value: String) : Like(field, "%%$value")
-private class Contains(field: AbstractField, value: String) : Like(field, "%%$value%%")
+private class EqualToIgnoreCase(field: Field, value: Any) : Like(field, "$value")
+private class StartsWith(field: Field, value: String) : Like(field, "$value%%")
+private class EndsWith(field: Field, value: String) : Like(field, "%%$value")
+private class Contains(field: Field, value: String) : Like(field, "%%$value%%")
 
-private class NotEqualToIgnoreCase(field: AbstractField, value: Any) : NotLike(field, "$value")
-private class DoesNotStartWith(field: AbstractField, value: String) : NotLike(field, "$value%%")
-private class DoesNotEndWith(field: AbstractField, value: String) : NotLike(field, "%%$value")
-private class DoesNotContain(field: AbstractField, value: String) : NotLike(field, "%%$value%%")
+private class NotEqualToIgnoreCase(field: Field, value: Any) : NotLike(field, "$value")
+private class DoesNotStartWith(field: Field, value: String) : NotLike(field, "$value%%")
+private class DoesNotEndWith(field: Field, value: String) : NotLike(field, "%%$value")
+private class DoesNotContain(field: Field, value: String) : NotLike(field, "%%$value%%")
 
 private class JoinedWhere(whereString: String) : Where(whereString)
 

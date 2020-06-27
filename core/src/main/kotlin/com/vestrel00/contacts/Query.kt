@@ -388,9 +388,10 @@ private class QueryImpl(
             CompoundOrderBy(orderBy.toSet())
         }
 
-        if (!this.orderBy.allFieldsAreContainedIn(include.fields)) {
-            throw IllegalArgumentException("Order by fields must be included in the query")
-        }
+        // TODO this is no longer necesary once this has been refactored to use the native ORDER BY.
+        // if (!this.orderBy.allFieldsAreContainedIn(include.fields)) {
+        //     throw IllegalArgumentException("Order by fields must be included in the query")
+        // }
     }
 
     override fun limit(limit: Int): Query = apply {

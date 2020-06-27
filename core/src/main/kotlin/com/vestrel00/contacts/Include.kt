@@ -6,28 +6,19 @@ internal fun Include(vararg fields: Field) = Include(fields.asSequence())
 @Suppress("FunctionName")
 internal fun Include(fields: Collection<Field>) = Include(fields.asSequence())
 
-internal class Include(fields: Sequence<Field>) {
+@Suppress("FunctionName")
+internal fun Include(fields: Sequence<Field>) = Include(
+    // The call toSet is important because it gets rid of duplicates. We can also call
+    // distinct() but then we can't call toTypedArray after it. And no, this is not more
+    // expensive than calling distinct, it is actually cheaper. Distinct uses a HashSet
+    // internally in addition to extra computations.
+    fields.map { it.columnName }.toSet()
+)
 
-    val fields: Set<AbstractField> by lazy(LazyThreadSafetyMode.NONE) {
-        // Couldn't find a clean way of writing this as fields.map... because of the varying types.
-        // We don't always have to use map or flatMap =)
-        mutableSetOf<AbstractField>().apply {
-            for (field in fields) {
-                when (field) {
-                    is AbstractField -> add(field)
-                    is FieldSet<*> -> addAll(field.all)
-                }
-            }
-        }
-    }
+@Suppress("FunctionName")
+internal fun Include(fieldSet: FieldSet<*>) = Include(fieldSet.all)
 
-    val columnNames: Array<out String> by lazy(LazyThreadSafetyMode.NONE) {
-        // The call toSet is important because it gets rid of duplicates. We can also call
-        // distinct() but then we can't call toTypedArray after it. And no, this is not more
-        // expensive than calling distinct, it is actually cheaper. Distinct uses a HashSet
-        // internally in addition to extra computations.
-        this.fields.asSequence().map { it.columnName }.toSet().toTypedArray()
-    }
+internal class Include(val columnNames: Set<String>) {
 
     override fun toString(): String = columnNames.joinToString(", ")
 }
@@ -35,32 +26,36 @@ internal class Include(fields: Sequence<Field>) {
 /**
  * Returns a new instance of [Include] where only the given [fields] in [this] are included.
  */
-internal fun Include.onlyFieldsIn(fields: Collection<AbstractField>) = Include(
-    fields.intersect(this.fields).asSequence()
+internal fun Include.onlyFieldsIn(fields: Collection<Field>) = Include(
+    Include(fields).columnNames.intersect(columnNames)
 )
 
 /**
- * Returns a new instance of [Include] where only Contacts fields in [this] are included.
+ * Returns a new instance of [Include] where only [ContactsFields] in [this] are included.
+ *
+ * This is used to convert an [Include] of [DataFields] to [ContactsFields].
  */
 internal fun Include.onlyContactsFields() = Include(
-    // Contacts.Id belong to the Contacts table. Contact.Id belongs to the Data table.
-    // So we just add the Contacts.Id since it is required anyways.
-    ContactsFields.all
-        .intersect(fields)
+    Include(ContactsFields.all).columnNames
+        .intersect(columnNames)
         .asSequence()
-        .plus(ContactsFields.Id)
+        // JoinedContactsFields.Id has a different columnName than ContactsFields.Id.
+        .plus(ContactsFields.Id.columnName)
+        .toSet()
 )
 
 /**
- * Returns a new instance of [Include] where only RawContacts fields in [this] are included.
+ * Returns a new instance of [Include] where only [RawContactsFields] in [this] are included.
+ *
+ * This is used to convert an [Include] of [DataFields] to [RawContactsFields].
  */
 internal fun Include.onlyRawContactsFields() = Include(
-    // Contacts.Id belong to the Contacts table. Contact.Id belongs to the Data table.
-    // RawContacts.Id belong to the RawContacts table. RawContact.Id belongs to the Data table.
-    // So we just add the Contacts.Id and RawContacts.Id since they are required anyways.
-    RawContactsFields.all
-        .intersect(fields)
+    Include(RawContactsFields.all).columnNames
+        .intersect(columnNames)
         .asSequence()
-        .plus(ContactsFields.Id)
-        .plus(RawContactsFields.Id)
+        // JoinedRawContactsFields.Id has a different columnName than RawContactsFields.Id.
+        .plus(RawContactsFields.Id.columnName)
+        // JoinedContactsFields.Id has a different columnName than RawContactsFields.ContactId.
+        .plus(RawContactsFields.ContactId.columnName)
+        .toSet()
 )

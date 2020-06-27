@@ -60,7 +60,7 @@ internal fun <T> ContentResolver.query(
     val cursor = try {
         query(
             contentUri,
-            include.columnNames,
+            include.columnNames.toTypedArray(),
             where?.toString(),
             null,
             sortOrder

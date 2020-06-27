@@ -18,41 +18,40 @@ private const val DEFAULT_IGNORE_CASE = true
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun AbstractField.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy =
-    Ascending(this, ignoreCase)
+fun Field.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy = Ascending(this, ignoreCase)
 
 /**
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun AbstractField.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy =
-    Descending(this, ignoreCase)
+fun Field.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy = Descending(this, ignoreCase)
 
 /**
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun Collection<AbstractField>.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy> =
+fun Collection<Field>.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy> =
     asSequence().map { it.asc(ignoreCase) }.toSet()
 
 /**
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun Collection<AbstractField>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy> =
+fun Collection<Field>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy> =
     asSequence().map { it.desc(ignoreCase) }.toSet()
 
 /**
  * Serves two different purposes;
  *
+ * TODO remove Comparator inheritance
  * 1. As a [Comparator] of [Contact]s.
  * 2. As the ORDER BY value string in Contacts Provider queries.
  */
-sealed class OrderBy(
-    internal val field: AbstractField,
-    private val order: String,
-    protected val ignoreCase: Boolean
-) : Comparator<Contact> {
+sealed class OrderBy : Comparator<Contact> {
+
+    internal abstract val field: Field
+    protected abstract val ignoreCase: Boolean
+    protected abstract val order: String
 
     override fun toString(): String = if (ignoreCase) {
         "${field.columnName} COLLATE NOCASE $order"
@@ -61,14 +60,16 @@ sealed class OrderBy(
     }
 }
 
-private class Ascending(field: AbstractField, ignoreCase: Boolean) :
-    OrderBy(field, "ASC", ignoreCase) {
+private class Ascending(override val field: Field, override val ignoreCase: Boolean) : OrderBy() {
+
+    override val order: String = "ASC"
 
     override fun compare(lhs: Contact, rhs: Contact): Int = field.compare(lhs, rhs, ignoreCase)
 }
 
-private class Descending(field: AbstractField, ignoreCase: Boolean) :
-    OrderBy(field, "DESC", ignoreCase) {
+private class Descending(override val field: Field, override val ignoreCase: Boolean) : OrderBy() {
+
+    override val order: String = "DESC"
 
     override fun compare(lhs: Contact, rhs: Contact): Int = -field.compare(lhs, rhs, ignoreCase)
 }
@@ -78,7 +79,7 @@ private class Descending(field: AbstractField, ignoreCase: Boolean) :
  */
 internal class CompoundOrderBy(private val orderBys: Set<OrderBy>) : Comparator<Contact> {
 
-    fun allFieldsAreContainedIn(fieldSet: Set<AbstractField>): Boolean {
+    fun allFieldsAreContainedIn(fieldSet: Set<Field>): Boolean {
         val orderByFieldSet = orderBys.asSequence().map { it.field }.toSet()
         return fieldSet.containsAll(orderByFieldSet)
     }
@@ -107,9 +108,9 @@ internal class CompoundOrderBy(private val orderBys: Set<OrderBy>) : Comparator<
 }
 
 /**
- * Compares [Contact] values corresponding to [AbstractField]s defined in [Fields].
+ * Compares [Contact] values corresponding to [Field]s defined in [Fields].
  */
-private fun AbstractField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int {
+private fun Field.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int {
 
     return when (this) {
         // ADDRESS

@@ -1,6 +1,6 @@
 package com.vestrel00.contacts.entities.operation
 
-import com.vestrel00.contacts.AbstractField
+import com.vestrel00.contacts.Field
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableAddress
@@ -10,7 +10,7 @@ internal class AddressOperation : AbstractDataOperation<MutableAddress>() {
     override val mimeType = MimeType.ADDRESS
 
     override fun setData(
-        data: MutableAddress, setValue: (field: AbstractField, dataValue: Any?) -> Unit
+        data: MutableAddress, setValue: (field: Field, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Address.Type, data.type?.value)
         setValue(Fields.Address.Label, data.label)

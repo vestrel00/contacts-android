@@ -2,18 +2,19 @@
 
 ----------------------- Query refactor.
 
-Only allow order by ContactsFields (and other Contact table fields like Options) like GeneralQuery.  
-This may allow me to order by limit offset natively. If so, as a bonus, create util functions for  
-sorting collection or sequence of Contact objects using fields using CompoundOrderBy.
+1. Add type info to include, where, and orderBy for compilation checks in queries instead of runtime.
 
-If refactoring Query, we may be able to add Options to RawContact as a member instead of only accessible via extension functions!
+2. Only allow order by ContactsFields (and other Contact table fields like Options) like GeneralQuery.  
+   This may allow me to order by limit offset natively.
 
-Create more specific AbstractField. EG GroupField so that it can be used in GroupsQuery as a type check. Apply to all queries.
-This might be an opportunity to refactor Where such that it gets resolved to a string lazily so that we can check if it only contains valid fields.
-Implement a version of Where that is already resolved instead of lazily for consumers that pass in mutable objects such as mutable lists
-In other words: Add type info to include, where, and orderBy for compilation checks instead of runtime.
+3. If refactoring Query, we may be able to add Options to RawContact as a member instead of only
+   accessible via extension functions?
+4. Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
 
-Ensure that OptionsFields are allowed (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
+5. Refactor Where such that it gets resolved to a string lazily so that we can check if it only contains valid fields.
+   Implement a version of Where that is already resolved instead of lazily for consumers that pass in mutable objects such as mutable lists
+
+6. Ensure that OptionsFields are included (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
 
 -------------------------------------------------------------------
 
