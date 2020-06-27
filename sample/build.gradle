@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation project(':contacts')
+    implementation project(':core')
     implementation project(':contacts-async')
     implementation project(':contacts-debug')
     implementation project(':contacts-permissions')

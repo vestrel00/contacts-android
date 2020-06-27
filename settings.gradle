@@ -1,4 +1,4 @@
-include ':contacts'
+include ':core'
 include ':contacts-async'
 include ':contacts-debug'
 include ':contacts-permissions'

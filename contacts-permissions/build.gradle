@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation project(':contacts')
+    implementation project(':core')
 
     implementation libraries.dexter
     implementation libraries.kotlin.coroutines
