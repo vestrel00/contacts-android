@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.MutableGroup
-import com.vestrel00.contacts.entities.operation.GroupOperation
+import com.vestrel00.contacts.entities.operation.GroupsOperation
 import com.vestrel00.contacts.util.applyBatch
 
 /**
@@ -152,7 +152,7 @@ private class GroupsUpdateImpl(
 }
 
 private fun ContentResolver.updateGroup(group: MutableGroup): Boolean =
-    GroupOperation.update(group)?.let { applyBatch(it) } != null
+    GroupsOperation.update(group)?.let { applyBatch(it) } != null
 
 private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsUpdate.Result {

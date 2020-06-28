@@ -6,7 +6,7 @@ import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.accounts.AccountsQuery
 import com.vestrel00.contacts.entities.MutableGroup
-import com.vestrel00.contacts.entities.operation.GroupOperation
+import com.vestrel00.contacts.entities.operation.GroupsOperation
 import com.vestrel00.contacts.util.applyBatch
 
 /**
@@ -162,7 +162,7 @@ private class GroupsInsertImpl(
 }
 
 private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
-    val results = applyBatch(GroupOperation.insert(group))
+    val results = applyBatch(GroupsOperation.insert(group))
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the
