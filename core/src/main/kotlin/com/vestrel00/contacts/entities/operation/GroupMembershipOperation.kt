@@ -15,7 +15,7 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.util.query
 
-internal object GroupMembershipOperation : AbstractDataOperation<GroupMembership>() {
+internal object GroupMembershipOperation : AbstractCommonDataOperation<GroupMembership>() {
 
     override val mimeType = MimeType.GROUP_MEMBERSHIP
 

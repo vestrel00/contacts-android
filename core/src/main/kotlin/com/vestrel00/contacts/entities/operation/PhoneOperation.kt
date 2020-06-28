@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutablePhone
 
-internal object PhoneOperation : AbstractDataOperation<MutablePhone>() {
+internal object PhoneOperation : AbstractCommonDataOperation<MutablePhone>() {
 
     override val mimeType = MimeType.PHONE
 

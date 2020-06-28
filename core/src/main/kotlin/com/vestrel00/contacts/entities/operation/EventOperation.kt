@@ -6,7 +6,7 @@ import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableEvent
 import com.vestrel00.contacts.entities.mapper.EventMapper
 
-internal object EventOperation : AbstractDataOperation<MutableEvent>() {
+internal object EventOperation : AbstractCommonDataOperation<MutableEvent>() {
 
     override val mimeType = MimeType.EVENT
 

@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableNote
 
-internal object NoteOperation : AbstractDataOperation<MutableNote>() {
+internal object NoteOperation : AbstractCommonDataOperation<MutableNote>() {
 
     override val mimeType = MimeType.NOTE
 

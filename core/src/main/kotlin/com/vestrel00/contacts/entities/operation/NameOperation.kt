@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableName
 
-internal object NameOperation : AbstractDataOperation<MutableName>() {
+internal object NameOperation : AbstractCommonDataOperation<MutableName>() {
 
     override val mimeType = MimeType.NAME
 

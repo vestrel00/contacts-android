@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableRelation
 
-internal object RelationOperation : AbstractDataOperation<MutableRelation>() {
+internal object RelationOperation : AbstractCommonDataOperation<MutableRelation>() {
 
     override val mimeType = MimeType.RELATION
 

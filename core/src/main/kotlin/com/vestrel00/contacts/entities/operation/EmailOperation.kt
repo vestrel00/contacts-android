@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableEmail
 
-internal object EmailOperation : AbstractDataOperation<MutableEmail>() {
+internal object EmailOperation : AbstractCommonDataOperation<MutableEmail>() {
 
     override val mimeType = MimeType.EMAIL
 
