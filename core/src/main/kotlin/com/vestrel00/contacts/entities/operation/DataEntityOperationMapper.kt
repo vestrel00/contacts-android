@@ -21,18 +21,18 @@ private fun <T : MutableDataEntity> T.dataOperation(): AbstractDataOperation<T> 
     // We could instead do when (this) is MutableAddress -> AddressOperation()
     // However, using mimeType instead of the class allows for exhaustive compilation checks.
     // Not requiring an 'else' branch.
-    MimeType.ADDRESS -> AddressOperation()
-    MimeType.EMAIL -> EmailOperation()
-    MimeType.EVENT -> EventOperation()
-    MimeType.IM -> ImOperation()
-    MimeType.NAME -> NameOperation()
-    MimeType.NICKNAME -> NicknameOperation()
-    MimeType.NOTE -> NoteOperation()
-    MimeType.ORGANIZATION -> OrganizationOperation()
-    MimeType.PHONE -> PhoneOperation()
-    MimeType.RELATION -> RelationOperation()
-    MimeType.SIP_ADDRESS -> SipAddressOperation()
-    MimeType.WEBSITE -> WebsiteOperation()
+    MimeType.ADDRESS -> AddressOperation
+    MimeType.EMAIL -> EmailOperation
+    MimeType.EVENT -> EventOperation
+    MimeType.IM -> ImOperation
+    MimeType.NAME -> NameOperation
+    MimeType.NICKNAME -> NicknameOperation
+    MimeType.NOTE -> NoteOperation
+    MimeType.ORGANIZATION -> OrganizationOperation
+    MimeType.PHONE -> PhoneOperation
+    MimeType.RELATION -> RelationOperation
+    MimeType.SIP_ADDRESS -> SipAddressOperation
+    MimeType.WEBSITE -> WebsiteOperation
 
     // The GroupMembership and Photo class intentionally does not have a mutable version unlike the
     // other entities. Manage group memberships via the RawContactGroupMemberships extension

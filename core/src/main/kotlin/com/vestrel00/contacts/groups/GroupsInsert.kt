@@ -162,7 +162,7 @@ private class GroupsInsertImpl(
 }
 
 private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
-    val results = applyBatch(GroupOperation().insert(group))
+    val results = applyBatch(GroupOperation.insert(group))
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the

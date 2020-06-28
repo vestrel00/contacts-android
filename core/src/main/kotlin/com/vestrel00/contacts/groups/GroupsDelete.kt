@@ -120,7 +120,7 @@ private class GroupsDeleteImpl(
             results[groupId] = if (groupId == INVALID_ID) {
                 false
             } else {
-                contentResolver.applyBatch(GroupOperation().delete(groupId)) != null
+                contentResolver.applyBatch(GroupOperation.delete(groupId)) != null
             }
         }
         return GroupsDeleteResult(results)
@@ -128,7 +128,7 @@ private class GroupsDeleteImpl(
 
     override fun commitInOneTransaction(): Boolean = groupIds.isNotEmpty()
             && permissions.canInsertUpdateDelete()
-            && contentResolver.applyBatch(GroupOperation().delete(groupIds)) != null
+            && contentResolver.applyBatch(GroupOperation.delete(groupIds)) != null
 
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.

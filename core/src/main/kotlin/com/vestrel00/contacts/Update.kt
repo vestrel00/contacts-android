@@ -240,79 +240,79 @@ private fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
     val operations = arrayListOf<ContentProviderOperation>()
 
     operations.addAll(
-        AddressOperation().updateInsertOrDelete(
+        AddressOperation.updateInsertOrDelete(
             rawContact.addresses, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        EmailOperation().updateInsertOrDelete(
+        EmailOperation.updateInsertOrDelete(
             rawContact.emails, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        EventOperation().updateInsertOrDelete(
+        EventOperation.updateInsertOrDelete(
             rawContact.events, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        GroupMembershipOperation().updateInsertOrDelete(
+        GroupMembershipOperation.updateInsertOrDelete(
             rawContact.groupMemberships, rawContact.id, this
         )
     )
 
     operations.addAll(
-        ImOperation().updateInsertOrDelete(
+        ImOperation.updateInsertOrDelete(
             rawContact.ims, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        NameOperation().updateInsertOrDelete(
+        NameOperation.updateInsertOrDelete(
             rawContact.name, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        NicknameOperation().updateInsertOrDelete(
+        NicknameOperation.updateInsertOrDelete(
             rawContact.nickname, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        NoteOperation().updateInsertOrDelete(
+        NoteOperation.updateInsertOrDelete(
             rawContact.note, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        OrganizationOperation().updateInsertOrDelete(
+        OrganizationOperation.updateInsertOrDelete(
             rawContact.organization, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        PhoneOperation().updateInsertOrDelete(
+        PhoneOperation.updateInsertOrDelete(
             rawContact.phones, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        RelationOperation().updateInsertOrDelete(
+        RelationOperation.updateInsertOrDelete(
             rawContact.relations, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        SipAddressOperation().updateInsertOrDelete(
+        SipAddressOperation.updateInsertOrDelete(
             rawContact.sipAddress, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        WebsiteOperation().updateInsertOrDelete(
+        WebsiteOperation.updateInsertOrDelete(
             rawContact.websites, rawContact.id, contentResolver
         )
     )

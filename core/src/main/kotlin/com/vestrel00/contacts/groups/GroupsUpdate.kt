@@ -152,7 +152,7 @@ private class GroupsUpdateImpl(
 }
 
 private fun ContentResolver.updateGroup(group: MutableGroup): Boolean =
-    GroupOperation().update(group)?.let { applyBatch(it) } != null
+    GroupOperation.update(group)?.let { applyBatch(it) } != null
 
 private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsUpdate.Result {

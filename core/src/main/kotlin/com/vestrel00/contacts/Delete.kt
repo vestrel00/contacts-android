@@ -207,15 +207,14 @@ private class DeleteImpl(
             return false
         }
 
-        val rawContactOperation = RawContactOperation()
         val operations = arrayListOf<ContentProviderOperation>()
 
         if (rawContactIds.isNotEmpty()) {
-            operations.add(rawContactOperation.deleteRawContacts(rawContactIds))
+            operations.add(RawContactOperation.deleteRawContacts(rawContactIds))
         }
 
         if (contactIds.isNotEmpty()) {
-            operations.add(rawContactOperation.deleteRawContactsWithContactIds(contactIds))
+            operations.add(RawContactOperation.deleteRawContactsWithContactIds(contactIds))
         }
 
         return contentResolver.applyBatch(operations) != null
@@ -228,14 +227,10 @@ private class DeleteImpl(
 }
 
 internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean =
-    applyBatch(
-        RawContactOperation().deleteRawContact(rawContactId)
-    ) != null
+    applyBatch(RawContactOperation.deleteRawContact(rawContactId)) != null
 
 private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
-    applyBatch(
-        RawContactOperation().deleteRawContactsWithContactId(contactId)
-    ) != null
+    applyBatch(RawContactOperation.deleteRawContactsWithContactId(contactId)) != null
 
 private class DeleteResult(
     private val rawContactIdsResultMap: Map<Long, Boolean>,

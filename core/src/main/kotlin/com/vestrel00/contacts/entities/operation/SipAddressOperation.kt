@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableSipAddress
 
-internal class SipAddressOperation : AbstractDataOperation<MutableSipAddress>() {
+internal object SipAddressOperation : AbstractDataOperation<MutableSipAddress>() {
 
     override val mimeType = MimeType.SIP_ADDRESS
 

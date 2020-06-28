@@ -12,7 +12,7 @@ private val TABLE = Table.RawContacts
 /**
  * Builds [ContentProviderOperation]s for [Table.RawContacts].
  */
-internal class RawContactOperation {
+internal object RawContactOperation {
 
     fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(TABLE)
         /*

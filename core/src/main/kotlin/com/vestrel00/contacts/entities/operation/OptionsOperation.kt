@@ -13,7 +13,7 @@ import com.vestrel00.contacts.equalTo
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  */
-internal class OptionsOperation {
+internal object OptionsOperation {
 
     fun updateContactOptions(contactId: Long, options: MutableOptions): ContentProviderOperation =
         newUpdate(Table.Contacts)

@@ -12,7 +12,7 @@ private val TABLE = Table.Groups
 /**
  * Builds [ContentProviderOperation]s for [Table.Groups].
  */
-internal class GroupOperation {
+internal object GroupOperation {
 
     fun insert(group: MutableGroup): ContentProviderOperation = newInsert(TABLE)
         .withValue(GroupsFields.Title, group.title)

@@ -31,7 +31,7 @@ fun ContactEntity.setOptions(context: Context, options: MutableOptions): Boolean
     }
 
     return context.contentResolver.applyBatch(
-        OptionsOperation().updateContactOptions(contactId, options)
+        OptionsOperation.updateContactOptions(contactId, options)
     ) != null
 }
 

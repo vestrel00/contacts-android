@@ -70,7 +70,7 @@ fun RawContactEntity.setOptions(context: Context, options: MutableOptions): Bool
     }
 
     return context.contentResolver.applyBatch(
-        OptionsOperation().updateRawContactOptions(rawContactId, options)
+        OptionsOperation.updateRawContactOptions(rawContactId, options)
     ) != null
 }
 

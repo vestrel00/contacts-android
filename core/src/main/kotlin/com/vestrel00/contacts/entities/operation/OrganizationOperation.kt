@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableOrganization
 
-internal class OrganizationOperation : AbstractDataOperation<MutableOrganization>() {
+internal object OrganizationOperation : AbstractDataOperation<MutableOrganization>() {
 
     override val mimeType = MimeType.ORGANIZATION
 

@@ -258,13 +258,13 @@ private fun Context.insertRawContactForAccount(
      * This needs to be the first operation in the batch as it will be used by all subsequent
      * Data table insert operations.
      */
-    operations.add(RawContactOperation().insert(account))
+    operations.add(RawContactOperation.insert(account))
 
-    operations.addAll(AddressOperation().insert(rawContact.addresses))
+    operations.addAll(AddressOperation.insert(rawContact.addresses))
 
-    operations.addAll(EmailOperation().insert(rawContact.emails))
+    operations.addAll(EmailOperation.insert(rawContact.emails))
 
-    operations.addAll(EventOperation().insert(rawContact.events))
+    operations.addAll(EventOperation.insert(rawContact.events))
 
     // The account can only be null if there are no available accounts. In this case, it should
     // not be possible for consumers to obtain group memberships unless they have saved them
@@ -272,37 +272,37 @@ private fun Context.insertRawContactForAccount(
     // Still we should have this null check just in case.
     if (account != null) {
         operations.addAll(
-            GroupMembershipOperation().insert(rawContact.groupMemberships, account, this)
+            GroupMembershipOperation.insert(rawContact.groupMemberships, account, this)
         )
     }
 
-    operations.addAll(ImOperation().insert(rawContact.ims))
+    operations.addAll(ImOperation.insert(rawContact.ims))
 
     rawContact.name?.let {
-        NameOperation().insert(it)?.let(operations::add)
+        NameOperation.insert(it)?.let(operations::add)
     }
 
     rawContact.nickname?.let {
-        NicknameOperation().insert(it)?.let(operations::add)
+        NicknameOperation.insert(it)?.let(operations::add)
     }
 
     rawContact.note?.let {
-        NoteOperation().insert(it)?.let(operations::add)
+        NoteOperation.insert(it)?.let(operations::add)
     }
 
     rawContact.organization?.let {
-        OrganizationOperation().insert(it)?.let(operations::add)
+        OrganizationOperation.insert(it)?.let(operations::add)
     }
 
-    operations.addAll(PhoneOperation().insert(rawContact.phones))
+    operations.addAll(PhoneOperation.insert(rawContact.phones))
 
-    operations.addAll(RelationOperation().insert(rawContact.relations))
+    operations.addAll(RelationOperation.insert(rawContact.relations))
 
     rawContact.sipAddress?.let {
-        SipAddressOperation().insert(it)?.let(operations::add)
+        SipAddressOperation.insert(it)?.let(operations::add)
     }
 
-    operations.addAll(WebsiteOperation().insert(rawContact.websites))
+    operations.addAll(WebsiteOperation.insert(rawContact.websites))
 
     /*
      * Atomically create the RawContact row and all of the associated Data rows. All of the

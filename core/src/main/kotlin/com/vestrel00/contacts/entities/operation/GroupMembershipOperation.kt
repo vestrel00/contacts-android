@@ -15,7 +15,7 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.util.query
 
-internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>() {
+internal object GroupMembershipOperation : AbstractDataOperation<GroupMembership>() {
 
     override val mimeType = MimeType.GROUP_MEMBERSHIP
 
@@ -116,8 +116,6 @@ internal class GroupMembershipOperation : AbstractDataOperation<GroupMembership>
             }
         }
     } ?: emptyList()
-
-    private companion object {
-        private val INCLUDE = Include(Fields.DataId, Fields.GroupMembership.GroupId)
-    }
 }
+
+private val INCLUDE = Include(Fields.DataId, Fields.GroupMembership.GroupId)
