@@ -258,7 +258,7 @@ private fun Context.insertRawContactForAccount(
      * This needs to be the first operation in the batch as it will be used by all subsequent
      * Data table insert operations.
      */
-    operations.add(RawContactOperation.insert(account))
+    operations.add(RawContactsOperation.insert(account))
 
     operations.addAll(AddressOperation.insert(rawContact.addresses))
 

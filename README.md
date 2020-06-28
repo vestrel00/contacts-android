@@ -2,7 +2,6 @@
 
 ----------------------- Query refactor.
 
-Rename RawContactOperation to RawContactsOperation
 Add Field type to Cursors, update CursorFactory and ContentResolverExtensions
 Add Field type to Mappers, update EntityMapperFactory
 Add Field type to Operations
