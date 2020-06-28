@@ -37,8 +37,7 @@ sealed class FieldSet<T : Field> {
 
 sealed class AbstractDataField : Field()
 
-// TODO rename this to DataField
-data class DataField2 internal constructor(override val columnName: String) : AbstractDataField()
+data class DataField internal constructor(override val columnName: String) : AbstractDataField()
 
 /**
  * Contains all fields / columns that are accessible via the Data table with joins from the
@@ -66,7 +65,7 @@ object Fields : FieldSet<AbstractDataField>() {
     val Contact = DataContactsFields()
 
     @JvmField
-    val DataId = DataField2(Data._ID)
+    val DataId = DataField(Data._ID)
 
     @JvmField
     val Email = EmailFields()
@@ -81,12 +80,12 @@ object Fields : FieldSet<AbstractDataField>() {
     val Im = ImFields()
 
     @JvmField
-    val IsPrimary = DataField2(Data.IS_PRIMARY)
+    val IsPrimary = DataField(Data.IS_PRIMARY)
 
     @JvmField
-    val IsSuperPrimary = DataField2(Data.IS_SUPER_PRIMARY)
+    val IsSuperPrimary = DataField(Data.IS_SUPER_PRIMARY)
 
-    internal val MimeType = DataField2(Data.MIMETYPE)
+    internal val MimeType = DataField(Data.MIMETYPE)
 
     @JvmField
     val Name = NameFields()
