@@ -3,7 +3,6 @@ package com.vestrel00.contacts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
-import android.util.Log
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.cursor.contactCursor
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
@@ -372,9 +371,6 @@ private class QueryImpl(
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
-
-        val fields = Include(DataFields).onlyRawContactsFields()
-        Log.d("YOLO", "INCLUDE: $fields")
     }
 
     override fun where(where: Where<AbstractDataField>?): Query = apply {
