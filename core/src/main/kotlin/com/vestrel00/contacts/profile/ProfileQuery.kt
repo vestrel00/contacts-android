@@ -100,17 +100,17 @@ interface ProfileQuery {
      * Do not perform updates on contacts returned by a query where all fields are not included as
      * it will result in data loss!
      */
-    fun include(vararg fields: DataField): ProfileQuery
+    fun include(vararg fields: AbstractDataField): ProfileQuery
 
     /**
      * See [ProfileQuery.include].
      */
-    fun include(fields: Collection<DataField>): ProfileQuery
+    fun include(fields: Collection<AbstractDataField>): ProfileQuery
 
     /**
      * See [ProfileQuery.include].
      */
-    fun include(fields: Sequence<DataField>): ProfileQuery
+    fun include(fields: Sequence<AbstractDataField>): ProfileQuery
 
     /**
      * Returns the profile [Contact], if available.
@@ -162,7 +162,7 @@ private class ProfileQueryImpl(
     private val contentResolver: ContentResolver,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<DataField> = DEFAULT_INCLUDE
+    private var include: Include<AbstractDataField> = DEFAULT_INCLUDE
 ) : ProfileQuery {
 
     override fun toString(): String {
@@ -180,11 +180,11 @@ private class ProfileQueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: DataField) = include(fields.asSequence())
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<DataField>) = include(fields.asSequence())
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<DataField>): ProfileQuery = apply {
+    override fun include(fields: Sequence<AbstractDataField>): ProfileQuery = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
@@ -210,15 +210,16 @@ private class ProfileQueryImpl(
 }
 
 private fun ContentResolver.resolve(
-    rawContactsWhere: Where<RawContactsField>?, include: Include<DataField>, cancel: () -> Boolean
+    rawContactsWhere: Where<RawContactsField>?,
+    include: Include<AbstractDataField>,
+    cancel: () -> Boolean
 ): Contact? {
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
     // Data table queries using profile uris only return user profile data.
     val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
     for (rawContactId in rawContactIds) {
-        // FIXME Remove this type after adding type to include
-        query<DataField, ContactsMapper>(
+        query(
             ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
                 .appendEncodedPath(rawContactId)
                 .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)

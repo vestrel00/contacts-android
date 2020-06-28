@@ -4,6 +4,7 @@ import android.content.ContentProviderOperation
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.and
 import com.vestrel00.contacts.entities.DataEntity
 import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection

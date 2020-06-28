@@ -15,6 +15,7 @@ private val TABLE = Table.Data
 /**
  * Builds [ContentProviderOperation]s for [Table.Data].
  */
+// TODO Rename to AbstractCommonDataOperation
 internal abstract class AbstractDataOperation<T : DataEntity> {
 
     abstract val mimeType: MimeType
@@ -22,7 +23,7 @@ internal abstract class AbstractDataOperation<T : DataEntity> {
     /**
      * There [Where] clause used as the selection for queries, updates, and deletes.
      */
-    protected fun selection(rawContactId: Long): Where<DataField> =
+    protected fun selection(rawContactId: Long): Where<AbstractDataField> =
         (Fields.MimeType equalTo mimeType) and (Fields.RawContact.Id equalTo rawContactId)
 
     /**

@@ -75,6 +75,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * these CONTENT_URIs probably results in shorter search times since it only has to look through a
  * subset of data instead of the entire data table.
  */
+// TODO Add more specific Field type to include, where, and orderBy functions.
 interface DataQuery {
 
     /**
@@ -111,17 +112,17 @@ interface DataQuery {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      */
-    fun include(vararg fields: DataField): DataQuery
+    fun include(vararg fields: AbstractDataField): DataQuery
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Collection<DataField>): DataQuery
+    fun include(fields: Collection<AbstractDataField>): DataQuery
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Sequence<DataField>): DataQuery
+    fun include(fields: Sequence<AbstractDataField>): DataQuery
 
     /**
      * Filters the returned data matching the criteria defined by the [where].
@@ -133,7 +134,7 @@ interface DataQuery {
      *
      * Use [Fields] to construct the [where].
      */
-    fun where(where: Where<DataField>?): DataQuery
+    fun where(where: Where<AbstractDataField>?): DataQuery
 
     /**
      * Orders the returned data using one or more [orderBy]s. If not specified, then data is ordered
@@ -652,8 +653,8 @@ private class DataQueryImpl(
     private val contentResolver: ContentResolver,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<DataField> = DEFAULT_INCLUDE,
-    private var where: Where<DataField>? = DEFAULT_WHERE,
+    private var include: Include<AbstractDataField> = DEFAULT_INCLUDE,
+    private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
@@ -678,11 +679,11 @@ private class DataQueryImpl(
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: DataField) = include(fields.asSequence())
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
-    override fun include(fields: Collection<DataField>) = include(fields.asSequence())
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<DataField>): DataQuery = apply {
+    override fun include(fields: Sequence<AbstractDataField>): DataQuery = apply {
         include = if (fields.isEmpty()) {
             DEFAULT_INCLUDE
         } else {
@@ -690,7 +691,7 @@ private class DataQueryImpl(
         }
     }
 
-    override fun where(where: Where<DataField>?): DataQuery = apply {
+    override fun where(where: Where<AbstractDataField>?): DataQuery = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
@@ -811,7 +812,7 @@ private class DataQueryImpl(
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_INCLUDE = Include(Fields)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
-        val DEFAULT_WHERE: Where<DataField>? = null
+        val DEFAULT_WHERE: Where<AbstractDataField>? = null
         val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.DataId.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -821,8 +822,8 @@ private class DataQueryImpl(
 internal fun <T : DataEntity> ContentResolver.resolveDataEntity(
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
-    include: Include<DataField>,
-    where: Where<DataField>?,
+    include: Include<AbstractDataField>,
+    where: Where<AbstractDataField>?,
     orderBy: CompoundOrderBy,
     limit: Int,
     offset: Int,
@@ -883,7 +884,7 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
     } ?: emptySet()
 
 // See the developer notes in the DataQuery interface documentation.
-private fun MimeType.dataWhere(): Where<DataField>? = when (this) {
+private fun MimeType.dataWhere(): Where<AbstractDataField>? = when (this) {
     MimeType.PHONE, MimeType.EMAIL, MimeType.ADDRESS -> null
     else -> Fields.MimeType equalTo this
 }

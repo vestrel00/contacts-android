@@ -8,9 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.provider.ContactsContract.RawContacts
-import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.Include
+import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.getNextOrNull
@@ -18,7 +16,6 @@ import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.table.Table
-import com.vestrel00.contacts.equalTo
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream

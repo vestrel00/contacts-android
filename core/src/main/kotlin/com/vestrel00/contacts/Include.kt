@@ -26,7 +26,7 @@ internal fun <T : Field> Include(fieldSet: FieldSet<T>) = Include(fieldSet.all)
  * The type [T] is not exactly used in this class itself. Rather, it is used for adding type
  * restrictions when constructing instances at compile time.
  */
-internal class Include<T : Field>(val columnNames: Set<String>) {
+internal class Include<out T : Field>(val columnNames: Set<String>) {
 
     override fun toString(): String = columnNames.joinToString(", ")
 }
@@ -43,7 +43,7 @@ internal fun <T : Field> Include<T>.onlyFieldsIn(fields: Collection<T>) = Includ
  *
  * This is used to convert an [Include] of [DataFields] to [ContactsFields].
  */
-internal fun Include<DataField>.onlyContactsFields() = Include<ContactsField>(
+internal fun Include<AbstractDataField>.onlyContactsFields() = Include<ContactsField>(
     Include(ContactsFields.all).columnNames
         .intersect(columnNames)
         .asSequence()
@@ -57,7 +57,7 @@ internal fun Include<DataField>.onlyContactsFields() = Include<ContactsField>(
  *
  * This is used to convert an [Include] of [DataFields] to [RawContactsFields].
  */
-internal fun Include<DataField>.onlyRawContactsFields() = Include<RawContactsField>(
+internal fun Include<AbstractDataField>.onlyRawContactsFields() = Include<RawContactsField>(
     Include(RawContactsFields.all).columnNames
         .intersect(columnNames)
         .asSequence()

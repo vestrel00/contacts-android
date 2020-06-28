@@ -588,7 +588,9 @@ private fun ContentResolver.updateRawContactsAccount(
  * app.
  */
 private fun ContentResolver.updateRawContactsAccount(
-    account: Account?, dataWhere: Where<DataField>?, rawContactsWhere: Where<RawContactsField>
+    account: Account?,
+    dataWhere: Where<AbstractDataField>?,
+    rawContactsWhere: Where<RawContactsField>
 ): Boolean = applyBatch(
     arrayListOf<ContentProviderOperation>().apply {
         // First delete existing group memberships.

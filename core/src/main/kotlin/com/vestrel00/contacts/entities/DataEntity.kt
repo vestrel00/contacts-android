@@ -3,6 +3,7 @@ package com.vestrel00.contacts.entities
 /**
  * [Entity] in the data table that belong to a [RawContact].
  */
+// TODO Rename to CommonDataEntity
 interface DataEntity : Entity {
 
     /**
@@ -60,4 +61,5 @@ interface DataEntity : Entity {
 /**
  * A [DataEntity] that is mutable.
  */
+// TODO Rename to MutableCommonDataEntity
 interface MutableDataEntity : DataEntity

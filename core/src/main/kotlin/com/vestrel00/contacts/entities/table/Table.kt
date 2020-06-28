@@ -7,7 +7,7 @@ import com.vestrel00.contacts.*
 /**
  * Defines all of the main [ContactsContract] tables, types with [Field]s =)
  */
-internal sealed class Table<T : Field>(val uri: Uri) {
+internal sealed class Table<out T : Field>(val uri: Uri) {
 
     /**
      * See [ContactsContract.Contacts].
@@ -22,7 +22,7 @@ internal sealed class Table<T : Field>(val uri: Uri) {
     /**
      * See [ContactsContract.Data].
      */
-    object Data : Table<DataField>(ContactsContract.Data.CONTENT_URI)
+    object Data : Table<AbstractDataField>(ContactsContract.Data.CONTENT_URI)
 
     /**
      * See [ContactsContract.Groups].

@@ -75,6 +75,11 @@ infix fun <T : Field> T.doesNotEndWith(value: String): Where<T> = DoesNotEndWith
  */
 infix fun <T : Field> T.doesNotContain(value: String): Where<T> = DoesNotContain(this, value)
 
+
+infix fun <T : Field> Where<T>.and(where: Where<T>): Where<T> = And(this, where)
+
+infix fun <T : Field> Where<T>.or(where: Where<T>): Where<T> = Or(this, where)
+
 // Non-infix convenience functions
 
 /**
@@ -237,13 +242,14 @@ private class ContactsTableWhere(whereString: String) : Where<ContactsField>(whe
  * This does no translate anything else. So any fields used that does not exist in the Contacts
  * table will remain.
  */
-internal fun Where<DataField>.inContactsTable(): Where<ContactsField> = ContactsTableWhere(
-    toString()
-        .replace(RawContactsFields.ContactId.columnName, ContactsFields.Id.columnName)
-        // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
-        // For the sake of OCD, I'm performing this redundant replacement =) SUE ME!
-        .replace(Fields.Contact.Id.columnName, ContactsFields.Id.columnName)
-)
+internal fun <T : AbstractDataField> Where<T>.inContactsTable(): Where<ContactsField> =
+    ContactsTableWhere(
+        toString()
+            .replace(RawContactsFields.ContactId.columnName, ContactsFields.Id.columnName)
+            // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
+            // For the sake of OCD, I'm performing this redundant replacement =) SUE ME!
+            .replace(Fields.Contact.Id.columnName, ContactsFields.Id.columnName)
+    )
 
 private class RawContactsTableWhere(whereString: String) : Where<RawContactsField>(whereString)
 
@@ -257,9 +263,10 @@ private class RawContactsTableWhere(whereString: String) : Where<RawContactsFiel
  * This does no translate anything else. So any fields used that does not exist in the RawContacts
  * table will remain.
  */
-internal fun Where<DataField>.inRawContactsTable(): Where<RawContactsField> = RawContactsTableWhere(
-    toString().replace(Fields.RawContact.Id.columnName, RawContactsFields.Id.columnName)
-)
+internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawContactsField> =
+    RawContactsTableWhere(
+        toString().replace(Fields.RawContact.Id.columnName, RawContactsFields.Id.columnName)
+    )
 
 /**
  * Each where expression is paired with its mimetype because the contacts Data table uses
@@ -283,7 +290,7 @@ internal fun Where<DataField>.inRawContactsTable(): Where<RawContactsField> = Ra
  */
 private fun where(field: Field, operator: String, value: Any?): String {
     var where = "${field.columnName} $operator ${value.toSqlString()}"
-    if (field is DataField && field.mimeType.value.isNotBlank()) {
+    if (field is CommonDataField && field.mimeType.value.isNotBlank()) {
         where += " AND ${Fields.MimeType.columnName} = '${field.mimeType.value}'"
     }
     return where
@@ -302,13 +309,8 @@ private fun <T : Field> where(lhs: Where<T>, operator: String, rhs: Where<T>): S
  * function that takes in a Where of GroupsField. The caller of that function can then only provide
  * a Where composed of one or more GroupsField.
  */
-sealed class Where<T : Field>(private val whereString: String) {
-
+sealed class Where<out T : Field>(private val whereString: String) {
     override fun toString(): String = whereString
-
-    infix fun and(where: Where<T>): Where<T> = And(this, where)
-
-    infix fun or(where: Where<T>): Where<T> = Or(this, where)
 }
 
 private class And<T : Field>(lhs: Where<T>, rhs: Where<T>) : Where<T>(where(lhs, "AND", rhs))
