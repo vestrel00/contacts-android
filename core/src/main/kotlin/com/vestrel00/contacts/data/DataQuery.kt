@@ -75,7 +75,6 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * these CONTENT_URIs probably results in shorter search times since it only has to look through a
  * subset of data instead of the entire data table.
  */
-// TODO Add more specific Field type to include, where, and orderBy functions.
 interface DataQuery {
 
     /**

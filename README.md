@@ -5,6 +5,7 @@
 Add Field type to Cursors, update CursorFactory and ContentResolverExtensions
 Add Field type to Mappers, update EntityMapperFactory
 Add Field type to Operations
+(Will need separate Options Fields, Cursors, Mappers, and Operations for each table; Contacts, RawContacts, Data)
 
 1. Add type info to orderBy for compilation checks in queries instead of runtime.
 
@@ -15,7 +16,7 @@ Add Field type to Operations
 
 4. Only allow order by RawContactsFields in AccountsRawContactsQuery.
 
-5. Only allow order by AbstractDataFields (or more specific ones?) in DataQuery.
+5. Only allow include, where, order by specific AbstractDataFields in DataQuery.
 
 6. If refactoring Query, we may be able to add Options to RawContact as a member instead of only
    accessible via extension functions?

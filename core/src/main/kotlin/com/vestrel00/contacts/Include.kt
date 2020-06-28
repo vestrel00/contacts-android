@@ -47,7 +47,7 @@ internal fun Include<AbstractDataField>.onlyContactsFields() = Include<ContactsF
     Include(ContactsFields.all).columnNames
         .intersect(columnNames)
         .asSequence()
-        // JoinedContactsFields.Id has a different columnName than ContactsFields.Id.
+        // DataContactsFields.Id has a different columnName than ContactsFields.Id.
         .plus(ContactsFields.Id.columnName)
         .toSet()
 )
@@ -61,9 +61,9 @@ internal fun Include<AbstractDataField>.onlyRawContactsFields() = Include<RawCon
     Include(RawContactsFields.all).columnNames
         .intersect(columnNames)
         .asSequence()
-        // JoinedRawContactsFields.Id has a different columnName than RawContactsFields.Id.
+        // DataRawContactsFields.Id has a different columnName than RawContactsFields.Id.
         .plus(RawContactsFields.Id.columnName)
-        // JoinedContactsFields.Id has a different columnName than RawContactsFields.ContactId.
+        // DataContactsFields.Id has a different columnName than RawContactsFields.ContactId.
         .plus(RawContactsFields.ContactId.columnName)
         .toSet()
 )

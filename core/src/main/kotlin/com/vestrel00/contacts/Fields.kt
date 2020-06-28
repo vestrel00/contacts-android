@@ -266,6 +266,8 @@ class DataContactsFields internal constructor() : FieldSet<DataContactsField>() 
 data class DataOptionsField internal constructor(override val columnName: String) :
     AbstractDataField()
 
+// Contains the same underlying column names as RaeContactsOptionsFields and ContactsOptionsFields but with
+// a different Field type.
 class DataOptionsFields internal constructor() : FieldSet<DataOptionsField>() {
 
     internal val Id = DataOptionsField(Data._ID)
@@ -654,15 +656,46 @@ object ContactsFields : FieldSet<ContactsField>() {
     @JvmField
     val LastUpdatedTimestamp = ContactsField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP)
 
+    @JvmField
+    val Options = ContactsOptionsFields()
+
     internal val PhotoUri = ContactsField(Contacts.PHOTO_URI)
 
     internal val PhotoThumbnailUri = ContactsField(Contacts.PHOTO_THUMBNAIL_URI)
 
     internal val PhotoFileId = ContactsField(Contacts.PHOTO_FILE_ID)
 
-    override val all = setOf(
+    override val all = mutableSetOf(
         Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
         PhotoUri, PhotoThumbnailUri, PhotoFileId
+    ).apply {
+        addAll(Options.all)
+    }
+}
+
+// Contains the same underlying column names as DataOptionsFields and RawContactsOptionsFields but
+// with a different Field type.
+class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
+
+    internal val Id = ContactsField(RawContacts._ID)
+
+    @JvmField
+    val Starred = ContactsField(Data.STARRED)
+
+    @JvmField
+    val TimesContacted = ContactsField(Data.TIMES_CONTACTED)
+
+    @JvmField
+    val LastTimeContacted = ContactsField(Data.LAST_TIME_CONTACTED)
+
+    @JvmField
+    val CustomRingtone = ContactsField(Data.CUSTOM_RINGTONE)
+
+    @JvmField
+    val SendToVoicemail = ContactsField(Data.SEND_TO_VOICEMAIL)
+
+    override val all = setOf(
+        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
     )
 }
 
@@ -744,7 +777,8 @@ object RawContactsFields : FieldSet<RawContactsField>() {
     }.toSet()
 }
 
-// Contains the same underlying column names as DataOptionsFields but with a different Field type.
+// Contains the same underlying column names as DataOptionsFields and ContactsOptionsFields but with
+// a different Field type.
 class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsField>() {
 
     internal val Id = RawContactsField(RawContacts._ID)
@@ -771,5 +805,4 @@ class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsFiel
 
 // endregion
 
-// TODO Ensure that Options Fields are included (part of intersection) in Where and Includes for Contacts and RawContacts table queries.
-// Will need separate Options Fields, Cursors, Mappers, and Operations for each table (Contacts, RawContacts, Data).
+// TODO Ensure that Options Fields are included (part of intersection) in Where for Contacts and RawContacts table queries.
