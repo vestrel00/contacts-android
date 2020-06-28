@@ -795,7 +795,7 @@ private class DataQueryImpl(
 
     override fun websites(cancel: () -> Boolean): List<Website> = resolve(MimeType.WEBSITE, cancel)
 
-    private fun <T : DataEntity> resolve(mimeType: MimeType, cancel: () -> Boolean): List<T> {
+    private fun <T : CommonDataEntity> resolve(mimeType: MimeType, cancel: () -> Boolean): List<T> {
         if (!permissions.canQuery()) {
             return emptyList()
         }
@@ -819,7 +819,7 @@ private class DataQueryImpl(
     }
 }
 
-internal fun <T : DataEntity> ContentResolver.resolveDataEntity(
+internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,

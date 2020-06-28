@@ -1,11 +1,11 @@
 package com.vestrel00.contacts.entities.mapper
 
 import android.database.Cursor
-import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.entities.CommonDataEntity
 import com.vestrel00.contacts.entities.MimeType
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : DataEntity> Cursor.entityMapperFor(mimeType: MimeType): EntityMapper<T> =
+internal fun <T : CommonDataEntity> Cursor.entityMapperFor(mimeType: MimeType): EntityMapper<T> =
     when (mimeType) {
         MimeType.ADDRESS -> addressMapper()
         MimeType.EMAIL -> emailMapper()

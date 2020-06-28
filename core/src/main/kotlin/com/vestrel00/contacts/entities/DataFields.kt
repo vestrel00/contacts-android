@@ -4,7 +4,7 @@ import com.vestrel00.contacts.CommonDataField
 import com.vestrel00.contacts.EmptyCommonDataFields
 import com.vestrel00.contacts.Fields
 
-internal fun DataEntity.fields(): Set<CommonDataField> = mimeType.fields()
+internal fun CommonDataEntity.fields(): Set<CommonDataField> = mimeType.fields()
 
 internal fun MimeType.fields(): Set<CommonDataField> = when (this) {
     MimeType.ADDRESS -> Fields.Address

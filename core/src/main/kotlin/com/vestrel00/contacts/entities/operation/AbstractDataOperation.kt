@@ -16,7 +16,7 @@ private val TABLE = Table.Data
  * Builds [ContentProviderOperation]s for [Table.Data].
  */
 // TODO Rename to AbstractCommonDataOperation
-internal abstract class AbstractDataOperation<T : DataEntity> {
+internal abstract class AbstractDataOperation<T : CommonDataEntity> {
 
     abstract val mimeType: MimeType
 

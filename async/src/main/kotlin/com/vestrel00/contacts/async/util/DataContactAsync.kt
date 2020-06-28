@@ -3,7 +3,7 @@ package com.vestrel00.contacts.async.util
 import android.content.Context
 import com.vestrel00.contacts.async.ASYNC_DISPATCHER
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.entities.CommonDataEntity
 import com.vestrel00.contacts.util.contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -14,9 +14,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [DataEntity.contact].
+ * See [CommonDataEntity.contact].
  */
-suspend fun DataEntity.contactWithContext(
+suspend fun CommonDataEntity.contactWithContext(
     context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Contact? = withContext(coroutineContext) { contact(context) { !isActive } }
 
@@ -26,9 +26,9 @@ suspend fun DataEntity.contactWithContext(
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [DataEntity.contact].
+ * See [CommonDataEntity.contact].
  */
-fun DataEntity.contactAsync(
+fun CommonDataEntity.contactAsync(
     context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> =
     CoroutineScope(coroutineContext).async { contact(context) { !isActive } }

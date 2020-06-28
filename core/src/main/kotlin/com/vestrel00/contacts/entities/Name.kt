@@ -88,7 +88,7 @@ data class Name internal constructor(
      */
     val phoneticFamilyName: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NAME
@@ -181,7 +181,7 @@ data class MutableName internal constructor(
      */
     var phoneticFamilyName: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NAME

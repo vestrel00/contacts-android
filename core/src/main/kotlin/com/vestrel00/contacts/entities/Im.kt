@@ -36,7 +36,7 @@ data class Im internal constructor(
      */
     val data: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.IM
@@ -108,7 +108,7 @@ data class MutableIm internal constructor(
      */
     var data: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.IM

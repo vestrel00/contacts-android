@@ -24,7 +24,7 @@ data class Nickname internal constructor(
      */
     val name: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NICKNAME
@@ -61,7 +61,7 @@ data class MutableNickname internal constructor(
      */
     var name: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NICKNAME

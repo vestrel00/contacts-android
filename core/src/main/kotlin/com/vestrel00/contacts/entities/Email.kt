@@ -33,7 +33,7 @@ data class Email internal constructor(
      */
     val address: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EMAIL
@@ -99,7 +99,7 @@ data class MutableEmail internal constructor(
      */
     var address: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.EMAIL

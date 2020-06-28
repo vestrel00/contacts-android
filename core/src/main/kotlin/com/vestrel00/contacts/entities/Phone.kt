@@ -52,7 +52,7 @@ data class Phone internal constructor(
      */
     val normalizedNumber: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.PHONE
@@ -165,7 +165,7 @@ data class MutablePhone internal constructor(
      */
     var normalizedNumber: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.PHONE

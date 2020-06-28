@@ -54,7 +54,7 @@ data class Organization internal constructor(
      */
     val phoneticName: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ORGANIZATION
@@ -130,7 +130,7 @@ data class MutableOrganization internal constructor(
      */
     var phoneticName: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ORGANIZATION

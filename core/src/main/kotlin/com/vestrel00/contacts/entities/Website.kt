@@ -24,7 +24,7 @@ data class Website internal constructor(
      */
     val url: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.WEBSITE
@@ -61,7 +61,7 @@ data class MutableWebsite internal constructor(
      */
     var url: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.WEBSITE

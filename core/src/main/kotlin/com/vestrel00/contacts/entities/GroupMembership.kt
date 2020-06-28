@@ -25,7 +25,7 @@ data class GroupMembership internal constructor(
      */
     val groupId: Long?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP

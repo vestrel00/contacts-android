@@ -79,7 +79,7 @@ data class Address internal constructor(
      */
     val country: String?
 
-) : DataEntity {
+) : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ADDRESS
@@ -188,7 +188,7 @@ data class MutableAddress internal constructor(
      */
     var country: String?
 
-) : MutableDataEntity {
+) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ADDRESS

@@ -3,14 +3,14 @@ package com.vestrel00.contacts.data
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.entities.MutableDataEntity
+import com.vestrel00.contacts.entities.MutableCommonDataEntity
 import com.vestrel00.contacts.entities.operation.updateOperation
 import com.vestrel00.contacts.util.applyBatch
 
 /**
  * Updates one or more data rows in the data table.
  *
- * Blank data ([MutableDataEntity.isBlank] will be deleted.
+ * Blank data ([MutableCommonDataEntity.isBlank] will be deleted.
  *
  * Note that in cases where blank data are deleted, existing RawContact instances will still have
  * references to the deleted data instance. The RawContact instances must be refreshed to get the
@@ -27,7 +27,7 @@ import com.vestrel00.contacts.util.applyBatch
  *
  * ## Usage
  *
- * To update a set of [MutableDataEntity];
+ * To update a set of [MutableCommonDataEntity];
  *
  * ```kotlin
  * val result = dataUpdate
@@ -40,26 +40,26 @@ interface DataUpdate {
     /**
      * Adds the given [data] to the update queue, which will be updated on [commit].
      *
-     * Blank data ([MutableDataEntity.isBlank] will be deleted instead.
+     * Blank data ([MutableCommonDataEntity.isBlank] will be deleted instead.
      *
      * Only existing [data] that have been retrieved via a query will be added to the update queue.
      * Those that have been manually created via a constructor will be ignored and result in a
      * failed operation.
      */
-    fun data(vararg data: MutableDataEntity): DataUpdate
+    fun data(vararg data: MutableCommonDataEntity): DataUpdate
 
     /**
      * See [DataUpdate.data].
      */
-    fun data(data: Collection<MutableDataEntity>): DataUpdate
+    fun data(data: Collection<MutableCommonDataEntity>): DataUpdate
 
     /**
      * See [DataUpdate.data].
      */
-    fun data(data: Sequence<MutableDataEntity>): DataUpdate
+    fun data(data: Sequence<MutableCommonDataEntity>): DataUpdate
 
     /**
-     * Updates the [MutableDataEntity]s in the queue (added via [data]) and returns the [Result].
+     * Updates the [MutableCommonDataEntity]s in the queue (added via [data]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -82,7 +82,7 @@ interface DataUpdate {
         /**
          * True if the [data] has been successfully updated. False otherwise.
          */
-        fun isSuccessful(data: MutableDataEntity): Boolean
+        fun isSuccessful(data: MutableCommonDataEntity): Boolean
     }
 }
 
@@ -95,14 +95,14 @@ internal fun DataUpdate(context: Context): DataUpdate = DataUpdateImpl(
 private class DataUpdateImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val data: MutableSet<MutableDataEntity> = mutableSetOf()
+    private val data: MutableSet<MutableCommonDataEntity> = mutableSetOf()
 ) : DataUpdate {
 
-    override fun data(vararg data: MutableDataEntity) = data(data.asSequence())
+    override fun data(vararg data: MutableCommonDataEntity) = data(data.asSequence())
 
-    override fun data(data: Collection<MutableDataEntity>) = data(data.asSequence())
+    override fun data(data: Collection<MutableCommonDataEntity>) = data(data.asSequence())
 
-    override fun data(data: Sequence<MutableDataEntity>): DataUpdate = apply {
+    override fun data(data: Sequence<MutableCommonDataEntity>): DataUpdate = apply {
         this.data.addAll(data)
     }
 
@@ -129,7 +129,7 @@ private class DataUpdateImpl(
     }
 }
 
-private fun ContentResolver.updateData(data: MutableDataEntity): Boolean =
+private fun ContentResolver.updateData(data: MutableCommonDataEntity): Boolean =
     data.updateOperation()?.let { applyBatch(it) } != null
 
 private class DataUpdateResult(private val dataIdsResultMao: Map<Long, Boolean>) :
@@ -137,7 +137,7 @@ private class DataUpdateResult(private val dataIdsResultMao: Map<Long, Boolean>)
 
     override val isSuccessful: Boolean by lazy { dataIdsResultMao.all { it.value } }
 
-    override fun isSuccessful(data: MutableDataEntity): Boolean {
+    override fun isSuccessful(data: MutableCommonDataEntity): Boolean {
         val dataId = data.id
         return dataId != null && dataIdsResultMao.getOrElse(dataId) { false }
     }
@@ -147,5 +147,5 @@ private object DataUpdateFailed : DataUpdate.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(data: MutableDataEntity): Boolean = false
+    override fun isSuccessful(data: MutableCommonDataEntity): Boolean = false
 }

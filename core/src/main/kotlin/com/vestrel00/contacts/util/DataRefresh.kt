@@ -3,16 +3,16 @@ package com.vestrel00.contacts.util
 import android.content.Context
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.data.resolveDataEntity
-import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.entities.CommonDataEntity
 import com.vestrel00.contacts.entities.fields
 
 /**
- * Returns the [DataEntity] with all of the latest data.
+ * Returns the [CommonDataEntity] with all of the latest data.
  *
  * This is useful for getting the latest data after performing an update. This may return null if
- * the [DataEntity] no longer exists or if permission is not granted.
+ * the [CommonDataEntity] no longer exists or if permission is not granted.
  *
- * Returns itself if the [DataEntity.id] is null, indicating that this DataEntity instance has not
+ * Returns itself if the [CommonDataEntity.id] is null, indicating that this DataEntity instance has not
  * yet been inserted to the DB.
  *
  * ## Permissions
@@ -26,7 +26,7 @@ import com.vestrel00.contacts.entities.fields
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun <T : DataEntity> T.refresh(context: Context, cancel: () -> Boolean = { false }): T? =
+fun <T : CommonDataEntity> T.refresh(context: Context, cancel: () -> Boolean = { false }): T? =
     if (id == null) {
         this
     } else if (!ContactsPermissions(context).canQuery()) {

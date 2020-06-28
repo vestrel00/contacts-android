@@ -2,12 +2,12 @@ package com.vestrel00.contacts.util
 
 import android.content.Context
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.entities.CommonDataEntity
 
 /**
- * Returns the [Contact] with the [DataEntity.contactId].
+ * Returns the [Contact] with the [CommonDataEntity.contactId].
  *
- * This may return null if the [Contact] no longer exists or if [DataEntity.contactId] is null
+ * This may return null if the [Contact] no longer exists or if [CommonDataEntity.contactId] is null
  * (which is the case for manually constructed entities).
  *
  * ## Permissions
@@ -21,7 +21,7 @@ import com.vestrel00.contacts.entities.DataEntity
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun DataEntity.contact(context: Context, cancel: () -> Boolean = { false }): Contact? =
+fun CommonDataEntity.contact(context: Context, cancel: () -> Boolean = { false }): Contact? =
     contactId?.let { contactId ->
         context.findFirstContactWithId(contactId, cancel)
     }

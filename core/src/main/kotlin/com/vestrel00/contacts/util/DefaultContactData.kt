@@ -5,7 +5,7 @@ import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.and
-import com.vestrel00.contacts.entities.DataEntity
+import com.vestrel00.contacts.entities.CommonDataEntity
 import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
@@ -15,12 +15,12 @@ import com.vestrel00.contacts.equalTo
 /**
  * Returns the default data entity in the collection or null if not found.
  */
-fun Collection<DataEntity>.default(): DataEntity? = firstOrNull { it.isDefault() }
+fun Collection<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.isDefault() }
 
 /**
  * Returns the default data entity in the sequence or null if not found.
  */
-fun Sequence<DataEntity>.default(): DataEntity? = firstOrNull { it.isDefault() }
+fun Sequence<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.isDefault() }
 
 /**
  * Sets this data as the default for the set of data of the same type (e.g. email) for the aggregate
@@ -36,7 +36,7 @@ fun Sequence<DataEntity>.default(): DataEntity? = firstOrNull { it.isDefault() }
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun DataEntity.setAsDefault(context: Context): Boolean {
+fun CommonDataEntity.setAsDefault(context: Context): Boolean {
     val dataId = id
     val rawContactId = rawContactId
     val contactId = contactId
@@ -84,7 +84,7 @@ fun DataEntity.setAsDefault(context: Context): Boolean {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun DataEntity.clearDefault(context: Context): Boolean {
+fun CommonDataEntity.clearDefault(context: Context): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
@@ -102,12 +102,12 @@ fun DataEntity.clearDefault(context: Context): Boolean {
 }
 
 /**
- * Provides the operation to set all primary data rows with the same [DataEntity.mimeType]
+ * Provides the operation to set all primary data rows with the same [CommonDataEntity.mimeType]
  * belonging to the same RawContact to false (0).
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
+private fun CommonDataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
     newUpdate(TABLE)
         .withSelection(
             (Fields.RawContact.Id equalTo rawContactId)
@@ -117,12 +117,12 @@ private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperatio
         .build()
 
 /**
- * Provides the operation to set all super primary data rows with the same [DataEntity.mimeType]
+ * Provides the operation to set all super primary data rows with the same [CommonDataEntity.mimeType]
  * belonging to the same Contact to false (0).
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
+private fun CommonDataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
     newUpdate(TABLE)
         .withSelection(
             (Fields.Contact.Id equalTo contactId)
