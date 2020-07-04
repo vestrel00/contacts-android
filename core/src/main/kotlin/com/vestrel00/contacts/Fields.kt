@@ -804,5 +804,3 @@ class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsFiel
 }
 
 // endregion
-
-// TODO Ensure that Options Fields are included (part of intersection) in Where for Contacts and RawContacts table queries.

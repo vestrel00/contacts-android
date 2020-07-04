@@ -2,11 +2,6 @@
 
 ----------------------- Query refactor.
 
-Add Field type to Cursors, update CursorFactory and ContentResolverExtensions
-Add Field type to Mappers, update EntityMapperFactory
-Add Field type to Operations
-(Will need separate Options Fields, Cursors, Mappers, and Operations for each table; Contacts, RawContacts, Data)
-
 1. Add type info to orderBy for compilation checks in queries instead of runtime.
 
 2. Only allow order by ContactsFields (and other Contacts table fields like Options) in Query and GeneralQuery.  
