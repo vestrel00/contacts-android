@@ -2,21 +2,14 @@
 
 ----------------------- Query refactor.
 
-1. Add type info to orderBy for compilation checks in queries instead of runtime.
-
-2. Only allow order by ContactsFields (and other Contacts table fields like Options) in Query and GeneralQuery.  
-   This may allow me to order by limit offset natively.
-
-3. Only allow order by GroupsFields in GroupsQuery.
-
-4. Only allow order by RawContactsFields in AccountsRawContactsQuery.
-
 5. Only allow include, where, order by specific AbstractDataFields in DataQuery.
 
-6. If refactoring Query, we may be able to add Options to RawContact as a member instead of only
-   accessible via extension functions?
+6. Refactor Query to order by natively instead of custom comparators.
+   - Change OrderBy type from AbstractField to ContactsField.
+   - Add Options to RawContact as a member instead of only accessible via extension functions?
 
-7. Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
+7. Remove Comparator inheritance in OrderBy.
+   Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
 
 -------------------------------------------------------------------
 

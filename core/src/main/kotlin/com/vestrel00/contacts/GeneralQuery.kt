@@ -190,17 +190,17 @@ interface GeneralQuery {
      *
      * Use [ContactsFields] to construct the [orderBy].
      */
-    fun orderBy(vararg orderBy: OrderBy): GeneralQuery
+    fun orderBy(vararg orderBy: OrderBy<ContactsField>): GeneralQuery
 
     /**
      * See [GeneralQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy>): GeneralQuery
+    fun orderBy(orderBy: Collection<ContactsField>): GeneralQuery
 
     /**
      * See [GeneralQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy>): GeneralQuery
+    fun orderBy(orderBy: Sequence<ContactsField>): GeneralQuery
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].

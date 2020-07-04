@@ -144,17 +144,17 @@ interface DataQuery {
      *
      * Use [Fields] to construct the [orderBy].
      */
-    fun orderBy(vararg orderBy: OrderBy): DataQuery
+    fun orderBy(vararg orderBy: OrderBy<AbstractDataField>): DataQuery
 
     /**
      * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy>): DataQuery
+    fun orderBy(orderBy: Collection<OrderBy<AbstractDataField>>): DataQuery
 
     /**
      * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy>): DataQuery
+    fun orderBy(orderBy: Sequence<OrderBy<AbstractDataField>>): DataQuery
 
     /**
      * Limits the maximum number of returned data to the given [limit].
@@ -654,7 +654,7 @@ private class DataQueryImpl(
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> = DEFAULT_INCLUDE,
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
-    private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
+    private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
 ) : DataQuery {
@@ -695,11 +695,12 @@ private class DataQueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy) = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy<AbstractDataField>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>) = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy<AbstractDataField>>) =
+        orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy>): DataQuery = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<AbstractDataField>>): DataQuery = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -823,7 +824,7 @@ internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
     where: Where<AbstractDataField>?,
-    orderBy: CompoundOrderBy,
+    orderBy: CompoundOrderBy<AbstractDataField>,
     limit: Int,
     offset: Int,
     cancel: () -> Boolean

@@ -18,36 +18,42 @@ private const val DEFAULT_IGNORE_CASE = true
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun Field.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy = Ascending(this, ignoreCase)
+fun <T : Field> T.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy<T> =
+    Ascending(this, ignoreCase)
 
 /**
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun Field.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy = Descending(this, ignoreCase)
+fun <T : Field> T.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): OrderBy<T> =
+    Descending(this, ignoreCase)
 
 /**
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun Collection<Field>.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy> =
+fun <T : Field> Collection<T>.asc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy<T>> =
     asSequence().map { it.asc(ignoreCase) }.toSet()
 
 /**
  * Default [ignoreCase] is true.
  */
 @JvmOverloads
-fun Collection<Field>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy> =
+fun <T : Field> Collection<T>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Collection<OrderBy<T>> =
     asSequence().map { it.desc(ignoreCase) }.toSet()
 
 /**
  * Serves two different purposes;
  *
- * TODO remove Comparator inheritance
  * 1. As a [Comparator] of [Contact]s.
  * 2. As the ORDER BY value string in Contacts Provider queries.
+ *
+ * ## Developer notes
+ *
+ * The type [T] is not exactly used in this class itself. Rather, it is used for adding type
+ * restrictions when constructing instances at compile time.
  */
-sealed class OrderBy : Comparator<Contact> {
+sealed class OrderBy<out T : Field> : Comparator<Contact> {
 
     internal abstract val field: Field
     protected abstract val ignoreCase: Boolean
@@ -60,14 +66,16 @@ sealed class OrderBy : Comparator<Contact> {
     }
 }
 
-private class Ascending(override val field: Field, override val ignoreCase: Boolean) : OrderBy() {
+private class Ascending<T : Field>(override val field: Field, override val ignoreCase: Boolean) :
+    OrderBy<T>() {
 
     override val order: String = "ASC"
 
     override fun compare(lhs: Contact, rhs: Contact): Int = field.compare(lhs, rhs, ignoreCase)
 }
 
-private class Descending(override val field: Field, override val ignoreCase: Boolean) : OrderBy() {
+private class Descending<T : Field>(override val field: Field, override val ignoreCase: Boolean) :
+    OrderBy<T>() {
 
     override val order: String = "DESC"
 
@@ -76,8 +84,14 @@ private class Descending(override val field: Field, override val ignoreCase: Boo
 
 /**
  * A set of one or more [OrderBy].
+ *
+ * ## Developer notes
+ *
+ * The type [T] is not exactly used in this class itself. Rather, it is used for adding type
+ * restrictions when constructing instances at compile time.
  */
-internal class CompoundOrderBy(private val orderBys: Set<OrderBy>) : Comparator<Contact> {
+internal class CompoundOrderBy<out T : Field>(private val orderBys: Set<OrderBy<T>>) :
+    Comparator<Contact> {
 
     fun allFieldsAreContainedIn(fieldSet: Set<Field>): Boolean {
         val orderByFieldSet = orderBys.asSequence().map { it.field }.toSet()

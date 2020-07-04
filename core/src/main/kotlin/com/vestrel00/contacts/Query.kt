@@ -215,17 +215,17 @@ interface Query {
      *
      * Use [Fields] to construct the [orderBy].
      */
-    fun orderBy(vararg orderBy: OrderBy): Query
+    fun orderBy(vararg orderBy: OrderBy<AbstractDataField>): Query
 
     /**
      * See [Query.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy>): Query
+    fun orderBy(orderBy: Collection<OrderBy<AbstractDataField>>): Query
 
     /**
      * See [Query.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy>): Query
+    fun orderBy(orderBy: Sequence<OrderBy<AbstractDataField>>): Query
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
@@ -332,7 +332,7 @@ private class QueryImpl(
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> = DEFAULT_INCLUDE,
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
-    private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
+    private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
 ) : Query {
@@ -378,11 +378,12 @@ private class QueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy) = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy<AbstractDataField>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>) = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy<AbstractDataField>>) =
+        orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy>): Query = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<AbstractDataField>>): Query = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -444,7 +445,7 @@ private fun ContentResolver.resolve(
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
     where: Where<AbstractDataField>?,
-    orderBy: CompoundOrderBy,
+    orderBy: CompoundOrderBy<AbstractDataField>,
     limit: Int,
     offset: Int,
     cancel: () -> Boolean

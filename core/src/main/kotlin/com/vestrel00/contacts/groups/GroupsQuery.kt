@@ -84,17 +84,17 @@ interface GroupsQuery {
      *
      * Use [GroupsFields] to construct the [orderBy].
      */
-    fun orderBy(vararg orderBy: OrderBy): GroupsQuery
+    fun orderBy(vararg orderBy: OrderBy<GroupsField>): GroupsQuery
 
     /**
      * See [GroupsQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy>): GroupsQuery
+    fun orderBy(orderBy: Collection<OrderBy<GroupsField>>): GroupsQuery
 
     /**
      * See [GroupsQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy>): GroupsQuery
+    fun orderBy(orderBy: Sequence<OrderBy<GroupsField>>): GroupsQuery
 
     /**
      * Limits the maximum number of returned [Group]s to the given [limit].
@@ -180,7 +180,7 @@ private class GroupsQueryImpl(
     // the Account name and type.
     private var rawContactsWhere: Where<GroupsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var where: Where<GroupsField>? = DEFAULT_WHERE,
-    private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
+    private var orderBy: CompoundOrderBy<GroupsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
 ) : GroupsQuery {
@@ -208,11 +208,11 @@ private class GroupsQueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy) = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy<GroupsField>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>) = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy<GroupsField>>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy>): GroupsQuery = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<GroupsField>>): GroupsQuery = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -261,7 +261,7 @@ private fun ContentResolver.resolve(
     rawContactsWhere: Where<GroupsField>?,
     include: Include<GroupsField>,
     where: Where<GroupsField>?,
-    orderBy: CompoundOrderBy,
+    orderBy: CompoundOrderBy<GroupsField>,
     limit: Int,
     offset: Int,
     cancel: () -> Boolean

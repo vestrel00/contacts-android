@@ -86,17 +86,17 @@ interface AccountsRawContactsQuery {
      *
      * Use [RawContactsFields] to construct the [orderBy].
      */
-    fun orderBy(vararg orderBy: OrderBy): AccountsRawContactsQuery
+    fun orderBy(vararg orderBy: OrderBy<RawContactsField>): AccountsRawContactsQuery
 
     /**
      * See [AccountsRawContactsQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy>): AccountsRawContactsQuery
+    fun orderBy(orderBy: Collection<OrderBy<RawContactsField>>): AccountsRawContactsQuery
 
     /**
      * See [AccountsRawContactsQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy>): AccountsRawContactsQuery
+    fun orderBy(orderBy: Sequence<OrderBy<RawContactsField>>): AccountsRawContactsQuery
 
     /**
      * Limits the maximum number of returned [BlankRawContact]s to the given [limit].
@@ -181,7 +181,7 @@ private class AccountsRawContactsQueryImpl(
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var where: Where<RawContactsField>? = DEFAULT_WHERE,
-    private var orderBy: CompoundOrderBy = DEFAULT_ORDER_BY,
+    private var orderBy: CompoundOrderBy<RawContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
 ) : AccountsRawContactsQuery {
@@ -209,17 +209,19 @@ private class AccountsRawContactsQueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy) = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy<RawContactsField>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy>) = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy<RawContactsField>>) =
+        orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy>): AccountsRawContactsQuery = apply {
-        this.orderBy = if (orderBy.isEmpty()) {
-            DEFAULT_ORDER_BY
-        } else {
-            CompoundOrderBy(orderBy.toSet())
+    override fun orderBy(orderBy: Sequence<OrderBy<RawContactsField>>): AccountsRawContactsQuery =
+        apply {
+            this.orderBy = if (orderBy.isEmpty()) {
+                DEFAULT_ORDER_BY
+            } else {
+                CompoundOrderBy(orderBy.toSet())
+            }
         }
-    }
 
     override fun limit(limit: Int): AccountsRawContactsQuery = apply {
         this.limit = if (limit > 0) {
@@ -262,7 +264,7 @@ private fun ContentResolver.resolve(
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<RawContactsField>,
     where: Where<RawContactsField>?,
-    orderBy: CompoundOrderBy,
+    orderBy: CompoundOrderBy<RawContactsField>,
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
