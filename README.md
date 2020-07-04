@@ -2,21 +2,18 @@
 
 ----------------------- Query refactor.
 
-5. Only allow include, where, order by specific AbstractDataFields in DataQuery.
-
-6. Refactor Query to order by natively instead of custom comparators.
+1. Refactor Query to order by natively instead of custom comparators.
    - Change OrderBy type from AbstractField to ContactsField.
    - Add Options to RawContact as a member instead of only accessible via extension functions?
 
-7. Remove Comparator inheritance in OrderBy.
+2. Remove Comparator inheritance in OrderBy.
    Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
 
 -------------------------------------------------------------------
 
 - Implement Contacts.generalQuery. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
-    - include use ContactFields
-    - orderBy use Contact(s)Fields
-    - limit and offset supported
+    - don’t query the Data table if only ContactsFields-equivalent are included
+    - don’t query the tRawContacts table if include blanks is false
     - are blanks included?
     - Contacts to display (accounts/groups)?
       - (see native Contacts App pre Nougat and post Nougat)

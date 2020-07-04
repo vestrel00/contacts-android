@@ -16,8 +16,6 @@ import com.vestrel00.contacts.entities.Contact
  * If you need more granularity and customizations when providing matching criteria (at the cost of
  * higher CPU and (temporary) memory usage) use [Query].
  *
- * To query specific types of data (e.g. emails, phones, etc), use DataQuery.
- *
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these

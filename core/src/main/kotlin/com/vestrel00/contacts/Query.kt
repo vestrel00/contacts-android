@@ -21,8 +21,6 @@ import kotlin.math.min
  * via [where] at the cost of higher CPU and (temporary) memory usage. For a more efficient (but not
  * as flexible) and more native Contacts app like query, use [GeneralQuery].
  *
- * To query specific types of data (e.g. emails, phones, etc), use DataQuery.
- *
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these

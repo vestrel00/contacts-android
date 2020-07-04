@@ -32,13 +32,6 @@ internal class Include<out T : Field>(val columnNames: Set<String>) {
 }
 
 /**
- * Returns a new instance of [Include] where only the given [fields] in [this] are included.
- */
-internal fun <T : Field> Include<T>.onlyFieldsIn(fields: Collection<T>) = Include<T>(
-    Include(fields).columnNames.intersect(columnNames)
-)
-
-/**
  * Returns a new instance of [Include] where only [ContactsFields] in [this] are included.
  *
  * This is used to convert an [Include] of [DataFields] to [ContactsFields].
