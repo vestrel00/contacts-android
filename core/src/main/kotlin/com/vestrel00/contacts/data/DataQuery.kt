@@ -11,7 +11,6 @@ import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
-import com.vestrel00.contacts.util.isNotEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
 
@@ -229,7 +228,6 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
      */
     fun accounts(accounts: Sequence<Account?>): CommonDataQuery<T, R>
 
-
     /**
      * Includes the given set of [fields] of type [T] in the resulting data objects of type [R].
      *
@@ -345,8 +343,6 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
     fun find(cancel: () -> Boolean): List<R>
 }
 
-// TODO Generalize this so that it can be reused for other query classes (e.g. Query, GroupsQuery).
-// Try delegation https://kotlinlang.org/docs/reference/delegation.html
 private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
@@ -389,10 +385,10 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
     override fun include(fields: Collection<T>) = include(fields.asSequence())
 
     override fun include(fields: Sequence<T>): CommonDataQuery<T, R> = apply {
-        val includeFields = if (fields.isNotEmpty()) {
-            fields
-        } else {
+        val includeFields = if (fields.isEmpty()) {
             defaultIncludeFields.all.asSequence()
+        } else {
+            fields
         }
 
         include = Include(includeFields + REQUIRED_INCLUDE_FIELDS)
