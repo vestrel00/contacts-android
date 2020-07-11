@@ -352,6 +352,7 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
 
     // Yes, the Include, Where, and OrderBy Field types are all AbstractDataField, not T.
     // The type T is mainly used to constrict consumers, not implementors (us).
+    // This allows us to append the RequiredDataFields, which casts T to AbstractDataField.
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> =
         Include(defaultIncludeFields.all + REQUIRED_INCLUDE_FIELDS),
