@@ -884,7 +884,7 @@ Android since the beginning. I want to honor that fact by avoiding adding depend
 a bit of an exception by adding the [Dexter library][2] for permissions handling for the permissions
 modules (not in the core modules). I'm tempted to remove the Dexter dependency and implement 
 permissions handling myself because Dexter brings in a lot of other dependencies with it. However,
-it is not part of the core `contacts` module so I'm able to live with this.
+it is not part of the core module so I'm able to live with this.
 
 If the community strongly desires the addition of these support libs, then I may change my mind =)
 
