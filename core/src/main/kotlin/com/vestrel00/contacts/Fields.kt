@@ -97,9 +97,6 @@ object Fields : FieldSet<AbstractDataField>() {
     val Note = NoteFields()
 
     @JvmField
-    val Options = DataOptionsFields()
-
-    @JvmField
     val Organization = OrganizationFields()
 
     @JvmField
@@ -128,7 +125,7 @@ object Fields : FieldSet<AbstractDataField>() {
      * - Types, e.g. [EmailFields.Type] (stored as integers in the DB)
      * - IDs, e.g. [DataContactsFields.Id] (stored as integers in the DB)
      * - [GroupMembershipFields] (stored as integers in the DB)
-     * - [DataOptionsFields]
+     * - [DataContactsOptionsFields]
      *
      * This is safe for matching in queries. This is useful in creating where clauses that matches
      * text that the user is typing in a search field. For example, if the user is typing in some
@@ -146,7 +143,7 @@ object Fields : FieldSet<AbstractDataField>() {
      * - Types, e.g. [EmailFields.Type] (stored as integers in the DB)
      * - IDs, e.g. [DataContactsFields.Id] (stored as integers in the DB)
      * - [GroupMembershipFields] (stored as integers in the DB)
-     * - [DataOptionsFields]
+     * - [DataContactsOptionsFields]
      *
      * Use [ForMatching] instead, which does not include the above fields.
      */
@@ -164,7 +161,6 @@ object Fields : FieldSet<AbstractDataField>() {
         addAll(Name.all)
         addAll(Nickname.all)
         addAll(Note.all)
-        addAll(Options.all)
         addAll(Organization.all)
         addAll(Phone.all)
         addAll(Photo.all)
@@ -260,34 +256,38 @@ class DataContactsFields internal constructor() : FieldSet<DataContactsField>() 
     @JvmField
     val LastUpdatedTimestamp = DataContactsField(Data.CONTACT_LAST_UPDATED_TIMESTAMP)
 
-    override val all = setOf(Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp)
+    @JvmField
+    val Options = DataContactsOptionsFields()
+
+    override val all = mutableSetOf(
+        Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp
+    ).apply {
+        addAll(Options.all)
+    }.toSet()
 }
 
-data class DataOptionsField internal constructor(override val columnName: String) :
-    AbstractDataField()
+// Contains the same underlying column names as RawContactsOptionsFields and ContactsOptionsFields
+// but with a different Field type.
+class DataContactsOptionsFields internal constructor() : FieldSet<DataContactsField>() {
 
-// Contains the same underlying column names as RaeContactsOptionsFields and ContactsOptionsFields but with
-// a different Field type.
-class DataOptionsFields internal constructor() : FieldSet<DataOptionsField>() {
-
-    internal val Id = DataOptionsField(Data._ID)
+    internal val Id = DataContactsField(Data._ID)
 
     @JvmField
-    val Starred = DataOptionsField(Data.STARRED)
+    val Starred = DataContactsField(Data.STARRED)
 
     /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     @JvmField
-    val TimesContacted = DataOptionsField(Data.TIMES_CONTACTED)
+    val TimesContacted = DataContactsField(Data.TIMES_CONTACTED)
 
     @JvmField
-    val LastTimeContacted = DataOptionsField(Data.LAST_TIME_CONTACTED)
+    val LastTimeContacted = DataContactsField(Data.LAST_TIME_CONTACTED)
      */
 
     @JvmField
-    val CustomRingtone = DataOptionsField(Data.CUSTOM_RINGTONE)
+    val CustomRingtone = DataContactsField(Data.CUSTOM_RINGTONE)
 
     @JvmField
-    val SendToVoicemail = DataOptionsField(Data.SEND_TO_VOICEMAIL)
+    val SendToVoicemail = DataContactsField(Data.SEND_TO_VOICEMAIL)
 
     override val all = setOf(
         Id, Starred, CustomRingtone, SendToVoicemail
@@ -675,8 +675,8 @@ object ContactsFields : FieldSet<ContactsField>() {
     }
 }
 
-// Contains the same underlying column names as DataOptionsFields and RawContactsOptionsFields but
-// with a different Field type.
+// Contains the same underlying column names as DataContactsOptionsFields and
+// RawContactsOptionsFields but with a different Field type.
 class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
 
     internal val Id = ContactsField(RawContacts._ID)
@@ -781,8 +781,8 @@ object RawContactsFields : FieldSet<RawContactsField>() {
     }.toSet()
 }
 
-// Contains the same underlying column names as DataOptionsFields and ContactsOptionsFields but with
-// a different Field type.
+// Contains the same underlying column names as DataContactsOptionsFields and ContactsOptionsFields
+// but with a different Field type.
 class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsField>() {
 
     internal val Id = RawContactsField(RawContacts._ID)

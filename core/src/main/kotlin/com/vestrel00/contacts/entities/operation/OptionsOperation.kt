@@ -31,13 +31,13 @@ internal object OptionsOperation {
 
 private fun ContentProviderOperation.Builder.withOptions(options: MutableOptions)
         : ContentProviderOperation.Builder =
-    withValue(Fields.Options.Starred, options.starred.toSqlValue())
+    withValue(Fields.Contact.Options.Starred, options.starred.toSqlValue())
         /* Deprecated in API 29 - contains useless value for all Android versions in Play store.
-        .withValue(Fields.Options.TimesContacted, options.timesContacted ?: 0)
-        .withValue(Fields.Options.LastTimeContacted, options.lastTimeContacted?.time ?: 0)
+        .withValue(Fields.Contact.Options.TimesContacted, options.timesContacted ?: 0)
+        .withValue(Fields.Contact.Options.LastTimeContacted, options.lastTimeContacted?.time ?: 0)
          */
-        .withValue(Fields.Options.CustomRingtone, options.customRingtone.toString())
-        .withValue(Fields.Options.SendToVoicemail, options.sendToVoicemail.toSqlValue())
+        .withValue(Fields.Contact.Options.CustomRingtone, options.customRingtone.toString())
+        .withValue(Fields.Contact.Options.SendToVoicemail, options.sendToVoicemail.toSqlValue())
 
 private fun Boolean?.toSqlValue(): Int {
     if (this != null) {

@@ -1,5 +1,7 @@
 ## TODO
 
+- Add HAS_PHONE_NUMBER function to GeneralQuery
+
 ----------------------- Query refactor.
 
 1. Refactor Query to order by natively instead of custom comparators.

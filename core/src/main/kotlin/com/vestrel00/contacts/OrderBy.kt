@@ -171,9 +171,21 @@ private fun Field.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int 
                 ignoreCase, rhs.displayNameAlt
             )
         }
-        // PhotoUri and PhotoThumbnailUri are excluded.
         Fields.Contact.LastUpdatedTimestamp ->
             lhs.lastUpdatedTimestamp.compareTo(rhs.lastUpdatedTimestamp)
+
+        // CONTACT OPTIONS
+        Fields.Contact.Options.Starred -> lhs.options?.starred.compareTo(rhs.options?.starred)
+        /* Deprecated in API 29 - contains useless value for all Android versions in Play store.
+        Fields.Contact.Options.TimesContacted ->
+            lhs.options?.timesContacted.compareTo(rhs.options?.timesContacted)
+        Fields.Contact.Options.LastTimeContacted ->
+            lhs.options?.lastTimeContacted.compareTo(rhs.options?.lastTimeContacted)
+         */
+        Fields.Contact.Options.CustomRingtone ->
+            lhs.options?.customRingtone.compareTo(rhs.options?.customRingtone)
+        Fields.Contact.Options.SendToVoicemail ->
+            lhs.options?.sendToVoicemail.compareTo(rhs.options?.sendToVoicemail)
 
         // EMAIL
         Fields.Email.Type -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
@@ -254,19 +266,6 @@ private fun Field.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int 
         Fields.Note.Note -> lhs.notes().compareTo(ignoreCase, rhs.notes()) {
             it.note
         }
-
-        // OPTIONS
-        Fields.Options.Starred -> lhs.options?.starred.compareTo(rhs.options?.starred)
-        /* Deprecated in API 29 - contains useless value for all Android versions in Play store.
-        Fields.Options.TimesContacted ->
-            lhs.options?.timesContacted.compareTo(rhs.options?.timesContacted)
-        Fields.Options.LastTimeContacted ->
-            lhs.options?.lastTimeContacted.compareTo(rhs.options?.lastTimeContacted)
-         */
-        Fields.Options.CustomRingtone ->
-            lhs.options?.customRingtone.compareTo(rhs.options?.customRingtone)
-        Fields.Options.SendToVoicemail ->
-            lhs.options?.sendToVoicemail.compareTo(rhs.options?.sendToVoicemail)
 
         // ORGANIZATION
         Fields.Organization.Company -> lhs.organizations().compareTo(
