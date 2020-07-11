@@ -26,8 +26,9 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
             ContactsContract.RawContacts.ACCOUNT_NAME,
             ContactsContract.RawContacts.ACCOUNT_TYPE,
             ContactsContract.RawContacts.STARRED,
-            ContactsContract.RawContacts.TIMES_CONTACTED,
-            ContactsContract.RawContacts.LAST_TIME_CONTACTED,
+            // Deprecated in API 29 - contains useless value for all Android versions in Play store.
+            // ContactsContract.RawContacts.TIMES_CONTACTED,
+            // ContactsContract.RawContacts.LAST_TIME_CONTACTED,
             ContactsContract.RawContacts.CUSTOM_RINGTONE,
             ContactsContract.RawContacts.SEND_TO_VOICEMAIL
         ),
@@ -48,17 +49,16 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
         val type = cursor.getString(5)
 
         val starred = cursor.getString(6)
-        val timesContacted = cursor.getString(7)
-        val lastTimeContacted = cursor.getString(8)
-        val customRingtone = cursor.getString(9)
-        val sendToVoicemail = cursor.getString(10)
+        // val timesContacted = cursor.getString(7)
+        // val lastTimeContacted = cursor.getString(8)
+        val customRingtone = cursor.getString(7)
+        val sendToVoicemail = cursor.getString(8)
 
         log(
             """
-                RawContact id: $id, contactId: $contactId, displayNamePrimary: $displayNamePrimary, 
+                RawContact id: $id, contactId: $contactId, displayNamePrimary: $displayNamePrimary,
                  displayNameAlt: $displayNameAlt,  accountName: $name, accountType: $type,
-                 starred: $starred, timesContacted: $timesContacted, 
-                 lastTimeContacted: $lastTimeContacted, customRingtone: $customRingtone, 
+                 starred: $starred, customRingtone: $customRingtone,
                  sendToVoicemail: $sendToVoicemail
             """.trimIndent().replace("\n", "")
         )

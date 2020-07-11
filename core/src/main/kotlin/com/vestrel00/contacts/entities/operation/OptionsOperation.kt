@@ -32,8 +32,10 @@ internal object OptionsOperation {
 private fun ContentProviderOperation.Builder.withOptions(options: MutableOptions)
         : ContentProviderOperation.Builder =
     withValue(Fields.Options.Starred, options.starred.toSqlValue())
+        /* Deprecated in API 29 - contains useless value for all Android versions in Play store.
         .withValue(Fields.Options.TimesContacted, options.timesContacted ?: 0)
         .withValue(Fields.Options.LastTimeContacted, options.lastTimeContacted?.time ?: 0)
+         */
         .withValue(Fields.Options.CustomRingtone, options.customRingtone.toString())
         .withValue(Fields.Options.SendToVoicemail, options.sendToVoicemail.toSqlValue())
 

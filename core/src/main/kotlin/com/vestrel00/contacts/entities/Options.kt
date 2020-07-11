@@ -2,7 +2,6 @@ package com.vestrel00.contacts.entities
 
 import android.net.Uri
 import kotlinx.android.parcel.Parcelize
-import java.util.*
 
 @Parcelize
 data class Options internal constructor(
@@ -34,6 +33,7 @@ data class Options internal constructor(
      */
     val starred: Boolean?,
 
+    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     /**
      * The number of times a contact has been contacted.
      */
@@ -43,6 +43,7 @@ data class Options internal constructor(
      * The last time a contact was contacted.
      */
     val lastTimeContacted: Date?,
+     */
 
     /**
      * URI for a custom ringtone associated with the contact.
@@ -56,10 +57,10 @@ data class Options internal constructor(
 
 ) : Entity {
 
-    internal constructor() : this(null, null, null, null, null, null)
+    internal constructor() : this(null, null, null, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        starred, timesContacted, lastTimeContacted, customRingtone, sendToVoicemail
+        starred, customRingtone, sendToVoicemail
     )
 
     fun toMutableOptions() = MutableOptions(
@@ -67,8 +68,8 @@ data class Options internal constructor(
 
         starred = starred,
 
-        timesContacted = timesContacted,
-        lastTimeContacted = lastTimeContacted,
+        // timesContacted = timesContacted,
+        // lastTimeContacted = lastTimeContacted,
 
         customRingtone = customRingtone,
 
@@ -89,6 +90,7 @@ data class MutableOptions internal constructor(
      */
     var starred: Boolean?,
 
+    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     /**
      * See [Options.timesContacted].
      */
@@ -98,6 +100,7 @@ data class MutableOptions internal constructor(
      * See [Options.lastTimeContacted].
      */
     var lastTimeContacted: Date?,
+     */
 
     /**
      * See [Options.customRingtone].
@@ -111,9 +114,9 @@ data class MutableOptions internal constructor(
 
 ) : Entity {
 
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null, null, null, null)
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        starred, timesContacted, lastTimeContacted, customRingtone, sendToVoicemail
+        starred, customRingtone, sendToVoicemail
     )
 }

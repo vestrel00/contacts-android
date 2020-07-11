@@ -3,7 +3,9 @@ package com.vestrel00.contacts.sample.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.widget.ImageView
@@ -40,9 +42,8 @@ import kotlin.coroutines.CoroutineContext
  *
  * This is in the sample and not in the contacts-ui module because it requires concurrency. We
  * should not add coroutines and contacts-async as dependencies to contacts-ui just for this.
- *
- * Consumers may copy and paste this into their projects or if the community really wants it,
- * we may move this to a separate module (contacts-ui-async).
+ * Consumers may copy and paste this into their projects or if the community really wants it, we may
+ * move this to a separate module (contacts-ui-async).
  */
 class PhotoView @JvmOverloads constructor(
     context: Context,
@@ -84,9 +85,23 @@ class PhotoView @JvmOverloads constructor(
             photoUriPicked = { uri ->
                 shouldSavePhoto = true
                 launch {
+                    // FIXME This suppression should no longer be necessary once the compiler is
+                    // smart enough to realize that these blocking calls are ran using the
+                    // Dispatchers.IO, which is designed to handle blocking calls.
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     val bitmap = withContext(Dispatchers.IO) {
-                        MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            ImageDecoder.decodeBitmap(
+                                ImageDecoder.createSource(context.contentResolver, uri)
+                            )
+                        } else {
+                            // Ugh, this suppression should not be necessary because this is only
+                            // called pre Android P. I doubt "they" will ever fix this...
+                            @Suppress("Deprecation")
+                            MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+                        }
                     }
+
                     setPhotoDrawable(BitmapDrawable(resources, bitmap))
                 }
             }
@@ -130,8 +145,12 @@ class PhotoView @JvmOverloads constructor(
             scaleType = ScaleType.FIT_CENTER
 
             val placeHolderImageDrawable = withContext(Dispatchers.IO) {
-                @Suppress("Deprecation")
-                context.resources.getDrawable(R.drawable.placeholder_photo)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    context.getDrawable(R.drawable.placeholder_photo)
+                } else {
+                    @Suppress("Deprecation")
+                    context.resources.getDrawable(R.drawable.placeholder_photo)
+                }
             }
             setImageDrawable(placeHolderImageDrawable)
         }

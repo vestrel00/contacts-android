@@ -257,10 +257,12 @@ private fun Field.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int 
 
         // OPTIONS
         Fields.Options.Starred -> lhs.options?.starred.compareTo(rhs.options?.starred)
+        /* Deprecated in API 29 - contains useless value for all Android versions in Play store.
         Fields.Options.TimesContacted ->
             lhs.options?.timesContacted.compareTo(rhs.options?.timesContacted)
         Fields.Options.LastTimeContacted ->
             lhs.options?.lastTimeContacted.compareTo(rhs.options?.lastTimeContacted)
+         */
         Fields.Options.CustomRingtone ->
             lhs.options?.customRingtone.compareTo(rhs.options?.customRingtone)
         Fields.Options.SendToVoicemail ->

@@ -217,6 +217,8 @@ private fun ContentResolver.resolve(
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
     // Data table queries using profile uris only return user profile data.
+    // Yes, I am aware of IS_USER_PROFILE and RAW_CONTACT_IS_USER_PROFILE but those seem to cause
+    // queries to throw an exception.
     val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
     for (rawContactId in rawContactIds) {
         query(

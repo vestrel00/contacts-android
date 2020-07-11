@@ -11,8 +11,9 @@ internal class OptionsMapper(private val optionsCursor: OptionsCursor) : EntityM
 
             starred = optionsCursor.starred,
 
-            timesContacted = optionsCursor.timesContacted,
-            lastTimeContacted = optionsCursor.lastTimeContacted,
+            // Deprecated in API 29 - contains useless value for all Android versions in Play store.
+            // timesContacted = optionsCursor.timesContacted,
+            // lastTimeContacted = optionsCursor.lastTimeContacted,
 
             customRingtone = optionsCursor.customRingtone,
 

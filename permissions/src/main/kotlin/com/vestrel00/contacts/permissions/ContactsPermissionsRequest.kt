@@ -1,6 +1,6 @@
 package com.vestrel00.contacts.permissions
 
-import android.app.Activity
+import android.content.Context
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
 
@@ -10,13 +10,13 @@ import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
  *
  * If permission is already granted, then immediately returns a new [Query] instance.
  */
-suspend fun Contacts.queryWithPermission(activity: Activity): Query {
-    val permissions = permissions(activity)
+suspend fun Contacts.queryWithPermission(context: Context): Query {
+    val permissions = permissions(context)
     if (!permissions.canQuery()) {
-        requestReadPermission(activity)
+        requestReadPermission(context)
     }
 
-    return query(activity)
+    return query(context)
 }
 
 /**
@@ -27,14 +27,14 @@ suspend fun Contacts.queryWithPermission(activity: Activity): Query {
  *
  * If permissions are already granted, then immediately returns a new [Insert] instance.
  */
-suspend fun Contacts.insertWithPermission(activity: Activity): Insert {
-    val permissions = permissions(activity)
+suspend fun Contacts.insertWithPermission(context: Context): Insert {
+    val permissions = permissions(context)
     if (!permissions.canInsertUpdateDelete()) {
-        requestWritePermission(activity)
-        requestGetAccountsPermission(activity)
+        requestWritePermission(context)
+        requestGetAccountsPermission(context)
     }
 
-    return insert(activity)
+    return insert(context)
 }
 
 /**
@@ -45,14 +45,14 @@ suspend fun Contacts.insertWithPermission(activity: Activity): Insert {
  *
  * If permissions are already granted, then immediately returns a new [Update] instance.
  */
-suspend fun Contacts.updateWithPermission(activity: Activity): Update {
-    val permissions = permissions(activity)
+suspend fun Contacts.updateWithPermission(context: Context): Update {
+    val permissions = permissions(context)
     if (!permissions.canInsertUpdateDelete()) {
-        requestWritePermission(activity)
-        requestGetAccountsPermission(activity)
+        requestWritePermission(context)
+        requestGetAccountsPermission(context)
     }
 
-    return update(activity)
+    return update(context)
 }
 
 /**
@@ -61,14 +61,14 @@ suspend fun Contacts.updateWithPermission(activity: Activity): Update {
  *
  * If permission is already granted, then immediately returns a new [Delete] instance.
  */
-suspend fun Contacts.deleteWithPermission(activity: Activity): Delete {
-    val permissions = permissions(activity)
+suspend fun Contacts.deleteWithPermission(context: Context): Delete {
+    val permissions = permissions(context)
     if (!permissions.canInsertUpdateDelete()) {
-        requestWritePermission(activity)
-        requestGetAccountsPermission(activity)
+        requestWritePermission(context)
+        requestGetAccountsPermission(context)
     }
 
-    return delete(activity)
+    return delete(context)
 }
 
 /**
@@ -77,8 +77,8 @@ suspend fun Contacts.deleteWithPermission(activity: Activity): Delete {
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun requestReadPermission(activity: Activity): Boolean =
-    requestContactsPermission(ContactsPermissions.READ_PERMISSION, activity)
+suspend fun requestReadPermission(context: Context): Boolean =
+    requestContactsPermission(ContactsPermissions.READ_PERMISSION, context)
 
 /**
  * Requests the [ContactsPermissions.WRITE_PERMISSION]. The current coroutine is suspended until
@@ -86,13 +86,13 @@ suspend fun requestReadPermission(activity: Activity): Boolean =
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun requestWritePermission(activity: Activity): Boolean =
-    requestContactsPermission(ContactsPermissions.WRITE_PERMISSION, activity)
+suspend fun requestWritePermission(context: Context): Boolean =
+    requestContactsPermission(ContactsPermissions.WRITE_PERMISSION, context)
 
-private suspend fun requestContactsPermission(permission: String, activity: Activity): Boolean =
+private suspend fun requestContactsPermission(permission: String, context: Context): Boolean =
     requestPermission(
         permission,
-        activity,
+        context,
         R.string.contacts_request_permission_title,
         R.string.contacts_request_permission_description
     )

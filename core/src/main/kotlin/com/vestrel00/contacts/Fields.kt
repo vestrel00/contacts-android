@@ -275,11 +275,13 @@ class DataOptionsFields internal constructor() : FieldSet<DataOptionsField>() {
     @JvmField
     val Starred = DataOptionsField(Data.STARRED)
 
+    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     @JvmField
     val TimesContacted = DataOptionsField(Data.TIMES_CONTACTED)
 
     @JvmField
     val LastTimeContacted = DataOptionsField(Data.LAST_TIME_CONTACTED)
+     */
 
     @JvmField
     val CustomRingtone = DataOptionsField(Data.CUSTOM_RINGTONE)
@@ -288,7 +290,7 @@ class DataOptionsFields internal constructor() : FieldSet<DataOptionsField>() {
     val SendToVoicemail = DataOptionsField(Data.SEND_TO_VOICEMAIL)
 
     override val all = setOf(
-        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
+        Id, Starred, CustomRingtone, SendToVoicemail
     )
 }
 
@@ -682,11 +684,13 @@ class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
     @JvmField
     val Starred = ContactsField(Data.STARRED)
 
+    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     @JvmField
     val TimesContacted = ContactsField(Data.TIMES_CONTACTED)
 
     @JvmField
     val LastTimeContacted = ContactsField(Data.LAST_TIME_CONTACTED)
+     */
 
     @JvmField
     val CustomRingtone = ContactsField(Data.CUSTOM_RINGTONE)
@@ -695,7 +699,7 @@ class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
     val SendToVoicemail = ContactsField(Data.SEND_TO_VOICEMAIL)
 
     override val all = setOf(
-        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
+        Id, Starred, CustomRingtone, SendToVoicemail
     )
 }
 
@@ -786,11 +790,13 @@ class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsFiel
     @JvmField
     val Starred = RawContactsField(Data.STARRED)
 
+    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     @JvmField
     val TimesContacted = RawContactsField(Data.TIMES_CONTACTED)
 
     @JvmField
     val LastTimeContacted = RawContactsField(Data.LAST_TIME_CONTACTED)
+     */
 
     @JvmField
     val CustomRingtone = RawContactsField(Data.CUSTOM_RINGTONE)
@@ -799,7 +805,7 @@ class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsFiel
     val SendToVoicemail = RawContactsField(Data.SEND_TO_VOICEMAIL)
 
     override val all = setOf(
-        Id, Starred, TimesContacted, LastTimeContacted, CustomRingtone, SendToVoicemail
+        Id, Starred, CustomRingtone, SendToVoicemail
     )
 }
 

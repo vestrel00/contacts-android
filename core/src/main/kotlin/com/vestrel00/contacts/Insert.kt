@@ -322,7 +322,7 @@ private fun Context.insertRawContactForAccount(
      */
     return results?.firstOrNull()?.let { result ->
         val rawContactUri = result.uri
-        val rawContactId = rawContactUri.lastPathSegment?.toLongOrNull()
+        val rawContactId = rawContactUri?.lastPathSegment?.toLongOrNull()
         rawContactId
     }
 }

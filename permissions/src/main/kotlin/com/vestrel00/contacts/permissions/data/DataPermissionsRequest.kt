@@ -1,6 +1,6 @@
 package com.vestrel00.contacts.permissions.data
 
-import android.app.Activity
+import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.data.Data
 import com.vestrel00.contacts.data.DataDelete
@@ -15,13 +15,13 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  *
  * If permission is already granted, then immediately returns a new [DataQuery] instance.
  */
-suspend fun Data.queryWithPermission(activity: Activity): DataQuery {
-    val permissions = permissions(activity)
+suspend fun Data.queryWithPermission(context: Context): DataQuery {
+    val permissions = permissions(context)
     if (!permissions.canQuery()) {
-        requestReadPermission(activity)
+        requestReadPermission(context)
     }
 
-    return query(activity)
+    return query(context)
 }
 
 /**
@@ -30,13 +30,13 @@ suspend fun Data.queryWithPermission(activity: Activity): DataQuery {
  *
  * If permission is already granted, then immediately returns a new [DataUpdate] instance.
  */
-suspend fun Data.updateWithPermission(activity: Activity): DataUpdate {
-    val permissions = permissions(activity)
+suspend fun Data.updateWithPermission(context: Context): DataUpdate {
+    val permissions = permissions(context)
     if (!permissions.canInsertUpdateDelete()) {
-        requestWritePermission(activity)
+        requestWritePermission(context)
     }
 
-    return update(activity)
+    return update(context)
 }
 
 /**
@@ -47,11 +47,11 @@ suspend fun Data.updateWithPermission(activity: Activity): DataUpdate {
  *
  * If permissions are already granted, then immediately returns a new [DataDelete] instance.
  */
-suspend fun Data.deleteWithPermission(activity: Activity): DataDelete {
-    val permissions = permissions(activity)
+suspend fun Data.deleteWithPermission(context: Context): DataDelete {
+    val permissions = permissions(context)
     if (!permissions.canInsertUpdateDelete()) {
-        requestWritePermission(activity)
+        requestWritePermission(context)
     }
 
-    return delete(activity)
+    return delete(context)
 }

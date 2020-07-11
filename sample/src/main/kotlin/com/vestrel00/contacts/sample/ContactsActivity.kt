@@ -1,7 +1,6 @@
 package com.vestrel00.contacts.sample
 
 import android.accounts.Account
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -102,9 +101,9 @@ class ContactsActivity : BaseActivity() {
                 SEARCH_FIELDS whereOr { it contains queryText }
             }
 
-            val activity: Activity = this@ContactsActivity
+            val context = this@ContactsActivity
 
-            searchResults = Contacts().queryWithPermission(activity)
+            searchResults = Contacts().queryWithPermission(context)
                 // Use accounts to limit the query to contacts belong to the specified accounts.
                 // Not passing any accounts or not calling accounts will default to searching all
                 // accounts.
@@ -124,7 +123,7 @@ class ContactsActivity : BaseActivity() {
 
             setContactsAdapterItems()
 
-            activity.logContactsProviderTables()
+            context.logContactsProviderTables()
         }
     }
 

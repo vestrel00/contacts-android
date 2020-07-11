@@ -23,8 +23,9 @@ internal fun Context.logContactsTable(contentUri: Uri) {
             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
             ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE,
             ContactsContract.Contacts.STARRED,
-            ContactsContract.Contacts.TIMES_CONTACTED,
-            ContactsContract.Contacts.LAST_TIME_CONTACTED,
+            // Deprecated in API 29 - contains useless value for all Android versions in Play store.
+            // ContactsContract.Contacts.TIMES_CONTACTED,
+            // ContactsContract.Contacts.LAST_TIME_CONTACTED,
             ContactsContract.Contacts.CUSTOM_RINGTONE,
             ContactsContract.Contacts.SEND_TO_VOICEMAIL,
             ContactsContract.Contacts.PHOTO_FILE_ID,
@@ -45,19 +46,18 @@ internal fun Context.logContactsTable(contentUri: Uri) {
         val displayNameAlt = cursor.getString(2)
 
         val starred = cursor.getString(3)
-        val timesContacted = cursor.getString(4)
-        val lastTimeContacted = cursor.getString(5)
-        val customRingtone = cursor.getString(6)
-        val sendToVoicemail = cursor.getString(7)
-        val photoFileId = cursor.getString(8)
-        val photoUri = cursor.getString(9)
-        val photoThumbnailUri = cursor.getString(10)
+        // val timesContacted = cursor.getString(4)
+        // val lastTimeContacted = cursor.getString(5)
+        val customRingtone = cursor.getString(4)
+        val sendToVoicemail = cursor.getString(5)
+        val photoFileId = cursor.getString(6)
+        val photoUri = cursor.getString(7)
+        val photoThumbnailUri = cursor.getString(8)
 
         log(
             """
                 Contact id: $id, displayNamePrimary: $displayNamePrimary,
                  displayNameAlt: $displayNameAlt, starred: $starred,
-                 timesContacted: $timesContacted, lastTimeContacted: $lastTimeContacted,
                  customRingtone: $customRingtone, sendToVoicemail: $sendToVoicemail,
                  photoFileId: $photoFileId, photoUri: $photoUri,
                  photoThumbnailUri: $photoThumbnailUri

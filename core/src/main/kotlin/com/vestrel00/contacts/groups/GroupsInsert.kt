@@ -176,7 +176,7 @@ private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
      */
     return results?.firstOrNull()?.let { result ->
         val groupUri = result.uri
-        val groupId = groupUri.lastPathSegment?.toLongOrNull()
+        val groupId = groupUri?.lastPathSegment?.toLongOrNull()
         groupId
     }
 }

@@ -127,7 +127,7 @@ class AccountsActivity : BaseActivity() {
         private fun Intent.choiceMode(): Int = getIntExtra(CHOICE_MODE, CHOICE_MODE_NONE)
 
         private fun Intent.selectedAccounts(): List<Account?> =
-            getParcelableArrayListExtra(SELECTED_ACCOUNTS)
+            getParcelableArrayListExtra(SELECTED_ACCOUNTS) ?: emptyList()
 
         private const val REQUEST_SELECT_ACCOUNTS = 101
         private const val CHOICE_MODE = "choiceMode"

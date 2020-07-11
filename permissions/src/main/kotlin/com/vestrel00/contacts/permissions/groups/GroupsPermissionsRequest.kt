@@ -1,6 +1,6 @@
 package com.vestrel00.contacts.permissions.groups
 
-import android.app.Activity
+import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.groups.GroupsInsert
@@ -16,13 +16,13 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  *
  * If permission is already granted, then immediately returns a new [GroupsQuery] instance.
  */
-suspend fun Groups.queryWithPermission(activity: Activity): GroupsQuery {
-    val permissions = permissions(activity)
+suspend fun Groups.queryWithPermission(context: Context): GroupsQuery {
+    val permissions = permissions(context)
     if (!permissions.canQuery()) {
-        requestReadPermission(activity)
+        requestReadPermission(context)
     }
 
-    return query(activity)
+    return query(context)
 }
 
 /**
@@ -33,14 +33,14 @@ suspend fun Groups.queryWithPermission(activity: Activity): GroupsQuery {
  *
  * If permissions are already granted, then immediately returns a new [GroupsInsert] instance.
  */
-suspend fun Groups.insertWithPermission(activity: Activity): GroupsInsert {
-    val permissions = permissions(activity)
+suspend fun Groups.insertWithPermission(context: Context): GroupsInsert {
+    val permissions = permissions(context)
     if (!permissions.canInsertUpdateDelete()) {
-        requestWritePermission(activity)
-        requestGetAccountsPermission(activity)
+        requestWritePermission(context)
+        requestGetAccountsPermission(context)
     }
 
-    return insert(activity)
+    return insert(context)
 }
 
 /**
@@ -51,12 +51,12 @@ suspend fun Groups.insertWithPermission(activity: Activity): GroupsInsert {
  *
  * If permissions are already granted, then immediately returns a new [GroupsUpdate] instance.
  */
-suspend fun Groups.updateWithPermission(activity: Activity): GroupsUpdate {
-    val permissions = permissions(activity)
+suspend fun Groups.updateWithPermission(context: Context): GroupsUpdate {
+    val permissions = permissions(context)
     if (!permissions.canInsertUpdateDelete()) {
-        requestWritePermission(activity)
-        requestGetAccountsPermission(activity)
+        requestWritePermission(context)
+        requestGetAccountsPermission(context)
     }
 
-    return update(activity)
+    return update(context)
 }

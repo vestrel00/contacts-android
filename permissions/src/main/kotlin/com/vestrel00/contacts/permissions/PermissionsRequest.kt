@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.permissions
 
-import android.app.Activity
 import android.content.Context
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -16,18 +15,18 @@ import kotlin.coroutines.suspendCoroutine
 
 internal suspend fun requestPermission(
     permission: String,
-    activity: Activity,
+    context: Context,
     // [ANDROID X] @StringRes (not using annotation to avoid dependency on androidx.annotation)
     permissionDeniedTitleRes: Int,
     permissionDeniedDescriptionRes: Int
 ): Boolean = suspendCoroutine { continuation ->
 
-    Dexter.withActivity(activity)
+    Dexter.withContext(context)
         .withPermission(permission)
         .withListener(
             CompositePermissionListener(
                 CustomDialogOnDeniedPermissionListener(
-                    activity,
+                    context,
                     permissionDeniedTitleRes,
                     permissionDeniedDescriptionRes
                 ),
