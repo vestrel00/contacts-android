@@ -33,20 +33,6 @@ android {
     }
 }
 
-/*
- * Enable experimental mode for Parcelize Android extension.
- * See https://kotlinlang.org/docs/tutorials/android-plugin.html#parcelable
- *
- * Even though Parcelize is still labeled as "experimental", most developers say it is
- * production-ready. The entities package benefits from this greatly, removing ugly boilerplate code
- * and reducing lines of code by more than half!
- *
- * FIXME: Remove experimental flag when Parcelize is no longer experimental
- */
-androidExtensions {
-    experimental = true
-}
-
 dependencies {
     implementation libraries.kotlin.standardLib
 }
