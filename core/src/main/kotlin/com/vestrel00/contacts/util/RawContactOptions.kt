@@ -7,8 +7,7 @@ import com.vestrel00.contacts.RawContactsFields
 import com.vestrel00.contacts.entities.MutableOptions
 import com.vestrel00.contacts.entities.Options
 import com.vestrel00.contacts.entities.RawContactEntity
-import com.vestrel00.contacts.entities.cursor.getNextOrNull
-import com.vestrel00.contacts.entities.mapper.optionsMapper
+import com.vestrel00.contacts.entities.mapper.rawContactsOptionsMapper
 import com.vestrel00.contacts.entities.operation.OptionsOperation
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
@@ -41,7 +40,7 @@ fun RawContactEntity.options(context: Context): Options {
         Include(RawContactsFields.Options),
         RawContactsFields.Id equalTo rawContactId
     ) {
-        it.getNextOrNull { it.optionsMapper().value }
+        it.getNextOrNull { it.rawContactsOptionsMapper().value }
     } ?: Options()
 }
 

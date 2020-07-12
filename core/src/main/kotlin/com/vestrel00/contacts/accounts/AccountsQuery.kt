@@ -7,7 +7,6 @@ import android.content.Context
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.account
-import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty

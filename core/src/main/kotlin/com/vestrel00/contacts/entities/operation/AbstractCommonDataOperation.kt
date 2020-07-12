@@ -5,8 +5,8 @@ import android.content.ContentResolver
 import android.database.Cursor
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
+import com.vestrel00.contacts.entities.cursor.EntityCursor
 import com.vestrel00.contacts.entities.cursor.dataCursor
-import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.query
 
@@ -252,7 +252,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
      * Provides the [Cursor] to the data rows of type [T] of the [RawContact] with [rawContactId].
      */
     private fun <T> ContentResolver.dataRowIdsFor(
-        rawContactId: Long, processCursor: (Cursor) -> T
+        rawContactId: Long, processCursor: (EntityCursor<AbstractDataField>) -> T
     ) = query(
         TABLE,
         Include(Fields.DataId),

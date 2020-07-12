@@ -1,6 +1,8 @@
 package com.vestrel00.contacts.entities.mapper
 
-import android.database.Cursor
+import com.vestrel00.contacts.AbstractDataField
+import com.vestrel00.contacts.ContactsField
+import com.vestrel00.contacts.RawContactsField
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.MimeType.*
 import com.vestrel00.contacts.entities.RawContact
@@ -41,10 +43,10 @@ internal class ContactsMapper(
      *
      * This will not close the given [cursor].
      */
-    fun processContactsCursor(cursor: Cursor): ContactsMapper = apply {
+    fun processContactsCursor(cursor: EntityCursor<ContactsField>): ContactsMapper = apply {
         // Use the Contacts cursor to retrieve the contactId.
         val contactsCursor = cursor.contactsCursor()
-        val contactMapper = cursor.contactMapper(contactsCursor, isProfile)
+        val contactMapper = cursor.contactsMapper(contactsCursor, isProfile)
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -61,10 +63,10 @@ internal class ContactsMapper(
      *
      * This will not close the given [cursor].
      */
-    fun processRawContactsCursor(cursor: Cursor): ContactsMapper = apply {
+    fun processRawContactsCursor(cursor: EntityCursor<RawContactsField>): ContactsMapper = apply {
         // Use the RawContacts cursor to retrieve the rawContactId.
         val rawContactsCursor = cursor.rawContactsCursor()
-        val tempRawContactMapper = cursor.tempRawContactMapper(rawContactsCursor, isProfile)
+        val tempRawContactMapper = rawContactsCursor.tempRawContactMapper(isProfile)
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -81,11 +83,11 @@ internal class ContactsMapper(
      *
      * This will not close the given [cursor].
      */
-    fun processDataCursor(cursor: Cursor): ContactsMapper = apply {
+    fun processDataCursor(cursor: EntityCursor<AbstractDataField>): ContactsMapper = apply {
         // Changing the cursor position also changes the values returned by the mappers.
         val dataCursor = cursor.dataCursor()
-        val contactMapper = cursor.contactMapper(dataCursor, isProfile)
-        val tempRawContactMapper = cursor.tempRawContactMapper(dataCursor, isProfile)
+        val contactMapper = cursor.dataContactsMapper(dataCursor, isProfile)
+        val tempRawContactMapper = dataCursor.tempRawContactMapper(isProfile)
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -132,7 +134,8 @@ internal class ContactsMapper(
         // Add all of the Contacts in the contactsMap.
         for (contact in contactsMap.values) {
             // Make sure to remove the entry in contactRawMap as it is processed.
-            val rawContacts = contact.id?.let(contactRawMap::remove) ?: emptyList()
+            val rawContacts: List<RawContact> =
+                contact.id?.let(contactRawMap::remove) ?: emptyList()
 
             // The data class copy function comes in handy here.
             contactList.add(contact.copy(rawContacts = rawContacts.sortedBy { it.id }))
@@ -166,7 +169,7 @@ internal class ContactsMapper(
 
 }
 
-private fun Cursor.updateRawContact(rawContact: TempRawContact) {
+private fun EntityCursor<AbstractDataField>.updateRawContact(rawContact: TempRawContact) {
     // Each row in the cursor only contains a subset of contact data paired by the mime type.
     // This is why full contact objects cannot be built per cursor row.
     // Therefore, mutable contact objects must be updated with different pieces of data

@@ -1,52 +1,101 @@
 package com.vestrel00.contacts.entities.mapper
 
-import android.database.Cursor
+import com.vestrel00.contacts.AbstractDataField
+import com.vestrel00.contacts.ContactsField
+import com.vestrel00.contacts.GroupsField
+import com.vestrel00.contacts.RawContactsField
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.*
 
-internal fun Cursor.addressMapper(): EntityMapper<Address> = AddressMapper(addressCursor())
+// region EntityCursor<AbstractDataField>
 
-internal fun Cursor.blankRawContactMapper(
-    rawContactIdCursor: RawContactIdCursor, isProfile: Boolean
-): EntityMapper<BlankRawContact> =
-    BlankRawContactMapper(rawContactsCursor(), rawContactIdCursor, isProfile)
+internal fun EntityCursor<AbstractDataField>.addressMapper(): EntityMapper<Address> =
+    AddressMapper(addressCursor())
 
-internal fun Cursor.contactMapper(
+internal fun EntityCursor<AbstractDataField>.dataContactsMapper(
     contactIdCursor: ContactIdCursor, isProfile: Boolean
 ): EntityMapper<Contact> =
-    ContactMapper(contactCursor(), contactIdCursor, optionsMapper(), isProfile)
+    ContactMapper(dataContactsCursor(), contactIdCursor, dataContactsOptionsMapper(), isProfile)
 
-internal fun Cursor.emailMapper(): EntityMapper<Email> = EmailMapper(emailCursor())
+internal fun EntityCursor<AbstractDataField>.emailMapper(): EntityMapper<Email> =
+    EmailMapper(emailCursor())
 
-internal fun Cursor.eventMapper(): EntityMapper<Event> = EventMapper(eventCursor())
+internal fun EntityCursor<AbstractDataField>.eventMapper(): EntityMapper<Event> =
+    EventMapper(eventCursor())
 
-internal fun Cursor.groupMapper(): EntityMapper<Group> = GroupMapper(groupsCursor())
-
-internal fun Cursor.groupMembershipMapper(): EntityMapper<GroupMembership> =
+internal fun EntityCursor<AbstractDataField>.groupMembershipMapper(): EntityMapper<GroupMembership> =
     GroupMembershipMapper(groupMembershipCursor())
 
-internal fun Cursor.imMapper(): EntityMapper<Im> = ImMapper(imCursor())
+internal fun EntityCursor<AbstractDataField>.imMapper(): EntityMapper<Im> = ImMapper(imCursor())
 
-internal fun Cursor.nameMapper(): EntityMapper<Name> = NameMapper(nameCursor())
+internal fun EntityCursor<AbstractDataField>.nameMapper(): EntityMapper<Name> =
+    NameMapper(nameCursor())
 
-internal fun Cursor.nicknameMapper(): EntityMapper<Nickname> = NicknameMapper(nicknameCursor())
+internal fun EntityCursor<AbstractDataField>.nicknameMapper(): EntityMapper<Nickname> =
+    NicknameMapper(nicknameCursor())
 
-internal fun Cursor.noteMapper(): EntityMapper<Note> = NoteMapper(noteCursor())
+internal fun EntityCursor<AbstractDataField>.noteMapper(): EntityMapper<Note> =
+    NoteMapper(noteCursor())
 
-internal fun Cursor.optionsMapper(): EntityMapper<Options> = OptionsMapper(optionsCursor())
+internal fun EntityCursor<AbstractDataField>.dataContactsOptionsMapper(): EntityMapper<Options> =
+    OptionsMapper(dataContactsOptionsCursor())
 
-internal fun Cursor.organizationMapper(): EntityMapper<Organization> =
+internal fun EntityCursor<AbstractDataField>.organizationMapper(): EntityMapper<Organization> =
     OrganizationMapper(organizationCursor())
 
-internal fun Cursor.phoneMapper(): EntityMapper<Phone> = PhoneMapper(phoneCursor())
+internal fun EntityCursor<AbstractDataField>.phoneMapper(): EntityMapper<Phone> =
+    PhoneMapper(phoneCursor())
 
-internal fun Cursor.relationMapper(): EntityMapper<Relation> = RelationMapper(relationCursor())
+internal fun EntityCursor<AbstractDataField>.relationMapper(): EntityMapper<Relation> =
+    RelationMapper(relationCursor())
 
-internal fun Cursor.sipAddressMapper(): EntityMapper<SipAddress> =
+internal fun EntityCursor<AbstractDataField>.sipAddressMapper(): EntityMapper<SipAddress> =
     SipAddressMapper(sipAddressCursor())
 
-internal fun Cursor.tempRawContactMapper(
-    rawContactIdCursor: RawContactIdCursor, isProfile: Boolean
-): EntityMapper<TempRawContact> = TempRawContactMapper(rawContactIdCursor, isProfile)
+internal fun EntityCursor<AbstractDataField>.websiteMapper(): EntityMapper<Website> =
+    WebsiteMapper(websiteCursor())
 
-internal fun Cursor.websiteMapper(): EntityMapper<Website> = WebsiteMapper(websiteCursor())
+@Suppress("UNCHECKED_CAST")
+internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapperFor(
+    mimeType: MimeType
+): EntityMapper<T> = when (mimeType) {
+    MimeType.ADDRESS -> addressMapper()
+    MimeType.EMAIL -> emailMapper()
+    MimeType.EVENT -> eventMapper()
+    MimeType.GROUP_MEMBERSHIP -> groupMembershipMapper()
+    MimeType.IM -> imMapper()
+    MimeType.NAME -> nameMapper()
+    MimeType.NICKNAME -> nicknameMapper()
+    MimeType.NOTE -> noteMapper()
+    MimeType.ORGANIZATION -> organizationMapper()
+    MimeType.PHONE -> phoneMapper()
+    MimeType.RELATION -> relationMapper()
+    MimeType.SIP_ADDRESS -> sipAddressMapper()
+    MimeType.WEBSITE -> websiteMapper()
+    MimeType.PHOTO, MimeType.UNKNOWN -> throw UnsupportedOperationException(
+        "No entity mapper for mime type $mimeType"
+    )
+} as EntityMapper<T>
+
+// endregion
+
+
+internal fun RawContactIdCursor.tempRawContactMapper(isProfile: Boolean): EntityMapper<TempRawContact> =
+    TempRawContactMapper(this, isProfile)
+
+internal fun EntityCursor<RawContactsField>.blankRawContactMapper(isProfile: Boolean): EntityMapper<BlankRawContact> =
+    BlankRawContactMapper(rawContactsCursor(), isProfile)
+
+internal fun EntityCursor<RawContactsField>.rawContactsOptionsMapper(): EntityMapper<Options> =
+    OptionsMapper(rawContactsOptionsCursor())
+
+internal fun EntityCursor<ContactsField>.contactsMapper(
+    contactIdCursor: ContactIdCursor, isProfile: Boolean
+): EntityMapper<Contact> =
+    ContactMapper(contactsCursor(), contactIdCursor, optionsMapper(), isProfile)
+
+internal fun EntityCursor<ContactsField>.optionsMapper(): EntityMapper<Options> =
+    OptionsMapper(optionsCursor())
+
+internal fun EntityCursor<GroupsField>.groupMapper(): EntityMapper<Group> =
+    GroupMapper(groupsCursor())

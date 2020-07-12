@@ -4,13 +4,14 @@ import android.annotation.SuppressLint
 import android.content.ContentProviderOperation
 import android.content.ContentProviderResult
 import android.content.ContentResolver
-import android.database.Cursor
 import android.database.SQLException
 import android.net.Uri
 import android.provider.ContactsContract
 import com.vestrel00.contacts.Field
 import com.vestrel00.contacts.Include
 import com.vestrel00.contacts.Where
+import com.vestrel00.contacts.entities.cursor.EntityCursor
+import com.vestrel00.contacts.entities.cursor.toEntityCursor
 import com.vestrel00.contacts.entities.table.Table
 
 // region QUERY
@@ -18,7 +19,7 @@ import com.vestrel00.contacts.entities.table.Table
 // Not inlining these as they just add too many lines of code and are most likely only used in one
 // time transactions (not in loops).
 
-internal fun <T : Field, R> ContentResolver.query(
+internal inline fun <reified T : Field, R> ContentResolver.query(
     table: Table<T>, include: Include<T>, where: Where<T>?,
 
     /**
@@ -35,11 +36,11 @@ internal fun <T : Field, R> ContentResolver.query(
     /**
      * Function that processes the non-null cursor (if any rows have been matched).
      */
-    processCursor: (Cursor) -> R?
+    processCursor: (EntityCursor<T>) -> R?
 ): R? = query(table.uri, include, where, sortOrder, suppressDbExceptions, processCursor)
 
 @SuppressLint("Recycle")
-internal fun <T : Field, R> ContentResolver.query(
+internal inline fun <reified T : Field, R> ContentResolver.query(
     contentUri: Uri, include: Include<T>, where: Where<T>?,
 
     /**
@@ -56,7 +57,7 @@ internal fun <T : Field, R> ContentResolver.query(
     /**
      * Function that processes the non-null cursor (if any rows have been matched).
      */
-    processCursor: (Cursor) -> R?
+    processCursor: (EntityCursor<T>) -> R?
 ): R? {
     val cursor = try {
         query(
@@ -77,7 +78,7 @@ internal fun <T : Field, R> ContentResolver.query(
     var result: R? = null
 
     if (cursor != null) {
-        result = processCursor(cursor)
+        result = processCursor(cursor.toEntityCursor())
         cursor.close()
     }
 

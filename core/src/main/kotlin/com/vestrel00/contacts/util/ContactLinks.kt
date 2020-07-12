@@ -13,7 +13,6 @@ import com.vestrel00.contacts.entities.Name
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.entities.cursor.dataCursor
-import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.nameMapper
 import com.vestrel00.contacts.entities.operation.newUpdate

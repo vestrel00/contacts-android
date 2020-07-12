@@ -10,6 +10,9 @@ import java.util.*
 /**
  * Retrieves [ContactsFields] data from the given [cursor].
  *
+ * Even though this uses [ContactsFields] from Contacts table queries, this may also be used for
+ * Data table queries because the underlying column names are the same.
+ *
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */

@@ -52,9 +52,3 @@ internal fun Cursor.getDate(field: Field): Date? {
 }
 
 // endregion
-
-internal fun Cursor.resetPosition() {
-    moveToPosition(-1)
-}
-
-internal fun <T> Cursor.getNextOrNull(next: () -> T?): T? = if (moveToNext()) next() else null

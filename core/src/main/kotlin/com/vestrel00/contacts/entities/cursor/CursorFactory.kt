@@ -1,25 +1,33 @@
 package com.vestrel00.contacts.entities.cursor
 
-import android.database.Cursor
+import com.vestrel00.contacts.AbstractDataField
+import com.vestrel00.contacts.ContactsField
+import com.vestrel00.contacts.GroupsField
+import com.vestrel00.contacts.RawContactsField
 
-internal fun Cursor.addressCursor() = AddressCursor(this)
-internal fun Cursor.contactCursor() = ContactCursor(this)
-internal fun Cursor.contactsCursor() = ContactsCursor(this)
-internal fun Cursor.dataCursor() = DataCursor(this)
-internal fun Cursor.emailCursor() = EmailCursor(this)
-internal fun Cursor.eventCursor() = EventCursor(this)
-internal fun Cursor.groupsCursor() = GroupsCursor(this)
-internal fun Cursor.groupMembershipCursor() = GroupMembershipCursor(this)
-internal fun Cursor.imCursor() = ImCursor(this)
-internal fun Cursor.mimeTypeCursor() = MimeTypeCursor(this)
-internal fun Cursor.nameCursor() = NameCursor(this)
-internal fun Cursor.nicknameCursor() = NicknameCursor(this)
-internal fun Cursor.noteCursor() = NoteCursor(this)
-internal fun Cursor.optionsCursor() = OptionsCursor(this)
-internal fun Cursor.organizationCursor() = OrganizationCursor(this)
-internal fun Cursor.phoneCursor() = PhoneCursor(this)
-internal fun Cursor.photoCursor() = PhotoCursor(this)
-internal fun Cursor.rawContactsCursor() = RawContactsCursor(this)
-internal fun Cursor.relationCursor() = RelationCursor(this)
-internal fun Cursor.sipAddressCursor() = SipAddressCursor(this)
-internal fun Cursor.websiteCursor() = WebsiteCursor(this)
+internal fun EntityCursor<AbstractDataField>.addressCursor() = AddressCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.dataContactsCursor() = ContactsCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.dataCursor() = DataCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.emailCursor() = EmailCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.eventCursor() = EventCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.groupMembershipCursor() = GroupMembershipCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.imCursor() = ImCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.mimeTypeCursor() = MimeTypeCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.nameCursor() = NameCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.nicknameCursor() = NicknameCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.noteCursor() = NoteCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.dataContactsOptionsCursor() = OptionsCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.organizationCursor() = OrganizationCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.phoneCursor() = PhoneCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.photoCursor() = PhotoCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.relationCursor() = RelationCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.sipAddressCursor() = SipAddressCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.websiteCursor() = WebsiteCursor(cursor)
+
+internal fun EntityCursor<RawContactsField>.rawContactsCursor() = RawContactsCursor(cursor)
+internal fun EntityCursor<RawContactsField>.rawContactsOptionsCursor() = OptionsCursor(cursor)
+
+internal fun EntityCursor<ContactsField>.contactsCursor() = ContactsCursor(cursor)
+internal fun EntityCursor<ContactsField>.optionsCursor() = OptionsCursor(cursor)
+
+internal fun EntityCursor<GroupsField>.groupsCursor() = GroupsCursor(cursor)

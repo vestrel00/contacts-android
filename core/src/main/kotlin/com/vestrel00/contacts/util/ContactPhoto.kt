@@ -10,7 +10,6 @@ import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.cursor.contactsCursor
-import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection

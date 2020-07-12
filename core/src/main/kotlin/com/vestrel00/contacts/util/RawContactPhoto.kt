@@ -11,7 +11,6 @@ import android.provider.ContactsContract.RawContacts
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
-import com.vestrel00.contacts.entities.cursor.getNextOrNull
 import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
