@@ -100,9 +100,8 @@ internal class ContactsMapper(
             // Collect the RawContacts and update them.
             // Use the Data cursor to retrieve the rawContactId.
             dataCursor.rawContactId?.let { rawContactId ->
-                rawContactsMap.getOrPut(rawContactId) { tempRawContactMapper.value }.also {
-                    cursor.updateRawContact(it)
-                }
+                rawContactsMap.getOrPut(rawContactId) { tempRawContactMapper.value }
+                    .also(cursor::updateRawContact)
             }
         }
     }
@@ -135,7 +134,7 @@ internal class ContactsMapper(
         // Add all of the Contacts in the contactsMap.
         for (contact in contactsMap.values) {
             // Make sure to remove the entry in contactRawMap as it is processed.
-            val rawContacts = contact.id?.let(contactRawMap::remove) ?: emptyList<RawContact>()
+            val rawContacts = contact.id?.let(contactRawMap::remove) ?: emptyList()
 
             // The data class copy function comes in handy here.
             contactList.add(contact.copy(rawContacts = rawContacts.sortedBy { it.id }))
@@ -167,31 +166,32 @@ internal class ContactsMapper(
         return if (cancel()) mutableListOf() else contactList
     }
 
-    private fun Cursor.updateRawContact(rawContact: TempRawContact) {
-        // Each row in the cursor only contains a subset of contact data paired by the mime type.
-        // This is why full contact objects cannot be built per cursor row.
-        // Therefore, mutable contact objects must be updated with different pieces of data
-        // that each cursor row provides.
-        when (mimeTypeCursor().mimeType) {
-            ADDRESS -> rawContact.addresses.add(addressMapper().value)
-            EMAIL -> rawContact.emails.add(emailMapper().value)
-            EVENT -> rawContact.events.add(eventMapper().value)
-            GROUP_MEMBERSHIP -> rawContact.groupMemberships.add(groupMembershipMapper().value)
-            IM -> rawContact.ims.add(imMapper().value)
-            NAME -> rawContact.name = nameMapper().value
-            NICKNAME -> rawContact.nickname = nicknameMapper().value
-            NOTE -> rawContact.note = noteMapper().value
-            ORGANIZATION -> rawContact.organization = organizationMapper().value
-            PHONE -> rawContact.phones.add(phoneMapper().value)
-            RELATION -> rawContact.relations.add(relationMapper().value)
-            SIP_ADDRESS -> rawContact.sipAddress = sipAddressMapper().value
-            WEBSITE -> rawContact.websites.add(websiteMapper().value)
+}
 
-            // Photo types are not included as an entity. Photo extension functions exist to get/set
-            // Contact and RawContact photos.
-            PHOTO, UNKNOWN -> {
-                // Do nothing
-            }
+private fun Cursor.updateRawContact(rawContact: TempRawContact) {
+    // Each row in the cursor only contains a subset of contact data paired by the mime type.
+    // This is why full contact objects cannot be built per cursor row.
+    // Therefore, mutable contact objects must be updated with different pieces of data
+    // that each cursor row provides.
+    when (mimeTypeCursor().mimeType) {
+        ADDRESS -> rawContact.addresses.add(addressMapper().value)
+        EMAIL -> rawContact.emails.add(emailMapper().value)
+        EVENT -> rawContact.events.add(eventMapper().value)
+        GROUP_MEMBERSHIP -> rawContact.groupMemberships.add(groupMembershipMapper().value)
+        IM -> rawContact.ims.add(imMapper().value)
+        NAME -> rawContact.name = nameMapper().value
+        NICKNAME -> rawContact.nickname = nicknameMapper().value
+        NOTE -> rawContact.note = noteMapper().value
+        ORGANIZATION -> rawContact.organization = organizationMapper().value
+        PHONE -> rawContact.phones.add(phoneMapper().value)
+        RELATION -> rawContact.relations.add(relationMapper().value)
+        SIP_ADDRESS -> rawContact.sipAddress = sipAddressMapper().value
+        WEBSITE -> rawContact.websites.add(websiteMapper().value)
+
+        // Photo types are not included as an entity. Photo extension functions exist to get/set
+        // Contact and RawContact photos.
+        PHOTO, UNKNOWN -> {
+            // Do nothing
         }
     }
 }
