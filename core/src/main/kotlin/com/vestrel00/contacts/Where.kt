@@ -75,10 +75,23 @@ infix fun <T : Field> T.doesNotEndWith(value: String): Where<T> = DoesNotEndWith
  */
 infix fun <T : Field> T.doesNotContain(value: String): Where<T> = DoesNotContain(this, value)
 
+/**
+ * ANDs [this] and [where]. If [where] is null, returns [this].
+ */
+infix fun <T : Field> Where<T>.and(where: Where<T>?): Where<T> = if (where != null) {
+    And(this, where)
+} else {
+    this
+}
 
-infix fun <T : Field> Where<T>.and(where: Where<T>): Where<T> = And(this, where)
-
-infix fun <T : Field> Where<T>.or(where: Where<T>): Where<T> = Or(this, where)
+/**
+ * ORs [this] and [where]. If [where] is null, returns [this].
+ */
+infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != null) {
+    Or(this, where)
+} else {
+    this
+}
 
 // Non-infix convenience functions
 
