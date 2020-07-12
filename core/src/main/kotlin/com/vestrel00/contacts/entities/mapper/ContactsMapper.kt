@@ -115,11 +115,6 @@ internal class ContactsMapper(
      * This returns a mutable list instead of immutable so that it may be sorted in-place.
      */
     fun map(): MutableList<Contact> {
-        // Ensure that contact data is sorted by insertion order. It most likely is already and
-        // there is no need for this. Just in case... Besides, sorting doesn't cost much if data
-        // is already sorted. Even if note, the data set for each sort should be small.
-        sortRawContactsDataListsByInsertionOrder()
-
         // Map contact id to set of raw contacts.
         val contactRawMap = mutableMapOf<Long, MutableList<RawContact>>()
         for (tempRawContact in rawContactsMap.values) {
@@ -196,23 +191,6 @@ internal class ContactsMapper(
             // Contact and RawContact photos.
             PHOTO, UNKNOWN -> {
                 // Do nothing
-            }
-        }
-    }
-
-    private fun sortRawContactsDataListsByInsertionOrder() {
-        for (rawContact in rawContactsMap.values) {
-            rawContact.addresses.sortBy { it.id }
-            rawContact.emails.sortBy { it.id }
-            rawContact.events.sortBy { it.id }
-            rawContact.groupMemberships.sortBy { it.id }
-            rawContact.ims.sortBy { it.id }
-            rawContact.phones.sortBy { it.id }
-            rawContact.relations.sortBy { it.id }
-            rawContact.websites.sortBy { it.id }
-
-            if (cancel()) {
-                break
             }
         }
     }
