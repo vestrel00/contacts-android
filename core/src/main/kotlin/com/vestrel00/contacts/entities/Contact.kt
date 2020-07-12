@@ -61,8 +61,8 @@ sealed class ContactEntity : Entity {
      * - [Nickname]
      * - [Phone]
      *
-     * The [ContactEntity.displayNamePrimary] is automatically resolved by the Contacts Provider. It
-     * may not be manually modified.
+     * This is a read-only attribute as the Contacts Provider automatically sets this value.
+     * This is ignored for insert, update, and delete functions.
      */
     abstract val displayNamePrimary: String?
 
@@ -70,6 +70,9 @@ sealed class ContactEntity : Entity {
      * An alternative representation of the display name, such as "family name first" instead of
      * "given name first" for Western names. If an alternative is not available, the values should
      * be the same as [displayNamePrimary].
+     *
+     * This is a read-only attribute as the Contacts Provider automatically sets this value.
+     * This is ignored for insert, update, and delete functions.
      */
     abstract val displayNameAlt: String?
 

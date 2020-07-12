@@ -1,13 +1,8 @@
 ## TODO
 
-- Add HAS_PHONE_NUMBER function to GeneralQuery
-
 ----------------------- Query refactor.
 
 1. Refactor Query to order by natively instead of custom comparators.
-   - Change OrderBy type from AbstractField to ContactsField.
-   - Add Options to RawContact as a member instead of only accessible via extension functions?
-
 2. Remove Comparator inheritance in OrderBy.
    Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
 

@@ -72,27 +72,6 @@ import kotlin.math.min
  *
  * All functions here are safe to call in the Main / UI thread EXCEPT for the [find] and [findFirst]
  * functions, which should be called in a worker thread in order to prevent blocking the UI.
- *
- * ## Developer Notes
- *
- * Unlike [GeneralQuery] which only supports ordering by Contacts table columns, this API supports
- * ordering by Data table columns. In effect, this is unable to use the ORDER BY, LIMIT, and OFFSET
- * functions of a raw database query and custom ordering is required.
- *
- * The Android contacts **data table** uses generic column names (e.g. data1, data2, ...) using the
- * column 'mimetype' to distinguish the type of data in that generic column. For example, the column
- * name of [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is
- * 'data1'. This means that if you order by the display  name, you are also ordering by the
- * formatted address and all other columns whose value is 'data1'. This API works around this
- * limitation by performing the ordering, limiting, and offsetting manually after
- * **all matching** contacts have been retrieved before returning it to the consumer.
- *
- * Note that there is no workaround for the [include] function because the [ContentResolver.query]
- * function only takes in an array of column names.
- *
- * With that said, Kotlin's Flow or reactive frameworks like RxJava and Java 8 Streams cannot really
- * be supported. We cannot emit complete contact instances and still honor ORDER BY, LIMIT, and
- * OFFSET functions. Although, it is possible for [GeneralQuery] and DataQuery.
  */
 interface Query {
 
@@ -192,7 +171,7 @@ interface Query {
      * other tables, accessible via the Data table with joins;
      *
      * - [Fields.Contact]
-     * - [Fields.Options]
+     * - [Fields.RawContact]
      *
      * Using these fields in the where clause does not have any effect in matching blank Contacts
      * or RawContacts simply because they have no Data rows containing these joined fields.
@@ -211,19 +190,42 @@ interface Query {
      * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase` as an
      * optional parameter.
      *
-     * Use [Fields] to construct the [orderBy].
+     * Use [ContactsFields] to construct the [orderBy].
+     *
+     * ## Developer Notes
+     *
+     * This API DOES NOT support ordering by Data table columns ([Fields]). It used to support it
+     * but it has been removed for optimization purposes. This now only supports ordering by
+     * Contacts table fields ([ContactsFields]).
+     *
+     * **If this supported ordering by Data table fields**, then it would be unable to use the
+     * ORDER BY, LIMIT, and OFFSET functions of a raw database query and custom ordering via
+     * Comparators is required.
+     *
+     * The Data table uses generic column names (e.g. data1, data2, ...) using the column 'mimetype'
+     * to distinguish the type of data in that generic column. For example, the column name of
+     * [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is 'data1'.
+     * This means that if you order by the display name, you are also ordering by the formatted
+     * address and all other columns whose value is 'data1'. This API could work around this
+     * limitation by performing the ordering, limiting, and offsetting manually after
+     * **all matching** contacts have been retrieved before returning it to the consumer.
+     *
+     * Note that there is no workaround for the [include] function because the
+     * [ContentResolver.query] function only takes in an array of column names. This means that
+     * including [NameFields.DisplayName] ('data1') will also result in the inclusion of
+     * [AddressFields.FormattedAddress] ('data1').
      */
-    fun orderBy(vararg orderBy: OrderBy<AbstractDataField>): Query
+    fun orderBy(vararg orderBy: OrderBy<ContactsField>): Query
 
     /**
      * See [Query.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy<AbstractDataField>>): Query
+    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): Query
 
     /**
      * See [Query.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy<AbstractDataField>>): Query
+    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): Query
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
@@ -330,7 +332,7 @@ private class QueryImpl(
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> = DEFAULT_INCLUDE,
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
-    private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
+    private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
 ) : Query {
@@ -376,22 +378,17 @@ private class QueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy<AbstractDataField>) = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy<ContactsField>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy<AbstractDataField>>) =
+    override fun orderBy(orderBy: Collection<OrderBy<ContactsField>>) =
         orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy<AbstractDataField>>): Query = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): Query = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
             CompoundOrderBy(orderBy.toSet())
         }
-
-        // TODO this is no longer necessary once this has been refactored to use the native ORDER BY.
-        // if (!this.orderBy.allFieldsAreContainedIn(include.fields)) {
-        //     throw IllegalArgumentException("Order by fields must be included in the query")
-        // }
     }
 
     override fun limit(limit: Int): Query = apply {
@@ -432,7 +429,7 @@ private class QueryImpl(
         val DEFAULT_INCLUDE = Include(Fields)
         val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
         val DEFAULT_WHERE: Where<AbstractDataField>? = null
-        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(Fields.Contact.Id.asc()))
+        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(ContactsFields.Id.asc()))
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
     }
@@ -443,12 +440,13 @@ private fun ContentResolver.resolve(
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
     where: Where<AbstractDataField>?,
-    orderBy: CompoundOrderBy<AbstractDataField>,
+    orderBy: CompoundOrderBy<ContactsField>,
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
 ): List<Contact> {
 
+    // TODO
     var contactIdsMatchingSelectedAccounts: Set<Long>? = null
 
     if (rawContactsWhere != null) {

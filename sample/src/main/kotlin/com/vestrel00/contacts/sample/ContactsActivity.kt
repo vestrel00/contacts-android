@@ -114,7 +114,7 @@ class ContactsActivity : BaseActivity() {
                 // Passing null or not calling where will default to returning all contacts.
                 .where(where)
                 // Not passing any orderBys or not calling orderBy will default to ordering by ID.
-                .orderBy(SEARCH_FIELDS.asc())
+                .orderBy(ContactsFields.DisplayNamePrimary.asc())
                 // Not showing how to load x number of contacts at a time and then loading more when
                 // scrolled to the very bottom of the list for brevity. Consumers can figure it out.
                 .offset(0)  // offset is 0 if offset function is not called
