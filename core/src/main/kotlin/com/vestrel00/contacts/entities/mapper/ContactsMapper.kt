@@ -110,10 +110,8 @@ internal class ContactsMapper(
      * This used to return a Sequence but I found that it was more CPU and memory intensive.
      * This is especially true if callers of this function call Sequence.count(), which invokes
      * all of the intermediate functions during traversal producing unwanted side effects.
-     *
-     * This returns a mutable list instead of immutable so that it may be sorted in-place.
      */
-    fun map(): MutableList<Contact> {
+    fun map(): List<Contact> {
         // Map contact id to set of raw contacts.
         val contactRawMap = mutableMapOf<Long, MutableList<RawContact>>()
         for (tempRawContact in rawContactsMap.values) {
@@ -163,7 +161,7 @@ internal class ContactsMapper(
             }
         }
 
-        return if (cancel()) mutableListOf() else contactList
+        return if (cancel()) emptyList() else contactList
     }
 
 }
