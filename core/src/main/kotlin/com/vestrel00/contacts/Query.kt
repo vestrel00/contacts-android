@@ -4,14 +4,14 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.cursor.contactCursor
+import com.vestrel00.contacts.entities.cursor.contactsCursor
+import com.vestrel00.contacts.entities.cursor.dataContactsCursor
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
-import kotlin.math.min
 
 /**
  * Queries the Contacts Provider tables and returns one or more contacts matching the search
@@ -93,6 +93,12 @@ interface Query {
      * 2. Contact that has a RawContact with Data row(s) and a RawContact with no Data rows.
      *     - In this case, the Contact and the RawContact with Data row(s) are not blank but the
      *     RawContact with no Data row is blank.
+     *
+     * ## Performance
+     *
+     * This may require several extra queries, internally performed in this function, which
+     * increases the time it takes for [find] or [findFirst] to complete. Therefore, you should only
+     * specify this if you actually need it.
      */
     fun includeBlanks(includeBlanks: Boolean): Query
 
@@ -108,6 +114,12 @@ interface Query {
      * A null [Account] may be provided here, which results in RawContacts with no associated
      * Account to be included in the search. RawContacts without an associated account are
      * considered local contacts or device-only contacts, which are not synced.
+     *
+     * ## Performance
+     *
+     * This requires an extra query, internally performed in this function, which increases the time
+     * it takes for [find] or [findFirst] to complete. Therefore, you should only specify this if
+     * you actually need it.
      */
     fun accounts(vararg accounts: Account?): Query
 
@@ -141,10 +153,10 @@ interface Query {
      * There is no workaround for this because the [ContentResolver.query] function only takes in
      * an array of column names.
      *
-     * ## IMPORTANT
+     * ## Data Loss
      *
-     * Do not perform updates on contacts returned by a query where all fields are not included as
-     * it may result in data loss!
+     * Do not perform updates on Contacts or RawContacts returned by a query where all fields are
+     * not included as it may result in data loss!
      */
     fun include(vararg fields: AbstractDataField): Query
 
@@ -177,6 +189,45 @@ interface Query {
      * or RawContacts simply because they have no Data rows containing these joined fields.
      *
      * See [includeBlanks] for more info about blank Contacts and RawContacts.
+     *
+     * ## Performance
+     *
+     * This requires one more query, internally performed in this function, which increases the time
+     * it takes for [find] or [findFirst] to complete. Therefore, you should only specify this if
+     * you actually need it.
+     *
+     * ## Limitations
+     *
+     * Blank RawContacts and blank Contacts do not have any rows in the Data table so a [where]
+     * clause that uses any fields from the Data table [Fields] will **exclude** blanks in the
+     * result (even if they are OR'ed). There are some joined fields that can be used to match
+     * blanks **as long as no other fields are in the where clause**;
+     *
+     * - [Fields.Contact] enables matching blank Contacts. The result will include all RawContact(s)
+     *   belonging to the Contact(s), including blank(s). Examples;
+     *
+     *   - Fields.Contact.Id equalTo 5
+     *   - Fields.Contact.Id in [1,2,3] and Fields.Contact.DisplayNamePrimary contains "a"
+     *   - Fields.Contact.LastUpdatedTimestamp greaterThan ...
+     *       and Fields.Contact.Options.Starred equalTo [true|1]
+     *
+     * - [Fields.RawContact] enables matching blank RawContacts. The result will include all
+     *   Contact(s) these belong to, including sibling RawContacts (blank and not blank). Examples;
+     *
+     *   - Fields.RawContact.Id equalTo 5
+     *   - Fields.RawContact.Id notIn [1,2,3]
+     *
+     * Blanks will not be included in the results even if they technically should **if** joined
+     * fields from other tables are in the [where]. In the below example, matching the Contact.Id
+     * to an existing blank Contact with Id of 5 will yield no results because it is joined by
+     * Fields.Email, which is not a part of Fields.Contact. It should technically return the blank
+     * Contact with Id of 5 because the OR operator is used. However, because we internally need to
+     * query the Contacts table to match the blanks, a DB exception will be thrown by the Contacts
+     * Provider because Fields.Email.Address ("data1" and "mimetype") are columns from the Data
+     * table that do not exist in the Contacts table. The same applies to the Fields.RawContact.
+     *
+     * - Fields.Contact.Id equalTo 5 OR (Fields.Email.Address.isNotNull())
+     * - Fields.RawContact.Id ... OR (Fields.Phone.Number...)
      */
     fun where(where: Where<AbstractDataField>?): Query
 
@@ -446,100 +497,106 @@ private fun ContentResolver.resolve(
     cancel: () -> Boolean
 ): List<Contact> {
 
-    // TODO
-    var contactIdsMatchingSelectedAccounts: Set<Long>? = null
+    var contactIds: MutableSet<Long>? = null
 
+    // (1) Get Contact Ids matching where from the Data table. If where is null, skip.
+    if (where != null) {
+        contactIds = mutableSetOf<Long>().apply { addAll(findContactIdsInDataTable(where, cancel)) }
+
+        // (1.5) Get the Contacts Ids of blank RawContacts and blank Contacts matching the where
+        // from the RawContacts and Contacts table respectively. Suppress DB exceptions because the
+        // where clause may contain fields (columns) that are not in the respective tables.
+        if (includeBlanks) {
+            contactIds.addAll(
+                findContactIdsInRawContactsTable(where.inRawContactsTable(), cancel, true)
+            )
+            contactIds.addAll(
+                findContactIdsInContactsTable(where.inContactsTable(), cancel, true)
+            )
+        }
+    }
+
+    // (2) Get the Contact Ids matching rawContactsWhere and contained in the Contact Ids (retrieved
+    // in (1) and (1.5)) from the RawContacts table. If rawContactsWhere is null, skip.
     if (rawContactsWhere != null) {
-        // Limit the contacts data to the set associated with the contacts found in the
-        // RawContacts table matching the rawContactsWhere.
-        contactIdsMatchingSelectedAccounts =
-            findContactIdsInRawContactsTable(rawContactsWhere, cancel, false)
+        val rawContactsTableWhere = rawContactsWhere and contactIds?.let {
+            RawContactsFields.ContactId `in` it
+        }
+
+        // Intentionally replace the contactsIds instead of adding to it.
+        contactIds = mutableSetOf<Long>().apply {
+            addAll(findContactIdsInRawContactsTable(rawContactsTableWhere, cancel, false))
+        }
     }
 
-    // If contactIdsMatchingSelectedAccounts is null, then rawContactsWhere is NoWhere.
-    // If contactIdsMatchingSelectedAccounts is empty, there are no matches; return empty list.
-    if (
-        cancel()
-        || (contactIdsMatchingSelectedAccounts != null
-                && contactIdsMatchingSelectedAccounts.isEmpty())
-    ) {
+    // (3) Collect Contacts with Ids in contactIds (which may include blanks), including included
+    // Contacts fields. Order by, limit, and offset results within the query itself.
+    // - If contactIds is null, get all Contacts.
+    // - If contactIds is empty, return empty list.
+    if (cancel() || (contactIds != null && contactIds.isEmpty())) {
         return emptyList()
-    }
-
-    // Formulate the where clause that will be used for Data table, and possible Contacts and
-    // RawContacts table queries.
-    val whereMatching: Where<AbstractDataField>? = if (where != null) {
-        if (contactIdsMatchingSelectedAccounts != null) {
-            where and (Fields.Contact.Id `in` contactIdsMatchingSelectedAccounts)
-        } else {
-            where
-        }
-    } else {
-        if (contactIdsMatchingSelectedAccounts != null) {
-            Fields.Contact.Id `in` contactIdsMatchingSelectedAccounts
-        } else {
-            null
-        }
     }
 
     val contactsMapper = ContactsMapper(isProfile = false, cancel = cancel)
 
-    // First, gather the Contact ids that match whereMatching. This is important so that we can
-    // collect all of the RawContacts of matching Contacts. If we just query the Data table using
-    // whereMatching and collect the Contacts and RawContacts there, there may be RawContacts that
-    // are not included in the resulting Contact objects because it did not have any rows that
-    // matched whereMatching.
-    val contactIdsMatchedInDataTable = findContactIdsInDataTable(whereMatching, cancel)
+    query(
+        Table.Contacts, include.onlyContactsFields(), contactIds?.let {
+            ContactsFields.Id `in` it
+        },
+        sortOrder = "$orderBy LIMIT $limit OFFSET $offset",
+        processCursor = contactsMapper::processContactsCursor
+    )
 
-    // Collect Contacts, RawContacts, and Data from the Data table.
-    if (contactIdsMatchedInDataTable.isNotEmpty()) {
-        query(
-            Table.Data, include, Fields.Contact.Id `in` contactIdsMatchedInDataTable,
-            processCursor = contactsMapper::processDataCursor
-        )
-    }
+    // (4) Collect Data (and non-blank RawContacts) belonging to Contacts with Ids in
+    // contactIds. If contactIds is null, collect all Data.
+    query(
+        Table.Data, include, contactIds?.let {
+            Fields.Contact.Id `in` it
+        },
+        processCursor = contactsMapper::processDataCursor
+    )
 
-    // It does not matter if contactIdsMatched is empty. It only means that there are no matches in
-    // the Data table. We may still be able to match blanks in the Contacts and RawContacts tables.
+    // (4.5) Collect blank RawContacts.
     if (includeBlanks) {
-
-        // Collect Contacts in the Contacts table including Contact specific fields.
         query(
-            Table.Contacts, include.onlyContactsFields(), whereMatching?.inContactsTable(),
-            // There may be columns in the where clause that may not be available in the Contacts
-            // table. This will result in an SQLiteException. Thus, we suppress it.
-            suppressDbExceptions = true,
-            processCursor = contactsMapper::processContactsCursor
-        )
-
-        // There may be one or more blank RawContacts that belong to the same aggregate Contact.
-        // Therefore, just like in the Data table query, we must first get the Contact ids. This
-        // fixes issues like only one RawContact is included in the aggregate Contact where both
-        // child RawContacts are blank when matching RawContact by id.
-        val contactIdsMatchedInRawContactsTable = findContactIdsInRawContactsTable(
-            whereMatching?.inRawContactsTable(), cancel,
-            // There may be columns in the where clause that may not be available in the RawContacts
-            // table. This will result in an SQLiteException. Thus, we suppress it.
-            suppressDbExceptions = true
-        )
-
-        // Collect RawContacts in the RawContacts table including RawContacts specific fields.
-        query(
-            Table.RawContacts,
-            include.onlyRawContactsFields(),
-            RawContactsFields.ContactId `in` contactIdsMatchedInRawContactsTable,
+            Table.RawContacts, include.onlyRawContactsFields(), contactIds?.let {
+                RawContactsFields.ContactId `in` it
+            },
             processCursor = contactsMapper::processRawContactsCursor
         )
     }
 
-    if (cancel()) {
-        return emptyList()
-    }
+    /*
+     * Total Queries (assuming there are matching Contacts)
+     *
+     * | where    | rawContactsWhere | includeBlanks | total |
+     * |----------|------------------|---------------|-------|
+     * | null     | null             | false         | 2     |
+     * | null     | null             | true          | 3     |
+     * | null     | not-null         | false         | 3     |
+     * | null     | not-null         | true          | 4     |
+     * | not-null | null             | false         | 3     |
+     * | not-null | null             | true          | 6     |
+     * | not-null | not-null         | false         | 4     |
+     * | not-null | not-null         | true          | 7     |
+     */
 
     return contactsMapper.map()
-        .apply { sortWith(orderBy) }
-        .limitAndOffset(limit, offset)
 }
+
+
+private fun ContentResolver.findContactIdsInContactsTable(
+    contactsWhere: Where<ContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
+): Set<Long> = query(
+    Table.Contacts, Include(ContactsFields.Id), contactsWhere,
+    suppressDbExceptions = suppressDbExceptions
+) {
+    mutableSetOf<Long>().apply {
+        while (!cancel() && it.moveToNext()) {
+            it.contactsCursor().contactId?.let(::add)
+        }
+    }
+} ?: emptySet()
 
 private fun ContentResolver.findContactIdsInRawContactsTable(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
@@ -548,11 +605,7 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
     Include(RawContactsFields.ContactId),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.
-    if (rawContactsWhere != null) {
-        rawContactsWhere and RawContactsFields.ContactId.isNotNull()
-    } else {
-        RawContactsFields.ContactId.isNotNull()
-    },
+    RawContactsFields.ContactId.isNotNull() and rawContactsWhere,
     suppressDbExceptions = suppressDbExceptions
 ) {
     mutableSetOf<Long>().apply {
@@ -564,20 +617,11 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
 
 private fun ContentResolver.findContactIdsInDataTable(
     where: Where<AbstractDataField>?, cancel: () -> Boolean
-): Set<Long> = query(
-    Table.Data, Include(Fields.Contact.Id), where
-) {
+): Set<Long> = query(Table.Data, Include(Fields.Contact.Id), where) {
     val contactIds = mutableSetOf<Long>()
-    val contactCursor = it.contactCursor()
+    val contactsCursor = it.dataContactsCursor()
     while (!cancel() && it.moveToNext()) {
-        contactCursor.contactId?.let(contactIds::add)
+        contactsCursor.contactId?.let(contactIds::add)
     }
     contactIds
 } ?: emptySet()
-
-private fun List<Contact>.limitAndOffset(limit: Int, offset: Int): List<Contact> {
-    val start = min(offset, size)
-    val end = min(start + limit, size)
-
-    return filterIndexed { index, _ -> index in start until end }
-}

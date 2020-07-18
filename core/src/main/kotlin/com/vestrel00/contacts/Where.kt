@@ -13,6 +13,8 @@ import java.util.*
 // these functions in a companion object within the Where class. However, we won't do this just
 // because it creates duplicate code. Java users just need to migrate to Kotlin already...
 
+// region Operators
+
 /**
  * Note that string comparison is case-sensitive.
  */
@@ -93,7 +95,7 @@ infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != nul
     this
 }
 
-// Non-infix convenience functions
+// region Non-infix convenience functions
 
 /**
  * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
@@ -127,7 +129,11 @@ fun <T : Field> T.isNotNullOrEmpty(): Where<T> = isNotNull() and notEqualTo("")
  */
 internal fun <T : Field> T.isNull(): Where<T> = IsNull(this)
 
-// Collection convenience functions
+// endregion
+
+// endregion
+
+// region Collections
 
 /**
  * Transforms each item in this collection to a [Where] and combines them with the "OR" operator.
@@ -239,8 +245,9 @@ private fun <T : Field, R : Any?> Sequence<R>.joinWhere(
     return JoinedWhere(whereString)
 }
 
+// endregion
 
-// Conversion functions
+// region Conversions
 
 private class ContactsTableWhere(whereString: String) : Where<ContactsField>(whereString)
 
@@ -280,6 +287,10 @@ internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawCon
     RawContactsTableWhere(
         toString().replace(Fields.RawContact.Id.columnName, RawContactsFields.Id.columnName)
     )
+
+// endregion
+
+// region Where
 
 /**
  * Each where expression is paired with its mimetype because the contacts Data table uses
@@ -326,6 +337,10 @@ sealed class Where<out T : Field>(private val whereString: String) {
     override fun toString(): String = whereString
 }
 
+// endregion
+
+// region Where classes
+
 private class And<T : Field>(lhs: Where<T>, rhs: Where<T>) : Where<T>(where(lhs, "AND", rhs))
 private class Or<T : Field>(lhs: Where<T>, rhs: Where<T>) : Where<T>(where(lhs, "OR", rhs))
 
@@ -369,6 +384,8 @@ private class DoesNotContain<T : Field>(field: Field, value: String) :
     NotLike<T>(field, "%%$value%%")
 
 private class JoinedWhere<T : Field>(whereString: String) : Where<T>(whereString)
+
+// endregion
 
 private fun Any?.toSqlString(): String = when (this) {
     null -> "NULL"

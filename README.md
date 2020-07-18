@@ -2,9 +2,8 @@
 
 ----------------------- Query refactor.
 
-1. Refactor Query to order by natively instead of custom comparators.
-2. Remove Comparator inheritance in OrderBy.
-   Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
+Remove Comparator inheritance in OrderBy.
+    - Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
 
 -------------------------------------------------------------------
 

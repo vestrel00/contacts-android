@@ -93,11 +93,6 @@ private class Descending<T : Field>(override val field: Field, override val igno
 internal class CompoundOrderBy<out T : Field>(private val orderBys: Set<OrderBy<T>>) :
     Comparator<Contact> {
 
-    fun allFieldsAreContainedIn(fieldSet: Set<Field>): Boolean {
-        val orderByFieldSet = orderBys.asSequence().map { it.field }.toSet()
-        return fieldSet.containsAll(orderByFieldSet)
-    }
-
     override fun toString(): String = orderBys.joinToString(", ")
 
     override fun compare(lhs: Contact, rhs: Contact): Int {
