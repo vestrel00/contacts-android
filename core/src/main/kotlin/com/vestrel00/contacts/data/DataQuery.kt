@@ -207,7 +207,7 @@ private class DataQueryImpl(
 interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
 
     /**
-     * Limits this query to only search for data associated with the given accounts.
+     * Limits this query to only search for data associated with one of the given [accounts].
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all data from all accounts are searched.

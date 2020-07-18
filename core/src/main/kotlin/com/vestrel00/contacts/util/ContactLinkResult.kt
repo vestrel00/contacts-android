@@ -23,7 +23,12 @@ import com.vestrel00.contacts.equalTo
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun ContactLinkResult.contact(context: Context, cancel: () -> Boolean = { false }): Contact? =
-    contactId?.let { Query(context).where(Fields.Contact.Id equalTo it).findFirst(cancel) }
+    contactId?.let {
+        Query(context)
+            .where(Fields.Contact.Id equalTo it)
+            .find(cancel)
+            .firstOrNull()
+    }
 
 /**
  * Returns all of the [Contact]s that are associated with each of the unlinked RawContacts.

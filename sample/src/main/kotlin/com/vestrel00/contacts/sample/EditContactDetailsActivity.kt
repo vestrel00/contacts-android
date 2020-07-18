@@ -10,7 +10,7 @@ import android.widget.Toast.LENGTH_SHORT
 import com.vestrel00.contacts.Contacts
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.async.commitWithContext
-import com.vestrel00.contacts.async.findFirstWithContext
+import com.vestrel00.contacts.async.findWithContext
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.permissions.queryWithPermission
@@ -67,7 +67,8 @@ class EditContactDetailsActivity : BaseActivity() {
     private suspend fun fetchContact(): Boolean {
         val result = Contacts().queryWithPermission(this)
             .where(Fields.Contact.Id equalTo intent.contactId())
-            .findFirstWithContext()
+            .findWithContext()
+            .firstOrNull()
 
         if (result != null) {
             contact = result.toMutableContact()

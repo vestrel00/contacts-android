@@ -45,7 +45,7 @@ import com.vestrel00.contacts.util.toGroupsWhere
 interface GroupsQuery {
 
     /**
-     * Limits the group(s) returned by this query to groups belonging to the given [accounts].
+     * Limits the group(s) returned by this query to groups belonging to one of the [accounts].
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all Groups are included in the search.

@@ -22,8 +22,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  *
  * See https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
  *
- * If you need more granularity and customizations when providing matching criteria (at the cost of
- * higher CPU and temporary memory usage) use [Query].
+ * If you need more granularity and customizations when providing matching criteria, use [Query].
  *
  * ## Permissions
  *
@@ -35,15 +34,18 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  *
  * Here is an example query that returns the first 10 [Contact]s, skipping the first 5, where the
  * any Contact data (e.g. name, email, address, phone, etc) matches the search term "john", ordered
- * by the Contact display name primary (given name first) in ascending order (ignoring case). Only
- * the full name and email address attributes of the [Contact] objects are included.
+ * by the Contact display name primary (given name first) in ascending order (ignoring case).  Only
+ * Contacts with at least one RawContact belonging to the given account and groups are included.
+ * Only the full name and email address attributes of the [Contact] objects are included.
  *
  * ```kotlin
  * import com.vestrel00.contacts.Fields.Name
  * import com.vestrel00.contacts.Fields.Address
  * import com.vestrel00.contacts.ContactsFields.DisplayNamePrimary
  *
- * val contacts : List<Contact> = search.
+ * val contacts : List<Contact> = generalQuery.
+ *      .accounts(account)
+ *      .groups(groups)
  *      .include(Name, Address)
  *      .whereAnyContactDataPartiallyMatches("john")
  *      .orderBy(DisplayNamePrimary.asc())
@@ -57,8 +59,8 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * TODO
  *
  * Data matching is more sophisticated under the hood than [Query]. The Contacts Provider matches
- * parts of data in segments. For example, a Contact having the email "hologram@gram.net" will be
- * matched with the following texts;
+ * parts of several types of data in segments. For example, a Contact having the email
+ * "hologram@gram.net" will be matched with the following texts;
  *
  * - h
  * - HOLO
@@ -108,10 +110,10 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * - .
  * - ots
  *
+ * Another cool feature
+ *
  * Data matching is **case-insensitive**.
  */
-// TODO Async + permissions extension functions
-// TODO Test this out!
 interface GeneralQuery {
 
     /**
@@ -142,10 +144,10 @@ interface GeneralQuery {
     fun includeBlanks(includeBlanks: Boolean): GeneralQuery
 
     /**
-     * Limits the search to only those RawContacts associated with the given accounts. Contacts
-     * returned may still contain RawContacts / data that belongs to other accounts not specified in
-     * [accounts] because Contacts may be made up of more than one RawContact from different
-     * Accounts. This is the same behavior as the native Contacts app.
+     * Limits the search to only those RawContacts associated with one of the given accounts.
+     * Contacts returned may still contain RawContacts / data that belongs to other accounts not
+     * specified in [accounts] because Contacts may be made up of more than one RawContact from
+     * different Accounts. This is the same behavior as the native Contacts app.
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all RawContacts of Contacts are included in the search.
@@ -173,10 +175,10 @@ interface GeneralQuery {
     fun accounts(accounts: Sequence<Account?>): GeneralQuery
 
     /**
-     * Limits the search to only those RawContacts associated with the given groups. Contacts
-     * returned may still contain RawContacts / data that belongs to other groups not specified in
-     * [groups] because Contacts may be made up of more than one RawContact from different
-     * Groups. This is the same behavior as the native Contacts app.
+     * Limits the search to only those RawContacts associated with at least one of the given groups.
+     * Contacts returned may still contain RawContacts / data that belongs to other groups not
+     * specified in [groups] because Contacts may be made up of more than one RawContact from
+     * different Groups. This is the same behavior as the native Contacts app.
      *
      * If no groups are specified (this function is not called or called with no Groups), then all
      * RawContacts of Contacts are included in the search.

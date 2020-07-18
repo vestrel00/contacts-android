@@ -55,6 +55,7 @@ internal fun Context.findFirstRawContactWithId(rawContactId: Long, cancel: () ->
         RawContact? = Query(this)
     .includeBlanks(true)
     .where(Fields.RawContact.Id equalTo rawContactId)
-    .findFirst(cancel)
+    .find(cancel)
+    .firstOrNull()
     ?.rawContacts
     ?.firstOrNull()

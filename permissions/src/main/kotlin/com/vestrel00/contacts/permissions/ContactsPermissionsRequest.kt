@@ -20,6 +20,21 @@ suspend fun Contacts.queryWithPermission(context: Context): Query {
 }
 
 /**
+ * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permission, and then returns a new [GeneralQuery] instance.
+ *
+ * If permission is already granted, then immediately returns a new [GeneralQuery] instance.
+ */
+suspend fun Contacts.generalQueryWithPermission(context: Context): GeneralQuery {
+    val permissions = permissions(context)
+    if (!permissions.canQuery()) {
+        requestReadPermission(context)
+    }
+
+    return generalQuery(context)
+}
+
+/**
  * If [ContactsPermissions.WRITE_PERMISSION] and
  * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
  * granted, suspends the current coroutine, requests for the permissions, and then returns a new

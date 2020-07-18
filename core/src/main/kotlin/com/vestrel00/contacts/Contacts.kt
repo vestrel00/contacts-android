@@ -6,13 +6,15 @@ import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.profile.Profile
 
 /**
- * Provides new [Query], [Insert], [Update], [Delete], [Data], [Groups], and [Profile] instances.
+ * Provides new [Query], [GeneralQuery], [Insert], [Update], [Delete], [Data], [Groups], and
+ * [Profile] instances.
  *
  * ## Permissions
  *
- * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
+ * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query] and
+ *   [generalQuery].
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
- * [update], and [delete].
+ *   [update], and [delete].
  *
  * Use [permissions] convenience functions to check for required permissions. The same permissions
  * apply to [Data], [Groups], and [Profile].
@@ -35,6 +37,11 @@ interface Contacts {
      * Returns a new [Query] instance.
      */
     fun query(context: Context): Query
+
+    /**
+     * Returns a new [GeneralQuery] instance.
+     */
+    fun generalQuery(context: Context): GeneralQuery
 
     /**
      * Returns a new [Insert] instance.
@@ -82,6 +89,8 @@ fun Contacts(): Contacts = ContactsImpl()
 private class ContactsImpl : Contacts {
 
     override fun query(context: Context) = Query(context)
+
+    override fun generalQuery(context: Context) = GeneralQuery(context)
 
     override fun insert(context: Context) = Insert(context)
 

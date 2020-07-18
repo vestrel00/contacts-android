@@ -53,9 +53,9 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 interface ProfileQuery {
 
     /**
-     * Limits the RawContacts and associated data to those associated with the given accounts. The
-     * Contact returned will not contain data that belongs to other accounts not specified in
-     * [accounts].
+     * Limits the RawContacts and associated data to those associated with one of the given
+     * accounts. The Contact returned will not contain data that belongs to other accounts not
+     * specified in [accounts].
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all RawContacts and associated data are included in the search.

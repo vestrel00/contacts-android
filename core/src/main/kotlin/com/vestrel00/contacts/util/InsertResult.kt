@@ -75,7 +75,10 @@ fun Insert.Result.contact(
 
     val rawContactId = rawContactId(rawContact) ?: return null
 
-    return Query(context).where(Fields.RawContact.Id equalTo rawContactId).findFirst(cancel)
+    return Query(context)
+        .where(Fields.RawContact.Id equalTo rawContactId)
+        .find(cancel)
+        .firstOrNull()
 }
 
 /**

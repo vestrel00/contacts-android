@@ -44,7 +44,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 interface AccountsRawContactsQuery {
 
     /**
-     * Limits the [BlankRawContact]s returned by this query to those belonging to the given
+     * Limits the [BlankRawContact]s returned by this query to those belonging to one of the given
      * [accounts].
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
