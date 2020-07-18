@@ -60,7 +60,7 @@ import com.vestrel00.contacts.util.unsafeLazy
  * Most, but not all, Contact data are included in the matching process probably because some data
  * may result in unintentional matching.
  *
- * TODO
+ * TODO just mention [Fields.forMatching]
  *
  * Data matching is more sophisticated under the hood than [Query]. The Contacts Provider matches
  * parts of several types of data in segments. For example, a Contact having the email

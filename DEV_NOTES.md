@@ -660,24 +660,34 @@ There are two scenarios where blanks may exist.
 
 #### Data `StructuredName`
 
-The `DISPLAY_NAME` of the `StructuredName` row in the Data table is automatically set by the 
-Contacts Provider by combining the other name elements; `GIVEN_NAME`, `FAMILY_NAME`, etc. 
-For example, if given and family name is "vandolf" and "estrellado", then the display name
-will be set to "vandolf estrellado".
+The `DISPLAY_NAME` is the unstructured representation of the name. It is made up of structured
+components; `PREFIX`, `GIVEN_NAME`, `MIDDLE_NAME`, `FAMILY_NAME`, and `SUFFIX`.
 
-The inverse is also true. If the display name is provided but not the other elements 
-(given name, family name, etc), then the Contacts Provider will automatically derive the other
-values from the display name. For example, if the display name is set to "vandolf estrellado", 
-then the given and family names are "vandolf" and "estrellado" respectively.
+When updating or inserting a row;
+
+- If the display name is null and there are non-null structured components provided (e.g. given and
+  family name), the Contacts Provider will automatically set the display name by combining the
+  structured components.
+- If the display name is not null and all structured components are null, the Contacts Provider
+  automatically (to the best of its ability) derive the values for all the structured components.
+- If the display name and structured components are not null, the Contacts Provider does nothing
+  automatically.
 
 #### Data `StructuredPostal`
 
-The `FORMATTED_ADDRESS` of the `StructuredPostal` row in the data table is automatically set by the 
-Contacts Provider by combining the other address elements; `STREET`, `CITY`, etc. This is similar to
-the `StructuredName`.
+The `FORMATTED_ADDRESS` is the unstructured representation of the postal address. It is made up of
+structured components; `STREET`, `POBOX`, `NEIGHBORHOOD`, `CITY`, `REGION`, `POSTCODE`, and
+`COUNTRY`.
 
-The inverse may not be true as the Contacts Provider does not seem to be able to derived the other
-address elements from the `FORMATTED_ADDRESS`.
+When updating or inserting a row;
+
+- If the formatted address is null and there are non-null structured components provided (e.g.
+  street and city), the Contacts Provider will automatically set the formatted address by combining
+  the structured components.
+- If the formatted address is not null and all structured components are null, the Contacts Provider
+  automatically sets the street value to the formatted address.
+- If the formatted address and structured components are not null, the Contacts Provider does
+  nothing automatically.
 
 #### Groups Table & Accounts
 

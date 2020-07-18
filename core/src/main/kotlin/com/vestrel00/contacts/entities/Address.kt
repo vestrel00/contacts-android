@@ -29,11 +29,23 @@ data class Address internal constructor(
     val label: String?,
 
     /**
-     * The full, unstructured postal address.
+     * The full, unstructured postal address. This must be consistent with any structured data.
      *
-     * This field must be consistent with any structured data.
+     * The [formattedAddress] is the unstructured representation of the postal address. It is made
+     * up of structured components; [street], [poBox], [neighborhood], [city], [region], [postcode],
+     * and [country].
      *
-     * Note! This is automatically set by the Contacts Provider if null.
+     * When updating or inserting;
+     *
+     * - If the [formattedAddress] is null and there are non-null structured components provided,
+     *   the Contacts Provider will automatically set the formatted address by combining the
+     *   structured components.
+     *
+     * - If the [formattedAddress] is not null and all structured components are null, the Contacts
+     *   Provider automatically sets the street value to the formatted address.
+     *
+     * - If the [formattedAddress] and structured components are not null, the Contacts Provider
+     *   does nothing automatically.
      */
     val formattedAddress: String?,
 

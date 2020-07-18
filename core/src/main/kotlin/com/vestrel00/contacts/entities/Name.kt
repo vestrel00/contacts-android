@@ -17,12 +17,24 @@ data class Name internal constructor(
     override val isSuperPrimary: Boolean,
 
     /**
-     * The name that should be used to display the (raw) contact.
+     * The name that should be used to display the (raw) contact. This is the unstructured component
+     * of the name should be consistent with its structured representation.
      *
-     * Unstructured component of the name should be consistent with its structured representation.
+     * The [displayName] is the unstructured representation of the name. It is made up of structured
+     * components; [prefix], [givenName], [middleName], [familyName], and [suffix].
      *
-     * This is automatically set by the Contacts Provider from the other name components (given,
-     * middle, family, etc) if inserted as null.
+     * When updating or inserting;
+     *
+     * - If the [displayName] is null and there are non-null structured components provided (e.g.
+     *   [givenName] and [familyName]), the Contacts Provider will automatically set the
+     *   [displayName] by combining the structured components.
+     *
+     * - If the [displayName] is not null and all structured components are null, the Contacts
+     *   Provider automatically (to the best of its ability) sets the values for all the structured
+     *   components.
+     *
+     * - If the [displayName] and structured components are not null, the Contacts Provider does
+     *   nothing automatically.
      *
      * ## [ContactEntity.displayNamePrimary] vs [Name.displayName]
      *

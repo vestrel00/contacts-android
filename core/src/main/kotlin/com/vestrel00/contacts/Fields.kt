@@ -345,6 +345,8 @@ sealed class CommonDataField : AbstractDataField() {
     internal abstract val mimeType: MimeType
 }
 
+// TODO Create CommonDataFieldSet if all forMatching sets contain only 1 field; probably the 'data1'
+
 internal object EmptyCommonDataFields : FieldSet<CommonDataField>() {
 
     override val all = emptySet<CommonDataField>()
@@ -397,9 +399,8 @@ class AddressFields internal constructor() : FieldSet<AddressField>() {
     }
 
     override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
+        // The GeneralMatch algorithm of the Contacts Provider only looks at this field.
+        setOf(FormattedAddress)
     }
 }
 
@@ -541,9 +542,8 @@ class NameFields internal constructor() : FieldSet<NameField>() {
     }
 
     override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
+        // The GeneralMatch algorithm of the Contacts Provider only matches this field.
+        setOf(DisplayName)
     }
 }
 
@@ -892,9 +892,11 @@ object GroupsFields : FieldSet<GroupsField>() {
         setOf(Id, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
     }
 
-    override val forMatching = setOf(
-        TODO()
-    )
+    override val forMatching by unsafeLazy {
+        setOf(
+            TODO()
+        )
+    }
 }
 
 // endregion
@@ -939,9 +941,11 @@ object RawContactsFields : FieldSet<RawContactsField>() {
         }.toSet() // ensure that this is not modifiable at runtime
     }
 
-    override val forMatching = setOf(
-        TODO()
-    )
+    override val forMatching by unsafeLazy {
+        setOf(
+            TODO()
+        )
+    }
 }
 
 // Contains the same underlying column names as DataContactsOptionsFields and ContactsOptionsFields
