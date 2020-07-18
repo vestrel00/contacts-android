@@ -1,12 +1,5 @@
 ## TODO
 
------------------------ Query refactor.
-
-Remove Comparator inheritance in OrderBy.
-    - Create util functions for sorting collection or sequence of Contact objects using fields using CompoundOrderBy so it doesn't go to waste.
-
--------------------------------------------------------------------
-
 - Implement Contacts.generalQuery. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
     - don’t query the Data table if only ContactsFields-equivalent are included
     - don’t query the tRawContacts table if include blanks is false

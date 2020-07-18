@@ -243,6 +243,9 @@ interface Query {
      *
      * Use [ContactsFields] to construct the [orderBy].
      *
+     * If you need to sort a collection of [Contact] **objects** retrieved from this query using any
+     * field from [Fields], use the ContactsComparator extension functions.
+     *
      * ## Developer Notes
      *
      * This API DOES NOT support ordering by Data table columns ([Fields]). It used to support it

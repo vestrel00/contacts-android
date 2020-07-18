@@ -187,6 +187,9 @@ interface GeneralQuery {
      * optional parameter.
      *
      * Use [ContactsFields] to construct the [orderBy].
+     *
+     * If you need to sort a collection of [Contact] **objects** retrieved from this query using any
+     * field from [Fields], use the ContactsComparator extension functions.
      */
     fun orderBy(vararg orderBy: OrderBy<ContactsField>): GeneralQuery
 
