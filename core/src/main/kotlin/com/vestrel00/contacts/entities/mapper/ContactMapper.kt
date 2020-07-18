@@ -2,22 +2,20 @@ package com.vestrel00.contacts.entities.mapper
 
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.Options
-import com.vestrel00.contacts.entities.cursor.ContactIdCursor
-import com.vestrel00.contacts.entities.cursor.ContactsCursor
+import com.vestrel00.contacts.entities.cursor.JoinedContactsCursor
 
 /**
  * Creates [Contact] instances. May be used for cursors from the Contacts or Data table.
  */
 internal class ContactMapper(
-    private val contactsCursor: ContactsCursor,
-    private val contactIdCursor: ContactIdCursor,
+    private val contactsCursor: JoinedContactsCursor,
     private val optionsMapper: EntityMapper<Options>,
     private val isProfile: Boolean
 ) : EntityMapper<Contact> {
 
     override val value: Contact
         get() = Contact(
-            id = contactIdCursor.contactId,
+            id = contactsCursor.contactId,
 
             isProfile = isProfile,
 

@@ -12,10 +12,10 @@ import com.vestrel00.contacts.entities.cursor.*
 internal fun EntityCursor<AbstractDataField>.addressMapper(): EntityMapper<Address> =
     AddressMapper(addressCursor())
 
-internal fun EntityCursor<AbstractDataField>.dataContactsMapper(
-    contactIdCursor: ContactIdCursor, isProfile: Boolean
-): EntityMapper<Contact> =
-    ContactMapper(dataContactsCursor(), contactIdCursor, dataContactsOptionsMapper(), isProfile)
+internal fun EntityCursor<AbstractDataField>.dataContactsMapper(isProfile: Boolean):
+        EntityMapper<Contact> = ContactMapper(
+    dataContactsCursor(), dataContactsOptionsMapper(), isProfile
+)
 
 internal fun EntityCursor<AbstractDataField>.emailMapper(): EntityMapper<Email> =
     EmailMapper(emailCursor())
@@ -89,10 +89,8 @@ internal fun EntityCursor<RawContactsField>.blankRawContactMapper(isProfile: Boo
 internal fun EntityCursor<RawContactsField>.rawContactsOptionsMapper(): EntityMapper<Options> =
     OptionsMapper(rawContactsOptionsCursor())
 
-internal fun EntityCursor<ContactsField>.contactsMapper(
-    contactIdCursor: ContactIdCursor, isProfile: Boolean
-): EntityMapper<Contact> =
-    ContactMapper(contactsCursor(), contactIdCursor, optionsMapper(), isProfile)
+internal fun EntityCursor<ContactsField>.contactsMapper(isProfile: Boolean): EntityMapper<Contact> =
+    ContactMapper(contactsCursor(), optionsMapper(), isProfile)
 
 internal fun EntityCursor<ContactsField>.optionsMapper(): EntityMapper<Options> =
     OptionsMapper(optionsCursor())

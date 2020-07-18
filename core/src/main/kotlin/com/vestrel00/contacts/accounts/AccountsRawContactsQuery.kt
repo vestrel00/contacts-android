@@ -271,19 +271,7 @@ private fun ContentResolver.resolve(
 ): AccountsRawContactsQuery.BlankRawContactsList = query(
     Table.RawContacts,
     include,
-    if (rawContactsWhere != null) {
-        if (where != null) {
-            rawContactsWhere and where
-        } else {
-            rawContactsWhere
-        } and RawContactsFields.ContactId.isNotNull()
-    } else {
-        if (where != null) {
-            where and RawContactsFields.ContactId.isNotNull()
-        } else {
-            RawContactsFields.ContactId.isNotNull()
-        }
-    },
+    RawContactsFields.ContactId.isNotNull() and rawContactsWhere and where,
     sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
 ) {
     val accountRawContactsMap = mutableMapOf<Account?, MutableList<BlankRawContact>>()

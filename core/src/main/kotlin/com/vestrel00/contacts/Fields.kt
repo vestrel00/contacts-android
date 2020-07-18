@@ -648,18 +648,18 @@ object ContactsFields : FieldSet<ContactsField>() {
     @JvmField
     val DisplayNameAlt = ContactsField(Contacts.DISPLAY_NAME_ALTERNATIVE)
 
+    @JvmField
+    val LastUpdatedTimestamp = ContactsField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP)
+
+    @JvmField
+    val Options = ContactsOptionsFields()
+
     // Do not include in fields.
     internal val DisplayNameSource = ContactsField(Contacts.DISPLAY_NAME_SOURCE)
 
     // Do not include in fields.
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     internal val NameRawContactId = ContactsField(Contacts.NAME_RAW_CONTACT_ID)
-
-    @JvmField
-    val LastUpdatedTimestamp = ContactsField(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP)
-
-    @JvmField
-    val Options = ContactsOptionsFields()
 
     internal val PhotoUri = ContactsField(Contacts.PHOTO_URI)
 

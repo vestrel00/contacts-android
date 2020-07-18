@@ -6,7 +6,7 @@ import com.vestrel00.contacts.GroupsField
 import com.vestrel00.contacts.RawContactsField
 
 internal fun EntityCursor<AbstractDataField>.addressCursor() = AddressCursor(cursor)
-internal fun EntityCursor<AbstractDataField>.dataContactsCursor() = ContactsCursor(cursor)
+internal fun EntityCursor<AbstractDataField>.dataContactsCursor() = DataContactsCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.dataCursor() = DataCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.emailCursor() = EmailCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.eventCursor() = EventCursor(cursor)

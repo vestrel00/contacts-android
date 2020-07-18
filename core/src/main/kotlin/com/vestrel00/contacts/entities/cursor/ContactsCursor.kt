@@ -10,22 +10,22 @@ import java.util.*
 /**
  * Retrieves [ContactsFields] data from the given [cursor].
  *
- * Even though this uses [ContactsFields] from Contacts table queries, this may also be used for
- * Data table queries because the underlying column names are the same.
- *
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class ContactsCursor(private val cursor: Cursor) : ContactIdCursor {
+internal class ContactsCursor(private val cursor: Cursor) : JoinedContactsCursor {
 
     override val contactId: Long?
         get() = cursor.getLong(ContactsFields.Id)
 
-    val displayNamePrimary: String?
+    override val displayNamePrimary: String?
         get() = cursor.getString(ContactsFields.DisplayNamePrimary)
 
-    val displayNameAlt: String?
+    override val displayNameAlt: String?
         get() = cursor.getString(ContactsFields.DisplayNameAlt)
+
+    override val lastUpdatedTimestamp: Date?
+        get() = cursor.getDate(ContactsFields.LastUpdatedTimestamp)
 
     val displayNameSource: Int?
         get() = cursor.getInt(ContactsFields.DisplayNameSource)
@@ -33,9 +33,6 @@ internal class ContactsCursor(private val cursor: Cursor) : ContactIdCursor {
     val nameRawContactId: Long?
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         get() = cursor.getLong(ContactsFields.NameRawContactId)
-
-    val lastUpdatedTimestamp: Date?
-        get() = cursor.getDate(ContactsFields.LastUpdatedTimestamp)
 
     val photoUri: Uri?
         get() = cursor.getUri(ContactsFields.PhotoUri)

@@ -46,7 +46,7 @@ internal class ContactsMapper(
     fun processContactsCursor(cursor: EntityCursor<ContactsField>): ContactsMapper = apply {
         // Use the Contacts cursor to retrieve the contactId.
         val contactsCursor = cursor.contactsCursor()
-        val contactMapper = cursor.contactsMapper(contactsCursor, isProfile)
+        val contactMapper = cursor.contactsMapper(isProfile)
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -86,7 +86,7 @@ internal class ContactsMapper(
     fun processDataCursor(cursor: EntityCursor<AbstractDataField>): ContactsMapper = apply {
         // Changing the cursor position also changes the values returned by the mappers.
         val dataCursor = cursor.dataCursor()
-        val contactMapper = cursor.dataContactsMapper(dataCursor, isProfile)
+        val contactMapper = cursor.dataContactsMapper(isProfile)
         val tempRawContactMapper = dataCursor.tempRawContactMapper(isProfile)
 
         cursor.resetPosition()

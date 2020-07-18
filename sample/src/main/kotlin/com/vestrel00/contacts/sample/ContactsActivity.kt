@@ -123,6 +123,9 @@ class ContactsActivity : BaseActivity() {
 
             setContactsAdapterItems()
 
+            // Uncommenting this may make the UI thread choppy because it may result in logging
+            // thousands of table rows. Only use this for debugging purposes.
+            // TODO Make sure to comment out the below and remove all logging before going public!
             context.logContactsProviderTables()
         }
     }
