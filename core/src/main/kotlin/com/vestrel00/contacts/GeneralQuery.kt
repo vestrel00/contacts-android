@@ -11,6 +11,7 @@ import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * A generalized version of [Query], that lets the Contacts Provider perform the search using its
@@ -55,6 +56,9 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * ```
  *
  * ## Which Contact data are matched and how?
+ *
+ * Most, but not all, Contact data are included in the matching process probably because some data
+ * may result in unintentional matching.
  *
  * TODO
  *
@@ -110,9 +114,10 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  * - .
  * - ots
  *
- * Another cool feature
+ * Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and
+ * phone numbers "987", "1 23", and "456" will be matched with "be bell ze 9 123 1 98 456".
  *
- * Data matching is **case-insensitive**.
+ * Matching is **case-insensitive** (case is ignored).
  */
 interface GeneralQuery {
 
@@ -450,10 +455,10 @@ private class GeneralQueryImpl(
         const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
-        val DEFAULT_INCLUDE = Include(Fields)
-        val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
+        val DEFAULT_INCLUDE by unsafeLazy { Include(Fields) }
+        val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
         val DEFAULT_SEARCH_STRING: String? = null
-        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(ContactsFields.Id.asc()))
+        val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
     }

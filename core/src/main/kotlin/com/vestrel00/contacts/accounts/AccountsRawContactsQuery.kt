@@ -12,6 +12,7 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Queries on the RawContacts table.
@@ -252,9 +253,9 @@ private class AccountsRawContactsQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val INCLUDE = Include(RawContactsFields)
+        val INCLUDE by unsafeLazy { Include(RawContactsFields) }
         val DEFAULT_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(RawContactsFields.Id.asc()))
+        val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(RawContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
     }

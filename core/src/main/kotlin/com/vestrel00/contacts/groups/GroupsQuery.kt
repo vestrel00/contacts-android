@@ -10,6 +10,7 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toGroupsWhere
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Queries on the groups table.
@@ -249,9 +250,9 @@ private class GroupsQueryImpl(
 
     companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<GroupsField>? = null
-        val INCLUDE = Include(GroupsFields)
+        val INCLUDE by unsafeLazy { Include(GroupsFields) }
         val DEFAULT_WHERE: Where<GroupsField>? = null
-        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(GroupsFields.Id.asc()))
+        val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(GroupsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
     }

@@ -11,6 +11,7 @@ import com.vestrel00.contacts.entities.mapper.ContactsMapper
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Queries the Contacts, RawContacts, and Data tables and returns the one and only profile
@@ -204,8 +205,8 @@ private class ProfileQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE = Include(Fields)
-        val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
+        val DEFAULT_INCLUDE by unsafeLazy { Include(Fields) }
+        val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
     }
 }
 
