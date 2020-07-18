@@ -1,7 +1,16 @@
 package com.vestrel00.contacts
 
+import android.accounts.Account
 import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
+import android.provider.ContactsContract
 import com.vestrel00.contacts.entities.Contact
+import com.vestrel00.contacts.entities.Group
+import com.vestrel00.contacts.entities.cursor.contactsCursor
+import com.vestrel00.contacts.util.isEmpty
+import com.vestrel00.contacts.util.query
+import com.vestrel00.contacts.util.toRawContactsWhere
 
 /**
  * A generalized version of [Query], that lets the Contacts Provider perform the search using its
@@ -14,7 +23,7 @@ import com.vestrel00.contacts.entities.Contact
  * See https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
  *
  * If you need more granularity and customizations when providing matching criteria (at the cost of
- * higher CPU and (temporary) memory usage) use [Query].
+ * higher CPU and temporary memory usage) use [Query].
  *
  * ## Permissions
  *
@@ -100,14 +109,10 @@ import com.vestrel00.contacts.entities.Contact
  * - ots
  *
  * Data matching is **case-insensitive**.
- *
- * ## Developer Notes
- *
- * TODO
  */
+// TODO Async + permissions extension functions
+// TODO Test this out!
 interface GeneralQuery {
-
-    // TODO Accounts and groups?
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
@@ -120,19 +125,79 @@ interface GeneralQuery {
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
      * allowing blanks, the native Contacts app shows them.
      *
-     * There is only one scenario where blank RawContacts may not be returned if this flag is set to
-     * false. A Contact that has a RawContact with Data row(s) and a RawContact with no Data rows.
-     * In this case, the Contact and the RawContact with Data row(s) are not blank but the
-     * RawContact with no Data row is blank.
+     * There are two scenarios where blanks may not be returned if this flag is set to false.
      *
-     * // TODO
-     * 1. Query Contacts table for contactIds.
-     *      - Use CONTENT_FILTER_URI if searchString is not null.
-     *      - Use CONTENT_URI if searchString is null.
-     * 2. Query the Data table with the given contactIds.
-     * 3. If includeBlanks is true, query the RawContacts table with the given contactIds.
+     * 1. Contact with RawContact(s) with no Data row(s).
+     *     - In this case, the Contact is blank as well as its RawContact(s).
+     * 2. Contact that has a RawContact with Data row(s) and a RawContact with no Data rows.
+     *     - In this case, the Contact and the RawContact with Data row(s) are not blank but the
+     *     RawContact with no Data row is blank.
+     *
+     * ## Performance
+     *
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
      */
     fun includeBlanks(includeBlanks: Boolean): GeneralQuery
+
+    /**
+     * Limits the search to only those RawContacts associated with the given accounts. Contacts
+     * returned may still contain RawContacts / data that belongs to other accounts not specified in
+     * [accounts] because Contacts may be made up of more than one RawContact from different
+     * Accounts. This is the same behavior as the native Contacts app.
+     *
+     * If no accounts are specified (this function is not called or called with no Accounts), then
+     * all RawContacts of Contacts are included in the search.
+     *
+     * A null [Account] may be provided here, which results in RawContacts with no associated
+     * Account to be included in the search. RawContacts without an associated account are
+     * considered local contacts or device-only contacts, which are not synced.
+     *
+     * ## Performance
+     *
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
+     */
+    fun accounts(vararg accounts: Account?): GeneralQuery
+
+    /**
+     * See [GeneralQuery.accounts]
+     */
+    fun accounts(accounts: Collection<Account?>): GeneralQuery
+
+    /**
+     * See [GeneralQuery.accounts]
+     */
+    fun accounts(accounts: Sequence<Account?>): GeneralQuery
+
+    /**
+     * Limits the search to only those RawContacts associated with the given groups. Contacts
+     * returned may still contain RawContacts / data that belongs to other groups not specified in
+     * [groups] because Contacts may be made up of more than one RawContact from different
+     * Groups. This is the same behavior as the native Contacts app.
+     *
+     * If no groups are specified (this function is not called or called with no Groups), then all
+     * RawContacts of Contacts are included in the search.
+     *
+     * ## Performance
+     *
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
+     */
+    fun groups(vararg groups: Group): GeneralQuery
+
+    /**
+     * See [GeneralQuery.groups]
+     */
+    fun groups(groups: Collection<Group>): GeneralQuery
+
+    /**
+     * See [GeneralQuery.groups]
+     */
+    fun groups(groups: Sequence<Group>): GeneralQuery
 
     /**
      * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
@@ -172,10 +237,16 @@ interface GeneralQuery {
     fun include(fields: Sequence<AbstractDataField>): GeneralQuery
 
     /**
-     * Filters the [Contact]s matching the criteria defined by the [where]. If not specified or
-     * null, then all [Contact]s are returned, limited by [limit].
+     * Filters the [Contact]s partially matching the [searchString]. If not specified or null or
+     * empty, then all [Contact]s are returned.
      *
      * For more info, see [GeneralQuery] **Which Contact data are matched and how?** section.
+     *
+     * ## Performance
+     *
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
      */
     fun whereAnyContactDataPartiallyMatches(searchString: String?): GeneralQuery
 
@@ -196,12 +267,12 @@ interface GeneralQuery {
     /**
      * See [GeneralQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<ContactsField>): GeneralQuery
+    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): GeneralQuery
 
     /**
      * See [GeneralQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<ContactsField>): GeneralQuery
+    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): GeneralQuery
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
@@ -255,3 +326,218 @@ interface GeneralQuery {
     // fun find(cancel: () -> Boolean = { false }): List<Contact>
     fun find(cancel: () -> Boolean): List<Contact>
 }
+
+@Suppress("FunctionName")
+internal fun GeneralQuery(context: Context): GeneralQuery = GeneralQueryImpl(
+    context.contentResolver,
+    ContactsPermissions(context)
+)
+
+private class GeneralQueryImpl(
+    private val contentResolver: ContentResolver,
+    private val permissions: ContactsPermissions,
+
+    private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
+    private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
+    private var groupMembershipWhere: Where<GroupMembershipField>? = DEFAULT_GROUP_MEMBERSHIP_WHERE,
+    private var include: Include<AbstractDataField> = DEFAULT_INCLUDE,
+    private var searchString: String? = DEFAULT_SEARCH_STRING,
+    private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
+    private var limit: Int = DEFAULT_LIMIT,
+    private var offset: Int = DEFAULT_OFFSET
+) : GeneralQuery {
+
+    override fun toString(): String {
+        return """
+            includeBlanks = $includeBlanks
+            rawContactsWhere = $rawContactsWhere
+            groupMembershipWhere = $groupMembershipWhere
+            include = $include
+            searchString = $searchString
+            orderBy = $orderBy
+            limit = $limit
+            offset = $offset
+        """.trimIndent()
+    }
+
+    override fun includeBlanks(includeBlanks: Boolean): GeneralQuery = apply {
+        this.includeBlanks = includeBlanks
+    }
+
+    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
+
+    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
+
+    override fun accounts(accounts: Sequence<Account?>): GeneralQuery = apply {
+        rawContactsWhere = accounts.toRawContactsWhere()
+    }
+
+    override fun groups(vararg groups: Group) = groups(groups.asSequence())
+
+    override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
+
+    override fun groups(groups: Sequence<Group>): GeneralQuery = apply {
+        val groupIds = groups.map { it.id }.filterNotNull()
+        groupMembershipWhere = if (groupIds.isEmpty()) {
+            DEFAULT_GROUP_MEMBERSHIP_WHERE
+        } else {
+            Fields.GroupMembership.GroupId `in` groupIds
+        }
+    }
+
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+
+    override fun include(fields: Sequence<AbstractDataField>): GeneralQuery = apply {
+        include = if (fields.isEmpty()) {
+            DEFAULT_INCLUDE
+        } else {
+            Include(fields + REQUIRED_INCLUDE_FIELDS)
+        }
+    }
+
+    override fun whereAnyContactDataPartiallyMatches(searchString: String?): GeneralQuery = apply {
+        // Yes, I know DEFAULT_SEARCH_STRING is null. This reads better though.
+        this.searchString = searchString ?: DEFAULT_SEARCH_STRING
+    }
+
+    override fun orderBy(vararg orderBy: OrderBy<ContactsField>) = orderBy(orderBy.asSequence())
+
+    override fun orderBy(orderBy: Collection<OrderBy<ContactsField>>) =
+        orderBy(orderBy.asSequence())
+
+    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): GeneralQuery = apply {
+        this.orderBy = if (orderBy.isEmpty()) {
+            DEFAULT_ORDER_BY
+        } else {
+            CompoundOrderBy(orderBy.toSet())
+        }
+    }
+
+    override fun limit(limit: Int): GeneralQuery = apply {
+        this.limit = if (limit > 0) {
+            limit
+        } else {
+            throw IllegalArgumentException("Limit must be greater than 0")
+        }
+    }
+
+    override fun offset(offset: Int): GeneralQuery = apply {
+        this.offset = if (offset >= 0) {
+            offset
+        } else {
+            throw IllegalArgumentException("Offset must be greater than or equal to 0")
+        }
+    }
+
+    override fun find(): List<Contact> = find { false }
+
+    override fun find(cancel: () -> Boolean): List<Contact> {
+        if (!permissions.canQuery()) {
+            return emptyList()
+        }
+
+        return contentResolver.resolve(
+            includeBlanks, rawContactsWhere, groupMembershipWhere, include, searchString,
+            orderBy, limit, offset, cancel
+        )
+    }
+
+    private companion object {
+        const val DEFAULT_INCLUDE_BLANKS = true
+        val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
+        val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
+        val DEFAULT_INCLUDE = Include(Fields)
+        val REQUIRED_INCLUDE_FIELDS = Fields.Required.all.asSequence()
+        val DEFAULT_SEARCH_STRING: String? = null
+        val DEFAULT_ORDER_BY = CompoundOrderBy(setOf(ContactsFields.Id.asc()))
+        const val DEFAULT_LIMIT = Int.MAX_VALUE
+        const val DEFAULT_OFFSET = 0
+    }
+}
+
+private fun ContentResolver.resolve(
+    includeBlanks: Boolean,
+    rawContactsWhere: Where<RawContactsField>?,
+    groupMembershipWhere: Where<GroupMembershipField>?,
+    include: Include<AbstractDataField>,
+    searchString: String?,
+    orderBy: CompoundOrderBy<ContactsField>,
+    limit: Int,
+    offset: Int,
+    cancel: () -> Boolean
+): List<Contact> {
+
+    var contactIds: MutableSet<Long>? = null
+
+    // Get Contact Ids partially matching the searchString from the Contacts table. If searchString
+    // is null, skip.
+    if (searchString != null && searchString.isNotEmpty() && !cancel()) {
+        contactIds = mutableSetOf<Long>().apply {
+            addAll(findContactIdsInContactsTable(searchString, cancel))
+        }
+
+        // If no match, return empty list.
+        if (contactIds.isEmpty() || cancel()) {
+            return emptyList()
+        }
+    }
+
+    // Get the Contact Ids matching groupMembershipWhere and contained in the contactIds from the
+    // Data table. If groupMembershipWhere is null, skip.
+    if (groupMembershipWhere != null && !cancel()) {
+        val dataTableWhere = groupMembershipWhere and contactIds?.let {
+            Fields.Contact.Id `in` it
+        }
+
+        // Intentionally replace the contactsIds instead of adding to it.
+        contactIds = mutableSetOf<Long>().apply {
+            addAll(findContactIdsInDataTable(dataTableWhere, cancel))
+        }
+
+        // If no match, return empty list.
+        if (contactIds.isEmpty() || cancel()) {
+            return emptyList()
+        }
+    }
+
+
+    // Get the Contact Ids matching rawContactsWhere and contained in the contactIds from the
+    // RawContacts table. If rawContactsWhere is null, skip.
+    if (rawContactsWhere != null && !cancel()) {
+        val rawContactsTableWhere = rawContactsWhere and contactIds?.let {
+            RawContactsFields.ContactId `in` it
+        }
+
+        // Intentionally replace the contactsIds instead of adding to it.
+        contactIds = mutableSetOf<Long>().apply {
+            addAll(findContactIdsInRawContactsTable(rawContactsTableWhere, cancel, false))
+        }
+
+        // If no match, return empty list.
+        if (contactIds.isEmpty() || cancel()) {
+            return emptyList()
+        }
+    }
+
+    return resolve(contactIds, includeBlanks, include, orderBy, limit, offset, cancel)
+}
+
+private fun ContentResolver.findContactIdsInContactsTable(
+    searchString: String, cancel: () -> Boolean
+): Set<Long> = query(
+    Uri.withAppendedPath(
+        ContactsContract.Contacts.CONTENT_FILTER_URI,
+        Uri.encode(searchString)
+    ),
+    Include(ContactsFields.Id),
+    null
+) {
+    val contactIds = mutableSetOf<Long>()
+    val contactsCursor = it.contactsCursor()
+    while (!cancel() && it.moveToNext()) {
+        contactsCursor.contactId?.let(contactIds::add)
+    }
+    contactIds
+} ?: emptySet()

@@ -1,12 +1,5 @@
 ## TODO
 
-- Implement Contacts.generalQuery. Use https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
-    - don’t query the Data table if only ContactsFields-equivalent are included
-    - don’t query the tRawContacts table if include blanks is false
-    - are blanks included?
-    - Contacts to display (accounts/groups)?
-      - (see native Contacts App pre Nougat and post Nougat)
-
 - Implement Where.regex. Can like take in a regex? Try matching phone numbers with spaces using like.
 
 1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.

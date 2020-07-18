@@ -123,9 +123,9 @@ internal class ContactsMapper(
             val rawContacts = contactRawMap.getOrPut(tempRawContact.contactId) { mutableListOf() }
             rawContacts.add(tempRawContact.toRawContact())
 
+            // Return empty list if cancelled to ensure only correct data set is returned.
             if (cancel()) {
-                // Return empty list if cancelled to ensure only correct data set is returned.
-                return mutableListOf()
+                return emptyList()
             }
         }
 
@@ -140,8 +140,9 @@ internal class ContactsMapper(
             // The data class copy function comes in handy here.
             contactList.add(contact.copy(rawContacts = rawContacts.sortedBy { it.id }))
 
+            // Return empty list if cancelled to ensure only correct data set is returned.
             if (cancel()) {
-                break
+                return emptyList()
             }
         }
 
@@ -159,8 +160,9 @@ internal class ContactsMapper(
                 )
             )
 
+            // Return empty list if cancelled to ensure only correct data set is returned.
             if (cancel()) {
-                break
+                return emptyList()
             }
         }
 

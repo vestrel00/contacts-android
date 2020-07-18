@@ -19,7 +19,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  *
  * This provides a great deal of granularity and customizations when providing matching criteria
  * via [where] at the cost of higher CPU and (temporary) memory usage. For a more efficient (but not
- * as flexible) and more native Contacts app like query, use [GeneralQuery].
+ * as customizable) and more native Contacts app like query, use [GeneralQuery].
  *
  * ## Permissions
  *
@@ -67,11 +67,6 @@ import com.vestrel00.contacts.util.toRawContactsWhere
  *      .limit(10)
  *      .find();
  * ```
- *
- * ## Note
- *
- * All functions here are safe to call in the Main / UI thread EXCEPT for the [find] and [findFirst]
- * functions, which should be called in a worker thread in order to prevent blocking the UI.
  */
 interface Query {
 
@@ -96,9 +91,9 @@ interface Query {
      *
      * ## Performance
      *
-     * This may require several extra queries, internally performed in this function, which
-     * increases the time it takes for [find] or [findFirst] to complete. Therefore, you should only
-     * specify this if you actually need it.
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
      */
     fun includeBlanks(includeBlanks: Boolean): Query
 
@@ -106,7 +101,7 @@ interface Query {
      * Limits the search to only those RawContacts associated with the given accounts. Contacts
      * returned may still contain RawContacts / data that belongs to other accounts not specified in
      * [accounts] because Contacts may be made up of more than one RawContact from different
-     * Accounts. This is the same native Contacts app behavior.
+     * Accounts. This is the same behavior as the native Contacts app.
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all RawContacts of Contacts are included in the search.
@@ -117,9 +112,9 @@ interface Query {
      *
      * ## Performance
      *
-     * This requires an extra query, internally performed in this function, which increases the time
-     * it takes for [find] or [findFirst] to complete. Therefore, you should only specify this if
-     * you actually need it.
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
      */
     fun accounts(vararg accounts: Account?): Query
 
@@ -172,7 +167,7 @@ interface Query {
 
     /**
      * Filters the [Contact]s matching the criteria defined by the [where]. If not specified or
-     * null, then all [Contact]s are returned, limited by [limit].
+     * null, then all [Contact]s are returned.
      *
      * Use [Fields] to construct the [where].
      *
@@ -192,9 +187,9 @@ interface Query {
      *
      * ## Performance
      *
-     * This requires one more query, internally performed in this function, which increases the time
-     * it takes for [find] or [findFirst] to complete. Therefore, you should only specify this if
-     * you actually need it.
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
      *
      * ## Limitations
      *
@@ -332,44 +327,6 @@ interface Query {
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): List<Contact>
     fun find(cancel: () -> Boolean): List<Contact>
-
-    /**
-     * Returns the first [Contact] matching the preceding query options.
-     *
-     * ## Permissions
-     *
-     * Requires [ContactsPermissions.READ_PERMISSION].
-     *
-     * ## Thread Safety
-     *
-     * This should be called in a background thread to avoid blocking the UI thread.
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun findFirst(): Contact?
-
-    /**
-     * Returns the first [Contact] matching the preceding query options.
-     *
-     * ## Permissions
-     *
-     * Requires [ContactsPermissions.READ_PERMISSION].
-     *
-     * ## Cancellation
-     *
-     * The number of contacts and contact data found and processed may be large, which results
-     * in this operation to take a while. Therefore, cancellation is supported while the contacts
-     * list is being built. To cancel at ay time, the [cancel] function should return true.
-     *
-     * This is useful when running this function in a background thread or coroutine.
-     *
-     * ## Thread Safety
-     *
-     * This should be called in a background thread to avoid blocking the UI thread.
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    // @JvmOverloads cannot be used in interface methods...
-    // fun findFirst(cancel: () -> Boolean = { false }): Contact?
-    fun findFirst(cancel: () -> Boolean): Contact?
 }
 
 @Suppress("FunctionName")
@@ -473,10 +430,6 @@ private class QueryImpl(
         )
     }
 
-    override fun findFirst() = findFirst { false }
-
-    override fun findFirst(cancel: () -> Boolean): Contact? = find(cancel).firstOrNull()
-
     private companion object {
         const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
@@ -502,13 +455,15 @@ private fun ContentResolver.resolve(
 
     var contactIds: MutableSet<Long>? = null
 
-    // (1) Get Contact Ids matching where from the Data table. If where is null, skip.
-    if (where != null) {
-        contactIds = mutableSetOf<Long>().apply { addAll(findContactIdsInDataTable(where, cancel)) }
+    // Get Contact Ids matching where from the Data table. If where is null, skip.
+    if (where != null && !cancel()) {
+        contactIds = mutableSetOf<Long>().apply {
+            addAll(findContactIdsInDataTable(where, cancel))
+        }
 
-        // (1.5) Get the Contacts Ids of blank RawContacts and blank Contacts matching the where
-        // from the RawContacts and Contacts table respectively. Suppress DB exceptions because the
-        // where clause may contain fields (columns) that are not in the respective tables.
+        // Get the Contacts Ids of blank RawContacts and blank Contacts matching the where rom the
+        // RawContacts and Contacts table respectively. Suppress DB exceptions because the where
+        // clause may contain fields (columns) that are not in the respective tables.
         if (includeBlanks) {
             contactIds.addAll(
                 findContactIdsInRawContactsTable(where.inRawContactsTable(), cancel, true)
@@ -517,11 +472,16 @@ private fun ContentResolver.resolve(
                 findContactIdsInContactsTable(where.inContactsTable(), cancel, true)
             )
         }
+
+        // If no match, return empty list.
+        if (contactIds.isEmpty() || cancel()) {
+            return emptyList()
+        }
     }
 
-    // (2) Get the Contact Ids matching rawContactsWhere and contained in the Contact Ids (retrieved
-    // in (1) and (1.5)) from the RawContacts table. If rawContactsWhere is null, skip.
-    if (rawContactsWhere != null) {
+    // Get the Contact Ids matching rawContactsWhere and contained in the contactIds from the
+    // RawContacts table. If rawContactsWhere is null, skip.
+    if (rawContactsWhere != null && !cancel()) {
         val rawContactsTableWhere = rawContactsWhere and contactIds?.let {
             RawContactsFields.ContactId `in` it
         }
@@ -530,16 +490,32 @@ private fun ContentResolver.resolve(
         contactIds = mutableSetOf<Long>().apply {
             addAll(findContactIdsInRawContactsTable(rawContactsTableWhere, cancel, false))
         }
+
+        // If no match, return empty list.
+        if (contactIds.isEmpty() || cancel()) {
+            return emptyList()
+        }
     }
 
-    // (3) Collect Contacts with Ids in contactIds (which may include blanks), including included
-    // Contacts fields. Order by, limit, and offset results within the query itself.
-    // - If contactIds is null, get all Contacts.
-    // - If contactIds is empty, return empty list.
+    return resolve(contactIds, includeBlanks, include, orderBy, limit, offset, cancel)
+}
+
+internal fun ContentResolver.resolve(
+    contactIds: MutableSet<Long>?,
+    includeBlanks: Boolean,
+    include: Include<AbstractDataField>,
+    orderBy: CompoundOrderBy<ContactsField>,
+    limit: Int,
+    offset: Int,
+    cancel: () -> Boolean
+): List<Contact> {
+
     if (cancel() || (contactIds != null && contactIds.isEmpty())) {
         return emptyList()
     }
 
+    // Collect Contacts with Ids in contactIds (which may include blanks), including included
+    // Contacts fields. Order by, limit, and offset results within the query itself.
     val contactsMapper = ContactsMapper(isProfile = false, cancel = cancel)
 
     query(
@@ -550,8 +526,12 @@ private fun ContentResolver.resolve(
         processCursor = contactsMapper::processContactsCursor
     )
 
-    // (4) Collect Data (and non-blank RawContacts) belonging to Contacts with Ids in
-    // contactIds. If contactIds is null, collect all Data.
+    if (cancel()) {
+        return emptyList()
+    }
+
+    // Collect Data (and non-blank RawContacts) belonging to Contacts with Ids in contactIds. If
+    // contactIds is null, collect all Data.
     query(
         Table.Data, include, contactIds?.let {
             Fields.Contact.Id `in` it
@@ -559,7 +539,11 @@ private fun ContentResolver.resolve(
         processCursor = contactsMapper::processDataCursor
     )
 
-    // (4.5) Collect blank RawContacts.
+    if (cancel()) {
+        return emptyList()
+    }
+
+    // Collect blank RawContacts.
     if (includeBlanks) {
         query(
             Table.RawContacts, include.onlyRawContactsFields(), contactIds?.let {
@@ -569,24 +553,8 @@ private fun ContentResolver.resolve(
         )
     }
 
-    /*
-     * Total Queries (assuming there are matching Contacts)
-     *
-     * | where    | rawContactsWhere | includeBlanks | total |
-     * |----------|------------------|---------------|-------|
-     * | null     | null             | false         | 2     |
-     * | null     | null             | true          | 3     |
-     * | null     | not-null         | false         | 3     |
-     * | null     | not-null         | true          | 4     |
-     * | not-null | null             | false         | 3     |
-     * | not-null | null             | true          | 6     |
-     * | not-null | not-null         | false         | 4     |
-     * | not-null | not-null         | true          | 7     |
-     */
-
-    return contactsMapper.map()
+    return if (cancel()) emptyList() else contactsMapper.map()
 }
-
 
 private fun ContentResolver.findContactIdsInContactsTable(
     contactsWhere: Where<ContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
@@ -601,7 +569,7 @@ private fun ContentResolver.findContactIdsInContactsTable(
     }
 } ?: emptySet()
 
-private fun ContentResolver.findContactIdsInRawContactsTable(
+internal fun ContentResolver.findContactIdsInRawContactsTable(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
 ): Set<Long> = query(
     Table.RawContacts,
@@ -618,7 +586,7 @@ private fun ContentResolver.findContactIdsInRawContactsTable(
     }
 } ?: emptySet()
 
-private fun ContentResolver.findContactIdsInDataTable(
+internal fun ContentResolver.findContactIdsInDataTable(
     where: Where<AbstractDataField>?, cancel: () -> Boolean
 ): Set<Long> = query(Table.Data, Include(Fields.Contact.Id), where) {
     val contactIds = mutableSetOf<Long>()
