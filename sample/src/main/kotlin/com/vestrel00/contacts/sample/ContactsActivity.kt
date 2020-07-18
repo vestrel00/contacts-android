@@ -27,7 +27,7 @@ class ContactsActivity : BaseActivity() {
     private var selectedAccounts = emptyList<Account?>()
     private var queryJob: Job? = null
 
-    private val queryText: String
+    private val searchText: String
         get() = searchField.text.toString()
 
     private var searchResults = emptyList<Contact>()
@@ -94,11 +94,11 @@ class ContactsActivity : BaseActivity() {
     private fun showContacts() {
         queryJob?.cancel()
         queryJob = launch {
-            val queryText = queryText
-            val where = if (queryText.isEmpty()) {
+            val searchText = searchText
+            val where = if (searchText.isEmpty()) {
                 null
             } else {
-                SEARCH_FIELDS whereOr { it contains queryText }
+                SEARCH_FIELDS whereOr { it contains searchText }
             }
 
             val context = this@ContactsActivity
