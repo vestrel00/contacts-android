@@ -166,12 +166,11 @@ private class ProfileQueryImpl(
     private var include: Include<AbstractDataField> = DEFAULT_INCLUDE
 ) : ProfileQuery {
 
-    override fun toString(): String {
-        return """
+    override fun toString(): String =
+        """
             rawContactsWhere = $rawContactsWhere
             include = $include
         """.trimIndent()
-    }
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 

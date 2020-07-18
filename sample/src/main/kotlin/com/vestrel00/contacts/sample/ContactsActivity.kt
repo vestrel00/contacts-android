@@ -9,11 +9,14 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.vestrel00.contacts.*
+import com.vestrel00.contacts.Contacts
+import com.vestrel00.contacts.ContactsFields
+import com.vestrel00.contacts.Fields
+import com.vestrel00.contacts.asc
 import com.vestrel00.contacts.async.findWithContext
 import com.vestrel00.contacts.debug.logContactsProviderTables
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.permissions.queryWithPermission
+import com.vestrel00.contacts.permissions.generalQueryWithPermission
 import com.vestrel00.contacts.ui.text.AbstractTextWatcher
 import com.vestrel00.contacts.util.emails
 import com.vestrel00.contacts.util.phones
@@ -94,31 +97,20 @@ class ContactsActivity : BaseActivity() {
     private fun showContacts() {
         queryJob?.cancel()
         queryJob = launch {
-            val searchText = searchText
-            val where = if (searchText.isEmpty()) {
-                null
-            } else {
-                SEARCH_FIELDS whereOr { it contains searchText }
-            }
-
-            val context = this@ContactsActivity
-
-            searchResults = Contacts().queryWithPermission(context)
-                // Use accounts to limit the query to contacts belong to the specified accounts.
-                // Not passing any accounts or not calling accounts will default to searching all
-                // accounts.
+            searchResults = Contacts().generalQueryWithPermission(this@ContactsActivity)
                 .accounts(selectedAccounts)
-                // Not passing any fields or not calling include will default to including all
-                // fields.
-                .include(SEARCH_FIELDS)
-                // Passing null or not calling where will default to returning all contacts.
-                .where(where)
-                // Not passing any orderBys or not calling orderBy will default to ordering by ID.
+                .include(
+                    Fields.Contact.DisplayNamePrimary,
+                    Fields.Email.Address,
+                    Fields.Phone.Number,
+                    Fields.Phone.NormalizedNumber
+                )
+                .whereAnyContactDataPartiallyMatches(searchText)
                 .orderBy(ContactsFields.DisplayNamePrimary.asc())
                 // Not showing how to load x number of contacts at a time and then loading more when
                 // scrolled to the very bottom of the list for brevity. Consumers can figure it out.
-                .offset(0)  // offset is 0 if offset function is not called
-                .limit(Int.MAX_VALUE) // limit is Int.MAX_VALUE if limit function is not called
+                // .offset(...)
+                // .limit(...)
                 .findWithContext()
 
             setContactsAdapterItems()
@@ -126,7 +118,7 @@ class ContactsActivity : BaseActivity() {
             // Uncommenting this may make the UI thread choppy because it may result in logging
             // thousands of table rows. Only use this for debugging purposes.
             // TODO Make sure to comment out the below and remove all logging before going public!
-            context.logContactsProviderTables()
+            this@ContactsActivity.logContactsProviderTables()
         }
     }
 
@@ -175,10 +167,3 @@ class ContactsActivity : BaseActivity() {
         }
     }
 }
-
-private val SEARCH_FIELDS = setOf(
-    Fields.Contact.DisplayNamePrimary,
-    Fields.Email.Address,
-    Fields.Phone.Number,
-    Fields.Phone.NormalizedNumber
-)

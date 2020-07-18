@@ -66,6 +66,9 @@ structured name in the Data table is not provided, then other kinds of data will
 display name will be the email. When a structured name is inserted, the Contacts Provider 
 automatically updates the Contacts row display name.
 
+> In the case of `StructuredName`, the `Contacts.DISPLAY_NAME` is made up of the prefix, given,
+> middle, family name, and suffix and not the unstructured display name.
+
 If no data rows suitable to be a display name are available, then the Contacts row display name will
 be null. Data suitable to be a Contacts row display name are enumerated in `DisplayNameSources`;
 
@@ -94,8 +97,8 @@ The kind of data used as the display for the Contact is set in
 There may be a scenario where the unstructed `StructuredName.DISPLAY_NAME` does not match the
 structured components. Such scenarios are possible but is considered incorrect. For example,
 it is possible to programatically set the display name to "Ice Cold" but set the given and family
-name to "Hot Fire". The `Contacts.DISPLAY_NAME` is made up of the given and family name ("Hot Fire")
-and not the unstructured display name; .
+name to "Hot Fire". The `Contacts.DISPLAY_NAME` is made up of the prefix, given, middle, family
+name, and suffix ("Hot Fire") and not the unstructured display name.
 
 The Contacts Provider's [general matching][3] algorithm does **not** include the
 `Contacts.DISPLAY_NAME`. However, the `StructuredName.DISPLAY_NAME` is included in the matching

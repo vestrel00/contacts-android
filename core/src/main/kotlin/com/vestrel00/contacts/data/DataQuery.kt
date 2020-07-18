@@ -363,8 +363,8 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
     private var offset: Int = DEFAULT_OFFSET
 ) : CommonDataQuery<T, R> {
 
-    override fun toString(): String {
-        return """
+    override fun toString(): String =
+        """
             rawContactsWhere = $rawContactsWhere
             include = $include
             where = $where
@@ -372,7 +372,6 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
             limit = $limit
             offset = $offset
         """.trimIndent()
-    }
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 

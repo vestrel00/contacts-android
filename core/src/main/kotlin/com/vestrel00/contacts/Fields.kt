@@ -45,6 +45,15 @@ sealed class FieldSet<T : Field> {
      * All of the fields defined in this set, useful for specifying includes.
      */
     abstract val all: Set<T>
+}
+
+// endregion
+
+// region Data Table Fields
+
+sealed class AbstractDataField : Field()
+
+sealed class AbstractDataFieldSet<T : AbstractDataField> : FieldSet<T>() {
 
     /**
      * All of the fields defined in this set that are safe for matching in queries.
@@ -61,17 +70,21 @@ sealed class FieldSet<T : Field> {
      * These are the same fields used by the Contacts Provider internally when performing a general
      * match; https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch.
      *
-     * Instead of using this with [Query], you may want to use [GeneralQuery] instead for
-     * simplicity, increased performance, and breadth.
+     * Instead of using this with [Query], you may want to use [GeneralQuery] instead for simplicity
+     * and breadth.
+     *
+     * The following fields are being used by the ContactProvider general matching algorithm;
+     *
+     * - [AddressFields.FormattedAddress].
+     * - [ImFields.Data].
+     * - [NameFields.DisplayName], PhoneticGivenName, PhoneticMiddleName, and PhoneticFamilyName.
+     * - [NicknameFields.Name]
+     * - [NoteFields.Note]
+     * - [OrganizationFields] (all of it)
+     * - [PhoneFields.Number]
      */
     abstract val forMatching: Set<T>
 }
-
-// endregion
-
-// region Data Table Fields
-
-sealed class AbstractDataField : Field()
 
 data class DataField internal constructor(override val columnName: String) : AbstractDataField()
 
@@ -92,7 +105,7 @@ data class DataField internal constructor(override val columnName: String) : Abs
  * an object instead of a class, then [AddressFields.City] (and all other fields) will not be
  * visible to Java consumers via this object.
  */
-object Fields : FieldSet<AbstractDataField>() {
+object Fields : AbstractDataFieldSet<AbstractDataField>() {
 
     @JvmField
     val Address = AddressFields()
@@ -233,7 +246,7 @@ val F = Fields
  * The set of data fields that are required, internally by this library, to be included in all
  * query results.
  */
-object RequiredDataFields : FieldSet<AbstractDataField>() {
+object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
 
     override val all by unsafeLazy {
         setOf(
@@ -256,7 +269,7 @@ object RequiredDataFields : FieldSet<AbstractDataField>() {
 data class DataContactsField internal constructor(override val columnName: String) :
     AbstractDataField()
 
-class DataContactsFields internal constructor() : FieldSet<DataContactsField>() {
+class DataContactsFields internal constructor() : AbstractDataFieldSet<DataContactsField>() {
 
     // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. This is only
     // meant to be used for Data table operations.
@@ -283,16 +296,13 @@ class DataContactsFields internal constructor() : FieldSet<DataContactsField>() 
         }.toSet() // ensure that this is not modifiable at runtime
     }
 
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
-    }
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
+    override val forMatching = emptySet<DataContactsField>()
 }
 
 // Contains the same underlying column names as RawContactsOptionsFields and ContactsOptionsFields
 // but with a different Field type.
-class DataContactsOptionsFields internal constructor() : FieldSet<DataContactsField>() {
+class DataContactsOptionsFields internal constructor() : AbstractDataFieldSet<DataContactsField>() {
 
     internal val Id = DataContactsField(Data._ID)
 
@@ -319,13 +329,14 @@ class DataContactsOptionsFields internal constructor() : FieldSet<DataContactsFi
         )
     }
 
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
     override val forMatching = emptySet<DataContactsField>()
 }
 
 data class DataRawContactsField internal constructor(override val columnName: String) :
     AbstractDataField()
 
-class DataRawContactsFields internal constructor() : FieldSet<DataRawContactsField>() {
+class DataRawContactsFields internal constructor() : AbstractDataFieldSet<DataRawContactsField>() {
 
     @JvmField
     val Id = DataRawContactsField(Data.RAW_CONTACT_ID)
@@ -334,6 +345,7 @@ class DataRawContactsFields internal constructor() : FieldSet<DataRawContactsFie
         setOf(Id)
     }
 
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
     override val forMatching = emptySet<DataRawContactsField>()
 }
 
@@ -345,9 +357,7 @@ sealed class CommonDataField : AbstractDataField() {
     internal abstract val mimeType: MimeType
 }
 
-// TODO Create CommonDataFieldSet if all forMatching sets contain only 1 field; probably the 'data1'
-
-internal object EmptyCommonDataFields : FieldSet<CommonDataField>() {
+internal object EmptyCommonDataFields : AbstractDataFieldSet<CommonDataField>() {
 
     override val all = emptySet<CommonDataField>()
 
@@ -358,7 +368,7 @@ data class AddressField internal constructor(override val columnName: String) : 
     override val mimeType: MimeType = MimeType.ADDRESS
 }
 
-class AddressFields internal constructor() : FieldSet<AddressField>() {
+class AddressFields internal constructor() : AbstractDataFieldSet<AddressField>() {
 
     @JvmField
     val Type = AddressField(CommonDataKinds.StructuredPostal.TYPE)
@@ -399,7 +409,7 @@ class AddressFields internal constructor() : FieldSet<AddressField>() {
     }
 
     override val forMatching by unsafeLazy {
-        // The GeneralMatch algorithm of the Contacts Provider only looks at this field.
+        // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(FormattedAddress)
     }
 }
@@ -408,7 +418,7 @@ data class EmailField internal constructor(override val columnName: String) : Co
     override val mimeType: MimeType = MimeType.EMAIL
 }
 
-class EmailFields internal constructor() : FieldSet<EmailField>() {
+class EmailFields internal constructor() : AbstractDataFieldSet<EmailField>() {
 
     @JvmField
     val Type = EmailField(CommonDataKinds.Email.TYPE)
@@ -424,9 +434,8 @@ class EmailFields internal constructor() : FieldSet<EmailField>() {
     }
 
     override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
+        // The GeneralMatch algorithm of the Contacts Provider only matches this field.
+        setOf(Address)
     }
 }
 
@@ -434,7 +443,7 @@ data class EventField internal constructor(override val columnName: String) : Co
     override val mimeType: MimeType = MimeType.EVENT
 }
 
-class EventFields internal constructor() : FieldSet<EventField>() {
+class EventFields internal constructor() : AbstractDataFieldSet<EventField>() {
 
     @JvmField
     val Type = EventField(CommonDataKinds.Event.TYPE)
@@ -449,11 +458,8 @@ class EventFields internal constructor() : FieldSet<EventField>() {
         setOf(Type, Label, Date)
     }
 
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
-    }
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
+    override val forMatching = emptySet<EventField>()
 }
 
 data class GroupMembershipField internal constructor(override val columnName: String) :
@@ -461,7 +467,7 @@ data class GroupMembershipField internal constructor(override val columnName: St
     override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP
 }
 
-class GroupMembershipFields internal constructor() : FieldSet<GroupMembershipField>() {
+class GroupMembershipFields internal constructor() : AbstractDataFieldSet<GroupMembershipField>() {
 
     @JvmField
     val GroupId = GroupMembershipField(CommonDataKinds.GroupMembership.GROUP_ROW_ID)
@@ -470,6 +476,7 @@ class GroupMembershipFields internal constructor() : FieldSet<GroupMembershipFie
         setOf(GroupId)
     }
 
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
     override val forMatching = emptySet<GroupMembershipField>()
 }
 
@@ -477,7 +484,7 @@ data class ImField internal constructor(override val columnName: String) : Commo
     override val mimeType: MimeType = MimeType.IM
 }
 
-class ImFields internal constructor() : FieldSet<ImField>() {
+class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
 
     @JvmField
     val Protocol = ImField(CommonDataKinds.Im.PROTOCOL)
@@ -493,9 +500,16 @@ class ImFields internal constructor() : FieldSet<ImField>() {
     }
 
     override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
+        // The GeneralMatch algorithm of the Contacts Provider actually matches the Data and
+        // Protocol. We are excluding Protocol here because its value is a number, not actual
+        // text (E.G. AIM's actual value in the DB is 0). These fields are typically used for the
+        // custom Query, not GeneralQuery (which uses GeneralMatch algorithm of the Contacts
+        // Provider).
+        // FIXME? Figure out how the GeneralMatch algorithm of the Contacts Provider matches
+        // a (user input) text to a (constant) number. Perhaps it has an index table containing
+        // a mapping of the Protocol number to its localized text? Or maybe it performs a query
+        // on the text to find the corresponding Protocol number?
+        setOf(Data /*, Protocol */)
     }
 }
 
@@ -503,7 +517,7 @@ data class NameField internal constructor(override val columnName: String) : Com
     override val mimeType: MimeType = MimeType.NAME
 }
 
-class NameFields internal constructor() : FieldSet<NameField>() {
+class NameFields internal constructor() : AbstractDataFieldSet<NameField>() {
 
     @JvmField
     val DisplayName = NameField(CommonDataKinds.StructuredName.DISPLAY_NAME)
@@ -542,8 +556,8 @@ class NameFields internal constructor() : FieldSet<NameField>() {
     }
 
     override val forMatching by unsafeLazy {
-        // The GeneralMatch algorithm of the Contacts Provider only matches this field.
-        setOf(DisplayName)
+        // The GeneralMatch algorithm of the Contacts Provider only matches these fields.
+        setOf(DisplayName, PhoneticGivenName, PhoneticMiddleName, PhoneticFamilyName)
     }
 }
 
@@ -551,7 +565,7 @@ data class NicknameField internal constructor(override val columnName: String) :
     override val mimeType: MimeType = MimeType.NICKNAME
 }
 
-class NicknameFields internal constructor() : FieldSet<NicknameField>() {
+class NicknameFields internal constructor() : AbstractDataFieldSet<NicknameField>() {
 
     @JvmField
     val Name = NicknameField(CommonDataKinds.Nickname.NAME)
@@ -561,6 +575,7 @@ class NicknameFields internal constructor() : FieldSet<NicknameField>() {
     }
 
     override val forMatching by unsafeLazy {
+        // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(Name)
     }
 }
@@ -569,7 +584,7 @@ data class NoteField internal constructor(override val columnName: String) : Com
     override val mimeType: MimeType = MimeType.NOTE
 }
 
-class NoteFields internal constructor() : FieldSet<NoteField>() {
+class NoteFields internal constructor() : AbstractDataFieldSet<NoteField>() {
 
     @JvmField
     val Note = NoteField(CommonDataKinds.Note.NOTE)
@@ -579,6 +594,7 @@ class NoteFields internal constructor() : FieldSet<NoteField>() {
     }
 
     override val forMatching by unsafeLazy {
+        // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(Note)
     }
 }
@@ -588,7 +604,7 @@ data class OrganizationField internal constructor(override val columnName: Strin
     override val mimeType: MimeType = MimeType.ORGANIZATION
 }
 
-class OrganizationFields internal constructor() : FieldSet<OrganizationField>() {
+class OrganizationFields internal constructor() : AbstractDataFieldSet<OrganizationField>() {
 
     @JvmField
     val Company = OrganizationField(CommonDataKinds.Organization.COMPANY)
@@ -620,9 +636,8 @@ class OrganizationFields internal constructor() : FieldSet<OrganizationField>() 
     }
 
     override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
+        // The GeneralMatch algorithm of the Contacts Provider matches all fields.
+        all
     }
 }
 
@@ -630,7 +645,7 @@ data class PhoneField internal constructor(override val columnName: String) : Co
     override val mimeType: MimeType = MimeType.PHONE
 }
 
-class PhoneFields internal constructor() : FieldSet<PhoneField>() {
+class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
 
     @JvmField
     val Type = PhoneField(CommonDataKinds.Phone.TYPE)
@@ -649,9 +664,8 @@ class PhoneFields internal constructor() : FieldSet<PhoneField>() {
     }
 
     override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
+        // The GeneralMatch algorithm of the Contacts Provider only matches this field.
+        setOf(Number)
     }
 }
 
@@ -660,7 +674,7 @@ internal data class PhotoField internal constructor(override val columnName: Str
     override val mimeType: MimeType = MimeType.PHOTO
 }
 
-internal class PhotoFields internal constructor() : FieldSet<PhotoField>() {
+internal class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
 
     val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
 
@@ -670,6 +684,7 @@ internal class PhotoFields internal constructor() : FieldSet<PhotoField>() {
         setOf(PhotoFileId, PhotoThumbnail)
     }
 
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
     override val forMatching = emptySet<PhotoField>()
 }
 
@@ -677,7 +692,7 @@ data class RelationField internal constructor(override val columnName: String) :
     override val mimeType: MimeType = MimeType.RELATION
 }
 
-class RelationFields internal constructor() : FieldSet<RelationField>() {
+class RelationFields internal constructor() : AbstractDataFieldSet<RelationField>() {
 
     @JvmField
     val Type = RelationField(CommonDataKinds.Relation.TYPE)
@@ -692,11 +707,10 @@ class RelationFields internal constructor() : FieldSet<RelationField>() {
         setOf(Type, Label, Name)
     }
 
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
-    }
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
+    // It kinda makes sense to match the Name BUT I'd rather match the behavior of the GeneralMatch
+    // algorithm of the Contacts Provider.
+    override val forMatching = emptySet<RelationField>()
 }
 
 data class SipAddressField internal constructor(override val columnName: String) :
@@ -704,7 +718,7 @@ data class SipAddressField internal constructor(override val columnName: String)
     override val mimeType: MimeType = MimeType.SIP_ADDRESS
 }
 
-class SipAddressFields internal constructor() : FieldSet<SipAddressField>() {
+class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressField>() {
 
     @JvmField
     val SipAddress = SipAddressField(CommonDataKinds.SipAddress.SIP_ADDRESS)
@@ -713,18 +727,17 @@ class SipAddressFields internal constructor() : FieldSet<SipAddressField>() {
         setOf(SipAddress)
     }
 
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
-    }
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
+    // It kinda makes sense to match the SipAddress BUT I'd rather match the behavior of the
+    // GeneralMatch algorithm of the Contacts Provider.
+    override val forMatching = emptySet<SipAddressField>()
 }
 
 data class WebsiteField internal constructor(override val columnName: String) : CommonDataField() {
     override val mimeType: MimeType = MimeType.WEBSITE
 }
 
-class WebsiteFields internal constructor() : FieldSet<WebsiteField>() {
+class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>() {
 
     @JvmField
     val Url = WebsiteField(CommonDataKinds.Website.URL)
@@ -733,11 +746,10 @@ class WebsiteFields internal constructor() : FieldSet<WebsiteField>() {
         setOf(Url)
     }
 
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
-    }
+    // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
+    // It kinda makes sense to match the Url BUT I'd rather match the behavior of the GeneralMatch
+    // algorithm of the Contacts Provider.
+    override val forMatching = emptySet<WebsiteField>()
 }
 
 // endregion
@@ -763,8 +775,6 @@ internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsFiel
     override val all by unsafeLazy {
         setOf(Type, RawContactId1, RawContactId2)
     }
-
-    override val forMatching = emptySet<AggregationExceptionsField>()
 }
 
 // endregion
@@ -814,12 +824,6 @@ object ContactsFields : FieldSet<ContactsField>() {
             addAll(Options.all)
         }
     }
-
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
-    }
 }
 
 // Contains the same underlying column names as DataContactsOptionsFields and
@@ -850,8 +854,6 @@ class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
             Id, Starred, CustomRingtone, SendToVoicemail
         )
     }
-
-    override val forMatching = emptySet<ContactsField>()
 }
 
 // endregion
@@ -890,12 +892,6 @@ object GroupsFields : FieldSet<GroupsField>() {
 
     override val all by unsafeLazy {
         setOf(Id, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
-    }
-
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
     }
 }
 
@@ -940,12 +936,6 @@ object RawContactsFields : FieldSet<RawContactsField>() {
             addAll(Options.all)
         }.toSet() // ensure that this is not modifiable at runtime
     }
-
-    override val forMatching by unsafeLazy {
-        setOf(
-            TODO()
-        )
-    }
 }
 
 // Contains the same underlying column names as DataContactsOptionsFields and ContactsOptionsFields
@@ -976,8 +966,6 @@ class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsFiel
             Id, Starred, CustomRingtone, SendToVoicemail
         )
     }
-
-    override val forMatching = emptySet<RawContactsField>()
 }
 
 // endregion

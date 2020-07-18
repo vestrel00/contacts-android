@@ -67,6 +67,11 @@ import com.vestrel00.contacts.util.unsafeLazy
  *      .limit(10)
  *      .find();
  * ```
+ *
+ * ## Groups Matching
+ *
+ * Unlike [GeneralQuery.groups], this does not have a groups function. You may still match groups
+ * (in a much flexible way) by using [Fields.GroupMembership] with [where].
  */
 interface Query {
 
@@ -127,6 +132,8 @@ interface Query {
      * See [Query.accounts]
      */
     fun accounts(accounts: Sequence<Account?>): Query
+
+    // No groups function here like in GeneralQuery. Use [Fields.GroupMembership] with [where].
 
     /**
      * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
@@ -348,8 +355,8 @@ private class QueryImpl(
     private var offset: Int = DEFAULT_OFFSET
 ) : Query {
 
-    override fun toString(): String {
-        return """
+    override fun toString(): String =
+        """
             includeBlanks = $includeBlanks
             rawContactsWhere = $rawContactsWhere
             include = $include
@@ -358,7 +365,6 @@ private class QueryImpl(
             limit = $limit
             offset = $offset
         """.trimIndent()
-    }
 
     override fun includeBlanks(includeBlanks: Boolean): Query = apply {
         this.includeBlanks = includeBlanks

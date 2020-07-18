@@ -57,10 +57,11 @@ import com.vestrel00.contacts.util.unsafeLazy
  *
  * ## Which Contact data are matched and how?
  *
- * Most, but not all, Contact data are included in the matching process probably because some data
- * may result in unintentional matching.
+ * Most, but not all, Contact data are included in the matching process. Some are not probably
+ * because some data may result in unintentional matching.
  *
- * TODO just mention [Fields.forMatching]
+ * See [AbstractDataFieldSet.forMatching] documentation on all the fields that are included in
+ * this match.
  *
  * Data matching is more sophisticated under the hood than [Query]. The Contacts Provider matches
  * parts of several types of data in segments. For example, a Contact having the email
@@ -354,8 +355,8 @@ private class GeneralQueryImpl(
     private var offset: Int = DEFAULT_OFFSET
 ) : GeneralQuery {
 
-    override fun toString(): String {
-        return """
+    override fun toString(): String =
+        """
             includeBlanks = $includeBlanks
             rawContactsWhere = $rawContactsWhere
             groupMembershipWhere = $groupMembershipWhere
@@ -365,7 +366,6 @@ private class GeneralQueryImpl(
             limit = $limit
             offset = $offset
         """.trimIndent()
-    }
 
     override fun includeBlanks(includeBlanks: Boolean): GeneralQuery = apply {
         this.includeBlanks = includeBlanks

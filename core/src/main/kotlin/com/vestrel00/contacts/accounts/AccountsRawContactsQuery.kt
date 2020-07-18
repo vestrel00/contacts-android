@@ -187,15 +187,14 @@ private class AccountsRawContactsQueryImpl(
     private var offset: Int = DEFAULT_OFFSET
 ) : AccountsRawContactsQuery {
 
-    override fun toString(): String {
-        return """
+    override fun toString(): String =
+        """
             rawContactsWhere = $rawContactsWhere
             where = $where
             orderBy = $orderBy
             limit = $limit
             offset = $offset
         """.trimIndent()
-    }
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
