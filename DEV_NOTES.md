@@ -60,7 +60,7 @@ The tables are connected the following way;
 
 #### Contacts; Display Name
 
-The Contact's display name may be different than the Data `StructuredName` display name! If a
+The `Contacts.DISPLAY_NAME` name may be different than the Data `StructuredName` display name! If a
 structured name in the Data table is not provided, then other kinds of data will be used as the 
 `Contacts` row display name. For example, if an email is provided but no structured name then the
 display name will be the email. When a structured name is inserted, the Contacts Provider 
@@ -86,8 +86,25 @@ Data not suitable to be display names are;
 - sip
 - website
 
-The kind of data used as the display for the Contact is set in 
+The kind of data used as the display for the Contact is set in
 `ContactNameColumns.DISPLAY_NAME_SOURCE`.
+
+**A note about `StructuredName`**
+
+There may be a scenario where the unstructed `StructuredName.DISPLAY_NAME` does not match the
+structured components. Such scenarios are possible but is considered incorrect. For example,
+it is possible to programatically set the display name to "Ice Cold" but set the given and family
+name to "Hot Fire". The `Contacts.DISPLAY_NAME` is made up of the given and family name ("Hot Fire")
+and not the unstructured display name; .
+
+The Contacts Provider's [general matching][3] algorithm does **not** include the
+`Contacts.DISPLAY_NAME`. However, the `StructuredName.DISPLAY_NAME` is included in the matching
+process but not the rest of the structured components (e.g. given and family name).
+
+The native Contacts app displays the `Contacts.DISPLAY_NAME`. So, here comes the unusual scenario
+that looks like a bug. The [general matching][3] algorithm will match the text "Ice" or "Cold" but
+not "Hot" or "Fire". The end result is that searching for the Contact "Ice Cold" will show a
+Contact called "Hot Fire"!
 
 #### Contact Display Name and Default Name Rows
 
@@ -900,3 +917,4 @@ If the community strongly desires the addition of these support libs, then I may
 
 [1]: https://developer.android.com/guide/topics/providers/contacts-provider
 [2]: https://github.com/Karumi/Dexter
+[3]: https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
