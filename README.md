@@ -1,7 +1,5 @@
 ## TODO
 
-- Implement Where.regex. Can like take in a regex? Try matching phone numbers with spaces using like.
-
 1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
     - Read-only like GroupMemberships. Update relevant util functions and AccountsRawContactsAssociations.
     - Add Photo entity to Contact (delete the block comment about photos) and RawContact.

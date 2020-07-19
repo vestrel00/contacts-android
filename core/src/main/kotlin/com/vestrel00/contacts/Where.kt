@@ -13,28 +13,39 @@ import java.util.*
 // these functions in a companion object within the Where class. However, we won't do this just
 // because it creates duplicate code. Java users just need to migrate to Kotlin already...
 
+// FIXME? Verify that LIKE or NOT LIKE operations are case-sensitive when outside of ASCII range.
+// From my limited testing, it seems like it is case-insensitive even when outside of ASCII range.
+// Perhaps, I was not using non-ascii characters when I was testing it out. For now, I'll just
+// mention that "String comparison is case-insensitive when within ASCII range". I'll wait until the
+// community sees an issue and raises it.
+
+// TODO ESCAPE LIKE wildcards % _. Try using Query + contains to match LOVE_IS_%BLIND nickname
+
 // region Operators
 
 /**
- * Note that string comparison is case-sensitive.
+ * String comparison is case-sensitive.
  */
 infix fun <T : Field> T.equalTo(value: Any): Where<T> = EqualTo(this, value)
 
 /**
- * Note that string comparison is case-sensitive.
+ * String comparison is case-sensitive.
  */
 infix fun <T : Field> T.notEqualTo(value: Any): Where<T> = NotEqualTo(this, value)
 
 /**
- * Note that string comparison is case-insensitive when within ASCII range.
+ * Same as `like("$value")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.equalToIgnoreCase(value: Any): Where<T> = EqualToIgnoreCase(this, value)
+infix fun <T : Field> T.equalToIgnoreCase(value: Any): Where<T> = like("$value")
 
 /**
- * Note that string comparison is case-insensitive when within ASCII range.
+ * Same as `notLike("$value")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.notEqualToIgnoreCase(value: Any): Where<T> =
-    NotEqualToIgnoreCase(this, value)
+infix fun <T : Field> T.notEqualToIgnoreCase(value: Any): Where<T> = notLike("$value")
 
 infix fun <T : Field> T.greaterThan(value: Any): Where<T> = GreaterThan(this, value)
 infix fun <T : Field> T.greaterThanOrEqual(value: Any): Where<T> = GreaterThanOrEqual(this, value)
@@ -48,34 +59,84 @@ infix fun <T : Field> T.notIn(values: Collection<Any>): Where<T> = NotIn(this, v
 infix fun <T : Field> T.notIn(values: Sequence<Any>): Where<T> = NotIn(this, values)
 
 /**
- * Note that the value is case-insensitive when within ASCII range.
+ * Same as `like("$value%")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.startsWith(value: String): Where<T> = StartsWith(this, value)
+infix fun <T : Field> T.startsWith(value: String): Where<T> = like("$value%")
 
 /**
- * Note that the value is case-insensitive when within ASCII range.
+ * Same as `like("%$value")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.endsWith(value: String): Where<T> = EndsWith(this, value)
+infix fun <T : Field> T.endsWith(value: String): Where<T> = like("%$value")
 
 /**
- * Note that the value is case-insensitive when within ASCII range.
+ * Same as `like("%$value%")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.contains(value: String): Where<T> = Contains(this, value)
+infix fun <T : Field> T.contains(value: String): Where<T> = like("%$value%")
 
 /**
- * Note that the value is case-insensitive when within ASCII range.
+ * Same as `notLike("$value%")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.doesNotStartWith(value: String): Where<T> = DoesNotStartWith(this, value)
+infix fun <T : Field> T.doesNotStartWith(value: String): Where<T> = notLike("$value%")
 
 /**
- * Note that the value is case-insensitive when within ASCII range.
+ * Same as `notLike("%$value")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.doesNotEndWith(value: String): Where<T> = DoesNotEndWith(this, value)
+infix fun <T : Field> T.doesNotEndWith(value: String): Where<T> = notLike("%$value")
 
 /**
- * Note that the value is case-insensitive when within ASCII range.
+ * Same as `notLike("%$value%")`.
+ *
+ * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.doesNotContain(value: String): Where<T> = DoesNotContain(this, value)
+infix fun <T : Field> T.doesNotContain(value: String): Where<T> = notLike("%$value%")
+
+/**
+ * SQLite provides two wildcards for constructing patterns; percent sign % and underscore _;
+ *
+ * - The percent sign % wildcard matches any sequence of zero or more characters.
+ * - The underscore _ wildcard matches any single character.
+ *
+ * ## The percent sign % wildcard examples
+ *
+ * The s% pattern that uses the percent sign wildcard (%) matches any string that starts with s
+ * e.g.,son and so.
+ *
+ * The %er pattern matches any string that ends with er like peter, clever, etc.
+ *
+ * And the %per% pattern matches any string that contains per such as percent and peeper.
+ *
+ * ## The underscore _ wildcard examples
+ *
+ * The h_nt pattern matches hunt, hint, etc. The __pple pattern matches topple, supple, tipple, etc.
+ *
+ * ## Note
+ *
+ * The above explanation of the % and _ wildcards are copied from
+ * https://www.sqlitetutorial.net/sqlite-like/. I do not take credit for it. All credit goes to
+ * that website. I just wanted the simplest documentation for this and I found that that is the
+ * simplest / best. Credits to them. Don't sue me, please. If this is an issue, I'll change the
+ * documentation above. AM I BEING PARANOID HERE?!?!
+ *
+ * String comparison is case-insensitive when within ASCII range.
+ */
+infix fun <T : Field> T.like(pattern: String): Where<T> = Like(this, pattern)
+
+/**
+ * Same as [like] but preceded with a NOT.
+ *
+ * String comparison is case-insensitive when within ASCII range.
+ */
+infix fun <T : Field> T.notLike(pattern: String): Where<T> = NotLike(this, pattern)
 
 /**
  * ANDs [this] and [where]. If [where] is null, returns [this].
@@ -364,24 +425,9 @@ private class In<T : Field>(field: Field, values: Sequence<Any>) :
 private class NotIn<T : Field>(field: Field, values: Sequence<Any>) :
     Where<T>(where(field, "NOT IN", values))
 
-private open class Like<T : Field>(field: Field, value: Any) : Where<T>(where(field, "LIKE", value))
-private open class NotLike<T : Field>(field: Field, value: Any) :
+private class Like<T : Field>(field: Field, value: Any) : Where<T>(where(field, "LIKE", value))
+private class NotLike<T : Field>(field: Field, value: Any) :
     Where<T>(where(field, "NOT LIKE", value))
-
-private class EqualToIgnoreCase<T : Field>(field: Field, value: Any) : Like<T>(field, "$value")
-private class StartsWith<T : Field>(field: Field, value: String) : Like<T>(field, "$value%%")
-private class EndsWith<T : Field>(field: Field, value: String) : Like<T>(field, "%%$value")
-private class Contains<T : Field>(field: Field, value: String) : Like<T>(field, "%%$value%%")
-
-private class NotEqualToIgnoreCase<T : Field>(field: Field, value: Any) :
-    NotLike<T>(field, "$value")
-
-private class DoesNotStartWith<T : Field>(field: Field, value: String) :
-    NotLike<T>(field, "$value%%")
-
-private class DoesNotEndWith<T : Field>(field: Field, value: String) : NotLike<T>(field, "%%$value")
-private class DoesNotContain<T : Field>(field: Field, value: String) :
-    NotLike<T>(field, "%%$value%%")
 
 private class JoinedWhere<T : Field>(whereString: String) : Where<T>(whereString)
 
