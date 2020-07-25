@@ -13,13 +13,11 @@ import java.util.*
 // these functions in a companion object within the Where class. However, we won't do this just
 // because it creates duplicate code. Java users just need to migrate to Kotlin already...
 
-// FIXME? Verify that LIKE or NOT LIKE operations are case-sensitive when outside of ASCII range.
+// TODO? Verify that LIKE or NOT LIKE operations are case-sensitive when outside of ASCII range.
 // From my limited testing, it seems like it is case-insensitive even when outside of ASCII range.
 // Perhaps, I was not using non-ascii characters when I was testing it out. For now, I'll just
 // mention that "String comparison is case-insensitive when within ASCII range". I'll wait until the
 // community sees an issue and raises it.
-
-// TODO ESCAPE LIKE wildcards % _. Try using Query + contains to match LOVE_IS_%BLIND nickname
 
 // region Operators
 
@@ -34,18 +32,20 @@ infix fun <T : Field> T.equalTo(value: Any): Where<T> = EqualTo(this, value)
 infix fun <T : Field> T.notEqualTo(value: Any): Where<T> = NotEqualTo(this, value)
 
 /**
- * Same as `like("$value")`.
+ * Same as `like(value.likeWildcardsEscaped(), "\\")`. See [like] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.equalToIgnoreCase(value: Any): Where<T> = like("$value")
+infix fun <T : Field> T.equalToIgnoreCase(value: Any): Where<T> =
+    like(value.likeWildcardsEscaped(), LIKE_ESCAPE_EXPR)
 
 /**
- * Same as `notLike("$value")`.
+ * Same as `notLike(value.likeWildcardsEscaped(), "\\")`. See [like] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.notEqualToIgnoreCase(value: Any): Where<T> = notLike("$value")
+infix fun <T : Field> T.notEqualToIgnoreCase(value: Any): Where<T> =
+    notLike(value.likeWildcardsEscaped(), LIKE_ESCAPE_EXPR)
 
 infix fun <T : Field> T.greaterThan(value: Any): Where<T> = GreaterThan(this, value)
 infix fun <T : Field> T.greaterThanOrEqual(value: Any): Where<T> = GreaterThanOrEqual(this, value)
@@ -59,48 +59,72 @@ infix fun <T : Field> T.notIn(values: Collection<Any>): Where<T> = NotIn(this, v
 infix fun <T : Field> T.notIn(values: Sequence<Any>): Where<T> = NotIn(this, values)
 
 /**
- * Same as `like("$value%")`.
+ * Same as `like("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`. See [like] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.startsWith(value: String): Where<T> = like("$value%")
+infix fun <T : Field> T.startsWith(value: String): Where<T> =
+    like("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
 
 /**
- * Same as `like("%$value")`.
+ * Same as `like("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)`.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.endsWith(value: String): Where<T> = like("%$value")
+infix fun <T : Field> T.endsWith(value: String): Where<T> =
+    like("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)
 
 /**
- * Same as `like("%$value%")`.
+ * Same as `like("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.contains(value: String): Where<T> = like("%$value%")
+infix fun <T : Field> T.contains(value: String): Where<T> =
+    like("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
 
 /**
- * Same as `notLike("$value%")`.
+ * Same as `notLike("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.doesNotStartWith(value: String): Where<T> = notLike("$value%")
+infix fun <T : Field> T.doesNotStartWith(value: String): Where<T> =
+    notLike("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
 
 /**
- * Same as `notLike("%$value")`.
+ * Same as `notLike("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)`.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.doesNotEndWith(value: String): Where<T> = notLike("%$value")
+infix fun <T : Field> T.doesNotEndWith(value: String): Where<T> =
+    notLike("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)
 
 /**
- * Same as `notLike("%$value%")`.
+ * Same as `notLike("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.doesNotContain(value: String): Where<T> = notLike("%$value%")
+infix fun <T : Field> T.doesNotContain(value: String): Where<T> =
+    notLike("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
 
 /**
+ * A [Where] of the form of `Field LIKE [pattern]`.
+ *
+ * If the [pattern] contains % or _ that should be escaped, provide the [escapeExpression] used to
+ * escape the [pattern]. For example, [contains] uses the pattern "%$value%". That alone has a flaw
+ * that it does not escape the % and _ inside the value. This means that the string "LOVE_IS_%BLIND"
+ * will be matched with the value "lov__i%s%lind". This flaw allows user input (the value) to use
+ * wildcards. That is why [contains] adds the [escapeExpression] (typically "\") to the value first.
+ * Then it calls this function with the [pattern] "%$escapedValue%" and [escapeExpression] "\".
+ *
+ * **Warning!** This is one of the more (relatively) advanced, free-form operators provided by this
+ * library. Use at your own expertise and knowledge of how it works. If you are not familiar with
+ * SQLite LIKE operator, read entire documentation below. Better yet, visit this website where the
+ * below documentation was copied from; https://www.sqlitetutorial.net/sqlite-like/
+ *
+ * String comparison is case-insensitive when within ASCII range.
+ *
+ * ## The LIKE operator explained
+ *
  * SQLite provides two wildcards for constructing patterns; percent sign % and underscore _;
  *
  * - The percent sign % wildcard matches any sequence of zero or more characters.
@@ -115,28 +139,53 @@ infix fun <T : Field> T.doesNotContain(value: String): Where<T> = notLike("%$val
  *
  * And the %per% pattern matches any string that contains per such as percent and peeper.
  *
- * ## The underscore _ wildcard examples
+ * #### The underscore _ wildcard examples
  *
  * The h_nt pattern matches hunt, hint, etc. The __pple pattern matches topple, supple, tipple, etc.
  *
- * ## Note
+ * #### ESCAPE clause
+ *
+ * If the pattern that you want to match contains % or _, you must use an escape character in an
+ * optional ESCAPE clause as follows
+ *
+ * When you specify the ESCAPE clause, the LIKE operator will evaluate the expression that follows
+ * the ESCAPE keyword to a string which consists of a single character, or an escape character.
+ *
+ * Then you can use this escape character in the pattern to include literal percent sign (%) or
+ * underscore (_). The LIKE operator evaluates the percent sign (%) or underscore (_) that follows
+ * the escape character as a literal string, not a wildcard character.
+ *
+ * Suppose you want to match the string 10% in a column of a table. However, SQLite interprets the
+ * percent symbol % as the wildcard character. Therefore,  you need to escape this percent symbol %
+ * using an escape character:
+ *
+ * `column_1 LIKE '%10\%%' ESCAPE '\'`
+ *
+ * In this expression, the LIKE operator interprets the first % and last % percent signs as
+ * wildcards and the second percent sign as a literal percent symbol.
+ *
+ * Note that you can use other characters as the escape character e.g., /, @, $.
+ *
+ * ## Note of Attribution
  *
  * The above explanation of the % and _ wildcards are copied from
  * https://www.sqlitetutorial.net/sqlite-like/. I do not take credit for it. All credit goes to
  * that website. I just wanted the simplest documentation for this and I found that that is the
- * simplest / best. Credits to them. Don't sue me, please. If this is an issue, I'll change the
+ * simplest/best. Credits to them. Don't sue me, please. If this is an issue, I'll change the
  * documentation above. AM I BEING PARANOID HERE?!?!
- *
- * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.like(pattern: String): Where<T> = Like(this, pattern)
+@JvmOverloads
+fun <T : Field> T.like(pattern: String, escapeExpression: String? = null): Where<T> =
+    Like(this, pattern, escapeExpression?.let { "ESCAPE '$escapeExpression'" })
 
 /**
  * Same as [like] but preceded with a NOT.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
-infix fun <T : Field> T.notLike(pattern: String): Where<T> = NotLike(this, pattern)
+@JvmOverloads
+fun <T : Field> T.notLike(pattern: String, escapeExpression: String? = null): Where<T> =
+    NotLike(this, pattern, escapeExpression?.let { "ESCAPE '$escapeExpression'" })
 
 /**
  * ANDs [this] and [where]. If [where] is null, returns [this].
@@ -373,8 +422,13 @@ internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawCon
  *
  * The above will never match any row because 'johnson' = 'colorado' is never true.
  */
-private fun where(field: Field, operator: String, value: Any?): String {
+private fun where(field: Field, operator: String, value: Any?, options: String? = null): String {
     var where = "${field.columnName} $operator ${value.toSqlString()}"
+
+    if (options != null) {
+        where += " $options"
+    }
+
     if (field is CommonDataField && field.mimeType.value.isNotBlank()) {
         where += " AND ${Fields.MimeType.columnName} = '${field.mimeType.value}'"
     }
@@ -425,13 +479,46 @@ private class In<T : Field>(field: Field, values: Sequence<Any>) :
 private class NotIn<T : Field>(field: Field, values: Sequence<Any>) :
     Where<T>(where(field, "NOT IN", values))
 
-private class Like<T : Field>(field: Field, value: Any) : Where<T>(where(field, "LIKE", value))
-private class NotLike<T : Field>(field: Field, value: Any) :
-    Where<T>(where(field, "NOT LIKE", value))
+private class Like<T : Field>(field: Field, value: Any, options: String? = null) :
+    Where<T>(where(field, "LIKE", value, options))
+
+private class NotLike<T : Field>(field: Field, value: Any, options: String? = null) :
+    Where<T>(where(field, "NOT LIKE", value, options))
 
 private class JoinedWhere<T : Field>(whereString: String) : Where<T>(whereString)
 
 // endregion
+
+/**
+ * The default [like] escape expression.
+ */
+const val LIKE_ESCAPE_EXPR = "\\"
+
+/**
+ * Returns a new String the escapes the LIKE wildcards (% and _) by prepending the
+ * [escapeExpression] to each instance of the wildcards in this object's string representation.
+ */
+@JvmOverloads
+fun Any.likeWildcardsEscaped(escapeExpression: String = LIKE_ESCAPE_EXPR): String {
+    /* This function is the same as the below expression, except better in performance and memory.
+        toString()
+            .replace("_", "${escapeExpression}_")
+            .replace("%", "${escapeExpression}%")
+     */
+    val str = toString()
+    val builder = StringBuilder()
+
+    for (char in str) {
+        builder.append(
+            when (char) {
+                '%', '_' -> "$escapeExpression$char"
+                else -> char
+            }
+        )
+    }
+
+    return builder.toString()
+}
 
 private fun Any?.toSqlString(): String = when (this) {
     null -> "NULL"
