@@ -70,6 +70,8 @@ interface DataQuery {
      */
     fun phones(): CommonDataQuery<PhoneField, Phone>
 
+    // Photos are intentionally left out.
+
     /**
      * Queries for [Relation]s.
      */

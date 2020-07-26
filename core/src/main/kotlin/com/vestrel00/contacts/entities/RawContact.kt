@@ -107,6 +107,8 @@ data class RawContact internal constructor(
      */
     val phones: List<Phone>,
 
+    // TODO internal val photo: Photo?,
+
     /**
      * An immutable list of relations.
      */

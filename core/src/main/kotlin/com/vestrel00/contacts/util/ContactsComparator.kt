@@ -302,8 +302,6 @@ private fun Field.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int 
             it.normalizedNumber
         }
 
-        // RAW CONTACT intentionally excluded.
-
         // RELATION
         Fields.Relation.Type -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
             it.type?.ordinal?.toString()

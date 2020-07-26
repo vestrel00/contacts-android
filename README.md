@@ -1,8 +1,8 @@
 ## TODO
 
 1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
-    - Read-only like GroupMemberships. Update relevant util functions and AccountsRawContactsAssociations.
-    - Add Photo entity to Contact (delete the block comment about photos) and RawContact.
+    - Verify that RawContacts with only a photo row in the Data table does not get deleted on Update
+      when all fields are included in the query.
 
 2. Setup user profile
     - Insert, Update, Delete + withPermission & async.
