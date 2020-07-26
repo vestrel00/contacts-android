@@ -158,7 +158,13 @@ interface Query {
      * ## Data Loss
      *
      * Do not perform updates on Contacts or RawContacts returned by a query where all fields are
-     * not included as it may result in data loss!
+     * not included as it may result in data loss! To include all fields, including those that are
+     * not exposed to consumer (you), do one of the following;
+     *
+     * - Do no call this function.
+     * - Call this function with no fields (empty).
+     * - Pass in [Fields].
+     * - Pass in [Fields.all].
      */
     fun include(vararg fields: AbstractDataField): Query
 
