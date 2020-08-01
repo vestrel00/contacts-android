@@ -94,7 +94,8 @@ sealed class ContactEntity : Entity {
      * other hand, changes to the options of the parent Contact will be propagated to all child
      * RawContact options.
      *
-     * Use the ContactOptions extension functions to modify options.
+     * This options instance will be ignored for update operations. Use the ContactOptions extension
+     * functions to modify options or get the most up-to-date options.
      */
     abstract val options: Options?
 
@@ -170,7 +171,9 @@ data class Contact internal constructor(
 
 ) : ContactEntity() {
 
-    // We only care about the contents of the RawContacts
+    // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
+    // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
+    // the Data table, which is why they are not part of the blank check.
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
 
     fun toMutableContact() = MutableContact(
@@ -233,6 +236,8 @@ data class MutableContact internal constructor(
 
 ) : ContactEntity() {
 
-    // We only care about the contents of the RawContacts
+    // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
+    // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
+    // the Data table, which is why they are not part of the blank check.
     override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
 }
