@@ -24,6 +24,14 @@ sealed class RawContactEntity : Entity {
      * True if this raw contact belongs to the user's personal profile entry.
      */
     abstract val isProfile: Boolean
+
+    /**
+     * The [Photo] class does not have any real functional value. This exist only to prevent
+     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
+     *
+     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set photos.
+     */
+    internal abstract var photo: Photo?
 }
 
 /**
@@ -108,12 +116,9 @@ data class RawContact internal constructor(
     val phones: List<Phone>,
 
     /**
-     * The [Photo] class does not have any real functional value. This exist only to prevent
-     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
-     *
-     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set photos.
+     * See [RawContactEntity.photo].
      */
-    internal val photo: Photo?,
+    override var photo: Photo?,
 
     /**
      * An immutable list of relations.
@@ -252,9 +257,9 @@ data class MutableRawContact internal constructor(
     var phones: MutableList<MutablePhone>,
 
     /**
-     * See [RawContact.photo].
+     * See [RawContactEntity.photo].
      */
-    internal val photo: Photo?,
+    override var photo: Photo?,
 
     /**
      * Mutable version of [RawContact.relations].
@@ -287,14 +292,19 @@ data class MutableRawContact internal constructor(
 }
 
 /**
- * A blank [RawContactEntity] that contains no data (e.g. email, phone). This only contains critical
- * information for performing RawContact operations.
+ * A blank [RawContactEntity] that contains no data (e.g. email, phone), although display names are
+ * available. This only contains critical information for performing RawContact operations.
  */
 @Parcelize
 data class BlankRawContact internal constructor(
     override val id: Long?,
     override val contactId: Long?,
     override val isProfile: Boolean,
+
+    /**
+     * See [RawContactEntity.photo].
+     */
+    override var photo: Photo?,
 
     /**
      * The RawContact's display name (given name first), which may be different from the parent
@@ -311,6 +321,7 @@ data class BlankRawContact internal constructor(
     // This can only be retrieved from RawContacts table queries. The Data table contains the
     // display name for Contacts, not for RawContacts.
     val displayNameAlt: String?
+
 ) : RawContactEntity() {
 
     override fun isBlank(): Boolean = true
@@ -338,7 +349,7 @@ internal data class TempRawContact constructor(
     var note: Note?,
     var organization: Organization?,
     var phones: MutableList<Phone>,
-    var photo: Photo?,
+    override var photo: Photo?,
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>

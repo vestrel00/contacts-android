@@ -10,6 +10,7 @@ import android.provider.ContactsContract
 import android.provider.ContactsContract.RawContacts
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MimeType
+import com.vestrel00.contacts.entities.Photo
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.photoCursor
 import com.vestrel00.contacts.entities.operation.newDelete
@@ -239,7 +240,7 @@ fun RawContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawa
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun RawContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean =
-    setRawContactPhoto(context, id, photoBytes)
+    doSetPhoto(context, photoBytes)
 
 /**
  * See [RawContactEntity.setPhoto].
@@ -262,8 +263,12 @@ fun RawContactEntity.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
 fun RawContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
     setPhoto(context, photoDrawable.bitmap.bytes())
 
-internal fun setRawContactPhoto(context: Context, rawContactId: Long?, photoBytes: ByteArray):
-        Boolean {
+/**
+ * Performs the actual setting of the photo. Only the [RawContactEntity.id] is required to be
+ * non-null for the operation.
+ */
+internal fun RawContactEntity.doSetPhoto(context: Context, photoBytes: ByteArray): Boolean {
+    val rawContactId = id
 
     if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
         return false
@@ -291,6 +296,14 @@ internal fun setRawContactPhoto(context: Context, rawContactId: Long?, photoByte
             isSuccessful = true
         }
     } finally {
+        if (isSuccessful) {
+            // Assume that the photo Data row has been created and inject a photo instance into the
+            // entity so that it will not be marked as blank if it has no other Data rows.
+            // We could make a query here just to make sure but we won't to save time and CPU. Also,
+            // I don't know if the Data row is immediately created at this point.
+            photo = Photo()
+        }
+
         return isSuccessful
     }
 }
@@ -331,7 +344,7 @@ fun RawContactEntity.removePhoto(context: Context): Boolean {
         return false
     }
 
-    return context.contentResolver.applyBatch(
+    val isSuccessful = context.contentResolver.applyBatch(
         newDelete(Table.Data)
             .withSelection(
                 (Fields.RawContact.Id equalTo rawContactId)
@@ -339,6 +352,16 @@ fun RawContactEntity.removePhoto(context: Context): Boolean {
             )
             .build()
     ) != null
+
+    if (isSuccessful) {
+        // Assume that the photo Data row has been deleted and remove the photo instance from the
+        // entity so that it will be marked as blank if it has no other Data rows.
+        // We could make a query here just to make sure but we won't to save time and CPU. Also,
+        // I don't know if the Data row is immediately deleted at this point.
+        photo = null
+    }
+
+    return isSuccessful
 }
 
 // endregion

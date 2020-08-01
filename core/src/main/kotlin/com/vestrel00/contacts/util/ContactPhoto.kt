@@ -9,8 +9,10 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.MimeType
+import com.vestrel00.contacts.entities.TempRawContact
 import com.vestrel00.contacts.entities.cursor.contactsCursor
-import com.vestrel00.contacts.entities.cursor.photoCursor
+import com.vestrel00.contacts.entities.cursor.dataCursor
+import com.vestrel00.contacts.entities.mapper.tempRawContactMapper
 import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.table.Table
@@ -272,18 +274,18 @@ fun ContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean {
 
     val photoFileId = photoFileId(context, contactId)
 
-    val rawContactId = if (photoFileId != null) {
-        // A photo exists for the Contact. Get the ID of the RawContact in the Data table that holds
-        // the photo row with the same photo file id. Keep in mind that there may be multiple
-        // RawContacts associated with a single Contact.
-        rawContactIdWithPhotoFileId(context, photoFileId)
+    val rawContact = if (photoFileId != null) {
+        // A photo exists for the Contact. Get the RawContact in the Data table that holds the photo
+        // row with the same photo file id. Keep in mind that there may be multiple RawContacts
+        // associated with a single Contact.
+        rawContactWithPhotoFileId(context, photoFileId)
     } else {
         // No photo exists for the Contact or any of its associated RawContacts. Use the
         // first RawContact as the default or fail if also not available.
-        rawContacts.firstOrNull()?.id
+        rawContacts.firstOrNull()
     }
 
-    return setRawContactPhoto(context, rawContactId, photoBytes)
+    return rawContact?.doSetPhoto(context, photoBytes) == true
 }
 
 /**
@@ -315,13 +317,13 @@ private fun photoFileId(context: Context, contactId: Long): Long? = context.cont
     it.getNextOrNull { it.contactsCursor().photoFileId }
 }
 
-private fun rawContactIdWithPhotoFileId(context: Context, photoFileId: Long): Long? =
+private fun rawContactWithPhotoFileId(context: Context, photoFileId: Long): TempRawContact? =
     context.contentResolver.query(
         Table.Data,
         Include(Fields.RawContact.Id),
         Fields.Photo.PhotoFileId equalTo photoFileId
     ) {
-        it.getNextOrNull { it.photoCursor().rawContactId }
+        it.getNextOrNull { it.dataCursor().tempRawContactMapper(false).value }
     }
 
 // endregion
@@ -353,7 +355,7 @@ fun ContactEntity.removePhoto(context: Context): Boolean {
         return false
     }
 
-    return context.contentResolver.applyBatch(
+    val isSuccessful = context.contentResolver.applyBatch(
         newDelete(Table.Data)
             .withSelection(
                 (Fields.Contact.Id equalTo contactId)
@@ -361,6 +363,16 @@ fun ContactEntity.removePhoto(context: Context): Boolean {
             )
             .build()
     ) != null
+
+    if (isSuccessful) {
+        // Assume that all photo Data rows have been deleted and remove the photo instances from all
+        // RawContacts so that it will all be marked as blank if it has no other Data rows.
+        for (rawContact in rawContacts) {
+            rawContact.photo = null
+        }
+    }
+
+    return isSuccessful
 }
 
 // endregion

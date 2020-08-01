@@ -101,13 +101,16 @@ class EditContactDetailsActivity : BaseActivity() {
     private suspend fun save(): Boolean {
         showProgressDialog()
 
-        // Save changes.
+        // Save photo first so that the Contact does not get deleted if it only has a photo.
+        // Blank Contacts are by default deleted in updates.
+        val photoSaveSuccess = photoView.saveContactPhoto()
+
+        // Save changes. Delete blanks!
         val contactSaveResult = Contacts().updateWithPermission(this)
+            // This is implicitly true by default. We are just being explicitly verbose here.
+            .deleteBlanks(true)
             .contacts(contact)
             .commitWithContext()
-
-        // Save photo.
-        val photoSaveSuccess = photoView.saveContactPhoto()
 
         val success = contactSaveResult.isSuccessful && photoSaveSuccess
 

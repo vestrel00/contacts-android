@@ -5,28 +5,35 @@ import kotlinx.android.parcel.Parcelize
 
 /**
  * This class does not have any real functional value. This exist only to prevent RawContacts from
- * being considered blanks, which may result in unwanted deletion in updates.
+ * being considered blanks, which may result in unwanted deletion in updates. Instances of this have
+ * no data but is never blank.
  *
  * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set photos.
+ *
+ * Note that this is a class instead of an object because @IgnoredOnParcel can not be applied to
+ * object properties. Also, just in case we need to actually transform this into something more.
  */
 @Parcelize
-internal data class Photo(
+internal class Photo : CommonDataEntity {
 
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean
-
-) : CommonDataEntity {
+    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
+    override fun isBlank(): Boolean = false
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.PHOTO
 
-    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
-    override fun isBlank(): Boolean = false
+    @IgnoredOnParcel
+    override val id: Long? = null
+
+    @IgnoredOnParcel
+    override val rawContactId: Long? = null
+
+    @IgnoredOnParcel
+    override val contactId: Long? = null
+
+    @IgnoredOnParcel
+    override val isPrimary: Boolean = false
+
+    @IgnoredOnParcel
+    override val isSuperPrimary: Boolean = false
 }
