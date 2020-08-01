@@ -107,7 +107,13 @@ data class RawContact internal constructor(
      */
     val phones: List<Phone>,
 
-    // TODO internal val photo: Photo?,
+    /**
+     * The [Photo] class does not have any real functional value. This exist only to prevent
+     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
+     *
+     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set photos.
+     */
+    internal val photo: Photo?,
 
     /**
      * An immutable list of relations.
@@ -124,7 +130,7 @@ data class RawContact internal constructor(
 ) : RawContactEntity() {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        name, nickname, note, organization, sipAddress
+        name, nickname, note, organization, photo, sipAddress
     ) && entitiesAreAllBlank(
         addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
@@ -154,6 +160,8 @@ data class RawContact internal constructor(
         organization = organization?.toMutableOrganization(),
 
         phones = phones.asSequence().map { it.toMutablePhone() }.toMutableList(),
+
+        photo = photo,
 
         relations = relations.asSequence().map { it.toMutableRelation() }.toMutableList(),
 
@@ -244,6 +252,11 @@ data class MutableRawContact internal constructor(
     var phones: MutableList<MutablePhone>,
 
     /**
+     * See [RawContact.photo].
+     */
+    internal val photo: Photo?,
+
+    /**
      * Mutable version of [RawContact.relations].
      */
     var relations: MutableList<MutableRelation>,
@@ -263,11 +276,11 @@ data class MutableRawContact internal constructor(
     constructor() : this(
         null, null, false, mutableListOf(), mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, null,
-        mutableListOf(), mutableListOf(), null, mutableListOf()
+        mutableListOf(), null, mutableListOf(), null, mutableListOf()
     )
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        name, nickname, note, organization, sipAddress
+        name, nickname, note, organization, photo, sipAddress
     ) && entitiesAreAllBlank(
         addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
@@ -325,6 +338,7 @@ internal data class TempRawContact constructor(
     var note: Note?,
     var organization: Organization?,
     var phones: MutableList<Phone>,
+    var photo: Photo?,
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>
@@ -332,7 +346,7 @@ internal data class TempRawContact constructor(
 ) : RawContactEntity() {
 
     override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        name, nickname, note, organization, sipAddress
+        name, nickname, note, organization, photo, sipAddress
     ) && entitiesAreAllBlank(
         addresses, emails, events, groupMemberships, ims, phones, relations, websites
     )
@@ -362,6 +376,8 @@ internal data class TempRawContact constructor(
         organization = organization,
 
         phones = phones.toList(),
+
+        photo = photo,
 
         relations = relations.toList(),
 

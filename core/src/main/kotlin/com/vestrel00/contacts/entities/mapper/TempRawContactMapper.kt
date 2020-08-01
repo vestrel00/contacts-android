@@ -35,8 +35,10 @@ internal class TempRawContactMapper(
             note = null,
 
             organization = null,
-            
+
             phones = mutableListOf(),
+
+            photo = null,
 
             relations = mutableListOf(),
 

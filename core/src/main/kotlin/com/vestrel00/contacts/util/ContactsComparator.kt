@@ -302,6 +302,8 @@ private fun Field.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int 
             it.normalizedNumber
         }
 
+        // PHOTO intentionally left out
+
         // RELATION
         Fields.Relation.Type -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
             it.type?.ordinal?.toString()

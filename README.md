@@ -1,20 +1,16 @@
 ## TODO
 
-1. Fix RawContacts with photo rows getting deleted by Update by creating a Photo entity.
-    - Verify that RawContacts with only a photo row in the Data table does not get deleted on Update
-      when all fields are included in the query.
-
-2. Setup user profile
+1. Setup user profile
     - Insert, Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly.
     - See TODOs in DEV_NOTES.
 
-3. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
+2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
     - `ContactsColumns.IN_VISIBLE_GROUP`
-4. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-5. Add extension functions for insert, update, delete, etc?
-6. Add Copyright to all files.
+3. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+4. Add extension functions for insert, update, delete, etc?
+5. Add Copyright to all files.
 
 ----------------------------------------------------------------------------------------------------
 

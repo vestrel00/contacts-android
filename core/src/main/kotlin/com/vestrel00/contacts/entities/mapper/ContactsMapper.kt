@@ -187,13 +187,11 @@ private fun EntityCursor<AbstractDataField>.updateRawContact(rawContact: TempRaw
         NOTE -> rawContact.note = noteMapper().value
         ORGANIZATION -> rawContact.organization = organizationMapper().value
         PHONE -> rawContact.phones.add(phoneMapper().value)
+        PHOTO -> rawContact.photo = photoMapper().value
         RELATION -> rawContact.relations.add(relationMapper().value)
         SIP_ADDRESS -> rawContact.sipAddress = sipAddressMapper().value
         WEBSITE -> rawContact.websites.add(websiteMapper().value)
-
-        // Photo types are not included as an entity. Photo extension functions exist to get/set
-        // Contact and RawContact photos.
-        PHOTO, UNKNOWN -> {
+        UNKNOWN -> {
             // Do nothing
         }
     }

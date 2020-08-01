@@ -46,6 +46,9 @@ internal fun EntityCursor<AbstractDataField>.organizationMapper(): EntityMapper<
 internal fun EntityCursor<AbstractDataField>.phoneMapper(): EntityMapper<Phone> =
     PhoneMapper(phoneCursor())
 
+internal fun EntityCursor<AbstractDataField>.photoMapper(): EntityMapper<Photo> =
+    PhotoMapper(photoCursor())
+
 internal fun EntityCursor<AbstractDataField>.relationMapper(): EntityMapper<Relation> =
     RelationMapper(relationCursor())
 
@@ -69,10 +72,11 @@ internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapper
     MimeType.NOTE -> noteMapper()
     MimeType.ORGANIZATION -> organizationMapper()
     MimeType.PHONE -> phoneMapper()
+    MimeType.PHOTO -> photoMapper()
     MimeType.RELATION -> relationMapper()
     MimeType.SIP_ADDRESS -> sipAddressMapper()
     MimeType.WEBSITE -> websiteMapper()
-    MimeType.PHOTO, MimeType.UNKNOWN -> throw UnsupportedOperationException(
+    MimeType.UNKNOWN -> throw UnsupportedOperationException(
         "No entity mapper for mime type $mimeType"
     )
 } as EntityMapper<T>

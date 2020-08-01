@@ -235,8 +235,8 @@ interface GeneralQuery {
      *
      * - Do no call this function.
      * - Call this function with no fields (empty).
-     * - Pass in [Fields].
-     * - Pass in [Fields.all].
+     * - Use [Fields].
+     * - Use [Fields.all].
      */
     fun include(vararg fields: AbstractDataField): GeneralQuery
 
