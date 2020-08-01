@@ -60,7 +60,7 @@ fun <T : Field> Sequence<T>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Seq
  */
 sealed class OrderBy<out T : Field> {
 
-    internal abstract val field: Field
+    internal abstract val field: T
     internal abstract val ignoreCase: Boolean
     protected abstract val order: String
 
@@ -71,13 +71,13 @@ sealed class OrderBy<out T : Field> {
     }
 }
 
-internal class Ascending<T : Field>(override val field: Field, override val ignoreCase: Boolean) :
+internal class Ascending<T : Field>(override val field: T, override val ignoreCase: Boolean) :
     OrderBy<T>() {
 
     override val order: String = "ASC"
 }
 
-internal class Descending<T : Field>(override val field: Field, override val ignoreCase: Boolean) :
+internal class Descending<T : Field>(override val field: T, override val ignoreCase: Boolean) :
     OrderBy<T>() {
 
     override val order: String = "DESC"

@@ -101,7 +101,7 @@ private class ContactsComparator(private val orderBys: Set<OrderBy<AbstractDataF
 /**
  * Compares [Contact] values corresponding to [Field]s defined in [Fields].
  */
-private fun Field.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int {
+private fun AbstractDataField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int {
 
     return when (this) {
         // ADDRESS
