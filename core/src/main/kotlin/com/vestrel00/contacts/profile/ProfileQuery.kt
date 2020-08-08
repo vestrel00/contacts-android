@@ -50,6 +50,10 @@ import com.vestrel00.contacts.util.unsafeLazy
  *      .include(Name, Address)
  *      .find();
  * ```
+ *
+ * ## Note
+ *
+ * Blank profile Contact or RawContacts are not allowed to exist.
  */
 interface ProfileQuery {
 
@@ -230,20 +234,6 @@ private fun ContentResolver.resolve(
             null,
             processCursor = contactsMapper::processDataCursor
         )
-
-        // Include blank RawContacts.
-        // If the contactsMapper has not processed any Data row for this rawContactId, then it is
-        // blank (no Data rows).
-        if (!contactsMapper.hasRawContactWithId(rawContactId)) {
-            query(
-                ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
-                    .appendEncodedPath("$rawContactId")
-                    .build(),
-                include.onlyRawContactsFields(),
-                null,
-                processCursor = contactsMapper::processRawContactsCursor
-            )
-        }
 
         if (cancel()) {
             return null

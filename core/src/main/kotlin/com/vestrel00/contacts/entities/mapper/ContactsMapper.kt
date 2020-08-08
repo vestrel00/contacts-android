@@ -38,8 +38,6 @@ internal class ContactsMapper(
     private val rawContactsMap: MutableMap<Long, TempRawContact> = mutableMapOf()
 ) {
 
-    fun hasRawContactWithId(rawContactId: Long): Boolean = rawContactsMap.containsKey(rawContactId)
-
     /**
      * Collects Contacts from the given Contacts table cursor.
      *
