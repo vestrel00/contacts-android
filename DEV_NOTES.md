@@ -861,6 +861,12 @@ should let consumers exploit this but set defaults to be one-for-one.
 Creating / setting up the profile in the native Contacts app results in the creation of a local
 RawContact (not associated with an Account) even if there are available Accounts.
 
+The Contacts Provider does not associate local contacts to an account when an account is or becomes
+available (regardless of API level).
+
+Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
+Groups tables. This includes user Profile data in those tables.
+
 **Profile permissions**
 
 Profile permissions (READ_PROFILE and WRITE_PROFILE) have been removed since API 23. However, they

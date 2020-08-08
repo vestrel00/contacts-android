@@ -12,9 +12,78 @@ import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
 
 /**
- * TODO Documentation
+ * Inserts one (Profile) raw contact into the RawContacts table and all associated Data to the Data
+ * table. The RawContact and Data table rows inserted here are stored in a special part of the
+ * respective tables and are not visible via regular queries. Use [ProfileQuery] for retrieval.
+ *
+ * If the (Profile) Contact does not yet exist, one will be created. Otherwise, the raw contact will
+ * be automatically associated with / belong to the (Profile) Contact upon creation. Note that there
+ * is zero or one (Profile) Contact, which may have one or more RawContacts.
+ *
+ * The native Contacts app typically only maintains one local (no account) RawContact when
+ * configuring the user's profile.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.WRITE_PERMISSION] and
+ * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
+ * been granted already in these examples for brevity. All inserts will do nothing if these
+ * permissions are not granted.
+ *
+ * ## Accounts
+ *
+ * The Contacts Provider does not associate local contacts to an account when an account is or
+ * becomes available (regardless of API level).
+ *
+ * **Account removal**
+ *
+ * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
+ *
+ * ## Usage
+ *
+ * To insert a (Profile) raw contact with the name "john doe" with email "john@doe.com" for the
+ * local account (no account), not allowing multiple raw contacts per account;
+ *
+ * In Kotlin,
+ *
+ * ```kotlin
+ * val result = profileInsert
+ *      .rawContact {
+ *          name = MutableName().apply {
+ *              givenName = "john"
+ *              familyName = "doe"
+ *          }
+ *          emails.add(MutableEmail().apply {
+ *              type = Email.Type.HOME
+ *              address = "john@doe.com"
+ *          })
+ *      }
+ *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * MutableName name = new MutableName();
+ * name.setGivenName("john");
+ * name.setFamilyName("doe");
+ *
+ * MutableEmail email = new MutableEmail();
+ * email.setType(Email.Type.HOME);
+ * email.setAddress("john@doe.com");
+ *
+ * List<MutableEmail> emails = new ArrayList<>();
+ * emails.add(email);
+ *
+ * MutableRawContact rawContact = new MutableRawContact();
+ * rawContact.setName(name);
+ * rawContact.setEmails(emails);
+ *
+ * ProfileInsert.Result result = profileInsert
+ *      .rawContact(rawContact)
+ *      .commit();
+ * ```
  */
-// TODO Permissions extensions.
 interface ProfileInsert {
 
     /**

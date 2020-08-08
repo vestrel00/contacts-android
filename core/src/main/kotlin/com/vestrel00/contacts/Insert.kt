@@ -12,7 +12,7 @@ import com.vestrel00.contacts.util.nullIfNotInSystem
 
 /**
  * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
- * data table.
+ * Data table.
  *
  * ## Permissions
  *

@@ -5,7 +5,6 @@
 1. Setup user profile
     - Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly, looking at usages of isProfile.
-    - See TODOs in DEV_NOTES.
 
 2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
