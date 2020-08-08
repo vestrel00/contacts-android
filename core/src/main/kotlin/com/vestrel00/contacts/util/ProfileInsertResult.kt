@@ -6,8 +6,6 @@ import com.vestrel00.contacts.entities.RawContact
 import com.vestrel00.contacts.profile.ProfileInsert
 import com.vestrel00.contacts.profile.ProfileQuery
 
-// TODO Permissions + Async extensions.
-
 /**
  * Returns the newly created [RawContact] or null if the insert operation failed.
  *
