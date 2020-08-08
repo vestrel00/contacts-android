@@ -3,7 +3,7 @@
 - Add toString functions for all APIs (not just Query) and their Results
 
 1. Setup user profile
-    - Insert, Update, Delete + withPermission & async.
+    - Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly, looking at usages of isProfile.
     - See TODOs in DEV_NOTES.
 
