@@ -189,11 +189,13 @@ private class AccountsRawContactsQueryImpl(
 
     override fun toString(): String =
         """
-            rawContactsWhere = $rawContactsWhere
-            where = $where
-            orderBy = $orderBy
-            limit = $limit
-            offset = $offset
+            AccountsRawContactsQuery {
+                rawContactsWhere: $rawContactsWhere
+                where: $where
+                orderBy: $orderBy
+                limit: $limit
+                offset: $offset
+            }
         """.trimIndent()
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())

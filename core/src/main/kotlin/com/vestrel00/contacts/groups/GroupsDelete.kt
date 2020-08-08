@@ -102,6 +102,13 @@ private class GroupsDeleteImpl(
     private val groupIds: MutableSet<Long> = mutableSetOf()
 ) : GroupsDelete {
 
+    override fun toString(): String =
+        """
+            GroupsDelete {
+                groupIds: $groupIds
+            }
+        """.trimIndent()
+
     override fun groups(vararg groups: Group) = groups(groups.asSequence())
 
     override fun groups(groups: Collection<Group>) = groups(groups.asSequence())

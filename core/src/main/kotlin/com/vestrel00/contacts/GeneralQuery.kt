@@ -363,14 +363,16 @@ private class GeneralQueryImpl(
 
     override fun toString(): String =
         """
-            includeBlanks = $includeBlanks
-            rawContactsWhere = $rawContactsWhere
-            groupMembershipWhere = $groupMembershipWhere
-            include = $include
-            searchString = $searchString
-            orderBy = $orderBy
-            limit = $limit
-            offset = $offset
+            GeneralQuery {
+                includeBlanks: $includeBlanks
+                rawContactsWhere: $rawContactsWhere
+                groupMembershipWhere: $groupMembershipWhere
+                include: $include
+                searchString: $searchString
+                orderBy: $orderBy
+                limit: $limit
+                offset: $offset
+            }
         """.trimIndent()
 
     override fun includeBlanks(includeBlanks: Boolean): GeneralQuery = apply {

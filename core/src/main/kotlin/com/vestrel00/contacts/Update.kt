@@ -174,6 +174,14 @@ private class UpdateImpl(
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : Update {
 
+    override fun toString(): String =
+        """
+            Update {
+                deleteBlanks: $deleteBlanks
+                rawContacts: $rawContacts
+            }
+        """.trimIndent()
+
     override fun deleteBlanks(deleteBlanks: Boolean): Update = apply {
         this.deleteBlanks = deleteBlanks
     }

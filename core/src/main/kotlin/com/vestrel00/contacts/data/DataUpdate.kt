@@ -98,6 +98,13 @@ private class DataUpdateImpl(
     private val data: MutableSet<MutableCommonDataEntity> = mutableSetOf()
 ) : DataUpdate {
 
+    override fun toString(): String =
+        """
+            DataUpdate {
+                data: $data
+            }
+        """.trimIndent()
+
     override fun data(vararg data: MutableCommonDataEntity) = data(data.asSequence())
 
     override fun data(data: Collection<MutableCommonDataEntity>) = data(data.asSequence())

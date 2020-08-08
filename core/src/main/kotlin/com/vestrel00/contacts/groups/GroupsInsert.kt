@@ -132,6 +132,13 @@ private class GroupsInsertImpl(
     private val groups: MutableSet<MutableGroup> = mutableSetOf()
 ) : GroupsInsert {
 
+    override fun toString(): String =
+        """
+            GroupsInsert {
+                groups: $groups
+            }
+        """.trimIndent()
+
     override fun group(title: String, account: Account): GroupsInsert =
         groups(MutableGroup(title, account))
 

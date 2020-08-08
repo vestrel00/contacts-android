@@ -198,6 +198,14 @@ private class InsertImpl(
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : Insert {
 
+    override fun toString(): String =
+        """
+            Insert {
+                allowBlanks: $allowBlanks
+                rawContacts: $rawContacts
+            }
+        """.trimIndent()
+
     override fun allowBlanks(allowBlanks: Boolean): Insert = apply {
         this.allowBlanks = allowBlanks
     }

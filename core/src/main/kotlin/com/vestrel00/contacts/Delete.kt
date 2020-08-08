@@ -154,6 +154,14 @@ private class DeleteImpl(
     private val contactIds: MutableSet<Long> = mutableSetOf()
 ) : Delete {
 
+    override fun toString(): String =
+        """
+            Delete {
+                rawContactIds: $rawContactIds
+                contactIds: $contactIds
+            }
+        """.trimIndent()
+
     override fun rawContacts(vararg rawContacts: RawContactEntity) =
         rawContacts(rawContacts.asSequence())
 

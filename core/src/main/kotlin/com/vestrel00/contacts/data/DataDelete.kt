@@ -121,6 +121,13 @@ private class DataDeleteImpl(
     private val dataIds: MutableSet<Long> = mutableSetOf()
 ) : DataDelete {
 
+    override fun toString(): String =
+        """
+            DataDelete {
+                dataIds: $dataIds
+            }
+        """.trimIndent()
+
     override fun data(vararg data: CommonDataEntity) = data(data.asSequence())
 
     override fun data(data: Collection<CommonDataEntity>) = data(data.asSequence())

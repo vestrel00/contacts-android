@@ -367,12 +367,15 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
 
     override fun toString(): String =
         """
-            rawContactsWhere = $rawContactsWhere
-            include = $include
-            where = $where
-            orderBy = $orderBy
-            limit = $limit
-            offset = $offset
+            DataQuery {
+                mimeType: $mimeType
+                rawContactsWhere: $rawContactsWhere
+                include: $include
+                where: $where
+                orderBy: $orderBy
+                limit: $limit
+                offset: $offset
+            }
         """.trimIndent()
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())

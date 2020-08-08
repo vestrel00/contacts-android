@@ -192,6 +192,16 @@ private class ProfileInsertImpl(
     private var rawContact: MutableRawContact? = null
 ) : ProfileInsert {
 
+    override fun toString(): String =
+        """
+            ProfileInsert {
+                allowBlanks: $allowBlanks
+                allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
+                account: $account
+                rawContact: $rawContact
+            }
+        """.trimIndent()
+
     override fun allowBlanks(allowBlanks: Boolean): ProfileInsert = apply {
         this.allowBlanks = allowBlanks
     }

@@ -1,7 +1,5 @@
 ## TODO
 
-- Add toString functions for all APIs (not just Query) and their Results
-
 1. Setup user profile
     - Update, Delete + withPermission & async.
     - Review and update ALL util functions accordingly, looking at usages of isProfile.

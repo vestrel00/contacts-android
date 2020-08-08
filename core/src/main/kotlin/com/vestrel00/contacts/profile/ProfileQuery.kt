@@ -191,9 +191,11 @@ private class ProfileQueryImpl(
 
     override fun toString(): String =
         """
-            includeBlanks = $includeBlanks
-            rawContactsWhere = $rawContactsWhere
-            include = $include
+            ProfileQuery {
+                includeBlanks: $includeBlanks
+                rawContactsWhere: $rawContactsWhere
+                include: $include
+            }
         """.trimIndent()
 
     override fun includeBlanks(includeBlanks: Boolean): ProfileQuery = apply {

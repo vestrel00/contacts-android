@@ -363,13 +363,15 @@ private class QueryImpl(
 
     override fun toString(): String =
         """
-            includeBlanks = $includeBlanks
-            rawContactsWhere = $rawContactsWhere
-            include = $include
-            where = $where
-            orderBy = $orderBy
-            limit = $limit
-            offset = $offset
+            Query {
+                includeBlanks: $includeBlanks
+                rawContactsWhere: $rawContactsWhere
+                include: $include
+                where: $where
+                orderBy: $orderBy
+                limit: $limit
+                offset: $offset
+            }
         """.trimIndent()
 
     override fun includeBlanks(includeBlanks: Boolean): Query = apply {

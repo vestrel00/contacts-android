@@ -117,6 +117,13 @@ private class GroupsUpdateImpl(
     private val groups: MutableSet<MutableGroup?> = mutableSetOf()
 ) : GroupsUpdate {
 
+    override fun toString(): String =
+        """
+            GroupsUpdate {
+                groups: $groups
+            }
+        """.trimIndent()
+
     override fun groups(vararg groups: MutableGroup?) = groups(groups.asSequence())
 
     override fun groups(groups: Collection<MutableGroup?>) = groups(groups.asSequence())
