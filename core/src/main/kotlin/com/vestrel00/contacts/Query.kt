@@ -473,7 +473,7 @@ private fun ContentResolver.resolve(
             addAll(findContactIdsInDataTable(where, cancel))
         }
 
-        // Get the Contacts Ids of blank RawContacts and blank Contacts matching the where rom the
+        // Get the Contacts Ids of blank RawContacts and blank Contacts matching the where from the
         // RawContacts and Contacts table respectively. Suppress DB exceptions because the where
         // clause may contain fields (columns) that are not in the respective tables.
         if (includeBlanks) {

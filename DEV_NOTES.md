@@ -855,6 +855,8 @@ RawContact (not associated with an Account) even if there are available Accounts
 // TODO Try inserting a RawContact for every single Account.
 // TODO Try inserting two RawContacts for the same Account.
 // TODO Try inserting a device-only RawContact. Try two!
+// TODO Blanks.
+// TODO GroupMemberships? Also check all allowable / shown fields in the native Contacts app.
 
 **Profile permissions**
 

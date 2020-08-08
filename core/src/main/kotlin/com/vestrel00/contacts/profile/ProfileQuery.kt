@@ -50,12 +50,29 @@ import com.vestrel00.contacts.util.unsafeLazy
  *      .include(Name, Address)
  *      .find();
  * ```
- *
- * ## Note
- *
- * Blank profile Contact or RawContacts are not allowed to exist.
  */
 interface ProfileQuery {
+
+    /**
+     * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
+     * blanks are not be included. If the Profile Contact only contains blank RawContacts, then
+     * the query will still return the blank Contact regardless of this flag.
+     *
+     * This flag is set to true by default, which results in more database queries so setting this
+     * to false will increase performance, especially for large Contacts databases.
+     *
+     * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
+     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
+     * without at least one data row. It also deletes blanks on update. Despite seemingly not
+     * allowing blanks, the native Contacts app shows them.
+     *
+     * ## Performance
+     *
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
+     */
+    fun includeBlanks(includeBlanks: Boolean): ProfileQuery
 
     /**
      * Limits the RawContacts and associated data to those associated with one of the given
@@ -166,15 +183,21 @@ private class ProfileQueryImpl(
     private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
 
+    private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> = DEFAULT_INCLUDE
 ) : ProfileQuery {
 
     override fun toString(): String =
         """
+            includeBlanks = $includeBlanks
             rawContactsWhere = $rawContactsWhere
             include = $include
         """.trimIndent()
+
+    override fun includeBlanks(includeBlanks: Boolean): ProfileQuery = apply {
+        this.includeBlanks = includeBlanks
+    }
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
@@ -203,10 +226,11 @@ private class ProfileQueryImpl(
             return null
         }
 
-        return contentResolver.resolve(rawContactsWhere, include, cancel)
+        return contentResolver.resolve(includeBlanks, rawContactsWhere, include, cancel)
     }
 
     private companion object {
+        const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_INCLUDE by unsafeLazy { Include(Fields) }
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
@@ -214,6 +238,7 @@ private class ProfileQueryImpl(
 }
 
 private fun ContentResolver.resolve(
+    includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
     cancel: () -> Boolean
@@ -235,9 +260,33 @@ private fun ContentResolver.resolve(
             processCursor = contactsMapper::processDataCursor
         )
 
+        // If the contactsMapper has not processed any Data rows for this rawContactId, then it is
+        // blank (no Data rows).
+        if (includeBlanks && !contactsMapper.hasRawContactWithId(rawContactId)) {
+            query(
+                ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
+                    .appendEncodedPath("$rawContactId")
+                    .build(),
+                include.onlyRawContactsFields(),
+                null,
+                processCursor = contactsMapper::processRawContactsCursor
+            )
+        }
+
         if (cancel()) {
             return null
         }
+    }
+
+    // If Contact only has blank RawContacts (no Data rows), then we need to query the Contacts
+    // table. This should be done regardless of the includeBlanks flag.
+    if (rawContactIds.isNotEmpty() && contactsMapper.hasNoRawContacts()) {
+        query(
+            ContactsContract.Profile.CONTENT_URI,
+            include.onlyContactsFields(),
+            null,
+            processCursor = contactsMapper::processContactsCursor
+        )
     }
 
     return contactsMapper.map().firstOrNull()
