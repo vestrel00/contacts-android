@@ -14,7 +14,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 /**
  * TODO Documentation
  */
-// TODO Permissions + Async extensions.
+// TODO Permissions extensions.
 interface ProfileInsert {
 
     /**
