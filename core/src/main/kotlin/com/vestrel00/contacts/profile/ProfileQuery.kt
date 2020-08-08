@@ -223,7 +223,7 @@ private fun ContentResolver.resolve(
     for (rawContactId in rawContactIds) {
         query(
             ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
-                .appendEncodedPath(rawContactId)
+                .appendEncodedPath("$rawContactId")
                 .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)
                 .build(),
             include,
@@ -231,7 +231,19 @@ private fun ContentResolver.resolve(
             processCursor = contactsMapper::processDataCursor
         )
 
-        // FIXME? Blank RawContacts (no Data rows) are not included here...
+        // Include blank RawContacts.
+        // If the contactsMapper has not processed any Data row for this rawContactId, then it is
+        // blank (no Data rows).
+        if (!contactsMapper.hasRawContactWithId(rawContactId)) {
+            query(
+                ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
+                    .appendEncodedPath("$rawContactId")
+                    .build(),
+                include.onlyRawContactsFields(),
+                null,
+                processCursor = contactsMapper::processRawContactsCursor
+            )
+        }
 
         if (cancel()) {
             return null
@@ -243,15 +255,15 @@ private fun ContentResolver.resolve(
 
 private fun ContentResolver.rawContactIds(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean
-): Set<String> = query(
+): Set<Long> = query(
     ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
     Include(RawContactsFields.Id),
     rawContactsWhere
 ) {
-    mutableSetOf<String>().apply {
+    mutableSetOf<Long>().apply {
         val rawContactsCursor = it.rawContactsCursor()
         while (!cancel() && it.moveToNext()) {
-            rawContactsCursor.rawContactId?.let { add("$it") }
+            rawContactsCursor.rawContactId?.let(::add)
         }
 
         // Ensure incomplete data sets are not returned.
