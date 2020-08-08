@@ -17,8 +17,6 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 // TODO Permissions + Async extensions.
 interface ProfileInsert {
 
-    // TODO Test drive allowBlanks and allowMultipleRawContactsPerAccount
-
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([MutableRawContact.isBlank]) will
      * will be inserted. Otherwise, blanks will not be inserted and will result in a failed
