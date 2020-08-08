@@ -830,6 +830,11 @@ See `ContactsContract.isProfileId`.
 Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
 associated Contacts and Data table rows will automatically be deleted.
 
+**Profile aggregation**
+
+The RawContacts of a (Contact) Profile are linked via the indexed rows;
+`Profile.CONTENT_RAW_CONTACTS_URI`. Therefore, the AggregationsExceptions table is not used here.
+
 **Profile and users**
 
 Note that as of Android 5 Lollipop, there may exist multiple users in a device. Each user has a
@@ -842,21 +847,19 @@ According to the `Profile` documentation; "... each account (including data set,
 the device may contribute a single raw contact representing the user's personal profile data from
 that source."
 
-In other words, 1 account can have 1 profile RawContact. Whether or not profile RawContacts
+In other words, one account can have one profile RawContact. Whether or not profile RawContacts
 associated to an Account can be carried over and synced across devices and users is up to the
 Contacts Provider / Sync provider for that Account.
 
 > From my experience, profile RawContacts associated to an Account is not carried over / synced
 > across devices or users.
 
+Despite the documentation of "one profile RawContact per one Account", the Contacts Provider allows
+for multiple RawContacts per Account, including multiple local RawContacts (no Account). Thus, we
+should let consumers exploit this but set defaults to be one-for-one.
+
 Creating / setting up the profile in the native Contacts app results in the creation of a local
 RawContact (not associated with an Account) even if there are available Accounts.
-
-// TODO Try inserting a RawContact for every single Account.
-// TODO Try inserting two RawContacts for the same Account.
-// TODO Try inserting a device-only RawContact. Try two!
-// TODO Blanks.
-// TODO GroupMemberships? Also check all allowable / shown fields in the native Contacts app.
 
 **Profile permissions**
 

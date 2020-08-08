@@ -53,6 +53,14 @@ internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
  */
 
 /**
+ * Uses [whereOr] to form a where clause that matches the given [Account]. This is for use in
+ * RawContacts table queries.
+ */
+internal fun Account?.toRawContactsWhere(): Where<RawContactsField> =
+    // Assume that this will not return a null Where because there is one element in the sequence.
+    sequenceOf(this).toRawContactsWhere() as Where<RawContactsField>
+
+/**
  * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
  * in RawContacts table queries.
  *
