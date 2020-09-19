@@ -2,8 +2,6 @@ package com.vestrel00.contacts.util
 
 import com.vestrel00.contacts.entities.*
 
-// TODO create convenience functions like addPhone(configurePhone: MutablePhone.() -> Unit)
-
 // Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
 // as they will not have to convert Sequences to List.
 
@@ -206,6 +204,14 @@ fun MutableContact.addAddress(address: MutableAddress) {
 }
 
 /**
+ * Adds a new address (configured by [configureAddress]) to the list of [RawContact.addresses] of
+ * the first [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.addAddress(configureAddress: MutableAddress.() -> Unit) {
+    rawContacts.firstOrNull()?.addresses?.add(MutableAddress().apply(configureAddress))
+}
+
+/**
  * Removes all instances of the given [address] from all of the [MutableContact.rawContacts].
  *
  * By default, all **structurally equal (same content but maybe different objects)** instances will
@@ -250,6 +256,14 @@ fun MutableContact.addEmail(email: MutableEmail) {
 }
 
 /**
+ * Adds a new email (configured by [configureEmail]) to the list of [RawContact.emails] of
+ * the first [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.addEmail(configureEmail: MutableEmail.() -> Unit) {
+    rawContacts.firstOrNull()?.emails?.add(MutableEmail().apply(configureEmail))
+}
+
+/**
  * Removes all instances of the given [email] from all of the [MutableContact.rawContacts].
  *
  * By default, all **structurally equal (same content but maybe different objects)** instances will
@@ -291,6 +305,14 @@ fun MutableContact.eventList(): List<MutableEvent> = events().toList()
  */
 fun MutableContact.addEvent(event: MutableEvent) {
     rawContacts.firstOrNull()?.events?.add(event)
+}
+
+/**
+ * Adds a new event (configured by [configureEvent]) to the list of [RawContact.events] of the first
+ * [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.addEvent(configureEvent: MutableEvent.() -> Unit) {
+    rawContacts.firstOrNull()?.events?.add(MutableEvent().apply(configureEvent))
 }
 
 /**
@@ -342,6 +364,14 @@ fun MutableContact.addIm(im: MutableIm) {
 }
 
 /**
+ * Adds a new IM (configured by [configureIm]) to the list of [RawContact.ims] of the first
+ * [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.addIm(configureIm: MutableIm.() -> Unit) {
+    rawContacts.firstOrNull()?.ims?.add(MutableIm().apply(configureIm))
+}
+
+/**
  * Removes all instances of the given [im] from all of the [MutableContact.rawContacts].
  *
  * By default, all **structurally equal (same content but maybe different objects)** instances will
@@ -387,6 +417,14 @@ fun MutableContact.setName(name: MutableName?) {
 }
 
 /**
+ * Sets the [RawContact.name] (configured by [configureName]) of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.setName(configureName: MutableName.() -> Unit) {
+    rawContacts.firstOrNull()?.name = MutableName().apply(configureName)
+}
+
+/**
  * Sequence of nicknames from all [rawContacts] ordered by the [MutableNickname.id].
  */
 fun MutableContact.nicknames(): Sequence<MutableNickname> = rawContacts
@@ -409,6 +447,14 @@ fun MutableContact.setNickname(nickname: MutableNickname?) {
 }
 
 /**
+ * Sets the [RawContact.nickname] (configured by [configureNickname]) of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.setNickname(configureNickname: MutableNickname.() -> Unit) {
+    rawContacts.firstOrNull()?.nickname = MutableNickname().apply(configureNickname)
+}
+
+/**
  * Sequence of notes from all [rawContacts] ordered by the [MutableNote.id].
  */
 fun MutableContact.notes(): Sequence<MutableNote> = rawContacts
@@ -428,6 +474,14 @@ fun MutableContact.noteList(): List<MutableNote> = notes().toList()
  */
 fun MutableContact.setNote(note: MutableNote?) {
     rawContacts.firstOrNull()?.note = note
+}
+
+/**
+ * Sets the [RawContact.note] (configured by [configureNote]) of the first [RawContact] in
+ * [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.setNote(configureNote: MutableNote.() -> Unit) {
+    rawContacts.firstOrNull()?.note = MutableNote().apply(configureNote)
 }
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
@@ -456,6 +510,14 @@ fun MutableContact.setOrganization(organization: MutableOrganization?) {
 }
 
 /**
+ * Sets the [RawContact.organization] (configured by [configureOrganization]) of the first
+ * [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.setOrganization(configureOrganization: MutableOrganization.() -> Unit) {
+    rawContacts.firstOrNull()?.organization = MutableOrganization().apply(configureOrganization)
+}
+
+/**
  * Sequence of phones from all [rawContacts] ordered by the [MutablePhone.id].
  */
 fun MutableContact.phones(): Sequence<MutablePhone> = rawContacts
@@ -474,6 +536,14 @@ fun MutableContact.phoneList(): List<MutablePhone> = phones().toList()
  */
 fun MutableContact.addPhone(phone: MutablePhone) {
     rawContacts.firstOrNull()?.phones?.add(phone)
+}
+
+/**
+ * Adds a new phone (configured by [configurePhone]) to the list of [RawContact.phones] of the first
+ * [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.addPhone(configurePhone: MutablePhone.() -> Unit) {
+    rawContacts.firstOrNull()?.phones?.add(MutablePhone().apply(configurePhone))
 }
 
 /**
@@ -523,6 +593,13 @@ fun MutableContact.addRelation(relation: MutableRelation) {
     rawContacts.firstOrNull()?.relations?.add(relation)
 }
 
+/**
+ * Adds a new relation (configured by [configureRelation]) to the list of [RawContact.relations] of
+ * the first [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.addRelation(configureRelation: MutableRelation.() -> Unit) {
+    rawContacts.firstOrNull()?.relations?.add(MutableRelation().apply(configureRelation))
+}
 
 /**
  * Removes all instances of the given [relation] from all of the [MutableContact.rawContacts].
@@ -570,6 +647,14 @@ fun MutableContact.setSipAddress(sipAddress: MutableSipAddress?) {
 }
 
 /**
+ * Sets the [RawContact.sipAddress] (configured by [configureSipAddress]) of the first
+ * [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.setSipAddress(configureSipAddress: MutableSipAddress.() -> Unit) {
+    rawContacts.firstOrNull()?.sipAddress = MutableSipAddress().apply(configureSipAddress)
+}
+
+/**
  * Sequence of websites from all [rawContacts] ordered by the [MutableWebsite.id].
  */
 fun MutableContact.websites(): Sequence<MutableWebsite> = rawContacts
@@ -588,6 +673,14 @@ fun MutableContact.websiteList(): List<MutableWebsite> = websites().toList()
  */
 fun MutableContact.addWebsite(website: MutableWebsite) {
     rawContacts.firstOrNull()?.websites?.add(website)
+}
+
+/**
+ * Adds a new website (configured by [configureWebsite]) to the list of [RawContact.websites] of the
+ * first [RawContact] in [MutableContact.rawContacts] sorted by the [RawContact.id].
+ */
+fun MutableContact.addWebsite(configureWebsite: MutableWebsite.() -> Unit) {
+    rawContacts.firstOrNull()?.websites?.add(MutableWebsite().apply(configureWebsite))
 }
 
 /**
