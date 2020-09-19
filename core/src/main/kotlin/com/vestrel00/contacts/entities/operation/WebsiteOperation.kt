@@ -5,7 +5,8 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableWebsite
 
-internal object WebsiteOperation : AbstractCommonDataOperation<MutableWebsite>() {
+internal class WebsiteOperation(isProfile: Boolean) :
+    AbstractCommonDataOperation<MutableWebsite>(isProfile) {
 
     override val mimeType = MimeType.WEBSITE
 

@@ -15,7 +15,9 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.util.query
 
-internal object GroupMembershipOperation : AbstractCommonDataOperation<GroupMembership>() {
+// TODO Make this work when isProfile is true
+internal class GroupMembershipOperation(isProfile: Boolean) :
+    AbstractCommonDataOperation<GroupMembership>(isProfile) {
 
     override val mimeType = MimeType.GROUP_MEMBERSHIP
 

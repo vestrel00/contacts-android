@@ -246,44 +246,53 @@ private fun ContentResolver.resolve(
     include: Include<AbstractDataField>,
     cancel: () -> Boolean
 ): Contact? {
+    // Note that we can perform an optimization here. When rawContactsWhere is null, we don't need
+    // to retrieve rawContactIds and query for its data one by one. We can simply perform one query
+    // to get all data of all RawContacts. I didn't do this because it adds more lines of code for
+    // something that will barely be used. Most profiles will only consist of one RawContact anyway.
+
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
     // Data table queries using profile uris only return user profile data.
     // Yes, I am aware of IS_USER_PROFILE and RAW_CONTACT_IS_USER_PROFILE but those seem to cause
     // queries to throw an exception.
     val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
-    for (rawContactId in rawContactIds) {
+
+    // Get the Data, RawContacts, and Contact from the Data table.
+    if (!cancel() && rawContactIds.isNotEmpty()) {
         query(
-            ProfileUris.dataForRawContact(rawContactId),
+            ProfileUris.DATA.uri,
             include,
-            null,
+            Fields.RawContact.Id `in` rawContactIds,
             processCursor = contactsMapper::processDataCursor
         )
-
-        // If the contactsMapper has not processed any Data rows for this rawContactId, then it is
-        // blank (no Data rows).
-        if (includeBlanks && !contactsMapper.hasRawContactWithId(rawContactId)) {
-            query(
-                ProfileUris.rawContact(rawContactId),
-                include.onlyRawContactsFields(),
-                null,
-                processCursor = contactsMapper::processRawContactsCursor
-            )
-        }
-
-        if (cancel()) {
-            return null
-        }
     }
 
     // If Contact only has blank RawContacts (no Data rows), then we need to query the Contacts
-    // table. This should be done regardless of the includeBlanks flag.
-    if (rawContactIds.isNotEmpty() && contactsMapper.hasNoRawContacts()) {
+    // table. This should be done regardless of the includeBlanks flag. This query should be done
+    // before a potential query to the RawContacts table so that the mapper saves the Contact with
+    // the values in the Contacts table instead of the RawContacts table. Some fields such as
+    // options are different depending on the table. The Contacts and Data table contains options
+    // of the Contacts. The RawContacts table contains the options of the RawContacts. This libs'
+    // Contact model requires the options of the Contacts table.
+    if (!cancel() && rawContactIds.isNotEmpty() && contactsMapper.contactIds.isEmpty()) {
         query(
-            ProfileUris.CONTACTS,
+            ProfileUris.CONTACTS.uri,
             include.onlyContactsFields(),
             null,
             processCursor = contactsMapper::processContactsCursor
+        )
+    }
+
+    // Get the blank RawContacts (no Data rows), which are those RawContacts that have not been
+    // retrieved from the data query.
+    val blankRawContactIds = rawContactIds.minus(contactsMapper.rawContactIds)
+    if (!cancel() && includeBlanks && blankRawContactIds.isNotEmpty()) {
+        query(
+            ProfileUris.RAW_CONTACTS.uri,
+            include.onlyRawContactsFields(),
+            RawContactsFields.Id `in` blankRawContactIds,
+            processCursor = contactsMapper::processRawContactsCursor
         )
     }
 
@@ -293,7 +302,7 @@ private fun ContentResolver.resolve(
 private fun ContentResolver.rawContactIds(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean
 ): Set<Long> = query(
-    ProfileUris.RAW_CONTACTS,
+    ProfileUris.RAW_CONTACTS.uri,
     Include(RawContactsFields.Id),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.

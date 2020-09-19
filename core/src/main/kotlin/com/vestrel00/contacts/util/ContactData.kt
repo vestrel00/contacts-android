@@ -2,6 +2,8 @@ package com.vestrel00.contacts.util
 
 import com.vestrel00.contacts.entities.*
 
+// TODO create convenience functions like addPhone(configurePhone: MutablePhone.() -> Unit)
+
 // Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
 // as they will not have to convert Sequences to List.
 

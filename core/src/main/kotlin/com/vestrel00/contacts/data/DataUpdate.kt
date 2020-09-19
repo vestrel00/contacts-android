@@ -122,7 +122,7 @@ private class DataUpdateImpl(
         for (data in data) {
             val dataId = data.id
             if (dataId != null) {
-                results[dataId] = contentResolver.updateData(data)
+                results[dataId] = contentResolver.updateData(data, IS_PROFILE)
             } else {
                 results[INVALID_ID] = false
             }
@@ -133,11 +133,13 @@ private class DataUpdateImpl(
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
+        const val IS_PROFILE = false
     }
 }
 
-private fun ContentResolver.updateData(data: MutableCommonDataEntity): Boolean =
-    data.updateOperation()?.let { applyBatch(it) } != null
+private fun ContentResolver.updateData(
+    data: MutableCommonDataEntity, isProfile: Boolean
+): Boolean = data.updateOperation(isProfile)?.let { applyBatch(it) } != null
 
 private class DataUpdateResult(private val dataIdsResultMao: Map<Long, Boolean>) :
     DataUpdate.Result {

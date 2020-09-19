@@ -3,32 +3,34 @@ package com.vestrel00.contacts.entities.operation
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.database.Cursor
+import android.net.Uri
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.EntityCursor
 import com.vestrel00.contacts.entities.cursor.dataCursor
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.query
-
-private val TABLE = Table.Data
 
 /**
  * Builds [ContentProviderOperation]s for [Table.Data].
  */
-internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
+internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProfile: Boolean) {
 
-    abstract val mimeType: MimeType
+    private val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
+
+    protected abstract val mimeType: MimeType
+
+    /**
+     * Sets the [data] values into the operation via the provided [setValue] function.
+     */
+    protected abstract fun setData(data: T, setValue: (field: Field, value: Any?) -> Unit)
 
     /**
      * There [Where] clause used as the selection for queries, updates, and deletes.
      */
     protected fun selection(rawContactId: Long): Where<AbstractDataField> =
         (Fields.MimeType equalTo mimeType) and (Fields.RawContact.Id equalTo rawContactId)
-
-    /**
-     * Sets the [data] values into the operation via the provided [setValue] function.
-     */
-    abstract fun setData(data: T, setValue: (field: Field, value: Any?) -> Unit)
 
     /**
      * Returns a [ContentProviderOperation] for adding the [entity] properties to the insert
@@ -42,7 +44,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
             return null
         }
 
-        val operation = newInsert(TABLE)
+        val operation = ContentProviderOperation.newInsert(contentUri)
 
         setData(entity) { field, dataValue ->
             if (dataValue.isNotNullOrBlank()) {
@@ -64,16 +66,16 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
     }
 
     /**
-     * Returns [ContentProviderOperation]s for adding [these]'s properties to the insert operation.
-     * This assumes that this will be used in a batch of operations where the first operation is the
-     * insertion of a new RawContact.
+     * Returns [ContentProviderOperation]s for adding entities to the insert operation. This assumes
+     * that this will be used in a batch of operations where the first operation is the insertion of
+     * a new RawContact.
      *
      * Blank entities are excluded.
      */
-    fun insert(these: List<T>): List<ContentProviderOperation> =
+    fun insert(entities: List<T>): List<ContentProviderOperation> =
         mutableListOf<ContentProviderOperation>().apply {
-            for (it in these) {
-                insert(it)?.let(::add)
+            for (entity in entities) {
+                insert(entity)?.let(::add)
             }
         }
 
@@ -91,9 +93,9 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
             // Get all entities with a valid Id, which means they are (or have been) in the DB.
             val validEntitiesMap = mutableMapOf<Long, T>().apply {
                 for (entity in entities) {
-                    val entityId = entity.id
-                    if (entityId != null) {
-                        put(entityId, entity)
+                    val dataRowId = entity.id
+                    if (dataRowId != null) {
+                        put(dataRowId, entity)
                     }
                 }
             }
@@ -181,7 +183,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
      * [entity]) for the given [RawContact] with [rawContactId].
      */
     protected fun insertDataRow(entity: T, rawContactId: Long): ContentProviderOperation {
-        val operation = newInsert(TABLE)
+        val operation = ContentProviderOperation.newInsert(contentUri)
             .withValue(Fields.RawContact.Id, rawContactId)
             .withValue(Fields.MimeType, mimeType.value)
 
@@ -205,11 +207,11 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
      * DB, the operation will fail.
      */
     fun updateDataRowOrDeleteIfBlank(entity: T): ContentProviderOperation? =
-        entity.id?.let { entityId ->
+        entity.id?.let { dataRowId ->
             if (entity.isBlank()) {
-                deleteDataRowWithId(entityId)
+                deleteDataRowWithId(dataRowId)
             } else {
-                updateDataRow(entity, entityId)
+                updateDataRow(entity, dataRowId)
             }
         }
 
@@ -220,7 +222,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
      * Note that this function does not check if the [entity] is blank.
      */
     private fun updateDataRow(entity: T, dataRowId: Long): ContentProviderOperation {
-        val operation = newUpdate(TABLE)
+        val operation = ContentProviderOperation.newUpdate(contentUri)
             .withSelection(Fields.DataId equalTo dataRowId)
 
         setData(entity) { field, dataValue ->
@@ -236,7 +238,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
      * [RawContact] with [rawContactId].
      */
     private fun deleteDataRows(rawContactId: Long): ContentProviderOperation =
-        newDelete(TABLE)
+        ContentProviderOperation.newDelete(contentUri)
             .withSelection(selection(rawContactId))
             .build()
 
@@ -244,7 +246,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
      * Provides the [ContentProviderOperation] for deleting the data row with the given [dataRowId].
      */
     protected fun deleteDataRowWithId(dataRowId: Long): ContentProviderOperation =
-        newDelete(TABLE)
+        ContentProviderOperation.newDelete(contentUri)
             .withSelection(Fields.DataId equalTo dataRowId)
             .build()
 
@@ -254,7 +256,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
     private fun <T> ContentResolver.dataRowIdsFor(
         rawContactId: Long, processCursor: (EntityCursor<AbstractDataField>) -> T
     ) = query(
-        TABLE,
+        contentUri,
         Include(Fields.DataId),
         selection(rawContactId),
         processCursor = processCursor

@@ -1,7 +1,7 @@
 ## TODO
 
 1. Setup user profile
-    - Update, Delete + withPermission & async.
+    - Update, Delete(rawContacts, allRawContacts) + withPermission & async.
     - First, check if they work with profile entities. If they do, just document it. If not, implement it and document.
         - Review and update APIs; E.G. Update.kt and Delete.kt
         - Review and update ALL util functions.

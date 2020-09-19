@@ -239,10 +239,14 @@ private class InsertImpl(
             results[rawContact] = if (!allowBlanks && rawContact.isBlank()) {
                 null
             } else {
-                context.insertRawContactForAccount(account, rawContact, false)
+                context.insertRawContactForAccount(account, rawContact, IS_PROFILE)
             }
         }
         return InsertResult(results)
+    }
+
+    private companion object {
+        const val IS_PROFILE = false
     }
 }
 
@@ -270,11 +274,11 @@ internal fun Context.insertRawContactForAccount(
      */
     operations.add(RawContactsOperation(isProfile).insert(account))
 
-    operations.addAll(AddressOperation.insert(rawContact.addresses))
+    operations.addAll(AddressOperation(isProfile).insert(rawContact.addresses))
 
-    operations.addAll(EmailOperation.insert(rawContact.emails))
+    operations.addAll(EmailOperation(isProfile).insert(rawContact.emails))
 
-    operations.addAll(EventOperation.insert(rawContact.events))
+    operations.addAll(EventOperation(isProfile).insert(rawContact.events))
 
     // The account can only be null if there are no available accounts. In this case, it should
     // not be possible for consumers to obtain group memberships unless they have saved them
@@ -282,37 +286,37 @@ internal fun Context.insertRawContactForAccount(
     // Still we should have this null check just in case.
     if (account != null) {
         operations.addAll(
-            GroupMembershipOperation.insert(rawContact.groupMemberships, account, this)
+            GroupMembershipOperation(isProfile).insert(rawContact.groupMemberships, account, this)
         )
     }
 
-    operations.addAll(ImOperation.insert(rawContact.ims))
+    operations.addAll(ImOperation(isProfile).insert(rawContact.ims))
 
     rawContact.name?.let {
-        NameOperation.insert(it)?.let(operations::add)
+        NameOperation(isProfile).insert(it)?.let(operations::add)
     }
 
     rawContact.nickname?.let {
-        NicknameOperation.insert(it)?.let(operations::add)
+        NicknameOperation(isProfile).insert(it)?.let(operations::add)
     }
 
     rawContact.note?.let {
-        NoteOperation.insert(it)?.let(operations::add)
+        NoteOperation(isProfile).insert(it)?.let(operations::add)
     }
 
     rawContact.organization?.let {
-        OrganizationOperation.insert(it)?.let(operations::add)
+        OrganizationOperation(isProfile).insert(it)?.let(operations::add)
     }
 
-    operations.addAll(PhoneOperation.insert(rawContact.phones))
+    operations.addAll(PhoneOperation(isProfile).insert(rawContact.phones))
 
-    operations.addAll(RelationOperation.insert(rawContact.relations))
+    operations.addAll(RelationOperation(isProfile).insert(rawContact.relations))
 
     rawContact.sipAddress?.let {
-        SipAddressOperation.insert(it)?.let(operations::add)
+        SipAddressOperation(isProfile).insert(it)?.let(operations::add)
     }
 
-    operations.addAll(WebsiteOperation.insert(rawContact.websites))
+    operations.addAll(WebsiteOperation(isProfile).insert(rawContact.websites))
 
     /*
      * Atomically create the RawContact row and all of the associated Data rows. All of the

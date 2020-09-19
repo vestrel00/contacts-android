@@ -17,7 +17,7 @@ import com.vestrel00.contacts.equalTo
 internal class RawContactsOperation(private val isProfile: Boolean) {
 
     private val contentUri: Uri
-        get() = if (isProfile) ProfileUris.RAW_CONTACTS else Table.RawContacts.uri
+        get() = if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri
 
     fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(contentUri)
         /*

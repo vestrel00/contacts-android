@@ -5,7 +5,8 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableNickname
 
-internal object NicknameOperation : AbstractCommonDataOperation<MutableNickname>() {
+internal class NicknameOperation(isProfile: Boolean) :
+    AbstractCommonDataOperation<MutableNickname>(isProfile) {
 
     override val mimeType = MimeType.NICKNAME
 

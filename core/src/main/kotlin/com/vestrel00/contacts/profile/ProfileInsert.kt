@@ -244,9 +244,13 @@ private class ProfileInsertImpl(
             return ProfileInsertFailed
         }
 
-        val rawContactId = context.insertRawContactForAccount(account, rawContact, true)
+        val rawContactId = context.insertRawContactForAccount(account, rawContact, IS_PROFILE)
 
         return ProfileInsertResult(rawContactId)
+    }
+
+    private companion object {
+        const val IS_PROFILE = true
     }
 }
 
@@ -263,7 +267,7 @@ private object ProfileInsertFailed : ProfileInsert.Result {
 }
 
 private fun ContentResolver.hasProfileRawContactForAccount(account: Account?): Boolean = query(
-    ProfileUris.RAW_CONTACTS,
+    ProfileUris.RAW_CONTACTS.uri,
     Include(RawContactsFields.Id),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.

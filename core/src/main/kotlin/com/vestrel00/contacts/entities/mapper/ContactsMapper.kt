@@ -38,9 +38,9 @@ internal class ContactsMapper(
     private val rawContactsMap: MutableMap<Long, TempRawContact> = mutableMapOf()
 ) {
 
-    fun hasNoRawContacts(): Boolean = rawContactsMap.isEmpty()
+    val rawContactIds: Set<Long> = rawContactsMap.keys
 
-    fun hasRawContactWithId(rawContactId: Long): Boolean = rawContactsMap.containsKey(rawContactId)
+    val contactIds: Set<Long> = contactsMap.keys
 
     /**
      * Collects Contacts from the given Contacts table cursor.
@@ -118,6 +118,10 @@ internal class ContactsMapper(
      * all of the intermediate functions during traversal producing unwanted side effects.
      */
     fun map(): List<Contact> {
+        if (cancel()) {
+            return emptyList()
+        }
+
         // Map contact id to set of raw contacts.
         val contactRawMap = mutableMapOf<Long, MutableList<RawContact>>()
         for (tempRawContact in rawContactsMap.values) {

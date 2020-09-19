@@ -5,7 +5,8 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableOrganization
 
-internal object OrganizationOperation : AbstractCommonDataOperation<MutableOrganization>() {
+internal class OrganizationOperation(isProfile: Boolean) :
+    AbstractCommonDataOperation<MutableOrganization>(isProfile) {
 
     override val mimeType = MimeType.ORGANIZATION
 

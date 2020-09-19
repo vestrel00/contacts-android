@@ -5,7 +5,7 @@ import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.MutableIm
 
-internal object ImOperation : AbstractCommonDataOperation<MutableIm>() {
+internal class ImOperation(isProfile: Boolean) : AbstractCommonDataOperation<MutableIm>(isProfile) {
 
     override val mimeType = MimeType.IM
 

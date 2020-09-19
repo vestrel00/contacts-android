@@ -214,9 +214,9 @@ private class UpdateImpl(
         for (rawContact in rawContacts) {
             if (rawContact.id != null) {
                 results[rawContact.id] = if (rawContact.isBlank() && deleteBlanks) {
-                    context.contentResolver.deleteRawContactWithId(rawContact.id)
+                    context.contentResolver.deleteRawContactWithId(rawContact.id, IS_PROFILE)
                 } else {
-                    context.updateRawContact(rawContact)
+                    context.updateRawContact(rawContact, IS_PROFILE)
                 }
             } else {
                 results[INVALID_ID] = false
@@ -228,6 +228,7 @@ private class UpdateImpl(
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
+        const val IS_PROFILE = false
     }
 }
 
@@ -240,7 +241,10 @@ private class UpdateImpl(
  * If only some of a raw contact's attribute's values are null, then a data row will be created
  * if it does not yet exist.
  */
-private fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
+private fun Context.updateRawContact(
+    rawContact: MutableRawContact,
+    isProfile: Boolean
+): Boolean {
     if (rawContact.id == null) {
         return false
     }
@@ -248,79 +252,79 @@ private fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
     val operations = arrayListOf<ContentProviderOperation>()
 
     operations.addAll(
-        AddressOperation.updateInsertOrDelete(
+        AddressOperation(isProfile).updateInsertOrDelete(
             rawContact.addresses, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        EmailOperation.updateInsertOrDelete(
+        EmailOperation(isProfile).updateInsertOrDelete(
             rawContact.emails, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        EventOperation.updateInsertOrDelete(
+        EventOperation(isProfile).updateInsertOrDelete(
             rawContact.events, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        GroupMembershipOperation.updateInsertOrDelete(
+        GroupMembershipOperation(isProfile).updateInsertOrDelete(
             rawContact.groupMemberships, rawContact.id, this
         )
     )
 
     operations.addAll(
-        ImOperation.updateInsertOrDelete(
+        ImOperation(isProfile).updateInsertOrDelete(
             rawContact.ims, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        NameOperation.updateInsertOrDelete(
+        NameOperation(isProfile).updateInsertOrDelete(
             rawContact.name, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        NicknameOperation.updateInsertOrDelete(
+        NicknameOperation(isProfile).updateInsertOrDelete(
             rawContact.nickname, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        NoteOperation.updateInsertOrDelete(
+        NoteOperation(isProfile).updateInsertOrDelete(
             rawContact.note, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        OrganizationOperation.updateInsertOrDelete(
+        OrganizationOperation(isProfile).updateInsertOrDelete(
             rawContact.organization, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        PhoneOperation.updateInsertOrDelete(
+        PhoneOperation(isProfile).updateInsertOrDelete(
             rawContact.phones, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        RelationOperation.updateInsertOrDelete(
+        RelationOperation(isProfile).updateInsertOrDelete(
             rawContact.relations, rawContact.id, contentResolver
         )
     )
 
     operations.add(
-        SipAddressOperation.updateInsertOrDelete(
+        SipAddressOperation(isProfile).updateInsertOrDelete(
             rawContact.sipAddress, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        WebsiteOperation.updateInsertOrDelete(
+        WebsiteOperation(isProfile).updateInsertOrDelete(
             rawContact.websites, rawContact.id, contentResolver
         )
     )
