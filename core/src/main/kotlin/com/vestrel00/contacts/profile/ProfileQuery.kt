@@ -246,11 +246,6 @@ private fun ContentResolver.resolve(
     include: Include<AbstractDataField>,
     cancel: () -> Boolean
 ): Contact? {
-    // Note that we can perform an optimization here. When rawContactsWhere is null, we don't need
-    // to retrieve rawContactIds and query for its data one by one. We can simply perform one query
-    // to get all data of all RawContacts. I didn't do this because it adds more lines of code for
-    // something that will barely be used. Most profiles will only consist of one RawContact anyway.
-
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
     // Data table queries using profile uris only return user profile data.
