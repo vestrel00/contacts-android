@@ -7,6 +7,7 @@ import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.util.nullIfNotInSystem
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
@@ -262,7 +263,7 @@ private object ProfileInsertFailed : ProfileInsert.Result {
 }
 
 private fun ContentResolver.hasProfileRawContactForAccount(account: Account?): Boolean = query(
-    ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
+    ProfileUris.RAW_CONTACTS,
     Include(RawContactsFields.Id),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.

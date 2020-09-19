@@ -836,10 +836,6 @@ To insert a new profile Data row, either;
 `RawContacts.Data.CONTENT_DIRECTORY`
 - insert to the Data table directly, referencing the RawContact id
 
-TODO UPDATE and DELETE May be able to reuse AbstractCommonDataOperation. Just fix
-`AbstractCommonDataOperation.dataRowIdsFor` not returning the data row ids from queries made directly
-to the Data table.
-
 Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
 associated Contacts and Data table rows will automatically be deleted.
 

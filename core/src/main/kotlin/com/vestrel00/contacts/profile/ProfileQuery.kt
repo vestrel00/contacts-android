@@ -3,11 +3,11 @@ package com.vestrel00.contacts.profile
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
-import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.ContactsMapper
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
 import com.vestrel00.contacts.util.toRawContactsWhere
@@ -254,10 +254,7 @@ private fun ContentResolver.resolve(
     val contactsMapper = ContactsMapper(isProfile = true, cancel = cancel)
     for (rawContactId in rawContactIds) {
         query(
-            ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
-                .appendEncodedPath("$rawContactId")
-                .appendEncodedPath(ContactsContract.RawContacts.Data.CONTENT_DIRECTORY)
-                .build(),
+            ProfileUris.dataForRawContact(rawContactId),
             include,
             null,
             processCursor = contactsMapper::processDataCursor
@@ -267,9 +264,7 @@ private fun ContentResolver.resolve(
         // blank (no Data rows).
         if (includeBlanks && !contactsMapper.hasRawContactWithId(rawContactId)) {
             query(
-                ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI.buildUpon()
-                    .appendEncodedPath("$rawContactId")
-                    .build(),
+                ProfileUris.rawContact(rawContactId),
                 include.onlyRawContactsFields(),
                 null,
                 processCursor = contactsMapper::processRawContactsCursor
@@ -285,7 +280,7 @@ private fun ContentResolver.resolve(
     // table. This should be done regardless of the includeBlanks flag.
     if (rawContactIds.isNotEmpty() && contactsMapper.hasNoRawContacts()) {
         query(
-            ContactsContract.Profile.CONTENT_URI,
+            ProfileUris.CONTACTS,
             include.onlyContactsFields(),
             null,
             processCursor = contactsMapper::processContactsCursor
@@ -298,7 +293,7 @@ private fun ContentResolver.resolve(
 private fun ContentResolver.rawContactIds(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean
 ): Set<Long> = query(
-    ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI,
+    ProfileUris.RAW_CONTACTS,
     Include(RawContactsFields.Id),
     // There may be lingering RawContacts whose associated contact was already deleted.
     // Such RawContacts have contact id column value as null.
