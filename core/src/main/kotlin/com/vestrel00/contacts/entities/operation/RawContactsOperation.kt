@@ -12,7 +12,7 @@ import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
 /**
- * Builds [ContentProviderOperation]s for [Table.RawContacts].
+ * Builds [ContentProviderOperation]s for [Table.RawContacts] and [ProfileUris.RAW_CONTACTS].
  */
 internal class RawContactsOperation(private val isProfile: Boolean) {
 

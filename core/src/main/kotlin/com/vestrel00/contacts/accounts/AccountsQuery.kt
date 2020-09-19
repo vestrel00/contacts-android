@@ -8,6 +8,7 @@ import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.account
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
@@ -186,7 +187,9 @@ private class AccountsQueryImpl(
         if (!permissions.canQueryAccounts()) {
             null
         } else {
-            rawContact.id?.let(contentResolver::accountForRawContactWithId)
+            rawContact.id?.let {
+                contentResolver.accountForRawContactWithId(it, IS_PROFILE)
+            }
         }
 
     override fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean) =
@@ -257,10 +260,16 @@ private class AccountsQueryImpl(
             }
         }
     }
+
+    private companion object {
+        const val IS_PROFILE = false
+    }
 }
 
-internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Account? = query(
-    Table.RawContacts,
+internal fun ContentResolver.accountForRawContactWithId(
+    rawContactId: Long, isProfile: Boolean
+): Account? = query(
+    if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
     Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
     RawContactsFields.Id equalTo rawContactId
 ) {

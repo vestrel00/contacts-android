@@ -17,7 +17,7 @@ import com.vestrel00.contacts.util.query
  */
 internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProfile: Boolean) {
 
-    private val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
+    protected val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
 
     protected abstract val mimeType: MimeType
 

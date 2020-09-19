@@ -11,12 +11,10 @@ import com.vestrel00.contacts.accounts.accountForRawContactWithId
 import com.vestrel00.contacts.entities.GroupMembership
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.mapper.groupMembershipMapper
-import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.util.query
 
-// TODO Make this work when isProfile is true
-internal class GroupMembershipOperation(isProfile: Boolean) :
+internal class GroupMembershipOperation(private val isProfile: Boolean) :
     AbstractCommonDataOperation<GroupMembership>(isProfile) {
 
     override val mimeType = MimeType.GROUP_MEMBERSHIP
@@ -66,7 +64,7 @@ internal class GroupMembershipOperation(isProfile: Boolean) :
 
         // Groups must always be associated with an account. No account, no group operation.
         val account = context.contentResolver
-            .accountForRawContactWithId(rawContactId) ?: return emptyList()
+            .accountForRawContactWithId(rawContactId, isProfile) ?: return emptyList()
         val accountGroups = GroupsQuery(context).accounts(account).find()
             // This is the same as GroupMembership.groupId.
             .associateBy { it.id }
@@ -109,7 +107,7 @@ internal class GroupMembershipOperation(isProfile: Boolean) :
     }
 
     private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long):
-            List<GroupMembership> = query(Table.Data, INCLUDE, selection(rawContactId)) {
+            List<GroupMembership> = query(contentUri, INCLUDE, selection(rawContactId)) {
 
         mutableListOf<GroupMembership>().apply {
             val groupMembershipMapper = it.groupMembershipMapper()
