@@ -5,6 +5,7 @@ import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentProviderOperation.newInsert
 import android.net.Uri
+import android.provider.ContactsContract
 import com.vestrel00.contacts.RawContactsFields
 import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.table.Table
@@ -13,7 +14,14 @@ import com.vestrel00.contacts.equalTo
 /**
  * Builds [ContentProviderOperation]s for [Table.RawContacts].
  */
-internal class RawContactsOperation(private val contentUri: Uri) {
+internal class RawContactsOperation(private val isProfile: Boolean) {
+
+    private val contentUri: Uri
+        get() = if (isProfile) {
+            ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI
+        } else {
+            Table.RawContacts.uri
+        }
 
     fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(contentUri)
         /*

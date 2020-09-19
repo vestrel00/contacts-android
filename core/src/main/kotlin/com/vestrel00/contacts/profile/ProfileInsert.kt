@@ -243,9 +243,7 @@ private class ProfileInsertImpl(
             return ProfileInsertFailed
         }
 
-        val rawContactId = context.insertRawContactForAccount(
-            account, rawContact, ContactsContract.Profile.CONTENT_RAW_CONTACTS_URI
-        )
+        val rawContactId = context.insertRawContactForAccount(account, rawContact, true)
 
         return ProfileInsertResult(rawContactId)
     }

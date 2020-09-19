@@ -808,6 +808,8 @@ There exist one (profile) Contacts row that identifies the user;
 `ContactsColumns.IS_USER_PROFILE`. There is at least one RawContacts row that is associated with the
 user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts may or may
 not be associated with an Account. The RawContacts row(s) may have rows in the Data table as usual.
+These profile table rows have special IDs that differ from regular rows. See  
+`ContactsContract.isProfileId`.
 
 > Note that the Contacts Provider will throw an IllegalArgument exception when attempting to include
 > `ContactsColumns.IS_USER_PROFILE` and `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE` columns
@@ -824,8 +826,19 @@ query the `Profile.CONTENT_URI`. To get profile RawContacts table rows, query th
 `Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
 `RawContacts.Data.CONTENT_DIRECTORY`.
 
-These profile table rows have special IDs that differ from regular rows.
-See `ContactsContract.isProfileId`.
+To insert a new profile RawContact, use `Profile.CONTENT_RAW_CONTACTS_URI`. It will automatically
+be associated with the profile Contact. If the profile Contact does not yet exist, it will be  
+created automatically.
+
+To insert a new profile Data row, either;
+
+- insert to the `Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
+`RawContacts.Data.CONTENT_DIRECTORY`
+- insert to the Data table directly, referencing the RawContact id
+
+TODO UPDATE and DELETE May be able to reuse AbstractCommonDataOperation. Just fix
+`AbstractCommonDataOperation.dataRowIdsFor` not returning the data row ids from queries made directly
+to the Data table.
 
 Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
 associated Contacts and Data table rows will automatically be deleted.

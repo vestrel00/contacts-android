@@ -6,7 +6,6 @@ import android.content.Context
 import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.operation.RawContactsOperation
-import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.applyBatch
 
 /**
@@ -219,11 +218,11 @@ private class DeleteImpl(
         val operations = arrayListOf<ContentProviderOperation>()
 
         if (rawContactIds.isNotEmpty()) {
-            operations.add(RAW_CONTACTS_OPERATION.deleteRawContacts(rawContactIds))
+            operations.add(RawContactsOperation(false).deleteRawContacts(rawContactIds))
         }
 
         if (contactIds.isNotEmpty()) {
-            operations.add(RAW_CONTACTS_OPERATION.deleteRawContactsWithContactIds(contactIds))
+            operations.add(RawContactsOperation(false).deleteRawContactsWithContactIds(contactIds))
         }
 
         return contentResolver.applyBatch(operations) != null
@@ -236,12 +235,10 @@ private class DeleteImpl(
 }
 
 internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean =
-    applyBatch(RAW_CONTACTS_OPERATION.deleteRawContact(rawContactId)) != null
+    applyBatch(RawContactsOperation(false).deleteRawContact(rawContactId)) != null
 
 private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
-    applyBatch(RAW_CONTACTS_OPERATION.deleteRawContactsWithContactId(contactId)) != null
-
-private val RAW_CONTACTS_OPERATION = RawContactsOperation(Table.RawContacts.uri)
+    applyBatch(RawContactsOperation(false).deleteRawContactsWithContactId(contactId)) != null
 
 private class DeleteResult(
     private val rawContactIdsResultMap: Map<Long, Boolean>,

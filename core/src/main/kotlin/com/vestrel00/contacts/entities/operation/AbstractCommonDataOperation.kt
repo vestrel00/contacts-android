@@ -204,7 +204,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity> {
      * Use this function for updating an existing data row. If the data row no longer exists in the
      * DB, the operation will fail.
      */
-    internal fun updateDataRowOrDeleteIfBlank(entity: T): ContentProviderOperation? =
+    fun updateDataRowOrDeleteIfBlank(entity: T): ContentProviderOperation? =
         entity.id?.let { entityId ->
             if (entity.isBlank()) {
                 deleteDataRowWithId(entityId)

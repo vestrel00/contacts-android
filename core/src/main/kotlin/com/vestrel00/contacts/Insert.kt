@@ -3,10 +3,8 @@ package com.vestrel00.contacts
 import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.Context
-import android.net.Uri
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
-import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.nullIfNotInSystem
 
@@ -202,6 +200,7 @@ private class InsertImpl(
         """
             Insert {
                 allowBlanks: $allowBlanks
+                account: $account
                 rawContacts: $rawContacts
             }
         """.trimIndent()
@@ -240,7 +239,7 @@ private class InsertImpl(
             results[rawContact] = if (!allowBlanks && rawContact.isBlank()) {
                 null
             } else {
-                context.insertRawContactForAccount(account, rawContact, Table.RawContacts.uri)
+                context.insertRawContactForAccount(account, rawContact, false)
             }
         }
         return InsertResult(results)
@@ -258,7 +257,7 @@ private class InsertImpl(
 internal fun Context.insertRawContactForAccount(
     account: Account?,
     rawContact: MutableRawContact,
-    rawContactTableUri: Uri
+    isProfile: Boolean
 ): Long? {
     val operations = arrayListOf<ContentProviderOperation>()
 
@@ -269,7 +268,7 @@ internal fun Context.insertRawContactForAccount(
      * This needs to be the first operation in the batch as it will be used by all subsequent
      * Data table insert operations.
      */
-    operations.add(RawContactsOperation(rawContactTableUri).insert(account))
+    operations.add(RawContactsOperation(isProfile).insert(account))
 
     operations.addAll(AddressOperation.insert(rawContact.addresses))
 

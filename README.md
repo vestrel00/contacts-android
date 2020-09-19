@@ -2,7 +2,10 @@
 
 1. Setup user profile
     - Update, Delete + withPermission & async.
-    - Review and update ALL util functions accordingly, looking at usages of isProfile.
+    - First, check if they work with profile entities. If they do, just document it. If not, implement it and document.
+        - Review and update APIs; E.G. Update.kt and Delete.kt
+        - Review and update ALL util functions.
+        - Review usages of isProfile.
 
 2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
