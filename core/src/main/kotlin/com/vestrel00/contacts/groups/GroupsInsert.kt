@@ -16,7 +16,7 @@ import com.vestrel00.contacts.util.applyBatch
  *
  * The [ContactsPermissions.WRITE_PERMISSION] and
  * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
- * been granted already in these  examples for brevity. All inserts will do nothing if these
+ * been granted already in these examples for brevity. All inserts will do nothing if these
  * permissions are not granted.
  *
  * ## Accounts

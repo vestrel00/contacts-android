@@ -10,11 +10,14 @@ import com.vestrel00.contacts.util.applyBatch
 /**
  * Updates one or more raw contacts' rows in the data table.
  *
+ * This does not support updating user Profile Contact. For Profile updates, use
+ * [com.vestrel00.contacts.profile.ProfileUpdate].
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] and
  * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
- * been granted already in these  examples for brevity. All updates will do nothing if these
+ * been granted already in these examples for brevity. All updates will do nothing if these
  * permissions are not granted.
  *
  * ## Accounts
@@ -213,7 +216,9 @@ private class UpdateImpl(
         val results = mutableMapOf<Long, Boolean>()
         for (rawContact in rawContacts) {
             if (rawContact.id != null) {
-                results[rawContact.id] = if (rawContact.isBlank() && deleteBlanks) {
+                results[rawContact.id] = if (rawContact.isProfile != IS_PROFILE) {
+                    false
+                } else if (rawContact.isBlank() && deleteBlanks) {
                     context.contentResolver.deleteRawContactWithId(rawContact.id, IS_PROFILE)
                 } else {
                     context.updateRawContact(rawContact, IS_PROFILE)
@@ -241,7 +246,7 @@ private class UpdateImpl(
  * If only some of a raw contact's attribute's values are null, then a data row will be created
  * if it does not yet exist.
  */
-private fun Context.updateRawContact(
+internal fun Context.updateRawContact(
     rawContact: MutableRawContact,
     isProfile: Boolean
 ): Boolean {

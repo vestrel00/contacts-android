@@ -27,6 +27,11 @@ interface Profile {
     fun insert(context: Context): ProfileInsert
 
     /**
+     * Returns a new [ProfileUpdate] instance.
+     */
+    fun update(context: Context): ProfileUpdate
+
+    /**
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
@@ -41,6 +46,8 @@ private class ProfileImpl : Profile {
     override fun query(context: Context) = ProfileQuery(context)
 
     override fun insert(context: Context) = ProfileInsert(context)
+
+    override fun update(context: Context) = ProfileUpdate(context)
 
     override fun permissions(context: Context) = ContactsPermissions(context)
 }
