@@ -2,35 +2,23 @@ package com.vestrel00.contacts.sample
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.os.Bundle
 import android.widget.ProgressBar
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.cancel
 
 /**
  * A coroutine-scoped activity that defines a [SupervisorJob], which automatically cancels all jobs
  * launched in scope of this activity in [onDestroy].
  */
-abstract class BaseActivity : Activity(), CoroutineScope {
-
-    private lateinit var job: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+abstract class BaseActivity : Activity(), CoroutineScope by MainScope() {
 
     private var progressDialog: AlertDialog? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        job = SupervisorJob()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        job.cancel()
+        cancel()
     }
 
     protected fun showProgressDialog() {

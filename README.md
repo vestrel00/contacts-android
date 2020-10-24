@@ -2,10 +2,9 @@
 
 1. Setup user profile
     - Update, Delete(rawContacts, allRawContacts) + withPermission & async.
-    - First, check if they work with profile entities. If they do, just document it. If not, implement it and document.
-        - Review and update APIs; E.G. Update.kt and Delete.kt
-        - Review and update ALL util functions.
-        - Review usages of isProfile.
+    - Review and update APIs; E.G. Update.kt and Delete.kt
+        - Make sure they don't work when isProfile is true and make sure to document it.
+    - Review and update ALL util functions.
 
 2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
     - SettingsColumns? (group visible / invisible)
