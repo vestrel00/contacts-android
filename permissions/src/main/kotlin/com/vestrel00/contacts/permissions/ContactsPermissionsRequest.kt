@@ -44,7 +44,7 @@ suspend fun Contacts.generalQueryWithPermission(context: Context): GeneralQuery 
  */
 suspend fun Contacts.insertWithPermission(context: Context): Insert {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canInsert()) {
         requestWritePermission(context)
         requestGetAccountsPermission(context)
     }
@@ -53,18 +53,15 @@ suspend fun Contacts.insertWithPermission(context: Context): Insert {
 }
 
 /**
- * If [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
- * granted, suspends the current coroutine, requests for the permissions, and then returns a new
- * [Update] instance.
+ * If [ContactsPermissions.WRITE_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permissions, and then returns a new [Update] instance.
  *
  * If permissions are already granted, then immediately returns a new [Update] instance.
  */
 suspend fun Contacts.updateWithPermission(context: Context): Update {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canUpdateDelete()) {
         requestWritePermission(context)
-        requestGetAccountsPermission(context)
     }
 
     return update(context)
@@ -78,9 +75,8 @@ suspend fun Contacts.updateWithPermission(context: Context): Update {
  */
 suspend fun Contacts.deleteWithPermission(context: Context): Delete {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canUpdateDelete()) {
         requestWritePermission(context)
-        requestGetAccountsPermission(context)
     }
 
     return delete(context)

@@ -28,8 +28,7 @@ fun Sequence<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.i
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *
@@ -41,7 +40,7 @@ fun CommonDataEntity.setAsDefault(context: Context): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete()
+    if (!ContactsPermissions(context).canUpdateDelete()
         || dataId == null
         || rawContactId == null
         || contactId == null
@@ -76,8 +75,7 @@ fun CommonDataEntity.setAsDefault(context: Context): Boolean {
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *
@@ -88,7 +86,7 @@ fun CommonDataEntity.clearDefault(context: Context): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete()
+    if (!ContactsPermissions(context).canUpdateDelete()
         || rawContactId == null
         || contactId == null
     ) {

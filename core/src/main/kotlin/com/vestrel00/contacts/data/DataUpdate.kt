@@ -114,7 +114,7 @@ private class DataUpdateImpl(
     }
 
     override fun commit(): DataUpdate.Result {
-        if (data.isEmpty() || !permissions.canInsertUpdateDelete()) {
+        if (data.isEmpty() || !permissions.canUpdateDelete()) {
             return DataUpdateFailed
         }
 

@@ -12,10 +12,8 @@ import com.vestrel00.contacts.util.applyBatch
  *
  * ## Permissions
  *
- * The [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
- * been granted already in these examples for brevity. All updates will do nothing if these
- * permissions are not granted.
+ * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All updates will do nothing if these  permissions are not granted.
  *
  * ## Usage
  *
@@ -81,8 +79,7 @@ interface GroupsUpdate {
      *
      * ## Permissions
      *
-     * Requires [ContactsPermissions.WRITE_PERMISSION] and
-     * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     * Requires [ContactsPermissions.WRITE_PERMISSION].
      *
      * ## Thread Safety
      *
@@ -133,7 +130,7 @@ private class GroupsUpdateImpl(
     }
 
     override fun commit(): GroupsUpdate.Result {
-        if (groups.isEmpty() || !permissions.canInsertUpdateDelete()) {
+        if (groups.isEmpty() || !permissions.canUpdateDelete()) {
             return GroupsUpdateFailed
         }
 

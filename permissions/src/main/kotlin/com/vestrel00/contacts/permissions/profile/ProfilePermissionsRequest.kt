@@ -34,7 +34,7 @@ suspend fun Profile.queryWithPermission(context: Context): ProfileQuery {
  */
 suspend fun Profile.insertWithPermission(context: Context): ProfileInsert {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canInsert()) {
         requestWritePermission(context)
         requestGetAccountsPermission(context)
     }

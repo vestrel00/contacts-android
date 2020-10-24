@@ -229,7 +229,7 @@ private class ProfileInsertImpl(
 
         if (rawContact == null
             || (!allowBlanks && rawContact.isBlank())
-            || !permissions.canInsertUpdateDelete()
+            || !permissions.canInsert()
         ) {
             return ProfileInsertFailed
         }

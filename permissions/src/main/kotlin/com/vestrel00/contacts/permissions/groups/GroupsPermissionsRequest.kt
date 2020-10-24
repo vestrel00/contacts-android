@@ -35,7 +35,7 @@ suspend fun Groups.queryWithPermission(context: Context): GroupsQuery {
  */
 suspend fun Groups.insertWithPermission(context: Context): GroupsInsert {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canInsert()) {
         requestWritePermission(context)
         requestGetAccountsPermission(context)
     }
@@ -44,18 +44,15 @@ suspend fun Groups.insertWithPermission(context: Context): GroupsInsert {
 }
 
 /**
- * If [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
- * granted, suspends the current coroutine, requests for the permissions, and then returns a new
- * [GroupsUpdate] instance.
+ * If [ContactsPermissions.WRITE_PERMISSION] is not yet  granted, suspends the current coroutine,
+ * requests for the permissions, and then returns a new [GroupsUpdate] instance.
  *
  * If permissions are already granted, then immediately returns a new [GroupsUpdate] instance.
  */
 suspend fun Groups.updateWithPermission(context: Context): GroupsUpdate {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canUpdateDelete()) {
         requestWritePermission(context)
-        requestGetAccountsPermission(context)
     }
 
     return update(context)

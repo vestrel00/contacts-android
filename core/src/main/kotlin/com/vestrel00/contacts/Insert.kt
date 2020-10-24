@@ -227,7 +227,7 @@ private class InsertImpl(
     }
 
     override fun commit(): Insert.Result {
-        if (rawContacts.isEmpty() || !permissions.canInsertUpdateDelete()) {
+        if (rawContacts.isEmpty() || !permissions.canInsert()) {
             return InsertFailed
         }
 

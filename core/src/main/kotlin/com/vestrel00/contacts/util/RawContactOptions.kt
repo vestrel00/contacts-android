@@ -53,8 +53,7 @@ fun RawContactEntity.options(context: Context): Options {
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *
@@ -64,7 +63,7 @@ fun RawContactEntity.options(context: Context): Options {
 fun RawContactEntity.setOptions(context: Context, options: MutableOptions): Boolean {
     val rawContactId = id
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || rawContactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() || rawContactId == null) {
         return false
     }
 
@@ -83,8 +82,7 @@ fun RawContactEntity.setOptions(context: Context, options: MutableOptions): Bool
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *

@@ -116,7 +116,7 @@ fun ContactEntity.link(context: Context, contacts: Collection<ContactEntity>) =
 fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): ContactLinkResult {
     val mainContactId = id
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || mainContactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() || mainContactId == null) {
         return ContactLinkFailed
     }
 
@@ -243,7 +243,7 @@ private object ContactLinkFailed : ContactLinkResult {
 fun ContactEntity.unlink(context: Context): ContactUnlinkResult {
     val contactId = id
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() || contactId == null) {
         return ContactUnlinkFailed
     }
 

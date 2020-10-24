@@ -152,7 +152,7 @@ private class GroupsInsertImpl(
 
     override fun commit(): GroupsInsert.Result {
         val accounts = accountsQuery.allAccounts()
-        if (accounts.isEmpty() || groups.isEmpty() || !permissions.canInsertUpdateDelete()) {
+        if (accounts.isEmpty() || groups.isEmpty() || !permissions.canInsert()) {
             return GroupsInsertFailed
         }
 

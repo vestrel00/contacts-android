@@ -32,7 +32,7 @@ suspend fun Data.queryWithPermission(context: Context): DataQuery {
  */
 suspend fun Data.updateWithPermission(context: Context): DataUpdate {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canUpdateDelete()) {
         requestWritePermission(context)
     }
 
@@ -40,16 +40,14 @@ suspend fun Data.updateWithPermission(context: Context): DataUpdate {
 }
 
 /**
- * If [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
- * granted, suspends the current coroutine, requests for the permissions, and then returns a new
- * [DataDelete] instance.
+ * If [ContactsPermissions.WRITE_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permissions, and then returns a new [DataDelete] instance.
  *
  * If permissions are already granted, then immediately returns a new [DataDelete] instance.
  */
 suspend fun Data.deleteWithPermission(context: Context): DataDelete {
     val permissions = permissions(context)
-    if (!permissions.canInsertUpdateDelete()) {
+    if (!permissions.canUpdateDelete()) {
         requestWritePermission(context)
     }
 

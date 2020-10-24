@@ -58,8 +58,7 @@ fun ContactEntity.options(context: Context): Options {
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *
@@ -69,7 +68,7 @@ fun ContactEntity.options(context: Context): Options {
 fun ContactEntity.setOptions(context: Context, options: MutableOptions): Boolean {
     val contactId = id
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() || contactId == null) {
         return false
     }
 
@@ -92,8 +91,7 @@ fun ContactEntity.setOptions(context: Context, options: MutableOptions): Boolean
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *

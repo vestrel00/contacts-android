@@ -137,7 +137,7 @@ private class DataDeleteImpl(
     }
 
     override fun commit(): DataDelete.Result {
-        if (dataIds.isEmpty() || !permissions.canInsertUpdateDelete()) {
+        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
             return DataDeleteFailed
         }
 
@@ -154,7 +154,7 @@ private class DataDeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean = dataIds.isNotEmpty()
-            && permissions.canInsertUpdateDelete()
+            && permissions.canUpdateDelete()
             && contentResolver.deleteDataRowsWithIds(dataIds)
 
     private companion object {

@@ -12,10 +12,8 @@ import com.vestrel00.contacts.updateRawContact
  *
  * ## Permissions
  *
- * The [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
- * been granted already in these examples for brevity. All updates will do nothing if these
- * permissions are not granted.
+ * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All updates will do nothing if these permissions are not granted.
  *
  * ## Accounts
  *
@@ -117,8 +115,7 @@ interface ProfileUpdate {
      *
      * ## Permissions
      *
-     * Requires [ContactsPermissions.WRITE_PERMISSION] and
-     * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     * Requires [ContactsPermissions.WRITE_PERMISSION].
      *
      * ## Thread Safety
      *
@@ -181,7 +178,7 @@ private class ProfileUpdateImpl(
     override fun contact(contact: MutableContact): ProfileUpdate = rawContacts(contact.rawContacts)
 
     override fun commit(): ProfileUpdate.Result {
-        if (rawContacts.isEmpty() || !permissions.canInsertUpdateDelete()) {
+        if (rawContacts.isEmpty() || !permissions.canUpdateDelete()) {
             return ProfileUpdateFailed
         }
 

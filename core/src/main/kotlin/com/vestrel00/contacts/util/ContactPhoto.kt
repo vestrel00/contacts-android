@@ -252,8 +252,7 @@ fun ContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *
@@ -268,7 +267,7 @@ fun ContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable
 fun ContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean {
     val contactId = id
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() || contactId == null) {
         return false
     }
 
@@ -340,8 +339,7 @@ private fun rawContactWithPhotoFileId(context: Context, photoFileId: Long): Temp
  *
  * ## Permissions
  *
- * This requires the [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * This requires the [ContactsPermissions.WRITE_PERMISSION].
  *
  * ## Thread Safety
  *
@@ -351,7 +349,7 @@ private fun rawContactWithPhotoFileId(context: Context, photoFileId: Long): Temp
 fun ContactEntity.removePhoto(context: Context): Boolean {
     val contactId = id
 
-    if (!ContactsPermissions(context).canInsertUpdateDelete() || contactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() || contactId == null) {
         return false
     }
 
