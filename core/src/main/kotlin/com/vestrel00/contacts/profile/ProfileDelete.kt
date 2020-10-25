@@ -14,8 +14,6 @@ import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * TODO documentation
- * TODO async
- * TODO withPermission
  */
 interface ProfileDelete {
 
