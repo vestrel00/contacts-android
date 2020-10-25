@@ -397,7 +397,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
             return false
         }
 
-        val rawContactIds = rawContacts.map { it.id }.filterNotNull()
+        val rawContactIds = rawContacts.mapNotNull { it.id }
         val localRawContactIds = context.contentResolver.rawContactIdsWhere(
             // Not using and/or as infix because this formatting looks better in this case.
             (RawContactsFields.Id `in` rawContactIds)
@@ -444,7 +444,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     ): Boolean {
 
         // Only existing RawContacts can be associated with an Account.
-        val nonNullRawContactIds = rawContacts.map { it.id }.filterNotNull()
+        val nonNullRawContactIds = rawContacts.mapNotNull { it.id }
 
         return nonNullRawContactIds.isNotEmpty()
                 && permissions.canUpdateRawContactsAssociations()
@@ -524,7 +524,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
 
     override fun dissociateRawContacts(rawContacts: Sequence<RawContactEntity>): Boolean {
         // Only existing RawContacts can be processed.
-        val nonNullRawContactIds = rawContacts.map { it.id }.filterNotNull()
+        val nonNullRawContactIds = rawContacts.mapNotNull { it.id }
 
         return nonNullRawContactIds.isNotEmpty()
                 && permissions.canUpdateRawContactsAssociations()

@@ -121,8 +121,7 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
     }
 
     val sortedContactIds = contacts
-        .map { it.id }
-        .filterNotNull()
+        .mapNotNull { it.id }
         .filter { it != mainContactId }
         .sortedBy { it }
         .toMutableList()

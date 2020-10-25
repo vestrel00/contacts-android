@@ -68,8 +68,7 @@ fun Contact.imList(): List<Im> = ims().toList()
  */
 fun Contact.names(): Sequence<Name> = rawContacts
     .asSequence()
-    .map { it.name }
-    .filterNotNull()
+    .mapNotNull { it.name }
     .sortedBy { it.id }
 
 /**
@@ -82,8 +81,7 @@ fun Contact.nameList(): List<Name> = names().toList()
  */
 fun Contact.nicknames(): Sequence<Nickname> = rawContacts
     .asSequence()
-    .map { it.nickname }
-    .filterNotNull()
+    .mapNotNull { it.nickname }
     .sortedBy { it.id }
 
 /**
@@ -96,8 +94,7 @@ fun Contact.nicknameList(): List<Nickname> = nicknames().toList()
  */
 fun Contact.notes(): Sequence<Note> = rawContacts
     .asSequence()
-    .map { it.note }
-    .filterNotNull()
+    .mapNotNull { it.note }
     .sortedBy { it.id }
 
 /**
@@ -113,8 +110,7 @@ fun Contact.noteList(): List<Note> = notes().toList()
  */
 fun Contact.organizations(): Sequence<Organization> = rawContacts
     .asSequence()
-    .map { it.organization }
-    .filterNotNull()
+    .mapNotNull { it.organization }
     .sortedBy { it.id }
 
 /**
@@ -156,8 +152,7 @@ fun Contact.relationList(): List<Relation> = relations().toList()
  */
 fun Contact.sipAddresses(): Sequence<SipAddress> = rawContacts
     .asSequence()
-    .map { it.sipAddress }
-    .filterNotNull()
+    .mapNotNull { it.sipAddress }
     .sortedBy { it.id }
 
 /**
@@ -399,8 +394,7 @@ fun MutableContact.removeAllIms() {
  */
 fun MutableContact.names(): Sequence<MutableName> = rawContacts
     .asSequence()
-    .map { it.name }
-    .filterNotNull()
+    .mapNotNull { it.name }
     .sortedBy { it.id }
 
 /**
@@ -429,8 +423,7 @@ fun MutableContact.setName(configureName: MutableName.() -> Unit) {
  */
 fun MutableContact.nicknames(): Sequence<MutableNickname> = rawContacts
     .asSequence()
-    .map { it.nickname }
-    .filterNotNull()
+    .mapNotNull { it.nickname }
     .sortedBy { it.id }
 
 /**
@@ -459,8 +452,7 @@ fun MutableContact.setNickname(configureNickname: MutableNickname.() -> Unit) {
  */
 fun MutableContact.notes(): Sequence<MutableNote> = rawContacts
     .asSequence()
-    .map { it.note }
-    .filterNotNull()
+    .mapNotNull { it.note }
     .sortedBy { it.id }
 
 /**
@@ -492,8 +484,7 @@ fun MutableContact.setNote(configureNote: MutableNote.() -> Unit) {
  */
 fun MutableContact.organizations(): Sequence<MutableOrganization> = rawContacts
     .asSequence()
-    .map { it.organization }
-    .filterNotNull()
+    .mapNotNull { it.organization }
     .sortedBy { it.id }
 
 /**
@@ -629,8 +620,7 @@ fun MutableContact.removeAllRelations() {
  */
 fun MutableContact.sipAddresses(): Sequence<MutableSipAddress> = rawContacts
     .asSequence()
-    .map { it.sipAddress }
-    .filterNotNull()
+    .mapNotNull { it.sipAddress }
     .sortedBy { it.id }
 
 /**

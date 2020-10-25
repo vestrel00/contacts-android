@@ -153,15 +153,15 @@ internal fun Delete(context: Context): Delete = DeleteImpl(
 private class DeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val rawContactIds: MutableSet<Long> = mutableSetOf(),
-    private val contactIds: MutableSet<Long> = mutableSetOf()
+    private val rawContacts: MutableSet<RawContactEntity> = mutableSetOf(),
+    private val contacts: MutableSet<ContactEntity> = mutableSetOf()
 ) : Delete {
 
     override fun toString(): String =
         """
             Delete {
-                rawContactIds: $rawContactIds
-                contactIds: $contactIds
+                rawContacts: $rawContacts
+                contacts: $contacts
             }
         """.trimIndent()
 
@@ -172,7 +172,7 @@ private class DeleteImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<RawContactEntity>): Delete = apply {
-        rawContactIds.addAll(rawContacts.map { it.id ?: INVALID_ID })
+        this.rawContacts.addAll(rawContacts)
     }
 
     override fun contacts(vararg contacts: ContactEntity) = contacts(contacts.asSequence())
@@ -181,31 +181,39 @@ private class DeleteImpl(
         contacts(contacts.asSequence())
 
     override fun contacts(contacts: Sequence<ContactEntity>): Delete = apply {
-        contactIds.addAll(contacts.map { it.id ?: INVALID_ID })
+        this.contacts.addAll(contacts)
     }
 
     override fun commit(): Delete.Result {
-        if ((contactIds.isEmpty() && rawContactIds.isEmpty())
-            || !permissions.canUpdateDelete()
-        ) {
+        if ((contacts.isEmpty() && rawContacts.isEmpty()) || !permissions.canUpdateDelete()) {
             return DeleteFailed
         }
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
-        for (rawContactId in rawContactIds) {
-            rawContactsResult[rawContactId] = if (rawContactId == INVALID_ID) {
-                false
+        for (rawContact in rawContacts) {
+            val rawContactId = rawContact.id
+            if (rawContactId != null) {
+                rawContactsResult[rawContactId] = if (rawContact.isProfile != IS_PROFILE) {
+                    false
+                } else {
+                    contentResolver.deleteRawContactWithId(rawContactId, IS_PROFILE)
+                }
             } else {
-                contentResolver.deleteRawContactWithId(rawContactId, IS_PROFILE)
+                rawContactsResult[INVALID_ID] = false
             }
         }
 
         val contactsResults = mutableMapOf<Long, Boolean>()
-        for (contactId in contactIds) {
-            contactsResults[contactId] = if (contactId == INVALID_ID) {
-                false
+        for (contact in contacts) {
+            val contactId = contact.id
+            if (contactId != null) {
+                contactsResults[contactId] = if (contact.isProfile != IS_PROFILE) {
+                    false
+                } else {
+                    contentResolver.deleteContactWithId(contactId, IS_PROFILE)
+                }
             } else {
-                contentResolver.deleteContactWithId(contactId, IS_PROFILE)
+                contactsResults[INVALID_ID] = false
             }
         }
 
@@ -213,17 +221,19 @@ private class DeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
+        if ((rawContacts.isEmpty() && contacts.isEmpty()) || !permissions.canUpdateDelete()) {
             return false
         }
 
         val operations = arrayListOf<ContentProviderOperation>()
 
-        if (rawContactIds.isNotEmpty()) {
+        if (rawContacts.isNotEmpty()) {
+            val rawContactIds = rawContacts.mapNotNull { it.id }
             operations.add(RawContactsOperation(IS_PROFILE).deleteRawContacts(rawContactIds))
         }
 
-        if (contactIds.isNotEmpty()) {
+        if (contacts.isNotEmpty()) {
+            val contactIds = contacts.mapNotNull { it.id }
             operations.add(
                 RawContactsOperation(IS_PROFILE).deleteRawContactsWithContactIds(
                     contactIds
@@ -254,7 +264,8 @@ private class DeleteResult(
 ) : Delete.Result {
 
     override val isSuccessful: Boolean by unsafeLazy {
-        rawContactIdsResultMap.all { it.value } && contactIdsResultMap.all { it.value }
+        (rawContactIdsResultMap.isNotEmpty() && rawContactIdsResultMap.all { it.value }) ||
+                (contactIdsResultMap.isNotEmpty() && contactIdsResultMap.all { it.value })
     }
 
     override fun isSuccessful(rawContact: RawContactEntity): Boolean =

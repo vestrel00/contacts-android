@@ -32,6 +32,11 @@ interface Profile {
     fun update(context: Context): ProfileUpdate
 
     /**
+     * Returns a new [ProfileDelete] instance.
+     */
+    fun delete(context: Context): ProfileDelete
+
+    /**
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
@@ -48,6 +53,8 @@ private class ProfileImpl : Profile {
     override fun insert(context: Context) = ProfileInsert(context)
 
     override fun update(context: Context) = ProfileUpdate(context)
+
+    override fun delete(context: Context) = ProfileDelete(context)
 
     override fun permissions(context: Context) = ContactsPermissions(context)
 }

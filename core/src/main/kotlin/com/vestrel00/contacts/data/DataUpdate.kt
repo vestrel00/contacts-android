@@ -142,14 +142,16 @@ private fun ContentResolver.updateData(
     data: MutableCommonDataEntity, isProfile: Boolean
 ): Boolean = data.updateOperation(isProfile)?.let { applyBatch(it) } != null
 
-private class DataUpdateResult(private val dataIdsResultMao: Map<Long, Boolean>) :
+private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>) :
     DataUpdate.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMao.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        dataIdsResultMap.isNotEmpty() && dataIdsResultMap.all { it.value }
+    }
 
     override fun isSuccessful(data: MutableCommonDataEntity): Boolean {
         val dataId = data.id
-        return dataId != null && dataIdsResultMao.getOrElse(dataId) { false }
+        return dataId != null && dataIdsResultMap.getOrElse(dataId) { false }
     }
 }
 

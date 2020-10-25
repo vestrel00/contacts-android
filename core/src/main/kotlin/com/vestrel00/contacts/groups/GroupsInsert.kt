@@ -194,8 +194,7 @@ private class GroupsInsertResult(private val groupsMap: Map<MutableGroup, Long?>
 
     override val groupIds: List<Long> by unsafeLazy {
         groupsMap.asSequence()
-            .map { it.value }
-            .filterNotNull()
+            .mapNotNull { it.value }
             .toList()
     }
 

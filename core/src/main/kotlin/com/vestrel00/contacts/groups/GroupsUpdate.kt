@@ -162,7 +162,9 @@ private fun ContentResolver.updateGroup(group: MutableGroup): Boolean =
 private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsUpdate.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        groupIdsResultMap.isNotEmpty() && groupIdsResultMap.all { it.value }
+    }
 
     override fun isSuccessful(group: MutableGroup): Boolean = group.id != null
             && groupIdsResultMap.getOrElse(group.id) { false }

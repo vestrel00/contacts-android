@@ -99,8 +99,7 @@ internal class GroupMembershipOperation(private val isProfile: Boolean) :
                 val group = accountGroups.getValue(it.groupId)
                 !group.isDefaultGroup
             }
-            .map { it.id }
-            .filterNotNull()
+            .mapNotNull { it.id }
             .forEach { groupMembershipId ->
                 add(deleteDataRowWithId(groupMembershipId))
             }

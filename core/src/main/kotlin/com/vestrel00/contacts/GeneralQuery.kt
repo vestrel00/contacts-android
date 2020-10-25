@@ -392,7 +392,7 @@ private class GeneralQueryImpl(
     override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<Group>): GeneralQuery = apply {
-        val groupIds = groups.map { it.id }.filterNotNull()
+        val groupIds = groups.mapNotNull { it.id }
         groupMembershipWhere = if (groupIds.isEmpty()) {
             DEFAULT_GROUP_MEMBERSHIP_WHERE
         } else {

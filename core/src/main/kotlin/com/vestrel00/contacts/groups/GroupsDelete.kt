@@ -147,7 +147,9 @@ private class GroupsDeleteImpl(
 private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsDelete.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        groupIdsResultMap.isNotEmpty() && groupIdsResultMap.all { it.value }
+    }
 
     override fun isSuccessful(group: Group): Boolean = group.id != null
             && groupIdsResultMap.getOrElse(group.id) { false }
