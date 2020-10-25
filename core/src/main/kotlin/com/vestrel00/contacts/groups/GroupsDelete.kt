@@ -6,6 +6,7 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.Group
 import com.vestrel00.contacts.entities.operation.GroupsOperation
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Deletes one or more groups from the groups table.
@@ -146,7 +147,7 @@ private class GroupsDeleteImpl(
 private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsDelete.Result {
 
-    override val isSuccessful: Boolean by lazy { groupIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
 
     override fun isSuccessful(group: Group): Boolean = group.id != null
             && groupIdsResultMap.getOrElse(group.id) { false }

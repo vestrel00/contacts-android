@@ -6,6 +6,7 @@ import com.vestrel00.contacts.deleteRawContactWithId
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.updateRawContact
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Updates one or more (Profile) raw contacts' rows in the data table.
@@ -210,7 +211,7 @@ private class ProfileUpdateImpl(
 private class ProfileUpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) :
     ProfileUpdate.Result {
 
-    override val isSuccessful: Boolean by lazy { rawContactIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
 
     override fun isSuccessful(rawContact: MutableRawContact): Boolean {
         val rawContactId = rawContact.id

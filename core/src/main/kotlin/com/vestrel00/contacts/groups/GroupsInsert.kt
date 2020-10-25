@@ -8,6 +8,7 @@ import com.vestrel00.contacts.accounts.AccountsQuery
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.operation.GroupsOperation
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Inserts one or more user groups into the groups table.
@@ -191,14 +192,14 @@ private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
 private class GroupsInsertResult(private val groupsMap: Map<MutableGroup, Long?>) :
     GroupsInsert.Result {
 
-    override val groupIds: List<Long> by lazy {
+    override val groupIds: List<Long> by unsafeLazy {
         groupsMap.asSequence()
             .map { it.value }
             .filterNotNull()
             .toList()
     }
 
-    override val isSuccessful: Boolean by lazy { groupsMap.all { it.value != null } }
+    override val isSuccessful: Boolean by unsafeLazy { groupsMap.all { it.value != null } }
 
     override fun isSuccessful(group: MutableGroup): Boolean = groupId(group) != null
 

@@ -6,6 +6,7 @@ import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Updates one or more raw contacts' rows in the data table.
@@ -340,7 +341,7 @@ internal fun Context.updateRawContact(
 
 private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {
 
-    override val isSuccessful: Boolean by lazy { rawContactIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
 
     override fun isSuccessful(rawContact: MutableRawContact): Boolean = isSuccessful(rawContact.id)
 

@@ -7,6 +7,7 @@ import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.operation.RawContactsOperation
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Deletes one or more raw contacts or contacts from the contacts table. All associated raw contacts
@@ -252,7 +253,7 @@ private class DeleteResult(
     private val contactIdsResultMap: Map<Long, Boolean>
 ) : Delete.Result {
 
-    override val isSuccessful: Boolean by lazy {
+    override val isSuccessful: Boolean by unsafeLazy {
         rawContactIdsResultMap.all { it.value } && contactIdsResultMap.all { it.value }
     }
 

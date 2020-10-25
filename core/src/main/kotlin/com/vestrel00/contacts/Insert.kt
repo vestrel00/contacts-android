@@ -7,6 +7,7 @@ import com.vestrel00.contacts.entities.MutableRawContact
 import com.vestrel00.contacts.entities.operation.*
 import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.nullIfNotInSystem
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
@@ -344,13 +345,13 @@ internal fun Context.insertRawContactForAccount(
 private class InsertResult(private val rawContactMap: Map<MutableRawContact, Long?>) :
     Insert.Result {
 
-    override val rawContactIds: List<Long> by lazy {
+    override val rawContactIds: List<Long> by unsafeLazy {
         rawContactMap.values.asSequence()
             .filterNotNull()
             .toList()
     }
 
-    override val isSuccessful: Boolean by lazy { rawContactMap.all { it.value != null } }
+    override val isSuccessful: Boolean by unsafeLazy { rawContactMap.all { it.value != null } }
 
     override fun isSuccessful(rawContact: MutableRawContact): Boolean =
         rawContactId(rawContact) != null

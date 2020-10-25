@@ -6,6 +6,7 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.MutableGroup
 import com.vestrel00.contacts.entities.operation.GroupsOperation
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Updates one or more groups rows in the groups table.
@@ -161,7 +162,7 @@ private fun ContentResolver.updateGroup(group: MutableGroup): Boolean =
 private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsUpdate.Result {
 
-    override val isSuccessful: Boolean by lazy { groupIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
 
     override fun isSuccessful(group: MutableGroup): Boolean = group.id != null
             && groupIdsResultMap.getOrElse(group.id) { false }

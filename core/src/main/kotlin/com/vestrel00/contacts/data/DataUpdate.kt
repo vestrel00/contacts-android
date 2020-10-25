@@ -6,6 +6,7 @@ import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.entities.MutableCommonDataEntity
 import com.vestrel00.contacts.entities.operation.updateOperation
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Updates one or more data rows in the data table.
@@ -144,7 +145,7 @@ private fun ContentResolver.updateData(
 private class DataUpdateResult(private val dataIdsResultMao: Map<Long, Boolean>) :
     DataUpdate.Result {
 
-    override val isSuccessful: Boolean by lazy { dataIdsResultMao.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMao.all { it.value } }
 
     override fun isSuccessful(data: MutableCommonDataEntity): Boolean {
         val dataId = data.id

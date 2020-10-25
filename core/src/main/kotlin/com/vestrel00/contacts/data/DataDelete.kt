@@ -11,6 +11,7 @@ import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.unsafeLazy
 
 /**
  * Deletes one or more data the Data table.
@@ -179,7 +180,7 @@ private class DataDeleteResult(
     private val dataIdsResultMap: Map<Long, Boolean>
 ) : DataDelete.Result {
 
-    override val isSuccessful: Boolean by lazy {
+    override val isSuccessful: Boolean by unsafeLazy {
         dataIdsResultMap.all { it.value }
     }
 
