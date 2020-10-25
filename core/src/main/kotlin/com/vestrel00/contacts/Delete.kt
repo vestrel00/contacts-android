@@ -225,11 +225,11 @@ private class DeleteImpl(
             return false
         }
 
-        val rawContactIds = rawContacts.mapNotNull { it.id }
-        val contactIds = contacts.mapNotNull { it.id }
+        val rawContactIds = rawContacts.filter { it.isProfile == IS_PROFILE }.mapNotNull { it.id }
+        val contactIds = contacts.filter { it.isProfile == IS_PROFILE }.mapNotNull { it.id }
 
         if (rawContactIds.size != rawContacts.size || contactIds.size != contacts.size) {
-            // There are some null ids, fail without performing operation.
+            // There are some null ids or IS_PROFILE mismatch, fail without performing operation.
             return false
         }
 

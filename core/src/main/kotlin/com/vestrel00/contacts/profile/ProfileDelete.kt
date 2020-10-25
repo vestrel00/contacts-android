@@ -187,10 +187,10 @@ private class ProfileDeleteImpl(
             return contentResolver.deleteProfileContact()
         }
 
-        val rawContactIds = rawContacts.mapNotNull { it.id }
+        val rawContactIds = rawContacts.filter { it.isProfile == IS_PROFILE }.mapNotNull { it.id }
 
         if (rawContactIds.size != rawContacts.size) {
-            // There are some null ids, fail without performing operation.
+            // There are some null ids or IS_PROFILE mismatch, fail without performing operation.
             return false
         }
 
