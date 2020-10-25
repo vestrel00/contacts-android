@@ -124,6 +124,10 @@ interface Delete {
 
         /**
          * True if the [rawContact] has been successfully deleted. False otherwise.
+         *
+         * This does not indicate whether the parent [ContactEntity] has been deleted or not. This
+         * may return false even if the parent [ContactEntity] has been deleted. This is used in
+         * conjunction with [Delete.rawContacts].
          */
         fun isSuccessful(rawContact: RawContactEntity): Boolean
 
@@ -131,10 +135,9 @@ interface Delete {
          * True the [ContactEntity] (and all of its associated [RawContactEntity]s has been
          * successfully deleted). False otherwise.
          *
-         * ## Important
-         *
-         * This will return false even if all associated [RawContactEntity]s have been deleted. This
-         * should only be used in conjunction with [Delete.contacts] to avoid incorrect results.
+         * This does not indicate whether the chile [RawContactEntity]s has been deleted or not.
+         * This may return false even if all associated [RawContactEntity]s have been deleted. This
+         * is used in conjunction with [Delete.contacts].
          */
         fun isSuccessful(contact: ContactEntity): Boolean
     }
