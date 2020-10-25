@@ -13,7 +13,31 @@ import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
- * TODO documentation
+ * Deletes one or more (Profile) raw contacts or the (Profile) contact from the raw contacts and
+ * contacts tables respectively. All associated (Profile) data rows are also deleted.
+ *
+ * ## Permissions
+ *
+ * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All deletes will do nothing if the permission is not granted.
+ *
+ * ## Usage
+ *
+ * To delete the profile [ContactEntity] (if it exist) and all associated [RawContactEntity]s;
+ *
+ * ```kotlin
+ * val result = profileDelete
+ *      .contact()
+ *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * ProfileDelete.Result result = profileDelete
+ *      .contact()
+ *      .commit()
+ * ```
  */
 interface ProfileDelete {
 

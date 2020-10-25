@@ -10,8 +10,8 @@ import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
- * Deletes one or more raw contacts or contacts from the contacts table. All associated raw contacts
- * and data rows are also deleted.
+ * Deletes one or more raw contacts or contacts from the raw contacts and contacts tables
+ * respectively. All associated data rows are also deleted.
  *
  * ## Permissions
  *
