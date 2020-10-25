@@ -1,6 +1,5 @@
 ## TODO
 
-0. All commitInOneTransaction functions should fail ASAP if there are any null ids in the delete queue.
 1. Setup user profile
     - Delete(rawContacts, allRawContacts) + withPermission & async.
     - Review and update APIs; E.G. Update.kt and Delete.kt (fail for non-profile entities).

@@ -154,8 +154,9 @@ private class DataDeleteImpl(
         return DataDeleteResult(dataIdsResultMap)
     }
 
-    override fun commitInOneTransaction(): Boolean = dataIds.isNotEmpty()
-            && permissions.canUpdateDelete()
+    override fun commitInOneTransaction(): Boolean = permissions.canUpdateDelete()
+            && dataIds.isNotEmpty()
+            && !dataIds.contains(INVALID_ID)
             && contentResolver.deleteDataRowsWithIds(dataIds)
 
     private companion object {

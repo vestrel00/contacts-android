@@ -225,15 +225,21 @@ private class DeleteImpl(
             return false
         }
 
+        val rawContactIds = rawContacts.mapNotNull { it.id }
+        val contactIds = contacts.mapNotNull { it.id }
+
+        if (rawContactIds.size != rawContacts.size || contactIds.size != contacts.size) {
+            // There are some null ids, fail without performing operation.
+            return false
+        }
+
         val operations = arrayListOf<ContentProviderOperation>()
 
         if (rawContacts.isNotEmpty()) {
-            val rawContactIds = rawContacts.mapNotNull { it.id }
             operations.add(RawContactsOperation(IS_PROFILE).deleteRawContacts(rawContactIds))
         }
 
         if (contacts.isNotEmpty()) {
-            val contactIds = contacts.mapNotNull { it.id }
             operations.add(
                 RawContactsOperation(IS_PROFILE).deleteRawContactsWithContactIds(
                     contactIds

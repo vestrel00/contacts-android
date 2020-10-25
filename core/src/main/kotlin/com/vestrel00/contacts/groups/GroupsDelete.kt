@@ -134,8 +134,9 @@ private class GroupsDeleteImpl(
         return GroupsDeleteResult(results)
     }
 
-    override fun commitInOneTransaction(): Boolean = groupIds.isNotEmpty()
-            && permissions.canUpdateDelete()
+    override fun commitInOneTransaction(): Boolean = permissions.canUpdateDelete()
+            && groupIds.isNotEmpty()
+            && !groupIds.contains(INVALID_ID)
             && contentResolver.applyBatch(GroupsOperation.delete(groupIds)) != null
 
     private companion object {

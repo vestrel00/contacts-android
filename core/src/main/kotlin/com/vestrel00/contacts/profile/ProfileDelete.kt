@@ -179,7 +179,7 @@ private class ProfileDeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if ((rawContacts.isEmpty() && deleteProfileContact) || !permissions.canUpdateDelete()) {
+        if ((rawContacts.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
             return false
         }
 
@@ -188,6 +188,12 @@ private class ProfileDeleteImpl(
         }
 
         val rawContactIds = rawContacts.mapNotNull { it.id }
+
+        if (rawContactIds.size != rawContacts.size) {
+            // There are some null ids, fail without performing operation.
+            return false
+        }
+
         return contentResolver.applyBatch(
             RawContactsOperation(IS_PROFILE).deleteRawContacts(rawContactIds)
         ) != null
