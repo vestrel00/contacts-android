@@ -8,6 +8,7 @@ import com.vestrel00.contacts.permissions.requestWritePermission
 import com.vestrel00.contacts.profile.Profile
 import com.vestrel00.contacts.profile.ProfileInsert
 import com.vestrel00.contacts.profile.ProfileQuery
+import com.vestrel00.contacts.profile.ProfileUpdate
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
@@ -40,4 +41,19 @@ suspend fun Profile.insertWithPermission(context: Context): ProfileInsert {
     }
 
     return insert(context)
+}
+
+/**
+ * If [ContactsPermissions.WRITE_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permission, and then returns a new [ProfileUpdate] instance.
+ *
+ * If permission is already granted, then immediately returns a new [ProfileUpdate] instance.
+ */
+suspend fun Profile.updateWithPermission(context: Context): ProfileUpdate {
+    val permissions = permissions(context)
+    if (!permissions.canUpdateDelete()) {
+        requestWritePermission(context)
+    }
+
+    return update(context)
 }
