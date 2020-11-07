@@ -16,10 +16,6 @@ android {
         sourceCompatibility versions.build.java.sourceCompatibility
         targetCompatibility versions.build.java.targetCompatibility
     }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
 }
 
 dependencies {
