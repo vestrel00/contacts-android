@@ -3,9 +3,6 @@
 This document contains useful developer notes that should be kept in mind during development. It 
 serves as a memory of all the quirks and gotcha's of things like Android's `ContactsContract`.
 
-> I thought about putting this in CONTRIBUTING.md but I think it's better that it is a separate 
-document.
-
 ## Contacts Provider
 
 It is important to know about the ins and outs of Android's Contacts Provider. After all, this API 
