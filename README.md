@@ -89,8 +89,9 @@ functionality is included (though may look different).
 1. Review remaining TODOs and FIXMEs.
 2. Provide usage documentation in README and other places as needed.
 3. Update AS, Kotlin, Gradle, Dexter, and all other dependencies before releasing.
-4. Publish artifact AND write/publish medium blog to ProAndroidDev AND promote via AndroidWeekly.
-5. Immediately setup Travis CI (free for public repos).
+4. Add CONTRIBUTING.md and CHANGELOG.md
+5. Publish artifact AND write/publish medium blog to ProAndroidDev AND promote via AndroidWeekly.
+6. Immediately setup Travis CI (free for public repos).
 
 ----------------------------------------------------------------------------------------------------
 
