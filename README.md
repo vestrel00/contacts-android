@@ -1,5 +1,7 @@
 ## TODO
 
+0. Move src/kotlin to src/java
+
 1. Setup user profile
     - Review and update APIs; E.G. Update.kt and Delete.kt (fail for non-profile entities).
         - Make sure they don't work when isProfile is true and make sure to document it.
@@ -79,30 +81,45 @@ functionality is included (though may look different).
 
 #### Tidy up
 
-1. Lint / code quality checks.
+1. Lint / code quality checks (checkstyle, lint, etc).
 2. Unit test.
 3. Espresso test.
     - Test RAM usage when paginating hundreds of thousands of contacts.
 
 #### Final steps!
 
-1. Review remaining TODOs and FIXMEs.
-2. Provide usage documentation in README and other places as needed.
-3. Update AS, Kotlin, Gradle, Dexter, and all other dependencies before releasing.
-4. Add CONTRIBUTING.md and CHANGELOG.md
-5. Publish artifact AND write/publish medium blog to ProAndroidDev AND promote via AndroidWeekly.
-6. Immediately setup Travis CI (free for public repos).
+1. Update AS, Kotlin stdlib + coroutines, Gradle, Dexter, and all other dependencies before releasing.
+2. Review remaining TODOs and FIXMEs.
+3. Add consumerProguardFiles?
+4. Add CONTRIBUTING.md and CHANGELOG.md.
+5. Complete README.
+6. Publish artifact AND write/publish medium blog to ProAndroidDev AND promote via AndroidWeekly.
+7. Immediately setup Travis CI (free for public repos).
 
 ----------------------------------------------------------------------------------------------------
 
 # Contacts
 
-An easy way to insert, query, update, delete contacts in idiomatic Kotlin (and Java).
+TODO summary
 
-## Usage
+### Download
 
 TODO
 
+## Quick Start
+
+TODO
+
+## Requirements
+
+- Min SDK 19+
+- Java 7+
+
+## Proguard
+
+If you are using ProGuard, you might need to add the following rules if using modules other than `core`;
+
+- [Coroutines][coroutines], if using modules `async`, TODO
 
 ## Upcoming features!
 
@@ -142,3 +159,5 @@ consumers to implement a specific part of the native Android Contacts app.
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+[coroutines]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro

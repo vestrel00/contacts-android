@@ -14,7 +14,6 @@ buildscript {
                                 targetSdk : 30,
                                 compileSdk: 30,
 
-                                tools     : '30.0.0',
                                 gradle    : '4.0.1',
                         ]
                 ],

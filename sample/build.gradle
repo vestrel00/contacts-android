@@ -6,21 +6,10 @@ plugins {
 
 android {
     compileSdkVersion versions.build.android.compileSdk
-    buildToolsVersion versions.build.android.tools
 
     defaultConfig {
-        versionName "1.0.0"
-        versionCode 1
-
         minSdkVersion versions.build.android.minSdk
         targetSdkVersion versions.build.android.targetSdk
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
 
     compileOptions {
