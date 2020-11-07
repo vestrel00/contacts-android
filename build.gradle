@@ -35,7 +35,8 @@ buildscript {
                 // FIXME? Remove Dexter. This is the only dependency keeping this project from
                 // being completely pure! Dexter depends on appcompat, which brings in a lot of
                 // External Libraries. It does not affect consumers that don't use the permissions
-                // module. However, it does ffect devs working on this project (slower build time).
+                // module. However, it does affect devs working on this project (slower build time).
+                // The External Libraries of Android Studio gets polluted =(
                 dexter: "com.karumi:dexter:$versions.dexter", // Used only by permissions module!
 
                 kotlin: [

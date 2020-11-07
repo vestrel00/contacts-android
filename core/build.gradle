@@ -9,9 +9,6 @@ android {
     buildToolsVersion versions.build.android.tools
 
     defaultConfig {
-        versionName versions.name
-        versionCode versions.code
-
         minSdkVersion versions.build.android.minSdk
         targetSdkVersion versions.build.android.targetSdk
     }
