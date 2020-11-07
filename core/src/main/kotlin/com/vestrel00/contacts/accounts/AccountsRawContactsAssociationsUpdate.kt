@@ -372,11 +372,11 @@ interface AccountsRawContactsAssociationsUpdate {
 @Suppress("FunctionName")
 internal fun AccountsRawContactsAssociationsUpdate(context: Context):
         AccountsRawContactsAssociationsUpdate = AccountsRawContactsAssociationsUpdateImpl(
-    context, AccountsPermissions(context)
+    context.applicationContext, AccountsPermissions(context)
 )
 
 private class AccountsRawContactsAssociationsUpdateImpl(
-    private val context: Context,
+    private val applicationContext: Context,
     private val permissions: AccountsPermissions
 ) : AccountsRawContactsAssociationsUpdate {
 
@@ -393,12 +393,15 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     override fun associateAccountWithLocalRawContacts(
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean {
-        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(context)) {
+        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(
+                applicationContext
+            )
+        ) {
             return false
         }
 
         val rawContactIds = rawContacts.mapNotNull { it.id }
-        val localRawContactIds = context.contentResolver.rawContactIdsWhere(
+        val localRawContactIds = applicationContext.contentResolver.rawContactIdsWhere(
             // Not using and/or as infix because this formatting looks better in this case.
             (RawContactsFields.Id `in` rawContactIds)
                 .and(
@@ -410,23 +413,26 @@ private class AccountsRawContactsAssociationsUpdateImpl(
         // Succeed if there are no local RawContacts.
         // Using the || operator here is important because if it is true, then the update does
         // not occur. If && is used instead, the update will occur even if it is true.
-        return localRawContactIds.isEmpty() || context.contentResolver
+        return localRawContactIds.isEmpty() || applicationContext.contentResolver
             .updateRawContactsAccount(account, localRawContactIds)
     }
 
     override fun associateAccountWithAllLocalRawContacts(account: Account): Boolean {
-        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(context)) {
+        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(
+                applicationContext
+            )
+        ) {
             return false
         }
 
-        val localRawContactIds = context.contentResolver.rawContactIdsWhere(
+        val localRawContactIds = applicationContext.contentResolver.rawContactIdsWhere(
             RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull()
         )
 
         // Succeed if there are no local RawContacts.
         // Using the || operator here is important because if it is true, then the update does
         // not occur. If && is used instead, the update will occur even if it is true.
-        return localRawContactIds.isEmpty() || context.contentResolver
+        return localRawContactIds.isEmpty() || applicationContext.contentResolver
             .updateRawContactsAccount(account, localRawContactIds)
     }
 

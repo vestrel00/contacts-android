@@ -22,35 +22,41 @@ interface Data {
     /**
      * Returns a new [DataQuery] instance.
      */
-    fun query(context: Context): DataQuery
+    fun query(): DataQuery
 
     /**
      * Returns a new [DataUpdate] instance.
      */
-    fun update(context: Context): DataUpdate
+    fun update(): DataUpdate
 
     /**
      * Returns a new [DataDelete] instance.
      */
-    fun delete(context: Context): DataDelete
+    fun delete(): DataDelete
 
     /**
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(context: Context): ContactsPermissions
+    fun permissions(): ContactsPermissions
+
+    /**
+     * Reference to the Application's Context for use in extension functions and external library
+     * modules. This is safe to hold on to. Not meant for consumer use.
+     */
+    val applicationContext: Context
 }
 
 @Suppress("FunctionName")
-internal fun Data(): Data = DataImpl()
+internal fun Data(context: Context): Data = DataImpl(context.applicationContext)
 
-private class DataImpl : Data {
+private class DataImpl(override val applicationContext: Context) : Data {
 
-    override fun query(context: Context) = DataQuery(context)
+    override fun query() = DataQuery(applicationContext)
 
-    override fun update(context: Context) = DataUpdate(context)
+    override fun update() = DataUpdate(applicationContext)
 
-    override fun delete(context: Context) = DataDelete(context)
+    override fun delete() = DataDelete(applicationContext)
 
-    override fun permissions(context: Context) = ContactsPermissions(context)
+    override fun permissions() = ContactsPermissions(applicationContext)
 }

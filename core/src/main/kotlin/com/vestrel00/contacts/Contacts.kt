@@ -36,27 +36,27 @@ interface Contacts {
     /**
      * Returns a new [Query] instance.
      */
-    fun query(context: Context): Query
+    fun query(): Query
 
     /**
      * Returns a new [GeneralQuery] instance.
      */
-    fun generalQuery(context: Context): GeneralQuery
+    fun generalQuery(): GeneralQuery
 
     /**
      * Returns a new [Insert] instance.
      */
-    fun insert(context: Context): Insert
+    fun insert(): Insert
 
     /**
      * Returns a new [Update] instance.
      */
-    fun update(context: Context): Update
+    fun update(): Update
 
     /**
      * Returns a new [Delete] instance.
      */
-    fun delete(context: Context): Delete
+    fun delete(): Delete
 
     /**
      * Returns a new [Data] instance.
@@ -77,32 +77,53 @@ interface Contacts {
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(context: Context): ContactsPermissions
+    fun permissions(): ContactsPermissions
+
+    /**
+     * Reference to the Application's Context for use in extension functions and external library
+     * modules. This is safe to hold on to. Not meant for consumer use.
+     */
+    val applicationContext: Context
 }
 
 /**
  * Creates a new [Contacts] instance.
  */
 @Suppress("FunctionName")
-fun Contacts(): Contacts = ContactsImpl()
+fun Contacts(context: Context): Contacts = ContactsImpl(context.applicationContext)
 
-private class ContactsImpl : Contacts {
+private class ContactsImpl(
+    /**
+     * It's safe to save a hard reference to the Application context as it is alive for as long as
+     * the app is alive. No need to make this a weak reference and make our lives more difficult
+     * for no reason. Other libraries do the same; e.g. coil.
+     *
+     * Don't believe me? Then read the official Android documentation about this posted back in
+     * 2009; https://android-developers.googleblog.com/2009/01/avoiding-memory-leaks.html
+     *
+     * Obviously, we should not save a reference to any Activity context.
+     *
+     * Consumers of this should still use [Context.getApplicationContext] for redundancy, which
+     * provides further protection.
+     */
+    override val applicationContext: Context
+) : Contacts {
 
-    override fun query(context: Context) = Query(context)
+    override fun query() = Query(applicationContext)
 
-    override fun generalQuery(context: Context) = GeneralQuery(context)
+    override fun generalQuery() = GeneralQuery(applicationContext)
 
-    override fun insert(context: Context) = Insert(context)
+    override fun insert() = Insert(applicationContext)
 
-    override fun update(context: Context) = Update(context)
+    override fun update() = Update(applicationContext)
 
-    override fun delete(context: Context) = Delete(context)
+    override fun delete() = Delete(applicationContext)
 
-    override fun data(): Data = Data()
+    override fun data(): Data = Data(applicationContext)
 
-    override fun groups() = Groups()
+    override fun groups() = Groups(applicationContext)
 
-    override fun profile(): Profile = Profile()
+    override fun profile(): Profile = Profile(applicationContext)
 
-    override fun permissions(context: Context) = ContactsPermissions(context)
+    override fun permissions() = ContactsPermissions(applicationContext)
 }

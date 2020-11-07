@@ -15,13 +15,13 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  *
  * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
  */
-suspend fun Accounts.queryWithPermission(context: Context): AccountsQuery {
-    val permissions = permissions(context)
+suspend fun Accounts.queryWithPermission(): AccountsQuery {
+    val permissions = permissions()
     if (!permissions.canQueryAccounts()) {
-        requestQueryAccountsPermission(context)
+        applicationContext.requestQueryAccountsPermission()
     }
 
-    return query(context)
+    return query()
 }
 
 /**
@@ -31,13 +31,13 @@ suspend fun Accounts.queryWithPermission(context: Context): AccountsQuery {
  * If permission is already granted, then immediately returns a new [AccountsRawContactsQuery]
  * instance.
  */
-suspend fun Accounts.queryRawContactsWithPermission(context: Context): AccountsRawContactsQuery {
-    val permissions = permissions(context)
+suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery {
+    val permissions = permissions()
     if (!permissions.canQueryRawContacts()) {
-        requestQueryRawContactsPermission(context)
+        applicationContext.requestQueryRawContactsPermission()
     }
 
-    return queryRawContacts(context)
+    return queryRawContacts()
 }
 
 /**
@@ -48,14 +48,14 @@ suspend fun Accounts.queryRawContactsWithPermission(context: Context): AccountsR
  * If permissions are already granted, then immediately returns a new
  * [AccountsRawContactsAssociationsUpdate] instance.
  */
-suspend fun Accounts.updateRawContactsAssociationsWithPermission(context: Context):
+suspend fun Accounts.updateRawContactsAssociationsWithPermission():
         AccountsRawContactsAssociationsUpdate {
-    val permissions = permissions(context)
+    val permissions = permissions()
     if (!permissions.canUpdateRawContactsAssociations()) {
-        requestUpdateRawContactsAssociationsPermission(context)
+        applicationContext.requestUpdateRawContactsAssociationsPermission()
     }
 
-    return updateRawContactsAssociations(context)
+    return updateRawContactsAssociations()
 }
 
 /**
@@ -65,8 +65,8 @@ suspend fun Accounts.updateRawContactsAssociationsWithPermission(context: Contex
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun requestQueryAccountsPermission(context: Context): Boolean =
-    requestGetAccountsPermission(context) && requestReadPermission(context)
+suspend fun Context.requestQueryAccountsPermission(): Boolean =
+    requestGetAccountsPermission() && requestReadPermission()
 
 /**
  * Requests the [ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until
@@ -74,8 +74,7 @@ suspend fun requestQueryAccountsPermission(context: Context): Boolean =
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun requestQueryRawContactsPermission(context: Context): Boolean =
-    requestReadPermission(context)
+suspend fun Context.requestQueryRawContactsPermission(): Boolean = requestReadPermission()
 
 /**
  * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
@@ -84,8 +83,8 @@ suspend fun requestQueryRawContactsPermission(context: Context): Boolean =
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun requestUpdateRawContactsAssociationsPermission(context: Context): Boolean =
-    requestGetAccountsPermission(context) && requestWritePermission(context)
+suspend fun Context.requestUpdateRawContactsAssociationsPermission(): Boolean =
+    requestGetAccountsPermission() && requestWritePermission()
 
 /**
  * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION]. The current coroutine is suspended
@@ -93,10 +92,10 @@ suspend fun requestUpdateRawContactsAssociationsPermission(context: Context): Bo
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun requestGetAccountsPermission(context: Context): Boolean =
+suspend fun Context.requestGetAccountsPermission(): Boolean =
     requestPermission(
         AccountsPermissions.GET_ACCOUNTS_PERMISSION,
-        context,
+        this,
         R.string.contacts_accounts_request_permission_title,
         R.string.contacts_accounts_request_permission_description
     )

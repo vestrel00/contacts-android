@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.permissions.groups
 
-import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.groups.GroupsInsert
@@ -16,13 +15,13 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  *
  * If permission is already granted, then immediately returns a new [GroupsQuery] instance.
  */
-suspend fun Groups.queryWithPermission(context: Context): GroupsQuery {
-    val permissions = permissions(context)
+suspend fun Groups.queryWithPermission(): GroupsQuery {
+    val permissions = permissions()
     if (!permissions.canQuery()) {
-        requestReadPermission(context)
+        applicationContext.requestReadPermission()
     }
 
-    return query(context)
+    return query()
 }
 
 /**
@@ -33,14 +32,14 @@ suspend fun Groups.queryWithPermission(context: Context): GroupsQuery {
  *
  * If permissions are already granted, then immediately returns a new [GroupsInsert] instance.
  */
-suspend fun Groups.insertWithPermission(context: Context): GroupsInsert {
-    val permissions = permissions(context)
+suspend fun Groups.insertWithPermission(): GroupsInsert {
+    val permissions = permissions()
     if (!permissions.canInsert()) {
-        requestWritePermission(context)
-        requestGetAccountsPermission(context)
+        applicationContext.requestWritePermission()
+        applicationContext.requestGetAccountsPermission()
     }
 
-    return insert(context)
+    return insert()
 }
 
 /**
@@ -49,11 +48,11 @@ suspend fun Groups.insertWithPermission(context: Context): GroupsInsert {
  *
  * If permissions are already granted, then immediately returns a new [GroupsUpdate] instance.
  */
-suspend fun Groups.updateWithPermission(context: Context): GroupsUpdate {
-    val permissions = permissions(context)
+suspend fun Groups.updateWithPermission(): GroupsUpdate {
+    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
-        requestWritePermission(context)
+        applicationContext.requestWritePermission()
     }
 
-    return update(context)
+    return update()
 }

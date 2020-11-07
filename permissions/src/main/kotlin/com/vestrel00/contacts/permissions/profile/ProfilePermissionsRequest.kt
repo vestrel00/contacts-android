@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.permissions.profile
 
-import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
 import com.vestrel00.contacts.permissions.requestReadPermission
@@ -13,13 +12,13 @@ import com.vestrel00.contacts.profile.*
  *
  * If permission is already granted, then immediately returns a new [ProfileQuery] instance.
  */
-suspend fun Profile.queryWithPermission(context: Context): ProfileQuery {
-    val permissions = permissions(context)
+suspend fun Profile.queryWithPermission(): ProfileQuery {
+    val permissions = permissions()
     if (!permissions.canQuery()) {
-        requestReadPermission(context)
+        applicationContext.requestReadPermission()
     }
 
-    return query(context)
+    return query()
 }
 
 /**
@@ -30,14 +29,14 @@ suspend fun Profile.queryWithPermission(context: Context): ProfileQuery {
  *
  * If permission is already granted, then immediately returns a new [ProfileInsert] instance.
  */
-suspend fun Profile.insertWithPermission(context: Context): ProfileInsert {
-    val permissions = permissions(context)
+suspend fun Profile.insertWithPermission(): ProfileInsert {
+    val permissions = permissions()
     if (!permissions.canInsert()) {
-        requestWritePermission(context)
-        requestGetAccountsPermission(context)
+        applicationContext.requestWritePermission()
+        applicationContext.requestGetAccountsPermission()
     }
 
-    return insert(context)
+    return insert()
 }
 
 /**
@@ -46,13 +45,13 @@ suspend fun Profile.insertWithPermission(context: Context): ProfileInsert {
  *
  * If permission is already granted, then immediately returns a new [ProfileUpdate] instance.
  */
-suspend fun Profile.updateWithPermission(context: Context): ProfileUpdate {
-    val permissions = permissions(context)
+suspend fun Profile.updateWithPermission(): ProfileUpdate {
+    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
-        requestWritePermission(context)
+        applicationContext.requestWritePermission()
     }
 
-    return update(context)
+    return update()
 }
 
 /**
@@ -61,11 +60,11 @@ suspend fun Profile.updateWithPermission(context: Context): ProfileUpdate {
  *
  * If permission is already granted, then immediately returns a new [ProfileDelete] instance.
  */
-suspend fun Profile.deleteWithPermission(context: Context): ProfileDelete {
-    val permissions = permissions(context)
+suspend fun Profile.deleteWithPermission(): ProfileDelete {
+    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
-        requestWritePermission(context)
+        applicationContext.requestWritePermission()
     }
 
-    return delete(context)
+    return delete()
 }

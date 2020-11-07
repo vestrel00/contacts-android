@@ -36,18 +36,19 @@ interface ContactsPermissions {
 
 @Suppress("FunctionName")
 internal fun ContactsPermissions(context: Context): ContactsPermissions =
-    ContactsPermissionsImpl(context)
+    ContactsPermissionsImpl(context.applicationContext)
 
 private class ContactsPermissionsImpl(
-    private val context: Context
+    private val applicationContext: Context
 ) : ContactsPermissions {
 
-    override fun canQuery(): Boolean = context.isPermissionGrantedFor(READ_PERMISSION)
+    override fun canQuery(): Boolean = applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
-    override fun canInsert(): Boolean = context.isPermissionGrantedFor(WRITE_PERMISSION)
-            && context.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+    override fun canInsert(): Boolean = applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
+            && applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
 
-    override fun canUpdateDelete(): Boolean = context.isPermissionGrantedFor(WRITE_PERMISSION)
+    override fun canUpdateDelete(): Boolean =
+        applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
 }
 
 // [ANDROID X] Same as ContextCompat.checkSelfPermission, which we are not using to avoid having

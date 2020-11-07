@@ -163,12 +163,12 @@ interface Update {
 
 @Suppress("FunctionName")
 internal fun Update(context: Context): Update = UpdateImpl(
-    context,
+    context.applicationContext,
     ContactsPermissions(context)
 )
 
 private class UpdateImpl(
-    private val context: Context,
+    private val applicationContext: Context,
     private val permissions: ContactsPermissions,
 
     private var deleteBlanks: Boolean = true,
@@ -217,9 +217,12 @@ private class UpdateImpl(
                 results[rawContact.id] = if (rawContact.isProfile != IS_PROFILE) {
                     false
                 } else if (rawContact.isBlank() && deleteBlanks) {
-                    context.contentResolver.deleteRawContactWithId(rawContact.id, IS_PROFILE)
+                    applicationContext.contentResolver.deleteRawContactWithId(
+                        rawContact.id,
+                        IS_PROFILE
+                    )
                 } else {
-                    context.updateRawContact(rawContact, IS_PROFILE)
+                    applicationContext.updateRawContact(rawContact, IS_PROFILE)
                 }
             } else {
                 results[INVALID_ID] = false

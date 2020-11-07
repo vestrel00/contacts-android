@@ -184,12 +184,12 @@ interface Insert {
 
 @Suppress("FunctionName")
 internal fun Insert(context: Context): Insert = InsertImpl(
-    context,
+    context.applicationContext,
     ContactsPermissions(context)
 )
 
 private class InsertImpl(
-    private val context: Context,
+    private val applicationContext: Context,
     private val permissions: ContactsPermissions,
 
     private var allowBlanks: Boolean = false,
@@ -233,14 +233,14 @@ private class InsertImpl(
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
-        account = account?.nullIfNotInSystem(context)
+        account = account?.nullIfNotInSystem(applicationContext)
 
         val results = mutableMapOf<MutableRawContact, Long?>()
         for (rawContact in rawContacts) {
             results[rawContact] = if (!allowBlanks && rawContact.isBlank()) {
                 null
             } else {
-                context.insertRawContactForAccount(account, rawContact, IS_PROFILE)
+                applicationContext.insertRawContactForAccount(account, rawContact, IS_PROFILE)
             }
         }
         return InsertResult(results)

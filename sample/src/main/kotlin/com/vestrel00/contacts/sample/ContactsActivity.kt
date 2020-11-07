@@ -99,7 +99,7 @@ class ContactsActivity : BaseActivity() {
         queryJob = launch {
             // Using GeneralQuery here so that it matches closely to the native Contacts app search
             // results. Consumers should try out Query too because it gives the most control.
-            searchResults = Contacts().generalQueryWithPermission(this@ContactsActivity)
+            searchResults = Contacts(this@ContactsActivity).generalQueryWithPermission()
                 .accounts(selectedAccounts)
                 .include(
                     Fields.Contact.DisplayNamePrimary,

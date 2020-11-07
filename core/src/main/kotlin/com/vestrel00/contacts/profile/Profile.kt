@@ -19,42 +19,48 @@ interface Profile {
     /**
      * Returns a new [ProfileQuery] instance.
      */
-    fun query(context: Context): ProfileQuery
+    fun query(): ProfileQuery
 
     /**
      * Returns a new [ProfileInsert] instance.
      */
-    fun insert(context: Context): ProfileInsert
+    fun insert(): ProfileInsert
 
     /**
      * Returns a new [ProfileUpdate] instance.
      */
-    fun update(context: Context): ProfileUpdate
+    fun update(): ProfileUpdate
 
     /**
      * Returns a new [ProfileDelete] instance.
      */
-    fun delete(context: Context): ProfileDelete
+    fun delete(): ProfileDelete
 
     /**
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(context: Context): ContactsPermissions
+    fun permissions(): ContactsPermissions
+
+    /**
+     * Reference to the Application's Context for use in extension functions and external library
+     * modules. This is safe to hold on to. Not meant for consumer use.
+     */
+    val applicationContext: Context
 }
 
 @Suppress("FunctionName")
-internal fun Profile(): Profile = ProfileImpl()
+internal fun Profile(context: Context): Profile = ProfileImpl(context.applicationContext)
 
-private class ProfileImpl : Profile {
+private class ProfileImpl(override val applicationContext: Context) : Profile {
 
-    override fun query(context: Context) = ProfileQuery(context)
+    override fun query() = ProfileQuery(applicationContext)
 
-    override fun insert(context: Context) = ProfileInsert(context)
+    override fun insert() = ProfileInsert(applicationContext)
 
-    override fun update(context: Context) = ProfileUpdate(context)
+    override fun update() = ProfileUpdate(applicationContext)
 
-    override fun delete(context: Context) = ProfileDelete(context)
+    override fun delete() = ProfileDelete(applicationContext)
 
-    override fun permissions(context: Context) = ContactsPermissions(context)
+    override fun permissions() = ContactsPermissions(applicationContext)
 }

@@ -22,40 +22,46 @@ interface Accounts {
     /**
      * Returns a new [AccountsQuery] instance.
      */
-    fun query(context: Context): AccountsQuery
+    fun query(): AccountsQuery
 
     /**
      * Returns a new [AccountsRawContactsQuery] instance.
      */
-    fun queryRawContacts(context: Context): AccountsRawContactsQuery
+    fun queryRawContacts(): AccountsRawContactsQuery
 
     /**
      * Returns a new [AccountsRawContactsAssociationsUpdate] instance.
      */
-    fun updateRawContactsAssociations(context: Context): AccountsRawContactsAssociationsUpdate
+    fun updateRawContactsAssociations(): AccountsRawContactsAssociationsUpdate
 
     /**
      * Returns a new [AccountsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(context: Context): AccountsPermissions
+    fun permissions(): AccountsPermissions
+
+    /**
+     * Reference to the Application's Context for use in extension functions and external library
+     * modules. This is safe to hold on to. Not meant for consumer use.
+     */
+    val applicationContext: Context
 }
 
 /**
  * Creates a new [Accounts] instance.
  */
 @Suppress("FunctionName")
-fun Accounts(): Accounts = AccountsImpl()
+fun Accounts(context: Context): Accounts = AccountsImpl(context.applicationContext)
 
 @SuppressWarnings("MissingPermission")
-private class AccountsImpl : Accounts {
+private class AccountsImpl(override val applicationContext: Context) : Accounts {
 
-    override fun query(context: Context) = AccountsQuery(context)
+    override fun query() = AccountsQuery(applicationContext)
 
-    override fun queryRawContacts(context: Context) = AccountsRawContactsQuery(context)
+    override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext)
 
-    override fun updateRawContactsAssociations(context: Context) =
-        AccountsRawContactsAssociationsUpdate(context)
+    override fun updateRawContactsAssociations() =
+        AccountsRawContactsAssociationsUpdate(applicationContext)
 
-    override fun permissions(context: Context) = AccountsPermissions(context)
+    override fun permissions() = AccountsPermissions(applicationContext)
 }

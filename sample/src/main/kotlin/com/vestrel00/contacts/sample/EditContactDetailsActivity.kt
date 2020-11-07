@@ -65,7 +65,7 @@ class EditContactDetailsActivity : BaseActivity() {
     }
 
     private suspend fun fetchContact(): Boolean {
-        val result = Contacts().queryWithPermission(this)
+        val result = Contacts(this).queryWithPermission()
             .where(Fields.Contact.Id equalTo intent.contactId())
             .findWithContext()
             .firstOrNull()
@@ -106,7 +106,7 @@ class EditContactDetailsActivity : BaseActivity() {
         val photoSaveSuccess = photoView.saveContactPhoto()
 
         // Save changes. Delete blanks!
-        val contactSaveResult = Contacts().updateWithPermission(this)
+        val contactSaveResult = Contacts(this).updateWithPermission()
             // This is implicitly true by default. We are just being explicitly verbose here.
             .deleteBlanks(true)
             .contacts(contact)

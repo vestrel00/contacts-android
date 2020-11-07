@@ -24,6 +24,8 @@ import com.vestrel00.contacts.util.unsafeLazy
  * See https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
  *
  * If you need more granularity and customizations when providing matching criteria, use [Query].
+ * For example, getting a Contact by ID is not supported by [GeneralQuery] but can be achieve by
+ * [Query].
  *
  * ## Permissions
  *

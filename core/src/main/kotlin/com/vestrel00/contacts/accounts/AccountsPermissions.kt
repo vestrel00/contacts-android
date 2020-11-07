@@ -34,17 +34,19 @@ interface AccountsPermissions {
 
 @Suppress("FunctionName")
 internal fun AccountsPermissions(context: Context): AccountsPermissions =
-    AccountsPermissionsImpl(context)
+    AccountsPermissionsImpl(context.applicationContext)
 
-private class AccountsPermissionsImpl(private val context: Context) : AccountsPermissions {
+private class AccountsPermissionsImpl(private val applicationContext: Context) :
+    AccountsPermissions {
 
     override fun canQueryAccounts(): Boolean =
-        context.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
-                && context.isPermissionGrantedFor(READ_PERMISSION)
+        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+                && applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
-    override fun canQueryRawContacts(): Boolean = context.isPermissionGrantedFor(READ_PERMISSION)
+    override fun canQueryRawContacts(): Boolean =
+        applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
     override fun canUpdateRawContactsAssociations(): Boolean =
-        context.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
-                && context.isPermissionGrantedFor(WRITE_PERMISSION)
+        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+                && applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
 }

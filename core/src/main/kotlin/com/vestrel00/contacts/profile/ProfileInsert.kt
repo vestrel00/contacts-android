@@ -179,12 +179,12 @@ interface ProfileInsert {
 
 @Suppress("FunctionName")
 internal fun ProfileInsert(context: Context): ProfileInsert = ProfileInsertImpl(
-    context,
+    context.applicationContext,
     ContactsPermissions(context)
 )
 
 private class ProfileInsertImpl(
-    private val context: Context,
+    private val applicationContext: Context,
     private val permissions: ContactsPermissions,
 
     private var allowBlanks: Boolean = false,
@@ -235,16 +235,17 @@ private class ProfileInsertImpl(
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
-        account = account?.nullIfNotInSystem(context)
+        account = account?.nullIfNotInSystem(applicationContext)
 
         if (
             !allowMultipleRawContactsPerAccount
-            && context.contentResolver.hasProfileRawContactForAccount(account)
+            && applicationContext.contentResolver.hasProfileRawContactForAccount(account)
         ) {
             return ProfileInsertFailed
         }
 
-        val rawContactId = context.insertRawContactForAccount(account, rawContact, IS_PROFILE)
+        val rawContactId =
+            applicationContext.insertRawContactForAccount(account, rawContact, IS_PROFILE)
 
         return ProfileInsertResult(rawContactId)
     }

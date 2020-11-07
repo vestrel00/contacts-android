@@ -1,6 +1,5 @@
 package com.vestrel00.contacts.permissions.data
 
-import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.data.Data
 import com.vestrel00.contacts.data.DataDelete
@@ -15,13 +14,13 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  *
  * If permission is already granted, then immediately returns a new [DataQuery] instance.
  */
-suspend fun Data.queryWithPermission(context: Context): DataQuery {
-    val permissions = permissions(context)
+suspend fun Data.queryWithPermission(): DataQuery {
+    val permissions = permissions()
     if (!permissions.canQuery()) {
-        requestReadPermission(context)
+        applicationContext.requestReadPermission()
     }
 
-    return query(context)
+    return query()
 }
 
 /**
@@ -30,13 +29,13 @@ suspend fun Data.queryWithPermission(context: Context): DataQuery {
  *
  * If permission is already granted, then immediately returns a new [DataUpdate] instance.
  */
-suspend fun Data.updateWithPermission(context: Context): DataUpdate {
-    val permissions = permissions(context)
+suspend fun Data.updateWithPermission(): DataUpdate {
+    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
-        requestWritePermission(context)
+        applicationContext.requestWritePermission()
     }
 
-    return update(context)
+    return update()
 }
 
 /**
@@ -45,11 +44,11 @@ suspend fun Data.updateWithPermission(context: Context): DataUpdate {
  *
  * If permissions are already granted, then immediately returns a new [DataDelete] instance.
  */
-suspend fun Data.deleteWithPermission(context: Context): DataDelete {
-    val permissions = permissions(context)
+suspend fun Data.deleteWithPermission(): DataDelete {
+    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
-        requestWritePermission(context)
+        applicationContext.requestWritePermission()
     }
 
-    return delete(context)
+    return delete()
 }

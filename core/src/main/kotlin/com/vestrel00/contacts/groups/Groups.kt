@@ -24,44 +24,50 @@ interface Groups {
     /**
      * Returns a new [GroupsQuery] instance.
      */
-    fun query(context: Context): GroupsQuery
+    fun query(): GroupsQuery
 
     /**
      * Returns a new [GroupsInsert] instance.
      */
-    fun insert(context: Context): GroupsInsert
+    fun insert(): GroupsInsert
 
     /**
      * Returns a new [GroupsUpdate] instance.
      */
-    fun update(context: Context): GroupsUpdate
+    fun update(): GroupsUpdate
 
     /*
     /**
      * Returns a new [GroupsDelete] instance.
      */
-    fun delete(context: Context): GroupsDelete
+    fun delete(): GroupsDelete
      */
 
     /**
      * Returns a new [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(context: Context): ContactsPermissions
+    fun permissions(): ContactsPermissions
+
+    /**
+     * Reference to the Application's Context for use in extension functions and external library
+     * modules. This is safe to hold on to. Not meant for consumer use.
+     */
+    val applicationContext: Context
 }
 
 @Suppress("FunctionName")
-internal fun Groups(): Groups = GroupsImpl()
+internal fun Groups(context: Context): Groups = GroupsImpl(context.applicationContext)
 
-private class GroupsImpl : Groups {
+private class GroupsImpl(override val applicationContext: Context) : Groups {
 
-    override fun query(context: Context) = GroupsQuery(context)
+    override fun query() = GroupsQuery(applicationContext)
 
-    override fun insert(context: Context) = GroupsInsert(context)
+    override fun insert() = GroupsInsert(applicationContext)
 
-    override fun update(context: Context) = GroupsUpdate(context)
+    override fun update() = GroupsUpdate(applicationContext)
 
-    // override fun delete(context: Context): GroupsDelete = GroupsDelete(context)
+    // override fun delete(): GroupsDelete = GroupsDelete(applicationContext)
 
-    override fun permissions(context: Context) = ContactsPermissions(context)
+    override fun permissions() = ContactsPermissions(applicationContext)
 }
