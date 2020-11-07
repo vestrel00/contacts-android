@@ -4,9 +4,6 @@ buildscript {
     // We'll utilize the buildSrc/ if absolutely necessary.
     ext {
         versions = [
-                name  : "1.0.0",
-                code  : 1,
-
                 build : [
                         java   : [
                                 targetCompatibility: '1.7',
