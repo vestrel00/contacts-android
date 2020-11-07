@@ -1,7 +1,5 @@
 ## TODO
 
-0. Move src/kotlin to src/java
-
 1. Setup user profile
     - Review and update APIs; E.G. Update.kt and Delete.kt (fail for non-profile entities).
         - Make sure they don't work when isProfile is true and make sure to document it.
@@ -93,14 +91,18 @@ functionality is included (though may look different).
 3. Add consumerProguardFiles?
 4. Add CONTRIBUTING.md and CHANGELOG.md.
 5. Complete README.
-6. Publish artifact AND write/publish medium blog to ProAndroidDev AND promote via AndroidWeekly.
-7. Immediately setup Travis CI (free for public repos).
+6. Draft medium blog.
+7. Publish artifact.
+8. Try out pubished artifact in a new project.
+9. Immediately setup Travis CI (free for public repos).
+10. Publish medium blog.
+11. Promote via AndroidWeekly.
 
 ----------------------------------------------------------------------------------------------------
 
 # Contacts
 
-TODO summary
+TODO
 
 ### Download
 
@@ -117,9 +119,8 @@ TODO
 
 ## Proguard
 
-If you are using ProGuard, you might need to add the following rules if using modules other than `core`;
-
-- [Coroutines][coroutines], if using modules `async`, TODO
+If you use Proguard and the `async` and/or `permissions`, you may need to add rules for
+[Coroutines][coroutines-proguard].
 
 ## Upcoming features!
 
@@ -160,4 +161,4 @@ consumers to implement a specific part of the native Android Contacts app.
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[coroutines]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
+[coroutines-proguard]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
