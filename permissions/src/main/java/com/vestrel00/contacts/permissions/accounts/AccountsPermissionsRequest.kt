@@ -59,6 +59,24 @@ suspend fun Accounts.updateRawContactsAssociationsWithPermission():
 }
 
 /**
+ * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
+ * not yet granted, suspends the current coroutine, requests for the permission, and then returns a
+ * new [AccountsRawContactsAssociationsUpdate] instance.
+ *
+ * If permissions are already granted, then immediately returns a new
+ * [AccountsRawContactsAssociationsUpdate] instance.
+ */
+suspend fun Accounts.updateProfileRawContactsAssociationsWithPermission():
+        AccountsRawContactsAssociationsUpdate {
+    val permissions = permissions()
+    if (!permissions.canUpdateRawContactsAssociations()) {
+        applicationContext.requestUpdateRawContactsAssociationsPermission()
+    }
+
+    return updateProfileRawContactsAssociations()
+}
+
+/**
  * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
  * [ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until the user either
  * grants or denies the permission request.

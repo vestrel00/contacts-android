@@ -13,7 +13,8 @@ import android.content.Context
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to use
  *   [queryRawContacts].
  * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.WRITE_CONTACTS" to the
- *   AndroidManifest in order to use [updateRawContactsAssociations].
+ *   AndroidManifest in order to use [updateRawContactsAssociations] and
+ *   [updateProfileRawContactsAssociations].
  *
  * Use [permissions] convenience functions to check for required permissions.
  */
@@ -30,9 +31,18 @@ interface Accounts {
     fun queryRawContacts(): AccountsRawContactsQuery
 
     /**
-     * Returns a new [AccountsRawContactsAssociationsUpdate] instance.
+     * Returns a new [AccountsRawContactsAssociationsUpdate] instance for non-Profile RawContacts.
+     *
+     * Operations for Profile RawContacts may fail.
      */
     fun updateRawContactsAssociations(): AccountsRawContactsAssociationsUpdate
+
+    /**
+     * Returns a new [AccountsRawContactsAssociationsUpdate] instance for Profile RawContacts.
+     *
+     * Operations for non-Profile RawContacts may fail.
+     */
+    fun updateProfileRawContactsAssociations(): AccountsRawContactsAssociationsUpdate
 
     /**
      * Returns a new [AccountsPermissions] instance, which provides functions for checking required
@@ -61,7 +71,10 @@ private class AccountsImpl(override val applicationContext: Context) : Accounts 
     override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext)
 
     override fun updateRawContactsAssociations() =
-        AccountsRawContactsAssociationsUpdate(applicationContext)
+        AccountsRawContactsAssociationsUpdate(applicationContext, false)
+
+    override fun updateProfileRawContactsAssociations() =
+        AccountsRawContactsAssociationsUpdate(applicationContext, true)
 
     override fun permissions() = AccountsPermissions(applicationContext)
 }

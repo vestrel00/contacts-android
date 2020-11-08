@@ -82,18 +82,9 @@ interface Contacts {
     /**
      * Reference to the Application's Context for use in extension functions and external library
      * modules. This is safe to hold on to. Not meant for consumer use.
-     */
-    val applicationContext: Context
-}
-
-/**
- * Creates a new [Contacts] instance.
- */
-@Suppress("FunctionName")
-fun Contacts(context: Context): Contacts = ContactsImpl(context.applicationContext)
-
-private class ContactsImpl(
-    /**
+     *
+     * ## Developer notes
+     *
      * It's safe to save a hard reference to the Application context as it is alive for as long as
      * the app is alive. No need to make this a weak reference and make our lives more difficult
      * for no reason. Other libraries do the same; e.g. coil.
@@ -106,6 +97,16 @@ private class ContactsImpl(
      * Consumers of this should still use [Context.getApplicationContext] for redundancy, which
      * provides further protection.
      */
+    val applicationContext: Context
+}
+
+/**
+ * Creates a new [Contacts] instance.
+ */
+@Suppress("FunctionName")
+fun Contacts(context: Context): Contacts = ContactsImpl(context.applicationContext)
+
+private class ContactsImpl(
     override val applicationContext: Context
 ) : Contacts {
 

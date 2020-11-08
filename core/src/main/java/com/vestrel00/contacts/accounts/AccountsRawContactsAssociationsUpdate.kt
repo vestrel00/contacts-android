@@ -2,23 +2,24 @@ package com.vestrel00.contacts.accounts
 
 import android.accounts.Account
 import android.content.ContentProviderOperation
+import android.content.ContentProviderOperation.newDelete
+import android.content.ContentProviderOperation.newUpdate
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
-import com.vestrel00.contacts.entities.operation.newDelete
-import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.isNotInSystem
 import com.vestrel00.contacts.util.query
 
 /**
- * Updates RawContacts associations to Accounts.
+ * Updates Profile OR non-Profile (depending on instance) RawContacts associations to Accounts.
  *
  * Due to certain limitations and behaviors imposed by the Contacts Provider, this only supports;
  *
@@ -370,15 +371,23 @@ interface AccountsRawContactsAssociationsUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsRawContactsAssociationsUpdate(context: Context):
+internal fun AccountsRawContactsAssociationsUpdate(context: Context, isProfile: Boolean):
         AccountsRawContactsAssociationsUpdate = AccountsRawContactsAssociationsUpdateImpl(
-    context.applicationContext, AccountsPermissions(context)
+    context.applicationContext, AccountsPermissions(context), isProfile
 )
 
 private class AccountsRawContactsAssociationsUpdateImpl(
     private val applicationContext: Context,
-    private val permissions: AccountsPermissions
+    private val permissions: AccountsPermissions,
+    private val isProfile: Boolean
 ) : AccountsRawContactsAssociationsUpdate {
+
+    override fun toString(): String =
+        """
+            AccountsRawContactsAssociationsUpdate {
+                isProfile: $isProfile
+            }
+        """.trimIndent()
 
     // region ASSOCIATE
 
@@ -393,10 +402,14 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     override fun associateAccountWithLocalRawContacts(
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean {
-        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(
-                applicationContext
-            )
+        if (!permissions.canUpdateRawContactsAssociations() ||
+            account.isNotInSystem(applicationContext)
         ) {
+            return false
+        }
+
+        if (rawContacts.find { it.isProfile != isProfile } != null) {
+            // Immediately fail if there one or more RawContacts that does not match isProfile.
             return false
         }
 
@@ -407,34 +420,37 @@ private class AccountsRawContactsAssociationsUpdateImpl(
                 .and(
                     RawContactsFields.AccountName.isNull()
                         .or(RawContactsFields.AccountType.isNull())
-                )
+                ),
+            isProfile
         )
 
         // Succeed if there are no local RawContacts.
         // Using the || operator here is important because if it is true, then the update does
         // not occur. If && is used instead, the update will occur even if it is true.
         return localRawContactIds.isEmpty() || applicationContext.contentResolver
-            .updateRawContactsAccount(account, localRawContactIds)
+            .updateRawContactsAccount(account, localRawContactIds, isProfile)
     }
 
     override fun associateAccountWithAllLocalRawContacts(account: Account): Boolean {
-        if (!permissions.canUpdateRawContactsAssociations() || account.isNotInSystem(
-                applicationContext
-            )
+        if (!permissions.canUpdateRawContactsAssociations() ||
+            account.isNotInSystem(applicationContext)
         ) {
             return false
         }
 
         val localRawContactIds = applicationContext.contentResolver.rawContactIdsWhere(
-            RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull()
+            RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull(),
+            isProfile
         )
 
         // Succeed if there are no local RawContacts.
         // Using the || operator here is important because if it is true, then the update does
         // not occur. If && is used instead, the update will occur even if it is true.
         return localRawContactIds.isEmpty() || applicationContext.contentResolver
-            .updateRawContactsAccount(account, localRawContactIds)
+            .updateRawContactsAccount(account, localRawContactIds, isProfile)
     }
+
+    // NOTE: If uncommenting code below, update it with isProfile.
 
     /*
     override fun associateAccountWithRawContacts(
@@ -571,16 +587,17 @@ private class AccountsRawContactsAssociationsUpdateImpl(
 }
 
 private fun ContentResolver.updateRawContactsAccount(
-    account: Account?, rawContactIds: Set<Long>
-): Boolean = updateRawContactsAccount(account, rawContactIds.asSequence())
+    account: Account?, rawContactIds: Set<Long>, isProfile: Boolean
+): Boolean = updateRawContactsAccount(account, rawContactIds.asSequence(), isProfile)
 
 private fun ContentResolver.updateRawContactsAccount(
-    account: Account?, rawContactIds: Sequence<Long>
+    account: Account?, rawContactIds: Sequence<Long>, isProfile: Boolean
 ): Boolean = updateRawContactsAccount(
     account,
     (Fields.RawContact.Id `in` rawContactIds)
             and (Fields.MimeType equalTo MimeType.GROUP_MEMBERSHIP),
-    RawContactsFields.Id `in` rawContactIds
+    RawContactsFields.Id `in` rawContactIds,
+    isProfile
 )
 
 /**
@@ -596,19 +613,20 @@ private fun ContentResolver.updateRawContactsAccount(
 private fun ContentResolver.updateRawContactsAccount(
     account: Account?,
     dataWhere: Where<AbstractDataField>?,
-    rawContactsWhere: Where<RawContactsField>
+    rawContactsWhere: Where<RawContactsField>,
+    isProfile: Boolean
 ): Boolean = applyBatch(
     arrayListOf<ContentProviderOperation>().apply {
         // First delete existing group memberships.
         if (account != null && dataWhere != null) {
-            newDelete(Table.Data)
+            newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
                 .withSelection(dataWhere)
                 .build()
                 .let(::add)
         }
 
         // Then update the sync columns.
-        newUpdate(Table.RawContacts)
+        newUpdate(if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri)
             .withSelection(rawContactsWhere)
             .withValue(RawContactsFields.AccountName, account?.name)
             .withValue(RawContactsFields.AccountType, account?.type)
@@ -617,8 +635,14 @@ private fun ContentResolver.updateRawContactsAccount(
     }
 ) != null
 
-private fun ContentResolver.rawContactIdsWhere(where: Where<RawContactsField>?):
-        Set<Long> = query(Table.RawContacts, Include(RawContactsFields.Id), where) {
+private fun ContentResolver.rawContactIdsWhere(
+    where: Where<RawContactsField>?,
+    isProfile: Boolean
+): Set<Long> = query(
+    if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+    Include(RawContactsFields.Id),
+    where
+) {
     val rawContactIds = mutableSetOf<Long>()
     val rawContactsCursor = it.rawContactsCursor()
 
