@@ -25,6 +25,22 @@ suspend fun Accounts.queryWithPermission(): AccountsQuery {
 }
 
 /**
+ * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.READ_PERMISSION] are
+ * not yet granted, suspends the current coroutine, requests for the permission, and then returns a
+ * new [AccountsQuery] instance.
+ *
+ * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
+ */
+suspend fun Accounts.queryProfileWithPermission(): AccountsQuery {
+    val permissions = permissions()
+    if (!permissions.canQueryAccounts()) {
+        applicationContext.requestQueryAccountsPermission()
+    }
+
+    return queryProfile()
+}
+
+/**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
  * requests for the permission, and then returns a new [AccountsRawContactsQuery] instance.
  *

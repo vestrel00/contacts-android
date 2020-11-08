@@ -15,7 +15,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
- * Queries on the RawContacts table.
+ * Queries for Profile OR non-Profile (depending on instance RawContacts.
  *
  * These queries return [BlankRawContact]s, which are RawContacts that contains no data (e.g. email,
  * phone) only containing critical information for performing RawContact operations such as
@@ -185,6 +185,7 @@ private class AccountsRawContactsQueryImpl(
     private var orderBy: CompoundOrderBy<RawContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
+    // TODO add isProfile and handle it
 ) : AccountsRawContactsQuery {
 
     override fun toString(): String =

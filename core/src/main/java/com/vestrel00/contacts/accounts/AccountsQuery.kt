@@ -42,7 +42,7 @@ import com.vestrel00.contacts.util.query
 interface AccountsQuery {
 
     /**
-     * Returns all available [Account]s.
+     * Returns all available [Account]s in the system.
      *
      * ## Permissions
      *
@@ -55,7 +55,7 @@ interface AccountsQuery {
     fun allAccounts(): List<Account>
 
     /**
-     * Returns all available [Account]s with the given [Account.type].
+     * Returns all available [Account]s with the given [Account.type] in the system.
      *
      * ## Permissions
      *
@@ -68,8 +68,9 @@ interface AccountsQuery {
     fun accountsWithType(type: String): List<Account>
 
     /**
-     * Returns the [Account] for the given [rawContact]. Returns null if the [rawContact] is a local
-     * RawContact, which is not associated with any account.
+     * Returns the [Account] for the given Profile or non-Profile (depending on instance)
+     * [rawContact]. Returns null if the [rawContact] is a local RawContact, which is not associated
+     * with any account.
      *
      * ## Permissions
      *
@@ -83,7 +84,8 @@ interface AccountsQuery {
     fun accountFor(rawContact: RawContactEntity): Account?
 
     /**
-     * Returns the [AccountsList] for the given [rawContacts].
+     * Returns the [AccountsList] for the given Profile or non-Profile (depending on instance)
+     * [rawContacts].
      *
      * ## Permissions
      *
@@ -157,18 +159,27 @@ interface AccountsQuery {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsQuery(context: Context): AccountsQuery = AccountsQueryImpl(
+internal fun AccountsQuery(context: Context, isProfile: Boolean): AccountsQuery = AccountsQueryImpl(
     context.contentResolver,
     AccountManager.get(context),
-    AccountsPermissions(context)
+    AccountsPermissions(context),
+    isProfile
 )
 
 @SuppressWarnings("MissingPermission")
 private class AccountsQueryImpl(
     private val contentResolver: ContentResolver,
     private val accountManager: AccountManager,
-    private val permissions: AccountsPermissions
+    private val permissions: AccountsPermissions,
+    private val isProfile: Boolean
 ) : AccountsQuery {
+
+    override fun toString(): String =
+        """
+            AccountsQuery {
+                isProfile: $isProfile
+            }
+        """.trimIndent()
 
     override fun allAccounts(): List<Account> = if (!permissions.canQueryAccounts()) {
         emptyList()
@@ -184,11 +195,11 @@ private class AccountsQueryImpl(
         }
 
     override fun accountFor(rawContact: RawContactEntity): Account? =
-        if (!permissions.canQueryAccounts()) {
+        if (!permissions.canQueryAccounts() || rawContact.isProfile != isProfile) {
             null
         } else {
             rawContact.id?.let {
-                contentResolver.accountForRawContactWithId(it, IS_PROFILE)
+                contentResolver.accountForRawContactWithId(it, isProfile)
             }
         }
 
@@ -214,6 +225,11 @@ private class AccountsQueryImpl(
             return AccountsListImpl(emptyMap())
         }
 
+        if (rawContacts.find { it.isProfile != isProfile } != null) {
+            // Immediately fail if there is one or more RawContacts that does not match isProfile.
+            return AccountsListImpl(emptyMap())
+        }
+
         val rawContactIds = rawContacts.map { it.id }
         val nonNullRawContactIds = rawContactIds.filterNotNull()
 
@@ -225,7 +241,7 @@ private class AccountsQueryImpl(
 
             // Get all rows in nonNullRawContactIds.
             contentResolver.query(
-                Table.RawContacts,
+                if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
                 Include(RawContactsFields),
                 RawContactsFields.Id `in` nonNullRawContactIds
             ) {
@@ -259,10 +275,6 @@ private class AccountsQueryImpl(
                 clear()
             }
         }
-    }
-
-    private companion object {
-        const val IS_PROFILE = false
     }
 }
 

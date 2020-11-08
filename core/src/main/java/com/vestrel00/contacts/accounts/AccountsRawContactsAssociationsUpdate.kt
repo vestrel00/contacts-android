@@ -409,7 +409,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
         }
 
         if (rawContacts.find { it.isProfile != isProfile } != null) {
-            // Immediately fail if there one or more RawContacts that does not match isProfile.
+            // Immediately fail if there is one or more RawContacts that does not match isProfile.
             return false
         }
 

@@ -122,7 +122,12 @@ interface GroupsInsert {
 @Suppress("FunctionName")
 internal fun GroupsInsert(context: Context): GroupsInsert = GroupsInsertImpl(
     context.contentResolver,
-    AccountsQuery(context),
+    AccountsQuery(
+        context,
+        // Does not matter what value is passed to isProfile because we are not using profile-aware
+        // functions.
+        false
+    ),
     ContactsPermissions(context)
 )
 

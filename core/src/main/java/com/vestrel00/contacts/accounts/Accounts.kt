@@ -21,9 +21,14 @@ import android.content.Context
 interface Accounts {
 
     /**
-     * Returns a new [AccountsQuery] instance.
+     * Returns a new [AccountsQuery] instance for non-Profile queries.
      */
     fun query(): AccountsQuery
+
+    /**
+     * Returns a new [AccountsQuery] instance for Profile queries.
+     */
+    fun queryProfile(): AccountsQuery
 
     /**
      * Returns a new [AccountsRawContactsQuery] instance.
@@ -66,7 +71,9 @@ fun Accounts(context: Context): Accounts = AccountsImpl(context.applicationConte
 @SuppressWarnings("MissingPermission")
 private class AccountsImpl(override val applicationContext: Context) : Accounts {
 
-    override fun query() = AccountsQuery(applicationContext)
+    override fun query() = AccountsQuery(applicationContext, false)
+
+    override fun queryProfile() = AccountsQuery(applicationContext, true)
 
     override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext)
 

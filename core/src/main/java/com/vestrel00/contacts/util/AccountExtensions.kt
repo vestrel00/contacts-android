@@ -32,7 +32,14 @@ internal fun Account.isNotInSystem(context: Context): Boolean = !isInSystem(cont
  * Requires [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
 internal fun Account.nullIfNotInSystem(context: Context): Account? =
-    nullIfNotIn(AccountsQuery(context).allAccounts())
+    nullIfNotIn(
+        AccountsQuery(
+            context,
+            // Does not matter what value is passed to isProfile because we are not using profile-aware
+            // functions.
+            false
+        ).allAccounts()
+    )
 
 /**
  * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
