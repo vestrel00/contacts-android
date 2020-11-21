@@ -31,9 +31,15 @@ interface Accounts {
     fun queryProfile(): AccountsQuery
 
     /**
-     * Returns a new [AccountsRawContactsQuery] instance.
+     * Returns a new [AccountsRawContactsQuery] instance for non-Profile queries.
      */
     fun queryRawContacts(): AccountsRawContactsQuery
+
+
+    /**
+     * Returns a new [AccountsRawContactsQuery] instance for profile queries.
+     */
+    fun queryProfileRawContacts(): AccountsRawContactsQuery
 
     /**
      * Returns a new [AccountsRawContactsAssociationsUpdate] instance for non-Profile RawContacts.
@@ -75,7 +81,9 @@ private class AccountsImpl(override val applicationContext: Context) : Accounts 
 
     override fun queryProfile() = AccountsQuery(applicationContext, true)
 
-    override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext)
+    override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext, false)
+
+    override fun queryProfileRawContacts() = AccountsRawContactsQuery(applicationContext, true)
 
     override fun updateRawContactsAssociations() =
         AccountsRawContactsAssociationsUpdate(applicationContext, false)

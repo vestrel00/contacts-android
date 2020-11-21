@@ -22,7 +22,6 @@ import com.vestrel00.contacts.profile.ProfileQuery
 @JvmOverloads
 fun ProfileInsert.Result.rawContact(context: Context, cancel: () -> Boolean = { false }):
         RawContact? = rawContactId?.let { rawContactId ->
-
     contact(context, cancel)
         ?.rawContacts
         ?.asSequence()

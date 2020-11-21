@@ -8,6 +8,7 @@ import com.vestrel00.contacts.entities.BlankRawContact
 import com.vestrel00.contacts.entities.cursor.account
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.blankRawContactMapper
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
@@ -15,7 +16,7 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
- * Queries for Profile OR non-Profile (depending on instance RawContacts.
+ * Queries for Profile OR non-Profile (depending on instance) RawContacts.
  *
  * These queries return [BlankRawContact]s, which are RawContacts that contains no data (e.g. email,
  * phone) only containing critical information for performing RawContact operations such as
@@ -170,27 +171,30 @@ interface AccountsRawContactsQuery {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsRawContactsQuery(context: Context): AccountsRawContactsQuery =
-    AccountsRawContactsQueryImpl(
-        context.contentResolver,
-        AccountsPermissions(context)
-    )
+internal fun AccountsRawContactsQuery(
+    context: Context, isProfile: Boolean
+): AccountsRawContactsQuery = AccountsRawContactsQueryImpl(
+    context.contentResolver,
+    AccountsPermissions(context),
+    isProfile
+)
 
 private class AccountsRawContactsQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: AccountsPermissions,
+    private val isProfile: Boolean,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var where: Where<RawContactsField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<RawContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
-    // TODO add isProfile and handle it
 ) : AccountsRawContactsQuery {
 
     override fun toString(): String =
         """
             AccountsRawContactsQuery {
+                isProfile: $isProfile
                 rawContactsWhere: $rawContactsWhere
                 where: $where
                 orderBy: $orderBy
@@ -249,7 +253,7 @@ private class AccountsRawContactsQueryImpl(
             BlankRawContactsListImpl(emptyMap())
         } else {
             contentResolver.resolve(
-                rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
+                isProfile, rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
             )
         }
 
@@ -264,6 +268,7 @@ private class AccountsRawContactsQueryImpl(
 }
 
 private fun ContentResolver.resolve(
+    isProfile: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<RawContactsField>,
     where: Where<RawContactsField>?,
@@ -272,7 +277,7 @@ private fun ContentResolver.resolve(
     offset: Int,
     cancel: () -> Boolean
 ): AccountsRawContactsQuery.BlankRawContactsList = query(
-    Table.RawContacts,
+    if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
     include,
     RawContactsFields.ContactId.isNotNull() and rawContactsWhere and where,
     sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
@@ -280,7 +285,7 @@ private fun ContentResolver.resolve(
     val accountRawContactsMap = mutableMapOf<Account?, MutableList<BlankRawContact>>()
     val rawContactsList = BlankRawContactsListImpl(accountRawContactsMap)
 
-    val blankRawContactMapper = it.blankRawContactMapper(false)
+    val blankRawContactMapper = it.blankRawContactMapper(isProfile)
 
     while (!cancel() && it.moveToNext()) {
         val account = it.rawContactsCursor().account()

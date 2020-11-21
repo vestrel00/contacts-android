@@ -4,7 +4,6 @@ import android.accounts.Account
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -13,17 +12,11 @@ import android.widget.ArrayAdapter
 import com.vestrel00.contacts.Contacts
 import com.vestrel00.contacts.ContactsFields
 import com.vestrel00.contacts.Fields
-import com.vestrel00.contacts.accounts.Accounts
 import com.vestrel00.contacts.asc
 import com.vestrel00.contacts.async.findWithContext
-import com.vestrel00.contacts.async.profile.commitWithContext
 import com.vestrel00.contacts.debug.logContactsProviderTables
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.MutableName
-import com.vestrel00.contacts.permissions.accounts.updateRawContactsAssociationsWithPermission
 import com.vestrel00.contacts.permissions.generalQueryWithPermission
-import com.vestrel00.contacts.permissions.profile.insertWithPermission
-import com.vestrel00.contacts.permissions.profile.queryWithPermission
 import com.vestrel00.contacts.ui.text.AbstractTextWatcher
 import com.vestrel00.contacts.util.emails
 import com.vestrel00.contacts.util.phones
@@ -129,30 +122,6 @@ class ContactsActivity : BaseActivity() {
             // TODO Make sure to comment out the below and remove all logging before going public!
             this@ContactsActivity.logContactsProviderTables()
         }
-    }
-
-    private suspend fun associateProfileRawContacts() {
-        val profile = Contacts(this@ContactsActivity).profile().queryWithPermission()
-            .find()
-
-        val result = Accounts(this@ContactsActivity).updateRawContactsAssociationsWithPermission()
-            .associateAccountWithLocalRawContacts(
-                Account("hoalwking@gmail.com", "com.google"),
-                profile!!.rawContacts
-            )
-
-        Log.d("YOLO", "Success? $result")
-    }
-
-    private suspend fun insertProfile() {
-        Contacts(this@ContactsActivity).profile().insertWithPermission()
-            .allowMultipleRawContactsPerAccount(true)
-            .rawContact {
-                name = MutableName().apply {
-                    displayName = "Local Three"
-                }
-            }
-            .commitWithContext()
     }
 
     private fun setContactsAdapterItems() {

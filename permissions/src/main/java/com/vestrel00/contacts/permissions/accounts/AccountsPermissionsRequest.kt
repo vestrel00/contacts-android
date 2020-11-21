@@ -57,6 +57,22 @@ suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery 
 }
 
 /**
+ * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permission, and then returns a new [AccountsRawContactsQuery] instance.
+ *
+ * If permission is already granted, then immediately returns a new [AccountsRawContactsQuery]
+ * instance.
+ */
+suspend fun Accounts.queryProfileRawContactsWithPermission(): AccountsRawContactsQuery {
+    val permissions = permissions()
+    if (!permissions.canQueryRawContacts()) {
+        applicationContext.requestQueryRawContactsPermission()
+    }
+
+    return queryProfileRawContacts()
+}
+
+/**
  * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
  * not yet granted, suspends the current coroutine, requests for the permission, and then returns a
  * new [AccountsRawContactsAssociationsUpdate] instance.
