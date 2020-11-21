@@ -3,12 +3,11 @@ package com.vestrel00.contacts.data
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
-import android.net.Uri
-import android.provider.ContactsContract
 import com.vestrel00.contacts.*
 import com.vestrel00.contacts.entities.*
 import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.mapper.entityMapperFor
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
 import com.vestrel00.contacts.util.query
@@ -16,7 +15,8 @@ import com.vestrel00.contacts.util.toRawContactsWhere
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
- * Provides new query instances for specific types of data.
+ * Provides new query instances for specific types of Profile OR non-Profile (depending on instance)
+ * data.
  */
 interface DataQuery {
 
@@ -89,73 +89,80 @@ interface DataQuery {
 }
 
 @Suppress("FunctionName")
-internal fun DataQuery(context: Context): DataQuery = DataQueryImpl(
+internal fun DataQuery(context: Context, isProfile: Boolean): DataQuery = DataQueryImpl(
     context.contentResolver,
-    ContactsPermissions(context)
+    ContactsPermissions(context),
+    isProfile
 )
 
 private class DataQueryImpl(
     private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions
+    private val permissions: ContactsPermissions,
+    private val isProfile: Boolean
 ) : DataQuery {
 
     override fun addresses(): CommonDataQuery<AddressField, Address> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Address, MimeType.ADDRESS
+        contentResolver, permissions, Fields.Address, MimeType.ADDRESS, isProfile
     )
 
     override fun emails(): CommonDataQuery<EmailField, Email> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Email, MimeType.EMAIL
+        contentResolver, permissions, Fields.Email, MimeType.EMAIL, isProfile
     )
 
     override fun events(): CommonDataQuery<EventField, Event> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Event, MimeType.EVENT
+        contentResolver, permissions, Fields.Event, MimeType.EVENT, isProfile
     )
 
     override fun groupMemberships(): CommonDataQuery<GroupMembershipField, GroupMembership> =
         CommonDataQueryImpl(
-            contentResolver, permissions, Fields.GroupMembership, MimeType.GROUP_MEMBERSHIP
+            contentResolver,
+            permissions,
+            Fields.GroupMembership,
+            MimeType.GROUP_MEMBERSHIP,
+            isProfile
         )
 
     override fun ims(): CommonDataQuery<ImField, Im> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Im, MimeType.IM
+        contentResolver, permissions, Fields.Im, MimeType.IM, isProfile
     )
 
     override fun names(): CommonDataQuery<NameField, Name> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Name, MimeType.NAME
+        contentResolver, permissions, Fields.Name, MimeType.NAME, isProfile
     )
 
     override fun nicknames(): CommonDataQuery<NicknameField, Nickname> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Nickname, MimeType.NICKNAME
+        contentResolver, permissions, Fields.Nickname, MimeType.NICKNAME, isProfile
     )
 
     override fun notes(): CommonDataQuery<NoteField, Note> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Note, MimeType.NOTE
+        contentResolver, permissions, Fields.Note, MimeType.NOTE, isProfile
     )
 
     override fun organizations(): CommonDataQuery<OrganizationField, Organization> =
         CommonDataQueryImpl(
-            contentResolver, permissions, Fields.Organization, MimeType.ORGANIZATION
+            contentResolver, permissions, Fields.Organization, MimeType.ORGANIZATION, isProfile
         )
 
     override fun phones(): CommonDataQuery<PhoneField, Phone> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Phone, MimeType.PHONE
+        contentResolver, permissions, Fields.Phone, MimeType.PHONE, isProfile
     )
 
     override fun relations(): CommonDataQuery<RelationField, Relation> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Relation, MimeType.RELATION
+        contentResolver, permissions, Fields.Relation, MimeType.RELATION, isProfile
     )
 
     override fun sipAddresses(): CommonDataQuery<SipAddressField, SipAddress> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.SipAddress, MimeType.SIP_ADDRESS
+        contentResolver, permissions, Fields.SipAddress, MimeType.SIP_ADDRESS, isProfile
     )
 
     override fun websites(): CommonDataQuery<WebsiteField, Website> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Website, MimeType.WEBSITE
+        contentResolver, permissions, Fields.Website, MimeType.WEBSITE, isProfile
     )
 }
 
 /**
- * Queries the Data table and returns one or more data of type [R] matching the search criteria.
+ * Queries the Data table and returns one or more Profile OR non-Profile (depending on instance)
+ * data of type [R] matching the search criteria.
  *
  * This returns a list of specific data type (e.g. emails, phones, etc). This is optimized and
  * useful for searching through and paginating one data type.
@@ -198,14 +205,6 @@ private class DataQueryImpl(
  *      .limit(10)
  *      .find();
  * ```
- *
- * ## Developer notes
- *
- * Phones, Emails, and Addresses have a CONTENT_URI that contains all rows consisting of only those
- * data kinds. Other data kinds do not have this content uri. These probably exists as an index /
- * for optimization since phones, emails, and addresses are the most commonly used data kinds. Using
- * these CONTENT_URIs probably results in shorter search times since it only has to look through a
- * subset of data instead of the entire data table.
  */
 interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
 
@@ -352,6 +351,7 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
 
     private val defaultIncludeFields: FieldSet<T>,
     private val mimeType: MimeType,
+    private val isProfile: Boolean,
 
     // Yes, the Include, Where, and OrderBy Field types are all AbstractDataField, not T.
     // The type T is mainly used to constrict consumers, not implementors (us).
@@ -367,8 +367,9 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
 
     override fun toString(): String =
         """
-            DataQuery {
-                mimeType: $mimeType
+            DataQuery {                
+                mimeType: $mimeType                
+                isProfile: $isProfile
                 rawContactsWhere: $rawContactsWhere
                 include: $include
                 where: $where
@@ -441,7 +442,7 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
         }
 
         return contentResolver.resolveDataEntity(
-            mimeType, rawContactsWhere, include, where, orderBy, limit, offset, cancel
+            isProfile, mimeType, rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
     }
 
@@ -456,6 +457,7 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
 }
 
 internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
+    isProfile: Boolean,
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
@@ -466,25 +468,24 @@ internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
     cancel: () -> Boolean
 ): List<T> {
 
-    var dataWhere = mimeType.dataWhere()
+    // var dataWhere: Where<AbstractDataField>? = mimeType.dataWhere()
+    var dataWhere: Where<AbstractDataField> = Fields.MimeType equalTo mimeType
 
     if (rawContactsWhere != null) {
         // Limit the data to the set associated with the RawContacts found in the RawContacts
         // table matching the rawContactsWhere.
         val rawContactIds = findRawContactIdsInRawContactsTable(rawContactsWhere, cancel)
-        dataWhere = if (dataWhere != null) {
-            dataWhere and (Fields.RawContact.Id `in` rawContactIds)
-        } else {
-            Fields.RawContact.Id `in` rawContactIds
-        }
+        dataWhere = dataWhere and (Fields.RawContact.Id `in` rawContactIds)
     }
 
     if (where != null) {
-        dataWhere = if (dataWhere != null) dataWhere and where else where
+        dataWhere = dataWhere and where
     }
 
     return query(
-        mimeType.contentUri(), include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
+        // mimeType.contentUri(),
+        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
+        include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
     ) {
         mutableListOf<T>().apply {
             val entityMapper = it.entityMapperFor<T>(mimeType)
@@ -519,11 +520,23 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
         }
     } ?: emptySet()
 
-// See the developer notes in the DataQuery interface documentation.
+/*
+
+Phones, Emails, and Addresses have a CONTENT_URI that contains all rows consisting of only those
+data kinds. Other data kinds do not have this content uri. These probably exists as an index /
+for optimization since phones, emails, and addresses are the most commonly used data kinds. Using
+these CONTENT_URIs probably results in shorter search times since it only has to look through a
+subset of data instead of the entire data table.
+
 private fun MimeType.dataWhere(): Where<AbstractDataField>? = when (this) {
     MimeType.PHONE, MimeType.EMAIL, MimeType.ADDRESS -> null
     else -> Fields.MimeType equalTo this
 }
+
+However, the content uris for phone, email, and address can only contain non-Profile data. Also,
+Uri.withAppendedPath(ProfileUris.DATA.uri, "phones") throws an exception.
+
+Therefore, we just end up using the generic profile and non-profile data table.
 
 private fun MimeType.contentUri(): Uri = when (this) {
     // I'm aware that CONTENT_FILTER_URI exist for PHONE and EMAIL. We are not using that here
@@ -533,3 +546,4 @@ private fun MimeType.contentUri(): Uri = when (this) {
     MimeType.ADDRESS -> ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI
     else -> Table.Data.uri
 }
+ */

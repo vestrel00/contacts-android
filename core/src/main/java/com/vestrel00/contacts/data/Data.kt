@@ -20,9 +20,14 @@ import com.vestrel00.contacts.ContactsPermissions
 interface Data {
 
     /**
-     * Returns a new [DataQuery] instance.
+     * Returns a new [DataQuery] instance for non-Profile queries.
      */
     fun query(): DataQuery
+
+    /**
+     * Returns a new [DataQuery] instance for Profile queries.
+     */
+    fun queryProfile(): DataQuery
 
     /**
      * Returns a new [DataUpdate] instance.
@@ -52,7 +57,9 @@ internal fun Data(context: Context): Data = DataImpl(context.applicationContext)
 
 private class DataImpl(override val applicationContext: Context) : Data {
 
-    override fun query() = DataQuery(applicationContext)
+    override fun query() = DataQuery(applicationContext, false)
+
+    override fun queryProfile() = DataQuery(applicationContext, true)
 
     override fun update() = DataUpdate(applicationContext)
 
