@@ -9,15 +9,12 @@ import com.vestrel00.contacts.entities.cursor.JoinedContactsCursor
  */
 internal class ContactMapper(
     private val contactsCursor: JoinedContactsCursor,
-    private val optionsMapper: EntityMapper<Options>,
-    private val isProfile: Boolean
+    private val optionsMapper: EntityMapper<Options>
 ) : EntityMapper<Contact> {
 
     override val value: Contact
         get() = Contact(
             id = contactsCursor.contactId,
-
-            isProfile = isProfile,
 
             rawContacts = emptyList(),
 

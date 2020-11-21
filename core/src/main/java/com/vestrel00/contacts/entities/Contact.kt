@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.entities
 
+import android.provider.ContactsContract
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -13,11 +14,6 @@ sealed class ContactEntity : Entity {
      * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
      */
     abstract override val id: Long?
-
-    /**
-     * True if this contact represents the user's personal profile entry.
-     */
-    abstract val isProfile: Boolean
 
     /**
      * A list of [RawContactEntity]s that are associated with this contact.
@@ -114,6 +110,12 @@ sealed class ContactEntity : Entity {
      * filters.
     val photoThumbnailUri: Uri?
      */
+
+    /**
+     * True if this contact represents the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = id?.let(ContactsContract::isProfileId) == true
 }
 
 /**
@@ -136,11 +138,6 @@ data class Contact internal constructor(
      * See [ContactEntity.id].
      */
     override val id: Long?,
-
-    /**
-     * See [ContactEntity.isProfile].
-     */
-    override val isProfile: Boolean,
 
     /**
      * See [ContactEntity.rawContacts].
@@ -179,8 +176,6 @@ data class Contact internal constructor(
     fun toMutableContact() = MutableContact(
         id = id,
 
-        isProfile = isProfile,
-
         rawContacts = rawContacts.map { it.toMutableRawContact() },
 
         displayNamePrimary = displayNamePrimary,
@@ -201,11 +196,6 @@ data class MutableContact internal constructor(
      * See [ContactEntity.id].
      */
     override val id: Long?,
-
-    /**
-     * See [ContactEntity.isProfile].
-     */
-    override val isProfile: Boolean,
 
     /**
      * See [ContactEntity.rawContacts].

@@ -322,7 +322,7 @@ private fun rawContactWithPhotoFileId(context: Context, photoFileId: Long): Temp
         Include(Fields.RawContact.Id),
         Fields.Photo.PhotoFileId equalTo photoFileId
     ) {
-        it.getNextOrNull { it.dataCursor().tempRawContactMapper(false).value }
+        it.getNextOrNull { it.dataCursor().tempRawContactMapper().value }
     }
 
 // endregion

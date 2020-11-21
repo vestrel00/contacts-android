@@ -7,16 +7,13 @@ import com.vestrel00.contacts.entities.cursor.RawContactIdCursor
  * Creates [TempRawContact] instances. May be used for cursors from the RawContacts or Data table.
  */
 internal class TempRawContactMapper(
-    private val rawContactIdCursor: RawContactIdCursor,
-    private val isProfile: Boolean
+    private val rawContactIdCursor: RawContactIdCursor
 ) : EntityMapper<TempRawContact> {
 
     override val value: TempRawContact
         get() = TempRawContact(
             id = rawContactIdCursor.rawContactId,
             contactId = rawContactIdCursor.contactId,
-
-            isProfile = isProfile,
 
             addresses = mutableListOf(),
 

@@ -285,7 +285,7 @@ private fun ContentResolver.resolve(
     val accountRawContactsMap = mutableMapOf<Account?, MutableList<BlankRawContact>>()
     val rawContactsList = BlankRawContactsListImpl(accountRawContactsMap)
 
-    val blankRawContactMapper = it.blankRawContactMapper(isProfile)
+    val blankRawContactMapper = it.blankRawContactMapper()
 
     while (!cancel() && it.moveToNext()) {
         val account = it.rawContactsCursor().account()

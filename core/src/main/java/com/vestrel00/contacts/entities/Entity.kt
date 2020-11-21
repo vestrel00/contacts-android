@@ -12,6 +12,7 @@ interface Entity : Parcelable {
      */
     val id: Long?
 
+    // TODO convert to a val
     /**
      * Returns true if this entity has no non-null (and non-blank for strings) properties or other
      * entities containing non-null (and non-blank for strings) properties.

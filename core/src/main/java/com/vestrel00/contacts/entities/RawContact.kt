@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.entities
 
+import android.provider.ContactsContract
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -21,17 +22,18 @@ sealed class RawContactEntity : Entity {
     abstract val contactId: Long?
 
     /**
-     * True if this raw contact belongs to the user's personal profile entry.
-     */
-    abstract val isProfile: Boolean
-
-    /**
      * The [Photo] class does not have any real functional value. This exist only to prevent
      * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
      *
      * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set photos.
      */
     internal abstract var photo: Photo?
+
+    /**
+     * True if this raw contact belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = id?.let(ContactsContract::isProfileId) == true
 }
 
 /**
@@ -66,11 +68,6 @@ data class RawContact internal constructor(
      * See [RawContactEntity.contactId].
      */
     override val contactId: Long?,
-
-    /**
-     * See [RawContactEntity.isProfile].
-     */
-    override val isProfile: Boolean,
 
     // The Data table contains the display name for Contacts, not for RawContacts.
 
@@ -144,8 +141,6 @@ data class RawContact internal constructor(
         id = id,
         contactId = contactId,
 
-        isProfile = isProfile,
-
         addresses = addresses.asSequence().map { it.toMutableAddress() }.toMutableList(),
 
         emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList(),
@@ -191,11 +186,6 @@ data class MutableRawContact internal constructor(
      * See [RawContact.contactId].
      */
     override val contactId: Long?,
-
-    /**
-     * See [RawContact.isProfile].
-     */
-    override val isProfile: Boolean,
 
     // The Data table contains the display name for Contacts, not for RawContacts.
 
@@ -279,7 +269,7 @@ data class MutableRawContact internal constructor(
 ) : RawContactEntity() {
 
     constructor() : this(
-        null, null, false, mutableListOf(), mutableListOf(), mutableListOf(),
+        null, null, mutableListOf(), mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, null,
         mutableListOf(), null, mutableListOf(), null, mutableListOf()
     )
@@ -299,7 +289,6 @@ data class MutableRawContact internal constructor(
 data class BlankRawContact internal constructor(
     override val id: Long?,
     override val contactId: Long?,
-    override val isProfile: Boolean,
 
     /**
      * See [RawContactEntity.photo].
@@ -337,7 +326,6 @@ internal data class TempRawContact constructor(
 
     override val id: Long?,
     override val contactId: Long?,
-    override val isProfile: Boolean,
 
     var addresses: MutableList<Address>,
     var emails: MutableList<Email>,
@@ -365,8 +353,6 @@ internal data class TempRawContact constructor(
     fun toRawContact() = RawContact(
         id = id,
         contactId = contactId,
-
-        isProfile = isProfile,
 
         addresses = addresses.toList(),
 

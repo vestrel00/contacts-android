@@ -530,7 +530,7 @@ internal fun ContentResolver.resolve(
 
     // Collect Contacts with Ids in contactIds (which may include blanks), including included
     // Contacts fields. Order by, limit, and offset results within the query itself.
-    val contactsMapper = ContactsMapper(isProfile = false, cancel = cancel)
+    val contactsMapper = ContactsMapper(cancel)
 
     query(
         Table.Contacts, include.onlyContactsFields(), contactIds?.let {

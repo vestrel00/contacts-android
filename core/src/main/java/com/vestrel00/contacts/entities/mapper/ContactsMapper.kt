@@ -14,12 +14,6 @@ import com.vestrel00.contacts.entities.cursor.*
  * Data table.
  */
 internal class ContactsMapper(
-
-    /**
-     * True if the cursors used to collect contacts contains data belonging to the user profile.
-     */
-    private val isProfile: Boolean,
-
     /**
      * If this function returns true while contacts are being looked-up / processed, an empty
      * sequence will be returned regardless of the accumulated data before cancellation. This is
@@ -50,7 +44,7 @@ internal class ContactsMapper(
     fun processContactsCursor(cursor: EntityCursor<ContactsField>): ContactsMapper = apply {
         // Use the Contacts cursor to retrieve the contactId.
         val contactsCursor = cursor.contactsCursor()
-        val contactMapper = cursor.contactsMapper(isProfile)
+        val contactMapper = cursor.contactsMapper()
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -70,7 +64,7 @@ internal class ContactsMapper(
     fun processRawContactsCursor(cursor: EntityCursor<RawContactsField>): ContactsMapper = apply {
         // Use the RawContacts cursor to retrieve the rawContactId.
         val rawContactsCursor = cursor.rawContactsCursor()
-        val tempRawContactMapper = rawContactsCursor.tempRawContactMapper(isProfile)
+        val tempRawContactMapper = rawContactsCursor.tempRawContactMapper()
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -90,8 +84,8 @@ internal class ContactsMapper(
     fun processDataCursor(cursor: EntityCursor<AbstractDataField>): ContactsMapper = apply {
         // Changing the cursor position also changes the values returned by the mappers.
         val dataCursor = cursor.dataCursor()
-        val contactMapper = cursor.dataContactsMapper(isProfile)
-        val tempRawContactMapper = dataCursor.tempRawContactMapper(isProfile)
+        val contactMapper = cursor.dataContactsMapper()
+        val tempRawContactMapper = dataCursor.tempRawContactMapper()
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -159,7 +153,6 @@ internal class ContactsMapper(
             contactList.add(
                 Contact(
                     id = entry.key,
-                    isProfile = isProfile,
                     rawContacts = entry.value.sortedBy { it.id },
                     displayNamePrimary = null,
                     displayNameAlt = null,
