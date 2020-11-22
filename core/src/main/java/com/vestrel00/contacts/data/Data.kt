@@ -34,6 +34,8 @@ interface Data {
      */
     fun update(): DataUpdate
 
+    // TODO fun updateProfile(): DataUpdate
+
     /**
      * Returns a new [DataDelete] instance.
      */

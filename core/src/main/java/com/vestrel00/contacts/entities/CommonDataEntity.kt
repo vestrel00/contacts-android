@@ -1,5 +1,7 @@
 package com.vestrel00.contacts.entities
 
+import android.provider.ContactsContract
+
 /**
  * [Entity] in the data table that belong to a [RawContact].
  */
@@ -56,6 +58,12 @@ interface CommonDataEntity : Entity {
      */
     val isDefault: Boolean
         get() = isSuperPrimary
+
+    /**
+     * True if this data belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = id?.let(ContactsContract::isProfileId) == true
 }
 
 /**

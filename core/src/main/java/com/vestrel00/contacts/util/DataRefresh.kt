@@ -32,8 +32,6 @@ fun <T : CommonDataEntity> T.refresh(context: Context, cancel: () -> Boolean = {
     } else if (!ContactsPermissions(context).canQuery()) {
         null
     } else {
-        // TODO add isProfile to CommonDataEntity
-        val isProfile = false
         context.contentResolver.resolveDataEntity<T>(
             isProfile, mimeType, null, Include(mimeType.fields() + Fields.Required.all),
             null, CompoundOrderBy(setOf(Fields.DataId.asc())), 1, 0, cancel
