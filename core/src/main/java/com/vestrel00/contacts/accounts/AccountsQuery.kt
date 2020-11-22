@@ -11,6 +11,7 @@ import com.vestrel00.contacts.entities.cursor.rawContactsCursor
 import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.util.isEmpty
+import com.vestrel00.contacts.util.isProfileId
 import com.vestrel00.contacts.util.query
 
 /**
@@ -196,10 +197,13 @@ private class AccountsQueryImpl(
 
     override fun accountFor(rawContact: RawContactEntity): Account? =
         if (!permissions.canQueryAccounts() || rawContact.isProfile != isProfile) {
+            // Intentionally fail the operation to ensure that this is only used for intended
+            // profile or non-profile operations. Otherwise, operation can succeed. This is only
+            // done to enforce API design.
             null
         } else {
             rawContact.id?.let {
-                contentResolver.accountForRawContactWithId(it, isProfile)
+                contentResolver.accountForRawContactWithId(it)
             }
         }
 
@@ -226,7 +230,9 @@ private class AccountsQueryImpl(
         }
 
         if (rawContacts.find { it.isProfile != isProfile } != null) {
-            // Immediately fail if there is one or more RawContacts that does not match isProfile.
+            // Intentionally fail the operation to ensure that this is only used for intended
+            // profile or non-profile operations. Otherwise, operation can succeed. This is only
+            // done to enforce API design.
             return AccountsListImpl(emptyMap())
         }
 
@@ -278,10 +284,8 @@ private class AccountsQueryImpl(
     }
 }
 
-internal fun ContentResolver.accountForRawContactWithId(
-    rawContactId: Long, isProfile: Boolean
-): Account? = query(
-    if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Account? = query(
+    if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
     Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
     RawContactsFields.Id equalTo rawContactId
 ) {
