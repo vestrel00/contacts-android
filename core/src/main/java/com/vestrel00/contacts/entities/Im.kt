@@ -43,7 +43,8 @@ data class Im internal constructor(
 
     // protocol and customProtocol are excluded from this check as they are useless information by
     // themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(data)
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(data)
 
     fun toMutableIm() = MutableIm(
         id = id,
@@ -110,15 +111,16 @@ data class MutableIm internal constructor(
 
 ) : MutableCommonDataEntity {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.IM
-
     constructor() : this(
         null, null, null, false, false,
         null, null, null
     )
 
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.IM
+
     // protocol and customProtocol are excluded from this check as they are useless information by
     // themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(data)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(data)
 }

@@ -39,7 +39,8 @@ data class Relation internal constructor(
     override val mimeType: MimeType = MimeType.RELATION
 
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(name)
 
     fun toMutableRelation() = MutableRelation(
         id = id,
@@ -120,5 +121,6 @@ data class MutableRelation internal constructor(
     )
 
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(name)
 }

@@ -1,6 +1,7 @@
 package com.vestrel00.contacts.entities
 
 import android.net.Uri
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -59,7 +60,8 @@ data class Options internal constructor(
 
     internal constructor() : this(null, null, null, null)
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(
         starred, customRingtone, sendToVoicemail
     )
 
@@ -116,7 +118,8 @@ data class MutableOptions internal constructor(
 
     constructor() : this(null, null, null, null)
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        starred, customRingtone, sendToVoicemail
-    )
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
+            starred, customRingtone, sendToVoicemail
+        )
 }

@@ -40,7 +40,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      * Returns null if [entity] is blank.
      */
     fun insert(entity: T): ContentProviderOperation? {
-        if (entity.isBlank()) {
+        if (entity.isBlank) {
             return null
         }
 
@@ -111,7 +111,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
                     val dataRowId = dataCursor.dataId ?: continue
 
                     val entity = validEntitiesMap.remove(dataRowId)
-                    val operation = if (entity != null && !entity.isBlank()) {
+                    val operation = if (entity != null && !entity.isBlank) {
                         // If dataRowId is in entities, update if not blank.
                         updateDataRow(entity, dataRowId)
                     } else {
@@ -129,7 +129,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
             // The entity may have been deleted or another entity belonging to a different contact
             // is included here. Blank entities are not inserted.
             val nonBlankValidEntities =
-                validEntitiesMap.values.asSequence().filter { !it.isBlank() }
+                validEntitiesMap.values.asSequence().filter { !it.isBlank }
 
             for (entity in nonBlankValidEntities) {
                 add(insertDataRow(entity, rawContactId))
@@ -139,7 +139,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
             // Invalid entities have an invalid id, which means they are newly created entities
             // that are not yet in the DB. Blank entities are not inserted.
             val nonBlankInvalidEntities =
-                entities.asSequence().filter { it.id == null && !it.isBlank() }
+                entities.asSequence().filter { it.id == null && !it.isBlank }
 
             for (entity in nonBlankInvalidEntities) {
                 add(insertDataRow(entity, rawContactId))
@@ -160,7 +160,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
     fun updateInsertOrDelete(
         entity: T?, rawContactId: Long, contentResolver: ContentResolver
     ): ContentProviderOperation =
-        if (entity != null && !entity.isBlank()) {
+        if (entity != null && !entity.isBlank) {
             // Entity contains some data. Query for the (first) row.
             val dataRowId: Long? = contentResolver.dataRowIdsFor(rawContactId) {
                 it.getNextOrNull { it.dataCursor().dataId }
@@ -208,7 +208,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      */
     fun updateDataRowOrDeleteIfBlank(entity: T): ContentProviderOperation? =
         entity.id?.let { dataRowId ->
-            if (entity.isBlank()) {
+            if (entity.isBlank) {
                 deleteDataRowWithId(dataRowId)
             } else {
                 updateDataRow(entity, dataRowId)

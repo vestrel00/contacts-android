@@ -228,7 +228,7 @@ private class ProfileInsertImpl(
         val rawContact = rawContact
 
         if (rawContact == null
-            || (!allowBlanks && rawContact.isBlank())
+            || (!allowBlanks && rawContact.isBlank)
             || !permissions.canInsert()
         ) {
             return ProfileInsertFailed

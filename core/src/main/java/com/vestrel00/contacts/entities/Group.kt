@@ -98,7 +98,8 @@ data class Group internal constructor(
     @IgnoredOnParcel
     val isFavoritesGroup: Boolean = readOnly && favorites
 
-    override fun isBlank(): Boolean = false
+    @IgnoredOnParcel
+    override val isBlank: Boolean = false
 
     /**
      * Returns a [MutableGroup]. If [readOnly] is true, this returns null instead.
@@ -188,5 +189,6 @@ data class MutableGroup internal constructor(
     @IgnoredOnParcel
     val isFavoritesGroup: Boolean = readOnly && favorites
 
-    override fun isBlank(): Boolean = false
+    @IgnoredOnParcel
+    override val isBlank: Boolean = false
 }

@@ -52,7 +52,8 @@ data class Event internal constructor(
     override val mimeType: MimeType = MimeType.EVENT
 
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(date)
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(date)
 
     fun toMutableEvent() = MutableEvent(
         id = id,
@@ -113,14 +114,15 @@ data class MutableEvent internal constructor(
 
 ) : MutableCommonDataEntity {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.EVENT
-
     constructor() : this(
         null, null, null, false, false,
         null, null, null
     )
 
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.EVENT
+
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(date)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(date)
 }

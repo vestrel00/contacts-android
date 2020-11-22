@@ -2,6 +2,7 @@ package com.vestrel00.contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 import com.vestrel00.contacts.entities.Address.Type
+import com.vestrel00.contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
@@ -97,9 +98,12 @@ data class Address internal constructor(
     override val mimeType: MimeType = MimeType.ADDRESS
 
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        formattedAddress, street, poBox, neighborhood, city, region, postcode, country
-    )
+    @IgnoredOnParcel
+    override val isBlank: Boolean by unsafeLazy {
+        propertiesAreAllNullOrBlank(
+            formattedAddress, street, poBox, neighborhood, city, region, postcode, country
+        )
+    }
 
     fun toMutableAddress() = MutableAddress(
         id = id,
@@ -202,16 +206,17 @@ data class MutableAddress internal constructor(
 
 ) : MutableCommonDataEntity {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.ADDRESS
-
     constructor() : this(
         null, null, null, false, false, null, null, null,
         null, null, null, null, null, null, null
     )
 
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.ADDRESS
+
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        formattedAddress, street, poBox, neighborhood, city, region, postcode, country
-    )
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
+            formattedAddress, street, poBox, neighborhood, city, region, postcode, country
+        )
 }

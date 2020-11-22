@@ -16,9 +16,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 internal class Photo : CommonDataEntity {
 
-    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
-    override fun isBlank(): Boolean = false
-
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.PHOTO
 
@@ -36,4 +33,8 @@ internal class Photo : CommonDataEntity {
 
     @IgnoredOnParcel
     override val isSuperPrimary: Boolean = false
+
+    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
+    @IgnoredOnParcel
+    override val isBlank: Boolean = false
 }

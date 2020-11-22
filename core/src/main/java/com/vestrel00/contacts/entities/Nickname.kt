@@ -29,7 +29,8 @@ data class Nickname internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NICKNAME
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(name)
 
     fun toMutableNickname() = MutableNickname(
         id = id,
@@ -63,10 +64,11 @@ data class MutableNickname internal constructor(
 
 ) : MutableCommonDataEntity {
 
+    constructor() : this(null, null, null, false, false, null)
+
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NICKNAME
 
-    constructor() : this(null, null, null, false, false, null)
-
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(name)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(name)
 }

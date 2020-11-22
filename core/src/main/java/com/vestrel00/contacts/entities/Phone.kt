@@ -58,7 +58,8 @@ data class Phone internal constructor(
     override val mimeType: MimeType = MimeType.PHONE
 
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(number, normalizedNumber)
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
     fun toMutablePhone() = MutablePhone(
         id = id,
@@ -167,14 +168,15 @@ data class MutablePhone internal constructor(
 
 ) : MutableCommonDataEntity {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.PHONE
-
     constructor() : this(
         null, null, null, false, false,
         null, null, null, null
     )
 
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.PHONE
+
     // type and label are excluded from this check as they are useless information by themselves
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(number, normalizedNumber)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 }

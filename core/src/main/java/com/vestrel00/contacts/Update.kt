@@ -216,7 +216,7 @@ private class UpdateImpl(
             if (rawContact.id != null) {
                 results[rawContact.id] = if (rawContact.isProfile != IS_PROFILE) {
                     false
-                } else if (rawContact.isBlank() && deleteBlanks) {
+                } else if (rawContact.isBlank && deleteBlanks) {
                     applicationContext.contentResolver.deleteRawContactWithId(
                         rawContact.id,
                         IS_PROFILE

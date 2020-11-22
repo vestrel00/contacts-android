@@ -26,7 +26,8 @@ data class Note internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NOTE
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(note)
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(note)
 
     fun toMutableNote() = MutableNote(
         id = id,
@@ -60,10 +61,11 @@ data class MutableNote internal constructor(
 
 ) : MutableCommonDataEntity {
 
+    constructor() : this(null, null, null, false, false, null)
+
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NOTE
 
-    constructor() : this(null, null, null, false, false, null)
-
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(note)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(note)
 }

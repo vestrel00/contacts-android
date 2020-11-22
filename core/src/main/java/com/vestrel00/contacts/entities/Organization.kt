@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.entities
 
+import com.vestrel00.contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
@@ -59,9 +60,12 @@ data class Organization internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.ORGANIZATION
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        company, title, department, jobDescription, officeLocation, symbol, phoneticName
-    )
+    @IgnoredOnParcel
+    override val isBlank: Boolean by unsafeLazy {
+        propertiesAreAllNullOrBlank(
+            company, title, department, jobDescription, officeLocation, symbol, phoneticName
+        )
+    }
 
     fun toMutableOrganization() = MutableOrganization(
         id = id,
@@ -132,15 +136,16 @@ data class MutableOrganization internal constructor(
 
 ) : MutableCommonDataEntity {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.ORGANIZATION
-
     constructor() : this(
         null, null, null, false, false, null, null,
         null, null, null, null, null
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        company, title, department, jobDescription, officeLocation, symbol, phoneticName
-    )
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.ORGANIZATION
+
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
+            company, title, department, jobDescription, officeLocation, symbol, phoneticName
+        )
 }

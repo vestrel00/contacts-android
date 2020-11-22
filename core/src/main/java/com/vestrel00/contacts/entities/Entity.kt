@@ -12,12 +12,11 @@ interface Entity : Parcelable {
      */
     val id: Long?
 
-    // TODO convert to a val
     /**
      * Returns true if this entity has no non-null (and non-blank for strings) properties or other
      * entities containing non-null (and non-blank for strings) properties.
      */
-    fun isBlank(): Boolean
+    val isBlank: Boolean
 
     interface Type {
         val value: Int
@@ -26,7 +25,7 @@ interface Entity : Parcelable {
 
 internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     null -> false
-    is Entity -> !this.isBlank()
+    is Entity -> !this.isBlank
     is String -> this.isNotBlank()
     is Collection<*> -> this.isNotNullOrBlank()
     else -> true

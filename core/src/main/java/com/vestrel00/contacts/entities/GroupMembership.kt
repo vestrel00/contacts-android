@@ -30,7 +30,8 @@ data class GroupMembership internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP
 
-    override fun isBlank(): Boolean = false
+    @IgnoredOnParcel
+    override val isBlank: Boolean = false
 }
 
 // NOTE. The GroupMembership class intentionally does not have a mutable version unlike the other

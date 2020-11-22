@@ -1,6 +1,8 @@
 package com.vestrel00.contacts.entities
 
 import android.provider.ContactsContract
+import com.vestrel00.contacts.util.unsafeLazy
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -131,11 +133,14 @@ data class RawContact internal constructor(
 
 ) : RawContactEntity() {
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        name, nickname, note, organization, photo, sipAddress
-    ) && entitiesAreAllBlank(
-        addresses, emails, events, groupMemberships, ims, phones, relations, websites
-    )
+    @IgnoredOnParcel
+    override val isBlank: Boolean by unsafeLazy {
+        propertiesAreAllNullOrBlank(
+            name, nickname, note, organization, photo, sipAddress
+        ) && entitiesAreAllBlank(
+            addresses, emails, events, groupMemberships, ims, phones, relations, websites
+        )
+    }
 
     fun toMutableRawContact() = MutableRawContact(
         id = id,
@@ -274,11 +279,12 @@ data class MutableRawContact internal constructor(
         mutableListOf(), null, mutableListOf(), null, mutableListOf()
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        name, nickname, note, organization, photo, sipAddress
-    ) && entitiesAreAllBlank(
-        addresses, emails, events, groupMemberships, ims, phones, relations, websites
-    )
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
+            name, nickname, note, organization, photo, sipAddress
+        ) && entitiesAreAllBlank(
+            addresses, emails, events, groupMemberships, ims, phones, relations, websites
+        )
 }
 
 /**
@@ -313,7 +319,8 @@ data class BlankRawContact internal constructor(
 
 ) : RawContactEntity() {
 
-    override fun isBlank(): Boolean = true
+    @IgnoredOnParcel
+    override val isBlank: Boolean = true
 }
 
 /**
@@ -344,11 +351,12 @@ internal data class TempRawContact constructor(
 
 ) : RawContactEntity() {
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        name, nickname, note, organization, photo, sipAddress
-    ) && entitiesAreAllBlank(
-        addresses, emails, events, groupMemberships, ims, phones, relations, websites
-    )
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
+            name, nickname, note, organization, photo, sipAddress
+        ) && entitiesAreAllBlank(
+            addresses, emails, events, groupMemberships, ims, phones, relations, websites
+        )
 
     fun toRawContact() = RawContact(
         id = id,

@@ -29,7 +29,8 @@ data class SipAddress internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.SIP_ADDRESS
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(sipAddress)
+    @IgnoredOnParcel
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(sipAddress)
 
     fun toMutableSipAddress() = MutableSipAddress(
         id = id,
@@ -68,5 +69,6 @@ data class MutableSipAddress internal constructor(
 
     constructor() : this(null, null, null, false, false, null)
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(sipAddress)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(sipAddress)
 }

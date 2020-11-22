@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.entities
 
+import com.vestrel00.contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
@@ -105,12 +106,15 @@ data class Name internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.NAME
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        displayName,
-        givenName, middleName, familyName,
-        prefix, suffix,
-        phoneticGivenName, phoneticMiddleName, phoneticFamilyName
-    )
+    @IgnoredOnParcel
+    override val isBlank: Boolean by unsafeLazy {
+        propertiesAreAllNullOrBlank(
+            displayName,
+            givenName, middleName, familyName,
+            prefix, suffix,
+            phoneticGivenName, phoneticMiddleName, phoneticFamilyName
+        )
+    }
 
     fun toMutableName() = MutableName(
         id = id,
@@ -195,18 +199,19 @@ data class MutableName internal constructor(
 
 ) : MutableCommonDataEntity {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.NAME
-
     constructor() : this(
         null, null, null, false, false, null, null,
         null, null, null, null, null, null, null
     )
 
-    override fun isBlank(): Boolean = propertiesAreAllNullOrBlank(
-        displayName,
-        givenName, middleName, familyName,
-        prefix, suffix,
-        phoneticGivenName, phoneticMiddleName, phoneticFamilyName
-    )
+    @IgnoredOnParcel
+    override val mimeType: MimeType = MimeType.NAME
+
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
+            displayName,
+            givenName, middleName, familyName,
+            prefix, suffix,
+            phoneticGivenName, phoneticMiddleName, phoneticFamilyName
+        )
 }

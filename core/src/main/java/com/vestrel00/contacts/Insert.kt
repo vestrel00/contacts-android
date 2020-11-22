@@ -237,7 +237,7 @@ private class InsertImpl(
 
         val results = mutableMapOf<MutableRawContact, Long?>()
         for (rawContact in rawContacts) {
-            results[rawContact] = if (!allowBlanks && rawContact.isBlank()) {
+            results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
                 null
             } else {
                 applicationContext.insertRawContactForAccount(account, rawContact, IS_PROFILE)

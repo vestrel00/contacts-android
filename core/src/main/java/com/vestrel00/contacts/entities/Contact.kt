@@ -1,6 +1,8 @@
 package com.vestrel00.contacts.entities
 
 import android.provider.ContactsContract
+import com.vestrel00.contacts.util.unsafeLazy
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -171,7 +173,10 @@ data class Contact internal constructor(
     // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
     // the Data table, which is why they are not part of the blank check.
-    override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
+    @IgnoredOnParcel
+    override val isBlank: Boolean by unsafeLazy {
+        entitiesAreAllBlank(rawContacts)
+    }
 
     fun toMutableContact() = MutableContact(
         id = id,
@@ -229,5 +234,6 @@ data class MutableContact internal constructor(
     // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
     // the Data table, which is why they are not part of the blank check.
-    override fun isBlank(): Boolean = entitiesAreAllBlank(rawContacts)
+    override val isBlank: Boolean
+        get() = entitiesAreAllBlank(rawContacts)
 }
