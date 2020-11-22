@@ -40,9 +40,14 @@ interface Data {
     fun updateProfile(): DataUpdate
 
     /**
-     * Returns a new [DataDelete] instance.
+     * Returns a new [DataDelete] instance for non-Profile data deletes.
      */
     fun delete(): DataDelete
+
+    /**
+     * Returns a new [DataDelete] instance for Profile data deletes.
+     */
+    fun deleteProfile(): DataDelete
 
     /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
@@ -76,5 +81,7 @@ private class DataImpl(
 
     override fun updateProfile() = DataUpdate(applicationContext, true)
 
-    override fun delete() = DataDelete(applicationContext)
+    override fun delete() = DataDelete(applicationContext, false)
+
+    override fun deleteProfile() = DataDelete(applicationContext, true)
 }

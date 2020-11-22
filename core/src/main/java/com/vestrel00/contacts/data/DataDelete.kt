@@ -1,20 +1,22 @@
 package com.vestrel00.contacts.data
 
+import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.CommonDataEntity
-import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.isProfileId
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
- * Deletes one or more data the Data table.
+ * Deletes one or more Profile OR non-Profile (depending on instance) data rows the data table.
  *
  * Note that deleting data will not remove it from existing RawContact instances. The RawContact
  * instances must be refreshed to get the most up-to-date data.
@@ -111,20 +113,23 @@ interface DataDelete {
 }
 
 @Suppress("FunctionName")
-internal fun DataDelete(context: Context): DataDelete = DataDeleteImpl(
+internal fun DataDelete(context: Context, isProfile: Boolean): DataDelete = DataDeleteImpl(
     context.contentResolver,
-    ContactsPermissions(context)
+    ContactsPermissions(context),
+    isProfile
 )
 
 private class DataDeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+    private val isProfile: Boolean,
     private val dataIds: MutableSet<Long> = mutableSetOf()
 ) : DataDelete {
 
     override fun toString(): String =
         """
             DataDelete {
+                isProfile: $isProfile
                 dataIds: $dataIds
             }
         """.trimIndent()
@@ -144,20 +149,35 @@ private class DataDeleteImpl(
 
         val dataIdsResultMap = mutableMapOf<Long, Boolean>()
         for (dataId in dataIds) {
-            dataIdsResultMap[dataId] = if (dataId == INVALID_ID) {
-                false
-            } else {
-                contentResolver.deleteDataWithId(dataId)
-            }
+            dataIdsResultMap[dataId] =
+                if (dataId == INVALID_ID || dataId.isProfileId != isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for profile
+                    // or non-profile deletes. Otherwise, operation can succeed. This is only done
+                    // to enforce API design.
+                    false
+                } else {
+                    contentResolver.deleteDataWithId(dataId)
+                }
         }
 
         return DataDeleteResult(dataIdsResultMap)
     }
 
-    override fun commitInOneTransaction(): Boolean = permissions.canUpdateDelete()
-            && dataIds.isNotEmpty()
-            && !dataIds.contains(INVALID_ID)
-            && contentResolver.deleteDataRowsWithIds(dataIds)
+    override fun commitInOneTransaction(): Boolean {
+        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
+            return false
+        }
+
+        val validDataIds = dataIds.filter { it != INVALID_ID && it.isProfileId == isProfile }
+
+        if (dataIds.size != validDataIds.size) {
+            // There are some invalid ids or profile or non-profile data ids, fail without
+            // performing operation.
+            return false
+        }
+
+        return contentResolver.deleteDataRowsWithIds(dataIds, isProfile)
+    }
 
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
@@ -166,13 +186,15 @@ private class DataDeleteImpl(
 }
 
 private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean = applyBatch(
-    newDelete(Table.Data)
+    newDelete(if (dataId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(Fields.DataId equalTo dataId)
         .build()
 ) != null
 
-private fun ContentResolver.deleteDataRowsWithIds(dataIds: Collection<Long>): Boolean = applyBatch(
-    newDelete(Table.Data)
+private fun ContentResolver.deleteDataRowsWithIds(
+    dataIds: Collection<Long>, isProfile: Boolean
+): Boolean = applyBatch(
+    newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(Fields.DataId `in` dataIds)
         .build()
 ) != null

@@ -1,9 +1,8 @@
 ## TODO
 
+0. Refactor .add/.addAll -> .let(::add)/.let(::addAll)
+
 1. Setup user profile
-    - Review and update APIs; E.G. Update.kt and Delete.kt (fail for non-profile entities).
-        - Make sure they don't work when isProfile is true and make sure to document it.
-        - What about others like Data APIs?
     - Review and update ALL util functions (make sure they work for both profile and non-profile).
 
 2. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.

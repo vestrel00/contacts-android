@@ -77,3 +77,17 @@ suspend fun Data.deleteWithPermission(): DataDelete {
 
     return delete()
 }
+
+/**
+ * If [ContactsPermissions.WRITE_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permissions, and then returns a new [DataDelete] instance.
+ *
+ * If permissions are already granted, then immediately returns a new [DataDelete] instance.
+ */
+suspend fun Data.deleteProfileWithPermission(): DataDelete {
+    if (!permissions.canUpdateDelete()) {
+        applicationContext.requestWritePermission()
+    }
+
+    return deleteProfile()
+}

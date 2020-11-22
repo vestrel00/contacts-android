@@ -10,6 +10,7 @@ import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.operation.RawContactsOperation
 import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.isProfileId
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
@@ -144,14 +145,14 @@ internal fun ProfileDelete(context: Context): ProfileDelete = ProfileDeleteImpl(
 private class ProfileDeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val rawContacts: MutableSet<RawContactEntity> = mutableSetOf(),
+    private val rawContactIds: MutableSet<Long> = mutableSetOf(),
     private var deleteProfileContact: Boolean = false
 ) : ProfileDelete {
 
     override fun toString(): String =
         """
             ProfileDeleteImpl {
-                rawContacts: $rawContacts
+                rawContactIds: $rawContactIds
                 deleteProfileContact: $deleteProfileContact
             }
         """.trimIndent()
@@ -163,7 +164,7 @@ private class ProfileDeleteImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<RawContactEntity>): ProfileDelete = apply {
-        this.rawContacts.addAll(rawContacts)
+        rawContactIds.addAll(rawContacts.map { it.id ?: INVALID_ID })
     }
 
     override fun contact(): ProfileDelete = apply {
@@ -171,7 +172,7 @@ private class ProfileDeleteImpl(
     }
 
     override fun commit(): ProfileDelete.Result {
-        if ((rawContacts.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
+        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
             return ProfileDeleteFailed
         }
 
@@ -183,10 +184,9 @@ private class ProfileDeleteImpl(
         }
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
-        for (rawContact in rawContacts) {
-            val rawContactId = rawContact.id
-            if (rawContactId != null) {
-                rawContactsResult[rawContactId] = if (!rawContact.isProfile) {
+        for (rawContactId in rawContactIds) {
+            rawContactsResult[rawContactId] =
+                if (rawContactId == INVALID_ID || !rawContactId.isProfileId) {
                     // Intentionally fail the operation to ensure that this is only used for profile
                     // deletes. Otherwise, operation can succeed. This is only done to enforce API
                     // design.
@@ -194,17 +194,13 @@ private class ProfileDeleteImpl(
                 } else {
                     contentResolver.deleteRawContactWithId(rawContactId)
                 }
-            } else {
-                rawContactsResult[INVALID_ID] = false
-            }
-
         }
 
         return ProfileDeleteResult(rawContactsResult, false)
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if ((rawContacts.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
+        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
             return false
         }
 
@@ -212,15 +208,16 @@ private class ProfileDeleteImpl(
             return contentResolver.deleteProfileContact()
         }
 
-        val rawContactIds = rawContacts.filter { it.isProfile }.mapNotNull { it.id }
+        val profileRawContactIds = rawContactIds.filter { it != INVALID_ID && it.isProfileId }
 
-        if (rawContactIds.size != rawContacts.size) {
-            // There are some null ids or profile RawContacts, fail without performing operation.
+        if (rawContactIds.size != profileRawContactIds.size) {
+            // There are some invalid ids or non-profile RawContact Ids, fail without performing
+            // operation.
             return false
         }
 
         return contentResolver.applyBatch(
-            RawContactsOperation(true).deleteRawContacts(rawContactIds)
+            RawContactsOperation(true).deleteRawContacts(profileRawContactIds)
         ) != null
     }
 
