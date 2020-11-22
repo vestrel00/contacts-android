@@ -9,7 +9,7 @@ import com.vestrel00.contacts.util.applyBatch
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
- * Updates one or more data rows in the data table.
+ * Updates one or more Profile OR non-Profile (depending on instance) data rows in the data table.
  *
  * Blank data ([MutableCommonDataEntity.isBlank] will be deleted.
  *
@@ -88,20 +88,23 @@ interface DataUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun DataUpdate(context: Context): DataUpdate = DataUpdateImpl(
+internal fun DataUpdate(context: Context, isProfile: Boolean): DataUpdate = DataUpdateImpl(
     context.contentResolver,
-    ContactsPermissions(context)
+    ContactsPermissions(context),
+    isProfile
 )
 
 private class DataUpdateImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+    private val isProfile: Boolean,
     private val data: MutableSet<MutableCommonDataEntity> = mutableSetOf()
 ) : DataUpdate {
 
     override fun toString(): String =
         """
             DataUpdate {
+                isProfile: $isProfile
                 data: $data
             }
         """.trimIndent()
@@ -123,7 +126,14 @@ private class DataUpdateImpl(
         for (data in data) {
             val dataId = data.id
             if (dataId != null) {
-                results[dataId] = contentResolver.updateData(data)
+                results[dataId] = if (data.isProfile != isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // intended profile or non-profile data updates. Otherwise, operation can
+                    // succeed. This is only done to enforce API design.
+                    false
+                } else {
+                    contentResolver.updateData(data)
+                }
             } else {
                 results[INVALID_ID] = false
             }
