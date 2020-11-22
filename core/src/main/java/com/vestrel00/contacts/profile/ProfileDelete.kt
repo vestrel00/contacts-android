@@ -186,10 +186,13 @@ private class ProfileDeleteImpl(
         for (rawContact in rawContacts) {
             val rawContactId = rawContact.id
             if (rawContactId != null) {
-                rawContactsResult[rawContactId] = if (rawContact.isProfile != IS_PROFILE) {
+                rawContactsResult[rawContactId] = if (!rawContact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for profile
+                    // deletes. Otherwise, operation can succeed. This is only done to enforce API
+                    // design.
                     false
                 } else {
-                    contentResolver.deleteRawContactWithId(rawContactId, IS_PROFILE)
+                    contentResolver.deleteRawContactWithId(rawContactId)
                 }
             } else {
                 rawContactsResult[INVALID_ID] = false
@@ -209,22 +212,21 @@ private class ProfileDeleteImpl(
             return contentResolver.deleteProfileContact()
         }
 
-        val rawContactIds = rawContacts.filter { it.isProfile == IS_PROFILE }.mapNotNull { it.id }
+        val rawContactIds = rawContacts.filter { it.isProfile }.mapNotNull { it.id }
 
         if (rawContactIds.size != rawContacts.size) {
-            // There are some null ids or IS_PROFILE mismatch, fail without performing operation.
+            // There are some null ids or profile RawContacts, fail without performing operation.
             return false
         }
 
         return contentResolver.applyBatch(
-            RawContactsOperation(IS_PROFILE).deleteRawContacts(rawContactIds)
+            RawContactsOperation(true).deleteRawContacts(rawContactIds)
         ) != null
     }
 
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
-        const val IS_PROFILE = true
     }
 }
 

@@ -186,15 +186,15 @@ private class ProfileUpdateImpl(
         val results = mutableMapOf<Long, Boolean>()
         for (rawContact in rawContacts) {
             if (rawContact.id != null) {
-                results[rawContact.id] = if (rawContact.isProfile != IS_PROFILE) {
+                results[rawContact.id] = if (!rawContact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for profile
+                    // updates. Otherwise, operation can succeed. This is only done to enforce API
+                    // design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    applicationContext.contentResolver.deleteRawContactWithId(
-                        rawContact.id,
-                        IS_PROFILE
-                    )
+                    applicationContext.contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    applicationContext.updateRawContact(rawContact, IS_PROFILE)
+                    applicationContext.updateRawContact(rawContact)
                 }
             } else {
                 results[INVALID_ID] = false
@@ -203,11 +203,9 @@ private class ProfileUpdateImpl(
         return ProfileUpdateResult(results)
     }
 
-
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
-        const val IS_PROFILE = true
     }
 }
 

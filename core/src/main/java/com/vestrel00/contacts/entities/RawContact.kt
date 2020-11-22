@@ -1,6 +1,6 @@
 package com.vestrel00.contacts.entities
 
-import android.provider.ContactsContract
+import com.vestrel00.contacts.util.isProfileId
 import com.vestrel00.contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -35,7 +35,7 @@ sealed class RawContactEntity : Entity {
      * True if this raw contact belongs to the user's personal profile entry.
      */
     val isProfile: Boolean
-        get() = id?.let(ContactsContract::isProfileId) == true
+        get() = id.isProfileId
 }
 
 /**

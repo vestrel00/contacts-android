@@ -7,6 +7,7 @@ import com.vestrel00.contacts.entities.ContactEntity
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.operation.RawContactsOperation
 import com.vestrel00.contacts.util.applyBatch
+import com.vestrel00.contacts.util.isProfileId
 import com.vestrel00.contacts.util.unsafeLazy
 
 /**
@@ -193,10 +194,13 @@ private class DeleteImpl(
         for (rawContact in rawContacts) {
             val rawContactId = rawContact.id
             if (rawContactId != null) {
-                rawContactsResult[rawContactId] = if (rawContact.isProfile != IS_PROFILE) {
+                rawContactsResult[rawContactId] = if (rawContact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // non-profile updates. Otherwise, operation can succeed. This is only done to
+                    // enforce API design.
                     false
                 } else {
-                    contentResolver.deleteRawContactWithId(rawContactId, IS_PROFILE)
+                    contentResolver.deleteRawContactWithId(rawContactId)
                 }
             } else {
                 rawContactsResult[INVALID_ID] = false
@@ -207,10 +211,13 @@ private class DeleteImpl(
         for (contact in contacts) {
             val contactId = contact.id
             if (contactId != null) {
-                contactsResults[contactId] = if (contact.isProfile != IS_PROFILE) {
+                contactsResults[contactId] = if (contact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // non-profile deletes. Otherwise, operation can succeed. This is only done to
+                    // enforce API design.
                     false
                 } else {
-                    contentResolver.deleteContactWithId(contactId, IS_PROFILE)
+                    contentResolver.deleteContactWithId(contactId)
                 }
             } else {
                 contactsResults[INVALID_ID] = false
@@ -225,25 +232,23 @@ private class DeleteImpl(
             return false
         }
 
-        val rawContactIds = rawContacts.filter { it.isProfile == IS_PROFILE }.mapNotNull { it.id }
-        val contactIds = contacts.filter { it.isProfile == IS_PROFILE }.mapNotNull { it.id }
+        val rawContactIds = rawContacts.filter { !it.isProfile }.mapNotNull { it.id }
+        val contactIds = contacts.filter { !it.isProfile }.mapNotNull { it.id }
 
         if (rawContactIds.size != rawContacts.size || contactIds.size != contacts.size) {
-            // There are some null ids or IS_PROFILE mismatch, fail without performing operation.
+            // There are some null ids or profile RawContacts, fail without performing operation.
             return false
         }
 
         val operations = arrayListOf<ContentProviderOperation>()
 
         if (rawContacts.isNotEmpty()) {
-            operations.add(RawContactsOperation(IS_PROFILE).deleteRawContacts(rawContactIds))
+            operations.add(RawContactsOperation(false).deleteRawContacts(rawContactIds))
         }
 
         if (contacts.isNotEmpty()) {
             operations.add(
-                RawContactsOperation(IS_PROFILE).deleteRawContactsWithContactIds(
-                    contactIds
-                )
+                RawContactsOperation(false).deleteRawContactsWithContactIds(contactIds)
             )
         }
 
@@ -253,16 +258,18 @@ private class DeleteImpl(
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
-        const val IS_PROFILE = false
     }
 }
 
-internal fun ContentResolver.deleteRawContactWithId(
-    rawContactId: Long, isProfile: Boolean
-): Boolean = applyBatch(RawContactsOperation(isProfile).deleteRawContact(rawContactId)) != null
+internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean =
+    applyBatch(
+        RawContactsOperation(rawContactId.isProfileId).deleteRawContact(rawContactId)
+    ) != null
 
-private fun ContentResolver.deleteContactWithId(contactId: Long, isProfile: Boolean): Boolean =
-    applyBatch(RawContactsOperation(isProfile).deleteRawContactsWithContactId(contactId)) != null
+private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
+    applyBatch(
+        RawContactsOperation(contactId.isProfileId).deleteRawContactsWithContactId(contactId)
+    ) != null
 
 private class DeleteResult(
     private val rawContactIdsResultMap: Map<Long, Boolean>,

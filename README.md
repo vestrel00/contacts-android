@@ -1,6 +1,7 @@
 ## TODO
 
-0. Convert class / interface functions with no parameters to a val.
+- Convert SOME class / interface functions with no parameters to a val.
+
 1. Setup user profile
     - Review and update APIs; E.G. Update.kt and Delete.kt (fail for non-profile entities).
         - Make sure they don't work when isProfile is true and make sure to document it.

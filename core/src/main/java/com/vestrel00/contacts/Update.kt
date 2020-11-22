@@ -214,15 +214,15 @@ private class UpdateImpl(
         val results = mutableMapOf<Long, Boolean>()
         for (rawContact in rawContacts) {
             if (rawContact.id != null) {
-                results[rawContact.id] = if (rawContact.isProfile != IS_PROFILE) {
+                results[rawContact.id] = if (rawContact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // non-profile updates. Otherwise, operation can succeed. This is only done to
+                    // enforce API design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    applicationContext.contentResolver.deleteRawContactWithId(
-                        rawContact.id,
-                        IS_PROFILE
-                    )
+                    applicationContext.contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    applicationContext.updateRawContact(rawContact, IS_PROFILE)
+                    applicationContext.updateRawContact(rawContact)
                 }
             } else {
                 results[INVALID_ID] = false
@@ -234,7 +234,6 @@ private class UpdateImpl(
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
         const val INVALID_ID = -1L
-        const val IS_PROFILE = false
     }
 }
 
@@ -247,14 +246,12 @@ private class UpdateImpl(
  * If only some of a raw contact's attribute's values are null, then a data row will be created
  * if it does not yet exist.
  */
-internal fun Context.updateRawContact(
-    rawContact: MutableRawContact,
-    isProfile: Boolean
-): Boolean {
+internal fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
     if (rawContact.id == null) {
         return false
     }
 
+    val isProfile = rawContact.isProfile
     val operations = arrayListOf<ContentProviderOperation>()
 
     operations.addAll(
@@ -356,7 +353,6 @@ private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean
                 return false
             }
         }
-
         return true
     }
 
