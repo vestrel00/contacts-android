@@ -37,10 +37,10 @@ interface Profile {
     fun delete(): ProfileDelete
 
     /**
-     * Returns a new [ContactsPermissions] instance, which provides functions for checking required
+     * Returns a [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(): ContactsPermissions
+    val permissions: ContactsPermissions
 
     /**
      * Reference to the Application's Context for use in extension functions and external library
@@ -50,9 +50,15 @@ interface Profile {
 }
 
 @Suppress("FunctionName")
-internal fun Profile(context: Context): Profile = ProfileImpl(context.applicationContext)
+internal fun Profile(context: Context): Profile = ProfileImpl(
+    context.applicationContext,
+    ContactsPermissions(context.applicationContext)
+)
 
-private class ProfileImpl(override val applicationContext: Context) : Profile {
+private class ProfileImpl(
+    override val applicationContext: Context,
+    override val permissions: ContactsPermissions
+) : Profile {
 
     override fun query() = ProfileQuery(applicationContext)
 
@@ -61,6 +67,4 @@ private class ProfileImpl(override val applicationContext: Context) : Profile {
     override fun update() = ProfileUpdate(applicationContext)
 
     override fun delete() = ProfileDelete(applicationContext)
-
-    override fun permissions() = ContactsPermissions(applicationContext)
 }

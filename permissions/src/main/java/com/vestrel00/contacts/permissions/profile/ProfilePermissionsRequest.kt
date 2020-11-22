@@ -13,7 +13,6 @@ import com.vestrel00.contacts.profile.*
  * If permission is already granted, then immediately returns a new [ProfileQuery] instance.
  */
 suspend fun Profile.queryWithPermission(): ProfileQuery {
-    val permissions = permissions()
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
@@ -30,7 +29,6 @@ suspend fun Profile.queryWithPermission(): ProfileQuery {
  * If permission is already granted, then immediately returns a new [ProfileInsert] instance.
  */
 suspend fun Profile.insertWithPermission(): ProfileInsert {
-    val permissions = permissions()
     if (!permissions.canInsert()) {
         applicationContext.requestWritePermission()
         applicationContext.requestGetAccountsPermission()
@@ -46,7 +44,6 @@ suspend fun Profile.insertWithPermission(): ProfileInsert {
  * If permission is already granted, then immediately returns a new [ProfileUpdate] instance.
  */
 suspend fun Profile.updateWithPermission(): ProfileUpdate {
-    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
         applicationContext.requestWritePermission()
     }
@@ -61,7 +58,6 @@ suspend fun Profile.updateWithPermission(): ProfileUpdate {
  * If permission is already granted, then immediately returns a new [ProfileDelete] instance.
  */
 suspend fun Profile.deleteWithPermission(): ProfileDelete {
-    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
         applicationContext.requestWritePermission()
     }

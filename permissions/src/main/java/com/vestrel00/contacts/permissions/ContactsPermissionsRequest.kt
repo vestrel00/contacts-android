@@ -11,7 +11,6 @@ import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
  * If permission is already granted, then immediately returns a new [Query] instance.
  */
 suspend fun Contacts.queryWithPermission(): Query {
-    val permissions = permissions()
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
@@ -26,7 +25,6 @@ suspend fun Contacts.queryWithPermission(): Query {
  * If permission is already granted, then immediately returns a new [GeneralQuery] instance.
  */
 suspend fun Contacts.generalQueryWithPermission(): GeneralQuery {
-    val permissions = permissions()
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
@@ -43,7 +41,6 @@ suspend fun Contacts.generalQueryWithPermission(): GeneralQuery {
  * If permissions are already granted, then immediately returns a new [Insert] instance.
  */
 suspend fun Contacts.insertWithPermission(): Insert {
-    val permissions = permissions()
     if (!permissions.canInsert()) {
         applicationContext.requestWritePermission()
         applicationContext.requestGetAccountsPermission()
@@ -59,7 +56,6 @@ suspend fun Contacts.insertWithPermission(): Insert {
  * If permissions are already granted, then immediately returns a new [Update] instance.
  */
 suspend fun Contacts.updateWithPermission(): Update {
-    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
         applicationContext.requestWritePermission()
     }
@@ -74,7 +70,6 @@ suspend fun Contacts.updateWithPermission(): Update {
  * If permission is already granted, then immediately returns a new [Delete] instance.
  */
 suspend fun Contacts.deleteWithPermission(): Delete {
-    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
         applicationContext.requestWritePermission()
     }

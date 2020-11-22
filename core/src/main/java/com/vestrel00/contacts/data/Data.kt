@@ -42,10 +42,10 @@ interface Data {
     fun delete(): DataDelete
 
     /**
-     * Returns a new [ContactsPermissions] instance, which provides functions for checking required
+     * Returns a [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(): ContactsPermissions
+    val permissions: ContactsPermissions
 
     /**
      * Reference to the Application's Context for use in extension functions and external library
@@ -55,9 +55,15 @@ interface Data {
 }
 
 @Suppress("FunctionName")
-internal fun Data(context: Context): Data = DataImpl(context.applicationContext)
+internal fun Data(context: Context): Data = DataImpl(
+    context.applicationContext,
+    ContactsPermissions(context.applicationContext)
+)
 
-private class DataImpl(override val applicationContext: Context) : Data {
+private class DataImpl(
+    override val applicationContext: Context,
+    override val permissions: ContactsPermissions
+) : Data {
 
     override fun query() = DataQuery(applicationContext, false)
 
@@ -66,6 +72,4 @@ private class DataImpl(override val applicationContext: Context) : Data {
     override fun update() = DataUpdate(applicationContext)
 
     override fun delete() = DataDelete(applicationContext)
-
-    override fun permissions() = ContactsPermissions(applicationContext)
 }

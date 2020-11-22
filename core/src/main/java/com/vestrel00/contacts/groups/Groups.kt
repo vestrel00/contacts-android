@@ -44,10 +44,10 @@ interface Groups {
      */
 
     /**
-     * Returns a new [ContactsPermissions] instance, which provides functions for checking required
+     * Returns a [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(): ContactsPermissions
+    val permissions: ContactsPermissions
 
     /**
      * Reference to the Application's Context for use in extension functions and external library
@@ -57,9 +57,15 @@ interface Groups {
 }
 
 @Suppress("FunctionName")
-internal fun Groups(context: Context): Groups = GroupsImpl(context.applicationContext)
+internal fun Groups(context: Context): Groups = GroupsImpl(
+    context.applicationContext,
+    ContactsPermissions(context.applicationContext)
+)
 
-private class GroupsImpl(override val applicationContext: Context) : Groups {
+private class GroupsImpl(
+    override val applicationContext: Context,
+    override val permissions: ContactsPermissions
+) : Groups {
 
     override fun query() = GroupsQuery(applicationContext)
 
@@ -68,6 +74,4 @@ private class GroupsImpl(override val applicationContext: Context) : Groups {
     override fun update() = GroupsUpdate(applicationContext)
 
     // override fun delete(): GroupsDelete = GroupsDelete(applicationContext)
-
-    override fun permissions() = ContactsPermissions(applicationContext)
 }

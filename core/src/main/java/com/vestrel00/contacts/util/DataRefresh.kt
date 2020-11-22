@@ -33,7 +33,7 @@ fun <T : CommonDataEntity> T.refresh(context: Context, cancel: () -> Boolean = {
         null
     } else {
         context.contentResolver.resolveDataEntity<T>(
-            isProfile, mimeType, null, Include(mimeType.fields() + Fields.Required.all),
+            isProfile, mimeType, null, Include(mimeType.fields + Fields.Required.all),
             null, CompoundOrderBy(setOf(Fields.DataId.asc())), 1, 0, cancel
         ).firstOrNull()
     }

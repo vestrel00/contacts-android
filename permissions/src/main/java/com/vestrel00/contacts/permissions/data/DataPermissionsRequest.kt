@@ -15,7 +15,6 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  * If permission is already granted, then immediately returns a new [DataQuery] instance.
  */
 suspend fun Data.queryWithPermission(): DataQuery {
-    val permissions = permissions()
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
@@ -30,7 +29,6 @@ suspend fun Data.queryWithPermission(): DataQuery {
  * If permission is already granted, then immediately returns a new [DataQuery] instance.
  */
 suspend fun Data.queryProfileWithPermission(): DataQuery {
-    val permissions = permissions()
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
@@ -45,7 +43,6 @@ suspend fun Data.queryProfileWithPermission(): DataQuery {
  * If permission is already granted, then immediately returns a new [DataUpdate] instance.
  */
 suspend fun Data.updateWithPermission(): DataUpdate {
-    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
         applicationContext.requestWritePermission()
     }
@@ -60,7 +57,6 @@ suspend fun Data.updateWithPermission(): DataUpdate {
  * If permissions are already granted, then immediately returns a new [DataDelete] instance.
  */
 suspend fun Data.deleteWithPermission(): DataDelete {
-    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
         applicationContext.requestWritePermission()
     }

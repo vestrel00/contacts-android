@@ -74,10 +74,10 @@ interface Contacts {
     fun profile(): Profile
 
     /**
-     * Returns a new [ContactsPermissions] instance, which provides functions for checking required
+     * Returns a [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(): ContactsPermissions
+    val permissions: ContactsPermissions
 
     /**
      * Reference to the Application's Context for use in extension functions and external library
@@ -104,10 +104,14 @@ interface Contacts {
  * Creates a new [Contacts] instance.
  */
 @Suppress("FunctionName")
-fun Contacts(context: Context): Contacts = ContactsImpl(context.applicationContext)
+fun Contacts(context: Context): Contacts = ContactsImpl(
+    context.applicationContext,
+    ContactsPermissions(context.applicationContext)
+)
 
 private class ContactsImpl(
-    override val applicationContext: Context
+    override val applicationContext: Context,
+    override val permissions: ContactsPermissions
 ) : Contacts {
 
     override fun query() = Query(applicationContext)
@@ -125,6 +129,4 @@ private class ContactsImpl(
     override fun groups() = Groups(applicationContext)
 
     override fun profile(): Profile = Profile(applicationContext)
-
-    override fun permissions() = ContactsPermissions(applicationContext)
 }

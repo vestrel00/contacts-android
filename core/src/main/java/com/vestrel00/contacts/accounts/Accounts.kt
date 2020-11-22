@@ -56,10 +56,10 @@ interface Accounts {
     fun updateProfileRawContactsAssociations(): AccountsRawContactsAssociationsUpdate
 
     /**
-     * Returns a new [AccountsPermissions] instance, which provides functions for checking required
+     * Returns a [AccountsPermissions] instance, which provides functions for checking required
      * permissions.
      */
-    fun permissions(): AccountsPermissions
+    val permissions: AccountsPermissions
 
     /**
      * Reference to the Application's Context for use in extension functions and external library
@@ -72,10 +72,16 @@ interface Accounts {
  * Creates a new [Accounts] instance.
  */
 @Suppress("FunctionName")
-fun Accounts(context: Context): Accounts = AccountsImpl(context.applicationContext)
+fun Accounts(context: Context): Accounts = AccountsImpl(
+    context.applicationContext,
+    AccountsPermissions(context.applicationContext)
+)
 
 @SuppressWarnings("MissingPermission")
-private class AccountsImpl(override val applicationContext: Context) : Accounts {
+private class AccountsImpl(
+    override val applicationContext: Context,
+    override val permissions: AccountsPermissions
+) : Accounts {
 
     override fun query() = AccountsQuery(applicationContext, false)
 
@@ -90,6 +96,4 @@ private class AccountsImpl(override val applicationContext: Context) : Accounts 
 
     override fun updateProfileRawContactsAssociations() =
         AccountsRawContactsAssociationsUpdate(applicationContext, true)
-
-    override fun permissions() = AccountsPermissions(applicationContext)
 }

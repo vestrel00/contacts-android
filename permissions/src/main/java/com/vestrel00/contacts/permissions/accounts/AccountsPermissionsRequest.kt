@@ -16,7 +16,6 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
  */
 suspend fun Accounts.queryWithPermission(): AccountsQuery {
-    val permissions = permissions()
     if (!permissions.canQueryAccounts()) {
         applicationContext.requestQueryAccountsPermission()
     }
@@ -32,7 +31,6 @@ suspend fun Accounts.queryWithPermission(): AccountsQuery {
  * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
  */
 suspend fun Accounts.queryProfileWithPermission(): AccountsQuery {
-    val permissions = permissions()
     if (!permissions.canQueryAccounts()) {
         applicationContext.requestQueryAccountsPermission()
     }
@@ -48,7 +46,6 @@ suspend fun Accounts.queryProfileWithPermission(): AccountsQuery {
  * instance.
  */
 suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery {
-    val permissions = permissions()
     if (!permissions.canQueryRawContacts()) {
         applicationContext.requestQueryRawContactsPermission()
     }
@@ -64,7 +61,6 @@ suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery 
  * instance.
  */
 suspend fun Accounts.queryProfileRawContactsWithPermission(): AccountsRawContactsQuery {
-    val permissions = permissions()
     if (!permissions.canQueryRawContacts()) {
         applicationContext.requestQueryRawContactsPermission()
     }
@@ -82,7 +78,6 @@ suspend fun Accounts.queryProfileRawContactsWithPermission(): AccountsRawContact
  */
 suspend fun Accounts.updateRawContactsAssociationsWithPermission():
         AccountsRawContactsAssociationsUpdate {
-    val permissions = permissions()
     if (!permissions.canUpdateRawContactsAssociations()) {
         applicationContext.requestUpdateRawContactsAssociationsPermission()
     }
@@ -100,7 +95,6 @@ suspend fun Accounts.updateRawContactsAssociationsWithPermission():
  */
 suspend fun Accounts.updateProfileRawContactsAssociationsWithPermission():
         AccountsRawContactsAssociationsUpdate {
-    val permissions = permissions()
     if (!permissions.canUpdateRawContactsAssociations()) {
         applicationContext.requestUpdateRawContactsAssociationsPermission()
     }

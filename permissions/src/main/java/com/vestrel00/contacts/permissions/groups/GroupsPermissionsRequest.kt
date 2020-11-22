@@ -16,7 +16,6 @@ import com.vestrel00.contacts.permissions.requestWritePermission
  * If permission is already granted, then immediately returns a new [GroupsQuery] instance.
  */
 suspend fun Groups.queryWithPermission(): GroupsQuery {
-    val permissions = permissions()
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
@@ -33,7 +32,6 @@ suspend fun Groups.queryWithPermission(): GroupsQuery {
  * If permissions are already granted, then immediately returns a new [GroupsInsert] instance.
  */
 suspend fun Groups.insertWithPermission(): GroupsInsert {
-    val permissions = permissions()
     if (!permissions.canInsert()) {
         applicationContext.requestWritePermission()
         applicationContext.requestGetAccountsPermission()
@@ -49,7 +47,6 @@ suspend fun Groups.insertWithPermission(): GroupsInsert {
  * If permissions are already granted, then immediately returns a new [GroupsUpdate] instance.
  */
 suspend fun Groups.updateWithPermission(): GroupsUpdate {
-    val permissions = permissions()
     if (!permissions.canUpdateDelete()) {
         applicationContext.requestWritePermission()
     }
