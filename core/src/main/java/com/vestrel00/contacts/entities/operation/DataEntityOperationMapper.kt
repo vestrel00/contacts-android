@@ -9,15 +9,15 @@ import com.vestrel00.contacts.entities.MutableCommonDataEntity
  */
 // This can be declared just as MutableDataEntity.updateOperation but this looks more consistent
 // with the other functions.
-internal fun <T : MutableCommonDataEntity> T.updateOperation(isProfile: Boolean):
-        ContentProviderOperation? = dataOperation(isProfile).updateDataRowOrDeleteIfBlank(this)
+internal fun <T : MutableCommonDataEntity> T.updateOperation():
+        ContentProviderOperation? = dataOperation().updateDataRowOrDeleteIfBlank(this)
 
 // Yes, I know we can avoid this whole type casting situation by moving the body of this function
 // to the updateOperation and instead do;
 // when (this) is MutableAddress -> AddressOperation().updateDataRowOrDeleteIfBlank(this)
 // I prefer this way because this function can be reused :D #NOT-ALWAYS-YAGNI
 @Suppress("UNCHECKED_CAST")
-private fun <T : MutableCommonDataEntity> T.dataOperation(isProfile: Boolean):
+private fun <T : MutableCommonDataEntity> T.dataOperation():
         AbstractCommonDataOperation<T> = when (mimeType) {
     // We could instead do when (this) is MutableAddress -> AddressOperation()
     // However, using mimeType instead of the class allows for exhaustive compilation checks.
