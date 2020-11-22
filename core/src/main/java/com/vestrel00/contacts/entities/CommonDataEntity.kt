@@ -54,7 +54,8 @@ interface CommonDataEntity : Entity {
      * "Default" is the terminology used by the native Contacts app. Consumers should use the
      * DefaultContactData extension functions to set a data entity as default or not.
      */
-    fun isDefault(): Boolean = isSuperPrimary
+    val isDefault: Boolean
+        get() = isSuperPrimary
 }
 
 /**

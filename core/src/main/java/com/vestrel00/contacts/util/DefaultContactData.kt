@@ -15,12 +15,12 @@ import com.vestrel00.contacts.equalTo
 /**
  * Returns the default data entity in the collection or null if not found.
  */
-fun Collection<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.isDefault() }
+fun Collection<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.isDefault }
 
 /**
  * Returns the default data entity in the sequence or null if not found.
  */
-fun Sequence<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.isDefault() }
+fun Sequence<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.isDefault }
 
 /**
  * Sets this data as the default for the set of data of the same type (e.g. email) for the aggregate
