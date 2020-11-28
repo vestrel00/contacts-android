@@ -7,6 +7,8 @@ import com.vestrel00.contacts.`in`
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.equalTo
 
+// Note that there is no need to handle isProfile here as ContactLinks operations do not support it.
+
 /**
  * Returns the [Contact] that contains all of the successfully linked RawContacts or null if the
  * link operation failed.

@@ -57,6 +57,9 @@ import com.vestrel00.contacts.entities.table.Table
  *
  * This does nothing / fails if there is only one RawContact associated with [this].
  *
+ * **Profile Contact & RawContacts are not supported!** This operation will fail if there are any
+ * profile Contact or RawContacts in [contacts].
+ *
  * ## Contact Display Name Resolution
  *
  * There is one thing that the native Contacts app manually does that the Contacts Provider does not
@@ -116,7 +119,11 @@ fun ContactEntity.link(context: Context, contacts: Collection<ContactEntity>) =
 fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): ContactLinkResult {
     val mainContactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete() || mainContactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() ||
+        mainContactId == null ||
+        mainContactId.isProfileId ||
+        contacts.find { it.isProfile } != null
+    ) {
         return ContactLinkFailed
     }
 
@@ -230,6 +237,9 @@ private object ContactLinkFailed : ContactLinkResult {
  *
  * This does nothing / fails if there is only one RawContact associated with [this].
  *
+ * **Profile Contact & RawContacts are not supported!** This operation will fail if [this] is a
+ * Profile Contact.
+ *
  * ## Permissions
  *
  * The [com.vestrel00.contacts.ContactsPermissions.WRITE_PERMISSION] is required.
@@ -242,7 +252,10 @@ private object ContactLinkFailed : ContactLinkResult {
 fun ContactEntity.unlink(context: Context): ContactUnlinkResult {
     val contactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete() || contactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete() ||
+        contactId == null ||
+        contactId.isProfileId
+    ) {
         return ContactUnlinkFailed
     }
 
