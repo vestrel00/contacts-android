@@ -35,8 +35,8 @@ internal fun Account.nullIfNotInSystem(context: Context): Account? =
     nullIfNotIn(
         AccountsQuery(
             context,
-            // Does not matter what value is passed to isProfile because we are not using profile-aware
-            // functions.
+            // Does not matter what value is passed to isProfile because we are not using
+            // profile-aware functions.
             false
         ).allAccounts()
     )

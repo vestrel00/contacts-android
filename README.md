@@ -1,7 +1,5 @@
 ## TODO
 
-0. Refactor .add/.addAll -> .let(::add)/.let(::addAll)
-
 1. Setup user profile
     - Review and update ALL util functions (make sure they work for both profile and non-profile).
 
