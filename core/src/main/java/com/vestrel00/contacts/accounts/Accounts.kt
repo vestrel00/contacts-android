@@ -4,7 +4,8 @@ import android.content.Context
 
 /**
  * Provides new [AccountsQuery], [AccountsRawContactsQuery], and
- * [AccountsRawContactsAssociationsUpdate] instances.
+ * [AccountsRawContactsAssociationsUpdate] for Profile OR non-Profile (depending on instance)
+ * operations.
  *
  * ## Permissions
  *
@@ -13,47 +14,36 @@ import android.content.Context
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to use
  *   [queryRawContacts].
  * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.WRITE_CONTACTS" to the
- *   AndroidManifest in order to use [updateRawContactsAssociations] and
- *   [updateProfileRawContactsAssociations].
+ *   AndroidManifest in order to use [updateRawContactsAssociations].
  *
  * Use [permissions] convenience functions to check for required permissions.
  */
 interface Accounts {
 
     /**
-     * Returns a new [AccountsQuery] instance for non-Profile queries.
+     * Returns a new [AccountsQuery] instance for Profile OR non-Profile (depending on instance)
+     * queries.
      */
     fun query(): AccountsQuery
 
     /**
-     * Returns a new [AccountsQuery] instance for Profile queries.
-     */
-    fun queryProfile(): AccountsQuery
-
-    /**
-     * Returns a new [AccountsRawContactsQuery] instance for non-Profile queries.
+     * Returns a new [AccountsRawContactsQuery] instance for Profile OR non-Profile (depending on
+     * instance) queries.
      */
     fun queryRawContacts(): AccountsRawContactsQuery
 
-
     /**
-     * Returns a new [AccountsRawContactsQuery] instance for profile queries.
-     */
-    fun queryProfileRawContacts(): AccountsRawContactsQuery
-
-    /**
-     * Returns a new [AccountsRawContactsAssociationsUpdate] instance for non-Profile RawContacts.
+     * Returns a new [AccountsRawContactsAssociationsUpdate] instance Profile OR non-Profile
+     * (depending on instance) RawContacts associations operations.
      *
      * Operations for Profile RawContacts may fail.
      */
     fun updateRawContactsAssociations(): AccountsRawContactsAssociationsUpdate
 
     /**
-     * Returns a new [AccountsRawContactsAssociationsUpdate] instance for Profile RawContacts.
-     *
-     * Operations for non-Profile RawContacts may fail.
+     * Returns a new [Accounts] instance for Profile operations.
      */
-    fun updateProfileRawContactsAssociations(): AccountsRawContactsAssociationsUpdate
+    fun profile(): Accounts
 
     /**
      * Returns a [AccountsPermissions] instance, which provides functions for checking required
@@ -69,31 +59,29 @@ interface Accounts {
 }
 
 /**
- * Creates a new [Accounts] instance.
+ * Creates a new [Accounts] instance for Profile or non-Profile operations.
  */
 @Suppress("FunctionName")
-fun Accounts(context: Context): Accounts = AccountsImpl(
+@JvmOverloads
+fun Accounts(context: Context, isProfile: Boolean = false): Accounts = AccountsImpl(
     context.applicationContext,
-    AccountsPermissions(context.applicationContext)
+    AccountsPermissions(context.applicationContext),
+    isProfile
 )
 
 @SuppressWarnings("MissingPermission")
 private class AccountsImpl(
     override val applicationContext: Context,
-    override val permissions: AccountsPermissions
+    override val permissions: AccountsPermissions,
+    private val isProfile: Boolean
 ) : Accounts {
 
-    override fun query() = AccountsQuery(applicationContext, false)
+    override fun query() = AccountsQuery(applicationContext, isProfile)
 
-    override fun queryProfile() = AccountsQuery(applicationContext, true)
-
-    override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext, false)
-
-    override fun queryProfileRawContacts() = AccountsRawContactsQuery(applicationContext, true)
+    override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext, isProfile)
 
     override fun updateRawContactsAssociations() =
-        AccountsRawContactsAssociationsUpdate(applicationContext, false)
+        AccountsRawContactsAssociationsUpdate(applicationContext, isProfile)
 
-    override fun updateProfileRawContactsAssociations() =
-        AccountsRawContactsAssociationsUpdate(applicationContext, true)
+    override fun profile() = Accounts(applicationContext, true)
 }

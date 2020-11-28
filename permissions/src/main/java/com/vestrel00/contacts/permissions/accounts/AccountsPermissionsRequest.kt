@@ -24,21 +24,6 @@ suspend fun Accounts.queryWithPermission(): AccountsQuery {
 }
 
 /**
- * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.READ_PERMISSION] are
- * not yet granted, suspends the current coroutine, requests for the permission, and then returns a
- * new [AccountsQuery] instance.
- *
- * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
- */
-suspend fun Accounts.queryProfileWithPermission(): AccountsQuery {
-    if (!permissions.canQueryAccounts()) {
-        applicationContext.requestQueryAccountsPermission()
-    }
-
-    return queryProfile()
-}
-
-/**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
  * requests for the permission, and then returns a new [AccountsRawContactsQuery] instance.
  *
@@ -51,21 +36,6 @@ suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery 
     }
 
     return queryRawContacts()
-}
-
-/**
- * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
- * requests for the permission, and then returns a new [AccountsRawContactsQuery] instance.
- *
- * If permission is already granted, then immediately returns a new [AccountsRawContactsQuery]
- * instance.
- */
-suspend fun Accounts.queryProfileRawContactsWithPermission(): AccountsRawContactsQuery {
-    if (!permissions.canQueryRawContacts()) {
-        applicationContext.requestQueryRawContactsPermission()
-    }
-
-    return queryProfileRawContacts()
 }
 
 /**
@@ -83,23 +53,6 @@ suspend fun Accounts.updateRawContactsAssociationsWithPermission():
     }
 
     return updateRawContactsAssociations()
-}
-
-/**
- * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
- * not yet granted, suspends the current coroutine, requests for the permission, and then returns a
- * new [AccountsRawContactsAssociationsUpdate] instance.
- *
- * If permissions are already granted, then immediately returns a new
- * [AccountsRawContactsAssociationsUpdate] instance.
- */
-suspend fun Accounts.updateProfileRawContactsAssociationsWithPermission():
-        AccountsRawContactsAssociationsUpdate {
-    if (!permissions.canUpdateRawContactsAssociations()) {
-        applicationContext.requestUpdateRawContactsAssociationsPermission()
-    }
-
-    return updateProfileRawContactsAssociations()
 }
 
 /**
