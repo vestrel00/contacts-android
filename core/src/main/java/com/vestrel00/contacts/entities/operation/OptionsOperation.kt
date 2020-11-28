@@ -1,12 +1,15 @@
 package com.vestrel00.contacts.entities.operation
 
 import android.content.ContentProviderOperation
+import android.content.ContentProviderOperation.newUpdate
 import com.vestrel00.contacts.ContactsFields
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.RawContactsFields
 import com.vestrel00.contacts.entities.MutableOptions
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
+import com.vestrel00.contacts.util.isProfileId
 
 /*
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
@@ -16,14 +19,16 @@ import com.vestrel00.contacts.equalTo
 internal object OptionsOperation {
 
     fun updateContactOptions(contactId: Long, options: MutableOptions): ContentProviderOperation =
-        newUpdate(Table.Contacts)
+        newUpdate(if (contactId.isProfileId) ProfileUris.CONTACTS.uri else Table.Contacts.uri)
             .withSelection(ContactsFields.Id equalTo contactId)
             .withOptions(options)
             .build()
 
     fun updateRawContactOptions(
         rawContactId: Long, options: MutableOptions
-    ): ContentProviderOperation = newUpdate(Table.RawContacts)
+    ): ContentProviderOperation = newUpdate(
+        if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri
+    )
         .withSelection(RawContactsFields.Id equalTo rawContactId)
         .withOptions(options)
         .build()

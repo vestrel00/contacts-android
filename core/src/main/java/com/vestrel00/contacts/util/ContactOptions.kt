@@ -9,6 +9,7 @@ import com.vestrel00.contacts.entities.MutableOptions
 import com.vestrel00.contacts.entities.Options
 import com.vestrel00.contacts.entities.mapper.optionsMapper
 import com.vestrel00.contacts.entities.operation.OptionsOperation
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -19,6 +20,8 @@ import com.vestrel00.contacts.equalTo
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -37,7 +40,7 @@ fun ContactEntity.options(context: Context): Options {
     }
 
     return context.contentResolver.query(
-        Table.Contacts,
+        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.Options),
         ContactsFields.Id equalTo contactId
     ) {
@@ -55,6 +58,8 @@ fun ContactEntity.options(context: Context): Options {
  * This will not change the value of this instance's options immutable member variable! You will
  * need to refresh this instance or use [ContactEntity.options] extension function to get the most
  * up-to-date options.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *

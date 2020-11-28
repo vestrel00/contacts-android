@@ -9,6 +9,7 @@ import com.vestrel00.contacts.entities.Options
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.mapper.rawContactsOptionsMapper
 import com.vestrel00.contacts.entities.operation.OptionsOperation
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -36,7 +37,7 @@ fun RawContactEntity.options(context: Context): Options {
     }
 
     return context.contentResolver.query(
-        Table.RawContacts,
+        if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
         Include(RawContactsFields.Options),
         RawContactsFields.Id equalTo rawContactId
     ) {

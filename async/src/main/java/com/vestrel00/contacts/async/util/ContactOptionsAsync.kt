@@ -47,8 +47,8 @@ suspend fun ContactEntity.setOptionsWithContext(
  */
 suspend fun ContactEntity.updateOptionsWithContext(
     context: Context,
-    update: MutableOptions.() -> Unit,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+    coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
+    update: MutableOptions.() -> Unit
 ): Boolean = withContext(coroutineContext) { updateOptions(context, update) }
 
 // endregion
@@ -86,8 +86,8 @@ fun ContactEntity.setOptionsAsync(
  */
 fun ContactEntity.updateOptionsAsync(
     context: Context,
-    update: MutableOptions.() -> Unit,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+    coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
+    update: MutableOptions.() -> Unit
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { updateOptions(context, update) }
 
 // endregion
