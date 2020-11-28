@@ -59,7 +59,7 @@ interface Contacts {
     fun delete(): Delete
 
     /**
-     * Returns a new [Data] instance.
+     * Returns a new [Data] instance for non-Profile data operations.
      */
     fun data(): Data
 
@@ -124,9 +124,9 @@ private class ContactsImpl(
 
     override fun delete() = Delete(applicationContext)
 
-    override fun data(): Data = Data(applicationContext)
+    override fun data() = Data(applicationContext, false)
 
     override fun groups() = Groups(applicationContext)
 
-    override fun profile(): Profile = Profile(applicationContext)
+    override fun profile() = Profile(applicationContext)
 }

@@ -4,7 +4,8 @@ import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 
 /**
- * Provides new [DataQuery], [DataUpdate], and [DataDelete] instances.
+ * Provides new [DataQuery], [DataUpdate], and [DataDelete] for Profile OR non-Profile (depending on
+ * instance) operations.
  *
  * Note that there is no DataInsert as data is required to be associated with a RawContact.
  * See [com.vestrel00.contacts.Insert]
@@ -20,34 +21,22 @@ import com.vestrel00.contacts.ContactsPermissions
 interface Data {
 
     /**
-     * Returns a new [DataQuery] instance for non-Profile data queries.
+     * Returns a new [DataQuery] instance for Profile OR non-Profile (depending on instance) data
+     * queries.
      */
     fun query(): DataQuery
 
     /**
-     * Returns a new [DataQuery] instance for Profile data queries.
-     */
-    fun queryProfile(): DataQuery
-
-    /**
-     * Returns a new [DataUpdate] instance for non-Profile data updates.
+     * Returns a new [DataUpdate] instance for Profile OR non-Profile (depending on instance) data
+     * updates.
      */
     fun update(): DataUpdate
 
     /**
-     * Returns a new [DataUpdate] instance for Profile data updates.
-     */
-    fun updateProfile(): DataUpdate
-
-    /**
-     * Returns a new [DataDelete] instance for non-Profile data deletes.
+     * Returns a new [DataDelete] instance for Profile OR non-Profile (depending on instance) data
+     * deletes.
      */
     fun delete(): DataDelete
-
-    /**
-     * Returns a new [DataDelete] instance for Profile data deletes.
-     */
-    fun deleteProfile(): DataDelete
 
     /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
@@ -63,25 +52,21 @@ interface Data {
 }
 
 @Suppress("FunctionName")
-internal fun Data(context: Context): Data = DataImpl(
+internal fun Data(context: Context, isProfile: Boolean): Data = DataImpl(
     context.applicationContext,
-    ContactsPermissions(context.applicationContext)
+    ContactsPermissions(context.applicationContext),
+    isProfile
 )
 
 private class DataImpl(
     override val applicationContext: Context,
-    override val permissions: ContactsPermissions
+    override val permissions: ContactsPermissions,
+    private val isProfile: Boolean
 ) : Data {
 
-    override fun query() = DataQuery(applicationContext, false)
+    override fun query() = DataQuery(applicationContext, isProfile)
 
-    override fun queryProfile() = DataQuery(applicationContext, true)
+    override fun update() = DataUpdate(applicationContext, isProfile)
 
-    override fun update() = DataUpdate(applicationContext, false)
-
-    override fun updateProfile() = DataUpdate(applicationContext, true)
-
-    override fun delete() = DataDelete(applicationContext, false)
-
-    override fun deleteProfile() = DataDelete(applicationContext, true)
+    override fun delete() = DataDelete(applicationContext, isProfile)
 }

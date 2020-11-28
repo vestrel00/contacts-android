@@ -2,6 +2,7 @@ package com.vestrel00.contacts.profile
 
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
+import com.vestrel00.contacts.data.Data
 
 /**
  * Provides new [ProfileQuery], [ProfileInsert], [ProfileUpdate], and [ProfileDelete] instances.
@@ -37,6 +38,11 @@ interface Profile {
     fun delete(): ProfileDelete
 
     /**
+     * Returns a new [Data] instance for Profile data operations.
+     */
+    fun data(): Data
+
+    /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
@@ -67,4 +73,6 @@ private class ProfileImpl(
     override fun update() = ProfileUpdate(applicationContext)
 
     override fun delete() = ProfileDelete(applicationContext)
+
+    override fun data() = Data(applicationContext, true)
 }
