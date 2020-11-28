@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.util
 
+import android.content.ContentProviderOperation.newDelete
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,8 +14,8 @@ import com.vestrel00.contacts.entities.MimeType
 import com.vestrel00.contacts.entities.Photo
 import com.vestrel00.contacts.entities.RawContactEntity
 import com.vestrel00.contacts.entities.cursor.photoCursor
-import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -26,6 +27,8 @@ import java.io.InputStream
  * Returns the full-sized photo as an [InputStream]. Returns null if a photo has not yet been set.
  *
  * It is up to the caller to close the [InputStream].
+ *
+ * Supports profile and non-profile RawContacts.
  *
  * ## Permissions
  *
@@ -44,7 +47,7 @@ fun RawContactEntity.photoInputStream(context: Context): InputStream? {
     }
 
     val photoFileId = context.contentResolver.query(
-        Table.Data,
+        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         Include(Fields.Photo.PhotoFileId),
         (Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo MimeType.PHOTO)
     ) {
@@ -70,6 +73,8 @@ fun RawContactEntity.photoInputStream(context: Context): InputStream? {
 /**
  * Returns the full-sized photo as a [ByteArray]. Returns null if a photo has not yet been set.
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -86,6 +91,8 @@ fun RawContactEntity.photoBytes(context: Context): ByteArray? = photoInputStream
 /**
  * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -101,6 +108,8 @@ fun RawContactEntity.photoBitmap(context: Context): Bitmap? = photoInputStream(c
 
 /**
  * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ *
+ * Supports profile and non-profile RawContacts.
  *
  * ## Permissions
  *
@@ -131,6 +140,8 @@ internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
  *
  * It is up to the caller to close the [InputStream].
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -148,7 +159,7 @@ fun RawContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
     }
 
     return context.contentResolver.query(
-        Table.Data,
+        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         Include(Fields.Photo.PhotoThumbnail),
         (Fields.RawContact.Id equalTo rawContactId)
                 and (Fields.MimeType equalTo MimeType.PHOTO)
@@ -160,6 +171,8 @@ fun RawContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
 
 /**
  * Returns the photo thumbnail as a [ByteArray]. Returns null if a photo has not yet been set.
+ *
+ * Supports profile and non-profile RawContacts.
  *
  * ## Permissions
  *
@@ -178,6 +191,8 @@ fun RawContactEntity.photoThumbnailBytes(context: Context): ByteArray? =
 /**
  * Returns the photo thumbnail as a [Bitmap]. Returns null if a photo has not yet been set.
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -194,6 +209,8 @@ fun RawContactEntity.photoThumbnailBitmap(context: Context): Bitmap? =
 
 /**
  * Returns the photo thumbnail as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ *
+ * Supports profile and non-profile RawContacts.
  *
  * ## Permissions
  *
@@ -223,6 +240,8 @@ fun RawContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawa
  * Contacts Provider as the contact photo.
  *
  * Returns true if the operation succeeds.
+ *
+ * Supports profile and non-profile RawContacts.
  *
  * ## Permissions
  *
@@ -276,6 +295,7 @@ internal fun RawContactEntity.doSetPhoto(context: Context, photoBytes: ByteArray
     var isSuccessful = false
     try {
         val photoUri = Uri.withAppendedPath(
+            // This is also used to set Profile photos along with non-Profile photos.
             ContentUris.withAppendedId(RawContacts.CONTENT_URI, rawContactId),
             RawContacts.DisplayPhoto.CONTENT_DIRECTORY
         )
@@ -326,6 +346,8 @@ internal fun Bitmap.bytes(): ByteArray {
  *
  * Returns true if the operation succeeds.
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.WRITE_PERMISSION].
@@ -343,7 +365,7 @@ fun RawContactEntity.removePhoto(context: Context): Boolean {
     }
 
     val isSuccessful = context.contentResolver.applyBatch(
-        newDelete(Table.Data)
+        newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.RawContact.Id equalTo rawContactId)
                         and (Fields.MimeType equalTo MimeType.PHOTO)

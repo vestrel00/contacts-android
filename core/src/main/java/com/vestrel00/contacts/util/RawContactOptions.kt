@@ -20,6 +20,8 @@ import com.vestrel00.contacts.equalTo
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -52,6 +54,8 @@ fun RawContactEntity.options(context: Context): Options {
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.WRITE_PERMISSION].
@@ -80,6 +84,8 @@ fun RawContactEntity.setOptions(context: Context, options: MutableOptions): Bool
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
+ *
+ * Supports profile and non-profile RawContacts.
  *
  * ## Permissions
  *

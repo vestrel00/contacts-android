@@ -88,6 +88,7 @@ class PhotoView @JvmOverloads constructor(
                     // FIXME This suppression should no longer be necessary once the compiler is
                     // smart enough to realize that these blocking calls are ran using the
                     // Dispatchers.IO, which is designed to handle blocking calls.
+                    // May require READ_EXTERNAL_STORAGE
                     @Suppress("BlockingMethodInNonBlockingContext")
                     val bitmap = withContext(Dispatchers.IO) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

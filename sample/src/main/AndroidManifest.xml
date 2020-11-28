@@ -12,8 +12,17 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <!--
-     Profile permissions have been removed since API 23. It is still required for API 22 and below.
-      -->
+         Required to read photos from external storage that is not in application-specific
+         directories returned by Context.getExternalFilesDir(String)
+         and Context.getExternalCacheDir()
+
+         Used in PhotoView.
+    -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!--
+        Profile permissions have been removed since API 23. It is still required for API 22 and below.
+    -->
     <uses-permission
         android:name="android.permission.READ_PROFILE"
         android:maxSdkVersion="22" />

@@ -31,7 +31,7 @@ internal enum class ProfileUris(val uri: Uri) {
 /**
  * Uri to the Profile RawContact row in the RawContacts table for the given [rawContactId].
  */
-fun rawContact(rawContactId: Long): Uri = RAW_CONTACTS.buildUpon()
+fun rawContact(rawContactId: Long): Uri = RAW_CONTACTS.uri.buildUpon()
     .appendEncodedPath("$rawContactId")
     .build()
 
@@ -40,7 +40,7 @@ fun rawContact(rawContactId: Long): Uri = RAW_CONTACTS.buildUpon()
  *
  * **Important** This does not support deletion of data rows! It will throw an exception.
  */
-fun dataForRawContact(rawContactId: Long): Uri = RAW_CONTACTS.buildUpon()
+fun dataForRawContact(rawContactId: Long): Uri = RAW_CONTACTS.uri.buildUpon()
     .appendEncodedPath("$rawContactId")
     .appendEncodedPath(RawContacts.Data.CONTENT_DIRECTORY)
     .build()
