@@ -6,6 +6,7 @@ import com.vestrel00.contacts.Query
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.equalTo
+import com.vestrel00.contacts.profile.ProfileQuery
 
 /**
  * Returns the contact with all of the latest data, including all
@@ -16,6 +17,8 @@ import com.vestrel00.contacts.equalTo
  *
  * Returns itself if the [Contact.id] is null, indicating that this Contact instance has not yet
  * been inserted to the DB.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -52,7 +55,12 @@ fun MutableContact.refresh(context: Context, cancel: () -> Boolean = { false }):
     }
 
 internal fun Context.findFirstContactWithId(contactId: Long, cancel: () -> Boolean): Contact? =
-    Query(this)
-        .where(Fields.Contact.Id equalTo contactId)
-        .find(cancel)
-        .firstOrNull()
+    if (contactId.isProfileId) {
+        ProfileQuery(this)
+            .find(cancel)
+    } else {
+        Query(this)
+            .where(Fields.Contact.Id equalTo contactId)
+            .find(cancel)
+            .firstOrNull()
+    }

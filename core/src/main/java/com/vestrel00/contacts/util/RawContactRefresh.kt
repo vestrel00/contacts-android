@@ -58,13 +58,11 @@ internal fun Context.findFirstRawContactWithId(
     rawContactId: Long, cancel: () -> Boolean
 ): RawContact? = if (rawContactId.isProfileId) {
     ProfileQuery(this)
-        .includeBlanks(true)
         .find(cancel)
         ?.rawContacts
         ?.find { it.id == rawContactId }
 } else {
     Query(this)
-        .includeBlanks(true)
         .where(Fields.RawContact.Id equalTo rawContactId)
         .find(cancel)
         .firstOrNull()
