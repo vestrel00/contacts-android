@@ -10,6 +10,8 @@ import com.vestrel00.contacts.entities.CommonDataEntity
  * This may return null if the [Contact] no longer exists or if [CommonDataEntity.contactId] is null
  * (which is the case for manually constructed entities).
  *
+ * Supports profile and non-profile Contacts.
+ *
  * ## Permissions
  *
  * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null

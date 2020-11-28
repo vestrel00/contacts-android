@@ -474,7 +474,7 @@ internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
     if (rawContactsWhere != null) {
         // Limit the data to the set associated with the RawContacts found in the RawContacts
         // table matching the rawContactsWhere.
-        val rawContactIds = findRawContactIdsInRawContactsTable(rawContactsWhere, cancel)
+        val rawContactIds = findRawContactIdsInRawContactsTable(isProfile, rawContactsWhere, cancel)
         dataWhere = dataWhere and (Fields.RawContact.Id `in` rawContactIds)
     }
 
@@ -502,10 +502,14 @@ internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
 }
 
 private fun ContentResolver.findRawContactIdsInRawContactsTable(
-    rawContactsWhere: Where<RawContactsField>, cancel: () -> Boolean
+    isProfile: Boolean,
+    rawContactsWhere: Where<RawContactsField>,
+    cancel: () -> Boolean
 ): Set<Long> =
     query(
-        Table.RawContacts, Include(RawContactsFields.Id), rawContactsWhere
+        if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+        Include(RawContactsFields.Id),
+        rawContactsWhere
     ) {
         mutableSetOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()

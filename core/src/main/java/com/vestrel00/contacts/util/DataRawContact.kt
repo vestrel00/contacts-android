@@ -10,6 +10,8 @@ import com.vestrel00.contacts.entities.RawContact
  * This may return null if the [RawContact] no longer exists or if [CommonDataEntity.rawContactId] is null
  * (which is the case for manually constructed entities).
  *
+ * Supports profile and non-profile RawContacts.
+ *
  * ## Permissions
  *
  * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null

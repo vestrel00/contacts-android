@@ -61,7 +61,7 @@ fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(): Comparator<Contac
  *
  * val mutableListOfContacts: MutableList<Contact>
  * mutableListOfContacts.sortWith(
- *      Fields.Email.Address.desc().contactsComparator(),
+ *      Fields.Email.Address.desc().contactsComparator()
  * )
  * ```
  */
