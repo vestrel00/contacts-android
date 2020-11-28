@@ -1,5 +1,6 @@
 package com.vestrel00.contacts.util
 
+import android.content.ContentProviderOperation.newDelete
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,8 +14,8 @@ import com.vestrel00.contacts.entities.TempRawContact
 import com.vestrel00.contacts.entities.cursor.contactsCursor
 import com.vestrel00.contacts.entities.cursor.dataCursor
 import com.vestrel00.contacts.entities.mapper.tempRawContactMapper
-import com.vestrel00.contacts.entities.operation.newDelete
 import com.vestrel00.contacts.entities.operation.withSelection
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import java.io.InputStream
 
@@ -28,6 +29,8 @@ import java.io.InputStream
  * on query filters.
  *
  * It is up to the caller to close the [InputStream].
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -46,7 +49,7 @@ fun ContactEntity.photoInputStream(context: Context): InputStream? {
     }
 
     return context.contentResolver.query(
-        Table.Contacts,
+        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoUri),
         ContactsFields.Id equalTo contactId
     ) {
@@ -61,6 +64,8 @@ fun ContactEntity.photoInputStream(context: Context): InputStream? {
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -80,7 +85,9 @@ fun ContactEntity.photoBytes(context: Context): ByteArray? = photoInputStream(co
  *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
- * on query filters..
+ * on query filters.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -101,6 +108,8 @@ fun ContactEntity.photoBitmap(context: Context): Bitmap? = photoInputStream(cont
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -143,6 +152,8 @@ private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
  *
  * It is up to the caller to close the [InputStream].
  *
+ * Supports profile and non-profile Contacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -160,7 +171,7 @@ fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
     }
 
     return context.contentResolver.query(
-        Table.Contacts,
+        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoThumbnailUri),
         ContactsFields.Id equalTo contactId
     ) {
@@ -177,6 +188,8 @@ fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
  * on query filters.
  *
  * The stream should be closed after use.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -199,6 +212,8 @@ fun ContactEntity.photoThumbnailBytes(context: Context): ByteArray? =
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
  *
+ * Supports profile and non-profile Contacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -219,6 +234,8 @@ fun ContactEntity.photoThumbnailBitmap(context: Context): Bitmap? =
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -249,6 +266,8 @@ fun ContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable
  * [ContactEntity.rawContacts].
  *
  * Returns true if the operation succeeds.
+ *
+ * Supports profile and non-profile Contacts.
  *
  * ## Permissions
  *
@@ -308,17 +327,20 @@ fun ContactEntity.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
 fun ContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
     setPhoto(context, photoDrawable.bitmap.bytes())
 
-private fun photoFileId(context: Context, contactId: Long): Long? = context.contentResolver.query(
-    Table.Contacts,
-    Include(ContactsFields.PhotoFileId),
-    ContactsFields.Id equalTo contactId
-) {
-    it.getNextOrNull { it.contactsCursor().photoFileId }
-}
-
-private fun rawContactWithPhotoFileId(context: Context, photoFileId: Long): TempRawContact? =
+private fun ContactEntity.photoFileId(context: Context, contactId: Long): Long? =
     context.contentResolver.query(
-        Table.Data,
+        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
+        Include(ContactsFields.PhotoFileId),
+        ContactsFields.Id equalTo contactId
+    ) {
+        it.getNextOrNull { it.contactsCursor().photoFileId }
+    }
+
+private fun ContactEntity.rawContactWithPhotoFileId(
+    context: Context, photoFileId: Long
+): TempRawContact? =
+    context.contentResolver.query(
+        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         Include(Fields.RawContact.Id),
         Fields.Photo.PhotoFileId equalTo photoFileId
     ) {
@@ -337,6 +359,8 @@ private fun rawContactWithPhotoFileId(context: Context, photoFileId: Long): Temp
  * The native Contacts app actually does not provide the option to remove the photo of a Contact
  * with at least 2 associated RawContacts.
  *
+ * Supports profile and non-profile Contacts.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.WRITE_PERMISSION].
@@ -354,7 +378,7 @@ fun ContactEntity.removePhoto(context: Context): Boolean {
     }
 
     val isSuccessful = context.contentResolver.applyBatch(
-        newDelete(Table.Data)
+        newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.Contact.Id equalTo contactId)
                         and (Fields.MimeType equalTo MimeType.PHOTO)
