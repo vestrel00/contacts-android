@@ -76,7 +76,7 @@ data class Phone internal constructor(
         normalizedNumber = normalizedNumber
     )
 
-    enum class Type(override val value: Int) : Entity.Type {
+    enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         MOBILE(CommonDataKinds.Phone.TYPE_MOBILE), // Default

@@ -64,6 +64,16 @@ interface CommonDataEntity : Entity {
      */
     val isProfile: Boolean
         get() = id.isProfileId
+
+    /**
+     * A type of data. Used by data that may have several types.
+     */
+    interface Type {
+        /**
+         * The actual value that represents the type.
+         */
+        val value: Int
+    }
 }
 
 /**

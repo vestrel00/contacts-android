@@ -1,7 +1,7 @@
 package contacts
 
 import android.database.DatabaseUtils
-import contacts.entities.Entity
+import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
 import contacts.util.isEmpty
 import java.util.*
@@ -528,7 +528,7 @@ private fun Any?.toSqlString(): String = when (this) {
     is Collection<*> -> this.asSequence().toSqlString()
     is Sequence<*> -> this.map { it?.toSqlString() }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
-    is Entity.Type -> value.toSqlString()
+    is CommonDataEntity.Type -> value.toSqlString()
     is Date -> time.toSqlString()
     is MimeType -> value.toSqlString()
     else -> this.toString().toSqlString()

@@ -60,7 +60,7 @@ data class Im internal constructor(
         data = data
     )
 
-    enum class Protocol(override val value: Int) : Entity.Type {
+    enum class Protocol(override val value: Int) : CommonDataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         AIM(CommonDataKinds.Im.PROTOCOL_AIM), // Default

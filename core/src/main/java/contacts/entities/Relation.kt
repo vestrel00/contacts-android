@@ -56,7 +56,7 @@ data class Relation internal constructor(
         name = name
     )
 
-    enum class Type(override val value: Int) : Entity.Type {
+    enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         ASSISTANT(CommonDataKinds.Relation.TYPE_ASSISTANT), // Default

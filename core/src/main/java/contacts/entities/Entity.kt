@@ -13,14 +13,10 @@ interface Entity : Parcelable {
     val id: Long?
 
     /**
-     * Returns true if this entity has no non-null (and non-blank for strings) properties or other
-     * entities containing non-null (and non-blank for strings) properties.
+     * Returns true if the underlying data contains at least one non-null and non-empty piece of
+     * information.
      */
     val isBlank: Boolean
-
-    interface Type {
-        val value: Int
-    }
 }
 
 internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {

@@ -56,7 +56,7 @@ data class Email internal constructor(
         address = address
     )
 
-    enum class Type(override val value: Int) : Entity.Type {
+    enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         HOME(CommonDataKinds.Email.TYPE_HOME), // Default

@@ -69,7 +69,7 @@ data class Event internal constructor(
         date = date
     )
 
-    enum class Type(override val value: Int) : Entity.Type {
+    enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         BIRTHDAY(CommonDataKinds.Event.TYPE_BIRTHDAY), // Default

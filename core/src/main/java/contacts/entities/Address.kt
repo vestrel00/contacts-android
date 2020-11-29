@@ -126,7 +126,7 @@ data class Address internal constructor(
         country = country
     )
 
-    enum class Type(override val value: Int) : Entity.Type {
+    enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         HOME(CommonDataKinds.StructuredPostal.TYPE_HOME), // Default

@@ -1,9 +1,6 @@
 ## TODO
 
-- Refactor package from com.vestrel00.contacts to just contacts.
-
-1. Support for adding custom mimetypes;
-    - Add Social media data; e.g. WhatsApp (vnd.com.whatsapp.profile), Facebook Messenger, etc.
+1. Support for adding custom mimetypes.
 2. Add extension functions for insert, update, delete, etc?
 3. Add Copyright to all files.
 
