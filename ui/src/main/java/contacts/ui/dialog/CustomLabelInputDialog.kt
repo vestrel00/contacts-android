@@ -1,12 +1,12 @@
-package com.vestrel00.contacts.ui.dialog
+package contacts.ui.dialog
 
 import android.app.AlertDialog
 import android.content.Context
 import android.text.Editable
 import android.view.ViewGroup
 import android.widget.EditText
-import com.vestrel00.contacts.ui.R
-import com.vestrel00.contacts.ui.text.AbstractTextWatcher
+import contacts.ui.R
+import contacts.ui.text.AbstractTextWatcher
 
 /**
  * Shows an [AlertDialog] with an [EditText] and a cancel and ok button. The ok button is enabled

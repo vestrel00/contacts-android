@@ -1,11 +1,11 @@
-package com.vestrel00.contacts.ui.util
+package contacts.ui.util
 
 import android.app.Activity
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
 import android.widget.Toast
-import com.vestrel00.contacts.ui.R
+import contacts.ui.R
 
 /**
  * Launches an external activity to pick a ringtone.

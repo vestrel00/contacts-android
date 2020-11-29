@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.ui.util
+package contacts.ui.util
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -7,7 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
-import com.vestrel00.contacts.ui.R
+import contacts.ui.R
 
 /**
  * Shows an alert dialog with two options; take a new photo using the camera and elect an existing

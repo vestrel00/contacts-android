@@ -75,7 +75,7 @@
             android:text="@string/edit_contact_details_phone_label"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
-        <com.vestrel00.contacts.ui.view.PhonesView
+        <contacts.ui.view.PhonesView
             android:id="@+id/phonesView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

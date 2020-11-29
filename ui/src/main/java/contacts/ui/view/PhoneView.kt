@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.ui.view
+package contacts.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,10 +8,10 @@ import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
 import com.vestrel00.contacts.entities.MutablePhone
 import com.vestrel00.contacts.entities.Phone
-import com.vestrel00.contacts.ui.R
-import com.vestrel00.contacts.ui.dialog.CustomLabelInputDialog
-import com.vestrel00.contacts.ui.text.AbstractTextWatcher
-import com.vestrel00.contacts.ui.util.PhoneType
+import contacts.ui.R
+import contacts.ui.dialog.CustomLabelInputDialog
+import contacts.ui.text.AbstractTextWatcher
+import contacts.ui.util.PhoneType
 import kotlinx.android.synthetic.main.view_phone.view.*
 
 /**

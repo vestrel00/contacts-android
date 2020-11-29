@@ -14,8 +14,8 @@ import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
 import com.vestrel00.contacts.entities.MutableContact
 import contacts.sample.R
-import com.vestrel00.contacts.ui.util.onPhotoPicked
-import com.vestrel00.contacts.ui.util.showPhotoPickerDialog
+import contacts.ui.util.onPhotoPicked
+import contacts.ui.util.showPhotoPickerDialog
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

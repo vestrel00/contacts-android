@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.ui.text
+package contacts.ui.text
 
 import android.text.Editable
 import android.text.TextWatcher

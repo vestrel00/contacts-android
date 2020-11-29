@@ -17,7 +17,7 @@ import contacts.async.findWithContext
 import contacts.debug.logContactsProviderTables
 import com.vestrel00.contacts.entities.Contact
 import contacts.permissions.generalQueryWithPermission
-import com.vestrel00.contacts.ui.text.AbstractTextWatcher
+import contacts.ui.text.AbstractTextWatcher
 import com.vestrel00.contacts.util.emails
 import com.vestrel00.contacts.util.phones
 import kotlinx.android.synthetic.main.activity_contacts.*

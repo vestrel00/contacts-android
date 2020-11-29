@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.ui.view
+package contacts.ui.view
 
 import android.content.Context
 import android.util.AttributeSet

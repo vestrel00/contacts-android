@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.ui.util
+package contacts.ui.util
 
 import android.content.res.Resources
 import com.vestrel00.contacts.entities.MutablePhone
