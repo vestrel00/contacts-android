@@ -234,10 +234,9 @@ fun RawContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawa
  * Sets the photo of this [RawContactEntity]. If a photo already exists, it will be overwritten.
  * The Contacts Provider automatically creates a downsized version of this as the thumbnail.
  *
- * If this [RawContactEntity] is the only one that make up a
- * [com.vestrel00.contacts.entities.ContactEntity], then the photo set here will also be used by the
- * Contacts Provider as the contact photo. Otherwise, it may or may not be the photo picked by the
- * Contacts Provider as the contact photo.
+ * If this [RawContactEntity] is the only one that make up a [contacts.entities.ContactEntity], then
+ * the photo set here will also be used by the Contacts Provider as the contact photo. Otherwise, it
+ * may or may not be the photo picked by the Contacts Provider as the contact photo.
  *
  * Returns true if the operation succeeds.
  *
@@ -340,8 +339,8 @@ internal fun Bitmap.bytes(): ByteArray {
 /**
  * Removes the photo of this [RawContactEntity], if one exists.
  *
- * If this [RawContactEntity] is the only one that make up a
- * [com.vestrel00.contacts.entities.ContactEntity], then the contact photo will also be removed.
+ * If this [RawContactEntity] is the only one that make up a [contacts.entities.ContactEntity], then
+ * the contact photo will also be removed.
  * Otherwise, it may or may not affect the contact photo.
  *
  * Returns true if the operation succeeds.

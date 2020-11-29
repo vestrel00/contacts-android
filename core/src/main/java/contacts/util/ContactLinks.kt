@@ -95,7 +95,7 @@ import contacts.entities.table.Table
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.WRITE_PERMISSION] is required.
+ * The [contacts.ContactsPermissions.WRITE_PERMISSION] is required.
  *
  * ## Thread Safety
  *
@@ -242,7 +242,7 @@ private object ContactLinkFailed : ContactLinkResult {
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.WRITE_PERMISSION] is required.
+ * The [contacts.ContactsPermissions.WRITE_PERMISSION] is required.
  *
  * ## Thread Safety
  *

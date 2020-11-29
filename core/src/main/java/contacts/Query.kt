@@ -38,8 +38,8 @@ import contacts.util.unsafeLazy
  * In Kotlin,
  *
  * ```kotlin
- * import com.vestrel00.contacts.Fields.Name
- * import com.vestrel00.contacts.Fields.Address
+ * import contacts.Fields.Name
+ * import contacts.Fields.Address
  *
  * val contacts : List<Contact> = query
  *      .accounts(account)
@@ -54,9 +54,9 @@ import contacts.util.unsafeLazy
  * In Java,
  *
  * ```java
- * import static com.vestrel00.contacts.Fields.*;
- * import static com.vestrel00.contacts.WhereKt.*;
- * import static com.vestrel00.contacts.OrderByKt.*;
+ * import static contacts.Fields.*;
+ * import static contacts.WhereKt.*;
+ * import static contacts.OrderByKt.*;
  *
  * List<Contact> contacts = query
  *      .accounts(account)

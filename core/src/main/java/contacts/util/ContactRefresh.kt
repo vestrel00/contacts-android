@@ -10,7 +10,7 @@ import contacts.profile.ProfileQuery
 
 /**
  * Returns the contact with all of the latest data, including all
- * [com.vestrel00.contacts.entities.RawContact]s.
+ * [contacts.entities.RawContact]s.
  *
  * This is useful for getting the latest contact data after performing an update. This may return
  * null if the [Contact] no longer exists or if permission is not granted.
@@ -22,8 +22,8 @@ import contacts.profile.ProfileQuery
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
- * will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
+ * if the permission is not granted.
  *
  * ## Thread Safety
  *

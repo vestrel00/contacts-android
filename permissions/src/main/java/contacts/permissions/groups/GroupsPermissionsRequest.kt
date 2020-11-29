@@ -25,9 +25,8 @@ suspend fun Groups.queryWithPermission(): GroupsQuery {
 
 /**
  * If [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
- * granted, suspends the current coroutine, requests for the permissions, and then returns a new
- * [GroupsInsert] instance.
+ * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted, suspends the
+ * current coroutine, requests for the permissions, and then returns a new [GroupsInsert] instance.
  *
  * If permissions are already granted, then immediately returns a new [GroupsInsert] instance.
  */

@@ -22,9 +22,8 @@ suspend fun Profile.queryWithPermission(): ProfileQuery {
 
 /**
  * If [ContactsPermissions.WRITE_PERMISSION] and
- * [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet
- * granted, suspends the current coroutine, requests for the permission, and then returns a new
- * [ProfileInsert] instance.
+ * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted, suspends the
+ * current coroutine, requests for the permission, and then returns a new [ProfileInsert] instance.
  *
  * If permission is already granted, then immediately returns a new [ProfileInsert] instance.
  */

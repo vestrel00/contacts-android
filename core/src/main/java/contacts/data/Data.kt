@@ -8,7 +8,7 @@ import contacts.ContactsPermissions
  * instance) operations.
  *
  * Note that there is no DataInsert as data is required to be associated with a RawContact.
- * See [com.vestrel00.contacts.Insert]
+ * See [contacts.Insert]
  *
  * ## Permissions
  *

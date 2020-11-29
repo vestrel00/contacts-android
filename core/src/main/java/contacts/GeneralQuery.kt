@@ -42,9 +42,9 @@ import contacts.util.unsafeLazy
  * Only the full name and email address attributes of the [Contact] objects are included.
  *
  * ```kotlin
- * import com.vestrel00.contacts.Fields.Name
- * import com.vestrel00.contacts.Fields.Address
- * import com.vestrel00.contacts.ContactsFields.DisplayNamePrimary
+ * import contacts.Fields.Name
+ * import contacts.Fields.Address
+ * import contacts.ContactsFields.DisplayNamePrimary
  *
  * val contacts : List<Contact> = generalQuery.
  *      .accounts(account)

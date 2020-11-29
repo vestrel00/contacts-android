@@ -15,8 +15,8 @@ import contacts.equalTo
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
- * will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
+ * if the permission is not granted.
  *
  * ## Thread Safety
  *
@@ -38,8 +38,8 @@ fun ContactLinkResult.contact(context: Context, cancel: () -> Boolean = { false 
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, empty
- * list will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, empty list will be
+ * returned if the permission is not granted.
  *
  * ## Thread Safety
  *

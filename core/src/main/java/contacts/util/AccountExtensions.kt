@@ -10,7 +10,7 @@ import contacts.accounts.AccountsQuery
  *
  * ## Permissions
  *
- * Requires [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * Requires [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
 internal fun Account.isInSystem(context: Context): Boolean = nullIfNotInSystem(context) != null
 
@@ -19,7 +19,7 @@ internal fun Account.isInSystem(context: Context): Boolean = nullIfNotInSystem(c
  *
  * ## Permissions
  *
- * Requires [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * Requires [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
 internal fun Account.isNotInSystem(context: Context): Boolean = !isInSystem(context)
 
@@ -29,7 +29,7 @@ internal fun Account.isNotInSystem(context: Context): Boolean = !isInSystem(cont
  *
  * ## Permissions
  *
- * Requires [com.vestrel00.contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ * Requires [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
 internal fun Account.nullIfNotInSystem(context: Context): Account? =
     nullIfNotIn(

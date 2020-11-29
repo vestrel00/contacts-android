@@ -1,8 +1,8 @@
 package contacts.util
 
 import android.content.Context
-import contacts.entities.Contact
 import contacts.entities.CommonDataEntity
+import contacts.entities.Contact
 
 /**
  * Returns the [Contact] with the [CommonDataEntity.contactId].
@@ -14,8 +14,8 @@ import contacts.entities.CommonDataEntity
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
- * will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
+ * if the permission is not granted.
  *
  * ## Thread Safety
  *

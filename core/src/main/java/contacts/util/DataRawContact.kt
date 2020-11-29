@@ -14,8 +14,8 @@ import contacts.entities.RawContact
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
- * will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
+ * if the permission is not granted.
  *
  * ## Thread Safety
  *

@@ -11,8 +11,8 @@ import contacts.entities.RawContact
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
- * will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
+ * if the permission is not granted.
  *
  * ## Thread Safety
  *
@@ -37,8 +37,8 @@ fun Insert.Result.rawContact(
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, an empty
- * list will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, an empty list will be
+ * returned if the permission is not granted.
  *
  * ## Thread Safety
  *
@@ -60,8 +60,8 @@ fun Insert.Result.rawContacts(
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null
- * will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
+ * if the permission is not granted.
  *
  * ## Thread Safety
  *
@@ -89,8 +89,8 @@ fun Insert.Result.contact(
  *
  * ## Permissions
  *
- * The [com.vestrel00.contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, an empty
- * list will be returned if the permission is not granted.
+ * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, an empty list will be
+ * returned if the permission is not granted.
  *
  * ## Thread Safety
  *

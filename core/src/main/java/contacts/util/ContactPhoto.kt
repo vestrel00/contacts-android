@@ -256,9 +256,9 @@ fun ContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable
 // region SET PHOTO
 
 /**
- * Sets the photo of this [ContactEntity] (and the [com.vestrel00.contacts.entities.RawContact] that
- * the Contacts Provider has chosen to hold the primary photo). If a photo already exists, it will
- * be overwritten. The Contacts Provider automatically creates a downsized version of this as the
+ * Sets the photo of this [ContactEntity] (and the [contacts.entities.RawContact] that the Contacts
+ * Provider has chosen to hold the primary photo). If a photo already exists, it will be
+ * overwritten. The Contacts Provider automatically creates a downsized version of this as the
  * thumbnail.
  *
  * If a photo has not yet been set and the Contacts Provider has not yet chosen the RawContact that

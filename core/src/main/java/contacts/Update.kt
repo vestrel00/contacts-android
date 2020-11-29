@@ -12,7 +12,7 @@ import contacts.util.unsafeLazy
  * Updates one or more raw contacts' rows in the data table.
  *
  * This does not support updating user Profile Contact. For Profile updates, use
- * [com.vestrel00.contacts.profile.ProfileUpdate].
+ * [contacts.profile.ProfileUpdate].
  *
  * ## Permissions
  *

@@ -37,8 +37,8 @@ data class Event internal constructor(
      * ## Query matching
      *
      * To match event dates in queries, the [Date] must be converted to a string first before using
-     * it in the where clause. Use [com.vestrel00.contacts.util.toWhereString] to convert [Date]s to
-     * the correct format required to match event dates.
+     * it in the where clause. Use [contacts.util.toWhereString] to convert [Date]s to the correct
+     * format required to match event dates.
      *
      * Unlike other dates in other entities in this library that are stored as milliseconds, these
      * dates are stored in the Content Provider DB as strings in the format of yyyy-MM-dd
