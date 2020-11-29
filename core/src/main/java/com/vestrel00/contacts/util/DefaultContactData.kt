@@ -1,14 +1,15 @@
 package com.vestrel00.contacts.util
 
 import android.content.ContentProviderOperation
+import android.content.ContentProviderOperation.newUpdate
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.and
 import com.vestrel00.contacts.entities.CommonDataEntity
-import com.vestrel00.contacts.entities.operation.newUpdate
 import com.vestrel00.contacts.entities.operation.withSelection
 import com.vestrel00.contacts.entities.operation.withValue
+import com.vestrel00.contacts.entities.table.ProfileUris
 import com.vestrel00.contacts.entities.table.Table
 import com.vestrel00.contacts.equalTo
 
@@ -25,6 +26,8 @@ fun Sequence<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.i
 /**
  * Sets this data as the default for the set of data of the same type (e.g. email) for the aggregate
  * Contact. If a default data already exist before this call, then it will no longer be the default.
+ *
+ * Supports profile and non-profile data.
  *
  * ## Permissions
  *
@@ -71,6 +74,8 @@ fun CommonDataEntity.setAsDefault(context: Context): Boolean {
  * - y@y.com
  * - z@z.com
  *
+ * Supports profile and non-profile data.
+ *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  *
  * ## Permissions
@@ -103,10 +108,12 @@ fun CommonDataEntity.clearDefault(context: Context): Boolean {
  * Provides the operation to set all primary data rows with the same [CommonDataEntity.mimeType]
  * belonging to the same RawContact to false (0).
  *
+ * Supports profile and non-profile data.
+ *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
 private fun CommonDataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
-    newUpdate(TABLE)
+    newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(
             (Fields.RawContact.Id equalTo rawContactId)
                     and (Fields.MimeType equalTo mimeType)
@@ -118,10 +125,12 @@ private fun CommonDataEntity.clearPrimary(rawContactId: Long): ContentProviderOp
  * Provides the operation to set all super primary data rows with the same [CommonDataEntity.mimeType]
  * belonging to the same Contact to false (0).
  *
+ * Supports profile and non-profile data.
+ *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
 private fun CommonDataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
-    newUpdate(TABLE)
+    newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(
             (Fields.Contact.Id equalTo contactId)
                     and (Fields.MimeType equalTo mimeType)
@@ -132,12 +141,13 @@ private fun CommonDataEntity.clearSuperPrimary(contactId: Long): ContentProvider
 /**
  * Provides the operation to set this data row as the primary and super primary.
  *
+ * Supports profile and non-profile data.
+ *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation = newUpdate(TABLE)
-    .withSelection(Fields.DataId equalTo dataId)
-    .withValue(Fields.IsPrimary, 1)
-    .withValue(Fields.IsSuperPrimary, 1)
-    .build()
-
-private val TABLE = Table.Data
+private fun CommonDataEntity.setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation =
+    newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
+        .withSelection(Fields.DataId equalTo dataId)
+        .withValue(Fields.IsPrimary, 1)
+        .withValue(Fields.IsSuperPrimary, 1)
+        .build()

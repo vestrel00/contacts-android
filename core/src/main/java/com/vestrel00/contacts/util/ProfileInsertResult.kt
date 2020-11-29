@@ -7,7 +7,7 @@ import com.vestrel00.contacts.profile.ProfileInsert
 import com.vestrel00.contacts.profile.ProfileQuery
 
 /**
- * Returns the newly created [RawContact] or null if the insert operation failed.
+ * Returns the newly created Profile [RawContact] or null if the insert operation failed.
  *
  * ## Permissions
  *
@@ -20,8 +20,9 @@ import com.vestrel00.contacts.profile.ProfileQuery
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun ProfileInsert.Result.rawContact(context: Context, cancel: () -> Boolean = { false }):
-        RawContact? = rawContactId?.let { rawContactId ->
+fun ProfileInsert.Result.rawContact(
+    context: Context, cancel: () -> Boolean = { false }
+): RawContact? = rawContactId?.let { rawContactId ->
     contact(context, cancel)
         ?.rawContacts
         ?.asSequence()
