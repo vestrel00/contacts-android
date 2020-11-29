@@ -3,7 +3,7 @@
 This document contains useful developer notes that should be kept in mind during development. It 
 serves as a memory of all the quirks and gotcha's of things like Android's `ContactsContract`.
 
-## Contacts Provider
+## Contacts Provider / ContactsContract
 
 It is important to know about the ins and outs of Android's Contacts Provider. After all, this API 
 is just a wrapper around it. 
@@ -884,6 +884,17 @@ permissions in the AndroidManifest have to be accepted prior to installation.
 
 This library does not add any custom sync adapters to keep it short and sweet. This relies on the
 default system sync settings and functions.
+
+#### Unused ContactsContract Stuff
+
+We are currently not utilizing these things because I haven't found usages of them while using the
+native Contacts app. They are probably working behind the scenes but until we find uses for these,
+let's leave it out because YAGNI.
+
+- `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
+    - Might be useful to add this for `SHOULD_SYNC` and `UNGROUPED_VISIBLE`.
+- `ContactsColumns.IN_VISIBLE_GROUP` + `Groups.GROUP_VISIBLE`. Flag indicating if the contacts
+   belonging to this group should be visible in any user interface.
 
 ## Java Support
 

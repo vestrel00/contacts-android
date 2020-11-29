@@ -1,11 +1,8 @@
 ## TODO
 
-1. Review all ContactsContract code and assess what else should be added to code, README, or DEV_NOTES.
-    - SettingsColumns? (group visible / invisible)
-    - `ContactsColumns.IN_VISIBLE_GROUP`
-2. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
-3. Add extension functions for insert, update, delete, etc?
-4. Add Copyright to all files.
+1. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+2. Add extension functions for insert, update, delete, etc?
+3. Add Copyright to all files.
 
 ----------------------------------------------------------------------------------------------------
 
