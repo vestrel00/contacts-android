@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.sample
+package contacts.sample
 
 import android.app.Activity
 import android.app.AlertDialog

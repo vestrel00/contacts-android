@@ -11,7 +11,7 @@
         android:paddingEnd="@dimen/activity_horizontal_margin">
 
         <!-- Photo -->
-        <com.vestrel00.contacts.sample.view.PhotoView
+        <contacts.sample.view.PhotoView
             android:id="@+id/photoView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/contact_detail_photo_height"

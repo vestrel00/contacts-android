@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.sample.view
+package contacts.sample.view
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,7 @@ import contacts.async.util.photoBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
 import com.vestrel00.contacts.entities.MutableContact
-import com.vestrel00.contacts.sample.R
+import contacts.sample.R
 import com.vestrel00.contacts.ui.util.onPhotoPicked
 import com.vestrel00.contacts.ui.util.showPhotoPickerDialog
 import kotlinx.coroutines.*
