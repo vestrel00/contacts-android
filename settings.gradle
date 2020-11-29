@@ -1,5 +1,6 @@
 include ':async'
 include ':core'
+include ':customdata-moreinfo'
 include ':debug'
 include ':permissions'
 include ':ui'

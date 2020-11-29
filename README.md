@@ -1,6 +1,9 @@
 ## TODO
 
-1. Support for adding custom mimetypes (e.g. vnd.com.whatsapp.profile).
+- Refactor package from com.vestrel00.contacts to just contacts.
+
+1. Support for adding custom mimetypes;
+    - Add Social media data; e.g. WhatsApp (vnd.com.whatsapp.profile), Facebook Messenger, etc.
 2. Add extension functions for insert, update, delete, etc?
 3. Add Copyright to all files.
 
@@ -127,14 +130,24 @@ consumers to implement a specific part of the native Android Contacts app.
       of phone numbers the user has specified should not be able to contact them via telephony
       communications (calls, SMS, MMS).
     - See https://source.android.com/devices/tech/connect/block-numbers
-1. SIM card query, insert(?), update(?), and delete(?).
+2. SIM card query, insert(?), update(?), and delete(?).
     - Enables importing from and exporting(?) to SIM card.
     - Query will definitely be possible. I'm not sure if insert, update, and delete operations
       are possible. We will see.
-2. Contacts read/write .VCF file.
+3. Contacts read/write .VCF file.
     - Enables import from and export to .VCF file.
     - Enables sharing a contact.
     - Dev note: search ContactsContract for "vcard".
+4. Custom data from social media.
+    - WhatsApp (vnd.com.whatsapp.profile)
+    - Facebook Messenger
+    - Twitter
+    - Etc
+    - I will need help from the community to implement these because I don't participate in
+      social media. Use the `debug` module to look into the data table and look for social media
+      mimetypes. Then, create a new custom data module using the `customdata-moreinfo` module as
+      reference. A separate module should be created for different social media.
+      E.G. customdata-whatsapp, customdata-messenger, customdata-twitter
 
 ## License
 
