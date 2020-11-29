@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.debug
+package contacts.debug
 
 import android.content.Context
 import android.net.Uri
