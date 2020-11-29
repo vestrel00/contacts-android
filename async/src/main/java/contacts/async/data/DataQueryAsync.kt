@@ -1,9 +1,9 @@
 package contacts.async.data
 
-import com.vestrel00.contacts.CommonDataField
+import contacts.CommonDataField
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.data.CommonDataQuery
-import com.vestrel00.contacts.entities.CommonDataEntity
+import contacts.data.CommonDataQuery
+import contacts.entities.CommonDataEntity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

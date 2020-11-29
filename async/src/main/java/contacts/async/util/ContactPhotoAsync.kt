@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.entities.ContactEntity
-import com.vestrel00.contacts.util.*
+import contacts.entities.ContactEntity
+import contacts.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

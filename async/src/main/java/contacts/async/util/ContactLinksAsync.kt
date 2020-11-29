@@ -2,11 +2,11 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.entities.ContactEntity
-import com.vestrel00.contacts.util.ContactLinkResult
-import com.vestrel00.contacts.util.ContactUnlinkResult
-import com.vestrel00.contacts.util.link
-import com.vestrel00.contacts.util.unlink
+import contacts.entities.ContactEntity
+import contacts.util.ContactLinkResult
+import contacts.util.ContactUnlinkResult
+import contacts.util.link
+import contacts.util.unlink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

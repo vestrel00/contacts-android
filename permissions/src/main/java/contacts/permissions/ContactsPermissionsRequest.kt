@@ -1,7 +1,7 @@
 package contacts.permissions
 
 import android.content.Context
-import com.vestrel00.contacts.*
+import contacts.*
 import contacts.permissions.accounts.requestGetAccountsPermission
 
 /**

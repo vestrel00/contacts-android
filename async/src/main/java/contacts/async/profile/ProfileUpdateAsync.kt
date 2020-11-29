@@ -1,7 +1,7 @@
 package contacts.async.profile
 
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.profile.ProfileUpdate
+import contacts.profile.ProfileUpdate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

@@ -1,7 +1,7 @@
 package contacts.async
 
-import com.vestrel00.contacts.GeneralQuery
-import com.vestrel00.contacts.entities.Contact
+import contacts.GeneralQuery
+import contacts.entities.Contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

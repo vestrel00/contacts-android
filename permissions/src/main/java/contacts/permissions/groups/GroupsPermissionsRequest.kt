@@ -1,10 +1,10 @@
 package contacts.permissions.groups
 
-import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.groups.Groups
-import com.vestrel00.contacts.groups.GroupsInsert
-import com.vestrel00.contacts.groups.GroupsQuery
-import com.vestrel00.contacts.groups.GroupsUpdate
+import contacts.ContactsPermissions
+import contacts.groups.Groups
+import contacts.groups.GroupsInsert
+import contacts.groups.GroupsQuery
+import contacts.groups.GroupsUpdate
 import contacts.permissions.accounts.requestGetAccountsPermission
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission

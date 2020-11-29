@@ -3,12 +3,12 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import com.vestrel00.contacts.entities.MutableContact
-import com.vestrel00.contacts.entities.MutablePhone
-import com.vestrel00.contacts.entities.Phone
-import com.vestrel00.contacts.util.addPhone
-import com.vestrel00.contacts.util.phones
-import com.vestrel00.contacts.util.removePhone
+import contacts.entities.MutableContact
+import contacts.entities.MutablePhone
+import contacts.entities.Phone
+import contacts.util.addPhone
+import contacts.util.phones
+import contacts.util.removePhone
 
 /**
  * A (vertical) [LinearLayout] that displays the [MutablePhone]s of the [contact] and handles its

@@ -1,10 +1,10 @@
 package contacts.permissions.profile
 
-import com.vestrel00.contacts.ContactsPermissions
+import contacts.ContactsPermissions
 import contacts.permissions.accounts.requestGetAccountsPermission
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
-import com.vestrel00.contacts.profile.*
+import contacts.profile.*
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,

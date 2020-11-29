@@ -2,12 +2,12 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.entities.ContactEntity
-import com.vestrel00.contacts.entities.MutableOptions
-import com.vestrel00.contacts.entities.Options
-import com.vestrel00.contacts.util.options
-import com.vestrel00.contacts.util.setOptions
-import com.vestrel00.contacts.util.updateOptions
+import contacts.entities.ContactEntity
+import contacts.entities.MutableOptions
+import contacts.entities.Options
+import contacts.util.options
+import contacts.util.setOptions
+import contacts.util.updateOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

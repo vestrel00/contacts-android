@@ -1,8 +1,8 @@
 package contacts.ui.util
 
 import android.content.res.Resources
-import com.vestrel00.contacts.entities.MutablePhone
-import com.vestrel00.contacts.entities.Phone
+import contacts.entities.MutablePhone
+import contacts.entities.Phone
 
 /**
  * A wrapper around [Phone.Type] that pairs it with the String value of its

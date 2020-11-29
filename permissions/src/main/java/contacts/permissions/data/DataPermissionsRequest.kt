@@ -1,10 +1,10 @@
 package contacts.permissions.data
 
-import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.data.Data
-import com.vestrel00.contacts.data.DataDelete
-import com.vestrel00.contacts.data.DataQuery
-import com.vestrel00.contacts.data.DataUpdate
+import contacts.ContactsPermissions
+import contacts.data.Data
+import contacts.data.DataDelete
+import contacts.data.DataQuery
+import contacts.data.DataUpdate
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
 

@@ -7,15 +7,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import com.vestrel00.contacts.Contacts
-import com.vestrel00.contacts.Fields
+import contacts.Contacts
+import contacts.Fields
 import contacts.async.commitWithContext
 import contacts.async.findWithContext
-import com.vestrel00.contacts.entities.MutableContact
-import com.vestrel00.contacts.equalTo
+import contacts.entities.MutableContact
+import contacts.equalTo
 import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
-import com.vestrel00.contacts.util.names
+import contacts.util.names
 import kotlinx.android.synthetic.main.activity_edit_contact_details.*
 import kotlinx.coroutines.launch
 

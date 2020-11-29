@@ -1,7 +1,7 @@
 package contacts.async.groups
 
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.groups.GroupsUpdate
+import contacts.groups.GroupsUpdate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

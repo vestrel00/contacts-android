@@ -12,7 +12,7 @@ import android.widget.ImageView
 import contacts.async.util.photoBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
-import com.vestrel00.contacts.entities.MutableContact
+import contacts.entities.MutableContact
 import contacts.sample.R
 import contacts.ui.util.onPhotoPicked
 import contacts.ui.util.showPhotoPickerDialog

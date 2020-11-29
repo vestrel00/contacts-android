@@ -2,9 +2,9 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.entities.Group
-import com.vestrel00.contacts.entities.GroupMembership
-import com.vestrel00.contacts.util.group
+import contacts.entities.Group
+import contacts.entities.GroupMembership
+import contacts.util.group
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

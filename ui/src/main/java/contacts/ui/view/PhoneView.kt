@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
-import com.vestrel00.contacts.entities.MutablePhone
-import com.vestrel00.contacts.entities.Phone
+import contacts.entities.MutablePhone
+import contacts.entities.Phone
 import contacts.ui.R
 import contacts.ui.dialog.CustomLabelInputDialog
 import contacts.ui.text.AbstractTextWatcher

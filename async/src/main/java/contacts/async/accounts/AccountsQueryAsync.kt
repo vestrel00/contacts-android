@@ -1,9 +1,9 @@
 package contacts.async.accounts
 
 import android.accounts.Account
-import com.vestrel00.contacts.accounts.AccountsQuery
+import contacts.accounts.AccountsQuery
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.entities.RawContactEntity
+import contacts.entities.RawContactEntity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

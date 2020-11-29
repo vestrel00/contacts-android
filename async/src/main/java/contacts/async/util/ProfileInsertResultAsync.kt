@@ -2,11 +2,11 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.entities.RawContact
-import com.vestrel00.contacts.profile.ProfileInsert
-import com.vestrel00.contacts.util.contact
-import com.vestrel00.contacts.util.rawContact
+import contacts.entities.Contact
+import contacts.entities.RawContact
+import contacts.profile.ProfileInsert
+import contacts.util.contact
+import contacts.util.rawContact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

@@ -1,6 +1,6 @@
 package contacts.async.accounts
 
-import com.vestrel00.contacts.accounts.AccountsRawContactsQuery
+import contacts.accounts.AccountsRawContactsQuery
 import contacts.async.ASYNC_DISPATCHER
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext

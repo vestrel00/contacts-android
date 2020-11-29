@@ -1,0 +1,22 @@
+package contacts.entities.mapper
+
+import contacts.entities.Im
+import contacts.entities.cursor.ImCursor
+
+internal class ImMapper(private val imCursor: ImCursor) : EntityMapper<Im> {
+
+    override val value: Im
+        get() = Im(
+            id = imCursor.dataId,
+            rawContactId = imCursor.rawContactId,
+            contactId = imCursor.contactId,
+
+            isPrimary = imCursor.isPrimary,
+            isSuperPrimary = imCursor.isSuperPrimary,
+
+            protocol = imCursor.protocol,
+            customProtocol = imCursor.customProtocol,
+
+            data = imCursor.data
+        )
+}
