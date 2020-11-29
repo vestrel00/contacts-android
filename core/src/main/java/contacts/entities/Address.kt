@@ -95,7 +95,7 @@ data class Address internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.ADDRESS
+    override val mimeType: MimeType = MimeType.Address
 
     // type and label are excluded from this check as they are useless information by themselves
     @IgnoredOnParcel
@@ -212,7 +212,7 @@ data class MutableAddress internal constructor(
     )
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.ADDRESS
+    override val mimeType: MimeType = MimeType.Address
 
     // type and label are excluded from this check as they are useless information by themselves
     override val isBlank: Boolean

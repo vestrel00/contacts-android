@@ -595,7 +595,7 @@ private fun ContentResolver.updateRawContactsAccount(
 ): Boolean = updateRawContactsAccount(
     account,
     (Fields.RawContact.Id `in` rawContactIds)
-            and (Fields.MimeType equalTo MimeType.GROUP_MEMBERSHIP),
+            and (Fields.MimeType equalTo MimeType.GroupMembership),
     RawContactsFields.Id `in` rawContactIds,
     isProfile
 )

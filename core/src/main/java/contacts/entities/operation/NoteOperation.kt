@@ -8,7 +8,7 @@ import contacts.entities.MutableNote
 internal class NoteOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableNote>(isProfile) {
 
-    override val mimeType = MimeType.NOTE
+    override val mimeType = MimeType.Note
 
     override fun setData(
         data: MutableNote, setValue: (field: Field, dataValue: Any?) -> Unit

@@ -8,7 +8,7 @@ import contacts.entities.MutableRelation
 internal class RelationOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableRelation>(isProfile) {
 
-    override val mimeType = MimeType.RELATION
+    override val mimeType = MimeType.Relation
 
     override fun setData(
         data: MutableRelation, setValue: (field: Field, dataValue: Any?) -> Unit

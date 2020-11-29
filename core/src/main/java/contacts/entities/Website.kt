@@ -27,7 +27,7 @@ data class Website internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.WEBSITE
+    override val mimeType: MimeType = MimeType.Website
 
     @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(url)
@@ -65,7 +65,7 @@ data class MutableWebsite internal constructor(
 ) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.WEBSITE
+    override val mimeType: MimeType = MimeType.Website
 
     constructor() : this(null, null, null, false, false, null)
 

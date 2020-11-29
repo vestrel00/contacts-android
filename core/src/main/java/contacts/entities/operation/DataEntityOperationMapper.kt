@@ -22,23 +22,23 @@ private fun <T : MutableCommonDataEntity> T.dataOperation():
     // We could instead do when (this) is MutableAddress -> AddressOperation()
     // However, using mimeType instead of the class allows for exhaustive compilation checks.
     // Not requiring an 'else' branch.
-    MimeType.ADDRESS -> AddressOperation(isProfile)
-    MimeType.EMAIL -> EmailOperation(isProfile)
-    MimeType.EVENT -> EventOperation(isProfile)
-    MimeType.IM -> ImOperation(isProfile)
-    MimeType.NAME -> NameOperation(isProfile)
-    MimeType.NICKNAME -> NicknameOperation(isProfile)
-    MimeType.NOTE -> NoteOperation(isProfile)
-    MimeType.ORGANIZATION -> OrganizationOperation(isProfile)
-    MimeType.PHONE -> PhoneOperation(isProfile)
-    MimeType.RELATION -> RelationOperation(isProfile)
-    MimeType.SIP_ADDRESS -> SipAddressOperation(isProfile)
-    MimeType.WEBSITE -> WebsiteOperation(isProfile)
+    MimeType.Address -> AddressOperation(isProfile)
+    MimeType.Email -> EmailOperation(isProfile)
+    MimeType.Event -> EventOperation(isProfile)
+    MimeType.Im -> ImOperation(isProfile)
+    MimeType.Name -> NameOperation(isProfile)
+    MimeType.Nickname -> NicknameOperation(isProfile)
+    MimeType.Note -> NoteOperation(isProfile)
+    MimeType.Organization -> OrganizationOperation(isProfile)
+    MimeType.Phone -> PhoneOperation(isProfile)
+    MimeType.Relation -> RelationOperation(isProfile)
+    MimeType.SipAddress -> SipAddressOperation(isProfile)
+    MimeType.Website -> WebsiteOperation(isProfile)
 
     // The GroupMembership and Photo class intentionally does not have a mutable version unlike the
     // other entities. Manage group memberships via the RawContactGroupMemberships extension
     // functions. Manage photos via the (Raw)ContactPhoto extension functions.
-    MimeType.GROUP_MEMBERSHIP, MimeType.PHOTO, MimeType.UNKNOWN ->
+    MimeType.GroupMembership, MimeType.Photo, MimeType.Unknown ->
         throw UnsupportedOperationException(
             "No update operation for ${this.javaClass.simpleName}"
         )

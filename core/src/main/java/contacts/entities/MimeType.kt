@@ -2,26 +2,44 @@ package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 
-enum class MimeType(internal val value: String) {
+sealed class MimeType(internal val value: String) {
 
-    ADDRESS(CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE),
-    EMAIL(CommonDataKinds.Email.CONTENT_ITEM_TYPE),
-    EVENT(CommonDataKinds.Event.CONTENT_ITEM_TYPE),
-    GROUP_MEMBERSHIP(CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE),
-    IM(CommonDataKinds.Im.CONTENT_ITEM_TYPE),
-    NAME(CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE),
-    NICKNAME(CommonDataKinds.Nickname.CONTENT_ITEM_TYPE),
-    NOTE(CommonDataKinds.Note.CONTENT_ITEM_TYPE),
-    ORGANIZATION(CommonDataKinds.Organization.CONTENT_ITEM_TYPE),
-    PHONE(CommonDataKinds.Phone.CONTENT_ITEM_TYPE),
-    PHOTO(CommonDataKinds.Photo.CONTENT_ITEM_TYPE),
-    RELATION(CommonDataKinds.Relation.CONTENT_ITEM_TYPE),
-    SIP_ADDRESS(CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE),
-    WEBSITE(CommonDataKinds.Website.CONTENT_ITEM_TYPE),
-    UNKNOWN("");
+    object Address : MimeType(CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)
+    object Email : MimeType(CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+    object Event : MimeType(CommonDataKinds.Event.CONTENT_ITEM_TYPE)
+    object GroupMembership : MimeType(CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE)
+    object Im : MimeType(CommonDataKinds.Im.CONTENT_ITEM_TYPE)
+    object Name : MimeType(CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+    object Nickname : MimeType(CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
+    object Note : MimeType(CommonDataKinds.Note.CONTENT_ITEM_TYPE)
+    object Organization : MimeType(CommonDataKinds.Organization.CONTENT_ITEM_TYPE)
+    object Phone : MimeType(CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+    object Photo : MimeType(CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+    object Relation : MimeType(CommonDataKinds.Relation.CONTENT_ITEM_TYPE)
+    object SipAddress : MimeType(CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE)
+    object Website : MimeType(CommonDataKinds.Website.CONTENT_ITEM_TYPE)
+    object Unknown : MimeType("")
+
+    // TODO add Custom
 
     companion object {
 
-        fun fromValue(value: String?): MimeType = values().find { it.value == value } ?: UNKNOWN
+        fun fromValue(value: String?): MimeType = when (value) {
+            Address.value -> Address
+            Email.value -> Email
+            Event.value -> Event
+            GroupMembership.value -> GroupMembership
+            Im.value -> Im
+            Name.value -> Name
+            Nickname.value -> Nickname
+            Note.value -> Note
+            Organization.value -> Organization
+            Phone.value -> Phone
+            Photo.value -> Photo
+            Relation.value -> Relation
+            SipAddress.value -> SipAddress
+            Website.value -> Website
+            else -> Unknown
+        }
     }
 }

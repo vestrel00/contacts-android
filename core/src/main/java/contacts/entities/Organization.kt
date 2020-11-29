@@ -58,7 +58,7 @@ data class Organization internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.ORGANIZATION
+    override val mimeType: MimeType = MimeType.Organization
 
     @IgnoredOnParcel
     override val isBlank: Boolean by unsafeLazy {
@@ -142,7 +142,7 @@ data class MutableOrganization internal constructor(
     )
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.ORGANIZATION
+    override val mimeType: MimeType = MimeType.Organization
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(

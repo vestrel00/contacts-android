@@ -8,7 +8,7 @@ import contacts.entities.MutableAddress
 internal class AddressOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableAddress>(isProfile) {
 
-    override val mimeType = MimeType.ADDRESS
+    override val mimeType = MimeType.Address
 
     override fun setData(
         data: MutableAddress, setValue: (field: Field, dataValue: Any?) -> Unit

@@ -8,7 +8,7 @@ import contacts.entities.MutableOrganization
 internal class OrganizationOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableOrganization>(isProfile) {
 
-    override val mimeType = MimeType.ORGANIZATION
+    override val mimeType = MimeType.Organization
 
     override fun setData(
         data: MutableOrganization, setValue: (field: Field, dataValue: Any?) -> Unit

@@ -55,7 +55,7 @@ data class Phone internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.PHONE
+    override val mimeType: MimeType = MimeType.Phone
 
     // type and label are excluded from this check as they are useless information by themselves
     @IgnoredOnParcel
@@ -174,7 +174,7 @@ data class MutablePhone internal constructor(
     )
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.PHONE
+    override val mimeType: MimeType = MimeType.Phone
 
     // type and label are excluded from this check as they are useless information by themselves
     override val isBlank: Boolean

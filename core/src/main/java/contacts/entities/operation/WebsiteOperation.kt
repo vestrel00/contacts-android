@@ -8,7 +8,7 @@ import contacts.entities.MutableWebsite
 internal class WebsiteOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableWebsite>(isProfile) {
 
-    override val mimeType = MimeType.WEBSITE
+    override val mimeType = MimeType.Website
 
     override fun setData(
         data: MutableWebsite, setValue: (field: Field, dataValue: Any?) -> Unit

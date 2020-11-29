@@ -27,7 +27,7 @@ data class Nickname internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.NICKNAME
+    override val mimeType: MimeType = MimeType.Nickname
 
     @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(name)
@@ -67,7 +67,7 @@ data class MutableNickname internal constructor(
     constructor() : this(null, null, null, false, false, null)
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.NICKNAME
+    override val mimeType: MimeType = MimeType.Nickname
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(name)

@@ -9,19 +9,19 @@ internal val CommonDataEntity.fields: Set<CommonDataField>
 
 internal val MimeType.fields: Set<CommonDataField>
     get() = when (this) {
-        MimeType.ADDRESS -> Fields.Address
-        MimeType.EMAIL -> Fields.Email
-        MimeType.EVENT -> Fields.Event
-        MimeType.GROUP_MEMBERSHIP -> Fields.GroupMembership
-        MimeType.IM -> Fields.Im
-        MimeType.NAME -> Fields.Name
-        MimeType.NICKNAME -> Fields.Nickname
-        MimeType.NOTE -> Fields.Note
-        MimeType.ORGANIZATION -> Fields.Organization
-        MimeType.PHONE -> Fields.Phone
-        MimeType.PHOTO -> Fields.Photo
-        MimeType.RELATION -> Fields.Relation
-        MimeType.SIP_ADDRESS -> Fields.SipAddress
-        MimeType.WEBSITE -> Fields.Website
-        MimeType.UNKNOWN -> EmptyCommonDataFields
+        MimeType.Address -> Fields.Address
+        MimeType.Email -> Fields.Email
+        MimeType.Event -> Fields.Event
+        MimeType.GroupMembership -> Fields.GroupMembership
+        MimeType.Im -> Fields.Im
+        MimeType.Name -> Fields.Name
+        MimeType.Nickname -> Fields.Nickname
+        MimeType.Note -> Fields.Note
+        MimeType.Organization -> Fields.Organization
+        MimeType.Phone -> Fields.Phone
+        MimeType.Photo -> Fields.Photo
+        MimeType.Relation -> Fields.Relation
+        MimeType.SipAddress -> Fields.SipAddress
+        MimeType.Website -> Fields.Website
+        MimeType.Unknown -> EmptyCommonDataFields
     }.all

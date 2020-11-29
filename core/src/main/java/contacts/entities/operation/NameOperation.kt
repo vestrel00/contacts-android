@@ -8,7 +8,7 @@ import contacts.entities.MutableName
 internal class NameOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableName>(isProfile) {
 
-    override val mimeType = MimeType.NAME
+    override val mimeType = MimeType.Name
 
     override fun setData(
         data: MutableName, setValue: (field: Field, dataValue: Any?) -> Unit

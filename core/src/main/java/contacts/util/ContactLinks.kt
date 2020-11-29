@@ -374,7 +374,7 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
         Table.Data,
         Include(Fields.DataId),
         (Fields.RawContact.Id equalTo nameRawContactId)
-                and (Fields.MimeType equalTo MimeType.NAME)
+                and (Fields.MimeType equalTo MimeType.Name)
     ) {
         it.getNextOrNull { it.dataCursor().dataId }
     }

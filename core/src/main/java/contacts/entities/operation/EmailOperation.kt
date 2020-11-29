@@ -8,7 +8,7 @@ import contacts.entities.MutableEmail
 internal class EmailOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableEmail>(isProfile) {
 
-    override val mimeType = MimeType.EMAIL
+    override val mimeType = MimeType.Email
 
     override fun setData(
         data: MutableEmail, setValue: (field: Field, dataValue: Any?) -> Unit

@@ -36,7 +36,7 @@ data class Relation internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.RELATION
+    override val mimeType: MimeType = MimeType.Relation
 
     // type and label are excluded from this check as they are useless information by themselves
     @IgnoredOnParcel
@@ -113,7 +113,7 @@ data class MutableRelation internal constructor(
 ) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.RELATION
+    override val mimeType: MimeType = MimeType.Relation
 
     constructor() : this(
         null, null, null, false, false,

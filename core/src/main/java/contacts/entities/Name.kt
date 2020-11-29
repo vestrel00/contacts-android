@@ -104,7 +104,7 @@ data class Name internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.NAME
+    override val mimeType: MimeType = MimeType.Name
 
     @IgnoredOnParcel
     override val isBlank: Boolean by unsafeLazy {
@@ -205,7 +205,7 @@ data class MutableName internal constructor(
     )
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.NAME
+    override val mimeType: MimeType = MimeType.Name
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(

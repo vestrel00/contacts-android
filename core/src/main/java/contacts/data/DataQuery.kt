@@ -102,15 +102,15 @@ private class DataQueryImpl(
 ) : DataQuery {
 
     override fun addresses(): CommonDataQuery<AddressField, Address> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Address, MimeType.ADDRESS, isProfile
+        contentResolver, permissions, Fields.Address, MimeType.Address, isProfile
     )
 
     override fun emails(): CommonDataQuery<EmailField, Email> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Email, MimeType.EMAIL, isProfile
+        contentResolver, permissions, Fields.Email, MimeType.Email, isProfile
     )
 
     override fun events(): CommonDataQuery<EventField, Event> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Event, MimeType.EVENT, isProfile
+        contentResolver, permissions, Fields.Event, MimeType.Event, isProfile
     )
 
     override fun groupMemberships(): CommonDataQuery<GroupMembershipField, GroupMembership> =
@@ -118,45 +118,45 @@ private class DataQueryImpl(
             contentResolver,
             permissions,
             Fields.GroupMembership,
-            MimeType.GROUP_MEMBERSHIP,
+            MimeType.GroupMembership,
             isProfile
         )
 
     override fun ims(): CommonDataQuery<ImField, Im> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Im, MimeType.IM, isProfile
+        contentResolver, permissions, Fields.Im, MimeType.Im, isProfile
     )
 
     override fun names(): CommonDataQuery<NameField, Name> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Name, MimeType.NAME, isProfile
+        contentResolver, permissions, Fields.Name, MimeType.Name, isProfile
     )
 
     override fun nicknames(): CommonDataQuery<NicknameField, Nickname> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Nickname, MimeType.NICKNAME, isProfile
+        contentResolver, permissions, Fields.Nickname, MimeType.Nickname, isProfile
     )
 
     override fun notes(): CommonDataQuery<NoteField, Note> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Note, MimeType.NOTE, isProfile
+        contentResolver, permissions, Fields.Note, MimeType.Note, isProfile
     )
 
     override fun organizations(): CommonDataQuery<OrganizationField, Organization> =
         CommonDataQueryImpl(
-            contentResolver, permissions, Fields.Organization, MimeType.ORGANIZATION, isProfile
+            contentResolver, permissions, Fields.Organization, MimeType.Organization, isProfile
         )
 
     override fun phones(): CommonDataQuery<PhoneField, Phone> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Phone, MimeType.PHONE, isProfile
+        contentResolver, permissions, Fields.Phone, MimeType.Phone, isProfile
     )
 
     override fun relations(): CommonDataQuery<RelationField, Relation> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Relation, MimeType.RELATION, isProfile
+        contentResolver, permissions, Fields.Relation, MimeType.Relation, isProfile
     )
 
     override fun sipAddresses(): CommonDataQuery<SipAddressField, SipAddress> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.SipAddress, MimeType.SIP_ADDRESS, isProfile
+        contentResolver, permissions, Fields.SipAddress, MimeType.SipAddress, isProfile
     )
 
     override fun websites(): CommonDataQuery<WebsiteField, Website> = CommonDataQueryImpl(
-        contentResolver, permissions, Fields.Website, MimeType.WEBSITE, isProfile
+        contentResolver, permissions, Fields.Website, MimeType.Website, isProfile
     )
 }
 

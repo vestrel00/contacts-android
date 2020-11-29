@@ -17,7 +17,7 @@ import kotlinx.android.parcel.Parcelize
 internal class Photo : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.PHOTO
+    override val mimeType: MimeType = MimeType.Photo
 
     @IgnoredOnParcel
     override val id: Long? = null

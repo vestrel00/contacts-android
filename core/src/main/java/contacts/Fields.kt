@@ -365,7 +365,7 @@ internal object EmptyCommonDataFields : AbstractDataFieldSet<CommonDataField>() 
 }
 
 data class AddressField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.ADDRESS
+    override val mimeType: MimeType = MimeType.Address
 }
 
 class AddressFields internal constructor() : AbstractDataFieldSet<AddressField>() {
@@ -415,7 +415,7 @@ class AddressFields internal constructor() : AbstractDataFieldSet<AddressField>(
 }
 
 data class EmailField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.EMAIL
+    override val mimeType: MimeType = MimeType.Email
 }
 
 class EmailFields internal constructor() : AbstractDataFieldSet<EmailField>() {
@@ -440,7 +440,7 @@ class EmailFields internal constructor() : AbstractDataFieldSet<EmailField>() {
 }
 
 data class EventField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.EVENT
+    override val mimeType: MimeType = MimeType.Event
 }
 
 class EventFields internal constructor() : AbstractDataFieldSet<EventField>() {
@@ -464,7 +464,7 @@ class EventFields internal constructor() : AbstractDataFieldSet<EventField>() {
 
 data class GroupMembershipField internal constructor(override val columnName: String) :
     CommonDataField() {
-    override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP
+    override val mimeType: MimeType = MimeType.GroupMembership
 }
 
 class GroupMembershipFields internal constructor() : AbstractDataFieldSet<GroupMembershipField>() {
@@ -481,7 +481,7 @@ class GroupMembershipFields internal constructor() : AbstractDataFieldSet<GroupM
 }
 
 data class ImField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.IM
+    override val mimeType: MimeType = MimeType.Im
 }
 
 class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
@@ -514,7 +514,7 @@ class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
 }
 
 data class NameField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.NAME
+    override val mimeType: MimeType = MimeType.Name
 }
 
 class NameFields internal constructor() : AbstractDataFieldSet<NameField>() {
@@ -562,7 +562,7 @@ class NameFields internal constructor() : AbstractDataFieldSet<NameField>() {
 }
 
 data class NicknameField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.NICKNAME
+    override val mimeType: MimeType = MimeType.Nickname
 }
 
 class NicknameFields internal constructor() : AbstractDataFieldSet<NicknameField>() {
@@ -581,7 +581,7 @@ class NicknameFields internal constructor() : AbstractDataFieldSet<NicknameField
 }
 
 data class NoteField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.NOTE
+    override val mimeType: MimeType = MimeType.Note
 }
 
 class NoteFields internal constructor() : AbstractDataFieldSet<NoteField>() {
@@ -601,7 +601,7 @@ class NoteFields internal constructor() : AbstractDataFieldSet<NoteField>() {
 
 data class OrganizationField internal constructor(override val columnName: String) :
     CommonDataField() {
-    override val mimeType: MimeType = MimeType.ORGANIZATION
+    override val mimeType: MimeType = MimeType.Organization
 }
 
 class OrganizationFields internal constructor() : AbstractDataFieldSet<OrganizationField>() {
@@ -642,7 +642,7 @@ class OrganizationFields internal constructor() : AbstractDataFieldSet<Organizat
 }
 
 data class PhoneField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.PHONE
+    override val mimeType: MimeType = MimeType.Phone
 }
 
 class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
@@ -671,7 +671,7 @@ class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
 
 internal data class PhotoField internal constructor(override val columnName: String) :
     CommonDataField() {
-    override val mimeType: MimeType = MimeType.PHOTO
+    override val mimeType: MimeType = MimeType.Photo
 }
 
 internal class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
@@ -689,7 +689,7 @@ internal class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoFi
 }
 
 data class RelationField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.RELATION
+    override val mimeType: MimeType = MimeType.Relation
 }
 
 class RelationFields internal constructor() : AbstractDataFieldSet<RelationField>() {
@@ -715,7 +715,7 @@ class RelationFields internal constructor() : AbstractDataFieldSet<RelationField
 
 data class SipAddressField internal constructor(override val columnName: String) :
     CommonDataField() {
-    override val mimeType: MimeType = MimeType.SIP_ADDRESS
+    override val mimeType: MimeType = MimeType.SipAddress
 }
 
 class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressField>() {
@@ -734,7 +734,7 @@ class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressF
 }
 
 data class WebsiteField internal constructor(override val columnName: String) : CommonDataField() {
-    override val mimeType: MimeType = MimeType.WEBSITE
+    override val mimeType: MimeType = MimeType.Website
 }
 
 class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>() {

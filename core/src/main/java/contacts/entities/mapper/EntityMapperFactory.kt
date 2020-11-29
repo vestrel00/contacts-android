@@ -64,21 +64,21 @@ internal fun EntityCursor<AbstractDataField>.websiteMapper(): EntityMapper<Websi
 internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapperFor(
     mimeType: MimeType
 ): EntityMapper<T> = when (mimeType) {
-    MimeType.ADDRESS -> addressMapper()
-    MimeType.EMAIL -> emailMapper()
-    MimeType.EVENT -> eventMapper()
-    MimeType.GROUP_MEMBERSHIP -> groupMembershipMapper()
-    MimeType.IM -> imMapper()
-    MimeType.NAME -> nameMapper()
-    MimeType.NICKNAME -> nicknameMapper()
-    MimeType.NOTE -> noteMapper()
-    MimeType.ORGANIZATION -> organizationMapper()
-    MimeType.PHONE -> phoneMapper()
-    MimeType.PHOTO -> photoMapper()
-    MimeType.RELATION -> relationMapper()
-    MimeType.SIP_ADDRESS -> sipAddressMapper()
-    MimeType.WEBSITE -> websiteMapper()
-    MimeType.UNKNOWN -> throw UnsupportedOperationException(
+    MimeType.Address -> addressMapper()
+    MimeType.Email -> emailMapper()
+    MimeType.Event -> eventMapper()
+    MimeType.GroupMembership -> groupMembershipMapper()
+    MimeType.Im -> imMapper()
+    MimeType.Name -> nameMapper()
+    MimeType.Nickname -> nicknameMapper()
+    MimeType.Note -> noteMapper()
+    MimeType.Organization -> organizationMapper()
+    MimeType.Phone -> phoneMapper()
+    MimeType.Photo -> photoMapper()
+    MimeType.Relation -> relationMapper()
+    MimeType.SipAddress -> sipAddressMapper()
+    MimeType.Website -> websiteMapper()
+    MimeType.Unknown -> throw UnsupportedOperationException(
         "No entity mapper for mime type $mimeType"
     )
 } as EntityMapper<T>

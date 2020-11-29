@@ -381,7 +381,7 @@ fun ContactEntity.removePhoto(context: Context): Boolean {
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.Contact.Id equalTo contactId)
-                        and (Fields.MimeType equalTo MimeType.PHOTO)
+                        and (Fields.MimeType equalTo MimeType.Photo)
             )
             .build()
     ) != null

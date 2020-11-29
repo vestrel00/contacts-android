@@ -17,7 +17,7 @@ import contacts.util.query
 internal class GroupMembershipOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<GroupMembership>(isProfile) {
 
-    override val mimeType = MimeType.GROUP_MEMBERSHIP
+    override val mimeType = MimeType.GroupMembership
 
     override fun setData(
         data: GroupMembership, setValue: (field: Field, dataValue: Any?) -> Unit

@@ -28,7 +28,7 @@ data class GroupMembership internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.GROUP_MEMBERSHIP
+    override val mimeType: MimeType = MimeType.GroupMembership
 
     @IgnoredOnParcel
     override val isBlank: Boolean = false

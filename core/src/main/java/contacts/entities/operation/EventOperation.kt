@@ -9,7 +9,7 @@ import contacts.entities.mapper.EventMapper
 internal class EventOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutableEvent>(isProfile) {
 
-    override val mimeType = MimeType.EVENT
+    override val mimeType = MimeType.Event
 
     override fun setData(
         data: MutableEvent, setValue: (field: Field, dataValue: Any?) -> Unit

@@ -27,7 +27,7 @@ data class SipAddress internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.SIP_ADDRESS
+    override val mimeType: MimeType = MimeType.SipAddress
 
     @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(sipAddress)
@@ -65,7 +65,7 @@ data class MutableSipAddress internal constructor(
 ) : MutableCommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.SIP_ADDRESS
+    override val mimeType: MimeType = MimeType.SipAddress
 
     constructor() : this(null, null, null, false, false, null)
 

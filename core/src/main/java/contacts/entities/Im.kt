@@ -39,7 +39,7 @@ data class Im internal constructor(
 ) : CommonDataEntity {
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.IM
+    override val mimeType: MimeType = MimeType.Im
 
     // protocol and customProtocol are excluded from this check as they are useless information by
     // themselves
@@ -117,7 +117,7 @@ data class MutableIm internal constructor(
     )
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.IM
+    override val mimeType: MimeType = MimeType.Im
 
     // protocol and customProtocol are excluded from this check as they are useless information by
     // themselves

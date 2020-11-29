@@ -178,21 +178,21 @@ private fun EntityCursor<AbstractDataField>.updateRawContact(rawContact: TempRaw
     // Therefore, mutable contact objects must be updated with different pieces of data
     // that each cursor row provides.
     when (mimeTypeCursor().mimeType) {
-        ADDRESS -> rawContact.addresses.add(addressMapper().value)
-        EMAIL -> rawContact.emails.add(emailMapper().value)
-        EVENT -> rawContact.events.add(eventMapper().value)
-        GROUP_MEMBERSHIP -> rawContact.groupMemberships.add(groupMembershipMapper().value)
-        IM -> rawContact.ims.add(imMapper().value)
-        NAME -> rawContact.name = nameMapper().value
-        NICKNAME -> rawContact.nickname = nicknameMapper().value
-        NOTE -> rawContact.note = noteMapper().value
-        ORGANIZATION -> rawContact.organization = organizationMapper().value
-        PHONE -> rawContact.phones.add(phoneMapper().value)
-        PHOTO -> rawContact.photo = photoMapper().value
-        RELATION -> rawContact.relations.add(relationMapper().value)
-        SIP_ADDRESS -> rawContact.sipAddress = sipAddressMapper().value
-        WEBSITE -> rawContact.websites.add(websiteMapper().value)
-        UNKNOWN -> {
+        Address -> rawContact.addresses.add(addressMapper().value)
+        Email -> rawContact.emails.add(emailMapper().value)
+        Event -> rawContact.events.add(eventMapper().value)
+        GroupMembership -> rawContact.groupMemberships.add(groupMembershipMapper().value)
+        Im -> rawContact.ims.add(imMapper().value)
+        Name -> rawContact.name = nameMapper().value
+        Nickname -> rawContact.nickname = nicknameMapper().value
+        Note -> rawContact.note = noteMapper().value
+        Organization -> rawContact.organization = organizationMapper().value
+        Phone -> rawContact.phones.add(phoneMapper().value)
+        Photo -> rawContact.photo = photoMapper().value
+        Relation -> rawContact.relations.add(relationMapper().value)
+        SipAddress -> rawContact.sipAddress = sipAddressMapper().value
+        Website -> rawContact.websites.add(websiteMapper().value)
+        Unknown -> {
             // Do nothing
         }
     }

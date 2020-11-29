@@ -7,7 +7,7 @@ import contacts.entities.MutableIm
 
 internal class ImOperation(isProfile: Boolean) : AbstractCommonDataOperation<MutableIm>(isProfile) {
 
-    override val mimeType = MimeType.IM
+    override val mimeType = MimeType.Im
 
     override fun setData(
         data: MutableIm, setValue: (field: Field, dataValue: Any?) -> Unit

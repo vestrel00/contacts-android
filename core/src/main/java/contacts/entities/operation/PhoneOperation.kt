@@ -8,7 +8,7 @@ import contacts.entities.MutablePhone
 internal class PhoneOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<MutablePhone>(isProfile) {
 
-    override val mimeType = MimeType.PHONE
+    override val mimeType = MimeType.Phone
 
     override fun setData(
         data: MutablePhone, setValue: (field: Field, dataValue: Any?) -> Unit
