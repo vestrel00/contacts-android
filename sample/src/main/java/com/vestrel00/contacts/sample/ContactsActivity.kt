@@ -16,7 +16,7 @@ import com.vestrel00.contacts.asc
 import contacts.async.findWithContext
 import contacts.debug.logContactsProviderTables
 import com.vestrel00.contacts.entities.Contact
-import com.vestrel00.contacts.permissions.generalQueryWithPermission
+import contacts.permissions.generalQueryWithPermission
 import com.vestrel00.contacts.ui.text.AbstractTextWatcher
 import com.vestrel00.contacts.util.emails
 import com.vestrel00.contacts.util.phones

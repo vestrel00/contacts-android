@@ -1,12 +1,12 @@
-package com.vestrel00.contacts.permissions.accounts
+package contacts.permissions.accounts
 
 import android.content.Context
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.accounts.*
-import com.vestrel00.contacts.permissions.R
-import com.vestrel00.contacts.permissions.requestPermission
-import com.vestrel00.contacts.permissions.requestReadPermission
-import com.vestrel00.contacts.permissions.requestWritePermission
+import contacts.permissions.R
+import contacts.permissions.requestPermission
+import contacts.permissions.requestReadPermission
+import contacts.permissions.requestWritePermission
 
 /**
  * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.READ_PERMISSION] are

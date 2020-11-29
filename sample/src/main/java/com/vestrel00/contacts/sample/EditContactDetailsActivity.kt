@@ -13,8 +13,8 @@ import contacts.async.commitWithContext
 import contacts.async.findWithContext
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.equalTo
-import com.vestrel00.contacts.permissions.queryWithPermission
-import com.vestrel00.contacts.permissions.updateWithPermission
+import contacts.permissions.queryWithPermission
+import contacts.permissions.updateWithPermission
 import com.vestrel00.contacts.util.names
 import kotlinx.android.synthetic.main.activity_edit_contact_details.*
 import kotlinx.coroutines.launch

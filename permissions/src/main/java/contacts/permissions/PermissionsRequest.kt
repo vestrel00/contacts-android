@@ -1,4 +1,4 @@
-package com.vestrel00.contacts.permissions
+package contacts.permissions
 
 import android.content.Context
 import com.karumi.dexter.Dexter

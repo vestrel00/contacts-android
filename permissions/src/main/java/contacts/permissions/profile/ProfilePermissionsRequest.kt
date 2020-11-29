@@ -1,9 +1,9 @@
-package com.vestrel00.contacts.permissions.profile
+package contacts.permissions.profile
 
 import com.vestrel00.contacts.ContactsPermissions
-import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
-import com.vestrel00.contacts.permissions.requestReadPermission
-import com.vestrel00.contacts.permissions.requestWritePermission
+import contacts.permissions.accounts.requestGetAccountsPermission
+import contacts.permissions.requestReadPermission
+import contacts.permissions.requestWritePermission
 import com.vestrel00.contacts.profile.*
 
 /**

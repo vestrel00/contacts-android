@@ -1,13 +1,13 @@
-package com.vestrel00.contacts.permissions.groups
+package contacts.permissions.groups
 
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.groups.Groups
 import com.vestrel00.contacts.groups.GroupsInsert
 import com.vestrel00.contacts.groups.GroupsQuery
 import com.vestrel00.contacts.groups.GroupsUpdate
-import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
-import com.vestrel00.contacts.permissions.requestReadPermission
-import com.vestrel00.contacts.permissions.requestWritePermission
+import contacts.permissions.accounts.requestGetAccountsPermission
+import contacts.permissions.requestReadPermission
+import contacts.permissions.requestWritePermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,

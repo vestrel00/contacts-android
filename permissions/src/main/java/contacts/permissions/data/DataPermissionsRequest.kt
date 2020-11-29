@@ -1,12 +1,12 @@
-package com.vestrel00.contacts.permissions.data
+package contacts.permissions.data
 
 import com.vestrel00.contacts.ContactsPermissions
 import com.vestrel00.contacts.data.Data
 import com.vestrel00.contacts.data.DataDelete
 import com.vestrel00.contacts.data.DataQuery
 import com.vestrel00.contacts.data.DataUpdate
-import com.vestrel00.contacts.permissions.requestReadPermission
-import com.vestrel00.contacts.permissions.requestWritePermission
+import contacts.permissions.requestReadPermission
+import contacts.permissions.requestWritePermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,

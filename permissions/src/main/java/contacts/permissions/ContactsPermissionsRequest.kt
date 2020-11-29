@@ -1,8 +1,8 @@
-package com.vestrel00.contacts.permissions
+package contacts.permissions
 
 import android.content.Context
 import com.vestrel00.contacts.*
-import com.vestrel00.contacts.permissions.accounts.requestGetAccountsPermission
+import contacts.permissions.accounts.requestGetAccountsPermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,

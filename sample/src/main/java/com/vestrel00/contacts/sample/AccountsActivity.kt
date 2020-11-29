@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView.*
 import com.vestrel00.contacts.accounts.Accounts
-import com.vestrel00.contacts.permissions.accounts.queryWithPermission
+import contacts.permissions.accounts.queryWithPermission
 import kotlinx.android.synthetic.main.activity_accounts.*
 import kotlinx.coroutines.launch
 
