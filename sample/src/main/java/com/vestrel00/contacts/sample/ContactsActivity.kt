@@ -13,7 +13,7 @@ import com.vestrel00.contacts.Contacts
 import com.vestrel00.contacts.ContactsFields
 import com.vestrel00.contacts.Fields
 import com.vestrel00.contacts.asc
-import com.vestrel00.contacts.async.findWithContext
+import contacts.async.findWithContext
 import com.vestrel00.contacts.debug.logContactsProviderTables
 import com.vestrel00.contacts.entities.Contact
 import com.vestrel00.contacts.permissions.generalQueryWithPermission

@@ -9,9 +9,9 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.widget.ImageView
-import com.vestrel00.contacts.async.util.photoBitmapDrawableWithContext
-import com.vestrel00.contacts.async.util.removePhotoWithContext
-import com.vestrel00.contacts.async.util.setPhotoWithContext
+import contacts.async.util.photoBitmapDrawableWithContext
+import contacts.async.util.removePhotoWithContext
+import contacts.async.util.setPhotoWithContext
 import com.vestrel00.contacts.entities.MutableContact
 import com.vestrel00.contacts.sample.R
 import com.vestrel00.contacts.ui.util.onPhotoPicked
