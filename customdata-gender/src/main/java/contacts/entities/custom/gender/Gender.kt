@@ -4,9 +4,11 @@ import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
 import contacts.entities.custom.CustomCommonDataEntity
 import contacts.entities.custom.gender.Gender.Type
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
+/**
+ * Describes the gender of a RawContact.
+ */
 @Parcelize
 data class Gender internal constructor(
 
@@ -32,8 +34,7 @@ data class Gender internal constructor(
 
 ) : CustomCommonDataEntity {
 
-    override val mimeType: MimeType.Custom
-        get() = TODO("Not yet implemented")
+    override val mimeType: MimeType.Custom = GenderMimeType
 
     /*
      * Typically, we do not consider type and label when determining if a piece of data is blank or
@@ -41,14 +42,16 @@ data class Gender internal constructor(
      * number is important in that case. However, the primary data we are interested in here is the
      * actual type itself.
      */
-    @IgnoredOnParcel
     override val isBlank: Boolean = type == null
 
     enum class Type(override val value: Int) : CommonDataEntity.Type {
 
-        MALE(TYPE_MALE),
-        FEMALE(TYPE_FEMALE),
-        CUSTOM(TYPE_CUSTOM);
+        MALE(1),
+        FEMALE(2),
+
+        // Does not really matter but custom is typically 0
+        // See ContactsContract.CommonDataKinds.BaseTypes.TYPE_CUSTOM
+        CUSTOM(0);
 
         internal companion object {
 
@@ -56,10 +59,3 @@ data class Gender internal constructor(
         }
     }
 }
-
-private const val TYPE_MALE = 1
-private const val TYPE_FEMALE = 2
-
-// Does not really matter but custom is typically 0
-// See ContactsContract.CommonDataKinds.BaseTypes.TYPE_CUSTOM
-private const val TYPE_CUSTOM = 0
