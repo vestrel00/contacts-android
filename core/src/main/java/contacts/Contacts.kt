@@ -131,7 +131,7 @@ private class ContactsImpl(
 
     override fun generalQuery() = GeneralQuery(applicationContext, customDataRegistry)
 
-    override fun insert() = Insert(applicationContext)
+    override fun insert() = Insert(applicationContext, customDataRegistry)
 
     override fun update() = Update(applicationContext)
 

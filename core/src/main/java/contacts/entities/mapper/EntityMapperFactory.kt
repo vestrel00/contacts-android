@@ -83,9 +83,7 @@ internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapper
     is MimeType.Custom -> customDataRegistry
         .customCommonDataMapperFactoryOf(mimeType)
         ?.create(cursor)
-        ?: throw IllegalStateException(
-            "No custom entity mapper for mime type ${mimeType.value}"
-        )
+        ?: throw IllegalStateException("No custom entity mapper for mime type ${mimeType.value}")
     MimeType.Unknown -> throw IllegalStateException(
         "No entity mapper for mime type ${mimeType.value}"
     )

@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.Context
 import contacts.entities.MutableRawContact
+import contacts.entities.custom.*
 import contacts.entities.operation.*
 import contacts.util.applyBatch
 import contacts.util.nullIfNotInSystem
@@ -183,14 +184,18 @@ interface Insert {
 }
 
 @Suppress("FunctionName")
-internal fun Insert(context: Context): Insert = InsertImpl(
+internal fun Insert(
+    context: Context, customDataRegistry: CustomCommonDataRegistry
+): Insert = InsertImpl(
     context.applicationContext,
-    ContactsPermissions(context)
+    ContactsPermissions(context),
+    customDataRegistry
 )
 
 private class InsertImpl(
     private val applicationContext: Context,
     private val permissions: ContactsPermissions,
+    private val customDataRegistry: CustomCommonDataRegistry,
 
     private var allowBlanks: Boolean = false,
     private var account: Account? = null,
@@ -240,7 +245,9 @@ private class InsertImpl(
             results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
                 null
             } else {
-                applicationContext.insertRawContactForAccount(account, rawContact, IS_PROFILE)
+                applicationContext.insertRawContactForAccount(
+                    customDataRegistry, account, rawContact, IS_PROFILE
+                )
             }
         }
         return InsertResult(results)
@@ -260,6 +267,7 @@ private class InsertImpl(
  * row.
  */
 internal fun Context.insertRawContactForAccount(
+    customDataRegistry: CustomCommonDataRegistry,
     account: Account?,
     rawContact: MutableRawContact,
     isProfile: Boolean
@@ -319,6 +327,9 @@ internal fun Context.insertRawContactForAccount(
 
     operations.addAll(WebsiteOperation(isProfile).insert(rawContact.websites))
 
+    // Process custom data
+    operations.addAll(rawContact.customDataInsertOperations(customDataRegistry))
+
     /*
      * Atomically create the RawContact row and all of the associated Data rows. All of the
      * above operations will either succeed or fail.
@@ -339,6 +350,29 @@ internal fun Context.insertRawContactForAccount(
         val rawContactUri = result.uri
         val rawContactId = rawContactUri?.lastPathSegment?.toLongOrNull()
         rawContactId
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun MutableRawContact.customDataInsertOperations(
+    customDataRegistry: CustomCommonDataRegistry
+): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+    for ((mimeTypeValue, customDataHolder) in customData) {
+        val mimeType = customDataRegistry.customMimeTypeOf(mimeTypeValue)
+            ?: throw IllegalStateException("Custom mime type $mimeTypeValue not registered")
+        val customDataOperation = customDataRegistry.customCommonDataOperationFactoryOf(mimeType)
+            ?.create(isProfile)
+                as AbstractCustomCommonDataOperation<AbstractMutableCustomCommonDataEntity>?
+            ?: throw IllegalStateException("No custom data operation found for $mimeTypeValue")
+
+        when (customDataHolder) {
+            is SingleMutableCustomCommonDataEntityHolder<*> -> {
+                customDataOperation.insert(customDataHolder.entity)?.let(::add)
+            }
+            is MultipleMutableCustomCommonDataEntityHolder<*> -> {
+                customDataOperation.insert(customDataHolder.entities).let(::addAll)
+            }
+        }
     }
 }
 

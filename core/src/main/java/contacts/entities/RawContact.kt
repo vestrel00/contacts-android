@@ -1,6 +1,8 @@
 package contacts.entities
 
 import contacts.entities.custom.AbstractCustomCommonDataEntity
+import contacts.entities.custom.MutableCustomCommonDataEntityHolder
+import contacts.entities.custom.entityList
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel
@@ -134,8 +136,15 @@ data class RawContact internal constructor(
 
     /**
      * Map of custom mime type value to a list of concrete [AbstractCustomCommonDataEntity]s.
+     *
+     * ## Developer notes
+     *
+     * Only mutable custom data entities are handled internally to avoid having to define a
+     * toMutable() and toImmutable() functions in the custom entity interface. This gives more
+     * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
+     * immutable version if they choose to do so.
      */
-    val customData: Map<String, List<AbstractCustomCommonDataEntity>>
+    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder<*>>
 
 ) : RawContactEntity() {
 
@@ -145,7 +154,7 @@ data class RawContact internal constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatten()
+            customData.values.flatMap { it.entityList }
         )
     }
 
@@ -179,7 +188,9 @@ data class RawContact internal constructor(
 
         sipAddress = sipAddress?.toMutableSipAddress(),
 
-        websites = websites.asSequence().map { it.toMutableWebsite() }.toMutableList()
+        websites = websites.asSequence().map { it.toMutableWebsite() }.toMutableList(),
+
+        customData = customData.toMutableMap() // send a shallow copy
     )
 }
 
@@ -276,23 +287,27 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.websites].
      */
-    var websites: MutableList<MutableWebsite>
+    var websites: MutableList<MutableWebsite>,
 
-    // TODO insert / update / delete custom data
+    /**
+     * See [RawContact.customData].
+     */
+    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder<*>>
 
 ) : RawContactEntity() {
 
     constructor() : this(
         null, null, mutableListOf(), mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, null,
-        mutableListOf(), null, mutableListOf(), null, mutableListOf()
+        mutableListOf(), null, mutableListOf(), null, mutableListOf(), mutableMapOf()
     )
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
-            addresses, emails, events, groupMemberships, ims, phones, relations, websites
+            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
+            customData.values.flatMap { it.entityList }
         )
 }
 
@@ -357,7 +372,7 @@ internal data class TempRawContact constructor(
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>,
-    var customData: MutableMap<String, MutableList<AbstractCustomCommonDataEntity>>
+    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder<*>>
 
 ) : RawContactEntity() {
 
@@ -366,7 +381,7 @@ internal data class TempRawContact constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatten()
+            customData.values.flatMap { it.entityList }
         )
 
     fun toRawContact() = RawContact(
@@ -401,6 +416,6 @@ internal data class TempRawContact constructor(
 
         websites = websites.toList(),
 
-        customData = customData.toMap()
+        customData = customData.toMutableMap() // send a shallow copy
     )
 }

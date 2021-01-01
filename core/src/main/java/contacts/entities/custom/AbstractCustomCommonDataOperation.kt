@@ -11,11 +11,11 @@ import contacts.entities.operation.AbstractCommonDataOperation
  * ## Developer notes
  *
  * Technically, this can be optional. We could have implemented this part of the API to be able to
- * handle [CommonDataEntity] directly instead of this [AbstractCustomCommonDataEntity]. However, we
- * are able to streamline all custom entities this way, which makes our internal code easier to
- * follow / trace. It also gives us more control and flexibility.
+ * handle [CommonDataEntity] directly instead of this [AbstractMutableCustomCommonDataEntity].
+ * However, we are able to streamline all custom entities this way, which makes our internal code
+ * easier to follow / trace. It also gives us more control and flexibility.
  */
-abstract class AbstractCustomCommonDataOperation<T : AbstractCustomCommonDataEntity>(
+abstract class AbstractCustomCommonDataOperation<T : AbstractMutableCustomCommonDataEntity>(
     isProfile: Boolean
 ) : AbstractCommonDataOperation<T>(isProfile) {
 
@@ -23,8 +23,7 @@ abstract class AbstractCustomCommonDataOperation<T : AbstractCustomCommonDataEnt
      * Sets the custom [data] values into the operation via the provided [setValue] function.
      */
     protected abstract fun setCustomData(
-        data: T,
-        setValue: (field: AbstractCustomCommonDataField, value: Any?) -> Unit
+        data: T, setValue: (field: AbstractCustomCommonDataField, value: Any?) -> Unit
     )
 
     /*

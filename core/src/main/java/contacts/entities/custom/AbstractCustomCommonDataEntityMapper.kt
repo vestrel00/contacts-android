@@ -5,7 +5,9 @@ import contacts.entities.mapper.EntityMapper
 
 /**
  * An abstract class that is used as a base of all custom [EntityMapper]s. It uses a
- * [AbstractCustomCommonDataCursor] [K] and outputs a [AbstractCustomCommonDataEntity] [V].
+ * [AbstractCustomCommonDataCursor] [K] and outputs a [AbstractMutableCustomCommonDataEntity] [V].
+ *
+ * The mutable version of the entity is used internally (not public-facing) to keep the code simple.
  *
  * ## Developer notes
  *
@@ -15,7 +17,7 @@ import contacts.entities.mapper.EntityMapper
  * follow / trace. It also gives us more control and flexibility.
  */
 abstract class AbstractCustomCommonDataEntityMapper
-<K : AbstractCustomCommonDataCursor, out V : AbstractCustomCommonDataEntity>(
+<K : AbstractCustomCommonDataCursor, out V : AbstractMutableCustomCommonDataEntity>(
     private val cursor: K
 ) : EntityMapper<V> {
 
