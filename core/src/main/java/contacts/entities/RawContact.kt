@@ -2,7 +2,6 @@ package contacts.entities
 
 import contacts.entities.custom.AbstractCustomCommonDataEntity
 import contacts.entities.custom.MutableCustomCommonDataEntityHolder
-import contacts.entities.custom.entityList
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel
@@ -144,7 +143,7 @@ data class RawContact internal constructor(
      * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
      * immutable version if they choose to do so.
      */
-    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder<*>>
+    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder>
 
 ) : RawContactEntity() {
 
@@ -154,7 +153,7 @@ data class RawContact internal constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatMap { it.entityList }
+            customData.values.flatMap { it.entities }
         )
     }
 
@@ -292,7 +291,7 @@ data class MutableRawContact internal constructor(
     /**
      * See [RawContact.customData].
      */
-    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder<*>>
+    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder>
 
 ) : RawContactEntity() {
 
@@ -307,7 +306,7 @@ data class MutableRawContact internal constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatMap { it.entityList }
+            customData.values.flatMap { it.entities }
         )
 }
 
@@ -372,7 +371,7 @@ internal data class TempRawContact constructor(
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>,
-    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder<*>>
+    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder>
 
 ) : RawContactEntity() {
 
@@ -381,7 +380,7 @@ internal data class TempRawContact constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatMap { it.entityList }
+            customData.values.flatMap { it.entities }
         )
 
     fun toRawContact() = RawContact(

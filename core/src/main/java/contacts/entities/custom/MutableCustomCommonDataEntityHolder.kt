@@ -1,27 +1,41 @@
 package contacts.entities.custom
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+internal data class MutableCustomCommonDataEntityHolder(
+    // This is not exposed to consumers so we do not need a generic type since we have no visibility
+    // of consumer types anyways.
+    val entities: MutableList<AbstractMutableCustomCommonDataEntity>,
+    val countRestriction: CustomCommonDataEntityCountRestriction
+) : Parcelable
+
+/* We'll go with non-sealed class approach because we don't need to expose these implementations.
+   Consumers only need to specify if a data entity is either one-per-RawContact or
+   one-or-more-per-RawContact. The above approach also leads to simpler code.
 /**
  * Holds a single, one-per-RawContact entity or multiple, one-or-more-per-RawContact entities.
  */
-internal sealed class MutableCustomCommonDataEntityHolder<T : AbstractMutableCustomCommonDataEntity>
+internal sealed class MutableCustomCommonDataEntityHolder
 
 /**
  * Holds zero or one-per-RawContact entity.
  */
-internal class SingleMutableCustomCommonDataEntityHolder<T : AbstractMutableCustomCommonDataEntity>(
-    val entity: T
-) : MutableCustomCommonDataEntityHolder<T>()
+internal class SingleMutableCustomCommonDataEntityHolder(
+    val entity: AbstractMutableCustomCommonDataEntity
+) : MutableCustomCommonDataEntityHolder()
 
 /**
  * Holds zero or one-or-more-per-RawContact entities.
  */
-internal class MultipleMutableCustomCommonDataEntityHolder<T : AbstractMutableCustomCommonDataEntity>(
-    val entities: List<T>
-) : MutableCustomCommonDataEntityHolder<T>()
+class MultipleMutableCustomCommonDataEntityHolder(
+    val entities: List<AbstractMutableCustomCommonDataEntity>
+) : MutableCustomCommonDataEntityHolder()
 
-internal val <T : AbstractMutableCustomCommonDataEntity>
-        MutableCustomCommonDataEntityHolder<T>.entityList: List<T>
+val MutableCustomCommonDataEntityHolder.entityList: List<AbstractMutableCustomCommonDataEntity>
     get() = when (this) {
-        is SingleMutableCustomCommonDataEntityHolder<T> -> listOf(entity)
-        is MultipleMutableCustomCommonDataEntityHolder<T> -> entities
-    }
+        is SingleMutableCustomCommonDataEntityHolder -> listOf(entity)
+        is MultipleMutableCustomCommonDataEntityHolder -> entities
+
+ */

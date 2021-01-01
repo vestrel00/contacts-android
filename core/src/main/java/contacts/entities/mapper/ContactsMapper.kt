@@ -9,6 +9,7 @@ import contacts.entities.RawContact
 import contacts.entities.TempRawContact
 import contacts.entities.cursor.*
 import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.MutableCustomCommonDataEntityHolder
 
 /**
  * Returns a list of [Contact]s from the given cursor, which assumed to have been retrieved from the
@@ -107,7 +108,7 @@ internal class ContactsMapper(
             // Use the Data cursor to retrieve the rawContactId.
             dataCursor.rawContactId?.let { rawContactId ->
                 rawContactsMap.getOrPut(rawContactId) { tempRawContactMapper.value }
-                    .also { cursor.updateRawContact(it, customDataRegistry) }
+                    .also { cursor.updateRawContact(customDataRegistry, it) }
             }
         }
     }
@@ -178,8 +179,8 @@ internal class ContactsMapper(
 }
 
 private fun EntityCursor<AbstractDataField>.updateRawContact(
-    rawContact: TempRawContact,
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomCommonDataRegistry,
+    rawContact: TempRawContact
 ) {
     // Each row in the cursor only contains a subset of contact data paired by the mime type.
     // This is why full contact objects cannot be built per cursor row.
@@ -200,19 +201,30 @@ private fun EntityCursor<AbstractDataField>.updateRawContact(
         Relation -> rawContact.relations.add(relationMapper().value)
         SipAddress -> rawContact.sipAddress = sipAddressMapper().value
         Website -> rawContact.websites.add(websiteMapper().value)
-        is Custom -> {
-            val customDataMapper = customDataRegistry
-                .customCommonDataMapperFactoryOf(mimeType)
-                ?.create(cursor)
-                ?: throw IllegalStateException("No custom data mapper found for ${mimeType.value}")
-
-            val customDataList = rawContact.customData.getOrPut(mimeType.value) {
-                mutableListOf()
-            }
-            customDataList.add(customDataMapper.value)
-        }
-        Unknown -> {
-            // Do nothing
+        is Custom -> updateRawContactCustomData(customDataRegistry, rawContact, mimeType)
+        Unknown -> { /* Do nothing */
         }
     }
+}
+
+private fun EntityCursor<AbstractDataField>.updateRawContactCustomData(
+    customDataRegistry: CustomCommonDataRegistry,
+    rawContact: TempRawContact,
+    mimeType: Custom
+) {
+    val customDataCountRestriction = customDataRegistry
+        .customCommonDataCountRestrictionOf(mimeType)
+        ?: throw IllegalStateException(
+            "No custom data count restriction for ${mimeType.value}"
+        )
+
+    val customDataMapper = customDataRegistry
+        .customCommonDataMapperFactoryOf(mimeType)
+        ?.create(cursor)
+        ?: throw IllegalStateException("No custom data mapper for ${mimeType.value}")
+
+    val customDataHolder = rawContact.customData.getOrPut(mimeType.value) {
+        MutableCustomCommonDataEntityHolder(mutableListOf(), customDataCountRestriction)
+    }
+    customDataHolder.entities.add(customDataMapper.value)
 }

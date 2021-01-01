@@ -41,7 +41,7 @@ sealed class Field {
 /**
  * Holds a set of [Field]s.
  */
-sealed class FieldSet<T : Field> {
+sealed class FieldSet<out T : Field> {
 
     /**
      * All of the fields defined in this set, useful for specifying includes.
@@ -55,7 +55,7 @@ sealed class FieldSet<T : Field> {
 
 sealed class AbstractDataField : Field()
 
-sealed class AbstractDataFieldSet<T : AbstractDataField> : FieldSet<T>() {
+sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {
 
     /**
      * All of the fields defined in this set that are safe for matching in queries.
@@ -924,7 +924,7 @@ abstract class AbstractCustomCommonDataField(
  * This had to be declared here instead of in the [contacts.custom] package because
  * [AbstractDataFieldSet] is sealed.
  */
-abstract class AbstractCustomCommonDataFieldSet<T : AbstractCustomCommonDataField> :
+abstract class AbstractCustomCommonDataFieldSet<out T : AbstractCustomCommonDataField> :
     AbstractDataFieldSet<T>()
 
 // endregion

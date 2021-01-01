@@ -38,11 +38,11 @@ abstract class AbstractCustomCommonDataOperation<T : AbstractMutableCustomCommon
     /**
      * Creates instances of [AbstractCustomCommonDataOperation].
      */
-    abstract class Factory<out T : AbstractCustomCommonDataOperation<*>> {
+    abstract class Factory<T : AbstractMutableCustomCommonDataEntity> {
 
         /**
          * Creates instances of [AbstractCustomCommonDataOperation] with the given [isProfile].
          */
-        abstract fun create(isProfile: Boolean): T
+        abstract fun create(isProfile: Boolean): AbstractCustomCommonDataOperation<T>
     }
 }

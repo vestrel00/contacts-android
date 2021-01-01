@@ -1,9 +1,11 @@
 package contacts
 
 import android.content.ContentProviderOperation
+import android.content.ContentResolver
 import android.content.Context
 import contacts.entities.MutableContact
 import contacts.entities.MutableRawContact
+import contacts.entities.custom.*
 import contacts.entities.operation.*
 import contacts.util.applyBatch
 import contacts.util.unsafeLazy
@@ -162,14 +164,18 @@ interface Update {
 }
 
 @Suppress("FunctionName")
-internal fun Update(context: Context): Update = UpdateImpl(
+internal fun Update(
+    context: Context, customDataRegistry: CustomCommonDataRegistry
+): Update = UpdateImpl(
     context.applicationContext,
-    ContactsPermissions(context)
+    ContactsPermissions(context),
+    customDataRegistry
 )
 
 private class UpdateImpl(
     private val applicationContext: Context,
     private val permissions: ContactsPermissions,
+    private val customDataRegistry: CustomCommonDataRegistry,
 
     private var deleteBlanks: Boolean = true,
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
@@ -222,7 +228,7 @@ private class UpdateImpl(
                 } else if (rawContact.isBlank && deleteBlanks) {
                     applicationContext.contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    applicationContext.updateRawContact(rawContact)
+                    applicationContext.updateRawContact(customDataRegistry, rawContact)
                 }
             } else {
                 results[INVALID_ID] = false
@@ -246,7 +252,10 @@ private class UpdateImpl(
  * If only some of a raw contact's attribute's values are null, then a data row will be created
  * if it does not yet exist.
  */
-internal fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
+internal fun Context.updateRawContact(
+    customDataRegistry: CustomCommonDataRegistry,
+    rawContact: MutableRawContact
+): Boolean {
     if (rawContact.id == null) {
         return false
     }
@@ -332,11 +341,51 @@ internal fun Context.updateRawContact(rawContact: MutableRawContact): Boolean {
         )
     )
 
+    // Process custom data
+    operations.addAll(
+        rawContact.customDataUpdateInsertOrDeleteOperations(contentResolver, customDataRegistry)
+    )
+
     /*
      * Atomically update all of the associated Data rows. All of the above operations will
      * either succeed or fail.
      */
     return contentResolver.applyBatch(operations) != null
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
+    contentResolver: ContentResolver,
+    customDataRegistry: CustomCommonDataRegistry
+): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+    if (id == null) {
+        return@apply
+    }
+
+    for ((mimeTypeValue, customDataHolder) in customData) {
+        val mimeType = customDataRegistry.customMimeTypeOf(mimeTypeValue)
+            ?: throw IllegalStateException("Custom mime type $mimeTypeValue not registered")
+        val countRestriction = customDataRegistry.customCommonDataCountRestrictionOf(mimeType)
+            ?: throw IllegalStateException("No custom data count restriction for $mimeTypeValue")
+        val customDataOperation = customDataRegistry.customCommonDataOperationFactoryOf(mimeType)
+            ?.create(isProfile)
+                as AbstractCustomCommonDataOperation<AbstractMutableCustomCommonDataEntity>?
+            ?: throw IllegalStateException("No custom data operation found for $mimeTypeValue")
+
+        when (countRestriction) {
+            CustomCommonDataEntityCountRestriction.AT_MOST_ONE -> {
+                customDataOperation
+                    .updateInsertOrDelete(
+                        customDataHolder.entities.firstOrNull(), id, contentResolver
+                    ).let(::add)
+            }
+            CustomCommonDataEntityCountRestriction.NO_LIMIT -> {
+                customDataOperation
+                    .updateInsertOrDelete(customDataHolder.entities, id, contentResolver)
+                    .let(::addAll)
+            }
+        }
+    }
 }
 
 private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {

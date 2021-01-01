@@ -5,6 +5,7 @@ import contacts.ContactsPermissions
 import contacts.deleteRawContactWithId
 import contacts.entities.MutableContact
 import contacts.entities.MutableRawContact
+import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.updateRawContact
 import contacts.util.unsafeLazy
 
@@ -141,14 +142,18 @@ interface ProfileUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileUpdate(context: Context): ProfileUpdate = ProfileUpdateImpl(
+internal fun ProfileUpdate(
+    context: Context, customDataRegistry: CustomCommonDataRegistry
+): ProfileUpdate = ProfileUpdateImpl(
     context.applicationContext,
-    ContactsPermissions(context)
+    ContactsPermissions(context),
+    customDataRegistry
 )
 
 private class ProfileUpdateImpl(
     private val applicationContext: Context,
     private val permissions: ContactsPermissions,
+    private val customDataRegistry: CustomCommonDataRegistry,
 
     private var deleteBlanks: Boolean = true,
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
@@ -194,7 +199,7 @@ private class ProfileUpdateImpl(
                 } else if (rawContact.isBlank && deleteBlanks) {
                     applicationContext.contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    applicationContext.updateRawContact(rawContact)
+                    applicationContext.updateRawContact(customDataRegistry, rawContact)
                 }
             } else {
                 results[INVALID_ID] = false

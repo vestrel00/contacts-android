@@ -133,7 +133,7 @@ private class ContactsImpl(
 
     override fun insert() = Insert(applicationContext, customDataRegistry)
 
-    override fun update() = Update(applicationContext)
+    override fun update() = Update(applicationContext, customDataRegistry)
 
     override fun delete() = Delete(applicationContext)
 

@@ -78,9 +78,9 @@ private class ProfileImpl(
 
     override fun query() = ProfileQuery(applicationContext, customDataRegistry)
 
-    override fun insert() = ProfileInsert(applicationContext)
+    override fun insert() = ProfileInsert(applicationContext, customDataRegistry)
 
-    override fun update() = ProfileUpdate(applicationContext)
+    override fun update() = ProfileUpdate(applicationContext, customDataRegistry)
 
     override fun delete() = ProfileDelete(applicationContext)
 

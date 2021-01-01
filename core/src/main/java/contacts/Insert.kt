@@ -4,7 +4,10 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.Context
 import contacts.entities.MutableRawContact
-import contacts.entities.custom.*
+import contacts.entities.custom.AbstractCustomCommonDataOperation
+import contacts.entities.custom.AbstractMutableCustomCommonDataEntity
+import contacts.entities.custom.CustomCommonDataEntityCountRestriction
+import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.entities.operation.*
 import contacts.util.applyBatch
 import contacts.util.nullIfNotInSystem
@@ -360,16 +363,20 @@ private fun MutableRawContact.customDataInsertOperations(
     for ((mimeTypeValue, customDataHolder) in customData) {
         val mimeType = customDataRegistry.customMimeTypeOf(mimeTypeValue)
             ?: throw IllegalStateException("Custom mime type $mimeTypeValue not registered")
+        val countRestriction = customDataRegistry.customCommonDataCountRestrictionOf(mimeType)
+            ?: throw IllegalStateException("No custom data count restriction for $mimeTypeValue")
         val customDataOperation = customDataRegistry.customCommonDataOperationFactoryOf(mimeType)
             ?.create(isProfile)
                 as AbstractCustomCommonDataOperation<AbstractMutableCustomCommonDataEntity>?
-            ?: throw IllegalStateException("No custom data operation found for $mimeTypeValue")
+            ?: throw IllegalStateException("No custom data operation for $mimeTypeValue")
 
-        when (customDataHolder) {
-            is SingleMutableCustomCommonDataEntityHolder<*> -> {
-                customDataOperation.insert(customDataHolder.entity)?.let(::add)
+        when (countRestriction) {
+            CustomCommonDataEntityCountRestriction.AT_MOST_ONE -> {
+                customDataHolder.entities.firstOrNull()?.let {
+                    customDataOperation.insert(it)?.let(::add)
+                }
             }
-            is MultipleMutableCustomCommonDataEntityHolder<*> -> {
+            CustomCommonDataEntityCountRestriction.NO_LIMIT -> {
                 customDataOperation.insert(customDataHolder.entities).let(::addAll)
             }
         }

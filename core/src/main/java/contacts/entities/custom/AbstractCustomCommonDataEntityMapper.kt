@@ -16,8 +16,8 @@ import contacts.entities.mapper.EntityMapper
  * we are able to streamline all custom entities this way, which makes our internal code easier to
  * follow / trace. It also gives us more control and flexibility.
  */
-abstract class AbstractCustomCommonDataEntityMapper
-<K : AbstractCustomCommonDataCursor, out V : AbstractMutableCustomCommonDataEntity>(
+abstract class AbstractCustomCommonDataEntityMapper<K : AbstractCustomCommonDataCursor,
+        out V : AbstractMutableCustomCommonDataEntity>(
     private val cursor: K
 ) : EntityMapper<V> {
 
@@ -37,11 +37,12 @@ abstract class AbstractCustomCommonDataEntityMapper
     /**
      * Creates instances of [AbstractCustomCommonDataEntityMapper].
      */
-    abstract class Factory<out T : AbstractCustomCommonDataEntityMapper<*, *>> {
+    abstract class Factory<K : AbstractCustomCommonDataCursor,
+            out V : AbstractMutableCustomCommonDataEntity> {
 
         /**
          * Creates instances of [AbstractCustomCommonDataEntityMapper] with the given [cursor].
          */
-        abstract fun create(cursor: Cursor): T
+        abstract fun create(cursor: Cursor): AbstractCustomCommonDataEntityMapper<K, V>
     }
 }
