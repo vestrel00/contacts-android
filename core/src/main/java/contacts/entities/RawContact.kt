@@ -1,5 +1,6 @@
 package contacts.entities
 
+import contacts.custom.AbstractCustomCommonDataEntity
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel
@@ -129,7 +130,12 @@ data class RawContact internal constructor(
     /**
      * An immutable list of websites.
      */
-    val websites: List<Website>
+    val websites: List<Website>,
+
+    /**
+     * Map of custom mime type value to a list of concrete [AbstractCustomCommonDataEntity]s.
+     */
+    val customData: Map<String, List<AbstractCustomCommonDataEntity>>
 
 ) : RawContactEntity() {
 
@@ -138,7 +144,8 @@ data class RawContact internal constructor(
         propertiesAreAllNullOrBlank(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
-            addresses, emails, events, groupMemberships, ims, phones, relations, websites
+            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
+            customData.values.flatten()
         )
     }
 
@@ -271,6 +278,8 @@ data class MutableRawContact internal constructor(
      */
     var websites: MutableList<MutableWebsite>
 
+    // TODO insert / update / delete custom data
+
 ) : RawContactEntity() {
 
     constructor() : this(
@@ -347,7 +356,8 @@ internal data class TempRawContact constructor(
     override var photo: Photo?,
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
-    var websites: MutableList<Website>
+    var websites: MutableList<Website>,
+    var customData: MutableMap<String, MutableList<AbstractCustomCommonDataEntity>>
 
 ) : RawContactEntity() {
 
@@ -355,7 +365,8 @@ internal data class TempRawContact constructor(
         get() = propertiesAreAllNullOrBlank(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
-            addresses, emails, events, groupMemberships, ims, phones, relations, websites
+            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
+            customData.values.flatten()
         )
 
     fun toRawContact() = RawContact(
@@ -388,6 +399,8 @@ internal data class TempRawContact constructor(
 
         sipAddress = sipAddress,
 
-        websites = websites.toList()
+        websites = websites.toList(),
+
+        customData = customData.toMap()
     )
 }

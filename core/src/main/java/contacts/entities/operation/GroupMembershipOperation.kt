@@ -4,7 +4,7 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
-import contacts.Field
+import contacts.CommonDataField
 import contacts.Fields
 import contacts.Include
 import contacts.accounts.accountForRawContactWithId
@@ -20,7 +20,7 @@ internal class GroupMembershipOperation(isProfile: Boolean) :
     override val mimeType = MimeType.GroupMembership
 
     override fun setData(
-        data: GroupMembership, setValue: (field: Field, dataValue: Any?) -> Unit
+        data: GroupMembership, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.GroupMembership.GroupId, data.groupId)
     }

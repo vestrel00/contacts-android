@@ -1,6 +1,6 @@
 package contacts.entities.operation
 
-import contacts.Field
+import contacts.CommonDataField
 import contacts.Fields
 import contacts.entities.MimeType
 import contacts.entities.MutableRelation
@@ -11,7 +11,7 @@ internal class RelationOperation(isProfile: Boolean) :
     override val mimeType = MimeType.Relation
 
     override fun setData(
-        data: MutableRelation, setValue: (field: Field, dataValue: Any?) -> Unit
+        data: MutableRelation, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Relation.Type, data.type?.value)
         setValue(Fields.Relation.Label, data.label)

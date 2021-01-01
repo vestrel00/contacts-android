@@ -1,6 +1,6 @@
 package contacts.entities.operation
 
-import contacts.Field
+import contacts.CommonDataField
 import contacts.Fields
 import contacts.entities.MimeType
 import contacts.entities.MutableWebsite
@@ -11,7 +11,7 @@ internal class WebsiteOperation(isProfile: Boolean) :
     override val mimeType = MimeType.Website
 
     override fun setData(
-        data: MutableWebsite, setValue: (field: Field, dataValue: Any?) -> Unit
+        data: MutableWebsite, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Website.Url, data.url)
     }

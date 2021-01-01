@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
+import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.Group
 import contacts.entities.cursor.contactsCursor
@@ -344,14 +345,18 @@ interface GeneralQuery {
 }
 
 @Suppress("FunctionName")
-internal fun GeneralQuery(context: Context): GeneralQuery = GeneralQueryImpl(
+internal fun GeneralQuery(
+    context: Context, customDataRegistry: CustomCommonDataRegistry
+): GeneralQuery = GeneralQueryImpl(
     context.contentResolver,
-    ContactsPermissions(context)
+    ContactsPermissions(context),
+    customDataRegistry
 )
 
 private class GeneralQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+    private val customDataRegistry: CustomCommonDataRegistry,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -456,6 +461,7 @@ private class GeneralQueryImpl(
         }
 
         return contentResolver.resolve(
+            customDataRegistry,
             includeBlanks, rawContactsWhere, groupMembershipWhere, include, searchString,
             orderBy, limit, offset, cancel
         )
@@ -475,6 +481,7 @@ private class GeneralQueryImpl(
 }
 
 private fun ContentResolver.resolve(
+    customDataRegistry: CustomCommonDataRegistry,
     includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     groupMembershipWhere: Where<GroupMembershipField>?,
@@ -538,7 +545,9 @@ private fun ContentResolver.resolve(
         }
     }
 
-    return resolve(contactIds, includeBlanks, include, orderBy, limit, offset, cancel)
+    return resolve(
+        customDataRegistry, contactIds, includeBlanks, include, orderBy, limit, offset, cancel
+    )
 }
 
 private fun ContentResolver.findContactIdsInContactsTable(

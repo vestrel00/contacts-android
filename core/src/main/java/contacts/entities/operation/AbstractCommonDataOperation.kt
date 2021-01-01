@@ -15,21 +15,21 @@ import contacts.util.query
 /**
  * Builds [ContentProviderOperation]s for [Table.Data].
  */
-internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProfile: Boolean) {
+abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProfile: Boolean) {
 
-    protected val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
+    internal val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
 
     protected abstract val mimeType: MimeType
 
     /**
      * Sets the [data] values into the operation via the provided [setValue] function.
      */
-    protected abstract fun setData(data: T, setValue: (field: Field, value: Any?) -> Unit)
+    protected abstract fun setData(data: T, setValue: (field: CommonDataField, value: Any?) -> Unit)
 
     /**
      * There [Where] clause used as the selection for queries, updates, and deletes.
      */
-    protected fun selection(rawContactId: Long): Where<AbstractDataField> =
+    internal fun selection(rawContactId: Long): Where<AbstractDataField> =
         (Fields.MimeType equalTo mimeType) and (Fields.RawContact.Id equalTo rawContactId)
 
     /**
@@ -39,7 +39,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      *
      * Returns null if [entity] is blank.
      */
-    fun insert(entity: T): ContentProviderOperation? {
+    internal fun insert(entity: T): ContentProviderOperation? {
         if (entity.isBlank) {
             return null
         }
@@ -72,7 +72,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      *
      * Blank entities are excluded.
      */
-    fun insert(entities: List<T>): List<ContentProviderOperation> =
+    internal fun insert(entities: List<T>): List<ContentProviderOperation> =
         mutableListOf<ContentProviderOperation>().apply {
             for (entity in entities) {
                 insert(entity)?.let(::add)
@@ -86,7 +86,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      * Use this function for data rows of a contact with [mimeType] that may occur more than once.
      * For example, a contact may have more than 1 data row for address, email, phone, etc.
      */
-    fun updateInsertOrDelete(
+    internal fun updateInsertOrDelete(
         entities: Collection<T>, rawContactId: Long, contentResolver: ContentResolver
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
         if (!entitiesAreAllBlank(entities)) {
@@ -157,7 +157,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      * Use this function for data rows of a contact with [mimeType] that may only occur once.
      * For example, a contact may only have 1 data row for company, name, note, etc.
      */
-    fun updateInsertOrDelete(
+    internal fun updateInsertOrDelete(
         entity: T?, rawContactId: Long, contentResolver: ContentResolver
     ): ContentProviderOperation =
         if (entity != null && !entity.isBlank) {
@@ -182,7 +182,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      * Provides the [ContentProviderOperation] for inserting the data row (represented by the
      * [entity]) for the given [RawContact] with [rawContactId].
      */
-    protected fun insertDataRow(entity: T, rawContactId: Long): ContentProviderOperation {
+    internal fun insertDataRow(entity: T, rawContactId: Long): ContentProviderOperation {
         val operation = ContentProviderOperation.newInsert(contentUri)
             .withValue(Fields.RawContact.Id, rawContactId)
             .withValue(Fields.MimeType, mimeType.value)
@@ -206,7 +206,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
      * Use this function for updating an existing data row. If the data row no longer exists in the
      * DB, the operation will fail.
      */
-    fun updateDataRowOrDeleteIfBlank(entity: T): ContentProviderOperation? =
+    internal fun updateDataRowOrDeleteIfBlank(entity: T): ContentProviderOperation? =
         entity.id?.let { dataRowId ->
             if (entity.isBlank) {
                 deleteDataRowWithId(dataRowId)
@@ -245,7 +245,7 @@ internal abstract class AbstractCommonDataOperation<T : CommonDataEntity>(isProf
     /**
      * Provides the [ContentProviderOperation] for deleting the data row with the given [dataRowId].
      */
-    protected fun deleteDataRowWithId(dataRowId: Long): ContentProviderOperation =
+    internal fun deleteDataRowWithId(dataRowId: Long): ContentProviderOperation =
         ContentProviderOperation.newDelete(contentUri)
             .withSelection(Fields.DataId equalTo dataRowId)
             .build()

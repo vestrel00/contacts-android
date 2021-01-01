@@ -3,6 +3,7 @@ package contacts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
+import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.cursor.contactsCursor
 import contacts.entities.cursor.dataContactsCursor
@@ -343,14 +344,17 @@ interface Query {
 }
 
 @Suppress("FunctionName")
-internal fun Query(context: Context): Query = QueryImpl(
-    context.contentResolver,
-    ContactsPermissions(context)
-)
+internal fun Query(context: Context, customDataRegistry: CustomCommonDataRegistry): Query =
+    QueryImpl(
+        context.contentResolver,
+        ContactsPermissions(context),
+        customDataRegistry
+    )
 
 private class QueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+    private val customDataRegistry: CustomCommonDataRegistry,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -440,7 +444,8 @@ private class QueryImpl(
         }
 
         return contentResolver.resolve(
-            includeBlanks, rawContactsWhere, include, where, orderBy, limit, offset, cancel
+            customDataRegistry, includeBlanks,
+            rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
     }
 
@@ -457,6 +462,7 @@ private class QueryImpl(
 }
 
 private fun ContentResolver.resolve(
+    customDataRegistry: CustomCommonDataRegistry,
     includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
@@ -511,10 +517,13 @@ private fun ContentResolver.resolve(
         }
     }
 
-    return resolve(contactIds, includeBlanks, include, orderBy, limit, offset, cancel)
+    return resolve(
+        customDataRegistry, contactIds, includeBlanks, include, orderBy, limit, offset, cancel
+    )
 }
 
 internal fun ContentResolver.resolve(
+    customDataRegistry: CustomCommonDataRegistry,
     contactIds: MutableSet<Long>?,
     includeBlanks: Boolean,
     include: Include<AbstractDataField>,
@@ -530,7 +539,7 @@ internal fun ContentResolver.resolve(
 
     // Collect Contacts with Ids in contactIds (which may include blanks), including included
     // Contacts fields. Order by, limit, and offset results within the query itself.
-    val contactsMapper = ContactsMapper(cancel)
+    val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
     query(
         Table.Contacts, include.onlyContactsFields(), contactIds?.let {

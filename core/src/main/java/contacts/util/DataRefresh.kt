@@ -2,6 +2,8 @@ package contacts.util
 
 import android.content.Context
 import contacts.*
+import contacts.custom.CustomCommonDataRegistry
+import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.data.resolveDataEntity
 import contacts.entities.CommonDataEntity
 import contacts.entities.fields
@@ -28,14 +30,19 @@ import contacts.entities.fields
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun <T : CommonDataEntity> T.refresh(context: Context, cancel: () -> Boolean = { false }): T? =
+fun <T : CommonDataEntity> T.refresh(
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
+): T? =
     if (id == null) {
         this
     } else if (!ContactsPermissions(context).canQuery()) {
         null
     } else {
         context.contentResolver.resolveDataEntity<T>(
-            isProfile, mimeType, null, Include(mimeType.fields + Fields.Required.all),
+            customDataRegistry, isProfile, mimeType, null,
+            Include(fields(customDataRegistry) + Fields.Required.all),
             null, CompoundOrderBy(setOf(Fields.DataId.asc())), 1, 0, cancel
         ).firstOrNull()
     }

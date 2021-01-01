@@ -2,7 +2,9 @@ package contacts.profile
 
 import android.content.Context
 import contacts.ContactsPermissions
+import contacts.custom.CustomCommonDataRegistry
 import contacts.data.Data
+import contacts.entities.MimeType
 
 /**
  * Provides new [ProfileQuery], [ProfileInsert], [ProfileUpdate], and [ProfileDelete] instances.
@@ -53,20 +55,28 @@ interface Profile {
      * modules. This is safe to hold on to. Not meant for consumer use.
      */
     val applicationContext: Context
+
+    /**
+     * Provides functions required to support custom common data, which have [MimeType.Custom].
+     */
+    val customDataRegistry: CustomCommonDataRegistry
 }
 
 @Suppress("FunctionName")
-internal fun Profile(context: Context): Profile = ProfileImpl(
-    context.applicationContext,
-    ContactsPermissions(context.applicationContext)
-)
+internal fun Profile(context: Context, customDataRegistry: CustomCommonDataRegistry): Profile =
+    ProfileImpl(
+        context.applicationContext,
+        ContactsPermissions(context.applicationContext),
+        customDataRegistry
+    )
 
 private class ProfileImpl(
     override val applicationContext: Context,
-    override val permissions: ContactsPermissions
+    override val permissions: ContactsPermissions,
+    override val customDataRegistry: CustomCommonDataRegistry
 ) : Profile {
 
-    override fun query() = ProfileQuery(applicationContext)
+    override fun query() = ProfileQuery(applicationContext, customDataRegistry)
 
     override fun insert() = ProfileInsert(applicationContext)
 
@@ -74,5 +84,5 @@ private class ProfileImpl(
 
     override fun delete() = ProfileDelete(applicationContext)
 
-    override fun data() = Data(applicationContext, true)
+    override fun data() = Data(applicationContext, customDataRegistry, true)
 }

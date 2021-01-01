@@ -1,6 +1,6 @@
 package contacts.entities.operation
 
-import contacts.Field
+import contacts.CommonDataField
 import contacts.Fields
 import contacts.entities.MimeType
 import contacts.entities.MutableAddress
@@ -11,7 +11,7 @@ internal class AddressOperation(isProfile: Boolean) :
     override val mimeType = MimeType.Address
 
     override fun setData(
-        data: MutableAddress, setValue: (field: Field, dataValue: Any?) -> Unit
+        data: MutableAddress, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Address.Type, data.type?.value)
         setValue(Fields.Address.Label, data.label)

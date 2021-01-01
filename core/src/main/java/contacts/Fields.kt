@@ -6,6 +6,7 @@ import android.annotation.TargetApi
 import android.os.Build
 import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
+import contacts.AbstractCustomCommonDataField.ColumnName
 import contacts.entities.MimeType
 import contacts.util.unsafeLazy
 
@@ -30,7 +31,8 @@ sealed class Field {
 
     internal abstract val columnName: String
 
-    // Force concrete implementations to implements equals and hashCode
+    // Force concrete implementations to implements equals and hashCode, which can be manually
+    // written or provided by being a data class.
     abstract override fun equals(other: Any?): Boolean
 
     abstract override fun hashCode(): Int
@@ -751,6 +753,181 @@ class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>(
     // algorithm of the Contacts Provider.
     override val forMatching = emptySet<WebsiteField>()
 }
+
+// region Custom Common Data Fields
+
+/**
+ * An abstract class that is used as a base of all custom common data fields.
+ *
+ * ## Developer notes
+ *
+ * This had to be declared here instead of in the [contacts.custom] package because
+ * [CommonDataField] is sealed.
+ */
+abstract class AbstractCustomCommonDataField(
+    /**
+     * The name of this column. Must be one of [ColumnName].
+     */
+    columnName: ColumnName
+) : CommonDataField() {
+
+    final override val columnName: String = columnName.value
+
+    /**
+     * Possible column names for custom data of a certain [mimeType].
+     */
+    enum class ColumnName(internal val value: String) {
+        /**
+         * Primary data of an entity. For example;
+         *
+         * - Name display name
+         * - Phone number
+         * - Formatted address
+         * - Website url
+         */
+        // CommonDataKinds.CommonColumns.DATA
+        DATA(Data.DATA1),
+
+        /**
+         * The type of data for entities that may have different variations. Column data value is by
+         * convention an integer. For example;
+         *
+         * Phone number type
+         *     - TYPE_HOME = 1
+         *     - TYPE_MOBILE = 2
+         *     - TYPE_WORK = 3
+         *     - TYPE_CUSTOM = 0
+         *
+         * This is optional.
+         *
+         * ## Developer notes. Also for advanced consumers.
+         *
+         * DATA2 and DATA3 does not have to be used to only store types and labels. It can also be
+         * used to store regular pieces of data. This can be useful if there are a lot of pieces of
+         * data for an entity. For example, [NameFields] / [CommonDataKinds.StructuredName] uses
+         * DATA2 for the given name and DATA3 for the family name.
+         */
+        // CommonDataKinds.CommonColumns.TYPE
+        TYPE(Data.DATA2),
+
+        /**
+         * The label / alias / name of the custom [TYPE]. Only used by data using [TYPE]s,
+         * specifically the custom type.
+         *
+         * Do not use if data has no custom type.
+         *
+         * ## Developer notes. Also for advanced consumers.
+         *
+         * DATA2 and DATA3 does not have to be used to only store types and labels. It can also be
+         * used to store regular pieces of data. This can be useful if there are a lot of pieces of
+         * data for an entity. For example, [NameFields] / [CommonDataKinds.StructuredName] uses
+         * DATA2 for the given name and DATA3 for the family name.
+         */
+        // CommonDataKinds.CommonColumns.LABEL
+        LABEL(Data.DATA3),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * For example, an address has the following components;
+         *
+         * - Formatted address (primary data, [DATA])
+         * - Street (DATA4)
+         * - PO box (DATA5)
+         * - Neighborhood (DATA6)
+         */
+        DATA4(Data.DATA4),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA5(Data.DATA5),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA6(Data.DATA6),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA7(Data.DATA7),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA8(Data.DATA8),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA9(Data.DATA9),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA10(Data.DATA10),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA11(Data.DATA11),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA12(Data.DATA12),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA13(Data.DATA13),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
+         * See [DATA4] for more documentation.
+         */
+        DATA14(Data.DATA14),
+
+        /**
+         * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         * By convention, this field is used to store BLOBs (binary data).
+         */
+        DATA15(Data.DATA15)
+    }
+}
+
+/**
+ * An abstract class that is used as a base of all custom common data field sets.
+ *
+ * ## Developer notes
+ *
+ * This had to be declared here instead of in the [contacts.custom] package because
+ * [AbstractDataFieldSet] is sealed.
+ */
+abstract class AbstractCustomCommonDataFieldSet<T : AbstractCustomCommonDataField> :
+    AbstractDataFieldSet<T>()
+
+// endregion
 
 // endregion
 

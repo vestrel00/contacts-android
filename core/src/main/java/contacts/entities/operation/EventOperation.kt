@@ -1,6 +1,6 @@
 package contacts.entities.operation
 
-import contacts.Field
+import contacts.CommonDataField
 import contacts.Fields
 import contacts.entities.MimeType
 import contacts.entities.MutableEvent
@@ -12,7 +12,7 @@ internal class EventOperation(isProfile: Boolean) :
     override val mimeType = MimeType.Event
 
     override fun setData(
-        data: MutableEvent, setValue: (field: Field, dataValue: Any?) -> Unit
+        data: MutableEvent, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Event.Type, data.type?.value)
         setValue(Fields.Event.Label, data.label)

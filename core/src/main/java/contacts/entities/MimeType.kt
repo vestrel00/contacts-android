@@ -1,6 +1,7 @@
 package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
+import contacts.custom.CustomCommonDataRegistry
 
 sealed class MimeType(internal val value: String) {
 
@@ -20,26 +21,34 @@ sealed class MimeType(internal val value: String) {
     object Website : MimeType(CommonDataKinds.Website.CONTENT_ITEM_TYPE)
     object Unknown : MimeType("")
 
-    // TODO add Custom
+    abstract class Custom(value: String) : MimeType(value) {
+        // Force concrete implementations to implements equals and hashCode, which can be manually
+        // written or provided by being a data class.
+        abstract override fun equals(other: Any?): Boolean
 
-    companion object {
+        abstract override fun hashCode(): Int
+    }
 
-        fun fromValue(value: String?): MimeType = when (value) {
-            Address.value -> Address
-            Email.value -> Email
-            Event.value -> Event
-            GroupMembership.value -> GroupMembership
-            Im.value -> Im
-            Name.value -> Name
-            Nickname.value -> Nickname
-            Note.value -> Note
-            Organization.value -> Organization
-            Phone.value -> Phone
-            Photo.value -> Photo
-            Relation.value -> Relation
-            SipAddress.value -> SipAddress
-            Website.value -> Website
-            else -> Unknown
-        }
+    internal companion object {
+
+        fun fromValue(value: String?, customDataRegistry: CustomCommonDataRegistry): MimeType =
+            when (value) {
+                Address.value -> Address
+                Email.value -> Email
+                Event.value -> Event
+                GroupMembership.value -> GroupMembership
+                Im.value -> Im
+                Name.value -> Name
+                Nickname.value -> Nickname
+                Note.value -> Note
+                Organization.value -> Organization
+                Phone.value -> Phone
+                Photo.value -> Photo
+                Relation.value -> Relation
+                SipAddress.value -> SipAddress
+                Website.value -> Website
+                null -> Unknown
+                else -> customDataRegistry.customMimeTypeOf(value) ?: Unknown
+            }
     }
 }

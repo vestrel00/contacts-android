@@ -3,7 +3,7 @@ package contacts.entities.cursor
 import android.database.Cursor
 import contacts.Fields
 
-internal open class DataCursor(protected val cursor: Cursor) : DataIdCursor {
+open class DataCursor(protected val cursor: Cursor) : DataIdCursor {
 
     override val dataId: Long?
         get() = cursor.getLong(Fields.DataId)

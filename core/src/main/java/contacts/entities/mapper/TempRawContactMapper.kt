@@ -41,6 +41,8 @@ internal class TempRawContactMapper(
 
             sipAddress = null,
 
-            websites = mutableListOf()
+            websites = mutableListOf(),
+
+            customData = mutableMapOf()
         )
 }

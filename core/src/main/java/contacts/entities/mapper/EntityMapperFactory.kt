@@ -4,6 +4,7 @@ import contacts.AbstractDataField
 import contacts.ContactsField
 import contacts.GroupsField
 import contacts.RawContactsField
+import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.*
 import contacts.entities.cursor.*
 
@@ -62,7 +63,8 @@ internal fun EntityCursor<AbstractDataField>.websiteMapper(): EntityMapper<Websi
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapperFor(
-    mimeType: MimeType
+    mimeType: MimeType,
+    customDataRegistry: CustomCommonDataRegistry
 ): EntityMapper<T> = when (mimeType) {
     MimeType.Address -> addressMapper()
     MimeType.Email -> emailMapper()
@@ -78,8 +80,14 @@ internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapper
     MimeType.Relation -> relationMapper()
     MimeType.SipAddress -> sipAddressMapper()
     MimeType.Website -> websiteMapper()
-    MimeType.Unknown -> throw UnsupportedOperationException(
-        "No entity mapper for mime type $mimeType"
+    is MimeType.Custom -> customDataRegistry
+        .customCommonDataMapperFactoryOf(mimeType)
+        ?.create(cursor)
+        ?: throw IllegalStateException(
+            "No custom entity mapper for mime type ${mimeType.value}"
+        )
+    MimeType.Unknown -> throw IllegalStateException(
+        "No entity mapper for mime type ${mimeType.value}"
     )
 } as EntityMapper<T>
 

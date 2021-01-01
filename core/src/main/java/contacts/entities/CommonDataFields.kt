@@ -3,12 +3,13 @@ package contacts.entities
 import contacts.CommonDataField
 import contacts.EmptyCommonDataFields
 import contacts.Fields
+import contacts.custom.CustomCommonDataRegistry
 
-internal val CommonDataEntity.fields: Set<CommonDataField>
-    get() = mimeType.fields
+internal fun CommonDataEntity.fields(customDataRegistry: CustomCommonDataRegistry):
+        Set<CommonDataField> = mimeType.fields(customDataRegistry)
 
-internal val MimeType.fields: Set<CommonDataField>
-    get() = when (this) {
+internal fun MimeType.fields(customDataRegistry: CustomCommonDataRegistry): Set<CommonDataField> =
+    when (this) {
         MimeType.Address -> Fields.Address
         MimeType.Email -> Fields.Email
         MimeType.Event -> Fields.Event
@@ -23,5 +24,6 @@ internal val MimeType.fields: Set<CommonDataField>
         MimeType.Relation -> Fields.Relation
         MimeType.SipAddress -> Fields.SipAddress
         MimeType.Website -> Fields.Website
+        is MimeType.Custom -> customDataRegistry.customFieldSetOf(this) ?: EmptyCommonDataFields
         MimeType.Unknown -> EmptyCommonDataFields
     }.all

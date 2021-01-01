@@ -2,6 +2,8 @@ package contacts.util
 
 import android.content.Context
 import contacts.*
+import contacts.custom.CustomCommonDataRegistry
+import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
@@ -21,12 +23,16 @@ import contacts.entities.RawContact
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun Insert.Result.rawContact(
-    context: Context, rawContact: MutableRawContact, cancel: () -> Boolean = { false }
+    context: Context,
+    rawContact: MutableRawContact,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
 ): RawContact? {
 
     val rawContactId = rawContactId(rawContact) ?: return null
 
-    return Query(context).where(Fields.RawContact.Id equalTo rawContactId).find(cancel)
+    return Query(context, customDataRegistry).where(Fields.RawContact.Id equalTo rawContactId)
+        .find(cancel)
         .asSequence()
         .flatMap { it.rawContacts.asSequence() }
         .find { it.id == rawContactId }
@@ -47,12 +53,15 @@ fun Insert.Result.rawContact(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun Insert.Result.rawContacts(
-    context: Context, cancel: () -> Boolean = { false }
-): List<RawContact> = Query(context).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
-    .asSequence()
-    .flatMap { it.rawContacts.asSequence() }
-    .filter { rawContactIds.contains(it.id) }
-    .toList()
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
+): List<RawContact> =
+    Query(context, customDataRegistry).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
+        .asSequence()
+        .flatMap { it.rawContacts.asSequence() }
+        .filter { rawContactIds.contains(it.id) }
+        .toList()
 
 /**
  * Returns the newly created [Contact] containing the [RawContact] or null if the insert operation
@@ -70,12 +79,15 @@ fun Insert.Result.rawContacts(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun Insert.Result.contact(
-    context: Context, rawContact: MutableRawContact, cancel: () -> Boolean = { false }
+    context: Context,
+    rawContact: MutableRawContact,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
 ): Contact? {
 
     val rawContactId = rawContactId(rawContact) ?: return null
 
-    return Query(context)
+    return Query(context, customDataRegistry)
         .where(Fields.RawContact.Id equalTo rawContactId)
         .find(cancel)
         .firstOrNull()
@@ -98,5 +110,9 @@ fun Insert.Result.contact(
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Insert.Result.contacts(context: Context, cancel: () -> Boolean = { false }): List<Contact> =
-    Query(context).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
+fun Insert.Result.contacts(
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
+): List<Contact> =
+    Query(context, customDataRegistry).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)

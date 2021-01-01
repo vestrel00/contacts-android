@@ -1,6 +1,8 @@
 package contacts.util
 
 import android.content.Context
+import contacts.custom.CustomCommonDataRegistry
+import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.RawContact
 import contacts.profile.ProfileInsert
@@ -21,11 +23,12 @@ import contacts.profile.ProfileQuery
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun ProfileInsert.Result.rawContact(
-    context: Context, cancel: () -> Boolean = { false }
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
 ): RawContact? = rawContactId?.let { rawContactId ->
-    contact(context, cancel)
+    contact(context, customDataRegistry, cancel)
         ?.rawContacts
-        ?.asSequence()
         ?.firstOrNull { it.id == rawContactId }
 }
 
@@ -44,5 +47,8 @@ fun ProfileInsert.Result.rawContact(
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun ProfileInsert.Result.contact(context: Context, cancel: () -> Boolean = { false }): Contact? =
-    if (isSuccessful) ProfileQuery(context).find(cancel) else null
+fun ProfileInsert.Result.contact(
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
+): Contact? = if (isSuccessful) ProfileQuery(context, customDataRegistry).find(cancel) else null

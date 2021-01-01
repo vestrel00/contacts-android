@@ -1,6 +1,8 @@
 package contacts.util
 
 import android.content.Context
+import contacts.custom.CustomCommonDataRegistry
+import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.BlankRawContact
 import contacts.entities.RawContact
 
@@ -22,7 +24,11 @@ import contacts.entities.RawContact
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun BlankRawContact.toRawContact(context: Context, cancel: () -> Boolean = { false }): RawContact? =
+fun BlankRawContact.toRawContact(
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
+): RawContact? =
     id?.let { rawContactId ->
-        context.findFirstRawContactWithId(rawContactId, cancel)
+        context.findFirstRawContactWithId(rawContactId, customDataRegistry, cancel)
     }

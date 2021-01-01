@@ -1,7 +1,10 @@
 package contacts
 
 import android.content.Context
+import contacts.custom.CustomCommonDataRegistry
+import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.data.Data
+import contacts.entities.MimeType
 import contacts.groups.Groups
 import contacts.profile.Profile
 
@@ -98,25 +101,35 @@ interface Contacts {
      * provides further protection.
      */
     val applicationContext: Context
+
+    /**
+     * Provides functions required to support custom common data, which have [MimeType.Custom].
+     */
+    val customDataRegistry: CustomCommonDataRegistry
 }
 
 /**
  * Creates a new [Contacts] instance.
  */
+@JvmOverloads
 @Suppress("FunctionName")
-fun Contacts(context: Context): Contacts = ContactsImpl(
+fun Contacts(
+    context: Context, customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+): Contacts = ContactsImpl(
     context.applicationContext,
-    ContactsPermissions(context.applicationContext)
+    ContactsPermissions(context.applicationContext),
+    customDataRegistry
 )
 
 private class ContactsImpl(
     override val applicationContext: Context,
-    override val permissions: ContactsPermissions
+    override val permissions: ContactsPermissions,
+    override val customDataRegistry: CustomCommonDataRegistry
 ) : Contacts {
 
-    override fun query() = Query(applicationContext)
+    override fun query() = Query(applicationContext, customDataRegistry)
 
-    override fun generalQuery() = GeneralQuery(applicationContext)
+    override fun generalQuery() = GeneralQuery(applicationContext, customDataRegistry)
 
     override fun insert() = Insert(applicationContext)
 
@@ -124,9 +137,9 @@ private class ContactsImpl(
 
     override fun delete() = Delete(applicationContext)
 
-    override fun data() = Data(applicationContext, false)
+    override fun data() = Data(applicationContext, customDataRegistry, false)
 
     override fun groups() = Groups(applicationContext)
 
-    override fun profile() = Profile(applicationContext)
+    override fun profile() = Profile(applicationContext, customDataRegistry)
 }

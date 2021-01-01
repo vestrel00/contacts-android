@@ -3,6 +3,8 @@ package contacts.util
 import android.content.Context
 import contacts.Fields
 import contacts.Query
+import contacts.custom.CustomCommonDataRegistry
+import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
 import contacts.equalTo
@@ -30,11 +32,15 @@ import contacts.profile.ProfileQuery
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): RawContact? =
+fun RawContact.refresh(
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
+): RawContact? =
     if (id == null) {
         this
     } else {
-        context.findFirstRawContactWithId(id, cancel)
+        context.findFirstRawContactWithId(id, customDataRegistry, cancel)
     }
 
 /**
@@ -47,22 +53,26 @@ fun RawContact.refresh(context: Context, cancel: () -> Boolean = { false }): Raw
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun MutableRawContact.refresh(
-    context: Context, cancel: () -> Boolean = { false }
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    cancel: () -> Boolean = { false }
 ): MutableRawContact? = if (id == null) {
     this
 } else {
-    context.findFirstRawContactWithId(id, cancel)?.toMutableRawContact()
+    context.findFirstRawContactWithId(id, customDataRegistry, cancel)?.toMutableRawContact()
 }
 
 internal fun Context.findFirstRawContactWithId(
-    rawContactId: Long, cancel: () -> Boolean
+    rawContactId: Long,
+    customDataRegistry: CustomCommonDataRegistry,
+    cancel: () -> Boolean
 ): RawContact? = if (rawContactId.isProfileId) {
-    ProfileQuery(this)
+    ProfileQuery(this, customDataRegistry)
         .find(cancel)
         ?.rawContacts
         ?.find { it.id == rawContactId }
 } else {
-    Query(this)
+    Query(this, customDataRegistry)
         .where(Fields.RawContact.Id equalTo rawContactId)
         .find(cancel)
         .firstOrNull()

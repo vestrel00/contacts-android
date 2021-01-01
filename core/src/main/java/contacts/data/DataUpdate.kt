@@ -3,6 +3,7 @@ package contacts.data
 import android.content.ContentResolver
 import android.content.Context
 import contacts.ContactsPermissions
+import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.MutableCommonDataEntity
 import contacts.entities.operation.updateOperation
 import contacts.util.applyBatch
@@ -88,15 +89,19 @@ interface DataUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun DataUpdate(context: Context, isProfile: Boolean): DataUpdate = DataUpdateImpl(
+internal fun DataUpdate(
+    context: Context, customDataRegistry: CustomCommonDataRegistry, isProfile: Boolean
+): DataUpdate = DataUpdateImpl(
     context.contentResolver,
     ContactsPermissions(context),
+    customDataRegistry,
     isProfile
 )
 
 private class DataUpdateImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+    private val customDataRegistry: CustomCommonDataRegistry,
     private val isProfile: Boolean,
     private val data: MutableSet<MutableCommonDataEntity> = mutableSetOf()
 ) : DataUpdate {
@@ -132,7 +137,7 @@ private class DataUpdateImpl(
                     // succeed. This is only done to enforce API design.
                     false
                 } else {
-                    contentResolver.updateData(data)
+                    contentResolver.updateData(data, customDataRegistry)
                 }
             } else {
                 results[INVALID_ID] = false
@@ -147,8 +152,10 @@ private class DataUpdateImpl(
     }
 }
 
-private fun ContentResolver.updateData(data: MutableCommonDataEntity): Boolean =
-    data.updateOperation()?.let { applyBatch(it) } != null
+private fun ContentResolver.updateData(
+    data: MutableCommonDataEntity,
+    customDataRegistry: CustomCommonDataRegistry
+): Boolean = data.updateOperation(customDataRegistry)?.let { applyBatch(it) } != null
 
 private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>) :
     DataUpdate.Result {

@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import contacts.*
+import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.cursor.rawContactsCursor
 import contacts.entities.mapper.ContactsMapper
@@ -175,14 +176,18 @@ interface ProfileQuery {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileQuery(context: Context): ProfileQuery = ProfileQueryImpl(
+internal fun ProfileQuery(
+    context: Context, customDataRegistry: CustomCommonDataRegistry
+): ProfileQuery = ProfileQueryImpl(
     ContactsPermissions(context),
-    context.contentResolver
+    context.contentResolver,
+    customDataRegistry
 )
 
 private class ProfileQueryImpl(
     private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
+    private val customDataRegistry: CustomCommonDataRegistry,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -229,7 +234,9 @@ private class ProfileQueryImpl(
             return null
         }
 
-        return contentResolver.resolve(includeBlanks, rawContactsWhere, include, cancel)
+        return contentResolver.resolve(
+            customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
+        )
     }
 
     private companion object {
@@ -241,6 +248,7 @@ private class ProfileQueryImpl(
 }
 
 private fun ContentResolver.resolve(
+    customDataRegistry: CustomCommonDataRegistry,
     includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
@@ -251,7 +259,7 @@ private fun ContentResolver.resolve(
     // Data table queries using profile uris only return user profile data.
     // Yes, I am aware of IS_USER_PROFILE and RAW_CONTACT_IS_USER_PROFILE but those seem to cause
     // queries to throw an exception.
-    val contactsMapper = ContactsMapper(cancel)
+    val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
     // Get the Data, RawContacts, and Contact from the Data table.
     if (!cancel() && rawContactIds.isNotEmpty()) {
