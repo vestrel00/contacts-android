@@ -1,7 +1,7 @@
 package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomCommonDataRegistry
 
 sealed class MimeType(internal val value: String) {
 

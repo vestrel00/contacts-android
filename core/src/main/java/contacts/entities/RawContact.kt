@@ -1,6 +1,6 @@
 package contacts.entities
 
-import contacts.custom.AbstractCustomCommonDataEntity
+import contacts.entities.custom.AbstractCustomCommonDataEntity
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
 import kotlinx.android.parcel.IgnoredOnParcel

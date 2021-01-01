@@ -1,4 +1,4 @@
-package contacts.custom
+package contacts.entities.custom
 
 import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType

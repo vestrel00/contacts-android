@@ -4,9 +4,9 @@ import contacts.AbstractDataField
 import contacts.ContactsField
 import contacts.GroupsField
 import contacts.RawContactsField
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.*
 import contacts.entities.cursor.*
+import contacts.entities.custom.CustomCommonDataRegistry
 
 // region EntityCursor<AbstractDataField>
 

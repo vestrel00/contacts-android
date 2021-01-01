@@ -2,9 +2,9 @@ package contacts.profile
 
 import android.content.Context
 import contacts.ContactsPermissions
-import contacts.custom.CustomCommonDataRegistry
 import contacts.data.Data
 import contacts.entities.MimeType
+import contacts.entities.custom.CustomCommonDataRegistry
 
 /**
  * Provides new [ProfileQuery], [ProfileInsert], [ProfileUpdate], and [ProfileDelete] instances.

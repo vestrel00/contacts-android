@@ -3,8 +3,8 @@ package contacts.data
 import android.content.ContentResolver
 import android.content.Context
 import contacts.ContactsPermissions
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.MutableCommonDataEntity
+import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.entities.operation.updateOperation
 import contacts.util.applyBatch
 import contacts.util.unsafeLazy

@@ -2,8 +2,8 @@ package contacts.data
 
 import android.content.Context
 import contacts.ContactsPermissions
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.MimeType
+import contacts.entities.custom.CustomCommonDataRegistry
 
 /**
  * Provides new [DataQuery], [DataUpdate], and [DataDelete] for Profile OR non-Profile (depending on

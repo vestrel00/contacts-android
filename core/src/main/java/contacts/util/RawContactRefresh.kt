@@ -3,10 +3,10 @@ package contacts.util
 import android.content.Context
 import contacts.Fields
 import contacts.Query
-import contacts.custom.CustomCommonDataRegistry
-import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.equalTo
 import contacts.profile.ProfileQuery
 

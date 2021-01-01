@@ -1,9 +1,9 @@
 package contacts.entities.operation
 
 import android.content.ContentProviderOperation
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.MimeType
 import contacts.entities.MutableCommonDataEntity
+import contacts.entities.custom.CustomCommonDataRegistry
 
 /**
  * Returns a new [ContentProviderOperation] for updating [this].

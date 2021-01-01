@@ -4,9 +4,9 @@ import android.content.Context
 import contacts.Fields
 import contacts.Query
 import contacts.`in`
-import contacts.custom.CustomCommonDataRegistry
-import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.Contact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.equalTo
 
 // Note that there is no need to handle isProfile here as ContactLinks operations do not support it.

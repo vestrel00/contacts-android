@@ -3,7 +3,7 @@ package contacts.entities
 import contacts.CommonDataField
 import contacts.EmptyCommonDataFields
 import contacts.Fields
-import contacts.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomCommonDataRegistry
 
 internal fun CommonDataEntity.fields(customDataRegistry: CustomCommonDataRegistry):
         Set<CommonDataField> = mimeType.fields(customDataRegistry)

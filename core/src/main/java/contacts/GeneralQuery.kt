@@ -5,10 +5,10 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.Group
 import contacts.entities.cursor.contactsCursor
+import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.util.isEmpty
 import contacts.util.query
 import contacts.util.toRawContactsWhere

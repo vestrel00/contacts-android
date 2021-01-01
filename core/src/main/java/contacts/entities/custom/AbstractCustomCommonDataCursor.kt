@@ -1,4 +1,4 @@
-package contacts.custom
+package contacts.entities.custom
 
 import android.database.Cursor
 import contacts.entities.cursor.DataCursor

@@ -1,10 +1,10 @@
 package contacts.util
 
 import android.content.Context
-import contacts.custom.CustomCommonDataRegistry
-import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.CommonDataEntity
 import contacts.entities.RawContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 
 /**
  * Returns the [RawContact] with the [CommonDataEntity.rawContactId].

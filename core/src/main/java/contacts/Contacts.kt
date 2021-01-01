@@ -1,10 +1,10 @@
 package contacts
 
 import android.content.Context
-import contacts.custom.CustomCommonDataRegistry
-import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.data.Data
 import contacts.entities.MimeType
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.groups.Groups
 import contacts.profile.Profile
 

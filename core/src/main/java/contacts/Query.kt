@@ -3,11 +3,11 @@ package contacts
 import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.cursor.contactsCursor
 import contacts.entities.cursor.dataContactsCursor
 import contacts.entities.cursor.rawContactsCursor
+import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.entities.mapper.ContactsMapper
 import contacts.entities.table.Table
 import contacts.util.isEmpty

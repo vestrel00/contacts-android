@@ -4,7 +4,7 @@ import contacts.AbstractDataField
 import contacts.ContactsField
 import contacts.GroupsField
 import contacts.RawContactsField
-import contacts.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomCommonDataRegistry
 
 internal fun EntityCursor<AbstractDataField>.addressCursor() = AddressCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.dataContactsCursor() = DataContactsCursor(cursor)

@@ -1,9 +1,9 @@
-package contacts.custom.data.moreinfo
+package contacts.entities.custom.data.moreinfo
 
-import contacts.custom.AbstractCustomCommonDataEntity
-import contacts.custom.data.moreinfo.Gender.Type
 import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
+import contacts.entities.custom.AbstractCustomCommonDataEntity
+import contacts.entities.custom.data.moreinfo.Gender.Type
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 

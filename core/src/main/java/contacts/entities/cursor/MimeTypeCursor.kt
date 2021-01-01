@@ -2,8 +2,8 @@ package contacts.entities.cursor
 
 import android.database.Cursor
 import contacts.Fields
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.MimeType
+import contacts.entities.custom.CustomCommonDataRegistry
 
 /**
  * Retrieves [Fields.MimeType] data from the given [cursor].

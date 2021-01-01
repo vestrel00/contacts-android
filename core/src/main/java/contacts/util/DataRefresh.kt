@@ -2,10 +2,10 @@ package contacts.util
 
 import android.content.Context
 import contacts.*
-import contacts.custom.CustomCommonDataRegistry
-import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.data.resolveDataEntity
 import contacts.entities.CommonDataEntity
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.fields
 
 /**

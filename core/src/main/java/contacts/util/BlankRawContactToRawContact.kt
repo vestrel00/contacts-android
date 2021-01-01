@@ -1,10 +1,10 @@
 package contacts.util
 
 import android.content.Context
-import contacts.custom.CustomCommonDataRegistry
-import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.BlankRawContact
 import contacts.entities.RawContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 
 /**
  * Returns the equivalent [RawContact] with all of the latest data.

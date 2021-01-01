@@ -4,10 +4,10 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import contacts.*
-import contacts.custom.AbstractCustomCommonDataEntity
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.*
 import contacts.entities.cursor.rawContactsCursor
+import contacts.entities.custom.AbstractCustomCommonDataEntity
+import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.entities.mapper.entityMapperFor
 import contacts.entities.table.ProfileUris
 import contacts.entities.table.Table

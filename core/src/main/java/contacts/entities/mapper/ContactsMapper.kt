@@ -3,12 +3,12 @@ package contacts.entities.mapper
 import contacts.AbstractDataField
 import contacts.ContactsField
 import contacts.RawContactsField
-import contacts.custom.CustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.MimeType.*
 import contacts.entities.RawContact
 import contacts.entities.TempRawContact
 import contacts.entities.cursor.*
+import contacts.entities.custom.CustomCommonDataRegistry
 
 /**
  * Returns a list of [Contact]s from the given cursor, which assumed to have been retrieved from the

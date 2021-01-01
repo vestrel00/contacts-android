@@ -2,11 +2,11 @@ package contacts.util
 
 import android.content.Context
 import contacts.*
-import contacts.custom.CustomCommonDataRegistry
-import contacts.custom.GlobalCustomCommonDataRegistry
 import contacts.entities.Contact
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 
 /**
  * Returns the newly created [RawContact] or null if the insert operation failed.
