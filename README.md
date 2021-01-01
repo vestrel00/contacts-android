@@ -159,7 +159,7 @@ consumers to implement a specific part of the native Android Contacts app.
     - Etc
     - I will need help from the community to implement these because I don't participate in
       social media. Use the `debug` module to look into the data table and look for social media
-      mimetypes. Then, create a new custom data module using the `customdata-moreinfo` module as
+      mimetypes. Then, create a new custom data module using the existing `customdata-x` modules as
       reference. A separate module should be created for different social media.
       E.G. customdata-whatsapp, customdata-messenger, customdata-twitter
 
