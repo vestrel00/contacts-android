@@ -15,9 +15,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * See [CommonDataQuery.find].
  */
-suspend fun <T : CommonDataField, R : CommonDataEntity> CommonDataQuery<T, R>.findWithContext(
+suspend fun <K : CommonDataField, V : CommonDataEntity> CommonDataQuery<K, V>.findWithContext(
     context: CoroutineContext = ASYNC_DISPATCHER
-): List<R> = withContext(context) { find { !isActive } }
+): List<V> = withContext(context) { find { !isActive } }
 
 
 /**
@@ -28,6 +28,6 @@ suspend fun <T : CommonDataField, R : CommonDataEntity> CommonDataQuery<T, R>.fi
  *
  * See [CommonDataQuery.find].
  */
-fun <T : CommonDataField, R : CommonDataEntity> CommonDataQuery<T, R>.findAsync(
+fun <K : CommonDataField, V : CommonDataEntity> CommonDataQuery<K, V>.findAsync(
     context: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<List<R>> = CoroutineScope(context).async { find { !isActive } }
+): Deferred<List<V>> = CoroutineScope(context).async { find { !isActive } }

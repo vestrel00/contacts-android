@@ -282,14 +282,14 @@ internal fun <T : Field> T.isNull(): Where<T> = IsNull(this)
  * ```
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Field, R : Any?> Collection<R>.whereOr(where: (R) -> Where<T>): Where<T>? =
+infix fun <K : Field, V : Any?> Collection<V>.whereOr(where: (V) -> Where<K>): Where<K>? =
     asSequence().joinWhere(where, "OR")
 
 /**
  * See [whereOr].
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Field, R : Any?> Sequence<R>.whereOr(where: (R) -> Where<T>): Where<T>? =
+infix fun <K : Field, V : Any?> Sequence<V>.whereOr(where: (V) -> Where<K>): Where<K>? =
     joinWhere(where, "OR")
 
 /**
@@ -322,14 +322,14 @@ infix fun <T : Field, R : Any?> Sequence<R>.whereOr(where: (R) -> Where<T>): Whe
  * // (display_name NOT LIKE 'letter%%') AND (data1 NOT LIKE 'letter%%' <omitted for brevity>)
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Field, R : Any?> Collection<R>.whereAnd(where: (R) -> Where<T>): Where<T>? =
+infix fun <K : Field, V : Any?> Collection<V>.whereAnd(where: (V) -> Where<K>): Where<K>? =
     asSequence().joinWhere(where, "AND")
 
 /**
  * See [whereAnd].
  */
 // Not inlined because of private functions and classes.
-infix fun <T : Field, R : Any?> Sequence<R>.whereAnd(where: (R) -> Where<T>): Where<T>? =
+infix fun <K : Field, V : Any?> Sequence<V>.whereAnd(where: (V) -> Where<K>): Where<K>? =
     joinWhere(where, "AND")
 
 /**
@@ -343,10 +343,10 @@ infix fun <T : Field> FieldSet<T>.whereOr(where: (T) -> Where<T>): Where<T>? = a
 infix fun <T : Field> FieldSet<T>.whereAnd(where: (T) -> Where<T>): Where<T>? = all.whereAnd(where)
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
-private fun <T : Field, R : Any?> Sequence<R>.joinWhere(
-    where: (R) -> Where<T>,
+private fun <K : Field, V : Any?> Sequence<V>.joinWhere(
+    where: (V) -> Where<K>,
     separator: String
-): Where<T>? {
+): Where<K>? {
     if (isEmpty()) {
         return null
     }

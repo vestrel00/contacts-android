@@ -90,10 +90,10 @@ interface DataQuery {
     fun websites(): CommonDataQuery<WebsiteField, Website>
 
     /**
-     * Queries for custom data of type [R] with the given custom [mimeType].
+     * Queries for custom data of type [V] with the given custom [mimeType].
      */
-    fun <T : AbstractCustomCommonDataField, R : AbstractCustomCommonDataEntity>
-            customData(mimeType: MimeType.Custom): CommonDataQuery<T, R>
+    fun <K : AbstractCustomCommonDataField, V : AbstractCustomCommonDataEntity>
+            customData(mimeType: MimeType.Custom): CommonDataQuery<K, V>
 }
 
 @Suppress("FunctionName")
@@ -181,14 +181,14 @@ private class DataQueryImpl(
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : AbstractCustomCommonDataField, R : AbstractCustomCommonDataEntity>
-            customData(mimeType: MimeType.Custom): CommonDataQuery<T, R> = CommonDataQueryImpl(
+    override fun <K : AbstractCustomCommonDataField, V : AbstractCustomCommonDataEntity>
+            customData(mimeType: MimeType.Custom): CommonDataQuery<K, V> = CommonDataQueryImpl(
         contentResolver, permissions, customDataRegistry,
         // FIXME? ClassCastException will be thrown here if consumer messes up.
         // Maybe there is a way to avoid casting WITHOUT increasing code complexity too much and
         // making code look very messy with types all over the place?
         // For now, we'll have to rely on consumer diligence for this.
-        customDataRegistry.customFieldSetOf(mimeType) as AbstractCustomCommonDataFieldSet<T>?
+        customDataRegistry.customFieldSetOf(mimeType) as AbstractCustomCommonDataFieldSet<K>?
             ?: throw IllegalStateException("No custom field set found for ${mimeType.value}"),
         mimeType, isProfile
     )
@@ -196,7 +196,7 @@ private class DataQueryImpl(
 
 /**
  * Queries the Data table and returns one or more Profile OR non-Profile (depending on instance)
- * data of type [R] matching the search criteria.
+ * data of type [V] matching the search criteria.
  *
  * This returns a list of specific data type (e.g. emails, phones, etc). This is optimized and
  * useful for searching through and paginating one data type.
@@ -240,7 +240,7 @@ private class DataQueryImpl(
  *      .find();
  * ```
  */
-interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
+interface CommonDataQuery<K : CommonDataField, V : CommonDataEntity> {
 
     /**
      * Limits this query to only search for data associated with one of the given [accounts].
@@ -252,20 +252,20 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
      * associated Account to be included in the search. RawContacts without an associated account
      * are considered local or device-only contacts, which are not synced.
      */
-    fun accounts(vararg accounts: Account?): CommonDataQuery<T, R>
+    fun accounts(vararg accounts: Account?): CommonDataQuery<K, V>
 
     /**
      * See [CommonDataQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account?>): CommonDataQuery<T, R>
+    fun accounts(accounts: Collection<Account?>): CommonDataQuery<K, V>
 
     /**
      * See [CommonDataQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account?>): CommonDataQuery<T, R>
+    fun accounts(accounts: Sequence<Account?>): CommonDataQuery<K, V>
 
     /**
-     * Includes the given set of [fields] of type [T] in the resulting data objects of type [R].
+     * Includes the given set of [fields] of type [K] in the resulting data objects of type [V].
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
      * fields will be included in addition to [Fields.Required], which are always included.
@@ -275,17 +275,17 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      */
-    fun include(vararg fields: T): CommonDataQuery<T, R>
+    fun include(vararg fields: K): CommonDataQuery<K, V>
 
     /**
      * See [CommonDataQuery.include].
      */
-    fun include(fields: Collection<T>): CommonDataQuery<T, R>
+    fun include(fields: Collection<K>): CommonDataQuery<K, V>
 
     /**
      * See [CommonDataQuery.include].
      */
-    fun include(fields: Sequence<T>): CommonDataQuery<T, R>
+    fun include(fields: Sequence<K>): CommonDataQuery<K, V>
 
     /**
      * Filters the returned data matching the criteria defined by the [where].
@@ -293,19 +293,19 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
      * Be careful what fields are used in this where. Querying for all addresses where the phone
      * number starts with whatever will produce no results. Think about it =)
      *
-     * If not specified or null, then all data of type [R] is returned.
+     * If not specified or null, then all data of type [V] is returned.
      *
      * ## Developer notes
      *
-     * The Field type of the Where is not constrained to [T] because consumers need to be able to
-     * use other fields such as [Fields.Contact] (perhaps to get all data of type [R] of a Contact),
+     * The Field type of the Where is not constrained to [K] because consumers need to be able to
+     * use other fields such as [Fields.Contact] (perhaps to get all data of type [V] of a Contact),
      * [Fields.RawContact], [Fields.IsSuperPrimary], etc...
      *
      * This allows consumers to make a mistake about trying to match addresses using phone fields.
      * At this point, I'll say we are consenting adults (Python motto if you don't know) and we need
      * apply some common sense =)
      */
-    fun where(where: Where<AbstractDataField>?): CommonDataQuery<T, R>
+    fun where(where: Where<AbstractDataField>?): CommonDataQuery<K, V>
 
     /**
      * Orders the returned data using one or more [orderBy]s. If not specified, then data is ordered
@@ -314,34 +314,34 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
      * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase` as an
      * optional parameter.
      */
-    fun orderBy(vararg orderBy: OrderBy<T>): CommonDataQuery<T, R>
+    fun orderBy(vararg orderBy: OrderBy<K>): CommonDataQuery<K, V>
 
     /**
      * See [CommonDataQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy<T>>): CommonDataQuery<T, R>
+    fun orderBy(orderBy: Collection<OrderBy<K>>): CommonDataQuery<K, V>
 
     /**
      * See [CommonDataQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy<T>>): CommonDataQuery<T, R>
+    fun orderBy(orderBy: Sequence<OrderBy<K>>): CommonDataQuery<K, V>
 
     /**
      * Limits the maximum number of returned data to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
      */
-    fun limit(limit: Int): CommonDataQuery<T, R>
+    fun limit(limit: Int): CommonDataQuery<K, V>
 
     /**
      * Skips results 0 to [offset] (excluding the offset).
      *
      * If not specified, offset value of 0 is used.
      */
-    fun offset(offset: Int): CommonDataQuery<T, R>
+    fun offset(offset: Int): CommonDataQuery<K, V>
 
     /**
-     * The list of [R]s.
+     * The list of [V]s.
      *
      * ## Permissions
      *
@@ -352,10 +352,10 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): List<R>
+    fun find(): List<V>
 
     /**
-     * The list of [R]s.
+     * The list of [V]s.
      *
      * ## Permissions
      *
@@ -376,15 +376,15 @@ interface CommonDataQuery<T : CommonDataField, R : CommonDataEntity> {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): List<R>
-    fun find(cancel: () -> Boolean): List<R>
+    fun find(cancel: () -> Boolean): List<V>
 }
 
-private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
+private class CommonDataQueryImpl<K : CommonDataField, V : CommonDataEntity>(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
     private val customDataRegistry: CustomCommonDataRegistry,
 
-    private val defaultIncludeFields: FieldSet<T>,
+    private val defaultIncludeFields: FieldSet<K>,
     private val mimeType: MimeType,
     private val isProfile: Boolean,
 
@@ -398,7 +398,7 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
     private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
-) : CommonDataQuery<T, R> {
+) : CommonDataQuery<K, V> {
 
     override fun toString(): String =
         """
@@ -418,15 +418,15 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account?>): CommonDataQuery<T, R> = apply {
+    override fun accounts(accounts: Sequence<Account?>): CommonDataQuery<K, V> = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
-    override fun include(vararg fields: T) = include(fields.asSequence())
+    override fun include(vararg fields: K) = include(fields.asSequence())
 
-    override fun include(fields: Collection<T>) = include(fields.asSequence())
+    override fun include(fields: Collection<K>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<T>): CommonDataQuery<T, R> = apply {
+    override fun include(fields: Sequence<K>): CommonDataQuery<K, V> = apply {
         val includeFields = if (fields.isEmpty()) {
             defaultIncludeFields.all.asSequence()
         } else {
@@ -436,16 +436,16 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
         include = Include(includeFields + REQUIRED_INCLUDE_FIELDS)
     }
 
-    override fun where(where: Where<AbstractDataField>?): CommonDataQuery<T, R> = apply {
+    override fun where(where: Where<AbstractDataField>?): CommonDataQuery<K, V> = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
 
-    override fun orderBy(vararg orderBy: OrderBy<T>) = orderBy(orderBy.asSequence())
+    override fun orderBy(vararg orderBy: OrderBy<K>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Collection<OrderBy<T>>) = orderBy(orderBy.asSequence())
+    override fun orderBy(orderBy: Collection<OrderBy<K>>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy<T>>): CommonDataQuery<T, R> = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<K>>): CommonDataQuery<K, V> = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -453,7 +453,7 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
         }
     }
 
-    override fun limit(limit: Int): CommonDataQuery<T, R> = apply {
+    override fun limit(limit: Int): CommonDataQuery<K, V> = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
@@ -461,7 +461,7 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
         }
     }
 
-    override fun offset(offset: Int): CommonDataQuery<T, R> = apply {
+    override fun offset(offset: Int): CommonDataQuery<K, V> = apply {
         this.offset = if (offset >= 0) {
             offset
         } else {
@@ -469,9 +469,9 @@ private class CommonDataQueryImpl<T : CommonDataField, R : CommonDataEntity>(
         }
     }
 
-    override fun find(): List<R> = find { false }
+    override fun find(): List<V> = find { false }
 
-    override fun find(cancel: () -> Boolean): List<R> {
+    override fun find(cancel: () -> Boolean): List<V> {
         if (!permissions.canQuery()) {
             return emptyList()
         }

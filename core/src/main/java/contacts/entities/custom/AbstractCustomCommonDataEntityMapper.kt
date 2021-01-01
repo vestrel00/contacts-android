@@ -5,7 +5,7 @@ import contacts.entities.mapper.EntityMapper
 
 /**
  * An abstract class that is used as a base of all custom [EntityMapper]s. It uses a
- * [AbstractCustomCommonDataCursor] [T] and outputs a [AbstractCustomCommonDataEntity] [R].
+ * [AbstractCustomCommonDataCursor] [K] and outputs a [AbstractCustomCommonDataEntity] [V].
  *
  * ## Developer notes
  *
@@ -15,21 +15,21 @@ import contacts.entities.mapper.EntityMapper
  * follow / trace. It also gives us more control and flexibility.
  */
 abstract class AbstractCustomCommonDataEntityMapper
-<T : AbstractCustomCommonDataCursor, out R : AbstractCustomCommonDataEntity>(
-    private val cursor: T
-) : EntityMapper<R> {
+<K : AbstractCustomCommonDataCursor, out V : AbstractCustomCommonDataEntity>(
+    private val cursor: K
+) : EntityMapper<V> {
 
     /**
-     * Returns the custom common data entity [R] created with values provided by the [cursor].
+     * Returns the custom common data entity [V] created with values provided by the [cursor].
      */
-    protected abstract fun value(cursor: T): R
+    protected abstract fun value(cursor: K): V
 
     /*
      * Invokes the abstract value function to force consumers to not assign a value for this and
      * instead calculate it every time this is invoked. This prevents consumers from making the
      * mistake of assigning a value to this instead of using a getter.
      */
-    final override val value: R
+    final override val value: V
         get() = value(cursor)
 
     /**
