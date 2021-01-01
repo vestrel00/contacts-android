@@ -4,6 +4,8 @@ import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
 import contacts.entities.CommonDataEntity
 import contacts.entities.RawContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.util.rawContact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -17,8 +19,12 @@ import kotlin.coroutines.CoroutineContext
  * See [CommonDataEntity.rawContact].
  */
 suspend fun CommonDataEntity.rawContactWithContext(
-    context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): RawContact? = withContext(coroutineContext) { rawContact(context) { !isActive } }
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+): RawContact? = withContext(coroutineContext) {
+    rawContact(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -29,6 +35,9 @@ suspend fun CommonDataEntity.rawContactWithContext(
  * See [CommonDataEntity.rawContact].
  */
 fun CommonDataEntity.rawContactAsync(
-    context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<RawContact?> =
-    CoroutineScope(coroutineContext).async { rawContact(context) { !isActive } }
+    context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
+    rawContact(context, customDataRegistry) { !isActive }
+}

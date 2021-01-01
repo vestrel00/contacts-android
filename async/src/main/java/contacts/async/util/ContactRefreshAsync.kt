@@ -4,6 +4,8 @@ import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
 import contacts.entities.Contact
 import contacts.entities.MutableContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -18,8 +20,9 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun Contact.refreshWithContext(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Contact? = withContext(coroutineContext) { refresh(context) { !isActive } }
+): Contact? = withContext(coroutineContext) { refresh(context, customDataRegistry) { !isActive } }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -31,8 +34,11 @@ suspend fun Contact.refreshWithContext(
  */
 suspend fun MutableContact.refreshWithContext(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): MutableContact? = withContext(coroutineContext) { refresh(context) { !isActive } }
+): MutableContact? = withContext(coroutineContext) {
+    refresh(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -44,8 +50,11 @@ suspend fun MutableContact.refreshWithContext(
  */
 fun Contact.refreshAsync(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Contact?> = CoroutineScope(coroutineContext).async { refresh(context) { !isActive } }
+): Deferred<Contact?> = CoroutineScope(coroutineContext).async {
+    refresh(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -57,6 +66,7 @@ fun Contact.refreshAsync(
  */
 fun MutableContact.refreshAsync(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<MutableContact?> =
-    CoroutineScope(coroutineContext).async { refresh(context) { !isActive } }
+    CoroutineScope(coroutineContext).async { refresh(context, customDataRegistry) { !isActive } }

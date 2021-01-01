@@ -4,6 +4,8 @@ import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
 import contacts.entities.Contact
 import contacts.entities.RawContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.profile.ProfileInsert
 import contacts.util.contact
 import contacts.util.rawContact
@@ -22,8 +24,11 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun ProfileInsert.Result.rawContactWithContext(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): RawContact? = withContext(coroutineContext) { rawContact(context) { !isActive } }
+): RawContact? = withContext(coroutineContext) {
+    rawContact(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -35,8 +40,11 @@ suspend fun ProfileInsert.Result.rawContactWithContext(
  */
 suspend fun ProfileInsert.Result.contactWithContext(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Contact? = withContext(coroutineContext) { contact(context) { !isActive } }
+): Contact? = withContext(coroutineContext) {
+    contact(context, customDataRegistry) { !isActive }
+}
 
 // endregion
 
@@ -52,9 +60,11 @@ suspend fun ProfileInsert.Result.contactWithContext(
  */
 fun ProfileInsert.Result.rawContactAsync(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<RawContact?> =
-    CoroutineScope(coroutineContext).async { rawContact(context) { !isActive } }
+): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
+    rawContact(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -66,8 +76,10 @@ fun ProfileInsert.Result.rawContactAsync(
  */
 fun ProfileInsert.Result.contactAsync(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Contact?> =
-    CoroutineScope(coroutineContext).async { contact(context) { !isActive } }
+): Deferred<Contact?> = CoroutineScope(coroutineContext).async {
+    contact(context, customDataRegistry) { !isActive }
+}
 
 // endregion

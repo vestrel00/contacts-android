@@ -4,6 +4,8 @@ import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
 import contacts.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -18,8 +20,11 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun RawContact.refreshWithContext(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): RawContact? = withContext(coroutineContext) { refresh(context) { !isActive } }
+): RawContact? = withContext(coroutineContext) {
+    refresh(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -31,8 +36,11 @@ suspend fun RawContact.refreshWithContext(
  */
 suspend fun MutableRawContact.refreshWithContext(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): MutableRawContact? = withContext(coroutineContext) { refresh(context) { !isActive } }
+): MutableRawContact? = withContext(coroutineContext) {
+    refresh(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -44,8 +52,11 @@ suspend fun MutableRawContact.refreshWithContext(
  */
 fun RawContact.refreshAsync(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<RawContact?> = CoroutineScope(coroutineContext).async { refresh(context) { !isActive } }
+): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
+    refresh(context, customDataRegistry) { !isActive }
+}
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -57,6 +68,8 @@ fun RawContact.refreshAsync(
  */
 fun MutableRawContact.refreshAsync(
     context: Context,
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<MutableRawContact?> =
-    CoroutineScope(coroutineContext).async { refresh(context) { !isActive } }
+): Deferred<MutableRawContact?> = CoroutineScope(coroutineContext).async {
+    refresh(context, customDataRegistry) { !isActive }
+}
