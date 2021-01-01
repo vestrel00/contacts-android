@@ -24,6 +24,6 @@ internal fun MimeType.fields(customDataRegistry: CustomCommonDataRegistry): Set<
         MimeType.Relation -> Fields.Relation
         MimeType.SipAddress -> Fields.SipAddress
         MimeType.Website -> Fields.Website
-        is MimeType.Custom -> customDataRegistry.customFieldSetOf(this) ?: EmptyCommonDataFields
+        is MimeType.Custom -> customDataRegistry.fieldSetOf(this) ?: EmptyCommonDataFields
         MimeType.Unknown -> EmptyCommonDataFields
     }.all

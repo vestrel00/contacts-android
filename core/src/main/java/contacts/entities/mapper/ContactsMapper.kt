@@ -213,13 +213,13 @@ private fun EntityCursor<AbstractDataField>.updateRawContactCustomData(
     mimeType: Custom
 ) {
     val customDataCountRestriction = customDataRegistry
-        .customCommonDataCountRestrictionOf(mimeType)
+        .countRestrictionOf(mimeType)
         ?: throw IllegalStateException(
             "No custom data count restriction for ${mimeType.value}"
         )
 
     val customDataMapper = customDataRegistry
-        .customCommonDataMapperFactoryOf(mimeType)
+        .mapperFactoryOf(mimeType)
         ?.create(cursor)
         ?: throw IllegalStateException("No custom data mapper for ${mimeType.value}")
 

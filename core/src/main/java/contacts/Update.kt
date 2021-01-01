@@ -363,11 +363,11 @@ private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
     }
 
     for ((mimeTypeValue, customDataHolder) in customData) {
-        val mimeType = customDataRegistry.customMimeTypeOf(mimeTypeValue)
+        val mimeType = customDataRegistry.mimeTypeOf(mimeTypeValue)
             ?: throw IllegalStateException("Custom mime type $mimeTypeValue not registered")
-        val countRestriction = customDataRegistry.customCommonDataCountRestrictionOf(mimeType)
+        val countRestriction = customDataRegistry.countRestrictionOf(mimeType)
             ?: throw IllegalStateException("No custom data count restriction for $mimeTypeValue")
-        val customDataOperation = customDataRegistry.customCommonDataOperationFactoryOf(mimeType)
+        val customDataOperation = customDataRegistry.operationFactoryOf(mimeType)
             ?.create(isProfile)
                 as AbstractCustomCommonDataOperation<AbstractMutableCustomCommonDataEntity>?
             ?: throw IllegalStateException("No custom data operation found for $mimeTypeValue")

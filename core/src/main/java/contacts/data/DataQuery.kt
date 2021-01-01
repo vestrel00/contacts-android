@@ -188,7 +188,7 @@ private class DataQueryImpl(
         // Maybe there is a way to avoid casting WITHOUT increasing code complexity too much and
         // making code look very messy with types all over the place?
         // For now, we'll have to rely on consumer diligence for this.
-        customDataRegistry.customFieldSetOf(mimeType) as AbstractCustomCommonDataFieldSet<K>?
+        customDataRegistry.fieldSetOf(mimeType) as AbstractCustomCommonDataFieldSet<K>?
             ?: throw IllegalStateException("No custom field set found for ${mimeType.value}"),
         mimeType, isProfile
     )

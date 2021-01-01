@@ -48,7 +48,7 @@ sealed class MimeType(internal val value: String) {
                 SipAddress.value -> SipAddress
                 Website.value -> Website
                 null -> Unknown
-                else -> customDataRegistry.customMimeTypeOf(value) ?: Unknown
+                else -> customDataRegistry.mimeTypeOf(value) ?: Unknown
             }
     }
 }

@@ -47,32 +47,31 @@ class CustomCommonDataRegistry {
         )
     }
 
-    internal fun customMimeTypeOf(mimeTypeValue: String): MimeType.Custom? =
-        entryMap[mimeTypeValue]?.customMimeType
+    internal fun mimeTypeOf(
+        mimeTypeValue: String
+    ): MimeType.Custom? = entryMap[mimeTypeValue]?.mimeType
 
-    internal fun customFieldSetOf(mimeType: MimeType.Custom): AbstractCustomCommonDataFieldSet<*>? =
-        entryMap[mimeType.value]?.customFieldSet
-
-    internal fun customCommonDataCountRestrictionOf(
+    internal fun fieldSetOf(
         mimeType: MimeType.Custom
-    ): CustomCommonDataEntityCountRestriction? =
-        entryMap[mimeType.value]?.customCommonDataCountRestriction
+    ): AbstractCustomCommonDataFieldSet<*>? = entryMap[mimeType.value]?.fieldSet
 
-    internal fun customCommonDataMapperFactoryOf(
+    internal fun countRestrictionOf(
         mimeType: MimeType.Custom
-    ): AbstractCustomCommonDataEntityMapper.Factory<*, *>? =
-        entryMap[mimeType.value]?.customCommonDataMapperFactory
+    ): CustomCommonDataEntityCountRestriction? = entryMap[mimeType.value]?.countRestriction
 
-    internal fun customCommonDataOperationFactoryOf(
+    internal fun mapperFactoryOf(
         mimeType: MimeType.Custom
-    ): AbstractCustomCommonDataOperation.Factory<*>? =
-        entryMap[mimeType.value]?.customCommonDataOperationFactory
+    ): AbstractCustomCommonDataEntityMapper.Factory<*, *>? = entryMap[mimeType.value]?.mapperFactory
+
+    internal fun operationFactoryOf(
+        mimeType: MimeType.Custom
+    ): AbstractCustomCommonDataOperation.Factory<*>? = entryMap[mimeType.value]?.operationFactory
 
     private class Entry(
-        val customMimeType: MimeType.Custom,
-        val customFieldSet: AbstractCustomCommonDataFieldSet<*>,
-        val customCommonDataCountRestriction: CustomCommonDataEntityCountRestriction,
-        val customCommonDataMapperFactory: AbstractCustomCommonDataEntityMapper.Factory<*, *>,
-        val customCommonDataOperationFactory: AbstractCustomCommonDataOperation.Factory<*>
+        val mimeType: MimeType.Custom,
+        val fieldSet: AbstractCustomCommonDataFieldSet<*>,
+        val countRestriction: CustomCommonDataEntityCountRestriction,
+        val mapperFactory: AbstractCustomCommonDataEntityMapper.Factory<*, *>,
+        val operationFactory: AbstractCustomCommonDataOperation.Factory<*>
     )
 }

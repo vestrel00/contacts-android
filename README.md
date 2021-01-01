@@ -1,6 +1,7 @@
 ## TODO
 
 1. Support for adding custom mimetypes.
+    - Support all util functions.
     - Add custom data registry as param to all util functions.
     - Gender; type (male, female), label (demonstrates single data with no primary data)
     - Weight; type (lbs, kg, etc), label, value (demonstrates single data with primary data)

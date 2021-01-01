@@ -81,7 +81,7 @@ internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapper
     MimeType.SipAddress -> sipAddressMapper()
     MimeType.Website -> websiteMapper()
     is MimeType.Custom -> customDataRegistry
-        .customCommonDataMapperFactoryOf(mimeType)
+        .mapperFactoryOf(mimeType)
         ?.create(cursor)
         ?: throw IllegalStateException("No custom entity mapper for mime type ${mimeType.value}")
     MimeType.Unknown -> throw IllegalStateException(
