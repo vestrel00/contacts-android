@@ -1,6 +1,5 @@
 package contacts.entities
 
-import contacts.entities.custom.AbstractCustomCommonDataEntity
 import contacts.entities.custom.MutableCustomCommonDataEntityHolder
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
@@ -134,16 +133,16 @@ data class RawContact internal constructor(
     val websites: List<Website>,
 
     /**
-     * Map of custom mime type value to a list of concrete [AbstractCustomCommonDataEntity]s.
+     * Map of custom mime type value to a [MutableCustomCommonDataEntityHolder].
      *
      * ## Developer notes
      *
-     * Only mutable custom data entities are handled internally to avoid having to define a
+     * Only mutable custom data entities are kept/handled internally to avoid having to define a
      * toMutable() and toImmutable() functions in the custom entity interface. This gives more
      * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
      * immutable version if they choose to do so.
      */
-    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder>
+    internal val customData: Map<String, MutableCustomCommonDataEntityHolder>
 
 ) : RawContactEntity() {
 
@@ -415,6 +414,6 @@ internal data class TempRawContact constructor(
 
         websites = websites.toList(),
 
-        customData = customData.toMutableMap() // send a shallow copy
+        customData = customData.toMap() // send a shallow copy
     )
 }

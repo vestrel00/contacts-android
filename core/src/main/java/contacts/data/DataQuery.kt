@@ -6,7 +6,7 @@ import android.content.Context
 import contacts.*
 import contacts.entities.*
 import contacts.entities.cursor.rawContactsCursor
-import contacts.entities.custom.AbstractCustomCommonDataEntity
+import contacts.entities.custom.CustomCommonDataEntity
 import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.entities.mapper.entityMapperFor
 import contacts.entities.table.ProfileUris
@@ -92,7 +92,7 @@ interface DataQuery {
     /**
      * Queries for custom data of type [V] with the given custom [mimeType].
      */
-    fun <K : AbstractCustomCommonDataField, V : AbstractCustomCommonDataEntity>
+    fun <K : AbstractCustomCommonDataField, V : CustomCommonDataEntity>
             customData(mimeType: MimeType.Custom): CommonDataQuery<K, V>
 }
 
@@ -181,7 +181,7 @@ private class DataQueryImpl(
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <K : AbstractCustomCommonDataField, V : AbstractCustomCommonDataEntity>
+    override fun <K : AbstractCustomCommonDataField, V : CustomCommonDataEntity>
             customData(mimeType: MimeType.Custom): CommonDataQuery<K, V> = CommonDataQueryImpl(
         contentResolver, permissions, customDataRegistry,
         // FIXME? ClassCastException will be thrown here if consumer messes up.

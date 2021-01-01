@@ -31,19 +31,21 @@ class CustomCommonDataRegistry {
      * as compile-time checks for matching the generic types of parameter instances.
      */
     fun <F : AbstractCustomCommonDataField, K : AbstractCustomCommonDataCursor,
-            V : AbstractMutableCustomCommonDataEntity> register(
+            V : MutableCustomCommonDataEntity> register(
         customMimeType: MimeType.Custom,
         customFieldSet: AbstractCustomCommonDataFieldSet<F>,
-        customCommonDataCountRestriction: CustomCommonDataEntityCountRestriction,
-        customCommonDataMapperFactory: AbstractCustomCommonDataEntityMapper.Factory<K, V>,
-        customCommonDataOperationFactory: AbstractCustomCommonDataOperation.Factory<V>
+        fieldMapper: CustomCommonDataEntityFieldMapper<*, *>,
+        countRestriction: CustomCommonDataEntityCountRestriction,
+        mapperFactory: AbstractCustomCommonDataEntityMapper.Factory<K, V>,
+        operationFactory: AbstractCustomCommonDataOperation.Factory<V>
     ) {
         entryMap[customMimeType.value] = Entry(
             customMimeType,
             customFieldSet,
-            customCommonDataCountRestriction,
-            customCommonDataMapperFactory,
-            customCommonDataOperationFactory
+            fieldMapper,
+            countRestriction,
+            mapperFactory,
+            operationFactory
         )
     }
 
@@ -51,9 +53,23 @@ class CustomCommonDataRegistry {
         mimeTypeValue: String
     ): MimeType.Custom? = entryMap[mimeTypeValue]?.mimeType
 
+    internal fun mimeTypeOf(
+        customDataField: AbstractCustomCommonDataField
+    ): MimeType.Custom? = entryMap.values.find {
+        it.fieldSet.all.contains(customDataField)
+    }?.mimeType
+
     internal fun fieldSetOf(
         mimeType: MimeType.Custom
     ): AbstractCustomCommonDataFieldSet<*>? = entryMap[mimeType.value]?.fieldSet
+
+    internal fun allFields(): Set<AbstractCustomCommonDataField> = entryMap.values
+        .flatMap { it.fieldSet.all }
+        .toSet()
+
+    internal fun fieldMapperOf(
+        mimeType: MimeType.Custom
+    ): CustomCommonDataEntityFieldMapper<*, *>? = entryMap[mimeType.value]?.fieldMapper
 
     internal fun countRestrictionOf(
         mimeType: MimeType.Custom
@@ -70,6 +86,7 @@ class CustomCommonDataRegistry {
     private class Entry(
         val mimeType: MimeType.Custom,
         val fieldSet: AbstractCustomCommonDataFieldSet<*>,
+        val fieldMapper: CustomCommonDataEntityFieldMapper<*, *>,
         val countRestriction: CustomCommonDataEntityCountRestriction,
         val mapperFactory: AbstractCustomCommonDataEntityMapper.Factory<*, *>,
         val operationFactory: AbstractCustomCommonDataOperation.Factory<*>

@@ -1,5 +1,7 @@
 package contacts
 
+import contacts.entities.custom.CustomCommonDataRegistry
+
 @Suppress("FunctionName")
 internal fun <T : Field> Include(vararg fields: T) = Include(fields.asSequence())
 
@@ -30,6 +32,10 @@ internal class Include<out T : Field>(val columnNames: Set<String>) {
 
     override fun toString(): String = columnNames.joinToString(", ")
 }
+
+internal fun allDataFields(
+    customDataRegistry: CustomCommonDataRegistry
+): Include<AbstractDataField> = Include(DataFields.all + customDataRegistry.allFields())
 
 /**
  * Returns a new instance of [Include] where only [ContactsFields] in [this] are included.

@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 internal data class MutableCustomCommonDataEntityHolder(
     // This is not exposed to consumers so we do not need a generic type since we have no visibility
     // of consumer types anyways.
-    val entities: MutableList<AbstractMutableCustomCommonDataEntity>,
+    val entities: MutableList<MutableCustomCommonDataEntity>,
     val countRestriction: CustomCommonDataEntityCountRestriction
 ) : Parcelable
 
@@ -23,17 +23,17 @@ internal sealed class MutableCustomCommonDataEntityHolder
  * Holds zero or one-per-RawContact entity.
  */
 internal class SingleMutableCustomCommonDataEntityHolder(
-    val entity: AbstractMutableCustomCommonDataEntity
+    val entity: MutableCustomCommonDataEntity
 ) : MutableCustomCommonDataEntityHolder()
 
 /**
  * Holds zero or one-or-more-per-RawContact entities.
  */
 class MultipleMutableCustomCommonDataEntityHolder(
-    val entities: List<AbstractMutableCustomCommonDataEntity>
+    val entities: List<MutableCustomCommonDataEntity>
 ) : MutableCustomCommonDataEntityHolder()
 
-val MutableCustomCommonDataEntityHolder.entityList: List<AbstractMutableCustomCommonDataEntity>
+val MutableCustomCommonDataEntityHolder.entityList: List<MutableCustomCommonDataEntity>
     get() = when (this) {
         is SingleMutableCustomCommonDataEntityHolder -> listOf(entity)
         is MultipleMutableCustomCommonDataEntityHolder -> entities

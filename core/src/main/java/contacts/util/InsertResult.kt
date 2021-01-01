@@ -11,6 +11,8 @@ import contacts.entities.custom.GlobalCustomCommonDataRegistry
 /**
  * Returns the newly created [RawContact] or null if the insert operation failed.
  *
+ * Supports RawContacts with native/custom data.
+ *
  * ## Permissions
  *
  * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
@@ -41,6 +43,8 @@ fun Insert.Result.rawContact(
 /**
  * Returns all newly created [RawContact]s (for those insert operations that succeeded).
  *
+ * Supports RawContacts with native/custom data.
+ *
  * ## Permissions
  *
  * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, an empty list will be
@@ -66,6 +70,8 @@ fun Insert.Result.rawContacts(
 /**
  * Returns the newly created [Contact] containing the [RawContact] or null if the insert operation
  * failed.
+ *
+ * Supports Contacts with native/custom data.
  *
  * ## Permissions
  *
@@ -96,6 +102,8 @@ fun Insert.Result.contact(
 /**
  * Returns all newly created [Contact]s containing the [RawContact]s (for those insert operations
  * that succeeded).
+ *
+ * Supports Contacts with native/custom data.
  *
  * Returns an empty list all insert operations failed.
  *

@@ -5,9 +5,9 @@ import android.content.ContentProviderOperation
 import android.content.Context
 import contacts.entities.MutableRawContact
 import contacts.entities.custom.AbstractCustomCommonDataOperation
-import contacts.entities.custom.AbstractMutableCustomCommonDataEntity
 import contacts.entities.custom.CustomCommonDataEntityCountRestriction
 import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.MutableCustomCommonDataEntity
 import contacts.entities.operation.*
 import contacts.util.applyBatch
 import contacts.util.nullIfNotInSystem
@@ -356,7 +356,6 @@ internal fun Context.insertRawContactForAccount(
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 private fun MutableRawContact.customDataInsertOperations(
     customDataRegistry: CustomCommonDataRegistry
 ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
@@ -365,9 +364,10 @@ private fun MutableRawContact.customDataInsertOperations(
             ?: throw IllegalStateException("Custom mime type $mimeTypeValue not registered")
         val countRestriction = customDataRegistry.countRestrictionOf(mimeType)
             ?: throw IllegalStateException("No custom data count restriction for $mimeTypeValue")
+
+        @Suppress("UNCHECKED_CAST")
         val customDataOperation = customDataRegistry.operationFactoryOf(mimeType)
-            ?.create(isProfile)
-                as AbstractCustomCommonDataOperation<AbstractMutableCustomCommonDataEntity>?
+            ?.create(isProfile) as AbstractCustomCommonDataOperation<MutableCustomCommonDataEntity>?
             ?: throw IllegalStateException("No custom data operation for $mimeTypeValue")
 
         when (countRestriction) {

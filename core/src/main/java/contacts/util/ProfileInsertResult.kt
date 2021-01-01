@@ -11,6 +11,8 @@ import contacts.profile.ProfileQuery
 /**
  * Returns the newly created Profile [RawContact] or null if the insert operation failed.
  *
+ * Supports RawContacts with native/custom data.
+ *
  * ## Permissions
  *
  * The [contacts.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
@@ -35,6 +37,8 @@ fun ProfileInsert.Result.rawContact(
 /**
  * Returns the Profile [Contact] containing the newly created [RawContact] or null if the insert
  * operation failed.
+ *
+ * Supports Contacts with native/custom data.
  *
  * ## Permissions
  *

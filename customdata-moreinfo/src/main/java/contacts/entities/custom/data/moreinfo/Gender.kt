@@ -2,7 +2,7 @@ package contacts.entities.custom.data.moreinfo
 
 import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
-import contacts.entities.custom.AbstractCustomCommonDataEntity
+import contacts.entities.custom.CustomCommonDataEntity
 import contacts.entities.custom.data.moreinfo.Gender.Type
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -30,9 +30,9 @@ data class Gender internal constructor(
      */
     val label: String?
 
-) : AbstractCustomCommonDataEntity(id, rawContactId, contactId, isPrimary, isSuperPrimary) {
+) : CustomCommonDataEntity {
 
-    override val mimeType: MimeType
+    override val mimeType: MimeType.Custom
         get() = TODO("Not yet implemented")
 
     /*

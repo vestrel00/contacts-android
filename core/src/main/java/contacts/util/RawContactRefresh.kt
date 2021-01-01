@@ -19,7 +19,7 @@ import contacts.profile.ProfileQuery
  * Returns itself if the [RawContact.id] is null, indicating that this RawContact instance has not
  * yet been inserted to the DB.
  *
- * Supports profile and non-profile RawContacts.
+ * Supports profile and non-profile RawContacts with native/custom data.
  *
  * ## Permissions
  *

@@ -361,7 +361,7 @@ private class GeneralQueryImpl(
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var groupMembershipWhere: Where<GroupMembershipField>? = DEFAULT_GROUP_MEMBERSHIP_WHERE,
-    private var include: Include<AbstractDataField> = DEFAULT_INCLUDE,
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
     private var searchString: String? = DEFAULT_SEARCH_STRING,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -413,7 +413,7 @@ private class GeneralQueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): GeneralQuery = apply {
         include = if (fields.isEmpty()) {
-            DEFAULT_INCLUDE
+            allDataFields(customDataRegistry)
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -471,7 +471,6 @@ private class GeneralQueryImpl(
         const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
-        val DEFAULT_INCLUDE by unsafeLazy { Include(Fields) }
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
         val DEFAULT_SEARCH_STRING: String? = null
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }

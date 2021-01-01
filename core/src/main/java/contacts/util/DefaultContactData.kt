@@ -27,7 +27,7 @@ fun Sequence<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.i
  * Sets this data as the default for the set of data of the same type (e.g. email) for the aggregate
  * Contact. If a default data already exist before this call, then it will no longer be the default.
  *
- * Supports profile and non-profile data.
+ * Supports profile/non-profile native/custom data.
  *
  * ## Permissions
  *
@@ -74,7 +74,7 @@ fun CommonDataEntity.setAsDefault(context: Context): Boolean {
  * - y@y.com
  * - z@z.com
  *
- * Supports profile and non-profile data.
+ * Supports profile/non-profile native/custom data.
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  *
@@ -108,7 +108,7 @@ fun CommonDataEntity.clearDefault(context: Context): Boolean {
  * Provides the operation to set all primary data rows with the same [CommonDataEntity.mimeType]
  * belonging to the same RawContact to false (0).
  *
- * Supports profile and non-profile data.
+ * Supports profile/non-profile native/custom data.
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
@@ -125,7 +125,7 @@ private fun CommonDataEntity.clearPrimary(rawContactId: Long): ContentProviderOp
  * Provides the operation to set all super primary data rows with the same [CommonDataEntity.mimeType]
  * belonging to the same Contact to false (0).
  *
- * Supports profile and non-profile data.
+ * Supports profile/non-profile native/custom data.
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
@@ -141,7 +141,7 @@ private fun CommonDataEntity.clearSuperPrimary(contactId: Long): ContentProvider
 /**
  * Provides the operation to set this data row as the primary and super primary.
  *
- * Supports profile and non-profile data.
+ * Supports profile/non-profile native/custom data.
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */

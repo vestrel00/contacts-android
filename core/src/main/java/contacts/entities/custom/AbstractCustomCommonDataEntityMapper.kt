@@ -5,19 +5,10 @@ import contacts.entities.mapper.EntityMapper
 
 /**
  * An abstract class that is used as a base of all custom [EntityMapper]s. It uses a
- * [AbstractCustomCommonDataCursor] [K] and outputs a [AbstractMutableCustomCommonDataEntity] [V].
- *
- * The mutable version of the entity is used internally (not public-facing) to keep the code simple.
- *
- * ## Developer notes
- *
- * Technically, this can be optional. We could have implemented this part of the API to be able to
- * handle [EntityMapper] directly instead of this [AbstractCustomCommonDataEntityMapper]. However,
- * we are able to streamline all custom entities this way, which makes our internal code easier to
- * follow / trace. It also gives us more control and flexibility.
+ * [AbstractCustomCommonDataCursor] [K] and outputs a [CustomCommonDataEntity] [V].
  */
 abstract class AbstractCustomCommonDataEntityMapper<K : AbstractCustomCommonDataCursor,
-        out V : AbstractMutableCustomCommonDataEntity>(
+        out V : MutableCustomCommonDataEntity>(
     private val cursor: K
 ) : EntityMapper<V> {
 
@@ -38,7 +29,7 @@ abstract class AbstractCustomCommonDataEntityMapper<K : AbstractCustomCommonData
      * Creates instances of [AbstractCustomCommonDataEntityMapper].
      */
     abstract class Factory<K : AbstractCustomCommonDataCursor,
-            out V : AbstractMutableCustomCommonDataEntity> {
+            out V : MutableCustomCommonDataEntity> {
 
         /**
          * Creates instances of [AbstractCustomCommonDataEntityMapper] with the given [cursor].

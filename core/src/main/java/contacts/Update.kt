@@ -353,7 +353,6 @@ internal fun Context.updateRawContact(
     return contentResolver.applyBatch(operations) != null
 }
 
-@Suppress("UNCHECKED_CAST")
 private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
     contentResolver: ContentResolver,
     customDataRegistry: CustomCommonDataRegistry
@@ -367,9 +366,10 @@ private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
             ?: throw IllegalStateException("Custom mime type $mimeTypeValue not registered")
         val countRestriction = customDataRegistry.countRestrictionOf(mimeType)
             ?: throw IllegalStateException("No custom data count restriction for $mimeTypeValue")
+
+        @Suppress("UNCHECKED_CAST")
         val customDataOperation = customDataRegistry.operationFactoryOf(mimeType)
-            ?.create(isProfile)
-                as AbstractCustomCommonDataOperation<AbstractMutableCustomCommonDataEntity>?
+            ?.create(isProfile) as AbstractCustomCommonDataOperation<MutableCustomCommonDataEntity>?
             ?: throw IllegalStateException("No custom data operation found for $mimeTypeValue")
 
         when (countRestriction) {

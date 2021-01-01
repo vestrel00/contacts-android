@@ -20,7 +20,7 @@ import contacts.profile.ProfileQuery
  * Returns itself if the [Contact.id] is null, indicating that this Contact instance has not yet
  * been inserted to the DB.
  *
- * Supports profile and non-profile Contacts.
+ * Supports profile and non-profile Contacts with native/custom data.
  *
  * ## Permissions
  *

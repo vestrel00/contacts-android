@@ -4,9 +4,18 @@ import android.net.Uri
 import contacts.*
 import contacts.entities.Contact
 import contacts.entities.Entity
+import contacts.entities.custom.CustomCommonDataEntityFieldMapper
+import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.MutableCustomCommonDataEntity
 import java.util.*
 
-/**
+// Developer notes
+// This was originally used to order query results. However, due to how it was used, it has been
+// removed from use within the API. To prevent wasting hard work, it is now here for optional
+// consumer use.
+
+/**0
  * Returns a [Comparator] of [Contact]s using [this] collection of [OrderBy]s.
  *
  * This is useful for sorting a collection of [Contact] instances based on a collection of
@@ -32,20 +41,23 @@ import java.util.*
  * )
  * ```
  */
-fun Collection<OrderBy<AbstractDataField>>.contactsComparator(): Comparator<Contact> =
-    ContactsComparator(toSet())
+fun Collection<OrderBy<AbstractDataField>>.contactsComparator(
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
  * See [contactsComparator].
  */
-fun Set<OrderBy<AbstractDataField>>.contactsComparator(): Comparator<Contact> =
-    ContactsComparator(this)
+fun Set<OrderBy<AbstractDataField>>.contactsComparator(
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+): Comparator<Contact> = ContactsComparator(customDataRegistry, this)
 
 /**
  * See [contactsComparator].
  */
-fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(): Comparator<Contact> =
-    ContactsComparator(toSet())
+fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
  * Returns a [Comparator] of [Contact]s using [this] [OrderBy].
@@ -65,13 +77,17 @@ fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(): Comparator<Contac
  * )
  * ```
  */
-fun OrderBy<AbstractDataField>.contactsComparator(): Comparator<Contact> =
-    ContactsComparator(setOf(this))
+fun OrderBy<AbstractDataField>.contactsComparator(
+    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+): Comparator<Contact> = ContactsComparator(customDataRegistry, setOf(this))
 
 /**
  * Compares [Contact] objects using one or more [OrderBy]s, which may be constructed from [Fields].
  */
-private class ContactsComparator(private val orderBys: Set<OrderBy<AbstractDataField>>) :
+private class ContactsComparator(
+    private val customDataRegistry: CustomCommonDataRegistry,
+    private val orderBys: Set<OrderBy<AbstractDataField>>
+) :
     Comparator<Contact> {
 
     override fun compare(lhs: Contact, rhs: Contact): Int {
@@ -79,8 +95,12 @@ private class ContactsComparator(private val orderBys: Set<OrderBy<AbstractDataF
 
         for (orderBy in orderBys) {
             result = when (orderBy) {
-                is Ascending<*> -> orderBy.field.compare(lhs, rhs, orderBy.ignoreCase)
-                is Descending<*> -> -orderBy.field.compare(lhs, rhs, orderBy.ignoreCase)
+                is Ascending<*> -> {
+                    orderBy.field.compare(customDataRegistry, lhs, rhs, orderBy.ignoreCase)
+                }
+                is Descending<*> -> {
+                    -orderBy.field.compare(customDataRegistry, lhs, rhs, orderBy.ignoreCase)
+                }
             }
 
             if (result == 0) {
@@ -101,233 +121,254 @@ private class ContactsComparator(private val orderBys: Set<OrderBy<AbstractDataF
 /**
  * Compares [Contact] values corresponding to [Field]s defined in [Fields].
  */
-private fun AbstractDataField.compare(lhs: Contact, rhs: Contact, ignoreCase: Boolean): Int {
-
-    return when (this) {
-        // ADDRESS
-        Fields.Address.Type -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.type?.ordinal?.toString()
-        }
-        Fields.Address.Label -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.label
-        }
-        Fields.Address.FormattedAddress -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.formattedAddress
-        }
-        Fields.Address.Street -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.street
-        }
-        Fields.Address.PoBox -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.poBox
-        }
-        Fields.Address.Neighborhood -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.neighborhood
-        }
-        Fields.Address.City -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.city
-        }
-        Fields.Address.Region -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.region
-        }
-        Fields.Address.PostCode -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.postcode
-        }
-        Fields.Address.Country -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
-            it.country
-        }
-
-        // CONTACT
-        Fields.Contact.Id -> lhs.id.compareTo(rhs.id)
-        Fields.Contact.DisplayNamePrimary -> {
-            lhs.displayNamePrimary.compareTo(
-                ignoreCase, rhs.displayNamePrimary
-            )
-        }
-        Fields.Contact.DisplayNameAlt -> {
-            lhs.displayNameAlt.compareTo(
-                ignoreCase, rhs.displayNameAlt
-            )
-        }
-        Fields.Contact.LastUpdatedTimestamp ->
-            lhs.lastUpdatedTimestamp.compareTo(rhs.lastUpdatedTimestamp)
-
-        // CONTACT OPTIONS
-        Fields.Contact.Options.Starred -> lhs.options?.starred.compareTo(rhs.options?.starred)
-        /* Deprecated in API 29 - contains useless value for all Android versions in Play store.
-        Fields.Contact.Options.TimesContacted ->
-            lhs.options?.timesContacted.compareTo(rhs.options?.timesContacted)
-        Fields.Contact.Options.LastTimeContacted ->
-            lhs.options?.lastTimeContacted.compareTo(rhs.options?.lastTimeContacted)
-         */
-        Fields.Contact.Options.CustomRingtone ->
-            lhs.options?.customRingtone.compareTo(rhs.options?.customRingtone)
-        Fields.Contact.Options.SendToVoicemail ->
-            lhs.options?.sendToVoicemail.compareTo(rhs.options?.sendToVoicemail)
-
-        // EMAIL
-        Fields.Email.Type -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
-            it.type?.ordinal?.toString()
-        }
-        Fields.Email.Label -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
-            it.label
-        }
-        Fields.Email.Address -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
-            it.address
-        }
-
-        // EVENT
-        Fields.Event.Type -> lhs.events().compareTo(ignoreCase, rhs.events()) {
-            it.type?.ordinal?.toString()
-        }
-        Fields.Event.Label -> lhs.events().compareTo(ignoreCase, rhs.events()) {
-            it.label
-        }
-        Fields.Event.Date -> lhs.events().compareTo(ignoreCase, rhs.events()) {
-            it.date?.time.toString()
-        }
-
-        // GROUP MEMBERSHIP intentionally excluded because they should never be combined.
-
-        // ID (data row ID) intentionally excluded.
-
-        // IM
-        Fields.Im.Protocol -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
-            it.protocol?.ordinal?.toString()
-        }
-        Fields.Im.CustomProtocol -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
-            it.customProtocol
-        }
-        Fields.Im.Data -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
-            it.data
-        }
-
-        // Primary and super primary intentionally excluded.
-
-        // MIMETYPE intentionally excluded.
-
-        // NAME
-        Fields.Name.DisplayName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.displayName
-        }
-        Fields.Name.GivenName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.givenName
-        }
-        Fields.Name.MiddleName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.middleName
-        }
-        Fields.Name.FamilyName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.familyName
-        }
-        Fields.Name.Prefix -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.prefix
-        }
-        Fields.Name.Suffix -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.suffix
-        }
-        Fields.Name.PhoneticGivenName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.phoneticGivenName
-        }
-        Fields.Name.PhoneticMiddleName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.phoneticMiddleName
-        }
-        Fields.Name.PhoneticFamilyName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
-            it.phoneticFamilyName
-        }
-
-        // NICKNAME
-        Fields.Nickname.Name -> lhs.nicknames().compareTo(ignoreCase, rhs.nicknames()) {
-            it.name
-        }
-
-        // NOTE
-        Fields.Note.Note -> lhs.notes().compareTo(ignoreCase, rhs.notes()) {
-            it.note
-        }
-
-        // ORGANIZATION
-        Fields.Organization.Company -> lhs.organizations().compareTo(
-            ignoreCase,
-            rhs.organizations()
-        ) {
-            it.company
-        }
-        Fields.Organization.Title -> lhs.organizations().compareTo(
-            ignoreCase,
-            rhs.organizations()
-        ) {
-            it.title
-        }
-        Fields.Organization.Department -> lhs.organizations().compareTo(
-            ignoreCase,
-            rhs.organizations()
-        ) {
-            it.department
-        }
-        Fields.Organization.JobDescription -> lhs.organizations().compareTo(
-            ignoreCase,
-            rhs.organizations()
-        ) {
-            it.jobDescription
-        }
-        Fields.Organization.OfficeLocation -> lhs.organizations().compareTo(
-            ignoreCase,
-            rhs.organizations()
-        ) {
-            it.officeLocation
-        }
-        Fields.Organization.Symbol -> lhs.organizations().compareTo(
-            ignoreCase,
-            rhs.organizations()
-        ) {
-            it.symbol
-        }
-        Fields.Organization.PhoneticName -> lhs.organizations().compareTo(
-            ignoreCase,
-            rhs.organizations()
-        ) {
-            it.phoneticName
-        }
-
-        // PHONE
-        Fields.Phone.Type -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
-            it.type?.ordinal?.toString()
-        }
-        Fields.Phone.Label -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
-            it.label
-        }
-        Fields.Phone.Number -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
-            it.number
-        }
-        Fields.Phone.NormalizedNumber -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
-            it.normalizedNumber
-        }
-
-        // PHOTO intentionally left out
-
-        // RELATION
-        Fields.Relation.Type -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
-            it.type?.ordinal?.toString()
-        }
-        Fields.Relation.Label -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
-            it.label
-        }
-        Fields.Relation.Name -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
-            it.name
-        }
-
-        // SIP ADDRESS
-        Fields.SipAddress.SipAddress -> lhs.sipAddresses()
-            .compareTo(ignoreCase, rhs.sipAddresses()) {
-                it.sipAddress
-            }
-
-        // WEBSITE
-        Fields.Website.Url -> lhs.websites().compareTo(ignoreCase, rhs.websites()) {
-            it.url
-        }
-
-        else -> 0 // Treat unhandled fields as equals instead of throwing an exception.
+private fun AbstractDataField.compare(
+    customDataRegistry: CustomCommonDataRegistry,
+    lhs: Contact,
+    rhs: Contact,
+    ignoreCase: Boolean
+): Int = when (this) {
+    // ADDRESS
+    Fields.Address.Type -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.type?.ordinal?.toString()
     }
+    Fields.Address.Label -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.label
+    }
+    Fields.Address.FormattedAddress -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.formattedAddress
+    }
+    Fields.Address.Street -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.street
+    }
+    Fields.Address.PoBox -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.poBox
+    }
+    Fields.Address.Neighborhood -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.neighborhood
+    }
+    Fields.Address.City -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.city
+    }
+    Fields.Address.Region -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.region
+    }
+    Fields.Address.PostCode -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.postcode
+    }
+    Fields.Address.Country -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
+        it.country
+    }
+
+    // CONTACT
+    Fields.Contact.Id -> lhs.id.compareTo(rhs.id)
+    Fields.Contact.DisplayNamePrimary -> {
+        lhs.displayNamePrimary.compareTo(
+            ignoreCase, rhs.displayNamePrimary
+        )
+    }
+    Fields.Contact.DisplayNameAlt -> {
+        lhs.displayNameAlt.compareTo(
+            ignoreCase, rhs.displayNameAlt
+        )
+    }
+    Fields.Contact.LastUpdatedTimestamp ->
+        lhs.lastUpdatedTimestamp.compareTo(rhs.lastUpdatedTimestamp)
+
+    // CONTACT OPTIONS
+    Fields.Contact.Options.Starred -> lhs.options?.starred.compareTo(rhs.options?.starred)
+    /* Deprecated in API 29 - contains useless value for all Android versions in Play store.
+    Fields.Contact.Options.TimesContacted ->
+        lhs.options?.timesContacted.compareTo(rhs.options?.timesContacted)
+    Fields.Contact.Options.LastTimeContacted ->
+        lhs.options?.lastTimeContacted.compareTo(rhs.options?.lastTimeContacted)
+     */
+    Fields.Contact.Options.CustomRingtone ->
+        lhs.options?.customRingtone.compareTo(rhs.options?.customRingtone)
+    Fields.Contact.Options.SendToVoicemail ->
+        lhs.options?.sendToVoicemail.compareTo(rhs.options?.sendToVoicemail)
+
+    // EMAIL
+    Fields.Email.Type -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
+        it.type?.ordinal?.toString()
+    }
+    Fields.Email.Label -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
+        it.label
+    }
+    Fields.Email.Address -> lhs.emails().compareTo(ignoreCase, rhs.emails()) {
+        it.address
+    }
+
+    // EVENT
+    Fields.Event.Type -> lhs.events().compareTo(ignoreCase, rhs.events()) {
+        it.type?.ordinal?.toString()
+    }
+    Fields.Event.Label -> lhs.events().compareTo(ignoreCase, rhs.events()) {
+        it.label
+    }
+    Fields.Event.Date -> lhs.events().compareTo(ignoreCase, rhs.events()) {
+        it.date?.time.toString()
+    }
+
+    // GROUP MEMBERSHIP intentionally excluded because they should never be combined.
+
+    // ID (data row ID) intentionally excluded.
+
+    // IM
+    Fields.Im.Protocol -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
+        it.protocol?.ordinal?.toString()
+    }
+    Fields.Im.CustomProtocol -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
+        it.customProtocol
+    }
+    Fields.Im.Data -> lhs.ims().compareTo(ignoreCase, rhs.ims()) {
+        it.data
+    }
+
+    // Primary and super primary intentionally excluded.
+
+    // MIMETYPE intentionally excluded.
+
+    // NAME
+    Fields.Name.DisplayName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.displayName
+    }
+    Fields.Name.GivenName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.givenName
+    }
+    Fields.Name.MiddleName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.middleName
+    }
+    Fields.Name.FamilyName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.familyName
+    }
+    Fields.Name.Prefix -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.prefix
+    }
+    Fields.Name.Suffix -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.suffix
+    }
+    Fields.Name.PhoneticGivenName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.phoneticGivenName
+    }
+    Fields.Name.PhoneticMiddleName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.phoneticMiddleName
+    }
+    Fields.Name.PhoneticFamilyName -> lhs.names().compareTo(ignoreCase, rhs.names()) {
+        it.phoneticFamilyName
+    }
+
+    // NICKNAME
+    Fields.Nickname.Name -> lhs.nicknames().compareTo(ignoreCase, rhs.nicknames()) {
+        it.name
+    }
+
+    // NOTE
+    Fields.Note.Note -> lhs.notes().compareTo(ignoreCase, rhs.notes()) {
+        it.note
+    }
+
+    // ORGANIZATION
+    Fields.Organization.Company -> lhs.organizations().compareTo(
+        ignoreCase,
+        rhs.organizations()
+    ) {
+        it.company
+    }
+    Fields.Organization.Title -> lhs.organizations().compareTo(
+        ignoreCase,
+        rhs.organizations()
+    ) {
+        it.title
+    }
+    Fields.Organization.Department -> lhs.organizations().compareTo(
+        ignoreCase,
+        rhs.organizations()
+    ) {
+        it.department
+    }
+    Fields.Organization.JobDescription -> lhs.organizations().compareTo(
+        ignoreCase,
+        rhs.organizations()
+    ) {
+        it.jobDescription
+    }
+    Fields.Organization.OfficeLocation -> lhs.organizations().compareTo(
+        ignoreCase,
+        rhs.organizations()
+    ) {
+        it.officeLocation
+    }
+    Fields.Organization.Symbol -> lhs.organizations().compareTo(
+        ignoreCase,
+        rhs.organizations()
+    ) {
+        it.symbol
+    }
+    Fields.Organization.PhoneticName -> lhs.organizations().compareTo(
+        ignoreCase,
+        rhs.organizations()
+    ) {
+        it.phoneticName
+    }
+
+    // PHONE
+    Fields.Phone.Type -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
+        it.type?.ordinal?.toString()
+    }
+    Fields.Phone.Label -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
+        it.label
+    }
+    Fields.Phone.Number -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
+        it.number
+    }
+    Fields.Phone.NormalizedNumber -> lhs.phones().compareTo(ignoreCase, rhs.phones()) {
+        it.normalizedNumber
+    }
+
+    // PHOTO intentionally left out
+
+    // RELATION
+    Fields.Relation.Type -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
+        it.type?.ordinal?.toString()
+    }
+    Fields.Relation.Label -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
+        it.label
+    }
+    Fields.Relation.Name -> lhs.relations().compareTo(ignoreCase, rhs.relations()) {
+        it.name
+    }
+
+    // SIP ADDRESS
+    Fields.SipAddress.SipAddress -> lhs.sipAddresses()
+        .compareTo(ignoreCase, rhs.sipAddresses()) {
+            it.sipAddress
+        }
+
+    // WEBSITE
+    Fields.Website.Url -> lhs.websites().compareTo(ignoreCase, rhs.websites()) {
+        it.url
+    }
+
+    // CUSTOM
+    is AbstractCustomCommonDataField -> {
+        val mimeType = customDataRegistry.mimeTypeOf(this)
+            ?: throw IllegalStateException("No custom mime type for ${mimeType.value}")
+
+        @Suppress("UNCHECKED_CAST")
+        val fieldMapper = customDataRegistry.fieldMapperOf(mimeType)
+                as CustomCommonDataEntityFieldMapper<AbstractCustomCommonDataField,
+                MutableCustomCommonDataEntity>?
+            ?: throw IllegalStateException("No custom field mapper for ${mimeType.value}")
+
+        val lhsCustomDataEntities = lhs.customDataSequenceOf(mimeType)
+        val rhsCustomDataEntities = rhs.customDataSequenceOf(mimeType)
+
+        lhsCustomDataEntities.compareTo(ignoreCase, rhsCustomDataEntities) {
+            fieldMapper.valueOf(this, it)
+        }
+    }
+
+    else -> 0 // Treat unhandled fields as equals instead of throwing an exception.
 }
 
 /**

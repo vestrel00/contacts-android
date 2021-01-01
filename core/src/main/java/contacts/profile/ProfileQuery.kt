@@ -191,7 +191,7 @@ private class ProfileQueryImpl(
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = DEFAULT_INCLUDE
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry)
 ) : ProfileQuery {
 
     override fun toString(): String =
@@ -221,7 +221,7 @@ private class ProfileQueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileQuery = apply {
         include = if (fields.isEmpty()) {
-            DEFAULT_INCLUDE
+            allDataFields(customDataRegistry)
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -242,7 +242,6 @@ private class ProfileQueryImpl(
     private companion object {
         const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE by unsafeLazy { Include(Fields) }
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
     }
 }

@@ -358,7 +358,7 @@ private class QueryImpl(
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = DEFAULT_INCLUDE,
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -396,7 +396,7 @@ private class QueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Query = apply {
         include = if (fields.isEmpty()) {
-            DEFAULT_INCLUDE
+            allDataFields(customDataRegistry)
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -452,7 +452,6 @@ private class QueryImpl(
     private companion object {
         const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE by unsafeLazy { Include(Fields) }
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
         val DEFAULT_WHERE: Where<AbstractDataField>? = null
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }

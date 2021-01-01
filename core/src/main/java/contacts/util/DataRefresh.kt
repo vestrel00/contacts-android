@@ -17,7 +17,7 @@ import contacts.entities.fields
  * Returns itself if the [CommonDataEntity.id] is null, indicating that this DataEntity instance has not
  * yet been inserted to the DB.
  *
- * Supports profile and non-profile Contacts.
+ * Supports profile/non-profile native/custom data.
  *
  * ## Permissions
  *

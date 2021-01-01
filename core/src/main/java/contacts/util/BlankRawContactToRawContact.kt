@@ -11,7 +11,7 @@ import contacts.entities.custom.GlobalCustomCommonDataRegistry
  *
  * This may return null if the [RawContact] no longer exists or if [BlankRawContact.id] is null.
  *
- * Supports profile and non-profile RawContacts.
+ * Supports profile and non-profile RawContacts with native/custom data.
  *
  * ## Permissions
  *
