@@ -28,13 +28,14 @@ class CustomCommonDataRegistry {
      * ## Developer notes
      *
      * The types [F], [K], and [V] are not kept internally. They are erased. These are simply here
-     * as compile-time checks for matching the generic types of parameter instances.
+     * as compile-time checks for matching the generic types of parameter instances to make sure
+     * consumers are providing the correct implementations.
      */
     fun <F : AbstractCustomCommonDataField, K : AbstractCustomCommonDataCursor,
             V : MutableCustomCommonDataEntity> register(
         customMimeType: MimeType.Custom,
         customFieldSet: AbstractCustomCommonDataFieldSet<F>,
-        fieldMapper: CustomCommonDataEntityFieldMapper<*, *>,
+        fieldMapper: CustomCommonDataEntityFieldMapper<F, V>,
         countRestriction: CustomCommonDataEntityCountRestriction,
         mapperFactory: AbstractCustomCommonDataEntityMapper.Factory<K, V>,
         operationFactory: AbstractCustomCommonDataOperation.Factory<V>
