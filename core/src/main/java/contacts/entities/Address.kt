@@ -3,7 +3,6 @@ package contacts.entities
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Address.Type
 import contacts.util.unsafeLazy
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -94,11 +93,9 @@ data class Address internal constructor(
 
 ) : CommonDataEntity {
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Address
 
     // type and label are excluded from this check as they are useless information by themselves
-    @IgnoredOnParcel
     override val isBlank: Boolean by unsafeLazy {
         propertiesAreAllNullOrBlank(
             formattedAddress, street, poBox, neighborhood, city, region, postcode, country
@@ -211,7 +208,6 @@ data class MutableAddress internal constructor(
         null, null, null, null, null, null, null
     )
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Address
 
     // type and label are excluded from this check as they are useless information by themselves

@@ -1,6 +1,5 @@
 package contacts.entities
 
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -26,10 +25,8 @@ data class SipAddress internal constructor(
 
 ) : CommonDataEntity {
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.SipAddress
 
-    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(sipAddress)
 
     fun toMutableSipAddress() = MutableSipAddress(
@@ -64,7 +61,6 @@ data class MutableSipAddress internal constructor(
 
 ) : MutableCommonDataEntity {
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.SipAddress
 
     constructor() : this(null, null, null, false, false, null)

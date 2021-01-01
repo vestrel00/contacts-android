@@ -1,7 +1,6 @@
 package contacts.entities
 
 import android.net.Uri
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -60,7 +59,6 @@ data class Options internal constructor(
 
     internal constructor() : this(null, null, null, null)
 
-    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(
         starred, customRingtone, sendToVoicemail
     )

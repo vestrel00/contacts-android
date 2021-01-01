@@ -2,7 +2,6 @@ package contacts.entities
 
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -173,7 +172,6 @@ data class Contact internal constructor(
     // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
     // the Data table, which is why they are not part of the blank check.
-    @IgnoredOnParcel
     override val isBlank: Boolean by unsafeLazy {
         entitiesAreAllBlank(rawContacts)
     }

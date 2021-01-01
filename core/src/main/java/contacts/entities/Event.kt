@@ -2,7 +2,6 @@ package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Event.Type
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -48,11 +47,9 @@ data class Event internal constructor(
 
 ) : CommonDataEntity {
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Event
 
     // type and label are excluded from this check as they are useless information by themselves
-    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(date)
 
     fun toMutableEvent() = MutableEvent(
@@ -119,7 +116,6 @@ data class MutableEvent internal constructor(
         null, null, null
     )
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Event
 
     // type and label are excluded from this check as they are useless information by themselves

@@ -1,6 +1,5 @@
 package contacts.entities
 
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -26,10 +25,8 @@ data class Nickname internal constructor(
 
 ) : CommonDataEntity {
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Nickname
 
-    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(name)
 
     fun toMutableNickname() = MutableNickname(
@@ -66,7 +63,6 @@ data class MutableNickname internal constructor(
 
     constructor() : this(null, null, null, false, false, null)
 
-    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Nickname
 
     override val isBlank: Boolean

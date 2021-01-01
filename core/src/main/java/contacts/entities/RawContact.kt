@@ -3,7 +3,6 @@ package contacts.entities
 import contacts.entities.custom.MutableCustomCommonDataEntityHolder
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -146,7 +145,6 @@ data class RawContact internal constructor(
 
 ) : RawContactEntity() {
 
-    @IgnoredOnParcel
     override val isBlank: Boolean by unsafeLazy {
         propertiesAreAllNullOrBlank(
             name, nickname, note, organization, photo, sipAddress
@@ -341,7 +339,6 @@ data class BlankRawContact internal constructor(
 
 ) : RawContactEntity() {
 
-    @IgnoredOnParcel
     override val isBlank: Boolean = true
 }
 
