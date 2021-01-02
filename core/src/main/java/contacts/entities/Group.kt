@@ -1,7 +1,8 @@
 package contacts.entities
 
 import android.accounts.Account
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Group internal constructor(
@@ -83,6 +84,7 @@ data class Group internal constructor(
      * "default" group as it is not shown in any UI as a selectable group. All contacts for an
      * account belong to the default group.
      */
+    @IgnoredOnParcel
     val isDefaultGroup: Boolean = readOnly && autoAdd
 
     /**
@@ -93,8 +95,10 @@ data class Group internal constructor(
      * Usually, only one of these system groups have [favorites] set to true and that is typically
      * the "favorites" group as it is shown in the UI as a special group.
      */
+    @IgnoredOnParcel
     val isFavoritesGroup: Boolean = readOnly && favorites
 
+    @IgnoredOnParcel
     override val isBlank: Boolean = false
 
     /**
@@ -171,6 +175,7 @@ data class MutableGroup internal constructor(
      * "default" group as it is not shown in any UI as a selectable group. All contacts for an
      * account belong to the default group.
      */
+    @IgnoredOnParcel
     val isDefaultGroup: Boolean = readOnly && autoAdd
 
     /**
@@ -181,7 +186,9 @@ data class MutableGroup internal constructor(
      * Usually, only one of these system groups have [favorites] set to true and that is typically
      * the "favorites" group as it is shown in the UI as a special group.
      */
+    @IgnoredOnParcel
     val isFavoritesGroup: Boolean = readOnly && favorites
 
+    @IgnoredOnParcel
     override val isBlank: Boolean = false
 }

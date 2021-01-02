@@ -8,13 +8,15 @@ import android.widget.ArrayAdapter
 import android.widget.ListView.*
 import contacts.accounts.Accounts
 import contacts.permissions.accounts.queryWithPermission
-import kotlinx.android.synthetic.main.activity_accounts.*
+import contacts.sample.databinding.ActivityAccountsBinding
 import kotlinx.coroutines.launch
 
 /**
  * Shows the list of all available accounts, allowing the user to choose which account(s) to use.
  */
 class AccountsActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityAccountsBinding
 
     // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.
     // Therefore, we maintain the List<Account?> separately so that we can retrieve the selected
@@ -25,7 +27,7 @@ class AccountsActivity : BaseActivity() {
     private val selectedAccounts: List<Account?>
         get() = mutableListOf<Account?>().apply {
 
-            val checkedItemPositions = accountsListView.checkedItemPositions
+            val checkedItemPositions = binding.accountsListView.checkedItemPositions
             for (i in 0 until checkedItemPositions.size()) {
                 val position = checkedItemPositions.keyAt(i)
                 val isChecked = checkedItemPositions.valueAt(i)
@@ -40,7 +42,8 @@ class AccountsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_accounts)
+        binding = ActivityAccountsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupAccountsListView()
     }
 
@@ -58,8 +61,8 @@ class AccountsActivity : BaseActivity() {
         // For simple cases like this though, ListView actually saves us from writing a bit of code.
         // We can just use the built-in choice mode functionality instead of writing it ourselves =)
         accountsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice)
-        accountsListView.adapter = accountsAdapter
-        accountsListView.choiceMode = intent.choiceMode()
+        binding.accountsListView.adapter = accountsAdapter
+        binding.accountsListView.choiceMode = intent.choiceMode()
 
         launch {
             addLocalAccount()
@@ -90,7 +93,7 @@ class AccountsActivity : BaseActivity() {
             if (itemPosition > -1) {
                 // The ListView, ArrayAdapter, and selectableAccounts all have the same list of
                 // accounts in the same indices.
-                accountsListView.setItemChecked(itemPosition, true)
+                binding.accountsListView.setItemChecked(itemPosition, true)
             }
         }
     }

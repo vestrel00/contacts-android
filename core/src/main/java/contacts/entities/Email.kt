@@ -2,7 +2,8 @@ package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Email.Type
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Email internal constructor(
@@ -34,9 +35,11 @@ data class Email internal constructor(
 
 ) : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Email
 
     // type and label are excluded from this check as they are useless information by themselves
+    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(address)
 
     fun toMutableEmail() = MutableEmail(
@@ -104,6 +107,7 @@ data class MutableEmail internal constructor(
         null, null, null
     )
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Email
 
     // type and label are excluded from this check as they are useless information by themselves

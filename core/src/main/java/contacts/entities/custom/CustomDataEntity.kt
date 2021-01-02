@@ -8,7 +8,7 @@ import contacts.entities.MutableCommonDataEntity
  * A custom [CommonDataEntity].
  *
  * Implementations are required to be parcelable. Kotlin users are recommended to use data class
- * combined with [kotlinx.android.parcel.Parcelize].
+ * combined with [kotlinx.parcelize.Parcelize].
  *
  * Implementors should define a toMutableX() function to allow for changes in their custom entities.
  *

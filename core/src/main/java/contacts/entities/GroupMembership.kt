@@ -1,6 +1,7 @@
 package contacts.entities
 
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 // Note that the actual Group lives in a separate table that is not joined with the Data table.
 @Parcelize
@@ -26,8 +27,10 @@ data class GroupMembership internal constructor(
 
 ) : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.GroupMembership
 
+    @IgnoredOnParcel
     override val isBlank: Boolean = false
 }
 

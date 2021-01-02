@@ -85,6 +85,8 @@ class CustomDataRegistry {
         mimeType: MimeType.Custom
     ): AbstractCustomDataOperation.Factory<*>? = entryMap[mimeType.value]?.operationFactory
 
+    // TODO Add types and expose to consumers so that the register function is clean.
+    // TODO Get rid of all internal fun and replace it with one internal function that returns the entry
     private class Entry(
         val mimeType: MimeType.Custom,
         val fieldSet: AbstractCustomDataFieldSet<*>,

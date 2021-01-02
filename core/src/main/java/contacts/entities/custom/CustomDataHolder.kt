@@ -1,7 +1,7 @@
 package contacts.entities.custom
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class CustomDataHolder(

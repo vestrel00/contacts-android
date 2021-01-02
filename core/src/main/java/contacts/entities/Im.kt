@@ -2,7 +2,8 @@ package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Im.Protocol
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Im internal constructor(
@@ -37,10 +38,12 @@ data class Im internal constructor(
 
 ) : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Im
 
     // protocol and customProtocol are excluded from this check as they are useless information by
     // themselves
+    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(data)
 
     fun toMutableIm() = MutableIm(
@@ -113,6 +116,7 @@ data class MutableIm internal constructor(
         null, null, null
     )
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Im
 
     // protocol and customProtocol are excluded from this check as they are useless information by

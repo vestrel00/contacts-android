@@ -2,7 +2,8 @@ package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Relation.Type
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Relation internal constructor(
@@ -34,9 +35,11 @@ data class Relation internal constructor(
 
 ) : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Relation
 
     // type and label are excluded from this check as they are useless information by themselves
+    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(name)
 
     fun toMutableRelation() = MutableRelation(
@@ -109,6 +112,7 @@ data class MutableRelation internal constructor(
 
 ) : MutableCommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Relation
 
     constructor() : this(

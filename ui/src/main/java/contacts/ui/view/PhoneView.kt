@@ -3,16 +3,13 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.RelativeLayout
+import android.widget.*
 import contacts.entities.MutablePhone
 import contacts.entities.Phone
 import contacts.ui.R
 import contacts.ui.dialog.CustomLabelInputDialog
 import contacts.ui.text.AbstractTextWatcher
 import contacts.ui.util.PhoneType
-import kotlinx.android.synthetic.main.view_phone.view.*
 
 /**
  * A [RelativeLayout] that displays a [MutablePhone] and handles the modifications to the given
@@ -43,18 +40,6 @@ class PhoneView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
 
-    private val typesAdapter: ArrayAdapter<PhoneType>
-
-    private var selectedPhoneType: PhoneType? = null
-        set(value) {
-            field = value
-
-            value?.let {
-                phone.type = it.type
-                phone.label = if (it.type == Phone.Type.CUSTOM) it.typeLabel else null
-            }
-        }
-
     var onPhoneDeleteButtonClicked: ((phoneView: PhoneView) -> Unit)? = null
     var onPhoneNumberCleared: ((phoneView: PhoneView) -> Unit)? = null
     var onPhoneNumberBegin: (() -> Unit)? = null
@@ -68,8 +53,30 @@ class PhoneView @JvmOverloads constructor(
             setPhoneDeleteButton()
         }
 
+    // Not using any view binding libraries or plugins just for this.
+    private val phoneNumberField: EditText
+    private val phoneTypeField: Spinner
+    private val phoneDeleteButton: View
+
+    private val typesAdapter: ArrayAdapter<PhoneType>
+
+    private var selectedPhoneType: PhoneType? = null
+        set(value) {
+            field = value
+
+            value?.let {
+                phone.type = it.type
+                phone.label = if (it.type == Phone.Type.CUSTOM) it.typeLabel else null
+            }
+        }
+
+
     init {
         inflate(context, R.layout.view_phone, this)
+
+        phoneNumberField = findViewById(R.id.phoneNumberField)
+        phoneTypeField = findViewById(R.id.phoneTypeField)
+        phoneDeleteButton = findViewById(R.id.phoneDeleteButton)
 
         phoneNumberField.apply {
             setOnFocusChangeListener { _, _ ->

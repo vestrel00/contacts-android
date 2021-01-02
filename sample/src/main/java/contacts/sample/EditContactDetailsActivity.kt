@@ -15,17 +15,20 @@ import contacts.entities.MutableContact
 import contacts.equalTo
 import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
+import contacts.sample.databinding.ActivityEditContactDetailsBinding
 import contacts.util.names
-import kotlinx.android.synthetic.main.activity_edit_contact_details.*
 import kotlinx.coroutines.launch
 
 class EditContactDetailsActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityEditContactDetailsBinding
 
     private lateinit var contact: MutableContact
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_contact_details)
+        binding = ActivityEditContactDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val activity: Activity = this@EditContactDetailsActivity
         launch {
@@ -61,7 +64,7 @@ class EditContactDetailsActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        photoView.onActivityResult(requestCode, resultCode, data)
+        binding.photoView.onActivityResult(requestCode, resultCode, data)
     }
 
     private suspend fun fetchContact(): Boolean {
@@ -79,23 +82,23 @@ class EditContactDetailsActivity : BaseActivity() {
     }
 
     private fun setupPhotoView() {
-        photoView.init(this)
-        photoView.contact = contact
+        binding.photoView.init(this)
+        binding.photoView.contact = contact
     }
 
     private fun setupNameFields() {
         // TODO Move this to a custom view in contacts-ui and handle multiple names the same way the
         // native Contacts app does. For now just pick the first name, if any.
         val name = contact.names().firstOrNull()
-        namePrefixField.setText(name?.prefix)
-        firstNameField.setText(name?.givenName)
-        middleNameField.setText(name?.middleName)
-        lastNameField.setText(name?.familyName)
-        nameSuffixField.setText(name?.suffix)
+        binding.namePrefixField.setText(name?.prefix)
+        binding.firstNameField.setText(name?.givenName)
+        binding.middleNameField.setText(name?.middleName)
+        binding.lastNameField.setText(name?.familyName)
+        binding.nameSuffixField.setText(name?.suffix)
     }
 
     private fun setupPhoneFields() {
-        phonesView.contact = contact
+        binding.phonesView.contact = contact
     }
 
     private suspend fun save(): Boolean {
@@ -103,7 +106,7 @@ class EditContactDetailsActivity : BaseActivity() {
 
         // Save photo first so that the Contact does not get deleted if it only has a photo.
         // Blank Contacts are by default deleted in updates.
-        val photoSaveSuccess = photoView.saveContactPhoto()
+        val photoSaveSuccess = binding.photoView.saveContactPhoto()
 
         // Save changes. Delete blanks!
         val contactSaveResult = Contacts(this).updateWithPermission()

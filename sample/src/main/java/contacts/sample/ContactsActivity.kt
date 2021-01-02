@@ -17,21 +17,23 @@ import contacts.async.findWithContext
 import contacts.debug.logContactsProviderTables
 import contacts.entities.Contact
 import contacts.permissions.generalQueryWithPermission
+import contacts.sample.databinding.ActivityContactsBinding
 import contacts.ui.text.AbstractTextWatcher
 import contacts.util.emails
 import contacts.util.phones
-import kotlinx.android.synthetic.main.activity_contacts.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ContactsActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityContactsBinding
 
     // The null Account is the "Local Account".
     private var selectedAccounts = emptyList<Account?>()
     private var queryJob: Job? = null
 
     private val searchText: String
-        get() = searchField.text.toString()
+        get() = binding.searchField.text.toString()
 
     private var searchResults = emptyList<Contact>()
 
@@ -39,7 +41,8 @@ class ContactsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_contacts)
+        binding = ActivityContactsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupSearchField()
         setupContactsListView()
         showContacts()
@@ -79,7 +82,7 @@ class ContactsActivity : BaseActivity() {
     }
 
     private fun setupSearchField() {
-        searchField.addTextChangedListener(object : AbstractTextWatcher {
+        binding.searchField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 showContacts()
             }
@@ -90,8 +93,8 @@ class ContactsActivity : BaseActivity() {
         // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
         // Ahh, my good ol' friend ListView. You serve me once again =)
         contactsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
-        contactsListView.adapter = contactsAdapter
-        contactsListView.onItemClickListener = OnContactClickListener()
+        binding.contactsListView.adapter = contactsAdapter
+        binding.contactsListView.onItemClickListener = OnContactClickListener()
     }
 
     private fun showContacts() {

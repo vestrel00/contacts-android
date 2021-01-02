@@ -1,7 +1,8 @@
 package contacts.entities
 
 import contacts.util.unsafeLazy
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Name internal constructor(
@@ -102,8 +103,10 @@ data class Name internal constructor(
 
 ) : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Name
 
+    @IgnoredOnParcel
     override val isBlank: Boolean by unsafeLazy {
         propertiesAreAllNullOrBlank(
             displayName,
@@ -201,6 +204,7 @@ data class MutableName internal constructor(
         null, null, null, null, null, null, null
     )
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Name
 
     override val isBlank: Boolean

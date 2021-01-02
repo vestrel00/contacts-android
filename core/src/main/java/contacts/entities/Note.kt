@@ -1,6 +1,7 @@
 package contacts.entities
 
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Note internal constructor(
@@ -22,8 +23,10 @@ data class Note internal constructor(
 
 ) : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Note
 
+    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(note)
 
     fun toMutableNote() = MutableNote(
@@ -60,6 +63,7 @@ data class MutableNote internal constructor(
 
     constructor() : this(null, null, null, false, false, null)
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Note
 
     override val isBlank: Boolean

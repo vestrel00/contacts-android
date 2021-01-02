@@ -1,6 +1,7 @@
 package contacts.entities
 
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Website internal constructor(
@@ -25,8 +26,10 @@ data class Website internal constructor(
 
 ) : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Website
 
+    @IgnoredOnParcel
     override val isBlank: Boolean = propertiesAreAllNullOrBlank(url)
 
     fun toMutableWebsite() = MutableWebsite(
@@ -61,6 +64,7 @@ data class MutableWebsite internal constructor(
 
 ) : MutableCommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Website
 
     constructor() : this(null, null, null, false, false, null)

@@ -1,6 +1,7 @@
 package contacts.entities
 
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 /**
  * This class does not have any real functional value. This exist only to prevent RawContacts from
@@ -17,18 +18,25 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class Photo : CommonDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Photo
 
+    @IgnoredOnParcel
     override val id: Long? = null
 
+    @IgnoredOnParcel
     override val rawContactId: Long? = null
 
+    @IgnoredOnParcel
     override val contactId: Long? = null
 
+    @IgnoredOnParcel
     override val isPrimary: Boolean = false
 
+    @IgnoredOnParcel
     override val isSuperPrimary: Boolean = false
 
+    @IgnoredOnParcel
     // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
     override val isBlank: Boolean = false
 }
