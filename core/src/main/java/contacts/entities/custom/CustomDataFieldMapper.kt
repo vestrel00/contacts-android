@@ -1,12 +1,12 @@
 package contacts.entities.custom
 
-import contacts.AbstractCustomCommonDataField
+import contacts.AbstractCustomDataField
 
 /**
  * Provides a piece of data as a nullable String from the custom entity [V] corresponding to the
  * field [K].
  */
-interface CustomDataFieldMapper<K : AbstractCustomCommonDataField, V : MutableCustomDataEntity> {
+interface CustomDataFieldMapper<K : AbstractCustomDataField, V : MutableCustomDataEntity> {
 
     /**
      * Return a piece of data as a nullable String from the [customEntity] corresponding to the

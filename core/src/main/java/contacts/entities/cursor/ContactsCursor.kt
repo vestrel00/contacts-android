@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import contacts.ContactsField
 import contacts.ContactsFields
 import java.util.*
 
@@ -13,36 +14,37 @@ import java.util.*
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class ContactsCursor(private val cursor: Cursor) : JoinedContactsCursor {
+internal class ContactsCursor(cursor: Cursor) : AbstractCursor<ContactsField>(cursor),
+    JoinedContactsCursor {
 
     override val contactId: Long?
-        get() = cursor.getLong(ContactsFields.Id)
+        get() = getLong(ContactsFields.Id)
 
     override val displayNamePrimary: String?
-        get() = cursor.getString(ContactsFields.DisplayNamePrimary)
+        get() = getString(ContactsFields.DisplayNamePrimary)
 
     override val displayNameAlt: String?
-        get() = cursor.getString(ContactsFields.DisplayNameAlt)
+        get() = getString(ContactsFields.DisplayNameAlt)
 
     override val lastUpdatedTimestamp: Date?
-        get() = cursor.getDate(ContactsFields.LastUpdatedTimestamp)
+        get() = getDate(ContactsFields.LastUpdatedTimestamp)
 
     val displayNameSource: Int?
-        get() = cursor.getInt(ContactsFields.DisplayNameSource)
+        get() = getInt(ContactsFields.DisplayNameSource)
 
     val nameRawContactId: Long?
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        get() = cursor.getLong(ContactsFields.NameRawContactId)
+        get() = getLong(ContactsFields.NameRawContactId)
 
     val photoUri: Uri?
-        get() = cursor.getUri(ContactsFields.PhotoUri)
+        get() = getUri(ContactsFields.PhotoUri)
 
     val photoThumbnailUri: Uri?
-        get() = cursor.getUri(ContactsFields.PhotoThumbnailUri)
+        get() = getUri(ContactsFields.PhotoThumbnailUri)
 
     val photoFileId: Long?
         get() {
-            val value = cursor.getLong(ContactsFields.PhotoFileId)
+            val value = getLong(ContactsFields.PhotoFileId)
             // Sometimes the value will be zero instead of null but 0 is not a valid photo file id.
             return if (value != null && value > 0) value else null
         }

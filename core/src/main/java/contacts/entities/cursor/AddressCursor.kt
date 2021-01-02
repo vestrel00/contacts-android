@@ -1,6 +1,7 @@
 package contacts.entities.cursor
 
 import android.database.Cursor
+import contacts.AddressField
 import contacts.Fields
 import contacts.entities.Address
 
@@ -10,35 +11,35 @@ import contacts.entities.Address
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class AddressCursor(cursor: Cursor) : DataCursor(cursor) {
+internal class AddressCursor(cursor: Cursor) : AbstractDataCursor<AddressField>(cursor) {
 
     val type: Address.Type?
-        get() = Address.Type.fromValue(cursor.getInt(Fields.Address.Type))
+        get() = Address.Type.fromValue(getInt(Fields.Address.Type))
 
     val label: String?
-        get() = cursor.getString(Fields.Address.Label)
+        get() = getString(Fields.Address.Label)
 
     val formattedAddress: String?
-        get() = cursor.getString(Fields.Address.FormattedAddress)
+        get() = getString(Fields.Address.FormattedAddress)
 
     val street: String?
-        get() = cursor.getString(Fields.Address.Street)
+        get() = getString(Fields.Address.Street)
 
     val poBox: String?
-        get() = cursor.getString(Fields.Address.PoBox)
+        get() = getString(Fields.Address.PoBox)
 
     val neighborhood: String?
-        get() = cursor.getString(Fields.Address.Neighborhood)
+        get() = getString(Fields.Address.Neighborhood)
 
     val city: String?
-        get() = cursor.getString(Fields.Address.City)
+        get() = getString(Fields.Address.City)
 
     val region: String?
-        get() = cursor.getString(Fields.Address.Region)
+        get() = getString(Fields.Address.Region)
 
     val postcode: String?
-        get() = cursor.getString(Fields.Address.PostCode)
+        get() = getString(Fields.Address.PostCode)
 
     val country: String?
-        get() = cursor.getString(Fields.Address.Country)
+        get() = getString(Fields.Address.Country)
 }

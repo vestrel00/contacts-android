@@ -1,6 +1,7 @@
 package contacts.entities.cursor
 
 import android.database.Cursor
+import contacts.EmailField
 import contacts.Fields
 import contacts.entities.Email
 
@@ -10,14 +11,14 @@ import contacts.entities.Email
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class EmailCursor(cursor: Cursor) : DataCursor(cursor) {
+internal class EmailCursor(cursor: Cursor) : AbstractDataCursor<EmailField>(cursor) {
 
     val type: Email.Type?
-        get() = Email.Type.fromValue(cursor.getInt(Fields.Email.Type))
+        get() = Email.Type.fromValue(getInt(Fields.Email.Type))
 
     val label: String?
-        get() = cursor.getString(Fields.Email.Label)
+        get() = getString(Fields.Email.Label)
 
     val address: String?
-        get() = cursor.getString(Fields.Email.Address)
+        get() = getString(Fields.Email.Address)
 }

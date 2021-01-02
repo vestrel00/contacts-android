@@ -2,6 +2,7 @@ package contacts.entities.cursor
 
 import android.accounts.Account
 import android.database.Cursor
+import contacts.RawContactsField
 import contacts.RawContactsFields
 
 /**
@@ -10,25 +11,26 @@ import contacts.RawContactsFields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class RawContactsCursor(private val cursor: Cursor) : RawContactIdCursor {
+internal class RawContactsCursor(cursor: Cursor) : AbstractCursor<RawContactsField>(cursor),
+    RawContactIdCursor {
 
     override val contactId: Long?
-        get() = cursor.getLong(RawContactsFields.ContactId)
+        get() = getLong(RawContactsFields.ContactId)
 
     override val rawContactId: Long?
-        get() = cursor.getLong(RawContactsFields.Id)
+        get() = getLong(RawContactsFields.Id)
 
     val displayNamePrimary: String?
-        get() = cursor.getString(RawContactsFields.DisplayNamePrimary)
+        get() = getString(RawContactsFields.DisplayNamePrimary)
 
     val displayNameAlt: String?
-        get() = cursor.getString(RawContactsFields.DisplayNameAlt)
+        get() = getString(RawContactsFields.DisplayNameAlt)
 
     val accountName: String?
-        get() = cursor.getString(RawContactsFields.AccountName)
+        get() = getString(RawContactsFields.AccountName)
 
     val accountType: String?
-        get() = cursor.getString(RawContactsFields.AccountType)
+        get() = getString(RawContactsFields.AccountType)
 
 }
 

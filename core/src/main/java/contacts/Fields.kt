@@ -6,7 +6,7 @@ import android.annotation.TargetApi
 import android.os.Build
 import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
-import contacts.AbstractCustomCommonDataField.ColumnName
+import contacts.AbstractCustomDataField.ColumnName
 import contacts.entities.MimeType
 import contacts.util.unsafeLazy
 
@@ -754,17 +754,17 @@ class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>(
     override val forMatching = emptySet<WebsiteField>()
 }
 
-// region Custom Common Data Fields
+// region Custom Data Fields
 
 /**
  * An abstract class that is used as a base of all custom common data fields.
  *
  * ## Developer notes
  *
- * This had to be declared here instead of in the [contacts.custom] package because
+ * This had to be declared here instead of in the [contacts.entities.custom] package because
  * [CommonDataField] is sealed.
  */
-abstract class AbstractCustomCommonDataField(
+abstract class AbstractCustomDataField(
     /**
      * The name of this column. Must be one of [ColumnName].
      */
@@ -929,7 +929,7 @@ abstract class AbstractCustomCommonDataField(
  * This had to be declared here instead of in the [contacts.entities.custom] package because
  * [AbstractDataFieldSet] is sealed.
  */
-abstract class AbstractCustomCommonDataFieldSet<out T : AbstractCustomCommonDataField> :
+abstract class AbstractCustomDataFieldSet<out T : AbstractCustomDataField> :
     AbstractDataFieldSet<T>()
 
 // endregion

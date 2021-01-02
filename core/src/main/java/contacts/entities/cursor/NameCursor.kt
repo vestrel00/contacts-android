@@ -2,6 +2,7 @@ package contacts.entities.cursor
 
 import android.database.Cursor
 import contacts.Fields
+import contacts.NameField
 
 /**
  * Retrieves [Fields.Name] data from the given [cursor].
@@ -9,32 +10,32 @@ import contacts.Fields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class NameCursor(cursor: Cursor) : DataCursor(cursor) {
+internal class NameCursor(cursor: Cursor) : AbstractDataCursor<NameField>(cursor) {
 
     val displayName: String?
-        get() = cursor.getString(Fields.Name.DisplayName)
+        get() = getString(Fields.Name.DisplayName)
 
     val givenName: String?
-        get() = cursor.getString(Fields.Name.GivenName)
+        get() = getString(Fields.Name.GivenName)
 
     val middleName: String?
-        get() = cursor.getString(Fields.Name.MiddleName)
+        get() = getString(Fields.Name.MiddleName)
 
     val familyName: String?
-        get() = cursor.getString(Fields.Name.FamilyName)
+        get() = getString(Fields.Name.FamilyName)
 
     val prefix: String?
-        get() = cursor.getString(Fields.Name.Prefix)
+        get() = getString(Fields.Name.Prefix)
 
     val suffix: String?
-        get() = cursor.getString(Fields.Name.Suffix)
+        get() = getString(Fields.Name.Suffix)
 
     val phoneticGivenName: String?
-        get() = cursor.getString(Fields.Name.PhoneticGivenName)
+        get() = getString(Fields.Name.PhoneticGivenName)
 
     val phoneticMiddleName: String?
-        get() = cursor.getString(Fields.Name.PhoneticMiddleName)
+        get() = getString(Fields.Name.PhoneticMiddleName)
 
     val phoneticFamilyName: String?
-        get() = cursor.getString(Fields.Name.PhoneticFamilyName)
+        get() = getString(Fields.Name.PhoneticFamilyName)
 }

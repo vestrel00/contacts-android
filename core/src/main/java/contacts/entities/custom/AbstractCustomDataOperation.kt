@@ -1,6 +1,6 @@
 package contacts.entities.custom
 
-import contacts.AbstractCustomCommonDataField
+import contacts.AbstractCustomDataField
 import contacts.CommonDataField
 import contacts.entities.operation.AbstractCommonDataOperation
 
@@ -15,12 +15,12 @@ abstract class AbstractCustomDataOperation<T : MutableCustomDataEntity>(
      * Sets the custom [data] values into the operation via the provided [setValue] function.
      */
     protected abstract fun setCustomData(
-        data: T, setValue: (field: AbstractCustomCommonDataField, value: Any?) -> Unit
+        data: T, setValue: (field: AbstractCustomDataField, value: Any?) -> Unit
     )
 
     /*
      * Invokes the abstract setCustomData function, which uses the type of
-     * AbstractCustomCommonDataField in the setValue function instead of CommonDataField. This
+     * AbstractCustomDataField in the setValue function instead of CommonDataField. This
      * enforces consumers to use their custom data field instead of API fields.
      */
     final override fun setData(data: T, setValue: (field: CommonDataField, value: Any?) -> Unit) {

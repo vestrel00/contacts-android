@@ -1,22 +1,29 @@
 package contacts.entities.cursor
 
 import android.database.Cursor
+import contacts.AbstractDataField
 import contacts.Fields
 
-open class DataCursor(protected val cursor: Cursor) : DataIdCursor {
+/**
+ * Retrieves [AbstractDataField] data from the given [cursor].
+ *
+ * This does not modify the [cursor] position. Moving the cursor may result in different attribute
+ * values.
+ */
+internal class DataCursor(cursor: Cursor) : AbstractCursor<AbstractDataField>(cursor), DataIdCursor {
 
     override val dataId: Long?
-        get() = cursor.getLong(Fields.DataId)
+        get() = getLong(Fields.DataId)
 
     override val rawContactId: Long?
-        get() = cursor.getLong(Fields.RawContact.Id)
+        get() = getLong(Fields.RawContact.Id)
 
     override val contactId: Long?
-        get() = cursor.getLong(Fields.Contact.Id)
+        get() = getLong(Fields.Contact.Id)
 
     val isPrimary: Boolean
-        get() = cursor.getBoolean(Fields.IsPrimary) ?: false
+        get() = getBoolean(Fields.IsPrimary) ?: false
 
     val isSuperPrimary: Boolean
-        get() = cursor.getBoolean(Fields.IsSuperPrimary) ?: false
+        get() = getBoolean(Fields.IsSuperPrimary) ?: false
 }

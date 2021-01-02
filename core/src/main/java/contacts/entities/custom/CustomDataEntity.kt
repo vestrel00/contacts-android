@@ -34,9 +34,9 @@ interface CustomDataEntity : CommonDataEntity {
  * promote clear separation between the immutable and mutable entities, which follow the pattern of
  * the entire API. This prevents developer error where a [CustomDataEntity] is expected but a
  * [MutableCustomDataEntity] is produced or vice versa. Given that there is really no relationship
- * between the two, this must be prevented in order to prevent bugs at runtime. There is no is not
- * possible; CustomCommonDataEntity<T: MutableCustomCommonDataEntity>,
- * MutableCustomCommonDataEntity<T: CustomCommonDataEntity>
+ * between the two, this must be prevented in order to prevent bugs at runtime. This is not
+ * possible; CustomDataEntity<T: MutableCustomDataEntity>,
+ * MutableCustomDataEntity<T: CustomDataEntity>
  */
 interface MutableCustomDataEntity : /* CustomDataEntity, */ MutableCommonDataEntity {
 

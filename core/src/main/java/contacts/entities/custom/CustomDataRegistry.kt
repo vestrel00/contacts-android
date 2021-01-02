@@ -1,7 +1,7 @@
 package contacts.entities.custom
 
-import contacts.AbstractCustomCommonDataField
-import contacts.AbstractCustomCommonDataFieldSet
+import contacts.AbstractCustomDataField
+import contacts.AbstractCustomDataFieldSet
 import contacts.entities.MimeType
 
 /**
@@ -32,13 +32,13 @@ class CustomDataRegistry {
      * as compile-time checks for matching the generic types of parameter instances to make sure
      * consumers are providing the correct implementations.
      */
-    fun <F : AbstractCustomCommonDataField, K : AbstractCustomDataCursor,
+    fun <F : AbstractCustomDataField, K : AbstractCustomDataCursor<F>,
             V : MutableCustomDataEntity> register(
         customMimeType: MimeType.Custom,
-        customFieldSet: AbstractCustomCommonDataFieldSet<F>,
+        customFieldSet: AbstractCustomDataFieldSet<F>,
         fieldMapper: CustomDataFieldMapper<F, V>,
         countRestriction: CustomDataCountRestriction,
-        mapperFactory: AbstractCustomEntityMapper.Factory<K, V>,
+        mapperFactory: AbstractCustomEntityMapper.Factory<F, K, V>,
         operationFactory: AbstractCustomDataOperation.Factory<V>
     ) {
         entryMap[customMimeType.value] = Entry(
@@ -56,16 +56,16 @@ class CustomDataRegistry {
     ): MimeType.Custom? = entryMap[mimeTypeValue]?.mimeType
 
     internal fun mimeTypeOf(
-        customDataField: AbstractCustomCommonDataField
+        customDataField: AbstractCustomDataField
     ): MimeType.Custom? = entryMap.values.find {
         it.fieldSet.all.contains(customDataField)
     }?.mimeType
 
     internal fun fieldSetOf(
         mimeType: MimeType.Custom
-    ): AbstractCustomCommonDataFieldSet<*>? = entryMap[mimeType.value]?.fieldSet
+    ): AbstractCustomDataFieldSet<*>? = entryMap[mimeType.value]?.fieldSet
 
-    internal fun allFields(): Set<AbstractCustomCommonDataField> = entryMap.values
+    internal fun allFields(): Set<AbstractCustomDataField> = entryMap.values
         .flatMap { it.fieldSet.all }
         .toSet()
 
@@ -79,7 +79,7 @@ class CustomDataRegistry {
 
     internal fun mapperFactoryOf(
         mimeType: MimeType.Custom
-    ): AbstractCustomEntityMapper.Factory<*, *>? = entryMap[mimeType.value]?.mapperFactory
+    ): AbstractCustomEntityMapper.Factory<*, *, *>? = entryMap[mimeType.value]?.mapperFactory
 
     internal fun operationFactoryOf(
         mimeType: MimeType.Custom
@@ -87,10 +87,10 @@ class CustomDataRegistry {
 
     private class Entry(
         val mimeType: MimeType.Custom,
-        val fieldSet: AbstractCustomCommonDataFieldSet<*>,
+        val fieldSet: AbstractCustomDataFieldSet<*>,
         val fieldMapper: CustomDataFieldMapper<*, *>,
         val countRestriction: CustomDataCountRestriction,
-        val mapperFactory: AbstractCustomEntityMapper.Factory<*, *>,
+        val mapperFactory: AbstractCustomEntityMapper.Factory<*, *, *>,
         val operationFactory: AbstractCustomDataOperation.Factory<*>
     )
 }

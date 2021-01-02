@@ -2,6 +2,7 @@ package contacts.entities.cursor
 
 import android.database.Cursor
 import contacts.Fields
+import contacts.NicknameField
 
 /**
  * Retrieves [Fields.Nickname] data from the given [cursor].
@@ -9,8 +10,8 @@ import contacts.Fields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class NicknameCursor(cursor: Cursor) : DataCursor(cursor) {
+internal class NicknameCursor(cursor: Cursor) : AbstractDataCursor<NicknameField>(cursor) {
 
     val name: String?
-        get() = cursor.getString(Fields.Nickname.Name)
+        get() = getString(Fields.Nickname.Name)
 }

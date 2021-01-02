@@ -2,6 +2,7 @@ package contacts.entities.cursor
 
 import android.database.Cursor
 import contacts.Fields
+import contacts.PhoneField
 import contacts.entities.Phone
 
 /**
@@ -10,17 +11,17 @@ import contacts.entities.Phone
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class PhoneCursor(cursor: Cursor) : DataCursor(cursor) {
+internal class PhoneCursor(cursor: Cursor) : AbstractDataCursor<PhoneField>(cursor) {
 
     val type: Phone.Type?
-        get() = Phone.Type.fromValue(cursor.getInt(Fields.Phone.Type))
+        get() = Phone.Type.fromValue(getInt(Fields.Phone.Type))
 
     val label: String?
-        get() = cursor.getString(Fields.Phone.Label)
+        get() = getString(Fields.Phone.Label)
 
     val number: String?
-        get() = cursor.getString(Fields.Phone.Number)
+        get() = getString(Fields.Phone.Number)
 
     val normalizedNumber: String?
-        get() = cursor.getString(Fields.Phone.NormalizedNumber)
+        get() = getString(Fields.Phone.NormalizedNumber)
 }

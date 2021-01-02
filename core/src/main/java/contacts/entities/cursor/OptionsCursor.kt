@@ -2,6 +2,7 @@ package contacts.entities.cursor
 
 import android.database.Cursor
 import android.net.Uri
+import contacts.ContactsField
 import contacts.ContactsFields
 
 /**
@@ -13,25 +14,25 @@ import contacts.ContactsFields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class OptionsCursor(private val cursor: Cursor) {
+internal class OptionsCursor(cursor: Cursor) : AbstractCursor<ContactsField>(cursor) {
 
     val id: Long?
-        get() = cursor.getLong(ContactsFields.Options.Id)
+        get() = getLong(ContactsFields.Options.Id)
 
     val starred: Boolean?
-        get() = cursor.getBoolean(ContactsFields.Options.Starred)
+        get() = getBoolean(ContactsFields.Options.Starred)
 
     /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     val timesContacted: Int?
-        get() = cursor.getInt(ContactsFields.Options.TimesContacted)
+        get() = getInt(ContactsFields.Options.TimesContacted)
 
     val lastTimeContacted: Date?
-        get() = cursor.getDate(ContactsFields.Options.LastTimeContacted)
+        get() = getDate(ContactsFields.Options.LastTimeContacted)
      */
 
     val customRingtone: Uri?
-        get() = cursor.getUri(ContactsFields.Options.CustomRingtone)
+        get() = getUri(ContactsFields.Options.CustomRingtone)
 
     val sendToVoicemail: Boolean?
-        get() = cursor.getBoolean(ContactsFields.Options.SendToVoicemail)
+        get() = getBoolean(ContactsFields.Options.SendToVoicemail)
 }

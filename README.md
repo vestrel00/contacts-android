@@ -1,7 +1,6 @@
 ## TODO
 
 1. Support for adding custom mimetypes.
-    - Gender; type (male, female), label (demonstrates single data with no primary data)
     - Weight; type (lbs, kg, etc), label, value (demonstrates single data with primary data)
     - Favorites; type (food, color, music, book, movie, hobby, sports), label, name (demonstrates multiple data)
     - Verify all functions using CustomCommonDataRegistry works.

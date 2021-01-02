@@ -347,13 +347,13 @@ private fun AbstractDataField.compare(
     }
 
     // CUSTOM
-    is AbstractCustomCommonDataField -> {
+    is AbstractCustomDataField -> {
         val mimeType = customDataRegistry.mimeTypeOf(this)
             ?: throw CustomDataException("No custom mime type for ${mimeType.value}")
 
         @Suppress("UNCHECKED_CAST")
         val fieldMapper = customDataRegistry.fieldMapperOf(mimeType)
-                as CustomDataFieldMapper<AbstractCustomCommonDataField,
+                as CustomDataFieldMapper<AbstractCustomDataField,
                 MutableCustomDataEntity>?
             ?: throw CustomDataException("No custom field mapper for ${mimeType.value}")
 

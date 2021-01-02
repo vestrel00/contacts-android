@@ -4,7 +4,10 @@ import android.database.Cursor
 import contacts.*
 
 /**
- * A wrapper around a [Cursor] with type [T].
+ * A wrapper around a [Cursor] using fields of type [T]. This provides type restrictions with
+ * specific fields and convenience functions.
+ *
+ * Used mainly for cursor manipulations and factory methods.
  *
  * ## Developer notes
  *
