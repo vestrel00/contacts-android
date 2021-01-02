@@ -12,24 +12,17 @@ import contacts.OrganizationField
  */
 internal class OrganizationCursor(cursor: Cursor) : AbstractDataCursor<OrganizationField>(cursor) {
 
-    val company: String?
-        get() = getString(Fields.Organization.Company)
+    val company: String? by string(Fields.Organization.Company)
 
-    val title: String?
-        get() = getString(Fields.Organization.Title)
+    val title: String? by string(Fields.Organization.Title)
 
-    val department: String?
-        get() = getString(Fields.Organization.Department)
+    val department: String? by string(Fields.Organization.Department)
 
-    val jobDescription: String?
-        get() = getString(Fields.Organization.JobDescription)
+    val jobDescription: String? by string(Fields.Organization.JobDescription)
 
-    val officeLocation: String?
-        get() = getString(Fields.Organization.OfficeLocation)
+    val officeLocation: String? by string(Fields.Organization.OfficeLocation)
 
-    val symbol: String?
-        get() = getString(Fields.Organization.Symbol)
+    val symbol: String? by string(Fields.Organization.Symbol)
 
-    val phoneticName: String?
-        get() = getString(Fields.Organization.PhoneticName)
+    val phoneticName: String? by string(Fields.Organization.PhoneticName)
 }

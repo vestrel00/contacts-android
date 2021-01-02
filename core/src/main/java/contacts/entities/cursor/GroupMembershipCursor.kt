@@ -13,6 +13,5 @@ import contacts.GroupMembershipField
 internal class GroupMembershipCursor(cursor: Cursor) :
     AbstractDataCursor<GroupMembershipField>(cursor) {
 
-    val groupId: Long?
-        get() = getLong(Fields.GroupMembership.GroupId)
+    val groupId: Long? by long(Fields.GroupMembership.GroupId)
 }

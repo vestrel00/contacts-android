@@ -12,6 +12,5 @@ import contacts.NicknameField
  */
 internal class NicknameCursor(cursor: Cursor) : AbstractDataCursor<NicknameField>(cursor) {
 
-    val name: String?
-        get() = getString(Fields.Nickname.Name)
+    val name: String? by string(Fields.Nickname.Name)
 }

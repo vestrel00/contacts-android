@@ -10,20 +10,16 @@ import contacts.Fields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class DataCursor(cursor: Cursor) : AbstractCursor<AbstractDataField>(cursor), DataIdCursor {
+internal class DataCursor(cursor: Cursor) : AbstractCursor<AbstractDataField>(cursor),
+    DataIdCursor {
 
-    override val dataId: Long?
-        get() = getLong(Fields.DataId)
+    override val dataId: Long? by long(Fields.DataId)
 
-    override val rawContactId: Long?
-        get() = getLong(Fields.RawContact.Id)
+    override val rawContactId: Long? by long(Fields.RawContact.Id)
 
-    override val contactId: Long?
-        get() = getLong(Fields.Contact.Id)
+    override val contactId: Long? by long(Fields.Contact.Id)
 
-    val isPrimary: Boolean
-        get() = getBoolean(Fields.IsPrimary) ?: false
+    val isPrimary: Boolean by nonNullBoolean(Fields.IsPrimary)
 
-    val isSuperPrimary: Boolean
-        get() = getBoolean(Fields.IsSuperPrimary) ?: false
+    val isSuperPrimary: Boolean by nonNullBoolean(Fields.IsSuperPrimary)
 }

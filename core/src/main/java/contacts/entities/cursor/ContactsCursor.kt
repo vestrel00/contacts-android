@@ -1,9 +1,7 @@
 package contacts.entities.cursor
 
-import android.annotation.TargetApi
 import android.database.Cursor
 import android.net.Uri
-import android.os.Build
 import contacts.ContactsField
 import contacts.ContactsFields
 import java.util.*
@@ -17,30 +15,22 @@ import java.util.*
 internal class ContactsCursor(cursor: Cursor) : AbstractCursor<ContactsField>(cursor),
     JoinedContactsCursor {
 
-    override val contactId: Long?
-        get() = getLong(ContactsFields.Id)
+    override val contactId: Long? by long(ContactsFields.Id)
 
-    override val displayNamePrimary: String?
-        get() = getString(ContactsFields.DisplayNamePrimary)
+    override val displayNamePrimary: String? by string(ContactsFields.DisplayNamePrimary)
 
-    override val displayNameAlt: String?
-        get() = getString(ContactsFields.DisplayNameAlt)
+    override val displayNameAlt: String? by string(ContactsFields.DisplayNameAlt)
 
-    override val lastUpdatedTimestamp: Date?
-        get() = getDate(ContactsFields.LastUpdatedTimestamp)
+    override val lastUpdatedTimestamp: Date? by date(ContactsFields.LastUpdatedTimestamp)
 
-    val displayNameSource: Int?
-        get() = getInt(ContactsFields.DisplayNameSource)
+    val displayNameSource: Int? by int(ContactsFields.DisplayNameSource)
 
-    val nameRawContactId: Long?
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        get() = getLong(ContactsFields.NameRawContactId)
+    // @TargetApi(Build.VERSION_CODES.LOLLIPOP) Not applicable to delegated properties
+    val nameRawContactId: Long? by long(ContactsFields.NameRawContactId)
 
-    val photoUri: Uri?
-        get() = getUri(ContactsFields.PhotoUri)
+    val photoUri: Uri? by uri(ContactsFields.PhotoUri)
 
-    val photoThumbnailUri: Uri?
-        get() = getUri(ContactsFields.PhotoThumbnailUri)
+    val photoThumbnailUri: Uri? by uri(ContactsFields.PhotoThumbnailUri)
 
     val photoFileId: Long?
         get() {

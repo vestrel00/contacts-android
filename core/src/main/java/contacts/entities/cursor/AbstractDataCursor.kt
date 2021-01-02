@@ -9,22 +9,18 @@ import contacts.AbstractDataField
 abstract class AbstractDataCursor<T : AbstractDataField>(cursor: Cursor) :
     AbstractCursor<T>(cursor), DataIdCursor {
 
-    // Cannot be in the constructor as this is internal, which is why I couldn't use
-    // DataIdCursor by dataCursor at the class declaration level.
+    // Cannot be in the constructor as DataCursor is internal, which is why I couldn't use
+    // DataIdCursor by dataCursor at the class declaration level and instead resort to delegation
+    // at the property level.
     private val dataCursor: DataCursor = DataCursor(cursor)
 
-    override val dataId: Long?
-        get() = dataCursor.dataId
+    override val dataId: Long? by dataCursor::dataId
 
-    override val rawContactId: Long?
-        get() = dataCursor.rawContactId
+    override val rawContactId: Long? by dataCursor::rawContactId
 
-    override val contactId: Long?
-        get() = dataCursor.contactId
+    override val contactId: Long? by dataCursor::contactId
 
-    val isPrimary: Boolean
-        get() = dataCursor.isPrimary
+    val isPrimary: Boolean by dataCursor::isPrimary
 
-    val isSuperPrimary: Boolean
-        get() = dataCursor.isSuperPrimary
+    val isSuperPrimary: Boolean by dataCursor::isSuperPrimary
 }

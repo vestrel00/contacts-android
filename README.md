@@ -1,5 +1,9 @@
 ## TODO
 
+- Rename EntityCursor to TableCursor or FieldCursor.
+- Rename AbstractCursor to AbstractEntityCursor.
+- Ensure cursors and mappers are not created in for or while loops. Query violates this rule.
+
 1. Support for adding custom mimetypes.
     - Weight; type (lbs, kg, etc), label, value (demonstrates single data with primary data)
     - Favorites; type (food, color, music, book, movie, hobby, sports), label, name (demonstrates multiple data)
@@ -83,6 +87,12 @@ functionality is included (though may look different).
   - Name format first name first or last name first
 
 ----------------------------------------------------------------------------------------------------
+
+#### Include in sample app
+
+1. Add extra activities that showcase unused library features.
+2. Ensure all groups of library features are used in both Kotlin and Java.
+    - This ensures that Java is also supported.
 
 #### Tidy up
 

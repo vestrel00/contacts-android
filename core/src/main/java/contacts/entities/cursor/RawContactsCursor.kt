@@ -14,23 +14,17 @@ import contacts.RawContactsFields
 internal class RawContactsCursor(cursor: Cursor) : AbstractCursor<RawContactsField>(cursor),
     RawContactIdCursor {
 
-    override val contactId: Long?
-        get() = getLong(RawContactsFields.ContactId)
+    override val contactId: Long? by long(RawContactsFields.ContactId)
 
-    override val rawContactId: Long?
-        get() = getLong(RawContactsFields.Id)
+    override val rawContactId: Long? by long(RawContactsFields.Id)
 
-    val displayNamePrimary: String?
-        get() = getString(RawContactsFields.DisplayNamePrimary)
+    val displayNamePrimary: String? by string(RawContactsFields.DisplayNamePrimary)
 
-    val displayNameAlt: String?
-        get() = getString(RawContactsFields.DisplayNameAlt)
+    val displayNameAlt: String? by string(RawContactsFields.DisplayNameAlt)
 
-    val accountName: String?
-        get() = getString(RawContactsFields.AccountName)
+    val accountName: String? by string(RawContactsFields.AccountName)
 
-    val accountType: String?
-        get() = getString(RawContactsFields.AccountType)
+    val accountType: String? by string(RawContactsFields.AccountType)
 
 }
 
@@ -38,9 +32,5 @@ internal fun RawContactsCursor.account(): Account? {
     val name = accountName
     val type = accountType
 
-    return if (name != null && type != null) {
-        Account(name, type)
-    } else {
-        null
-    }
+    return if (name != null && type != null) Account(name, type) else null
 }

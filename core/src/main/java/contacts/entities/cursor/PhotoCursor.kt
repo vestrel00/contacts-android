@@ -19,6 +19,5 @@ internal class PhotoCursor(cursor: Cursor) : AbstractDataCursor<PhotoField>(curs
             return if (value != null && value > 0) value else null
         }
 
-    val photoThumbnail: ByteArray?
-        get() = getBlob(Fields.Photo.PhotoThumbnail)
+    val photoThumbnail: ByteArray? by blob(Fields.Photo.PhotoThumbnail)
 }

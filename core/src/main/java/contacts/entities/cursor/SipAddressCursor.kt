@@ -12,6 +12,5 @@ import contacts.SipAddressField
  */
 internal class SipAddressCursor(cursor: Cursor) : AbstractDataCursor<SipAddressField>(cursor) {
 
-    val sipAddress: String?
-        get() = getString(Fields.SipAddress.SipAddress)
+    val sipAddress: String? by string(Fields.SipAddress.SipAddress)
 }

@@ -12,30 +12,21 @@ import contacts.NameField
  */
 internal class NameCursor(cursor: Cursor) : AbstractDataCursor<NameField>(cursor) {
 
-    val displayName: String?
-        get() = getString(Fields.Name.DisplayName)
+    val displayName: String? by string(Fields.Name.DisplayName)
 
-    val givenName: String?
-        get() = getString(Fields.Name.GivenName)
+    val givenName: String? by string(Fields.Name.GivenName)
 
-    val middleName: String?
-        get() = getString(Fields.Name.MiddleName)
+    val middleName: String? by string(Fields.Name.MiddleName)
 
-    val familyName: String?
-        get() = getString(Fields.Name.FamilyName)
+    val familyName: String? by string(Fields.Name.FamilyName)
 
-    val prefix: String?
-        get() = getString(Fields.Name.Prefix)
+    val prefix: String? by string(Fields.Name.Prefix)
 
-    val suffix: String?
-        get() = getString(Fields.Name.Suffix)
+    val suffix: String? by string(Fields.Name.Suffix)
 
-    val phoneticGivenName: String?
-        get() = getString(Fields.Name.PhoneticGivenName)
+    val phoneticGivenName: String? by string(Fields.Name.PhoneticGivenName)
 
-    val phoneticMiddleName: String?
-        get() = getString(Fields.Name.PhoneticMiddleName)
+    val phoneticMiddleName: String? by string(Fields.Name.PhoneticMiddleName)
 
-    val phoneticFamilyName: String?
-        get() = getString(Fields.Name.PhoneticFamilyName)
+    val phoneticFamilyName: String? by string(Fields.Name.PhoneticFamilyName)
 }

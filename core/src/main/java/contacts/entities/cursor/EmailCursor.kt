@@ -13,12 +13,9 @@ import contacts.entities.Email
  */
 internal class EmailCursor(cursor: Cursor) : AbstractDataCursor<EmailField>(cursor) {
 
-    val type: Email.Type?
-        get() = Email.Type.fromValue(getInt(Fields.Email.Type))
+    val type: Email.Type? by type(Fields.Email.Type, typeFromValue = Email.Type::fromValue)
 
-    val label: String?
-        get() = getString(Fields.Email.Label)
+    val label: String? by string(Fields.Email.Label)
 
-    val address: String?
-        get() = getString(Fields.Email.Address)
+    val address: String? by string(Fields.Email.Address)
 }

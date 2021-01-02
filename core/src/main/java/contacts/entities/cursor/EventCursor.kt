@@ -13,12 +13,9 @@ import contacts.entities.Event
  */
 internal class EventCursor(cursor: Cursor) : AbstractDataCursor<EventField>(cursor) {
 
-    val type: Event.Type?
-        get() = Event.Type.fromValue(getInt(Fields.Event.Type))
+    val type: Event.Type? by type(Fields.Event.Type, typeFromValue = Event.Type::fromValue)
 
-    val label: String?
-        get() = getString(Fields.Event.Label)
+    val label: String? by string(Fields.Event.Label)
 
-    val date: String?
-        get() = getString(Fields.Event.Date)
+    val date: String? by string(Fields.Event.Date)
 }

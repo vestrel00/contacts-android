@@ -12,6 +12,5 @@ import contacts.WebsiteField
  */
 internal class WebsiteCursor(cursor: Cursor) : AbstractDataCursor<WebsiteField>(cursor) {
 
-    val url: String?
-        get() = getString(Fields.Website.Url)
+    val url: String? by string(Fields.Website.Url)
 }

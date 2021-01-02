@@ -13,15 +13,11 @@ import contacts.entities.Phone
  */
 internal class PhoneCursor(cursor: Cursor) : AbstractDataCursor<PhoneField>(cursor) {
 
-    val type: Phone.Type?
-        get() = Phone.Type.fromValue(getInt(Fields.Phone.Type))
+    val type: Phone.Type? by type(Fields.Phone.Type, typeFromValue = Phone.Type::fromValue)
 
-    val label: String?
-        get() = getString(Fields.Phone.Label)
+    val label: String? by string(Fields.Phone.Label)
 
-    val number: String?
-        get() = getString(Fields.Phone.Number)
+    val number: String? by string(Fields.Phone.Number)
 
-    val normalizedNumber: String?
-        get() = getString(Fields.Phone.NormalizedNumber)
+    val normalizedNumber: String? by string(Fields.Phone.NormalizedNumber)
 }

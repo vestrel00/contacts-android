@@ -13,12 +13,9 @@ import contacts.entities.Relation
  */
 internal class RelationCursor(cursor: Cursor) : AbstractDataCursor<RelationField>(cursor) {
 
-    val type: Relation.Type?
-        get() = Relation.Type.fromValue(getInt(Fields.Relation.Type))
+    val type: Relation.Type? by type(Fields.Relation.Type, typeFromValue = Relation.Type::fromValue)
 
-    val label: String?
-        get() = getString(Fields.Relation.Label)
+    val label: String? by string(Fields.Relation.Label)
 
-    val name: String?
-        get() = getString(Fields.Relation.Name)
+    val name: String? by string(Fields.Relation.Name)
 }

@@ -16,23 +16,17 @@ import contacts.ContactsFields
  */
 internal class OptionsCursor(cursor: Cursor) : AbstractCursor<ContactsField>(cursor) {
 
-    val id: Long?
-        get() = getLong(ContactsFields.Options.Id)
+    val id: Long? by long(ContactsFields.Options.Id)
 
-    val starred: Boolean?
-        get() = getBoolean(ContactsFields.Options.Starred)
+    val starred: Boolean? by boolean(ContactsFields.Options.Starred)
 
     /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
-    val timesContacted: Int?
-        get() = getInt(ContactsFields.Options.TimesContacted)
+    val timesContacted: Int? by int(ContactsFields.Options.TimesContacted)
 
-    val lastTimeContacted: Date?
-        get() = getDate(ContactsFields.Options.LastTimeContacted)
+    val lastTimeContacted: Date? by date(ContactsFields.Options.LastTimeContacted)
      */
 
-    val customRingtone: Uri?
-        get() = getUri(ContactsFields.Options.CustomRingtone)
+    val customRingtone: Uri? by uri(ContactsFields.Options.CustomRingtone)
 
-    val sendToVoicemail: Boolean?
-        get() = getBoolean(ContactsFields.Options.SendToVoicemail)
+    val sendToVoicemail: Boolean? by boolean(ContactsFields.Options.SendToVoicemail)
 }

@@ -7,7 +7,7 @@ import contacts.*
  * A wrapper around a [Cursor] using fields of type [T]. This provides type restrictions with
  * specific fields and convenience functions.
  *
- * Used mainly for cursor manipulations and factory methods.
+ * Used mainly for cursor manipulations and used for factory extensions.
  *
  * ## Developer notes
  *

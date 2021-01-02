@@ -13,33 +13,23 @@ import contacts.entities.Address
  */
 internal class AddressCursor(cursor: Cursor) : AbstractDataCursor<AddressField>(cursor) {
 
-    val type: Address.Type?
-        get() = Address.Type.fromValue(getInt(Fields.Address.Type))
+    val type: Address.Type? by type(Fields.Address.Type, typeFromValue = Address.Type::fromValue)
 
-    val label: String?
-        get() = getString(Fields.Address.Label)
+    val label: String? by string(Fields.Address.Label)
 
-    val formattedAddress: String?
-        get() = getString(Fields.Address.FormattedAddress)
+    val formattedAddress: String? by string(Fields.Address.FormattedAddress)
 
-    val street: String?
-        get() = getString(Fields.Address.Street)
+    val street: String? by string(Fields.Address.Street)
 
-    val poBox: String?
-        get() = getString(Fields.Address.PoBox)
+    val poBox: String? by string(Fields.Address.PoBox)
 
-    val neighborhood: String?
-        get() = getString(Fields.Address.Neighborhood)
+    val neighborhood: String? by string(Fields.Address.Neighborhood)
 
-    val city: String?
-        get() = getString(Fields.Address.City)
+    val city: String? by string(Fields.Address.City)
 
-    val region: String?
-        get() = getString(Fields.Address.Region)
+    val region: String? by string(Fields.Address.Region)
 
-    val postcode: String?
-        get() = getString(Fields.Address.PostCode)
+    val postcode: String? by string(Fields.Address.PostCode)
 
-    val country: String?
-        get() = getString(Fields.Address.Country)
+    val country: String? by string(Fields.Address.Country)
 }

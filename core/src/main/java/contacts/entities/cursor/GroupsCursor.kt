@@ -13,26 +13,21 @@ import contacts.GroupsFields
  */
 internal class GroupsCursor(cursor: Cursor) : AbstractCursor<GroupsField>(cursor) {
 
-    val id: Long?
-        get() = getLong(GroupsFields.Id)
+    val id: Long? by long(GroupsFields.Id)
 
-    val title: String
-        get() = getString(GroupsFields.Title) ?: "Null"
+    val title: String by nonNullString(GroupsFields.Title, "Null")
 
-    val readOnly: Boolean
-        get() = getBoolean(GroupsFields.ReadOnly) ?: false
+    val readOnly: Boolean by nonNullBoolean(GroupsFields.ReadOnly)
 
-    val favorites: Boolean
-        get() = getBoolean(GroupsFields.Favorites) ?: false
+    val favorites: Boolean by nonNullBoolean(GroupsFields.Favorites)
 
-    val autoAdd: Boolean
-        get() = getBoolean(GroupsFields.AutoAdd) ?: false
+    val autoAdd: Boolean by nonNullBoolean(GroupsFields.AutoAdd)
 
     val account: Account
         get() {
             // There should never be null account name or type...
-            val accountName = getString(GroupsFields.AccountName) ?: "null"
-            val accountType = getString(GroupsFields.AccountType) ?: "null"
+            val accountName = getNonNullString(GroupsFields.AccountName, "null")
+            val accountType = getNonNullString(GroupsFields.AccountType, "null")
 
             return Account(accountName, accountType)
         }

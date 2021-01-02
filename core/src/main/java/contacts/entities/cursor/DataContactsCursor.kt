@@ -14,15 +14,11 @@ import java.util.*
 internal class DataContactsCursor(cursor: Cursor) : AbstractDataCursor<DataContactsField>(cursor),
     JoinedContactsCursor {
 
-    override val contactId: Long?
-        get() = getLong(Fields.Contact.Id)
+    override val contactId: Long? by long(Fields.Contact.Id)
 
-    override val displayNamePrimary: String?
-        get() = getString(Fields.Contact.DisplayNamePrimary)
+    override val displayNamePrimary: String? by string(Fields.Contact.DisplayNamePrimary)
 
-    override val displayNameAlt: String?
-        get() = getString(Fields.Contact.DisplayNameAlt)
+    override val displayNameAlt: String? by string(Fields.Contact.DisplayNameAlt)
 
-    override val lastUpdatedTimestamp: Date?
-        get() = getDate(Fields.Contact.LastUpdatedTimestamp)
+    override val lastUpdatedTimestamp: Date? by date(Fields.Contact.LastUpdatedTimestamp)
 }

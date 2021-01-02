@@ -13,12 +13,9 @@ import contacts.entities.Im
  */
 internal class ImCursor(cursor: Cursor) : AbstractDataCursor<ImField>(cursor) {
 
-    val protocol: Im.Protocol?
-        get() = Im.Protocol.fromValue(getInt(Fields.Im.Protocol))
+    val protocol: Im.Protocol? by type(Fields.Im.Protocol, typeFromValue = Im.Protocol::fromValue)
 
-    val customProtocol: String?
-        get() = getString(Fields.Im.CustomProtocol)
+    val customProtocol: String? by string(Fields.Im.CustomProtocol)
 
-    val data: String?
-        get() = getString(Fields.Im.Data)
+    val data: String? by string(Fields.Im.Data)
 }

@@ -12,6 +12,5 @@ import contacts.NoteField
  */
 internal class NoteCursor(cursor: Cursor) : AbstractDataCursor<NoteField>(cursor) {
 
-    val note: String?
-        get() = getString(Fields.Note.Note)
+    val note: String? by string(Fields.Note.Note)
 }
