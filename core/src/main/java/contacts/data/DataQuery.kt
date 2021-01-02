@@ -7,6 +7,7 @@ import contacts.*
 import contacts.entities.*
 import contacts.entities.cursor.rawContactsCursor
 import contacts.entities.custom.CustomCommonDataEntity
+import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomCommonDataRegistry
 import contacts.entities.mapper.entityMapperFor
 import contacts.entities.table.ProfileUris
@@ -189,7 +190,7 @@ private class DataQueryImpl(
         // making code look very messy with types all over the place?
         // For now, we'll have to rely on consumer diligence for this.
         customDataRegistry.fieldSetOf(mimeType) as AbstractCustomCommonDataFieldSet<K>?
-            ?: throw IllegalStateException("No custom field set found for ${mimeType.value}"),
+            ?: throw CustomDataException("No custom field set found for ${mimeType.value}"),
         mimeType, isProfile
     )
 }

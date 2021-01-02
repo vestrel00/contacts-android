@@ -1,11 +1,9 @@
 package contacts.entities.mapper
 
-import contacts.AbstractDataField
-import contacts.ContactsField
-import contacts.GroupsField
-import contacts.RawContactsField
+import contacts.*
 import contacts.entities.*
 import contacts.entities.cursor.*
+import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomCommonDataRegistry
 
 // region EntityCursor<AbstractDataField>
@@ -83,8 +81,10 @@ internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapper
     is MimeType.Custom -> customDataRegistry
         .mapperFactoryOf(mimeType)
         ?.create(cursor)
-        ?: throw IllegalStateException("No custom entity mapper for mime type ${mimeType.value}")
-    MimeType.Unknown -> throw IllegalStateException(
+        ?: throw CustomDataException(
+            "No custom entity mapper for mime type ${mimeType.value}"
+        )
+    MimeType.Unknown -> throw ContactsException(
         "No entity mapper for mime type ${mimeType.value}"
     )
 } as EntityMapper<T>

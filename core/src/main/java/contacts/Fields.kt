@@ -771,6 +771,11 @@ abstract class AbstractCustomCommonDataField(
     columnName: ColumnName
 ) : CommonDataField() {
 
+    abstract val customMimeType: MimeType.Custom
+
+    final override val mimeType: MimeType
+        get() = customMimeType
+
     final override val columnName: String = columnName.value
 
     /**
@@ -921,7 +926,7 @@ abstract class AbstractCustomCommonDataField(
  *
  * ## Developer notes
  *
- * This had to be declared here instead of in the [contacts.custom] package because
+ * This had to be declared here instead of in the [contacts.entities.custom] package because
  * [AbstractDataFieldSet] is sealed.
  */
 abstract class AbstractCustomCommonDataFieldSet<out T : AbstractCustomCommonDataField> :

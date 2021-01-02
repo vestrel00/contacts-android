@@ -9,6 +9,7 @@ import contacts.entities.RawContact
 import contacts.entities.TempRawContact
 import contacts.entities.cursor.*
 import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.MutableCustomCommonDataEntityHolder
 
 /**
@@ -214,14 +215,12 @@ private fun EntityCursor<AbstractDataField>.updateRawContactCustomData(
 ) {
     val customDataCountRestriction = customDataRegistry
         .countRestrictionOf(mimeType)
-        ?: throw IllegalStateException(
-            "No custom data count restriction for ${mimeType.value}"
-        )
+        ?: throw CustomDataException("No custom data count restriction for ${mimeType.value}")
 
     val customDataMapper = customDataRegistry
         .mapperFactoryOf(mimeType)
         ?.create(cursor)
-        ?: throw IllegalStateException("No custom data mapper for ${mimeType.value}")
+        ?: throw CustomDataException("No custom data mapper for ${mimeType.value}")
 
     val customDataHolder = rawContact.customData.getOrPut(mimeType.value) {
         MutableCustomCommonDataEntityHolder(mutableListOf(), customDataCountRestriction)
