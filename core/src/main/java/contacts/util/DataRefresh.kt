@@ -4,8 +4,8 @@ import android.content.Context
 import contacts.*
 import contacts.data.resolveDataEntity
 import contacts.entities.CommonDataEntity
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.entities.fields
 
 /**
@@ -32,7 +32,7 @@ import contacts.entities.fields
 @JvmOverloads
 fun <T : CommonDataEntity> T.refresh(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): T? =
     if (id == null) {

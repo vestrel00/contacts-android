@@ -7,7 +7,7 @@ import contacts.entities.Contact
 import contacts.entities.cursor.contactsCursor
 import contacts.entities.cursor.dataContactsCursor
 import contacts.entities.cursor.rawContactsCursor
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.mapper.ContactsMapper
 import contacts.entities.table.Table
 import contacts.util.isEmpty
@@ -344,7 +344,7 @@ interface Query {
 }
 
 @Suppress("FunctionName")
-internal fun Query(context: Context, customDataRegistry: CustomCommonDataRegistry): Query =
+internal fun Query(context: Context, customDataRegistry: CustomDataRegistry): Query =
     QueryImpl(
         context.contentResolver,
         ContactsPermissions(context),
@@ -354,7 +354,7 @@ internal fun Query(context: Context, customDataRegistry: CustomCommonDataRegistr
 private class QueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -461,7 +461,7 @@ private class QueryImpl(
 }
 
 private fun ContentResolver.resolve(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
@@ -522,7 +522,7 @@ private fun ContentResolver.resolve(
 }
 
 internal fun ContentResolver.resolve(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     contactIds: MutableSet<Long>?,
     includeBlanks: Boolean,
     include: Include<AbstractDataField>,

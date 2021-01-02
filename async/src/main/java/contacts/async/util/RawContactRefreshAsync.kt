@@ -4,8 +4,8 @@ import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun RawContact.refreshWithContext(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): RawContact? = withContext(coroutineContext) {
     refresh(context, customDataRegistry) { !isActive }
@@ -36,7 +36,7 @@ suspend fun RawContact.refreshWithContext(
  */
 suspend fun MutableRawContact.refreshWithContext(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): MutableRawContact? = withContext(coroutineContext) {
     refresh(context, customDataRegistry) { !isActive }
@@ -52,7 +52,7 @@ suspend fun MutableRawContact.refreshWithContext(
  */
 fun RawContact.refreshAsync(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
     refresh(context, customDataRegistry) { !isActive }
@@ -68,7 +68,7 @@ fun RawContact.refreshAsync(
  */
 fun MutableRawContact.refreshAsync(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<MutableRawContact?> = CoroutineScope(coroutineContext).async {
     refresh(context, customDataRegistry) { !isActive }

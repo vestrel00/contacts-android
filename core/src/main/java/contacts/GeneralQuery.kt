@@ -8,7 +8,7 @@ import android.provider.ContactsContract
 import contacts.entities.Contact
 import contacts.entities.Group
 import contacts.entities.cursor.contactsCursor
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 import contacts.util.isEmpty
 import contacts.util.query
 import contacts.util.toRawContactsWhere
@@ -346,7 +346,7 @@ interface GeneralQuery {
 
 @Suppress("FunctionName")
 internal fun GeneralQuery(
-    context: Context, customDataRegistry: CustomCommonDataRegistry
+    context: Context, customDataRegistry: CustomDataRegistry
 ): GeneralQuery = GeneralQueryImpl(
     context.contentResolver,
     ContactsPermissions(context),
@@ -356,7 +356,7 @@ internal fun GeneralQuery(
 private class GeneralQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -480,7 +480,7 @@ private class GeneralQueryImpl(
 }
 
 private fun ContentResolver.resolve(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     groupMembershipWhere: Where<GroupMembershipField>?,

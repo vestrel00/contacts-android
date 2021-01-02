@@ -4,8 +4,8 @@ import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
 import contacts.entities.CommonDataEntity
 import contacts.entities.Contact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.util.contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun CommonDataEntity.contactWithContext(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Contact? = withContext(coroutineContext) { contact(context, customDataRegistry) { !isActive } }
 
@@ -34,7 +34,7 @@ suspend fun CommonDataEntity.contactWithContext(
  */
 fun CommonDataEntity.contactAsync(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> =
     CoroutineScope(coroutineContext).async { contact(context, customDataRegistry) { !isActive } }

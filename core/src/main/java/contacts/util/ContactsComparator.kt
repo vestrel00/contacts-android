@@ -39,21 +39,21 @@ import java.util.*
  * ```
  */
 fun Collection<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
  * See [contactsComparator].
  */
 fun Set<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, this)
 
 /**
  * See [contactsComparator].
  */
 fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
@@ -75,14 +75,14 @@ fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(
  * ```
  */
 fun OrderBy<AbstractDataField>.contactsComparator(
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, setOf(this))
 
 /**
  * Compares [Contact] objects using one or more [OrderBy]s, which may be constructed from [Fields].
  */
 private class ContactsComparator(
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
     private val orderBys: Set<OrderBy<AbstractDataField>>
 ) :
     Comparator<Contact> {
@@ -119,7 +119,7 @@ private class ContactsComparator(
  * Compares [Contact] values corresponding to [Field]s defined in [Fields].
  */
 private fun AbstractDataField.compare(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     lhs: Contact,
     rhs: Contact,
     ignoreCase: Boolean
@@ -353,8 +353,8 @@ private fun AbstractDataField.compare(
 
         @Suppress("UNCHECKED_CAST")
         val fieldMapper = customDataRegistry.fieldMapperOf(mimeType)
-                as CustomCommonDataEntityFieldMapper<AbstractCustomCommonDataField,
-                MutableCustomCommonDataEntity>?
+                as CustomDataFieldMapper<AbstractCustomCommonDataField,
+                MutableCustomDataEntity>?
             ?: throw CustomDataException("No custom field mapper for ${mimeType.value}")
 
         val lhsCustomDataEntities = lhs.customDataSequenceOf(mimeType)

@@ -1,7 +1,7 @@
 package contacts.util
 
 import contacts.entities.*
-import contacts.entities.custom.MutableCustomCommonDataEntity
+import contacts.entities.custom.MutableCustomDataEntity
 
 // Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
 // as they will not have to convert Sequences to List. Also, all are functions instead of vals
@@ -181,7 +181,7 @@ fun Contact.websiteList(): List<Website> = websites().toList()
  */
 internal fun Contact.customDataSequenceOf(
     mimeType: MimeType.Custom
-): Sequence<MutableCustomCommonDataEntity> = rawContacts
+): Sequence<MutableCustomDataEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.customData[mimeType.value] }
     .flatMap {

@@ -6,8 +6,7 @@ import contacts.AbstractCustomCommonDataField
  * Provides a piece of data as a nullable String from the custom entity [V] corresponding to the
  * field [K].
  */
-interface CustomCommonDataEntityFieldMapper<K : AbstractCustomCommonDataField,
-        V : MutableCustomCommonDataEntity> {
+interface CustomDataFieldMapper<K : AbstractCustomCommonDataField, V : MutableCustomDataEntity> {
 
     /**
      * Return a piece of data as a nullable String from the [customEntity] corresponding to the

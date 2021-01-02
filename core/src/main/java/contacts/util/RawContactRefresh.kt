@@ -5,8 +5,8 @@ import contacts.Fields
 import contacts.Query
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.equalTo
 import contacts.profile.ProfileQuery
 
@@ -34,7 +34,7 @@ import contacts.profile.ProfileQuery
 @JvmOverloads
 fun RawContact.refresh(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): RawContact? =
     if (id == null) {
@@ -54,7 +54,7 @@ fun RawContact.refresh(
 @JvmOverloads
 fun MutableRawContact.refresh(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): MutableRawContact? = if (id == null) {
     this
@@ -64,7 +64,7 @@ fun MutableRawContact.refresh(
 
 internal fun Context.findFirstRawContactWithId(
     rawContactId: Long,
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     cancel: () -> Boolean
 ): RawContact? = if (rawContactId.isProfileId) {
     ProfileQuery(this, customDataRegistry)

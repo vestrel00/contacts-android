@@ -3,7 +3,7 @@ package contacts.data
 import android.content.Context
 import contacts.ContactsPermissions
 import contacts.entities.MimeType
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 
 /**
  * Provides new [DataQuery], [DataUpdate], and [DataDelete] for Profile OR non-Profile (depending on
@@ -55,12 +55,12 @@ interface Data {
     /**
      * Provides functions required to support custom common data, which have [MimeType.Custom].
      */
-    val customDataRegistry: CustomCommonDataRegistry
+    val customDataRegistry: CustomDataRegistry
 }
 
 @Suppress("FunctionName")
 internal fun Data(
-    context: Context, customDataRegistry: CustomCommonDataRegistry, isProfile: Boolean
+    context: Context, customDataRegistry: CustomDataRegistry, isProfile: Boolean
 ): Data = DataImpl(
     context.applicationContext,
     ContactsPermissions(context.applicationContext),
@@ -71,7 +71,7 @@ internal fun Data(
 private class DataImpl(
     override val applicationContext: Context,
     override val permissions: ContactsPermissions,
-    override val customDataRegistry: CustomCommonDataRegistry,
+    override val customDataRegistry: CustomDataRegistry,
     private val isProfile: Boolean
 ) : Data {
 

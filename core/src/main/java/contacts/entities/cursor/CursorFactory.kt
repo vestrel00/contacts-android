@@ -4,7 +4,7 @@ import contacts.AbstractDataField
 import contacts.ContactsField
 import contacts.GroupsField
 import contacts.RawContactsField
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 
 internal fun EntityCursor<AbstractDataField>.addressCursor() = AddressCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.dataContactsCursor() = DataContactsCursor(cursor)
@@ -14,7 +14,7 @@ internal fun EntityCursor<AbstractDataField>.eventCursor() = EventCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.groupMembershipCursor() = GroupMembershipCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.imCursor() = ImCursor(cursor)
 internal fun EntityCursor<AbstractDataField>.mimeTypeCursor(
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry
 ) = MimeTypeCursor(cursor, customDataRegistry)
 
 internal fun EntityCursor<AbstractDataField>.nameCursor() = NameCursor(cursor)

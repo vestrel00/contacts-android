@@ -3,8 +3,8 @@ package contacts.util
 import android.content.Context
 import contacts.entities.Contact
 import contacts.entities.RawContact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.profile.ProfileInsert
 import contacts.profile.ProfileQuery
 
@@ -26,7 +26,7 @@ import contacts.profile.ProfileQuery
 @JvmOverloads
 fun ProfileInsert.Result.rawContact(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): RawContact? = rawContactId?.let { rawContactId ->
     contact(context, customDataRegistry, cancel)
@@ -53,6 +53,6 @@ fun ProfileInsert.Result.rawContact(
 @JvmOverloads
 fun ProfileInsert.Result.contact(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): Contact? = if (isSuccessful) ProfileQuery(context, customDataRegistry).find(cancel) else null

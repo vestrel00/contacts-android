@@ -6,9 +6,9 @@ import android.content.Context
 import contacts.*
 import contacts.entities.*
 import contacts.entities.cursor.rawContactsCursor
-import contacts.entities.custom.CustomCommonDataEntity
+import contacts.entities.custom.CustomDataEntity
 import contacts.entities.custom.CustomDataException
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.mapper.entityMapperFor
 import contacts.entities.table.ProfileUris
 import contacts.entities.table.Table
@@ -93,13 +93,13 @@ interface DataQuery {
     /**
      * Queries for custom data of type [V] with the given custom [mimeType].
      */
-    fun <K : AbstractCustomCommonDataField, V : CustomCommonDataEntity>
+    fun <K : AbstractCustomCommonDataField, V : CustomDataEntity>
             customData(mimeType: MimeType.Custom): CommonDataQuery<K, V>
 }
 
 @Suppress("FunctionName")
 internal fun DataQuery(
-    context: Context, customDataRegistry: CustomCommonDataRegistry, isProfile: Boolean
+    context: Context, customDataRegistry: CustomDataRegistry, isProfile: Boolean
 ): DataQuery = DataQueryImpl(
     context.contentResolver,
     ContactsPermissions(context),
@@ -110,7 +110,7 @@ internal fun DataQuery(
 private class DataQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
     private val isProfile: Boolean
 ) : DataQuery {
 
@@ -182,7 +182,7 @@ private class DataQueryImpl(
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <K : AbstractCustomCommonDataField, V : CustomCommonDataEntity>
+    override fun <K : AbstractCustomCommonDataField, V : CustomDataEntity>
             customData(mimeType: MimeType.Custom): CommonDataQuery<K, V> = CommonDataQueryImpl(
         contentResolver, permissions, customDataRegistry,
         // FIXME? ClassCastException will be thrown here if consumer messes up.
@@ -383,7 +383,7 @@ interface CommonDataQuery<K : CommonDataField, V : CommonDataEntity> {
 private class CommonDataQueryImpl<K : CommonDataField, V : CommonDataEntity>(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
 
     private val defaultIncludeFields: FieldSet<K>,
     private val mimeType: MimeType,
@@ -494,7 +494,7 @@ private class CommonDataQueryImpl<K : CommonDataField, V : CommonDataEntity>(
 }
 
 internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     isProfile: Boolean,
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,

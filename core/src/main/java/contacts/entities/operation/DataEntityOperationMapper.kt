@@ -5,7 +5,7 @@ import contacts.ContactsException
 import contacts.entities.MimeType
 import contacts.entities.MutableCommonDataEntity
 import contacts.entities.custom.CustomDataException
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 
 /**
  * Returns a new [ContentProviderOperation] for updating [this].
@@ -13,7 +13,7 @@ import contacts.entities.custom.CustomCommonDataRegistry
 // This can be declared just as MutableDataEntity.updateOperation but this looks more consistent
 // with the other functions.
 internal fun <T : MutableCommonDataEntity> T.updateOperation(
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): ContentProviderOperation? = dataOperation(customDataRegistry).updateDataRowOrDeleteIfBlank(this)
 
 // Yes, I know we can avoid this whole type casting situation by moving the body of this function
@@ -22,7 +22,7 @@ internal fun <T : MutableCommonDataEntity> T.updateOperation(
 // I prefer this way because this function can be reused :D #NOT-ALWAYS-YAGNI
 @Suppress("UNCHECKED_CAST")
 private fun <T : MutableCommonDataEntity> T.dataOperation(
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): AbstractCommonDataOperation<T> = when (mimeType) {
     // We could instead do when (this) is MutableAddress -> AddressOperation()
     // However, using mimeType instead of the class allows for exhaustive compilation checks.

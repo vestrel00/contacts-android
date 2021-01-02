@@ -6,4 +6,4 @@ import contacts.entities.cursor.DataCursor
 /**
  * An abstract class that is used as a base of all custom common [DataCursor]s.
  */
-abstract class AbstractCustomCommonDataCursor(cursor: Cursor) : DataCursor(cursor)
+abstract class AbstractCustomDataCursor(cursor: Cursor) : DataCursor(cursor)

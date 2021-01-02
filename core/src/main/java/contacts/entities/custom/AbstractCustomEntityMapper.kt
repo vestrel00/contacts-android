@@ -5,10 +5,10 @@ import contacts.entities.mapper.EntityMapper
 
 /**
  * An abstract class that is used as a base of all custom [EntityMapper]s. It uses a
- * [AbstractCustomCommonDataCursor] [K] and outputs a [CustomCommonDataEntity] [V].
+ * [AbstractCustomDataCursor] [K] and outputs a [CustomDataEntity] [V].
  */
-abstract class AbstractCustomCommonDataEntityMapper<K : AbstractCustomCommonDataCursor,
-        out V : MutableCustomCommonDataEntity>(
+abstract class AbstractCustomEntityMapper<K : AbstractCustomDataCursor,
+        out V : MutableCustomDataEntity>(
     private val cursor: K
 ) : EntityMapper<V> {
 
@@ -26,14 +26,13 @@ abstract class AbstractCustomCommonDataEntityMapper<K : AbstractCustomCommonData
         get() = value(cursor)
 
     /**
-     * Creates instances of [AbstractCustomCommonDataEntityMapper].
+     * Creates instances of [AbstractCustomEntityMapper].
      */
-    abstract class Factory<K : AbstractCustomCommonDataCursor,
-            out V : MutableCustomCommonDataEntity> {
+    abstract class Factory<K : AbstractCustomDataCursor, out V : MutableCustomDataEntity> {
 
         /**
-         * Creates instances of [AbstractCustomCommonDataEntityMapper] with the given [cursor].
+         * Creates instances of [AbstractCustomEntityMapper] with the given [cursor].
          */
-        abstract fun create(cursor: Cursor): AbstractCustomCommonDataEntityMapper<K, V>
+        abstract fun create(cursor: Cursor): AbstractCustomEntityMapper<K, V>
     }
 }

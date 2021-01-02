@@ -185,7 +185,7 @@ interface Insert {
 
 @Suppress("FunctionName")
 internal fun Insert(
-    context: Context, customDataRegistry: CustomCommonDataRegistry
+    context: Context, customDataRegistry: CustomDataRegistry
 ): Insert = InsertImpl(
     context.applicationContext,
     ContactsPermissions(context),
@@ -195,7 +195,7 @@ internal fun Insert(
 private class InsertImpl(
     private val applicationContext: Context,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
 
     private var allowBlanks: Boolean = false,
     private var account: Account? = null,
@@ -267,7 +267,7 @@ private class InsertImpl(
  * row.
  */
 internal fun Context.insertRawContactForAccount(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     account: Account?,
     rawContact: MutableRawContact,
     isProfile: Boolean
@@ -354,7 +354,7 @@ internal fun Context.insertRawContactForAccount(
 }
 
 private fun MutableRawContact.customDataInsertOperations(
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
     for ((mimeTypeValue, customDataHolder) in customData) {
         val mimeType = customDataRegistry.mimeTypeOf(mimeTypeValue)
@@ -364,16 +364,16 @@ private fun MutableRawContact.customDataInsertOperations(
 
         @Suppress("UNCHECKED_CAST")
         val customDataOperation = customDataRegistry.operationFactoryOf(mimeType)
-            ?.create(isProfile) as AbstractCustomCommonDataOperation<MutableCustomCommonDataEntity>?
+            ?.create(isProfile) as AbstractCustomDataOperation<MutableCustomDataEntity>?
             ?: throw CustomDataException("No custom data operation for $mimeTypeValue")
 
         when (countRestriction) {
-            CustomCommonDataEntityCountRestriction.AT_MOST_ONE -> {
+            CustomDataCountRestriction.AT_MOST_ONE -> {
                 customDataHolder.entities.firstOrNull()?.let {
                     customDataOperation.insert(it)?.let(::add)
                 }
             }
-            CustomCommonDataEntityCountRestriction.NO_LIMIT -> {
+            CustomDataCountRestriction.NO_LIMIT -> {
                 customDataOperation.insert(customDataHolder.entities).let(::addAll)
             }
         }

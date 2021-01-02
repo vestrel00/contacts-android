@@ -7,7 +7,7 @@ import contacts.entities.operation.AbstractCommonDataOperation
 /**
  * An abstract class that is used as a base of all custom [AbstractCommonDataOperation]s.
  */
-abstract class AbstractCustomCommonDataOperation<T : MutableCustomCommonDataEntity>(
+abstract class AbstractCustomDataOperation<T : MutableCustomDataEntity>(
     isProfile: Boolean
 ) : AbstractCommonDataOperation<T>(isProfile) {
 
@@ -28,13 +28,13 @@ abstract class AbstractCustomCommonDataOperation<T : MutableCustomCommonDataEnti
     }
 
     /**
-     * Creates instances of [AbstractCustomCommonDataOperation].
+     * Creates instances of [AbstractCustomDataOperation].
      */
-    abstract class Factory<T : MutableCustomCommonDataEntity> {
+    abstract class Factory<T : MutableCustomDataEntity> {
 
         /**
-         * Creates instances of [AbstractCustomCommonDataOperation] with the given [isProfile].
+         * Creates instances of [AbstractCustomDataOperation] with the given [isProfile].
          */
-        abstract fun create(isProfile: Boolean): AbstractCustomCommonDataOperation<T>
+        abstract fun create(isProfile: Boolean): AbstractCustomDataOperation<T>
     }
 }

@@ -3,8 +3,8 @@ package contacts.util
 import android.content.Context
 import contacts.entities.BlankRawContact
 import contacts.entities.RawContact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the equivalent [RawContact] with all of the latest data.
@@ -26,7 +26,7 @@ import contacts.entities.custom.GlobalCustomCommonDataRegistry
 @JvmOverloads
 fun BlankRawContact.toRawContact(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): RawContact? =
     id?.let { rawContactId ->

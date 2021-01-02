@@ -165,7 +165,7 @@ interface Update {
 
 @Suppress("FunctionName")
 internal fun Update(
-    context: Context, customDataRegistry: CustomCommonDataRegistry
+    context: Context, customDataRegistry: CustomDataRegistry
 ): Update = UpdateImpl(
     context.applicationContext,
     ContactsPermissions(context),
@@ -175,7 +175,7 @@ internal fun Update(
 private class UpdateImpl(
     private val applicationContext: Context,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
 
     private var deleteBlanks: Boolean = true,
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
@@ -253,7 +253,7 @@ private class UpdateImpl(
  * if it does not yet exist.
  */
 internal fun Context.updateRawContact(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     rawContact: MutableRawContact
 ): Boolean {
     if (rawContact.id == null) {
@@ -355,7 +355,7 @@ internal fun Context.updateRawContact(
 
 private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
     contentResolver: ContentResolver,
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
     if (id == null) {
         return@apply
@@ -369,17 +369,17 @@ private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
 
         @Suppress("UNCHECKED_CAST")
         val customDataOperation = customDataRegistry.operationFactoryOf(mimeType)
-            ?.create(isProfile) as AbstractCustomCommonDataOperation<MutableCustomCommonDataEntity>?
+            ?.create(isProfile) as AbstractCustomDataOperation<MutableCustomDataEntity>?
             ?: throw CustomDataException("No custom data operation found for $mimeTypeValue")
 
         when (countRestriction) {
-            CustomCommonDataEntityCountRestriction.AT_MOST_ONE -> {
+            CustomDataCountRestriction.AT_MOST_ONE -> {
                 customDataOperation
                     .updateInsertOrDelete(
                         customDataHolder.entities.firstOrNull(), id, contentResolver
                     ).let(::add)
             }
-            CustomCommonDataEntityCountRestriction.NO_LIMIT -> {
+            CustomDataCountRestriction.NO_LIMIT -> {
                 customDataOperation
                     .updateInsertOrDelete(customDataHolder.entities, id, contentResolver)
                     .let(::addAll)

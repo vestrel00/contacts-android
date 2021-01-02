@@ -3,12 +3,12 @@ package contacts.entities
 import contacts.CommonDataField
 import contacts.EmptyCommonDataFields
 import contacts.Fields
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 
-internal fun CommonDataEntity.fields(customDataRegistry: CustomCommonDataRegistry):
+internal fun CommonDataEntity.fields(customDataRegistry: CustomDataRegistry):
         Set<CommonDataField> = mimeType.fields(customDataRegistry)
 
-internal fun MimeType.fields(customDataRegistry: CustomCommonDataRegistry): Set<CommonDataField> =
+internal fun MimeType.fields(customDataRegistry: CustomDataRegistry): Set<CommonDataField> =
     when (this) {
         MimeType.Address -> Fields.Address
         MimeType.Email -> Fields.Email

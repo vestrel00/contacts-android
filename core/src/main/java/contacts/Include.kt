@@ -1,6 +1,6 @@
 package contacts
 
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 
 @Suppress("FunctionName")
 internal fun <T : Field> Include(vararg fields: T) = Include(fields.asSequence())
@@ -34,7 +34,7 @@ internal class Include<out T : Field>(val columnNames: Set<String>) {
 }
 
 internal fun allDataFields(
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): Include<AbstractDataField> = Include(DataFields.all + customDataRegistry.allFields())
 
 /**

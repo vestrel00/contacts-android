@@ -5,8 +5,8 @@ import contacts.Fields
 import contacts.Query
 import contacts.`in`
 import contacts.entities.Contact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.equalTo
 
 // Note that there is no need to handle isProfile here as ContactLinks operations do not support it.
@@ -28,7 +28,7 @@ import contacts.equalTo
 @JvmOverloads
 fun ContactLinkResult.contact(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): Contact? = contactId?.let {
     Query(context, customDataRegistry)
@@ -54,7 +54,7 @@ fun ContactLinkResult.contact(
 @JvmOverloads
 fun ContactUnlinkResult.contacts(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): List<Contact> = if (rawContactIds.isEmpty()) {
     emptyList()

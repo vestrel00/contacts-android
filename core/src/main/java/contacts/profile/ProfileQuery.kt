@@ -6,7 +6,7 @@ import android.content.Context
 import contacts.*
 import contacts.entities.Contact
 import contacts.entities.cursor.rawContactsCursor
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.mapper.ContactsMapper
 import contacts.entities.table.ProfileUris
 import contacts.util.isEmpty
@@ -177,7 +177,7 @@ interface ProfileQuery {
 
 @Suppress("FunctionName")
 internal fun ProfileQuery(
-    context: Context, customDataRegistry: CustomCommonDataRegistry
+    context: Context, customDataRegistry: CustomDataRegistry
 ): ProfileQuery = ProfileQueryImpl(
     ContactsPermissions(context),
     context.contentResolver,
@@ -187,7 +187,7 @@ internal fun ProfileQuery(
 private class ProfileQueryImpl(
     private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -247,7 +247,7 @@ private class ProfileQueryImpl(
 }
 
 private fun ContentResolver.resolve(
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,

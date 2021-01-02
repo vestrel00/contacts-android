@@ -5,17 +5,18 @@ import contacts.AbstractCustomCommonDataFieldSet
 import contacts.entities.MimeType
 
 /**
- * A global instance of [CustomCommonDataRegistry] that is used as the default throughout the API.
+ * A global instance of [CustomDataRegistry] that is used as the default throughout the API.
+ *
  * Use this instance to register custom data entries without having to keep a reference to it to
  * pass it around. For example, this is the default registry used in all util functions in the
  * [contacts.util] package.
  */
-val GlobalCustomCommonDataRegistry = CustomCommonDataRegistry()
+val GlobalCustomDataRegistry = CustomDataRegistry()
 
 /**
  * Provides functions required to support custom common data, which have [MimeType.Custom].
  */
-class CustomCommonDataRegistry {
+class CustomDataRegistry {
 
     /**
      * Map of mime type value to an [Entry].
@@ -31,14 +32,14 @@ class CustomCommonDataRegistry {
      * as compile-time checks for matching the generic types of parameter instances to make sure
      * consumers are providing the correct implementations.
      */
-    fun <F : AbstractCustomCommonDataField, K : AbstractCustomCommonDataCursor,
-            V : MutableCustomCommonDataEntity> register(
+    fun <F : AbstractCustomCommonDataField, K : AbstractCustomDataCursor,
+            V : MutableCustomDataEntity> register(
         customMimeType: MimeType.Custom,
         customFieldSet: AbstractCustomCommonDataFieldSet<F>,
-        fieldMapper: CustomCommonDataEntityFieldMapper<F, V>,
-        countRestriction: CustomCommonDataEntityCountRestriction,
-        mapperFactory: AbstractCustomCommonDataEntityMapper.Factory<K, V>,
-        operationFactory: AbstractCustomCommonDataOperation.Factory<V>
+        fieldMapper: CustomDataFieldMapper<F, V>,
+        countRestriction: CustomDataCountRestriction,
+        mapperFactory: AbstractCustomEntityMapper.Factory<K, V>,
+        operationFactory: AbstractCustomDataOperation.Factory<V>
     ) {
         entryMap[customMimeType.value] = Entry(
             customMimeType,
@@ -70,26 +71,26 @@ class CustomCommonDataRegistry {
 
     internal fun fieldMapperOf(
         mimeType: MimeType.Custom
-    ): CustomCommonDataEntityFieldMapper<*, *>? = entryMap[mimeType.value]?.fieldMapper
+    ): CustomDataFieldMapper<*, *>? = entryMap[mimeType.value]?.fieldMapper
 
     internal fun countRestrictionOf(
         mimeType: MimeType.Custom
-    ): CustomCommonDataEntityCountRestriction? = entryMap[mimeType.value]?.countRestriction
+    ): CustomDataCountRestriction? = entryMap[mimeType.value]?.countRestriction
 
     internal fun mapperFactoryOf(
         mimeType: MimeType.Custom
-    ): AbstractCustomCommonDataEntityMapper.Factory<*, *>? = entryMap[mimeType.value]?.mapperFactory
+    ): AbstractCustomEntityMapper.Factory<*, *>? = entryMap[mimeType.value]?.mapperFactory
 
     internal fun operationFactoryOf(
         mimeType: MimeType.Custom
-    ): AbstractCustomCommonDataOperation.Factory<*>? = entryMap[mimeType.value]?.operationFactory
+    ): AbstractCustomDataOperation.Factory<*>? = entryMap[mimeType.value]?.operationFactory
 
     private class Entry(
         val mimeType: MimeType.Custom,
         val fieldSet: AbstractCustomCommonDataFieldSet<*>,
-        val fieldMapper: CustomCommonDataEntityFieldMapper<*, *>,
-        val countRestriction: CustomCommonDataEntityCountRestriction,
-        val mapperFactory: AbstractCustomCommonDataEntityMapper.Factory<*, *>,
-        val operationFactory: AbstractCustomCommonDataOperation.Factory<*>
+        val fieldMapper: CustomDataFieldMapper<*, *>,
+        val countRestriction: CustomDataCountRestriction,
+        val mapperFactory: AbstractCustomEntityMapper.Factory<*, *>,
+        val operationFactory: AbstractCustomDataOperation.Factory<*>
     )
 }

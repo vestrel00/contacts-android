@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import contacts.ContactsPermissions
 import contacts.entities.MutableCommonDataEntity
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.operation.updateOperation
 import contacts.util.applyBatch
 import contacts.util.unsafeLazy
@@ -90,7 +90,7 @@ interface DataUpdate {
 
 @Suppress("FunctionName")
 internal fun DataUpdate(
-    context: Context, customDataRegistry: CustomCommonDataRegistry, isProfile: Boolean
+    context: Context, customDataRegistry: CustomDataRegistry, isProfile: Boolean
 ): DataUpdate = DataUpdateImpl(
     context.contentResolver,
     ContactsPermissions(context),
@@ -101,7 +101,7 @@ internal fun DataUpdate(
 private class DataUpdateImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
     private val isProfile: Boolean,
     private val data: MutableSet<MutableCommonDataEntity> = mutableSetOf()
 ) : DataUpdate {
@@ -154,7 +154,7 @@ private class DataUpdateImpl(
 
 private fun ContentResolver.updateData(
     data: MutableCommonDataEntity,
-    customDataRegistry: CustomCommonDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): Boolean = data.updateOperation(customDataRegistry)?.let { applyBatch(it) } != null
 
 private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>) :

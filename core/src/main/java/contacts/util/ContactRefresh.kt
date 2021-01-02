@@ -5,8 +5,8 @@ import contacts.Fields
 import contacts.Query
 import contacts.entities.Contact
 import contacts.entities.MutableContact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.equalTo
 import contacts.profile.ProfileQuery
 
@@ -35,7 +35,7 @@ import contacts.profile.ProfileQuery
 @JvmOverloads
 fun Contact.refresh(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): Contact? =
     if (id == null) {
@@ -55,7 +55,7 @@ fun Contact.refresh(
 @JvmOverloads
 fun MutableContact.refresh(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): MutableContact? =
     if (id == null) {
@@ -66,7 +66,7 @@ fun MutableContact.refresh(
 
 internal fun Context.findFirstContactWithId(
     contactId: Long,
-    customDataRegistry: CustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry,
     cancel: () -> Boolean
 ): Contact? =
     if (contactId.isProfileId) {

@@ -1,7 +1,7 @@
 package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 
 sealed class MimeType {
 
@@ -71,7 +71,7 @@ sealed class MimeType {
 
     internal companion object {
 
-        fun fromValue(value: String?, customDataRegistry: CustomCommonDataRegistry): MimeType =
+        fun fromValue(value: String?, customDataRegistry: CustomDataRegistry): MimeType =
             when (value) {
                 Address.value -> Address
                 Email.value -> Email

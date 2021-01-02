@@ -3,8 +3,8 @@ package contacts.util
 import android.content.Context
 import contacts.entities.CommonDataEntity
 import contacts.entities.Contact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the [Contact] with the [CommonDataEntity.contactId].
@@ -27,7 +27,7 @@ import contacts.entities.custom.GlobalCustomCommonDataRegistry
 @JvmOverloads
 fun CommonDataEntity.contact(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): Contact? =
     contactId?.let { contactId ->

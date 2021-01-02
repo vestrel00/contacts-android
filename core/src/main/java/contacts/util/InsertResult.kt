@@ -5,8 +5,8 @@ import contacts.*
 import contacts.entities.Contact
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the newly created [RawContact] or null if the insert operation failed.
@@ -27,7 +27,7 @@ import contacts.entities.custom.GlobalCustomCommonDataRegistry
 fun Insert.Result.rawContact(
     context: Context,
     rawContact: MutableRawContact,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): RawContact? {
 
@@ -58,7 +58,7 @@ fun Insert.Result.rawContact(
 @JvmOverloads
 fun Insert.Result.rawContacts(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): List<RawContact> =
     Query(context, customDataRegistry).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
@@ -87,7 +87,7 @@ fun Insert.Result.rawContacts(
 fun Insert.Result.contact(
     context: Context,
     rawContact: MutableRawContact,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): Contact? {
 
@@ -120,7 +120,7 @@ fun Insert.Result.contact(
 @JvmOverloads
 fun Insert.Result.contacts(
     context: Context,
-    customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry,
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
     cancel: () -> Boolean = { false }
 ): List<Contact> =
     Query(context, customDataRegistry).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)

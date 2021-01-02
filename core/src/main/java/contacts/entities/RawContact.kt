@@ -1,6 +1,6 @@
 package contacts.entities
 
-import contacts.entities.custom.MutableCustomCommonDataEntityHolder
+import contacts.entities.custom.CustomDataHolder
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
 import kotlinx.android.parcel.Parcelize
@@ -132,7 +132,7 @@ data class RawContact internal constructor(
     val websites: List<Website>,
 
     /**
-     * Map of custom mime type value to a [MutableCustomCommonDataEntityHolder].
+     * Map of custom mime type value to a [CustomDataHolder].
      *
      * ## Developer notes
      *
@@ -141,7 +141,7 @@ data class RawContact internal constructor(
      * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
      * immutable version if they choose to do so.
      */
-    internal val customData: Map<String, MutableCustomCommonDataEntityHolder>
+    internal val customData: Map<String, CustomDataHolder>
 
 ) : RawContactEntity() {
 
@@ -288,7 +288,7 @@ data class MutableRawContact internal constructor(
     /**
      * See [RawContact.customData].
      */
-    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder>
+    internal var customData: MutableMap<String, CustomDataHolder>
 
 ) : RawContactEntity() {
 
@@ -367,7 +367,7 @@ internal data class TempRawContact constructor(
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>,
-    internal var customData: MutableMap<String, MutableCustomCommonDataEntityHolder>
+    internal var customData: MutableMap<String, CustomDataHolder>
 
 ) : RawContactEntity() {
 

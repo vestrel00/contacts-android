@@ -7,7 +7,7 @@ import android.provider.ContactsContract
 import contacts.*
 import contacts.entities.MutableRawContact
 import contacts.entities.cursor.rawContactsCursor
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.table.ProfileUris
 import contacts.util.nullIfNotInSystem
 import contacts.util.query
@@ -180,7 +180,7 @@ interface ProfileInsert {
 
 @Suppress("FunctionName")
 internal fun ProfileInsert(
-    context: Context, customDataRegistry: CustomCommonDataRegistry
+    context: Context, customDataRegistry: CustomDataRegistry
 ): ProfileInsert = ProfileInsertImpl(
     context.applicationContext,
     ContactsPermissions(context),
@@ -190,7 +190,7 @@ internal fun ProfileInsert(
 private class ProfileInsertImpl(
     private val applicationContext: Context,
     private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomCommonDataRegistry,
+    private val customDataRegistry: CustomDataRegistry,
 
     private var allowBlanks: Boolean = false,
     private var allowMultipleRawContactsPerAccount: Boolean = false,

@@ -4,7 +4,7 @@ import android.content.Context
 import contacts.ContactsPermissions
 import contacts.data.Data
 import contacts.entities.MimeType
-import contacts.entities.custom.CustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
 
 /**
  * Provides new [ProfileQuery], [ProfileInsert], [ProfileUpdate], and [ProfileDelete] instances.
@@ -59,11 +59,11 @@ interface Profile {
     /**
      * Provides functions required to support custom common data, which have [MimeType.Custom].
      */
-    val customDataRegistry: CustomCommonDataRegistry
+    val customDataRegistry: CustomDataRegistry
 }
 
 @Suppress("FunctionName")
-internal fun Profile(context: Context, customDataRegistry: CustomCommonDataRegistry): Profile =
+internal fun Profile(context: Context, customDataRegistry: CustomDataRegistry): Profile =
     ProfileImpl(
         context.applicationContext,
         ContactsPermissions(context.applicationContext),
@@ -73,7 +73,7 @@ internal fun Profile(context: Context, customDataRegistry: CustomCommonDataRegis
 private class ProfileImpl(
     override val applicationContext: Context,
     override val permissions: ContactsPermissions,
-    override val customDataRegistry: CustomCommonDataRegistry
+    override val customDataRegistry: CustomDataRegistry
 ) : Profile {
 
     override fun query() = ProfileQuery(applicationContext, customDataRegistry)

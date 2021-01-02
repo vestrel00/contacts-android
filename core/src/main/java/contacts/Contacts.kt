@@ -3,8 +3,8 @@ package contacts
 import android.content.Context
 import contacts.data.Data
 import contacts.entities.MimeType
-import contacts.entities.custom.CustomCommonDataRegistry
-import contacts.entities.custom.GlobalCustomCommonDataRegistry
+import contacts.entities.custom.CustomDataRegistry
+import contacts.entities.custom.GlobalCustomDataRegistry
 import contacts.groups.Groups
 import contacts.profile.Profile
 
@@ -105,7 +105,7 @@ interface Contacts {
     /**
      * Provides functions required to support custom common data, which have [MimeType.Custom].
      */
-    val customDataRegistry: CustomCommonDataRegistry
+    val customDataRegistry: CustomDataRegistry
 }
 
 /**
@@ -114,7 +114,7 @@ interface Contacts {
 @JvmOverloads
 @Suppress("FunctionName")
 fun Contacts(
-    context: Context, customDataRegistry: CustomCommonDataRegistry = GlobalCustomCommonDataRegistry
+    context: Context, customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): Contacts = ContactsImpl(
     context.applicationContext,
     ContactsPermissions(context.applicationContext),
@@ -124,7 +124,7 @@ fun Contacts(
 private class ContactsImpl(
     override val applicationContext: Context,
     override val permissions: ContactsPermissions,
-    override val customDataRegistry: CustomCommonDataRegistry
+    override val customDataRegistry: CustomDataRegistry
 ) : Contacts {
 
     override fun query() = Query(applicationContext, customDataRegistry)
