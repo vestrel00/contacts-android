@@ -2,6 +2,7 @@ package contacts.entities.custom
 
 import contacts.AbstractCustomDataField
 import contacts.AbstractCustomDataFieldSet
+import contacts.Contacts
 import contacts.entities.MimeType
 
 /**
@@ -14,7 +15,8 @@ import contacts.entities.MimeType
 val GlobalCustomDataRegistry = CustomDataRegistry()
 
 /**
- * Provides functions required to support custom common data, which have [MimeType.Custom].
+ * Registry of custom data components, enabling queries, inserts, updates, and deletes for custom
+ * data.
  */
 class CustomDataRegistry {
 
