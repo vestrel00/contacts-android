@@ -3,7 +3,6 @@ package contacts.entities.mapper
 import contacts.*
 import contacts.entities.*
 import contacts.entities.cursor.*
-import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomDataRegistry
 
 // region EntityCursor<AbstractDataField>
@@ -80,11 +79,8 @@ internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapper
     MimeType.Website -> websiteMapper()
     is MimeType.Custom -> customDataRegistry
         .entryOf(mimeType)
-        ?.mapperFactory
-        ?.create(cursor)
-        ?: throw CustomDataException(
-            "No custom entity mapper for mime type ${mimeType.value}"
-        )
+        .mapperFactory
+        .create(cursor)
     MimeType.Unknown -> throw ContactsException(
         "No entity mapper for mime type ${mimeType.value}"
     )

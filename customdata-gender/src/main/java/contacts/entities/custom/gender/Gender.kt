@@ -48,6 +48,18 @@ data class Gender internal constructor(
     @IgnoredOnParcel
     override val isBlank: Boolean = type == null
 
+    fun toMutableGender() = MutableGender(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        type = type,
+        label = label
+    )
+
     enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         MALE(1),
@@ -97,4 +109,16 @@ data class MutableGender internal constructor(
 
     @IgnoredOnParcel
     override val isBlank: Boolean = type == null
+
+    internal fun toGender() = Gender(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        type = type,
+        label = label
+    )
 }

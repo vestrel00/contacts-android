@@ -183,7 +183,7 @@ internal fun Contact.customDataSequenceOf(
     mimeType: MimeType.Custom
 ): Sequence<MutableCustomDataEntity> = rawContacts
     .asSequence()
-    .mapNotNull { it.customData[mimeType.value] }
+    .mapNotNull { it.customDataEntities[mimeType.value] }
     .flatMap {
         it.entities.asSequence()
     }

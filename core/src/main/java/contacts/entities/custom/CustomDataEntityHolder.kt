@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal data class CustomDataHolder(
+internal data class CustomDataEntityHolder(
     // This is not exposed to consumers so we do not need a generic type since we have no visibility
     // of consumer types anyways.
     val entities: MutableList<MutableCustomDataEntity>,
@@ -22,20 +22,20 @@ internal sealed class CustomDataEntityHolder
 /**
  * Holds zero or one-per-RawContact .
  */
-internal class SingleCustomDataHolder(
-    val entity: MutableCustomData
+internal class SingleCustomDataEntityHolder(
+    val entity: MutableCustomDataEntity
 ) : CustomDataHolder()
 
 /**
  * Holds zero or one-or-more-per-RawContact entities.
  */
-class MultipleCustomDataHolder(
+class MultipleCustomDataEntityHolder(
     val entities: List<MutableCustomDataEntity>
 ) : CustomDataHolder()
 
-val CustomDataHolder.entityList: List<MutableCustomDataEntity>
+val CustomDataEntityHolder.entities: List<MutableCustomDataEntity>
     get() = when (this) {
-        is SingleCustomDataHolder -> listOf(entity)
-        is MultipleCustomDataHolder -> entities
+        is SingleCustomDataEntityHolder -> listOf(entity)
+        is MultipleCustomDataEntityHolder -> entities
 
  */

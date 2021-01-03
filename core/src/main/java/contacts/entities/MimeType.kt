@@ -1,6 +1,7 @@
 package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
+import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomDataRegistry
 
 sealed class MimeType {
@@ -88,7 +89,12 @@ sealed class MimeType {
                 SipAddress.value -> SipAddress
                 Website.value -> Website
                 null -> Unknown
-                else -> customDataRegistry.mimeTypeOf(value) ?: Unknown
+                else -> try {
+                    customDataRegistry.entryOf(value).mimeType
+                } catch (cde: CustomDataException) {
+                    // We may encounter custom data but not have a custom data entry for it.
+                    Unknown
+                }
             }
     }
 }

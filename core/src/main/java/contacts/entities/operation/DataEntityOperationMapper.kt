@@ -4,7 +4,6 @@ import android.content.ContentProviderOperation
 import contacts.ContactsException
 import contacts.entities.MimeType
 import contacts.entities.MutableCommonDataEntity
-import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomDataRegistry
 
 /**
@@ -37,9 +36,8 @@ private fun MutableCommonDataEntity.dataOperation(
         // Smart cast doesn't work here like this because mimeType has a custom getter. We can fix
         // this by declaring a local val mimeType = this.mimeType but this looks okay.
         .entryOf(mimeType as MimeType.Custom)
-        ?.operationFactory
-        ?.create(isProfile)
-        ?: throw CustomDataException("No custom data operation found for ${mimeType.value}")
+        .operationFactory
+        .create(isProfile)
 
     // The GroupMembership and Photo class intentionally does not have a mutable version unlike the
     // other entities. Manage group memberships via the RawContactGroupMemberships extension

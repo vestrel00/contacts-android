@@ -1,6 +1,6 @@
 package contacts.entities
 
-import contacts.entities.custom.CustomDataHolder
+import contacts.entities.custom.CustomDataEntityHolder
 import contacts.util.isProfileId
 import contacts.util.unsafeLazy
 import kotlinx.parcelize.IgnoredOnParcel
@@ -133,7 +133,7 @@ data class RawContact internal constructor(
     val websites: List<Website>,
 
     /**
-     * Map of custom mime type value to a [CustomDataHolder].
+     * Map of custom mime type value to a [CustomDataEntityHolder].
      *
      * ## Developer notes
      *
@@ -142,7 +142,7 @@ data class RawContact internal constructor(
      * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
      * immutable version if they choose to do so.
      */
-    internal val customData: Map<String, CustomDataHolder>
+    internal val customDataEntities: Map<String, CustomDataEntityHolder>
 
 ) : RawContactEntity() {
 
@@ -152,7 +152,7 @@ data class RawContact internal constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatMap { it.entities }
+            customDataEntities.values.flatMap { it.entities }
         )
     }
 
@@ -188,7 +188,7 @@ data class RawContact internal constructor(
 
         websites = websites.asSequence().map { it.toMutableWebsite() }.toMutableList(),
 
-        customData = customData.toMutableMap() // send a shallow copy
+        customDataEntities = customDataEntities.toMutableMap() // send a shallow copy
     )
 }
 
@@ -288,9 +288,9 @@ data class MutableRawContact internal constructor(
     var websites: MutableList<MutableWebsite>,
 
     /**
-     * See [RawContact.customData].
+     * See [RawContact.customDataEntities].
      */
-    internal var customData: MutableMap<String, CustomDataHolder>
+    internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
 ) : RawContactEntity() {
 
@@ -305,7 +305,7 @@ data class MutableRawContact internal constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatMap { it.entities }
+            customDataEntities.values.flatMap { it.entities }
         )
 }
 
@@ -370,7 +370,7 @@ internal data class TempRawContact constructor(
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>,
-    internal var customData: MutableMap<String, CustomDataHolder>
+    internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
 ) : RawContactEntity() {
 
@@ -379,7 +379,7 @@ internal data class TempRawContact constructor(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customData.values.flatMap { it.entities }
+            customDataEntities.values.flatMap { it.entities }
         )
 
     fun toRawContact() = RawContact(
@@ -414,6 +414,6 @@ internal data class TempRawContact constructor(
 
         websites = websites.toList(),
 
-        customData = customData.toMap() // send a shallow copy
+        customDataEntities = customDataEntities.toMap() // send a shallow copy
     )
 }

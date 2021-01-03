@@ -43,6 +43,6 @@ internal class TempRawContactMapper(
 
             websites = mutableListOf(),
 
-            customData = mutableMapOf()
+            customDataEntities = mutableMapOf()
         )
 }

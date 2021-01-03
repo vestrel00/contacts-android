@@ -8,8 +8,7 @@ import contacts.entities.MimeType.*
 import contacts.entities.RawContact
 import contacts.entities.TempRawContact
 import contacts.entities.cursor.*
-import contacts.entities.custom.CustomDataException
-import contacts.entities.custom.CustomDataHolder
+import contacts.entities.custom.CustomDataEntityHolder
 import contacts.entities.custom.CustomDataRegistry
 
 /**
@@ -203,7 +202,8 @@ private fun EntityCursor<AbstractDataField>.updateRawContact(
         SipAddress -> rawContact.sipAddress = sipAddressMapper().value
         Website -> rawContact.websites.add(websiteMapper().value)
         is Custom -> updateRawContactCustomData(customDataRegistry, rawContact, mimeType)
-        Unknown -> { /* Do nothing */
+        Unknown -> {
+            // Do nothing
         }
     }
 }
@@ -213,19 +213,12 @@ private fun EntityCursor<AbstractDataField>.updateRawContactCustomData(
     rawContact: TempRawContact,
     mimeType: Custom
 ) {
-    val customDataCountRestriction = customDataRegistry
-        .entryOf(mimeType)
-        ?.countRestriction
-        ?: throw CustomDataException("No custom data count restriction for ${mimeType.value}")
+    val customDataEntry = customDataRegistry.entryOf(mimeType)
 
-    val customDataMapper = customDataRegistry
-        .entryOf(mimeType)
-        ?.mapperFactory
-        ?.create(cursor)
-        ?: throw CustomDataException("No custom data mapper for ${mimeType.value}")
-
-    val customDataHolder = rawContact.customData.getOrPut(mimeType.value) {
-        CustomDataHolder(mutableListOf(), customDataCountRestriction)
+    val customDataEntityHolder = rawContact.customDataEntities.getOrPut(mimeType.value) {
+        CustomDataEntityHolder(mutableListOf(), customDataEntry.countRestriction)
     }
-    customDataHolder.entities.add(customDataMapper.value)
+
+    val customDataMapper = customDataEntry.mapperFactory.create(cursor)
+    customDataEntityHolder.entities.add(customDataMapper.value)
 }

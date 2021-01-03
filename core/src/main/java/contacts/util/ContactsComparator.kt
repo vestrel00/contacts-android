@@ -4,7 +4,6 @@ import android.net.Uri
 import contacts.*
 import contacts.entities.Contact
 import contacts.entities.Entity
-import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.custom.GlobalCustomDataRegistry
 import java.util.*
@@ -351,11 +350,8 @@ private fun AbstractDataField.compare(
     // CUSTOM
     is AbstractCustomDataField -> {
         val mimeType = customDataRegistry.mimeTypeOf(this)
-            ?: throw CustomDataException("No custom mime type for ${mimeType.value}")
 
-        val fieldMapper = customDataRegistry.entryOf(mimeType)
-            ?.fieldMapper
-            ?: throw CustomDataException("No custom field mapper for ${mimeType.value}")
+        val fieldMapper = customDataRegistry.entryOf(mimeType).fieldMapper
 
         val lhsCustomDataEntities = lhs.customDataSequenceOf(mimeType)
         val rhsCustomDataEntities = rhs.customDataSequenceOf(mimeType)

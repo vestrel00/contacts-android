@@ -7,7 +7,6 @@ import contacts.*
 import contacts.entities.*
 import contacts.entities.cursor.rawContactsCursor
 import contacts.entities.custom.CustomDataEntity
-import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.mapper.entityMapperFor
 import contacts.entities.table.ProfileUris
@@ -185,9 +184,7 @@ private class DataQueryImpl(
     override fun <K : AbstractCustomDataField, V : CustomDataEntity>
             customData(mimeType: MimeType.Custom): CommonDataQuery<K, V> = CommonDataQueryImpl(
         contentResolver, permissions, customDataRegistry,
-        customDataRegistry.entryOf(mimeType)
-            ?.fieldSet as AbstractCustomDataFieldSet<K>?
-            ?: throw CustomDataException("No custom field set found for ${mimeType.value}"),
+        customDataRegistry.entryOf(mimeType).fieldSet as AbstractCustomDataFieldSet<K>,
         mimeType, isProfile
     )
 }
