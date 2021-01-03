@@ -4,7 +4,9 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.Context
 import contacts.entities.MutableRawContact
-import contacts.entities.custom.*
+import contacts.entities.custom.CustomDataCountRestriction
+import contacts.entities.custom.CustomDataException
+import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.operation.*
 import contacts.util.applyBatch
 import contacts.util.nullIfNotInSystem
@@ -359,12 +361,13 @@ private fun MutableRawContact.customDataInsertOperations(
     for ((mimeTypeValue, customDataHolder) in customData) {
         val mimeType = customDataRegistry.mimeTypeOf(mimeTypeValue)
             ?: throw CustomDataException("Custom mime type $mimeTypeValue not registered")
-        val countRestriction = customDataRegistry.countRestrictionOf(mimeType)
+        val countRestriction = customDataRegistry.entryOf(mimeType)
+            ?.countRestriction
             ?: throw CustomDataException("No custom data count restriction for $mimeTypeValue")
 
-        @Suppress("UNCHECKED_CAST")
-        val customDataOperation = customDataRegistry.operationFactoryOf(mimeType)
-            ?.create(isProfile) as AbstractCustomDataOperation<AbstractCustomDataField, MutableCustomDataEntity>?
+        val customDataOperation = customDataRegistry.entryOf(mimeType)
+            ?.operationFactory
+            ?.create(isProfile)
             ?: throw CustomDataException("No custom data operation for $mimeTypeValue")
 
         when (countRestriction) {

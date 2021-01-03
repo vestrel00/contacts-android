@@ -36,7 +36,8 @@ private fun MutableCommonDataEntity.dataOperation(
     is MimeType.Custom -> customDataRegistry
         // Smart cast doesn't work here like this because mimeType has a custom getter. We can fix
         // this by declaring a local val mimeType = this.mimeType but this looks okay.
-        .operationFactoryOf(mimeType as MimeType.Custom)
+        .entryOf(mimeType as MimeType.Custom)
+        ?.operationFactory
         ?.create(isProfile)
         ?: throw CustomDataException("No custom data operation found for ${mimeType.value}")
 

@@ -15,7 +15,8 @@ import contacts.util.query
 /**
  * Builds [ContentProviderOperation]s for [Table.Data] using the field [K] and entity [V].
  */
-abstract class AbstractCommonDataOperation<K : CommonDataField, V : CommonDataEntity>(isProfile: Boolean) {
+abstract class AbstractCommonDataOperation<K : CommonDataField,
+        V : CommonDataEntity>(isProfile: Boolean) {
 
     internal val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
 

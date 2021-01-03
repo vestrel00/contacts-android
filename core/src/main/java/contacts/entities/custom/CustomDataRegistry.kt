@@ -19,37 +19,29 @@ val GlobalCustomDataRegistry = CustomDataRegistry()
 class CustomDataRegistry {
 
     /**
-     * Map of mime type value to an [Entry].
+     * Map of mime type value to an [Entry]. Entry types are casted to their base types.
      */
-    private val entryMap = mutableMapOf<String, Entry>()
+    private val entryMap = mutableMapOf<String, Entry<
+            AbstractCustomDataField,
+            AbstractCustomDataCursor<AbstractCustomDataField>,
+            MutableCustomDataEntity>>()
 
     /**
      * Register a custom common data entry.
-     *
-     * ## Developer notes
-     *
-     * The types [F], [K], and [V] are not kept internally. They are erased. These are simply here
-     * as compile-time checks for matching the generic types of parameter instances to make sure
-     * consumers are providing the correct implementations.
      */
-    fun <F : AbstractCustomDataField, K : AbstractCustomDataCursor<F>,
-            V : MutableCustomDataEntity> register(
-        customMimeType: MimeType.Custom,
-        customFieldSet: AbstractCustomDataFieldSet<F>,
-        fieldMapper: CustomDataFieldMapper<F, V>,
-        countRestriction: CustomDataCountRestriction,
-        mapperFactory: AbstractCustomEntityMapper.Factory<F, K, V>,
-        operationFactory: AbstractCustomDataOperation.Factory<F, V>
-    ) {
-        entryMap[customMimeType.value] = Entry(
-            customMimeType,
-            customFieldSet,
-            fieldMapper,
-            countRestriction,
-            mapperFactory,
-            operationFactory
-        )
+    fun register(entry: Entry<*, *, *>) {
+        // Cast the specific types as we don't need to know about them internally.
+        @Suppress("UNCHECKED_CAST")
+        entryMap[entry.mimeType.value] = entry as Entry<
+                AbstractCustomDataField,
+                AbstractCustomDataCursor<AbstractCustomDataField>,
+                MutableCustomDataEntity>
     }
+
+    internal fun entryOf(mimeType: MimeType.Custom):
+            Entry<AbstractCustomDataField,
+                    AbstractCustomDataCursor<AbstractCustomDataField>,
+                    MutableCustomDataEntity>? = entryMap[mimeType.value]
 
     internal fun mimeTypeOf(
         mimeTypeValue: String
@@ -61,38 +53,27 @@ class CustomDataRegistry {
         it.fieldSet.all.contains(customDataField)
     }?.mimeType
 
-    internal fun fieldSetOf(
-        mimeType: MimeType.Custom
-    ): AbstractCustomDataFieldSet<*>? = entryMap[mimeType.value]?.fieldSet
-
     internal fun allFields(): Set<AbstractCustomDataField> = entryMap.values
         .flatMap { it.fieldSet.all }
         .toSet()
 
-    internal fun fieldMapperOf(
-        mimeType: MimeType.Custom
-    ): CustomDataFieldMapper<*, *>? = entryMap[mimeType.value]?.fieldMapper
-
-    internal fun countRestrictionOf(
-        mimeType: MimeType.Custom
-    ): CustomDataCountRestriction? = entryMap[mimeType.value]?.countRestriction
-
-    internal fun mapperFactoryOf(
-        mimeType: MimeType.Custom
-    ): AbstractCustomEntityMapper.Factory<*, *, *>? = entryMap[mimeType.value]?.mapperFactory
-
-    internal fun operationFactoryOf(
-        mimeType: MimeType.Custom
-    ): AbstractCustomDataOperation.Factory<*, *>? = entryMap[mimeType.value]?.operationFactory
-
-    // TODO Add types and expose to consumers so that the register function is clean.
-    // TODO Get rid of all internal fun and replace it with one internal function that returns the entry
-    private class Entry(
-        val mimeType: MimeType.Custom,
-        val fieldSet: AbstractCustomDataFieldSet<*>,
-        val fieldMapper: CustomDataFieldMapper<*, *>,
-        val countRestriction: CustomDataCountRestriction,
-        val mapperFactory: AbstractCustomEntityMapper.Factory<*, *, *>,
-        val operationFactory: AbstractCustomDataOperation.Factory<*, *>
+    /**
+     * A custom common data entry that provides all the required mechanisms to support queries,
+     * inserts, updates, and deletes.
+     *
+     * ## Developer notes
+     *
+     * The specific types [F], [K], and [V] are not kept internally. Only the generic base types are
+     * kept. These specific types provide compile-time checks to make sure consumers are providing
+     * the correct implementations.
+     */
+    class Entry<F : AbstractCustomDataField, K : AbstractCustomDataCursor<F>,
+            V : MutableCustomDataEntity>(
+        internal val mimeType: MimeType.Custom,
+        internal val fieldSet: AbstractCustomDataFieldSet<F>,
+        internal val fieldMapper: CustomDataFieldMapper<F, V>,
+        internal val countRestriction: CustomDataCountRestriction,
+        internal val mapperFactory: AbstractCustomEntityMapper.Factory<F, K, V>,
+        internal val operationFactory: AbstractCustomDataOperation.Factory<F, V>
     )
 }

@@ -185,11 +185,8 @@ private class DataQueryImpl(
     override fun <K : AbstractCustomDataField, V : CustomDataEntity>
             customData(mimeType: MimeType.Custom): CommonDataQuery<K, V> = CommonDataQueryImpl(
         contentResolver, permissions, customDataRegistry,
-        // FIXME? ClassCastException will be thrown here if consumer messes up.
-        // Maybe there is a way to avoid casting WITHOUT increasing code complexity too much and
-        // making code look very messy with types all over the place?
-        // For now, we'll have to rely on consumer diligence for this.
-        customDataRegistry.fieldSetOf(mimeType) as AbstractCustomDataFieldSet<K>?
+        customDataRegistry.entryOf(mimeType)
+            ?.fieldSet as AbstractCustomDataFieldSet<K>?
             ?: throw CustomDataException("No custom field set found for ${mimeType.value}"),
         mimeType, isProfile
     )

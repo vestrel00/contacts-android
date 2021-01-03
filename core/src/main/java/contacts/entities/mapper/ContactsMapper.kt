@@ -8,9 +8,9 @@ import contacts.entities.MimeType.*
 import contacts.entities.RawContact
 import contacts.entities.TempRawContact
 import contacts.entities.cursor.*
-import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.custom.CustomDataException
 import contacts.entities.custom.CustomDataHolder
+import contacts.entities.custom.CustomDataRegistry
 
 /**
  * Returns a list of [Contact]s from the given cursor, which assumed to have been retrieved from the
@@ -214,11 +214,13 @@ private fun EntityCursor<AbstractDataField>.updateRawContactCustomData(
     mimeType: Custom
 ) {
     val customDataCountRestriction = customDataRegistry
-        .countRestrictionOf(mimeType)
+        .entryOf(mimeType)
+        ?.countRestriction
         ?: throw CustomDataException("No custom data count restriction for ${mimeType.value}")
 
     val customDataMapper = customDataRegistry
-        .mapperFactoryOf(mimeType)
+        .entryOf(mimeType)
+        ?.mapperFactory
         ?.create(cursor)
         ?: throw CustomDataException("No custom data mapper for ${mimeType.value}")
 
