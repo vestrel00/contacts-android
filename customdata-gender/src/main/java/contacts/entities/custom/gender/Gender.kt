@@ -2,9 +2,11 @@ package contacts.entities.custom.gender
 
 import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
-import contacts.entities.custom.CustomCommonDataEntity
+import contacts.entities.custom.CustomDataEntity
+import contacts.entities.custom.MutableCustomDataEntity
 import contacts.entities.custom.gender.Gender.Type
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 /**
  * Describes the gender of a RawContact.
@@ -32,8 +34,9 @@ data class Gender internal constructor(
      */
     val label: String?
 
-) : CustomCommonDataEntity {
+) : CustomDataEntity {
 
+    @IgnoredOnParcel
     override val mimeType: MimeType.Custom = GenderMimeType
 
     /*
@@ -42,6 +45,7 @@ data class Gender internal constructor(
      * number is important in that case. However, the primary data we are interested in here is the
      * actual type itself.
      */
+    @IgnoredOnParcel
     override val isBlank: Boolean = type == null
 
     enum class Type(override val value: Int) : CommonDataEntity.Type {
@@ -58,4 +62,39 @@ data class Gender internal constructor(
             fun fromValue(value: Int?): Type? = values().find { it.value == value }
         }
     }
+}
+
+/**
+ * A mutable [Gender].
+ */
+@Parcelize
+data class MutableGender internal constructor(
+
+    override val id: Long?,
+
+    override val rawContactId: Long?,
+
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+
+    override val isSuperPrimary: Boolean,
+
+    /**
+     * See [Gender.type].
+     */
+    var type: Type?,
+
+    /**
+     * See [Gender.label].
+     */
+    var label: String?
+
+) : MutableCustomDataEntity {
+
+    @IgnoredOnParcel
+    override val mimeType: MimeType.Custom = GenderMimeType
+
+    @IgnoredOnParcel
+    override val isBlank: Boolean = type == null
 }
