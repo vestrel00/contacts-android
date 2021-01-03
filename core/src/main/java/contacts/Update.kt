@@ -214,7 +214,7 @@ private class UpdateImpl(
 
     override fun commit(): Update.Result {
         if (rawContacts.isEmpty() || !permissions.canUpdateDelete()) {
-            return UpdateFailed
+            return UpdateFailed()
         }
 
         val results = mutableMapOf<Long, Boolean>()
@@ -410,7 +410,7 @@ private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean
             && rawContactIdsResultMap.getOrElse(rawContactId) { false }
 }
 
-private object UpdateFailed : Update.Result {
+private class UpdateFailed : Update.Result {
 
     override val isSuccessful: Boolean = false
 

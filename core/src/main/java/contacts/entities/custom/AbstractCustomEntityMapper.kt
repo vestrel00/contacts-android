@@ -31,7 +31,7 @@ abstract class AbstractCustomEntityMapper<
     /**
      * Creates instances of [AbstractCustomEntityMapper].
      */
-    abstract class Factory<
+    interface Factory<
             F : AbstractCustomDataField,
             K : AbstractCustomDataCursor<F>,
             out V : MutableCustomDataEntity> {
@@ -39,6 +39,6 @@ abstract class AbstractCustomEntityMapper<
         /**
          * Creates instances of [AbstractCustomEntityMapper] with the given [cursor].
          */
-        abstract fun create(cursor: Cursor): AbstractCustomEntityMapper<F, K, V>
+        fun create(cursor: Cursor): AbstractCustomEntityMapper<F, K, V>
     }
 }

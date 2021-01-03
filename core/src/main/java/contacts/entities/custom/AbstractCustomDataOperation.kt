@@ -33,11 +33,11 @@ abstract class AbstractCustomDataOperation<K : AbstractCustomDataField, V : Muta
     /**
      * Creates instances of [AbstractCustomDataOperation].
      */
-    abstract class Factory<K : AbstractCustomDataField, V : MutableCustomDataEntity> {
+    interface Factory<K : AbstractCustomDataField, V : MutableCustomDataEntity> {
 
         /**
          * Creates instances of [AbstractCustomDataOperation] with the given [isProfile].
          */
-        abstract fun create(isProfile: Boolean): AbstractCustomDataOperation<K, V>
+        fun create(isProfile: Boolean): AbstractCustomDataOperation<K, V>
     }
 }

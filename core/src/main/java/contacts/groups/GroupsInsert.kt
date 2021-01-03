@@ -159,7 +159,7 @@ private class GroupsInsertImpl(
     override fun commit(): GroupsInsert.Result {
         val accounts = accountsQuery.allAccounts()
         if (accounts.isEmpty() || groups.isEmpty() || !permissions.canInsert()) {
-            return GroupsInsertFailed
+            return GroupsInsertFailed()
         }
 
         val results = mutableMapOf<MutableGroup, Long?>()
@@ -175,7 +175,7 @@ private class GroupsInsertImpl(
 }
 
 private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
-    val results = applyBatch(GroupsOperation.insert(group))
+    val results = applyBatch(GroupsOperation().insert(group))
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the
@@ -210,7 +210,7 @@ private class GroupsInsertResult(private val groupsMap: Map<MutableGroup, Long?>
     override fun groupId(group: MutableGroup): Long? = groupsMap.getOrElse(group) { null }
 }
 
-private object GroupsInsertFailed : GroupsInsert.Result {
+private class GroupsInsertFailed : GroupsInsert.Result {
 
     override val groupIds: List<Long> = emptyList()
 

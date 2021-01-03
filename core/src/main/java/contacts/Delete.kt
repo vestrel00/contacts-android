@@ -187,7 +187,7 @@ private class DeleteImpl(
 
     override fun commit(): Delete.Result {
         if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
-            return DeleteFailed
+            return DeleteFailed()
         }
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
@@ -287,7 +287,7 @@ private class DeleteResult(
         } ?: false
 }
 
-private object DeleteFailed : Delete.Result {
+private class DeleteFailed : Delete.Result {
 
     override val isSuccessful: Boolean = false
 

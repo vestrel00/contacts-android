@@ -124,7 +124,7 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
         mainContactId.isProfileId ||
         contacts.find { it.isProfile } != null
     ) {
-        return ContactLinkFailed
+        return ContactLinkFailed()
     }
 
     val sortedContactIds = contacts
@@ -139,7 +139,7 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
 
     if (sortedContactIds.size < 2) {
         // At least 2 Contacts are required to link.
-        return ContactLinkFailed
+        return ContactLinkFailed()
     }
 
     val prioritizedContactIds = sortedContactIds.toSet()
@@ -148,7 +148,7 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
 
     if (sortedRawContactIds.size < 2) {
         // At least 2 RawContacts are required to link.
-        return ContactLinkFailed
+        return ContactLinkFailed()
     }
 
     val nameRowIdToUseAsDefault = nameRowIdToUseAsDefault(context, prioritizedContactIds)
@@ -159,7 +159,7 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
             sortedRawContactIds,
             AggregationExceptions.TYPE_KEEP_TOGETHER
         )
-    ) ?: return ContactLinkFailed
+    ) ?: return ContactLinkFailed()
 
     // Link succeeded. Set the default name.
     // This operation is not batched with the aggregateExceptionsOperations because there may not be
@@ -197,7 +197,7 @@ fun Sequence<ContactEntity>.link(context: Context): ContactLinkResult {
     return if (mainContact != null && contacts.isNotEmpty()) {
         mainContact.link(context, contacts)
     } else {
-        ContactLinkFailed
+        ContactLinkFailed()
     }
 }
 
@@ -220,7 +220,7 @@ private class ContactLinkSuccess(override val contactId: Long?) : ContactLinkRes
     override val isSuccessful: Boolean = true
 }
 
-private object ContactLinkFailed : ContactLinkResult {
+private class ContactLinkFailed : ContactLinkResult {
 
     override val contactId: Long? = null
 
@@ -256,14 +256,14 @@ fun ContactEntity.unlink(context: Context): ContactUnlinkResult {
         contactId == null ||
         contactId.isProfileId
     ) {
-        return ContactUnlinkFailed
+        return ContactUnlinkFailed()
     }
 
     val sortedRawContactIds = sortedRawContactIds(context, setOf(contactId))
 
     if (sortedRawContactIds.size < 2) {
         // At least 2 RawContacts are required to unlink.
-        return ContactUnlinkFailed
+        return ContactUnlinkFailed()
     }
 
     context.contentResolver.applyBatch(
@@ -271,7 +271,7 @@ fun ContactEntity.unlink(context: Context): ContactUnlinkResult {
             sortedRawContactIds,
             AggregationExceptions.TYPE_KEEP_SEPARATE
         )
-    ) ?: return ContactUnlinkFailed
+    ) ?: return ContactUnlinkFailed()
 
     return ContactUnlinkSuccess(sortedRawContactIds)
 }
@@ -294,7 +294,7 @@ private class ContactUnlinkSuccess(override val rawContactIds: List<Long>) : Con
     override val isSuccessful: Boolean = true
 }
 
-private object ContactUnlinkFailed : ContactUnlinkResult {
+private class ContactUnlinkFailed : ContactUnlinkResult {
 
     override val rawContactIds: List<Long> = emptyList()
 

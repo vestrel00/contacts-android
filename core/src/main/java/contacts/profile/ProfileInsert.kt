@@ -236,7 +236,7 @@ private class ProfileInsertImpl(
             || (!allowBlanks && rawContact.isBlank)
             || !permissions.canInsert()
         ) {
-            return ProfileInsertFailed
+            return ProfileInsertFailed()
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
@@ -246,7 +246,7 @@ private class ProfileInsertImpl(
             !allowMultipleRawContactsPerAccount
             && applicationContext.contentResolver.hasProfileRawContactForAccount(account)
         ) {
-            return ProfileInsertFailed
+            return ProfileInsertFailed()
         }
 
         val rawContactId =
@@ -267,7 +267,7 @@ private class ProfileInsertResult(override val rawContactId: Long?) : ProfileIns
     override val isSuccessful: Boolean = rawContactId?.let(ContactsContract::isProfileId) == true
 }
 
-private object ProfileInsertFailed : ProfileInsert.Result {
+private class ProfileInsertFailed : ProfileInsert.Result {
 
     override val rawContactId: Long? = null
 

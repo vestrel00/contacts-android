@@ -144,7 +144,7 @@ private class DataDeleteImpl(
 
     override fun commit(): DataDelete.Result {
         if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
-            return DataDeleteFailed
+            return DataDeleteFailed()
         }
 
         val dataIdsResultMap = mutableMapOf<Long, Boolean>()
@@ -213,7 +213,7 @@ private class DataDeleteResult(
         } ?: false
 }
 
-private object DataDeleteFailed : DataDelete.Result {
+private class DataDeleteFailed : DataDelete.Result {
 
     override val isSuccessful: Boolean = false
 

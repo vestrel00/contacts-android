@@ -236,7 +236,7 @@ private class InsertImpl(
 
     override fun commit(): Insert.Result {
         if (rawContacts.isEmpty() || !permissions.canInsert()) {
-            return InsertFailed
+            return InsertFailed()
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
@@ -401,7 +401,7 @@ private class InsertResult(private val rawContactMap: Map<MutableRawContact, Lon
         rawContactMap.getOrElse(rawContact) { null }
 }
 
-private object InsertFailed : Insert.Result {
+private class InsertFailed : Insert.Result {
 
     override val rawContactIds: List<Long> = emptyList()
 

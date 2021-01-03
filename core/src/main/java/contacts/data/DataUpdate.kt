@@ -124,7 +124,7 @@ private class DataUpdateImpl(
 
     override fun commit(): DataUpdate.Result {
         if (data.isEmpty() || !permissions.canUpdateDelete()) {
-            return DataUpdateFailed
+            return DataUpdateFailed()
         }
 
         val results = mutableMapOf<Long, Boolean>()
@@ -170,7 +170,7 @@ private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>)
     }
 }
 
-private object DataUpdateFailed : DataUpdate.Result {
+private class DataUpdateFailed : DataUpdate.Result {
 
     override val isSuccessful: Boolean = false
 

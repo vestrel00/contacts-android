@@ -19,7 +19,7 @@ val GlobalCustomDataRegistry = CustomDataRegistry()
 class CustomDataRegistry {
 
     /**
-     * Map of mime type value to an [Entry]. Entry types are casted to their base types.
+     * Map of mime type value to an [Entry].
      */
     private val entryMap = mutableMapOf<String, Entry<
             AbstractCustomDataField,
@@ -30,7 +30,6 @@ class CustomDataRegistry {
      * Register a custom common data entry.
      */
     fun register(entry: Entry<*, *, *>) {
-        // Cast the specific types as we don't need to know about them internally.
         @Suppress("UNCHECKED_CAST")
         entryMap[entry.mimeType.value] = entry as Entry<
                 AbstractCustomDataField,
@@ -58,22 +57,17 @@ class CustomDataRegistry {
         .toSet()
 
     /**
-     * A custom common data entry that provides all the required mechanisms to support queries,
+     * A custom common data entry provides all the required implementations to support queries,
      * inserts, updates, and deletes.
-     *
-     * ## Developer notes
-     *
-     * The specific types [F], [K], and [V] are not kept internally. Only the generic base types are
-     * kept. These specific types provide compile-time checks to make sure consumers are providing
-     * the correct implementations.
      */
-    class Entry<F : AbstractCustomDataField, K : AbstractCustomDataCursor<F>,
-            V : MutableCustomDataEntity>(
-        internal val mimeType: MimeType.Custom,
-        internal val fieldSet: AbstractCustomDataFieldSet<F>,
-        internal val fieldMapper: CustomDataFieldMapper<F, V>,
-        internal val countRestriction: CustomDataCountRestriction,
-        internal val mapperFactory: AbstractCustomEntityMapper.Factory<F, K, V>,
-        internal val operationFactory: AbstractCustomDataOperation.Factory<F, V>
-    )
+    interface Entry<F : AbstractCustomDataField, K : AbstractCustomDataCursor<F>,
+            V : MutableCustomDataEntity> {
+        val mimeType: MimeType.Custom
+        val fieldSet: AbstractCustomDataFieldSet<F>
+        val fieldMapper: CustomDataFieldMapper<F, V>
+        val countRestriction: CustomDataCountRestriction
+        val mapperFactory: AbstractCustomEntityMapper.Factory<F, K, V>
+        val operationFactory: AbstractCustomDataOperation.Factory<F, V>
+    }
+
 }

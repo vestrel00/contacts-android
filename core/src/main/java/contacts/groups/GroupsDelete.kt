@@ -120,7 +120,7 @@ private class GroupsDeleteImpl(
 
     override fun commit(): GroupsDelete.Result {
         if (groupIds.isEmpty() || !permissions.canUpdateDelete()) {
-            return GroupsDeleteFailed
+            return GroupsDeleteFailed()
         }
 
         val results = mutableMapOf<Long, Boolean>()
@@ -128,7 +128,7 @@ private class GroupsDeleteImpl(
             results[groupId] = if (groupId == INVALID_ID) {
                 false
             } else {
-                contentResolver.applyBatch(GroupsOperation.delete(groupId)) != null
+                contentResolver.applyBatch(GroupsOperation().delete(groupId)) != null
             }
         }
         return GroupsDeleteResult(results)
@@ -137,7 +137,7 @@ private class GroupsDeleteImpl(
     override fun commitInOneTransaction(): Boolean = permissions.canUpdateDelete()
             && groupIds.isNotEmpty()
             && !groupIds.contains(INVALID_ID)
-            && contentResolver.applyBatch(GroupsOperation.delete(groupIds)) != null
+            && contentResolver.applyBatch(GroupsOperation().delete(groupIds)) != null
 
     private companion object {
         // A failed entry in the results so that Result.isSuccessful returns false.
@@ -156,7 +156,7 @@ private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolea
             && groupIdsResultMap.getOrElse(group.id) { false }
 }
 
-private object GroupsDeleteFailed : GroupsDelete.Result {
+private class GroupsDeleteFailed : GroupsDelete.Result {
 
     override val isSuccessful: Boolean = false
 

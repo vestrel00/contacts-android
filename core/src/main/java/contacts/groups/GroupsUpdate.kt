@@ -132,7 +132,7 @@ private class GroupsUpdateImpl(
 
     override fun commit(): GroupsUpdate.Result {
         if (groups.isEmpty() || !permissions.canUpdateDelete()) {
-            return GroupsUpdateFailed
+            return GroupsUpdateFailed()
         }
 
         val results = mutableMapOf<Long, Boolean>()
@@ -157,7 +157,7 @@ private class GroupsUpdateImpl(
 }
 
 private fun ContentResolver.updateGroup(group: MutableGroup): Boolean =
-    GroupsOperation.update(group)?.let { applyBatch(it) } != null
+    GroupsOperation().update(group)?.let { applyBatch(it) } != null
 
 private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsUpdate.Result {
@@ -170,7 +170,7 @@ private class GroupsUpdateResult(private val groupIdsResultMap: Map<Long, Boolea
             && groupIdsResultMap.getOrElse(group.id) { false }
 }
 
-private object GroupsUpdateFailed : GroupsUpdate.Result {
+private class GroupsUpdateFailed : GroupsUpdate.Result {
 
     override val isSuccessful: Boolean = false
 

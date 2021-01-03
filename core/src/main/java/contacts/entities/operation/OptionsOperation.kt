@@ -16,7 +16,7 @@ import contacts.util.isProfileId
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  */
-internal object OptionsOperation {
+internal class OptionsOperation {
 
     fun updateContactOptions(contactId: Long, options: MutableOptions): ContentProviderOperation =
         newUpdate(if (contactId.isProfileId) ProfileUris.CONTACTS.uri else Table.Contacts.uri)

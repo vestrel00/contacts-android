@@ -173,7 +173,7 @@ private class ProfileDeleteImpl(
 
     override fun commit(): ProfileDelete.Result {
         if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
-            return ProfileDeleteFailed
+            return ProfileDeleteFailed()
         }
 
         if (deleteProfileContact) {
@@ -246,8 +246,7 @@ private class ProfileDeleteResult(
         } ?: false
 }
 
-private object ProfileDeleteFailed :
-    ProfileDelete.Result {
+private class ProfileDeleteFailed : ProfileDelete.Result {
 
     override val isSuccessful: Boolean = false
 

@@ -771,7 +771,7 @@ abstract class AbstractCustomDataField(
     columnName: ColumnName
 ) : CommonDataField() {
 
-    abstract val customMimeType: MimeType.Custom
+    protected abstract val customMimeType: MimeType.Custom
 
     final override val mimeType: MimeType
         get() = customMimeType
