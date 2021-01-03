@@ -4,8 +4,8 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
-import contacts.CommonDataField
 import contacts.Fields
+import contacts.GroupMembershipField
 import contacts.Include
 import contacts.accounts.accountForRawContactWithId
 import contacts.entities.GroupMembership
@@ -15,12 +15,12 @@ import contacts.groups.GroupsQuery
 import contacts.util.query
 
 internal class GroupMembershipOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<GroupMembership>(isProfile) {
+    AbstractCommonDataOperation<GroupMembershipField, GroupMembership>(isProfile) {
 
     override val mimeType = MimeType.GroupMembership
 
     override fun setData(
-        data: GroupMembership, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
+        data: GroupMembership, setValue: (field: GroupMembershipField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.GroupMembership.GroupId, data.groupId)
     }
@@ -35,7 +35,6 @@ internal class GroupMembershipOperation(isProfile: Boolean) :
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
 
         val accountGroups = GroupsQuery(context).accounts(account).find()
-            .asSequence()
             .associateBy { it.id }
             .toMutableMap()
 

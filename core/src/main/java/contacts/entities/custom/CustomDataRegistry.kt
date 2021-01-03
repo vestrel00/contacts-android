@@ -39,7 +39,7 @@ class CustomDataRegistry {
         fieldMapper: CustomDataFieldMapper<F, V>,
         countRestriction: CustomDataCountRestriction,
         mapperFactory: AbstractCustomEntityMapper.Factory<F, K, V>,
-        operationFactory: AbstractCustomDataOperation.Factory<V>
+        operationFactory: AbstractCustomDataOperation.Factory<F, V>
     ) {
         entryMap[customMimeType.value] = Entry(
             customMimeType,
@@ -83,7 +83,7 @@ class CustomDataRegistry {
 
     internal fun operationFactoryOf(
         mimeType: MimeType.Custom
-    ): AbstractCustomDataOperation.Factory<*>? = entryMap[mimeType.value]?.operationFactory
+    ): AbstractCustomDataOperation.Factory<*, *>? = entryMap[mimeType.value]?.operationFactory
 
     // TODO Add types and expose to consumers so that the register function is clean.
     // TODO Get rid of all internal fun and replace it with one internal function that returns the entry
@@ -93,6 +93,6 @@ class CustomDataRegistry {
         val fieldMapper: CustomDataFieldMapper<*, *>,
         val countRestriction: CustomDataCountRestriction,
         val mapperFactory: AbstractCustomEntityMapper.Factory<*, *, *>,
-        val operationFactory: AbstractCustomDataOperation.Factory<*>
+        val operationFactory: AbstractCustomDataOperation.Factory<*, *>
     )
 }

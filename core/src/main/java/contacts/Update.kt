@@ -369,7 +369,8 @@ private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
 
         @Suppress("UNCHECKED_CAST")
         val customDataOperation = customDataRegistry.operationFactoryOf(mimeType)
-            ?.create(isProfile) as AbstractCustomDataOperation<MutableCustomDataEntity>?
+            ?.create(isProfile) as
+                AbstractCustomDataOperation<AbstractCustomDataField, MutableCustomDataEntity>?
             ?: throw CustomDataException("No custom data operation found for $mimeTypeValue")
 
         when (countRestriction) {

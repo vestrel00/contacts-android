@@ -1,21 +1,24 @@
 package contacts.entities.custom
 
 import contacts.AbstractCustomDataField
-import contacts.CommonDataField
+import contacts.entities.MimeType
 import contacts.entities.operation.AbstractCommonDataOperation
 
 /**
  * An abstract class that is used as a base of all custom [AbstractCommonDataOperation]s.
  */
-abstract class AbstractCustomDataOperation<T : MutableCustomDataEntity>(
+abstract class AbstractCustomDataOperation<K : AbstractCustomDataField, V : MutableCustomDataEntity>(
     isProfile: Boolean
-) : AbstractCommonDataOperation<T>(isProfile) {
+) : AbstractCommonDataOperation<K, V>(isProfile) {
+
+    // Override this to cast type from MimeType to MimeType.Custom
+    abstract override val mimeType: MimeType.Custom
 
     /**
      * Sets the custom [data] values into the operation via the provided [setValue] function.
      */
     protected abstract fun setCustomData(
-        data: T, setValue: (field: AbstractCustomDataField, value: Any?) -> Unit
+        data: V, setValue: (field: K, value: Any?) -> Unit
     )
 
     /*
@@ -23,18 +26,18 @@ abstract class AbstractCustomDataOperation<T : MutableCustomDataEntity>(
      * AbstractCustomDataField in the setValue function instead of CommonDataField. This
      * enforces consumers to use their custom data field instead of API fields.
      */
-    final override fun setData(data: T, setValue: (field: CommonDataField, value: Any?) -> Unit) {
+    final override fun setData(data: V, setValue: (field: K, value: Any?) -> Unit) {
         setCustomData(data, setValue)
     }
 
     /**
      * Creates instances of [AbstractCustomDataOperation].
      */
-    abstract class Factory<T : MutableCustomDataEntity> {
+    abstract class Factory<K : AbstractCustomDataField, V : MutableCustomDataEntity> {
 
         /**
          * Creates instances of [AbstractCustomDataOperation] with the given [isProfile].
          */
-        abstract fun create(isProfile: Boolean): AbstractCustomDataOperation<T>
+        abstract fun create(isProfile: Boolean): AbstractCustomDataOperation<K, V>
     }
 }

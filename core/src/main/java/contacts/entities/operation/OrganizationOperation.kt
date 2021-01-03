@@ -1,17 +1,17 @@
 package contacts.entities.operation
 
-import contacts.CommonDataField
 import contacts.Fields
+import contacts.OrganizationField
 import contacts.entities.MimeType
 import contacts.entities.MutableOrganization
 
 internal class OrganizationOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<MutableOrganization>(isProfile) {
+    AbstractCommonDataOperation<OrganizationField, MutableOrganization>(isProfile) {
 
     override val mimeType = MimeType.Organization
 
     override fun setData(
-        data: MutableOrganization, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
+        data: MutableOrganization, setValue: (field: OrganizationField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Organization.Company, data.company)
         setValue(Fields.Organization.Title, data.title)

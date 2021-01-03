@@ -10,20 +10,14 @@ import contacts.entities.custom.CustomDataRegistry
 /**
  * Returns a new [ContentProviderOperation] for updating [this].
  */
-// This can be declared just as MutableDataEntity.updateOperation but this looks more consistent
-// with the other functions.
-internal fun <T : MutableCommonDataEntity> T.updateOperation(
+internal fun MutableCommonDataEntity.updateOperation(
     customDataRegistry: CustomDataRegistry
 ): ContentProviderOperation? = dataOperation(customDataRegistry).updateDataRowOrDeleteIfBlank(this)
 
-// Yes, I know we can avoid this whole type casting situation by moving the body of this function
-// to the updateOperation and instead do;
-// when (this) is MutableAddress -> AddressOperation().updateDataRowOrDeleteIfBlank(this)
-// I prefer this way because this function can be reused :D #NOT-ALWAYS-YAGNI
 @Suppress("UNCHECKED_CAST")
-private fun <T : MutableCommonDataEntity> T.dataOperation(
+private fun MutableCommonDataEntity.dataOperation(
     customDataRegistry: CustomDataRegistry
-): AbstractCommonDataOperation<T> = when (mimeType) {
+): AbstractCommonDataOperation<*, MutableCommonDataEntity> = when (mimeType) {
     // We could instead do when (this) is MutableAddress -> AddressOperation()
     // However, using mimeType instead of the class allows for exhaustive compilation checks.
     // Not requiring an 'else' branch.
@@ -51,4 +45,4 @@ private fun <T : MutableCommonDataEntity> T.dataOperation(
     // functions. Manage photos via the (Raw)ContactPhoto extension functions.
     MimeType.GroupMembership, MimeType.Photo, MimeType.Unknown ->
         throw ContactsException("No data operation found for ${mimeType.value}")
-} as AbstractCommonDataOperation<T>
+} as AbstractCommonDataOperation<*, MutableCommonDataEntity>

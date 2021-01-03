@@ -1,17 +1,17 @@
 package contacts.entities.operation
 
-import contacts.CommonDataField
 import contacts.Fields
+import contacts.NameField
 import contacts.entities.MimeType
 import contacts.entities.MutableName
 
 internal class NameOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<MutableName>(isProfile) {
+    AbstractCommonDataOperation<NameField, MutableName>(isProfile) {
 
     override val mimeType = MimeType.Name
 
     override fun setData(
-        data: MutableName, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
+        data: MutableName, setValue: (field: NameField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Name.DisplayName, data.displayName)
 

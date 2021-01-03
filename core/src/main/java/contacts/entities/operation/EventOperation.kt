@@ -1,18 +1,18 @@
 package contacts.entities.operation
 
-import contacts.CommonDataField
+import contacts.EventField
 import contacts.Fields
 import contacts.entities.MimeType
 import contacts.entities.MutableEvent
 import contacts.entities.mapper.EventMapper
 
 internal class EventOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<MutableEvent>(isProfile) {
+    AbstractCommonDataOperation<EventField, MutableEvent>(isProfile) {
 
     override val mimeType = MimeType.Event
 
     override fun setData(
-        data: MutableEvent, setValue: (field: CommonDataField, dataValue: Any?) -> Unit
+        data: MutableEvent, setValue: (field: EventField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Event.Type, data.type?.value)
         setValue(Fields.Event.Label, data.label)
