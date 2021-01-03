@@ -3,7 +3,14 @@ package contacts.entities.custom.gender
 import contacts.entities.MimeType
 import contacts.entities.custom.AbstractCustomDataOperation
 
-internal class GenderDataOperation(isProfile: Boolean) :
+internal class GenderDataOperationFactory : AbstractCustomDataOperation.Factory<GenderField,
+        MutableGender> {
+
+    override fun create(isProfile: Boolean): AbstractCustomDataOperation<GenderField,
+            MutableGender> = GenderDataOperation(isProfile)
+}
+
+private class GenderDataOperation(isProfile: Boolean) :
     AbstractCustomDataOperation<GenderField, MutableGender>(isProfile) {
 
     override val mimeType: MimeType.Custom = GenderMimeType

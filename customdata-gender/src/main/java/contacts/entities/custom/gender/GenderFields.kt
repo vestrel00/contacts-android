@@ -7,6 +7,7 @@ import contacts.entities.MimeType
 
 data class GenderField internal constructor(private val columnName: ColumnName) :
     AbstractCustomDataField(columnName) {
+    
     override val customMimeType: MimeType.Custom = GenderMimeType
 }
 
