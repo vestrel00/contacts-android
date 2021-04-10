@@ -2,10 +2,7 @@ package contacts.async.profile
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.profile.ProfileInsert
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -17,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
  * See [ProfileInsert.commit].
  */
 suspend fun ProfileInsert.commitWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
-        ProfileInsert.Result = withContext(context) { commit() }
+        ProfileInsert.Result = withContext(context) { commit { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -28,4 +25,4 @@ suspend fun ProfileInsert.commitWithContext(context: CoroutineContext = ASYNC_DI
  * See [ProfileInsert.commit].
  */
 fun ProfileInsert.commitAsync(context: CoroutineContext = ASYNC_DISPATCHER):
-        Deferred<ProfileInsert.Result> = CoroutineScope(context).async { commit() }
+        Deferred<ProfileInsert.Result> = CoroutineScope(context).async { commit { !isActive } }

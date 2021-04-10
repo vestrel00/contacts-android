@@ -164,6 +164,34 @@ interface ProfileInsert {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
+    /**
+     * Inserts the [MutableRawContact]s in the queue (added via [rawContact]) and returns the
+     * [Result].
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION] and
+     * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
+     * ## Cancellation
+     *
+     * To cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * **Cancelling does not undo insertions. This means that depending on when the cancellation
+     * occurs, some if not all of the RawContacts in the insert queue may have already been
+     * inserted.**
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun commit(cancel: () -> Boolean = { false }): Result
+    fun commit(cancel: () -> Boolean): Result
+
     interface Result {
 
         /**
@@ -229,12 +257,15 @@ private class ProfileInsertImpl(
         this.rawContact = rawContact
     }
 
-    override fun commit(): ProfileInsert.Result {
+    override fun commit(): ProfileInsert.Result = commit { false }
+
+    override fun commit(cancel: () -> Boolean): ProfileInsert.Result {
         val rawContact = rawContact
 
         if (rawContact == null
             || (!allowBlanks && rawContact.isBlank)
             || !permissions.canInsert()
+            || cancel()
         ) {
             return ProfileInsertFailed()
         }
@@ -243,12 +274,15 @@ private class ProfileInsertImpl(
         account = account?.nullIfNotInSystem(applicationContext)
 
         if (
-            !allowMultipleRawContactsPerAccount
-            && applicationContext.contentResolver.hasProfileRawContactForAccount(account)
+            (!allowMultipleRawContactsPerAccount
+                    && applicationContext.contentResolver.hasProfileRawContactForAccount(account))
+            || cancel()
         ) {
             return ProfileInsertFailed()
         }
 
+        // No need to propagate the cancel function to within insertRawContactForAccount
+        // as that operation should be fast and CPU time should be trivial.
         val rawContactId =
             applicationContext.insertRawContactForAccount(
                 customDataRegistry, account, rawContact, IS_PROFILE
