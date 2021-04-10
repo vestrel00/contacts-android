@@ -187,6 +187,8 @@ class CustomDataRegistry {
      * Stuff like this wouldn't be necessary if we have the ability to restrict access by using
      * annotations.
      */
+    // TODO This isn't necessary! MimeType.Custom can bew used for this purpose. Libraries can
+    // just keep their custom mimetype internal!
     interface EntryId
 
     /**
