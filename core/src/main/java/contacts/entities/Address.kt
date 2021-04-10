@@ -2,7 +2,6 @@ package contacts.entities
 
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Address.Type
-import contacts.util.unsafeLazy
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -97,13 +96,11 @@ data class Address internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Address
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean by unsafeLazy {
-        propertiesAreAllNullOrBlank(
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
             // type and label are excluded from this check as they are useless information by themselves
             formattedAddress, street, poBox, neighborhood, city, region, postcode, country
         )
-    }
 
     fun toMutableAddress() = MutableAddress(
         id = id,

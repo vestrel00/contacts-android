@@ -1,7 +1,6 @@
 package contacts.entities
 
 import android.net.Uri
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -60,10 +59,8 @@ data class Options internal constructor(
 
     internal constructor() : this(null, null, null, null)
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean = propertiesAreAllNullOrBlank(
-        starred, customRingtone, sendToVoicemail
-    )
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(starred, customRingtone, sendToVoicemail)
 
     fun toMutableOptions() = MutableOptions(
         id = id,
@@ -119,7 +116,5 @@ data class MutableOptions internal constructor(
     constructor() : this(null, null, null, null)
 
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(
-            starred, customRingtone, sendToVoicemail
-        )
+        get() = propertiesAreAllNullOrBlank(starred, customRingtone, sendToVoicemail)
 }

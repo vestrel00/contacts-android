@@ -43,8 +43,8 @@ data class Im internal constructor(
 
     // protocol and customProtocol are excluded from this check as they are useless information by
     // themselves
-    @IgnoredOnParcel
-    override val isBlank: Boolean = propertiesAreAllNullOrBlank(data)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(data)
 
     fun toMutableIm() = MutableIm(
         id = id,

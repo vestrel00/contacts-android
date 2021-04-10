@@ -29,8 +29,8 @@ data class Website internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Website
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean = propertiesAreAllNullOrBlank(url)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(url)
 
     fun toMutableWebsite() = MutableWebsite(
         id = id,

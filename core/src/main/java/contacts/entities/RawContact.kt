@@ -2,7 +2,6 @@ package contacts.entities
 
 import contacts.entities.custom.CustomDataEntityHolder
 import contacts.util.isProfileId
-import contacts.util.unsafeLazy
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -146,15 +145,13 @@ data class RawContact internal constructor(
 
 ) : RawContactEntity() {
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean by unsafeLazy {
-        propertiesAreAllNullOrBlank(
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
             name, nickname, note, organization, photo, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
             customDataEntities.values.flatMap { it.entities }
         )
-    }
 
     fun toMutableRawContact() = MutableRawContact(
         id = id,

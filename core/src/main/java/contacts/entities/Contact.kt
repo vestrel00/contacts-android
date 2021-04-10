@@ -1,8 +1,6 @@
 package contacts.entities
 
 import contacts.util.isProfileId
-import contacts.util.unsafeLazy
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -170,13 +168,11 @@ data class Contact internal constructor(
 
 ) : ContactEntity() {
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean by unsafeLazy {
-        // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
-        // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
-        // the Data table, which is why they are not part of the blank check.
-        entitiesAreAllBlank(rawContacts)
-    }
+    // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
+    // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
+    // the Data table, which is why they are not part of the blank check.
+    override val isBlank: Boolean
+        get() = entitiesAreAllBlank(rawContacts)
 
     fun toMutableContact() = MutableContact(
         id = id,

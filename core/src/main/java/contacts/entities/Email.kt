@@ -39,8 +39,8 @@ data class Email internal constructor(
     override val mimeType: MimeType = MimeType.Email
 
     // type and label are excluded from this check as they are useless information by themselves
-    @IgnoredOnParcel
-    override val isBlank: Boolean = propertiesAreAllNullOrBlank(address)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(address)
 
     fun toMutableEmail() = MutableEmail(
         id = id,

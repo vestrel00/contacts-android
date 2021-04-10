@@ -52,8 +52,8 @@ data class Event internal constructor(
     override val mimeType: MimeType = MimeType.Event
 
     // type and label are excluded from this check as they are useless information by themselves
-    @IgnoredOnParcel
-    override val isBlank: Boolean = propertiesAreAllNullOrBlank(date)
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(date)
 
     fun toMutableEvent() = MutableEvent(
         id = id,

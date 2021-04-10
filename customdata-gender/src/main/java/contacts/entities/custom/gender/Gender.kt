@@ -45,8 +45,8 @@ data class Gender internal constructor(
      * number is important in that case. However, the primary data we are interested in here is the
      * actual type itself.
      */
-    @IgnoredOnParcel
-    override val isBlank: Boolean = type == null
+    override val isBlank: Boolean
+        get() = type == null
 
     fun toMutableGender() = MutableGender(
         id = id,
@@ -109,8 +109,8 @@ data class MutableGender internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = GenderMimeType
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean = type == null
+    override val isBlank: Boolean
+        get() = type == null
 
     internal fun toGender() = Gender(
         id = id,

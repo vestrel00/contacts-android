@@ -1,6 +1,5 @@
 package contacts.entities
 
-import contacts.util.unsafeLazy
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -60,12 +59,10 @@ data class Organization internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Organization
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean by unsafeLazy {
-        propertiesAreAllNullOrBlank(
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
             company, title, department, jobDescription, officeLocation, symbol, phoneticName
         )
-    }
 
     fun toMutableOrganization() = MutableOrganization(
         id = id,

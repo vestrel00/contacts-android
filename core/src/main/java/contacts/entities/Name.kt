@@ -1,6 +1,5 @@
 package contacts.entities
 
-import contacts.util.unsafeLazy
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -106,15 +105,13 @@ data class Name internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Name
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean by unsafeLazy {
-        propertiesAreAllNullOrBlank(
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
             displayName,
             givenName, middleName, familyName,
             prefix, suffix,
             phoneticGivenName, phoneticMiddleName, phoneticFamilyName
         )
-    }
 
     fun toMutableName() = MutableName(
         id = id,

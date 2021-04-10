@@ -6,7 +6,6 @@ import contacts.entities.custom.CustomDataRegistry
  * Provides functions for consumers to register [Gender] components to a [CustomDataRegistry]
  * instance, enabling queries, inserts, updates, and deletes of [Gender] data.
  */
-// TODO try this out!!!!
 class GenderRegistration : CustomDataRegistry.EntryRegistration {
 
     /**
