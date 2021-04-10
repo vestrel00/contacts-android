@@ -104,6 +104,8 @@ data class MutableGender internal constructor(
 
 ) : MutableCustomDataEntity {
 
+    constructor() : this(null, null, null, false, false, null, null)
+
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = GenderMimeType
 

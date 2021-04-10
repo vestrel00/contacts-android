@@ -6,9 +6,10 @@ import contacts.entities.custom.CustomDataRegistry
 import contacts.entities.custom.GlobalCustomDataRegistry
 
 /**
- * TODO documentation
+ * Returns the [Gender] of this RawContact. Null if not available (e.g. does not exist in the
+ * database or was not an included field in the query).
  */
-fun RawContact.getGender(
+fun RawContact.gender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): Gender? {
     val customDataEntities =
@@ -19,9 +20,10 @@ fun RawContact.getGender(
 }
 
 /**
- * TODO documentation
+ * Returns the [MutableGender] of this RawContact. Null if not available (e.g. does not exist in
+ * the  database or was not an included field in the query).
  */
-fun MutableRawContact.getGender(
+fun MutableRawContact.gender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): MutableGender? {
     val customDataEntities =
@@ -32,7 +34,10 @@ fun MutableRawContact.getGender(
 }
 
 /**
- * TODO documentation (note the nullable gender)
+ * Sets the gender of this RawContact to the given [gender].
+ *
+ * This does not perform the actual update to the database. You will need to perform an update
+ * operation on this [MutableRawContact] object.
  */
 fun MutableRawContact.setGender(
     gender: MutableGender?,
@@ -43,4 +48,17 @@ fun MutableRawContact.setGender(
     } else {
         customDataRegistry.removeAllCustomDataEntityFrom(this, GenderEntryId)
     }
+}
+
+/**
+ * Sets the gender of this RawContact to a new [MutableGender] configured by [configureGender].
+ *
+ * This does not perform the actual update to the database. You will need to perform an update
+ * operation on this [MutableRawContact] object.
+ */
+fun MutableRawContact.setGender(
+    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    configureGender: MutableGender.() -> Unit
+) {
+    setGender(MutableGender().apply(configureGender), customDataRegistry)
 }
