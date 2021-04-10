@@ -1,7 +1,6 @@
 ## TODO
 
 - Rename EntityCursor to TableCursor or FieldCursor.
-- Rename AbstractCursor to AbstractEntityCursor.
 - Ensure cursors and mappers are not created in for or while loops. Query violates this rule.
 - Support cancellation for Insert, Update, and Delete operations. Queries already support cancellation.
 

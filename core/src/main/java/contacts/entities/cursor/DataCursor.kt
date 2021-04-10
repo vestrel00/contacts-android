@@ -10,7 +10,7 @@ import contacts.Fields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class DataCursor(cursor: Cursor) : AbstractCursor<AbstractDataField>(cursor),
+internal class DataCursor(cursor: Cursor) : AbstractEntityCursor<AbstractDataField>(cursor),
     DataIdCursor {
 
     override val dataId: Long? by long(Fields.DataId)

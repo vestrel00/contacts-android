@@ -14,7 +14,7 @@ import contacts.ContactsFields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class OptionsCursor(cursor: Cursor) : AbstractCursor<ContactsField>(cursor) {
+internal class OptionsCursor(cursor: Cursor) : AbstractEntityCursor<ContactsField>(cursor) {
 
     val id: Long? by long(ContactsFields.Options.Id)
 

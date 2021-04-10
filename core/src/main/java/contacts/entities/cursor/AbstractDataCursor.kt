@@ -7,7 +7,7 @@ import contacts.AbstractDataField
  * An abstract cursor for data fields of type [T].
  */
 abstract class AbstractDataCursor<T : AbstractDataField>(cursor: Cursor) :
-    AbstractCursor<T>(cursor), DataIdCursor {
+    AbstractEntityCursor<T>(cursor), DataIdCursor {
 
     // Cannot be in the constructor as DataCursor is internal, which is why I couldn't use
     // DataIdCursor by dataCursor at the class declaration level and instead resort to delegation

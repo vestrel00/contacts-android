@@ -85,7 +85,7 @@ import kotlin.reflect.KProperty
  * The value assigned to `formattedAddress` will most likely be null. Either way, the return value
  * of `formattedAddress` will always be the same. Bad!
  */
-abstract class AbstractCursor<T : Field>(private val cursor: Cursor) {
+abstract class AbstractEntityCursor<T : Field>(private val cursor: Cursor) {
 
     // region REGULAR FUNCTIONS - NULLABLE
 
@@ -206,39 +206,39 @@ abstract class AbstractCursor<T : Field>(private val cursor: Cursor) {
     protected fun string(
         field: T,
         default: String? = null
-    ): ReadOnlyProperty<AbstractCursor<T>, String?> = StringDelegate(field, default)
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, String?> = StringDelegate(field, default)
 
-    protected fun int(field: T, default: Int? = null): ReadOnlyProperty<AbstractCursor<T>, Int?> =
+    protected fun int(field: T, default: Int? = null): ReadOnlyProperty<AbstractEntityCursor<T>, Int?> =
         IntDelegate(field, default)
 
     protected fun long(
         field: T,
         default: Long? = null
-    ): ReadOnlyProperty<AbstractCursor<T>, Long?> = LongDelegate(field, default)
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Long?> = LongDelegate(field, default)
 
     protected fun boolean(
         field: T,
         default: Boolean? = null
-    ): ReadOnlyProperty<AbstractCursor<T>, Boolean?> = BooleanDelegate(field, default)
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Boolean?> = BooleanDelegate(field, default)
 
     protected fun blob(
         field: T,
         default: ByteArray? = null
-    ): ReadOnlyProperty<AbstractCursor<T>, ByteArray?> = BlobDelegate(field, default)
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, ByteArray?> = BlobDelegate(field, default)
 
-    protected fun uri(field: T, default: Uri? = null): ReadOnlyProperty<AbstractCursor<T>, Uri?> =
+    protected fun uri(field: T, default: Uri? = null): ReadOnlyProperty<AbstractEntityCursor<T>, Uri?> =
         UriDelegate(field, default)
 
     protected fun date(
         field: T,
         default: Date? = null
-    ): ReadOnlyProperty<AbstractCursor<T>, Date?> = DateDelegate(field, default)
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Date?> = DateDelegate(field, default)
 
     protected fun <K : CommonDataEntity.Type> type(
         field: T,
         default: K? = null,
         typeFromValue: (value: Int?) -> K?
-    ): ReadOnlyProperty<AbstractCursor<T>, K?> = TypeDelegate(field, default, typeFromValue)
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, K?> = TypeDelegate(field, default, typeFromValue)
 
     // endregion
 
@@ -247,39 +247,39 @@ abstract class AbstractCursor<T : Field>(private val cursor: Cursor) {
     protected fun nonNullString(
         field: T,
         default: String = ""
-    ): ReadOnlyProperty<AbstractCursor<T>, String> =
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, String> =
         NonNullStringDelegate(field, default)
 
-    protected fun nonNullInt(field: T, default: Int = 0): ReadOnlyProperty<AbstractCursor<T>, Int> =
+    protected fun nonNullInt(field: T, default: Int = 0): ReadOnlyProperty<AbstractEntityCursor<T>, Int> =
         NonNullIntDelegate(field, default)
 
     protected fun nonNullLong(
         field: T,
         default: Long = 0
-    ): ReadOnlyProperty<AbstractCursor<T>, Long> = NonNullLongDelegate(field, default)
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Long> = NonNullLongDelegate(field, default)
 
     protected fun nonNullBoolean(
         field: T,
         default: Boolean = false
-    ): ReadOnlyProperty<AbstractCursor<T>, Boolean> =
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Boolean> =
         NonNullBooleanDelegate(field, default)
 
     protected fun nonNullBlob(
         field: T,
         default: ByteArray = ByteArray(0)
-    ): ReadOnlyProperty<AbstractCursor<T>, ByteArray> =
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, ByteArray> =
         NonNullBlobDelegate(field, default)
 
     protected fun nonNullUri(
         field: T,
         default: Uri = Uri.EMPTY
-    ): ReadOnlyProperty<AbstractCursor<T>, Uri> =
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Uri> =
         NonNullUriDelegate(field, default)
 
     protected fun nonNullDate(
         field: T,
         default: Date = Date()
-    ): ReadOnlyProperty<AbstractCursor<T>, Date> =
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Date> =
         NonNullDateDelegate(field, default)
 
     // No nonNullType because that would require us to introduce an UNKNOWN type.
@@ -291,56 +291,56 @@ abstract class AbstractCursor<T : Field>(private val cursor: Cursor) {
     private inner class StringDelegate(
         private val field: T,
         private val default: String? = null
-    ) : ReadOnlyProperty<AbstractCursor<T>, String?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): String? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, String?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): String? =
             getString(field, default)
     }
 
     private inner class IntDelegate(
         private val field: T,
         private val default: Int? = null
-    ) : ReadOnlyProperty<AbstractCursor<T>, Int?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Int? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Int?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Int? =
             getInt(field, default)
     }
 
     private inner class LongDelegate(
         private val field: T,
         private val default: Long? = null
-    ) : ReadOnlyProperty<AbstractCursor<T>, Long?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Long? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Long?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Long? =
             getLong(field, default)
     }
 
     private inner class BooleanDelegate(
         private val field: T,
         private val default: Boolean? = null
-    ) : ReadOnlyProperty<AbstractCursor<T>, Boolean?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Boolean? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Boolean?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Boolean? =
             getBoolean(field, default)
     }
 
     private inner class BlobDelegate(
         private val field: T,
         private val default: ByteArray? = null
-    ) : ReadOnlyProperty<AbstractCursor<T>, ByteArray?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): ByteArray? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, ByteArray?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): ByteArray? =
             getBlob(field, default)
     }
 
     private inner class UriDelegate(
         private val field: T,
         private val default: Uri? = null
-    ) : ReadOnlyProperty<AbstractCursor<T>, Uri?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Uri? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Uri?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Uri? =
             getUri(field, default)
     }
 
     private inner class DateDelegate(
         private val field: T,
         private val default: Date? = null
-    ) : ReadOnlyProperty<AbstractCursor<T>, Date?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Date? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Date?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Date? =
             getDate(field, default)
     }
 
@@ -348,8 +348,8 @@ abstract class AbstractCursor<T : Field>(private val cursor: Cursor) {
         private val field: T,
         private val default: K? = null,
         private val typeFromValue: (value: Int?) -> K?
-    ) : ReadOnlyProperty<AbstractCursor<T>, K?> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): K? =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, K?> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): K? =
             getType(field, default, typeFromValue)
     }
 
@@ -360,56 +360,56 @@ abstract class AbstractCursor<T : Field>(private val cursor: Cursor) {
     private inner class NonNullStringDelegate(
         private val field: T,
         private val default: String = ""
-    ) : ReadOnlyProperty<AbstractCursor<T>, String> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): String =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, String> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): String =
             getNonNullString(field, default)
     }
 
     private inner class NonNullIntDelegate(
         private val field: T,
         private val default: Int = 0
-    ) : ReadOnlyProperty<AbstractCursor<T>, Int> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Int =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Int> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Int =
             getNonNullInt(field, default)
     }
 
     private inner class NonNullLongDelegate(
         private val field: T,
         private val default: Long = 0
-    ) : ReadOnlyProperty<AbstractCursor<T>, Long> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Long =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Long> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Long =
             getNonNullLong(field, default)
     }
 
     private inner class NonNullBooleanDelegate(
         private val field: T,
         private val default: Boolean = false
-    ) : ReadOnlyProperty<AbstractCursor<T>, Boolean> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Boolean =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Boolean> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Boolean =
             getNonNullBoolean(field, default)
     }
 
     private inner class NonNullBlobDelegate(
         private val field: T,
         private val default: ByteArray = ByteArray(0)
-    ) : ReadOnlyProperty<AbstractCursor<T>, ByteArray> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): ByteArray =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, ByteArray> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): ByteArray =
             getNonNullBlob(field, default)
     }
 
     private inner class NonNullUriDelegate(
         private val field: T,
         private val default: Uri = Uri.EMPTY
-    ) : ReadOnlyProperty<AbstractCursor<T>, Uri> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Uri =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Uri> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Uri =
             getNonNullUri(field, default)
     }
 
     private inner class NonNullDateDelegate(
         private val field: T,
         private val default: Date = Date()
-    ) : ReadOnlyProperty<AbstractCursor<T>, Date> {
-        override fun getValue(thisRef: AbstractCursor<T>, property: KProperty<*>): Date =
+    ) : ReadOnlyProperty<AbstractEntityCursor<T>, Date> {
+        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): Date =
             getNonNullDate(field, default)
     }
 

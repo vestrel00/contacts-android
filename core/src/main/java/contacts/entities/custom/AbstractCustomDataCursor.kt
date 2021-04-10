@@ -7,7 +7,7 @@ import contacts.entities.cursor.DataCursor
 
 /**
  * An abstract class that is used as a base of all custom [DataCursor]s. The type [T] are the fields
- * allowed to be used in the functions defined in [contacts.entities.cursor.AbstractCursor].
+ * allowed to be used in the functions defined in [contacts.entities.cursor.AbstractEntityCursor].
  */
 abstract class AbstractCustomDataCursor<T : AbstractDataField>(cursor: Cursor) :
     AbstractDataCursor<T>(cursor)

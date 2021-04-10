@@ -12,7 +12,7 @@ import java.util.*
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class ContactsCursor(cursor: Cursor) : AbstractCursor<ContactsField>(cursor),
+internal class ContactsCursor(cursor: Cursor) : AbstractEntityCursor<ContactsField>(cursor),
     JoinedContactsCursor {
 
     override val contactId: Long? by long(ContactsFields.Id)
