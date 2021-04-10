@@ -1,6 +1,5 @@
 ## TODO
 
-- Ensure cursors and mappers are not created in for or while loops. Query violates this rule.
 - Support cancellation for Insert, Update, and Delete operations. Queries already support cancellation.
 
 1. Support for adding custom mimetypes.

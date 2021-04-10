@@ -333,6 +333,8 @@ interface Query {
      *
      * This is useful when running this function in a background thread or coroutine.
      *
+     * **An empty list will be returned if cancelled.**
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -439,7 +441,7 @@ private class QueryImpl(
     override fun find(): List<Contact> = find { false }
 
     override fun find(cancel: () -> Boolean): List<Contact> {
-        if (!permissions.canQuery()) {
+        if (!permissions.canQuery() || cancel()) {
             return emptyList()
         }
 

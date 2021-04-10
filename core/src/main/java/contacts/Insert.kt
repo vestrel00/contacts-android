@@ -154,6 +154,34 @@ interface Insert {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
+    /**
+     * Inserts the [MutableRawContact]s in the queue (added via [rawContacts]) and returns the
+     * [Result].
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION] and
+     * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
+     * ## Cancellation
+     *
+     * To cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * **Cancelling does not undo insertions. This means that depending on when the cancellation
+     * occurs, some if not all of the RawContacts in the insert queue may have already been
+     * inserted.**
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun commit(cancel: () -> Boolean = { false }): Result
+    fun commit(cancel: () -> Boolean): Result
+
     interface Result {
 
         /**
@@ -233,8 +261,10 @@ private class InsertImpl(
         this.rawContacts.addAll(rawContacts)
     }
 
-    override fun commit(): Insert.Result {
-        if (rawContacts.isEmpty() || !permissions.canInsert()) {
+    override fun commit(): Insert.Result = commit { false }
+
+    override fun commit(cancel: () -> Boolean): Insert.Result {
+        if (rawContacts.isEmpty() || !permissions.canInsert() || cancel()) {
             return InsertFailed()
         }
 
@@ -243,9 +273,15 @@ private class InsertImpl(
 
         val results = mutableMapOf<MutableRawContact, Long?>()
         for (rawContact in rawContacts) {
+            if (cancel()) {
+                break
+            }
+
             results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
                 null
             } else {
+                // No need to propagate the cancel function to within insertRawContactForAccount
+                // as that operation should be fast and CPU time should be trivial.
                 applicationContext.insertRawContactForAccount(
                     customDataRegistry, account, rawContact, IS_PROFILE
                 )
