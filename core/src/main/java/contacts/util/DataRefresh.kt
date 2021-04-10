@@ -14,8 +14,8 @@ import contacts.entities.fields
  * This is useful for getting the latest data after performing an update. This may return null if
  * the [CommonDataEntity] no longer exists or if permission is not granted.
  *
- * Returns itself if the [CommonDataEntity.id] is null, indicating that this DataEntity instance has not
- * yet been inserted to the DB.
+ * Returns itself if the [CommonDataEntity.id] is null, indicating that this DataEntity instance has
+ * not yet been inserted to the DB.
  *
  * Supports profile/non-profile native/custom data.
  *

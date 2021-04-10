@@ -31,6 +31,7 @@
         android:maxSdkVersion="22" />
 
     <application
+        android:name=".SampleApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/contacts"
