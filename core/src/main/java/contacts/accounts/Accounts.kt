@@ -69,6 +69,19 @@ fun Accounts(context: Context, isProfile: Boolean = false): Accounts = AccountsI
     isProfile
 )
 
+/**
+ * Creates a new [Accounts] instance for Profile or non-Profile operations.
+ *
+ * This is mainly for Java convenience. Kotlin users should use [Accounts] function instead.
+ */
+object AccountsFactory {
+
+    @JvmStatic
+    @JvmOverloads
+    fun create(context: Context, isProfile: Boolean = false): Accounts =
+        Accounts(context, isProfile)
+}
+
 @SuppressWarnings("MissingPermission")
 private class AccountsImpl(
     override val applicationContext: Context,

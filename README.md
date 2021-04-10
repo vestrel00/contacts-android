@@ -1,9 +1,9 @@
 ## TODO
 
 1. Support for adding custom mimetypes.
+    - Test Java compatability.
     - Weight; type (lbs, kg, etc), label, value (demonstrates single data with primary data)
     - Favorites; type (food, color, music, book, movie, hobby, sports), label, name (demonstrates multiple data)
-    - Test Java compatability.
 2. Integrate androidx.annotations for WorkerThread, etc. Only do this if the next bullet point works.
     - Use @RestrictTo(RestrictTo.Scope.LIBRARY) to hide public interface fields / functions that are not meant to be used by applications (e.g. Contacts.applicationContext).
         - Might not work. See https://github.com/google/error-prone/issues/812

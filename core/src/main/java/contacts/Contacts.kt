@@ -121,6 +121,20 @@ fun Contacts(
     customDataRegistry
 )
 
+/**
+ * Creates a new [Contacts] instance.
+ *
+ * This is mainly for Java convenience. Kotlin users should use [Contacts] function instead.
+ */
+object ContactsFactory {
+
+    @JvmStatic
+    @JvmOverloads
+    fun create(
+        context: Context, customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
+    ): Contacts = Contacts(context, customDataRegistry)
+}
+
 private class ContactsImpl(
     override val applicationContext: Context,
     override val permissions: ContactsPermissions,
