@@ -126,6 +126,32 @@ interface ProfileUpdate {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
+    /**
+     * Updates the [MutableRawContact]s in the queue (added via [rawContacts] and [contact]) and
+     * returns the [Result].
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * ## Cancellation
+     *
+     * To cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * **Cancelling does not undo updates. This means that depending on when the cancellation
+     * occurs, the RawContact in the update queue may have already been updated.**
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun commit(cancel: () -> Boolean = { false }): Result
+    fun commit(cancel: () -> Boolean): Result
+
     interface Result {
 
         /**
@@ -183,13 +209,19 @@ private class ProfileUpdateImpl(
 
     override fun contact(contact: MutableContact): ProfileUpdate = rawContacts(contact.rawContacts)
 
-    override fun commit(): ProfileUpdate.Result {
-        if (rawContacts.isEmpty() || !permissions.canUpdateDelete()) {
+    override fun commit(): ProfileUpdate.Result = commit { false }
+
+    override fun commit(cancel: () -> Boolean): ProfileUpdate.Result {
+        if (rawContacts.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             return ProfileUpdateFailed()
         }
 
         val results = mutableMapOf<Long, Boolean>()
         for (rawContact in rawContacts) {
+            if (cancel()) {
+                break
+            }
+
             if (rawContact.id != null) {
                 results[rawContact.id] = if (!rawContact.isProfile) {
                     // Intentionally fail the operation to ensure that this is only used for profile
