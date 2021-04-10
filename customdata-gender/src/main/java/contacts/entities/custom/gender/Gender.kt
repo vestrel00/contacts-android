@@ -11,6 +11,8 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * Describes the gender of a RawContact.
+ *
+ * A RawContact may only have one Gender entry.
  */
 @Parcelize
 data class Gender internal constructor(
