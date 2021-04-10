@@ -585,8 +585,9 @@ private fun ContentResolver.findContactIdsInContactsTable(
     suppressDbExceptions = suppressDbExceptions
 ) {
     mutableSetOf<Long>().apply {
+        val contactsCursor = it.contactsCursor()
         while (!cancel() && it.moveToNext()) {
-            it.contactsCursor().contactId?.let(::add)
+            contactsCursor.contactId?.let(::add)
         }
     }
 } ?: emptySet()
@@ -602,8 +603,9 @@ internal fun ContentResolver.findContactIdsInRawContactsTable(
     suppressDbExceptions = suppressDbExceptions
 ) {
     mutableSetOf<Long>().apply {
+        val rawContactsCursor = it.rawContactsCursor()
         while (!cancel() && it.moveToNext()) {
-            it.rawContactsCursor().contactId?.let(::add)
+            rawContactsCursor.contactId?.let(::add)
         }
     }
 } ?: emptySet()
