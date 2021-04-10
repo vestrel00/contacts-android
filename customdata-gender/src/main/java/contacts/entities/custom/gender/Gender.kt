@@ -1,5 +1,6 @@
 package contacts.entities.custom.gender
 
+import android.provider.ContactsContract
 import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
 import contacts.entities.custom.CustomDataEntity
@@ -60,14 +61,16 @@ data class Gender internal constructor(
         label = label
     )
 
+    /**
+     * The types of gender. There are two main genders; [MALE] and [FEMALE].
+     *
+     * For other types of genders, use [CUSTOM] and [Gender.label]
+     */
     enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         MALE(1),
         FEMALE(2),
-
-        // Does not really matter but custom is typically 0
-        // See ContactsContract.CommonDataKinds.BaseTypes.TYPE_CUSTOM
-        CUSTOM(0);
+        CUSTOM(ContactsContract.CommonDataKinds.BaseTypes.TYPE_CUSTOM);
 
         internal companion object {
 

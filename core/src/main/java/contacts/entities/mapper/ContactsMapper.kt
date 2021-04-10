@@ -48,7 +48,7 @@ internal class ContactsMapper(
      *
      * This will not close the given [cursor].
      */
-    fun processContactsCursor(cursor: EntityCursor<ContactsField>): ContactsMapper = apply {
+    fun processContactsCursor(cursor: CursorHolder<ContactsField>): ContactsMapper = apply {
         // Use the Contacts cursor to retrieve the contactId.
         val contactsCursor = cursor.contactsCursor()
         val contactMapper = cursor.contactsMapper()
@@ -68,7 +68,7 @@ internal class ContactsMapper(
      *
      * This will not close the given [cursor].
      */
-    fun processRawContactsCursor(cursor: EntityCursor<RawContactsField>): ContactsMapper = apply {
+    fun processRawContactsCursor(cursor: CursorHolder<RawContactsField>): ContactsMapper = apply {
         // Use the RawContacts cursor to retrieve the rawContactId.
         val rawContactsCursor = cursor.rawContactsCursor()
         val tempRawContactMapper = rawContactsCursor.tempRawContactMapper()
@@ -88,7 +88,7 @@ internal class ContactsMapper(
      *
      * This will not close the given [cursor].
      */
-    fun processDataCursor(cursor: EntityCursor<AbstractDataField>): ContactsMapper = apply {
+    fun processDataCursor(cursor: CursorHolder<AbstractDataField>): ContactsMapper = apply {
         // Changing the cursor position also changes the values returned by the mappers.
         val dataCursor = cursor.dataCursor()
         val contactMapper = cursor.dataContactsMapper()
@@ -178,7 +178,7 @@ internal class ContactsMapper(
     }
 }
 
-private fun EntityCursor<AbstractDataField>.updateRawContact(
+private fun CursorHolder<AbstractDataField>.updateRawContact(
     customDataRegistry: CustomDataRegistry,
     rawContact: TempRawContact
 ) {
@@ -208,7 +208,7 @@ private fun EntityCursor<AbstractDataField>.updateRawContact(
     }
 }
 
-private fun EntityCursor<AbstractDataField>.updateRawContactCustomData(
+private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
     customDataRegistry: CustomDataRegistry,
     rawContact: TempRawContact,
     mimeType: Custom

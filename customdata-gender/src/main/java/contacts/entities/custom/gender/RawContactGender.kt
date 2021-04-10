@@ -21,7 +21,7 @@ fun RawContact.gender(
 
 /**
  * Returns the [MutableGender] of this RawContact. Null if not available (e.g. does not exist in
- * the  database or was not an included field in the query).
+ * the database or was not an included field in the query).
  */
 fun MutableRawContact.gender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry

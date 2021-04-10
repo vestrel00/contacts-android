@@ -14,7 +14,7 @@ import contacts.*
  * The type [T] is not exactly used in this class itself. Rather, it is used for adding type
  * restrictions when constructing instances at compile time.
  */
-internal sealed class EntityCursor<T : Field> {
+internal sealed class CursorHolder<T : Field> {
     abstract val cursor: Cursor
 
     fun moveToNext(): Boolean = cursor.moveToNext()
@@ -26,20 +26,20 @@ internal sealed class EntityCursor<T : Field> {
     }
 }
 
-internal class DataEntityCursor(override val cursor: Cursor) : EntityCursor<AbstractDataField>()
-internal class RawContactsEntityCursor(override val cursor: Cursor) :
-    EntityCursor<RawContactsField>()
+internal class DataCursorHolder(override val cursor: Cursor) : CursorHolder<AbstractDataField>()
+internal class RawContactsCursorHolder(override val cursor: Cursor) :
+    CursorHolder<RawContactsField>()
 
-internal class ContactsEntityCursor(override val cursor: Cursor) : EntityCursor<ContactsField>()
-internal class GroupsEntityCursor(override val cursor: Cursor) : EntityCursor<GroupsField>()
+internal class ContactsCursorHolder(override val cursor: Cursor) : CursorHolder<ContactsField>()
+internal class GroupsCursorHolder(override val cursor: Cursor) : CursorHolder<GroupsField>()
 
 @Suppress("UNCHECKED_CAST")
-internal inline fun <reified T : Field> Cursor.toEntityCursor(): EntityCursor<T> = when (T::class) {
-    AbstractDataField::class -> DataEntityCursor(this)
-    RawContactsField::class -> RawContactsEntityCursor(this)
-    ContactsField::class -> ContactsEntityCursor(this)
-    GroupsField::class -> GroupsEntityCursor(this)
+internal inline fun <reified T : Field> Cursor.toEntityCursor(): CursorHolder<T> = when (T::class) {
+    AbstractDataField::class -> DataCursorHolder(this)
+    RawContactsField::class -> RawContactsCursorHolder(this)
+    ContactsField::class -> ContactsCursorHolder(this)
+    GroupsField::class -> GroupsCursorHolder(this)
     else -> throw UnsupportedOperationException(
         "No entity cursor for ${T::class.java.simpleName}"
     )
-} as EntityCursor<T>
+} as CursorHolder<T>

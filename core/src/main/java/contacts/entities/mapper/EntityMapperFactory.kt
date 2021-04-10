@@ -7,59 +7,59 @@ import contacts.entities.custom.CustomDataRegistry
 
 // region EntityCursor<AbstractDataField>
 
-internal fun EntityCursor<AbstractDataField>.addressMapper(): EntityMapper<Address> =
+internal fun CursorHolder<AbstractDataField>.addressMapper(): EntityMapper<Address> =
     AddressMapper(addressCursor())
 
-internal fun EntityCursor<AbstractDataField>.dataContactsMapper():
+internal fun CursorHolder<AbstractDataField>.dataContactsMapper():
         EntityMapper<Contact> = ContactMapper(
     dataContactsCursor(), dataContactsOptionsMapper()
 )
 
-internal fun EntityCursor<AbstractDataField>.emailMapper(): EntityMapper<Email> =
+internal fun CursorHolder<AbstractDataField>.emailMapper(): EntityMapper<Email> =
     EmailMapper(emailCursor())
 
-internal fun EntityCursor<AbstractDataField>.eventMapper(): EntityMapper<Event> =
+internal fun CursorHolder<AbstractDataField>.eventMapper(): EntityMapper<Event> =
     EventMapper(eventCursor())
 
-internal fun EntityCursor<AbstractDataField>.groupMembershipMapper(): EntityMapper<GroupMembership> =
+internal fun CursorHolder<AbstractDataField>.groupMembershipMapper(): EntityMapper<GroupMembership> =
     GroupMembershipMapper(groupMembershipCursor())
 
-internal fun EntityCursor<AbstractDataField>.imMapper(): EntityMapper<Im> = ImMapper(imCursor())
+internal fun CursorHolder<AbstractDataField>.imMapper(): EntityMapper<Im> = ImMapper(imCursor())
 
-internal fun EntityCursor<AbstractDataField>.nameMapper(): EntityMapper<Name> =
+internal fun CursorHolder<AbstractDataField>.nameMapper(): EntityMapper<Name> =
     NameMapper(nameCursor())
 
-internal fun EntityCursor<AbstractDataField>.nicknameMapper(): EntityMapper<Nickname> =
+internal fun CursorHolder<AbstractDataField>.nicknameMapper(): EntityMapper<Nickname> =
     NicknameMapper(nicknameCursor())
 
-internal fun EntityCursor<AbstractDataField>.noteMapper(): EntityMapper<Note> =
+internal fun CursorHolder<AbstractDataField>.noteMapper(): EntityMapper<Note> =
     NoteMapper(noteCursor())
 
-internal fun EntityCursor<AbstractDataField>.dataContactsOptionsMapper(): EntityMapper<Options> =
+internal fun CursorHolder<AbstractDataField>.dataContactsOptionsMapper(): EntityMapper<Options> =
     OptionsMapper(dataContactsOptionsCursor())
 
-internal fun EntityCursor<AbstractDataField>.organizationMapper(): EntityMapper<Organization> =
+internal fun CursorHolder<AbstractDataField>.organizationMapper(): EntityMapper<Organization> =
     OrganizationMapper(organizationCursor())
 
-internal fun EntityCursor<AbstractDataField>.phoneMapper(): EntityMapper<Phone> =
+internal fun CursorHolder<AbstractDataField>.phoneMapper(): EntityMapper<Phone> =
     PhoneMapper(phoneCursor())
 
 // The receiver EntityCursor<AbstractDataField> is unused here. However, we should still have it
 // so that the mapper is still tied to or coupled with the receiver.
 @Suppress("Unused")
-internal fun EntityCursor<AbstractDataField>.photoMapper(): EntityMapper<Photo> = PhotoMapper()
+internal fun CursorHolder<AbstractDataField>.photoMapper(): EntityMapper<Photo> = PhotoMapper()
 
-internal fun EntityCursor<AbstractDataField>.relationMapper(): EntityMapper<Relation> =
+internal fun CursorHolder<AbstractDataField>.relationMapper(): EntityMapper<Relation> =
     RelationMapper(relationCursor())
 
-internal fun EntityCursor<AbstractDataField>.sipAddressMapper(): EntityMapper<SipAddress> =
+internal fun CursorHolder<AbstractDataField>.sipAddressMapper(): EntityMapper<SipAddress> =
     SipAddressMapper(sipAddressCursor())
 
-internal fun EntityCursor<AbstractDataField>.websiteMapper(): EntityMapper<Website> =
+internal fun CursorHolder<AbstractDataField>.websiteMapper(): EntityMapper<Website> =
     WebsiteMapper(websiteCursor())
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapperFor(
+internal fun <T : CommonDataEntity> CursorHolder<AbstractDataField>.entityMapperFor(
     mimeType: MimeType,
     customDataRegistry: CustomDataRegistry
 ): EntityMapper<T> = when (mimeType) {
@@ -92,17 +92,17 @@ internal fun <T : CommonDataEntity> EntityCursor<AbstractDataField>.entityMapper
 internal fun RawContactIdCursor.tempRawContactMapper(): EntityMapper<TempRawContact> =
     TempRawContactMapper(this)
 
-internal fun EntityCursor<RawContactsField>.blankRawContactMapper(): EntityMapper<BlankRawContact> =
+internal fun CursorHolder<RawContactsField>.blankRawContactMapper(): EntityMapper<BlankRawContact> =
     BlankRawContactMapper(rawContactsCursor())
 
-internal fun EntityCursor<RawContactsField>.rawContactsOptionsMapper(): EntityMapper<Options> =
+internal fun CursorHolder<RawContactsField>.rawContactsOptionsMapper(): EntityMapper<Options> =
     OptionsMapper(rawContactsOptionsCursor())
 
-internal fun EntityCursor<ContactsField>.contactsMapper(): EntityMapper<Contact> =
+internal fun CursorHolder<ContactsField>.contactsMapper(): EntityMapper<Contact> =
     ContactMapper(contactsCursor(), optionsMapper())
 
-internal fun EntityCursor<ContactsField>.optionsMapper(): EntityMapper<Options> =
+internal fun CursorHolder<ContactsField>.optionsMapper(): EntityMapper<Options> =
     OptionsMapper(optionsCursor())
 
-internal fun EntityCursor<GroupsField>.groupMapper(): EntityMapper<Group> =
+internal fun CursorHolder<GroupsField>.groupMapper(): EntityMapper<Group> =
     GroupMapper(groupsCursor())

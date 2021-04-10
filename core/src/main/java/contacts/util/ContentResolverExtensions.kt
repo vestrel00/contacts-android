@@ -10,7 +10,7 @@ import android.provider.ContactsContract
 import contacts.Field
 import contacts.Include
 import contacts.Where
-import contacts.entities.cursor.EntityCursor
+import contacts.entities.cursor.CursorHolder
 import contacts.entities.cursor.toEntityCursor
 import contacts.entities.table.Table
 
@@ -36,7 +36,7 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
     /**
      * Function that processes the non-null cursor (if any rows have been matched).
      */
-    processCursor: (EntityCursor<T>) -> R?
+    processCursor: (CursorHolder<T>) -> R?
 ): R? = query(table.uri, include, where, sortOrder, suppressDbExceptions, processCursor)
 
 @SuppressLint("Recycle")
@@ -57,7 +57,7 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
     /**
      * Function that processes the non-null cursor (if any rows have been matched).
      */
-    processCursor: (EntityCursor<T>) -> R?
+    processCursor: (CursorHolder<T>) -> R?
 ): R? {
     val cursor = try {
         query(

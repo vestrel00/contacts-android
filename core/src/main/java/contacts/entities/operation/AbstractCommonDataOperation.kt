@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import contacts.*
 import contacts.entities.*
-import contacts.entities.cursor.EntityCursor
+import contacts.entities.cursor.CursorHolder
 import contacts.entities.cursor.dataCursor
 import contacts.entities.table.ProfileUris
 import contacts.entities.table.Table
@@ -255,7 +255,7 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
      * Provides the [Cursor] to the data rows of type [T] of the [RawContact] with [rawContactId].
      */
     private fun <T> ContentResolver.dataRowIdsFor(
-        rawContactId: Long, processCursor: (EntityCursor<AbstractDataField>) -> T
+        rawContactId: Long, processCursor: (CursorHolder<AbstractDataField>) -> T
     ) = query(
         contentUri,
         Include(Fields.DataId),
