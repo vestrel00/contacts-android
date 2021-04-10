@@ -13,7 +13,7 @@ fun RawContact.gender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): Gender? {
     val customDataEntities =
-        customDataRegistry.customDataEntitiesFor<MutableGender>(this, GenderEntryId)
+        customDataRegistry.customDataEntitiesFor<MutableGender>(this, GenderMimeType)
 
     // We know that there can only be one gender so we only look to at the first element.
     return customDataEntities.firstOrNull()?.toGender()
@@ -27,7 +27,7 @@ fun MutableRawContact.gender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ): MutableGender? {
     val customDataEntities =
-        customDataRegistry.customDataEntitiesFor<MutableGender>(this, GenderEntryId)
+        customDataRegistry.customDataEntitiesFor<MutableGender>(this, GenderMimeType)
 
     // We know that there can only be one gender so we only look to at the first element.
     return customDataEntities.firstOrNull()
@@ -44,9 +44,9 @@ fun MutableRawContact.setGender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
 ) {
     if (gender != null) {
-        customDataRegistry.putCustomDataEntityInto(this, gender, GenderEntryId)
+        customDataRegistry.putCustomDataEntityInto(this, gender)
     } else {
-        customDataRegistry.removeAllCustomDataEntityFrom(this, GenderEntryId)
+        customDataRegistry.removeAllCustomDataEntityFrom(this, GenderMimeType)
     }
 }
 
