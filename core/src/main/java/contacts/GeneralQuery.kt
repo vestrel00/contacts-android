@@ -22,6 +22,9 @@ import contacts.util.unsafeLazy
  * technique is useful for apps that want to implement functionality similar to the People app's
  * contact list screen.
  *
+ * Custom mimetypes / data are excluded from the search! Use [Query] to search for contacts using
+ * custom data.
+ *
  * See https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
  *
  * If you need more granularity and customizations when providing matching criteria, use [Query].
