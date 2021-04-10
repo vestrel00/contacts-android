@@ -180,8 +180,7 @@ interface ProfileInsert {
      * This is useful when running this function in a background thread or coroutine.
      *
      * **Cancelling does not undo insertions. This means that depending on when the cancellation
-     * occurs, some if not all of the RawContacts in the insert queue may have already been
-     * inserted.**
+     * the RawContact in the insert queue may have already been inserted.**
      *
      * ## Thread Safety
      *

@@ -90,6 +90,39 @@ interface GroupsInsert {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commit(): Result
 
+    /**
+     * Inserts the [MutableGroup]s in the queue (added via [groups]) and returns the [Result].
+     *
+     * Groups with titles that already exist will be inserted. The Contacts Provider allows this
+     * and is the behavior of the native Contacts app. If desired, it is up to consumers to protect
+     * against multiple groups from the same account having the same titles.
+     *
+     * This does nothing if there are no available accounts or no groups are in the insert queue or
+     * if insert permission has not been granted. An empty map will be returned in this case.
+     *
+     * ## Permissions
+     *
+     * The [ContactsPermissions.WRITE_PERMISSION] and
+     * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
+     * ## Cancellation
+     *
+     * To cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * **Cancelling does not undo insertions. This means that depending on when the cancellation
+     * occurs, some if not all of the Groups in the insert queue may have already been inserted.**
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun commit(cancel: () -> Boolean = { false }): Result
+    fun commit(cancel: () -> Boolean): Result
+
     interface Result {
 
         /**
@@ -156,15 +189,23 @@ private class GroupsInsertImpl(
         this.groups.addAll(groups)
     }
 
-    override fun commit(): GroupsInsert.Result {
+    override fun commit(): GroupsInsert.Result = commit { false }
+
+    override fun commit(cancel: () -> Boolean): GroupsInsert.Result {
         val accounts = accountsQuery.allAccounts()
-        if (accounts.isEmpty() || groups.isEmpty() || !permissions.canInsert()) {
+        if (accounts.isEmpty() || groups.isEmpty() || !permissions.canInsert() || cancel()) {
             return GroupsInsertFailed()
         }
 
         val results = mutableMapOf<MutableGroup, Long?>()
         for (group in groups) {
+            if (cancel()) {
+                break
+            }
+
             results[group] = if (accounts.contains(group.account)) {
+                // No need to propagate the cancel function to within insertGroup as that operation
+                // should be fast and CPU time should be trivial.
                 contentResolver.insertGroup(group)
             } else {
                 null
