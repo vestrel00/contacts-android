@@ -923,7 +923,7 @@ let's leave it out because YAGNI.
 
 This library is intended to be Java-friendly. The policy is that we should attempt to write 
 Java-friendly code that does not increase lines of code by much or add external dependencies to 
-cater exclusively to Java consumers.
+cater exclusively to Java users.
 
 ## Creating Entities
 
@@ -955,10 +955,10 @@ Why not use a more conventional builder pattern? Why "mutable"? Because it's the
 implement a form of the builder pattern without having the write builder code or adding a dependency
 on Google's `AutoValue`. Furthermore, having "mutable" entities as data classes with all properties
 defined in the constructor allows it to be `Parcelize`d. Besides, one of the main benefits of the
-conventional builder pattern really only benefits Java consumers. That is function chaining. Kotlin 
-consumers may just use `apply` (and other similar ones).
+conventional builder pattern really only benefits Java users. That is function chaining. Kotlin
+users may just use `apply` (and other similar ones).
 
-## Why Not Add Android X / Support Library Dependency?
+## Why Not Add Android X / Support Library Dependencies?
 
 I want to keep the dependency list of this library to a minimum. The Contacts Provider is native to
 Android since the beginning. I want to honor that fact by avoiding adding dependencies here. I made
@@ -967,7 +967,14 @@ modules (not in the core modules). I'm tempted to remove the Dexter dependency a
 permissions handling myself because Dexter brings in a lot of other dependencies with it. However,
 it is not part of the core module so I'm able to live with this.
 
-If the community strongly desires the addition of these support libs, then I may change my mind =)
+Keeping dependencies to a minimum is just a small challenge I made up. We will see how long it can
+last!
+
+I left comments all over the code on when an androidx dependency may be useful. The most glaring
+example of this is @WorkerThread. Even with that, I'll hold off on adding the androidx annotation
+lib. I think we can all be consenting adults and apply some common sense.
+
+If the community strongly desires the addition of these support libs, then the community will win =)
 
 [1]: https://developer.android.com/guide/topics/providers/contacts-provider
 [2]: https://github.com/Karumi/Dexter

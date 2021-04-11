@@ -1,15 +1,3 @@
-## TODO
-
-1. Integrate androidx.annotations for WorkerThread, etc. Only do this if the next bullet point works.
-    - Use @RestrictTo(RestrictTo.Scope.LIBRARY) to hide public interface fields / functions that are not meant to be used by applications (e.g. Contacts.applicationContext).
-        - Might not work. See https://github.com/google/error-prone/issues/812
-2. Add Copyright to all files.
-3. Add Android X annotations?
-    - Get rid of comments about it.
-    - Update DEV_NOTES.
-
-----------------------------------------------------------------------------------------------------
-
 #### Complete sample app
 
 Build the sample app as simple as possible, referencing new and older versions to ensure all
@@ -155,6 +143,7 @@ consumers to implement a specific part of the native Android Contacts app.
       mimetypes. Then, create a new custom data module using the existing `customdata-x` modules as
       reference. A separate module should be created for different social media.
       E.G. customdata-whatsapp, customdata-messenger, customdata-twitter
+        - Read more in the DEV_NOTES "Custom Data / MimeTypes" section.
 
 ## License
 
