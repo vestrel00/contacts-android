@@ -43,11 +43,11 @@ fun MutableContact.genderList(
 ): List<MutableGender> = genders(customDataRegistry).toList()
 
 /**
- * Sets the [RawContact.gender] of the first [RawContact] in [MutableContact.rawContacts] sorted by
- * the [RawContact.id].
+ * Sets the [RawContact.gender] of the first RawContact in [MutableContact.rawContacts] sorted by
+ * the RawContact id.
  *
- * This does not perform the actual update to the database. You will need to perform an update
- * operation on this [MutableContact] object.
+ * This does not perform the actual insert/update to the database. You will need to perform an
+ * insert/update operation on this [MutableContact] object.
  */
 fun MutableContact.setGender(
     gender: MutableGender?,
@@ -57,11 +57,11 @@ fun MutableContact.setGender(
 }
 
 /**
- * Sets the [RawContact.gender] (configured by [configureGender]) of the first [RawContact] in
- * [MutableContact.rawContacts] sorted by the [RawContact.id].
+ * Sets the [RawContact.gender] (configured by [configureGender]) of the first RawContact in
+ * [MutableContact.rawContacts] sorted by the RawContact id.
  *
- * This does not perform the actual update to the database. You will need to perform an update
- * operation on this [MutableContact] object.
+ * This does not perform the actual insert/update to the database. You will need to perform an
+ * insert/update operation on this [MutableContact] object.
  */
 fun MutableContact.setGender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,

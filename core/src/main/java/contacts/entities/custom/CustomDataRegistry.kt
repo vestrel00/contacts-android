@@ -5,6 +5,7 @@ import contacts.AbstractCustomDataFieldSet
 import contacts.entities.MimeType
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
+import contacts.util.removeAll
 
 /**
  * A global instance of [CustomDataRegistry] that is used as the default throughout the API.
@@ -79,6 +80,18 @@ class CustomDataRegistry {
                 entityHolder.entities.add(customDataEntity)
             }
         }
+    }
+
+    /**
+     * Removes all instances of the given custom [entity] from the given [rawContact].
+     */
+    fun removeCustomDataEntityFrom(
+        rawContact: MutableRawContact,
+        byReference: Boolean,
+        entity: MutableCustomDataEntity
+    ) {
+        val entityHolder = rawContact.customDataEntities[entity.mimeType.value]
+        entityHolder?.entities?.removeAll(entity, byReference)
     }
 
     /**

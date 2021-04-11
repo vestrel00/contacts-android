@@ -36,8 +36,8 @@ fun MutableRawContact.gender(
 /**
  * Sets the gender of this RawContact to the given [gender].
  *
- * This does not perform the actual update to the database. You will need to perform an update
- * operation on this [MutableRawContact] object.
+ * This does not perform the actual insert/update to the database. You will need to perform an
+ * insert/update operation on this [MutableRawContact] object.
  */
 fun MutableRawContact.setGender(
     gender: MutableGender?,
@@ -53,8 +53,8 @@ fun MutableRawContact.setGender(
 /**
  * Sets the gender of this RawContact to a new [MutableGender] configured by [configureGender].
  *
- * This does not perform the actual update to the database. You will need to perform an update
- * operation on this [MutableRawContact] object.
+ * This does not perform the actual insert/update to the database. You will need to perform an
+ * insert/update operation on this [MutableRawContact] object.
  */
 fun MutableRawContact.setGender(
     customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,

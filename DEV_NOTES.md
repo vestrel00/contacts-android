@@ -880,10 +880,33 @@ are still required for API 22 and below. Reading and writing the profile is incl
 permissions. There is no need to ask for profile permissions at runtime because prior to API 23,
 permissions in the AndroidManifest have to be accepted prior to installation.
 
-#### Sync Adapters
+#### Syncing Data / Sync Adapters
 
-This library does not add any custom sync adapters to keep it short and sweet. This relies on the
-default system sync settings and functions.
+Data that is "synced" belong to a RawContact that is linked to an Account. Such data is available
+in the same Account across different platforms. For example, native contacts data (e.g. address,
+email, phone, etc) will be available in Gmail iOS, Gmail Android, Gmail Web, and anything else
+Google. In other words, native Contacts data is hosted by / lives in Google servers.
+
+This library relies on the default system sync adapters and settings to sync native Contacts
+data.
+
+#### Custom Data / MimeTypes
+
+Custom mimetypes do not belong the the native Contacts Provider mimetype set (e.g. address, email,
+phone, etc). The Contacts Provider allows for the creation of new / custom mimetypes. This is
+especially useful for social media apps (Facebook, Twitter, WhatsApp, etc) that want to attach extra
+pieces of data to a particular RawContact.
+
+Custom data are NOT synced event those that belong to RawContacts that are linked to an Account.
+Custom sync adapters are required to sync custom data. This library currently does NOT provide
+custom sync adapters to sync custom data!
+
+Custom data from other apps such as Facebook, Twitter, and WhatsApp may or may not be synced. It all
+depends on those apps and their custom sync adapters (if they have any) and sync settings.
+
+This library does not provide any custom sync adapters. If, or when, custom data from other apps
+get implemented here, they should rely on their respective custom sync adapters that come with the
+app (if any).
 
 #### Unused ContactsContract Stuff
 

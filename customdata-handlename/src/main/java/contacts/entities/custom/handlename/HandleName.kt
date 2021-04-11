@@ -54,6 +54,9 @@ data class HandleName internal constructor(
     )
 }
 
+/**
+ * A mutable [HandleName].
+ */
 @Parcelize
 data class MutableHandleName internal constructor(
 
@@ -73,6 +76,8 @@ data class MutableHandleName internal constructor(
     var handle: String?
 
 ) : MutableCustomDataEntity {
+
+    constructor() : this(null, null, null, false, false, null)
 
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = HandleNameMimeType

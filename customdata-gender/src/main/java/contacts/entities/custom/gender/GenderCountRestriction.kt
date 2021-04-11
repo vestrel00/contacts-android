@@ -3,6 +3,6 @@ package contacts.entities.custom.gender
 import contacts.entities.custom.CustomDataCountRestriction
 
 /**
- * There should only be one gender entry per RawContact.
+ * A RawContact may have at most 1 gender.
  */
 internal val GENDER_COUNT_RESTRICTION = CustomDataCountRestriction.AT_MOST_ONE

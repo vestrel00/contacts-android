@@ -25,6 +25,7 @@ dependencies {
     implementation project(':async')
     implementation project(':core')
     implementation project(':customdata-gender')
+    implementation project(':customdata-handlename')
     implementation project(':debug')
     implementation project(':permissions')
     implementation project(':ui')
