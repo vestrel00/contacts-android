@@ -6,7 +6,6 @@ import contacts.entities.MimeType
 import contacts.util.isEmpty
 import java.util.*
 
-// TODO TEST
 // Java consumers would have to access these static functions via Wherekt instead of Where.
 // Using @file:JvmName("Where") will not work because of the name clash with the Where class.
 // In order for Java consumers to use these via OrderBy instead of Wherekt, we could redefine

@@ -63,29 +63,30 @@ functionality is included (though may look different).
 #### Include in sample app
 
 1. Add extra activities that showcase unused library features.
-2. Ensure all groups of library features are used in both Kotlin and Java.
-    - This ensures that Java is also supported.
 
 #### Tidy up
 
-1. Lint / code quality checks (checkstyle, lint, etc).
-2. Unit test.
-3. Espresso test.
-    - Test RAM usage when paginating hundreds of thousands of contacts.
+1. Lint / code quality checks (checkstyle, lint, etc)
+2. Tests (androidTest).
+    - Code coverage tool?
 
 #### Final steps!
 
 1. Update AS, Kotlin stdlib + coroutines, Gradle, Dexter, and all other dependencies before releasing.
 2. Review remaining TODOs and FIXMEs.
 3. Add consumerProguardFiles?
-4. Add CONTRIBUTING.md and CHANGELOG.md.
-5. Complete README.
-6. Draft medium blog.
-7. Publish artifact.
-8. Try out pubished artifact in a new project.
-9. Immediately setup Travis CI (free for public repos).
-10. Publish medium blog.
-11. Promote via AndroidWeekly.
+4. Create howto folder containing an md file for each;
+    - “Querying contacts”, “Creating contacts”, “Updating contacts”, “Deleting contacts”,
+      “Linking contacts”, etc mention parts of the sample app that demonstrates each function
+    - “Create your own customdata”
+5. Add CONTRIBUTING.md and CHANGELOG.md.
+6. Complete README.
+7. Draft medium blog.
+8. Publish artifact starting at version 1.0.0-beta1.
+9. Try out pubished artifact in a new project.
+10. Immediately setup Travis CI (free for public repos).
+11. Publish medium blog.
+12. Promote via AndroidWeekly.
 
 ----------------------------------------------------------------------------------------------------
 
@@ -145,9 +146,19 @@ consumers to implement a specific part of the native Android Contacts app.
       E.G. customdata-whatsapp, customdata-messenger, customdata-twitter
         - Read more in the DEV_NOTES "Custom Data / MimeTypes" section.
 
+## Support
+
+This is a newly open sourced library with only one contributor so far (me). Don’t expect much
+support in the beginning. I am only able to work on this (and respond to issues) outside of work
+hours. This means late nights, weekends, and maybe holidays.
+
+As time passes, hopefully this library gets more and more contributors. At some point, I hope to
+gain contributors that have become experts on this library to help me support the community by
+maintaining it and making admin-level decisions.
+
 ## License
 
-    Copyright 2020 Contacts Contributors
+    Copyright 2021 Contacts Contributors
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
