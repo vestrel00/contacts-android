@@ -1,12 +1,3 @@
-#### Implement
-
-- Bring in support annotations and go through ANDROID X comments; WorkerThread
-- Use IntRange from annotations lib for limit and offset functions
-- Remove comments about minimal dependencies in dev notes and build.gradle
-- Add rx extensions. Provide two versions of RX functions. Ensure these can be cancelled/disposed.
-  - return single, entire list
-  - Emit 0 or more
-
 #### Complete sample app
 
 Build the sample app as simple as possible, referencing new and older versions to ensure all
