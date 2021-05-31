@@ -20,16 +20,16 @@ suspend fun Contacts.queryWithPermission(): Query {
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
- * requests for the permission, and then returns a new [GeneralQuery] instance.
+ * requests for the permission, and then returns a new [BroadQuery] instance.
  *
- * If permission is already granted, then immediately returns a new [GeneralQuery] instance.
+ * If permission is already granted, then immediately returns a new [BroadQuery] instance.
  */
-suspend fun Contacts.generalQueryWithPermission(): GeneralQuery {
+suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
 
-    return generalQuery()
+    return broadQuery()
 }
 
 /**

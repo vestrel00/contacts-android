@@ -9,13 +9,13 @@ import contacts.groups.Groups
 import contacts.profile.Profile
 
 /**
- * Provides new [Query], [GeneralQuery], [Insert], [Update], [Delete], [Data], [Groups], and
+ * Provides new [Query], [BroadQuery], [Insert], [Update], [Delete], [Data], [Groups], and
  * [Profile] instances.
  *
  * ## Permissions
  *
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query] and
- *   [generalQuery].
+ *   [broadQuery].
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
  *   [update], and [delete].
  *
@@ -42,9 +42,9 @@ interface Contacts {
     fun query(): Query
 
     /**
-     * Returns a new [GeneralQuery] instance.
+     * Returns a new [BroadQuery] instance.
      */
-    fun generalQuery(): GeneralQuery
+    fun broadQuery(): BroadQuery
 
     /**
      * Returns a new [Insert] instance.
@@ -143,7 +143,7 @@ private class ContactsImpl(
 
     override fun query() = Query(applicationContext, customDataRegistry)
 
-    override fun generalQuery() = GeneralQuery(applicationContext, customDataRegistry)
+    override fun broadQuery() = BroadQuery(applicationContext, customDataRegistry)
 
     override fun insert() = Insert(applicationContext, customDataRegistry)
 

@@ -28,7 +28,7 @@ import contacts.util.unsafeLazy
  * See https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
  *
  * If you need more granularity and customizations when providing matching criteria, use [Query].
- * For example, getting a Contact by ID is not supported by [GeneralQuery] but can be achieve by
+ * For example, getting a Contact by ID is not supported by [BroadQuery] but can be achieve by
  * [Query].
  *
  * ## Permissions
@@ -50,7 +50,7 @@ import contacts.util.unsafeLazy
  * import contacts.Fields.Address
  * import contacts.ContactsFields.DisplayNamePrimary
  *
- * val contacts : List<Contact> = generalQuery.
+ * val contacts : List<Contact> = broadQuery.
  *      .accounts(account)
  *      .groups(groups)
  *      .include(Name, Address)
@@ -126,7 +126,7 @@ import contacts.util.unsafeLazy
  *
  * Matching is **case-insensitive** (case is ignored).
  */
-interface GeneralQuery {
+interface BroadQuery {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
@@ -153,7 +153,7 @@ interface GeneralQuery {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun includeBlanks(includeBlanks: Boolean): GeneralQuery
+    fun includeBlanks(includeBlanks: Boolean): BroadQuery
 
     /**
      * Limits the search to only those RawContacts associated with one of the given accounts.
@@ -174,17 +174,17 @@ interface GeneralQuery {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun accounts(vararg accounts: Account?): GeneralQuery
+    fun accounts(vararg accounts: Account?): BroadQuery
 
     /**
-     * See [GeneralQuery.accounts]
+     * See [BroadQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account?>): GeneralQuery
+    fun accounts(accounts: Collection<Account?>): BroadQuery
 
     /**
-     * See [GeneralQuery.accounts]
+     * See [BroadQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account?>): GeneralQuery
+    fun accounts(accounts: Sequence<Account?>): BroadQuery
 
     /**
      * Limits the search to only those RawContacts associated with at least one of the given groups.
@@ -201,17 +201,17 @@ interface GeneralQuery {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun groups(vararg groups: Group): GeneralQuery
+    fun groups(vararg groups: Group): BroadQuery
 
     /**
-     * See [GeneralQuery.groups]
+     * See [BroadQuery.groups]
      */
-    fun groups(groups: Collection<Group>): GeneralQuery
+    fun groups(groups: Collection<Group>): BroadQuery
 
     /**
-     * See [GeneralQuery.groups]
+     * See [BroadQuery.groups]
      */
-    fun groups(groups: Sequence<Group>): GeneralQuery
+    fun groups(groups: Sequence<Group>): BroadQuery
 
     /**
      * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
@@ -244,23 +244,23 @@ interface GeneralQuery {
      * - Use [Fields].
      * - Use [Fields.all].
      */
-    fun include(vararg fields: AbstractDataField): GeneralQuery
+    fun include(vararg fields: AbstractDataField): BroadQuery
 
     /**
-     * See [GeneralQuery.include].
+     * See [BroadQuery.include].
      */
-    fun include(fields: Collection<AbstractDataField>): GeneralQuery
+    fun include(fields: Collection<AbstractDataField>): BroadQuery
 
     /**
-     * See [GeneralQuery.include].
+     * See [BroadQuery.include].
      */
-    fun include(fields: Sequence<AbstractDataField>): GeneralQuery
+    fun include(fields: Sequence<AbstractDataField>): BroadQuery
 
     /**
      * Filters the [Contact]s partially matching the [searchString]. If not specified or null or
      * empty, then all [Contact]s are returned.
      *
-     * For more info, see [GeneralQuery] **Which Contact data are matched and how?** section.
+     * For more info, see [BroadQuery] **Which Contact data are matched and how?** section.
      *
      * ## Performance
      *
@@ -268,7 +268,7 @@ interface GeneralQuery {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun whereAnyContactDataPartiallyMatches(searchString: String?): GeneralQuery
+    fun whereAnyContactDataPartiallyMatches(searchString: String?): BroadQuery
 
     /**
      * Orders the [Contact]s using one or more [orderBy]s. If not specified, then contacts are
@@ -282,31 +282,31 @@ interface GeneralQuery {
      * If you need to sort a collection of [Contact] **objects** retrieved from this query using any
      * field from [Fields], use the ContactsComparator extension functions.
      */
-    fun orderBy(vararg orderBy: OrderBy<ContactsField>): GeneralQuery
+    fun orderBy(vararg orderBy: OrderBy<ContactsField>): BroadQuery
 
     /**
-     * See [GeneralQuery.orderBy].
+     * See [BroadQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): GeneralQuery
+    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): BroadQuery
 
     /**
-     * See [GeneralQuery.orderBy].
+     * See [BroadQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): GeneralQuery
+    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): BroadQuery
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
      */
-    fun limit(limit: Int): GeneralQuery
+    fun limit(limit: Int): BroadQuery
 
     /**
      * Skips results 0 to [offset] (excluding the offset).
      *
      * If not specified, offset value of 0 is used.
      */
-    fun offset(offset: Int): GeneralQuery
+    fun offset(offset: Int): BroadQuery
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -348,15 +348,15 @@ interface GeneralQuery {
 }
 
 @Suppress("FunctionName")
-internal fun GeneralQuery(
+internal fun BroadQuery(
     context: Context, customDataRegistry: CustomDataRegistry
-): GeneralQuery = GeneralQueryImpl(
+): BroadQuery = BroadQueryImpl(
     context.contentResolver,
     ContactsPermissions(context),
     customDataRegistry
 )
 
-private class GeneralQueryImpl(
+private class BroadQueryImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
     private val customDataRegistry: CustomDataRegistry,
@@ -369,11 +369,11 @@ private class GeneralQueryImpl(
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
-) : GeneralQuery {
+) : BroadQuery {
 
     override fun toString(): String =
         """
-            GeneralQuery {
+            BroadQuery {
                 includeBlanks: $includeBlanks
                 rawContactsWhere: $rawContactsWhere
                 groupMembershipWhere: $groupMembershipWhere
@@ -385,7 +385,7 @@ private class GeneralQueryImpl(
             }
         """.trimIndent()
 
-    override fun includeBlanks(includeBlanks: Boolean): GeneralQuery = apply {
+    override fun includeBlanks(includeBlanks: Boolean): BroadQuery = apply {
         this.includeBlanks = includeBlanks
     }
 
@@ -393,7 +393,7 @@ private class GeneralQueryImpl(
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account?>): GeneralQuery = apply {
+    override fun accounts(accounts: Sequence<Account?>): BroadQuery = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
@@ -401,7 +401,7 @@ private class GeneralQueryImpl(
 
     override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
 
-    override fun groups(groups: Sequence<Group>): GeneralQuery = apply {
+    override fun groups(groups: Sequence<Group>): BroadQuery = apply {
         val groupIds = groups.mapNotNull { it.id }
         groupMembershipWhere = if (groupIds.isEmpty()) {
             DEFAULT_GROUP_MEMBERSHIP_WHERE
@@ -414,7 +414,7 @@ private class GeneralQueryImpl(
 
     override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<AbstractDataField>): GeneralQuery = apply {
+    override fun include(fields: Sequence<AbstractDataField>): BroadQuery = apply {
         include = if (fields.isEmpty()) {
             allDataFields(customDataRegistry)
         } else {
@@ -422,7 +422,7 @@ private class GeneralQueryImpl(
         }
     }
 
-    override fun whereAnyContactDataPartiallyMatches(searchString: String?): GeneralQuery = apply {
+    override fun whereAnyContactDataPartiallyMatches(searchString: String?): BroadQuery = apply {
         // Yes, I know DEFAULT_SEARCH_STRING is null. This reads better though.
         this.searchString = searchString ?: DEFAULT_SEARCH_STRING
     }
@@ -432,7 +432,7 @@ private class GeneralQueryImpl(
     override fun orderBy(orderBy: Collection<OrderBy<ContactsField>>) =
         orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): GeneralQuery = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): BroadQuery = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -440,7 +440,7 @@ private class GeneralQueryImpl(
         }
     }
 
-    override fun limit(limit: Int): GeneralQuery = apply {
+    override fun limit(limit: Int): BroadQuery = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
@@ -448,7 +448,7 @@ private class GeneralQueryImpl(
         }
     }
 
-    override fun offset(offset: Int): GeneralQuery = apply {
+    override fun offset(offset: Int): BroadQuery = apply {
         this.offset = if (offset >= 0) {
             offset
         } else {

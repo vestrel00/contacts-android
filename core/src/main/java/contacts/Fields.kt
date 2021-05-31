@@ -72,7 +72,7 @@ sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {
      * These are the same fields used by the Contacts Provider internally when performing a general
      * match; https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch.
      *
-     * Instead of using this with [Query], you may want to use [GeneralQuery] instead for simplicity
+     * Instead of using this with [Query], you may want to use [BroadQuery] instead for simplicity
      * and breadth.
      *
      * The following fields are being used by the ContactProvider general matching algorithm;
@@ -505,7 +505,7 @@ class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
         // The GeneralMatch algorithm of the Contacts Provider actually matches the Data and
         // Protocol. We are excluding Protocol here because its value is a number, not actual
         // text (E.G. AIM's actual value in the DB is 0). These fields are typically used for the
-        // custom Query, not GeneralQuery (which uses GeneralMatch algorithm of the Contacts
+        // custom Query, not BroadQuery (which uses GeneralMatch algorithm of the Contacts
         // Provider).
         // FIXME? Figure out how the GeneralMatch algorithm of the Contacts Provider matches
         // a (user input) text to a (constant) number. Perhaps it has an index table containing

@@ -1,6 +1,6 @@
 package contacts.async
 
-import contacts.GeneralQuery
+import contacts.BroadQuery
 import contacts.entities.Contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -11,9 +11,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [GeneralQuery.find].
+ * See [BroadQuery.find].
  */
-suspend fun GeneralQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+suspend fun BroadQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
         List<Contact> = withContext(context) { find { !isActive } }
 
 /**
@@ -22,7 +22,7 @@ suspend fun GeneralQuery.findWithContext(context: CoroutineContext = ASYNC_DISPA
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [GeneralQuery.find].
+ * See [BroadQuery.find].
  */
-fun GeneralQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Contact>> =
+fun BroadQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Contact>> =
     CoroutineScope(context).async { find { !isActive } }

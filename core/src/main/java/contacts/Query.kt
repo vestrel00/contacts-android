@@ -20,7 +20,7 @@ import contacts.util.unsafeLazy
  * criteria. All RawContacts of matching Contacts are included in the resulting Contacts objects.
  *
  * This provides a great deal of granularity and customizations when providing matching criteria
- * via [where]. For a broader and more native Contacts app like query, use [GeneralQuery].
+ * via [where]. For a broader and more native Contacts app like query, use [BroadQuery].
  *
  * ## Permissions
  *
@@ -71,7 +71,7 @@ import contacts.util.unsafeLazy
  *
  * ## Groups Matching
  *
- * Unlike [GeneralQuery.groups], this does not have a groups function. You may still match groups
+ * Unlike [BroadQuery.groups], this does not have a groups function. You may still match groups
  * (in a much flexible way) by using [Fields.GroupMembership] with [where].
  */
 interface Query {
@@ -134,7 +134,7 @@ interface Query {
      */
     fun accounts(accounts: Sequence<Account?>): Query
 
-    // No groups function here like in GeneralQuery. Use [Fields.GroupMembership] with [where].
+    // No groups function here like in BroadQuery. Use [Fields.GroupMembership] with [where].
 
     /**
      * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact

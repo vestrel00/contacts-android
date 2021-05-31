@@ -16,7 +16,7 @@ import contacts.asc
 import contacts.async.findWithContext
 import contacts.debug.logContactsProviderTables
 import contacts.entities.Contact
-import contacts.permissions.generalQueryWithPermission
+import contacts.permissions.broadQueryWithPermission
 import contacts.sample.databinding.ActivityContactsBinding
 import contacts.ui.text.AbstractTextWatcher
 import contacts.util.emails
@@ -100,9 +100,9 @@ class ContactsActivity : BaseActivity() {
     private fun showContacts() {
         queryJob?.cancel()
         queryJob = launch {
-            // Using GeneralQuery here so that it matches closely to the native Contacts app search
+            // Using BroadQuery here so that it matches closely to the native Contacts app search
             // results. Consumers should try out Query too because it gives the most control.
-            searchResults = Contacts(this@ContactsActivity).generalQueryWithPermission()
+            searchResults = Contacts(this@ContactsActivity).broadQueryWithPermission()
                 .accounts(selectedAccounts)
                 .include(
                     Fields.Contact.DisplayNamePrimary,
