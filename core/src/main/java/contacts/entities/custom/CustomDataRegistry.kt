@@ -5,7 +5,7 @@ import contacts.AbstractCustomDataFieldSet
 import contacts.entities.MimeType
 import contacts.entities.MutableRawContact
 import contacts.entities.RawContact
-import contacts.util.removeAll
+import contacts.entities.removeAll
 
 /**
  * A global instance of [CustomDataRegistry] that is used as the default throughout the API.

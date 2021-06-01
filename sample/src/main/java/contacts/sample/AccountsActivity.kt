@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
 
 /**
  * Shows the list of all available accounts, allowing the user to choose which account(s) to use.
+ * All accounts are used if 0 or all accounts are selected.
+ *
+ * The chosen accounts will be included in the result of this activity.
  */
 class AccountsActivity : BaseActivity() {
 

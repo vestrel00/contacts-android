@@ -24,6 +24,16 @@ import contacts.util.phones
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+/**
+ * Displays a search field that allows users to broadly search for contacts using the Contacts
+ * Provider general matching algorithm. All matching contacts are displayed in a list view. Tapping
+ * a contact in the list view will open the details activity, where more details are shown.
+ *
+ * #### Action Menu
+ *
+ * - Accounts: Opens the accounts activity to select which accounts to include in the search.
+ * - Refresh: Performs the search query again.
+ */
 class ContactsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityContactsBinding

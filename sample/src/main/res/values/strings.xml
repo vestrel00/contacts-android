@@ -3,7 +3,7 @@
 
     <!-- Contacts activity -->
     <string name="contacts">Contacts</string>
-    <string name="contacts_search_field_hint">Enter name, email, or phone number</string>
+    <string name="contacts_search_field_hint">Find contacts</string>
     <string name="contacts_refresh">Refresh</string>
 
     <!-- Contact edit details activity -->

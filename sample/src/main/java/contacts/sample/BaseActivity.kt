@@ -11,6 +11,10 @@ import kotlinx.coroutines.cancel
 /**
  * A coroutine-scoped activity that defines a [SupervisorJob], which automatically cancels all jobs
  * launched in scope of this activity in [onDestroy].
+ *
+ * #### Convenience functions
+ *
+ * - [showProgressDialog] and [dismissProgressDialog]
  */
 abstract class BaseActivity : Activity(), CoroutineScope by MainScope() {
 

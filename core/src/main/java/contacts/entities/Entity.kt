@@ -19,6 +19,22 @@ interface Entity : Parcelable {
     val isBlank: Boolean
 }
 
+/**
+ * Removes all instances of the given [instance] from [this] collection.
+ *
+ * By default, all **structurally equal (same content but maybe different objects)** instances will
+ * be removed. Set [byReference] to true to remove all instances that are **equal by reference
+ * (same object)**.
+ */
+@JvmOverloads
+fun <T : Entity> MutableCollection<T>.removeAll(instance: T, byReference: Boolean = false) {
+    if (byReference) {
+        removeAll { it === instance }
+    } else {
+        removeAll { it == instance }
+    }
+}
+
 internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     null -> false
     is Entity -> !this.isBlank
