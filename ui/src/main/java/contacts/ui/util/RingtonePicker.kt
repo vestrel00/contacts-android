@@ -1,5 +1,6 @@
 package contacts.ui.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.media.RingtoneManager
@@ -15,6 +16,19 @@ import contacts.ui.R
  * overlay.
  *
  * This is used in conjunction with [onRingtoneSelected] to process the results.
+ *
+ * #### Manifest
+ *
+ * Starting with Android 11 (API 30), you must include the following to your manifest in order to
+ * successfully use this function.
+ *
+ * ```
+ * <queries>
+ *     <intent>
+ *         <action android:name="android.intent.action.RINGTONE_PICKER" />
+ *     </intent>
+ * </queries>
+ * ```
  */
 fun Activity.selectRingtone(currentRingtoneUri: Uri?) {
     val selectRingtoneIntent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
@@ -22,6 +36,7 @@ fun Activity.selectRingtone(currentRingtoneUri: Uri?) {
         putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, currentRingtoneUri)
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     val component = selectRingtoneIntent.resolveActivity(packageManager)
     if (component != null) {
         startActivityForResult(selectRingtoneIntent, REQUEST_SELECT_RINGTONE)

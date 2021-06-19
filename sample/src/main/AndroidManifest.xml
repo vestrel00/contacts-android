@@ -30,9 +30,22 @@
         android:name="android.permission.WRITE_PROFILE"
         android:maxSdkVersion="22" />
 
+    <!-- Required starting on Android 11 (API 30) -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.RINGTONE_PICKER" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.PICK" />
+        </intent>
+    </queries>
+
     <application
         android:name=".SampleApp"
-        android:allowBackup="true"
+        android:allowBackup=""
         android:icon="@mipmap/ic_launcher"
         android:label="@string/contacts"
         android:supportsRtl="true">

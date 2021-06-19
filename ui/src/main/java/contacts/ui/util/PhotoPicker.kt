@@ -1,5 +1,6 @@
 package contacts.ui.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -58,6 +59,18 @@ fun Activity.showPhotoPickerDialog(
  * val bitmap = intent?.extras?.get("data") as Bitmap?
  * ```
  *
+ * #### Manifest
+ *
+ * Starting with Android 11 (API 30), you must include the following to your manifest in order to
+ * successfully use this function.
+ *
+ * ```
+ * <queries>
+ *     <intent>
+ *         <action android:name="android.media.action.IMAGE_CAPTURE" />
+ *     </intent>
+ * </queries>
+ * ```
  * ## Important!
  *
  * This only provides a thumbnail version of the photo taken. To get full-sized photos, see
@@ -67,6 +80,8 @@ fun Activity.showPhotoPickerDialog(
  */
 fun Activity.takeNewPhoto() {
     val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+    @SuppressLint("QueryPermissionsNeeded")
     val component = takePhotoIntent.resolveActivity(packageManager)
     if (component != null) {
         startActivityForResult(takePhotoIntent, REQUEST_TAKE_PHOTO)
@@ -80,9 +95,24 @@ fun Activity.takeNewPhoto() {
  *
  * This is used in the [showPhotoPickerDialog] but can also be used on its own in conjunction
  * with [onPhotoPicked].
+ *
+ * #### Manifest
+ *
+ * Starting with Android 11 (API 30), you must include the following to your manifest in order to
+ * successfully use this function.
+ *
+ * ```
+ * <queries>
+ *     <intent>
+ *         <action android:name="android.intent.action.PICK" />
+ *     </intent>
+ * </queries>
+ * ```
  */
 fun Activity.selectPhoto() {
     val selectPhotoIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+
+    @SuppressLint("QueryPermissionsNeeded")
     val component = selectPhotoIntent.resolveActivity(packageManager)
     if (component != null) {
         startActivityForResult(selectPhotoIntent, REQUEST_SELECT_PHOTO)
