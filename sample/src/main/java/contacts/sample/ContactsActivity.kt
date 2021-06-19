@@ -9,6 +9,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ListView
 import contacts.Contacts
 import contacts.ContactsFields
 import contacts.Fields
@@ -17,7 +19,6 @@ import contacts.async.findWithContext
 import contacts.debug.logContactsProviderTables
 import contacts.entities.Contact
 import contacts.permissions.broadQueryWithPermission
-import contacts.sample.databinding.ActivityContactsBinding
 import contacts.ui.text.AbstractTextWatcher
 import contacts.util.emails
 import contacts.util.phones
@@ -36,23 +37,24 @@ import kotlinx.coroutines.launch
  */
 class ContactsActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityContactsBinding
-
     // The null Account is the "Local Account".
     private var selectedAccounts = emptyList<Account?>()
     private var queryJob: Job? = null
 
     private val searchText: String
-        get() = binding.searchField.text.toString()
+        get() = searchField.text.toString()
 
     private var searchResults = emptyList<Contact>()
 
     private lateinit var contactsAdapter: ArrayAdapter<String>
 
+    // Not using any view binding libraries or plugins just for this.
+    private lateinit var searchField: EditText
+    private lateinit var contactsListView: ListView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityContactsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_contacts)
         setupSearchField()
         setupContactsListView()
         showContacts()
@@ -92,7 +94,8 @@ class ContactsActivity : BaseActivity() {
     }
 
     private fun setupSearchField() {
-        binding.searchField.addTextChangedListener(object : AbstractTextWatcher {
+        searchField = findViewById(R.id.searchField)
+        searchField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 showContacts()
             }
@@ -102,9 +105,10 @@ class ContactsActivity : BaseActivity() {
     private fun setupContactsListView() {
         // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
         // Ahh, my good ol' friend ListView. You serve me once again =)
+        contactsListView = findViewById(R.id.contactsListView)
         contactsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
-        binding.contactsListView.adapter = contactsAdapter
-        binding.contactsListView.onItemClickListener = OnContactClickListener()
+        contactsListView.adapter = contactsAdapter
+        contactsListView.onItemClickListener = OnContactClickListener()
     }
 
     private fun showContacts() {

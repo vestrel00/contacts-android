@@ -9,16 +9,13 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import contacts.Contacts
 import contacts.Fields
-import contacts.async.commitWithContext
 import contacts.async.findWithContext
 import contacts.entities.MutableContact
 import contacts.equalTo
 import contacts.permissions.queryWithPermission
-import contacts.permissions.updateWithPermission
 import contacts.sample.ContactDetailsActivity.Companion.CONTACT_ID
 import contacts.sample.ContactDetailsActivity.Companion.Mode
-import contacts.sample.databinding.ActivityContactDetailsBinding
-import contacts.util.names
+import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
 
 /**
@@ -32,14 +29,14 @@ import kotlinx.coroutines.launch
  */
 class ContactDetailsActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityContactDetailsBinding
-
-    private lateinit var contact: MutableContact
+    // Not using any view binding libraries or plugins just for this.
+    private lateinit var contactView: ContactView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityContactDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_contact_details)
+        contactView = findViewById(R.id.contactView)
+
         launch {
             initializeMode()
         }
@@ -59,21 +56,19 @@ class ContactDetailsActivity : BaseActivity() {
     }
 
     private suspend fun initializeEditMode() {
-        if (!fetchContact()) {
-            Toast.makeText(this, R.string.edit_contact_details_fetch_error, LENGTH_SHORT)
+        val contact = fetchContact()
+        if (contact == null) {
+            Toast.makeText(this, R.string.contact_details_fetch_error, LENGTH_SHORT)
                 .show()
             finish()
             return
         }
 
-        // TODO Add linked contacts field
-        setupPhotoView()
-        setupNameFields()
-        setupPhoneFields()
+        contactView.contact = contact
     }
 
-    private suspend fun initializeCreateMode() {
-        // TODO
+    private fun initializeCreateMode() {
+        TODO("initializeCreateMode")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -94,69 +89,29 @@ class ContactDetailsActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        binding.photoView.onActivityResult(requestCode, resultCode, data)
+        contactView.onActivityResult(requestCode, resultCode, data)
     }
 
-    private suspend fun fetchContact(): Boolean {
+    private suspend fun fetchContact(): MutableContact? {
         val result = Contacts(this).queryWithPermission()
             .where(Fields.Contact.Id equalTo intent.contactId)
             .findWithContext()
             .firstOrNull()
 
-        if (result != null) {
-            contact = result.toMutableContact()
-            return true
-        }
-
-        return false
+        return result?.toMutableContact()
     }
 
-    private fun setupPhotoView() {
-        binding.photoView.init(this)
-        binding.photoView.contact = contact
-    }
-
-    private fun setupNameFields() {
-        // TODO Move this to a custom view in contacts-ui and handle multiple names the same way the
-        // native Contacts app does. For now just pick the first name, if any.
-        val name = contact.names().firstOrNull()
-        binding.namePrefixField.setText(name?.prefix)
-        binding.firstNameField.setText(name?.givenName)
-        binding.middleNameField.setText(name?.middleName)
-        binding.lastNameField.setText(name?.familyName)
-        binding.nameSuffixField.setText(name?.suffix)
-    }
-
-    private fun setupPhoneFields() {
-        binding.phonesView.contact = contact
-    }
-
-    private suspend fun save(): Boolean {
+    private suspend fun save() {
         showProgressDialog()
 
-        // Save photo first so that the Contact does not get deleted if it only has a photo.
-        // Blank Contacts are by default deleted in updates.
-        val photoSaveSuccess = binding.photoView.saveContactPhoto()
-
-        // Save changes. Delete blanks!
-        val contactSaveResult = Contacts(this).updateWithPermission()
-            // This is implicitly true by default. We are just being explicitly verbose here.
-            .deleteBlanks(true)
-            .contacts(contact)
-            .commitWithContext()
-
-        val success = contactSaveResult.isSuccessful && photoSaveSuccess
-
-        val resultMessageRes = if (success) {
-            R.string.edit_contact_details_save_success
+        val resultMessageRes = if (contactView.saveContact()) {
+            R.string.contact_details_save_success
         } else {
-            R.string.edit_contact_details_save_error
+            R.string.contact_details_save_error
         }
         Toast.makeText(this, resultMessageRes, LENGTH_SHORT).show()
 
         dismissProgressDialog()
-
-        return success
     }
 
     companion object {

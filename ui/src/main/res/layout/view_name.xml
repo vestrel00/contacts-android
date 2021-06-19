@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- [ANDROID X] Not using ConstraintLayout to avoid dependency on androidx.constraintlayout -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditText
+        android:id="@+id/namePrefixField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_prefix_hint"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/firstNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_first_hint"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/middleNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_middle_hint"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/lastNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_last_hint"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/nameSuffixField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_suffix_hint"
+        android:inputType="textPersonName" />
+</merge>

@@ -5,10 +5,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.ListView.*
 import contacts.accounts.Accounts
 import contacts.permissions.accounts.queryWithPermission
-import contacts.sample.databinding.ActivityAccountsBinding
 import kotlinx.coroutines.launch
 
 /**
@@ -19,8 +19,6 @@ import kotlinx.coroutines.launch
  */
 class AccountsActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityAccountsBinding
-
     // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.
     // Therefore, we maintain the List<Account?> separately so that we can retrieve the selected
     // Accounts via the checked item position. The null Account is the "Local Account".
@@ -30,7 +28,7 @@ class AccountsActivity : BaseActivity() {
     private val selectedAccounts: List<Account?>
         get() = mutableListOf<Account?>().apply {
 
-            val checkedItemPositions = binding.accountsListView.checkedItemPositions
+            val checkedItemPositions = accountsListView.checkedItemPositions
             for (i in 0 until checkedItemPositions.size()) {
                 val position = checkedItemPositions.keyAt(i)
                 val isChecked = checkedItemPositions.valueAt(i)
@@ -43,10 +41,12 @@ class AccountsActivity : BaseActivity() {
             }
         }
 
+    // Not using any view binding libraries or plugins just for this.
+    private lateinit var accountsListView: ListView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAccountsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_accounts)
         setupAccountsListView()
     }
 
@@ -61,11 +61,12 @@ class AccountsActivity : BaseActivity() {
         // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
         // Obviously, everyone should use RecyclerView. I'm just being stupid here by trying to
         // avoid adding dependencies to make this repo as lean as possible.
+        accountsListView = findViewById(R.id.accountsListView)
         // For simple cases like this though, ListView actually saves us from writing a bit of code.
         // We can just use the built-in choice mode functionality instead of writing it ourselves =)
         accountsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice)
-        binding.accountsListView.adapter = accountsAdapter
-        binding.accountsListView.choiceMode = intent.choiceMode()
+        accountsListView.adapter = accountsAdapter
+        accountsListView.choiceMode = intent.choiceMode()
 
         launch {
             addLocalAccount()
@@ -96,7 +97,7 @@ class AccountsActivity : BaseActivity() {
             if (itemPosition > -1) {
                 // The ListView, ArrayAdapter, and selectableAccounts all have the same list of
                 // accounts in the same indices.
-                binding.accountsListView.setItemChecked(itemPosition, true)
+                accountsListView.setItemChecked(itemPosition, true)
             }
         }
     }

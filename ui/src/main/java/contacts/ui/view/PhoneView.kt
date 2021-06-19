@@ -15,7 +15,8 @@ import contacts.ui.util.PhoneType
  * A [RelativeLayout] that displays a [MutablePhone] and handles the modifications to the given
  * [phone].
  *
- * This is used in the [PhonesView].
+ * Setting the [phone] will automatically update the views. Any modifications in the views will also
+ * be made to the [phone].
  *
  * ## Note
  *
@@ -40,10 +41,10 @@ class PhoneView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
 
-    var onPhoneDeleteButtonClicked: ((phoneView: PhoneView) -> Unit)? = null
-    var onPhoneNumberCleared: ((phoneView: PhoneView) -> Unit)? = null
-    var onPhoneNumberBegin: (() -> Unit)? = null
-
+    /**
+     * The phone that is shown in this view. Setting this will automatically update the views. Any
+     * modifications in the views will also be made to the this.
+     */
     var phone: MutablePhone = MutablePhone()
         set(value) {
             field = value
@@ -52,6 +53,21 @@ class PhoneView @JvmOverloads constructor(
             setPhoneTypeField()
             setPhoneDeleteButton()
         }
+
+    /**
+     * Invoked when the delete button is clicked.
+     */
+    var onPhoneDeleteButtonClicked: ((phoneView: PhoneView) -> Unit)? = null
+
+    /**
+     * Invoked when the phone number is cleared.
+     */
+    var onPhoneNumberCleared: ((phoneView: PhoneView) -> Unit)? = null
+
+    /**
+     * Invoked when the a piece of the phone number is entered from a blank state.
+     */
+    var onPhoneNumberBegin: (() -> Unit)? = null
 
     // Not using any view binding libraries or plugins just for this.
     private val phoneNumberField: EditText
@@ -148,7 +164,7 @@ class PhoneView @JvmOverloads constructor(
 
     private fun showCustomTypeInputPrompt() {
         CustomLabelInputDialog(context)
-            .show(R.string.contact_custom_label_input_dialog_title,
+            .show(R.string.contacts_ui__custom_label_input_dialog_title,
                 onLabelEntered = { label ->
                     val userCustomType = PhoneType.userCustomType(label)
                     replaceUserCustomType(userCustomType)

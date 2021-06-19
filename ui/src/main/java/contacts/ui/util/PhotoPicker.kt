@@ -26,17 +26,20 @@ import contacts.ui.R
 @JvmOverloads
 fun Activity.showPhotoPickerDialog(
     withRemovePhotoOption: Boolean = false,
-    removePhoto: () -> Unit = {}
+    removePhoto: () -> Unit = {},
+    onCancelled: () -> Unit = {}
 ) {
     val items = if (withRemovePhotoOption) {
-        R.array.contact_photo_picker_dialog_choices_1
+        R.array.contacts_ui_photo_picker_dialog_choices_1
     } else {
-        R.array.contact_photo_picker_dialog_choices_2
+        R.array.contacts_ui_photo_picker_dialog_choices_2
     }
 
+    var choiceMade = false
     AlertDialog.Builder(this)
-        .setTitle(R.string.contact_photo_picker_dialog_title)
+        .setTitle(R.string.contacts_ui_photo_picker_dialog_title)
         .setItems(items) { _, choice ->
+            choiceMade = true
             when (choice) {
                 0 -> takeNewPhoto()
                 1 -> selectPhoto()
@@ -44,6 +47,13 @@ fun Activity.showPhotoPickerDialog(
             }
         }
         .setNegativeButton(android.R.string.cancel, null)
+        .setOnDismissListener {
+            // The built-in cancel listener of the AlertDialog does not get invoked if the negative
+            // button is pressed. However, the on dismiss listener gets invoked no matter what.
+            if (!choiceMade) {
+                onCancelled()
+            }
+        }
         .show()
 }
 
@@ -86,7 +96,7 @@ fun Activity.takeNewPhoto() {
     if (component != null) {
         startActivityForResult(takePhotoIntent, REQUEST_TAKE_PHOTO)
     } else {
-        Toast.makeText(this, R.string.contact_photo_take_error, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, R.string.contacts_ui_photo_take_error, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -117,7 +127,7 @@ fun Activity.selectPhoto() {
     if (component != null) {
         startActivityForResult(selectPhotoIntent, REQUEST_SELECT_PHOTO)
     } else {
-        Toast.makeText(this, R.string.contact_photo_select_error, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, R.string.contacts_ui_photo_select_error, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -149,3 +159,11 @@ fun onPhotoPicked(
 
 private const val REQUEST_TAKE_PHOTO = 9001
 private const val REQUEST_SELECT_PHOTO = 9002
+
+// Cannot use Intent.get/setIdentifier as that require API 29.
+//private var Intent.intentId: String?
+//    get() = getStringExtra(INTENT_ID_EXTRA)
+//    set(value) {
+//        putExtra(INTENT_ID_EXTRA, value)
+//    }
+//private const val INTENT_ID_EXTRA = "INTENT_ID_EXTRA"

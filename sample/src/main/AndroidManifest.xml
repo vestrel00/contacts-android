@@ -45,7 +45,6 @@
 
     <application
         android:name=".SampleApp"
-        android:allowBackup=""
         android:icon="@mipmap/ic_launcher"
         android:label="@string/contacts"
         android:supportsRtl="true">
@@ -61,7 +60,7 @@
 
         <activity
             android:name=".ContactDetailsActivity"
-            android:label="@string/edit_contact_details"
+            android:label="@string/contact_details"
             android:windowSoftInputMode="stateHidden" />
 
         <activity

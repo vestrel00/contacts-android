@@ -41,7 +41,7 @@ fun Activity.selectRingtone(currentRingtoneUri: Uri?) {
     if (component != null) {
         startActivityForResult(selectRingtoneIntent, REQUEST_SELECT_RINGTONE)
     } else {
-        Toast.makeText(this, R.string.contact_ringtone_select_error, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, R.string.contacts_ui_ringtone_select_error, Toast.LENGTH_SHORT).show()
     }
 }
 

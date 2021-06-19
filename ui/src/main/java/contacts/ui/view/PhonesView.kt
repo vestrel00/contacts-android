@@ -3,24 +3,22 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import contacts.entities.MutableContact
 import contacts.entities.MutablePhone
 import contacts.entities.Phone
-import contacts.util.addPhone
-import contacts.util.phones
-import contacts.util.removePhone
+import contacts.entities.removeAll
 
 /**
- * A (vertical) [LinearLayout] that displays the [MutablePhone]s of the [contact] and handles its
- * addition, removal, and modification.
+ * A (vertical) [LinearLayout] that displays a list of [MutablePhone]s and handles the modifications
+ * to the given [phones]. Each of the phone is displayed in a [PhoneView].
  *
- * Each [MutablePhone] is displayed using a [PhoneView].
+ * Setting the [phones] will automatically update the views. Any modifications in the views will
+ * also be made to the [phones].
  *
  * ## Note
  *
- * This is a very simple view that is not styled or made to look good. Consumers of the library may
- * choose to use this as is or simply as a reference on how to implement this part of native
- * Contacts app.
+ * This is a very rudimentary view that is not styled or made to look good. It may not follow any
+ * good practices and may even implement bad practices. Consumers of the library may choose to use
+ * this as is or simply as a reference on how to implement this part of native Contacts app.
  *
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.
@@ -39,26 +37,30 @@ class PhonesView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attributeSet, defStyleAttr) {
 
-    private lateinit var emptyPhoneView: PhoneView
-
-    var contact: MutableContact? = null
+    /**
+     * The list of phones that is shown in this view. Setting this will automatically update the
+     * views. Any modifications in the views will also be made to the this.
+     */
+    var phones: MutableList<MutablePhone> = mutableListOf()
         set(value) {
             field = value
 
             setPhonesViews()
         }
 
+    private lateinit var emptyPhoneView: PhoneView
+
     private fun setPhonesViews() {
         removeAllViews()
 
-        contact?.phones()?.forEach { phone ->
-            addPhone(phone)
+        phones.forEach { phone ->
+            addPhoneView(phone)
         }
 
         addEmptyPhoneView()
     }
 
-    private fun addPhone(phone: MutablePhone): PhoneView {
+    private fun addPhoneView(phone: MutablePhone): PhoneView {
         val phoneView = PhoneView(context).apply {
             this.phone = phone
             onPhoneDeleteButtonClicked = ::onPhoneDeleteButtonClicked
@@ -72,17 +74,15 @@ class PhonesView @JvmOverloads constructor(
     }
 
     private fun addEmptyPhoneView() {
-        contact?.let { contact ->
-            // In the native Contacts app, the new empty phone that is added has a phone type of
-            // either mobile, home, work, or other in that other; which ever has not yet been added.
-            // If all those phone types already exist, it defaults to other.
-            val existingPhoneTypes = contact.phones().map { it.type }
-            val phoneType = DEFAULT_PHONE_TYPES.minus(existingPhoneTypes).firstOrNull()
-                ?: DEFAULT_PHONE_TYPES.last()
+        // In the native Contacts app, the new empty phone that is added has a phone type of
+        // either mobile, home, work, or other in that other; which ever has not yet been added.
+        // If all those phone types already exist, it defaults to other.
+        val existingPhoneTypes = phones.map { it.type }
+        val phoneType = DEFAULT_PHONE_TYPES.minus(existingPhoneTypes).firstOrNull()
+            ?: DEFAULT_PHONE_TYPES.last()
 
-            emptyPhoneView = addPhone(MutablePhone().apply { type = phoneType })
-            contact.addPhone(emptyPhoneView.phone)
-        }
+        emptyPhoneView = addPhoneView(MutablePhone().apply { type = phoneType })
+        phones.add(emptyPhoneView.phone)
     }
 
     private fun onPhoneNumberCleared(phoneView: PhoneView) {
@@ -101,7 +101,7 @@ class PhonesView @JvmOverloads constructor(
     private fun removePhoneView(phoneView: PhoneView) {
         // There may be duplicate phones. Therefore, we need to remove the exact phone instance.
         // Thus, we remove the phone by reference equality instead of by content/structure equality.
-        contact?.removePhone(phoneView.phone, byReference = true)
+        phones.removeAll(phoneView.phone, byReference = true)
         removeView(phoneView)
     }
 }

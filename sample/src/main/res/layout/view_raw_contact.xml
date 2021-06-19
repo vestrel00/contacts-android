@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- [ANDROID X] Not using ConstraintLayout to avoid dependency on androidx.constraintlayout -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- RawContact -->
+    <TextView
+        android:id="@+id/rawContactInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+    <!-- Photo -->
+    <contacts.sample.view.PhotoView
+        android:id="@+id/photoView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/contact_detail_photo_height"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:scaleType="fitCenter"
+        android:src="@drawable/placeholder_photo" />
+
+    <!-- Name -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_name_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <contacts.ui.view.NameView
+        android:id="@+id/nameView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Phones -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_phone_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <contacts.ui.view.PhonesView
+        android:id="@+id/phonesView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical" />
+
+</merge>
