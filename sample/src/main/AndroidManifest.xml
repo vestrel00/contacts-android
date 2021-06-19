@@ -47,7 +47,7 @@
         </activity>
 
         <activity
-            android:name=".EditContactDetailsActivity"
+            android:name=".ContactDetailsActivity"
             android:label="@string/edit_contact_details"
             android:windowSoftInputMode="stateHidden" />
 
