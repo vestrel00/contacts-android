@@ -15,6 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
+
 /**
  * A (vertical) [LinearLayout] that displays a [MutableContact] and handles the modifications to the
  * given [contact]. Each of the RawContact is displayed in a [RawContactView].

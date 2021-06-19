@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.View
+import android.view.ViewGroup
 
 /**
  * Returns the activity that hosts this view.
@@ -21,3 +22,16 @@ val View.activity: Activity?
         }
         return null
     }
+
+/**
+ * Sets [View.isEnabled] this view group and all of it's descendants.
+ */
+fun ViewGroup.setEnabledIncludingDescendants(isEnabled: Boolean) {
+    for (i in 0 until childCount) {
+        val child = getChildAt(i)
+        child.isEnabled = isEnabled
+        if (child is ViewGroup) {
+            child.setEnabledIncludingDescendants(isEnabled)
+        }
+    }
+}

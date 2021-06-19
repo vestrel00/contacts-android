@@ -16,6 +16,7 @@ import contacts.permissions.queryWithPermission
 import contacts.sample.ContactDetailsActivity.Companion.CONTACT_ID
 import contacts.sample.ContactDetailsActivity.Companion.Mode
 import contacts.sample.view.ContactView
+import contacts.ui.view.setEnabledIncludingDescendants
 import kotlinx.coroutines.launch
 
 /**
@@ -42,35 +43,6 @@ class ContactDetailsActivity : BaseActivity() {
         }
     }
 
-    private suspend fun initializeMode() {
-        when (intent.mode) {
-            Mode.VIEW -> initializeViewMode()
-            Mode.EDIT -> initializeEditMode()
-            Mode.CREATE -> initializeCreateMode()
-        }
-    }
-
-    private suspend fun initializeViewMode() {
-        initializeEditMode()
-        // TODO disable all views.
-    }
-
-    private suspend fun initializeEditMode() {
-        val contact = fetchContact()
-        if (contact == null) {
-            Toast.makeText(this, R.string.contact_details_fetch_error, LENGTH_SHORT)
-                .show()
-            finish()
-            return
-        }
-
-        contactView.contact = contact
-    }
-
-    private fun initializeCreateMode() {
-        TODO("initializeCreateMode")
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_edit_contact_details, menu)
         return true
@@ -90,6 +62,39 @@ class ContactDetailsActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         contactView.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private suspend fun initializeMode() {
+        when (intent.mode) {
+            Mode.VIEW -> initializeViewMode()
+            Mode.EDIT -> initializeEditMode()
+            Mode.CREATE -> initializeCreateMode()
+        }
+    }
+
+    private suspend fun initializeViewMode() {
+        fetchAndSetContact()
+        contactView.setEnabledIncludingDescendants(false)
+    }
+
+    private suspend fun initializeEditMode() {
+        fetchAndSetContact()
+    }
+
+    private fun initializeCreateMode() {
+        TODO("initializeCreateMode")
+    }
+
+    private suspend fun fetchAndSetContact() {
+        val contact = fetchContact()
+        if (contact == null) {
+            Toast.makeText(this, R.string.contact_details_fetch_error, LENGTH_SHORT)
+                .show()
+            finish()
+            return
+        }
+
+        contactView.contact = contact
     }
 
     private suspend fun fetchContact(): MutableContact? {
