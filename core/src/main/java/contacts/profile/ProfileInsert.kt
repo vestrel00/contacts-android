@@ -32,6 +32,8 @@ import contacts.util.toRawContactsWhere
  * already in these examples for brevity. All inserts will do nothing if these permissions are not
  * granted.
  *
+ * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
+ *
  * ## Accounts
  *
  * The Contacts Provider does not associate local contacts to an account when an account is or

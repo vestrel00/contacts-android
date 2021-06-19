@@ -17,6 +17,8 @@ import contacts.util.unsafeLazy
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
  * examples for brevity. All updates will do nothing if these permissions are not granted.
  *
+ * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
+ *
  * ## Accounts
  *
  * These operations ensure that only [MutableRawContact.groupMemberships] belonging to the same

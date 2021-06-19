@@ -22,6 +22,8 @@ import contacts.util.unsafeLazy
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
  * examples for brevity. All deletes will do nothing if the permission is not granted.
  *
+ * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
+ *
  * ## Usage
  *
  * To delete the profile [ContactEntity] (if it exist) and all associated [RawContactEntity]s;

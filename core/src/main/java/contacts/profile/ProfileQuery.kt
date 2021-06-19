@@ -23,6 +23,8 @@ import contacts.util.unsafeLazy
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
  * examples for brevity. All queries will return null if the permission is not granted.
  *
+ * For API 22 and below, the permission "android.permission.READ_PROFILE" is also required.
+ *
  * ## Usage
  *
  * Here is an example query that returns the profile [Contact]. Only RawContacts belonging to the

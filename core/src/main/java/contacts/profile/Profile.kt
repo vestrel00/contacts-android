@@ -12,10 +12,13 @@ import contacts.entities.custom.CustomDataRegistry
  * ## Permissions
  *
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
+ *     - For API 22 and below, the permission "android.permission.READ_PROFILE" is also required.
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
  * [update], and [delete].
+ *     - For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
  *
  * Use [permissions] convenience functions to check for required permissions.
+ *
  */
 interface Profile {
 
