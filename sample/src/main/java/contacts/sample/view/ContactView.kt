@@ -3,6 +3,7 @@ package contacts.sample.view
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import contacts.Contacts
 import contacts.Fields
@@ -16,6 +17,7 @@ import contacts.permissions.deleteWithPermission
 import contacts.permissions.insertWithPermission
 import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
+import contacts.sample.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -80,13 +82,24 @@ class ContactView @JvmOverloads constructor(
 
     private val job: Job = SupervisorJob()
 
+    // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
+    // Also, I'm too lazy to use a ListView for this. So, I'm just using a LinearLayout. No view
+    // recycling. There shouldn't typically be more than a few (if not just one) RawContact per
+    // Contact. We aren't displaying tens, hundreds, or thousands of RawContacts here. Anyways,
+    // obviously the most correct way is to use a RecyclerView... But I'm prioritizing simplicity
+    // over performance and correctness for this SAMPLE app!
+    private val rawContactsView: ViewGroup
+
     init {
         orientation = VERTICAL
+        inflate(context, R.layout.view_contact, this)
+
+        rawContactsView = findViewById(R.id.rawContacts)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        for (index in 0 until childCount) {
-            val rawContactView = getChildAt(index) as RawContactView
+        for (index in 0 until rawContactsView.childCount) {
+            val rawContactView = rawContactsView.getChildAt(index) as RawContactView
             rawContactView.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -149,8 +162,8 @@ class ContactView @JvmOverloads constructor(
 
         // Update photos first so that the (Raw)Contacts does not get deleted if it only has a photo.
         // Blank (Raw)Contacts are by default deleted in updates.
-        for (index in 0 until childCount) {
-            val rawContactView = getChildAt(index) as RawContactView
+        for (index in 0 until rawContactsView.childCount) {
+            val rawContactView = rawContactsView.getChildAt(index) as RawContactView
             rawContactView.savePhoto()
         }
 
@@ -179,7 +192,7 @@ class ContactView @JvmOverloads constructor(
     }
 
     private fun setContactView() {
-        removeAllViews()
+        rawContactsView.removeAllViews()
 
         val contact = contact
         if (contact != null) {
@@ -197,7 +210,7 @@ class ContactView @JvmOverloads constructor(
         val rawContactView = RawContactView(context).also {
             it.rawContact = rawContact
         }
-        addView(rawContactView)
+        rawContactsView.addView(rawContactView)
         return rawContactView
     }
 }

@@ -10,7 +10,7 @@ import java.util.*
 
 // TODO Delete this file before releasing code to public!
 
-suspend fun Context.insertContact(prefix: String) {
+suspend fun Context.insertContact(prefix: String = Random().nextLong().toString()) {
     Contacts(this).insert()
         .rawContact {
             addAddress {

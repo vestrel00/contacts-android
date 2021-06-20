@@ -69,11 +69,6 @@ class PhoneView @JvmOverloads constructor(
      */
     var onPhoneNumberBegin: (() -> Unit)? = null
 
-    // Not using any view binding libraries or plugins just for this.
-    private val phoneNumberField: EditText
-    private val phoneTypeField: Spinner
-    private val phoneDeleteButton: View
-
     private val typesAdapter: ArrayAdapter<PhoneType>
 
     private var selectedPhoneType: PhoneType? = null
@@ -86,6 +81,10 @@ class PhoneView @JvmOverloads constructor(
             }
         }
 
+    // Not using any view binding libraries or plugins just for this.
+    private val phoneNumberField: EditText
+    private val phoneTypeField: Spinner
+    private val phoneDeleteButton: View
 
     init {
         inflate(context, R.layout.view_phone, this)

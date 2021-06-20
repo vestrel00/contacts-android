@@ -33,6 +33,16 @@ data class Options internal constructor(
      */
     val starred: Boolean?,
 
+    /**
+     * URI for a custom ringtone associated with the contact.
+     */
+    val customRingtone: Uri?,
+
+    /**
+     * Whether the contact should always be sent to voicemail.
+     */
+    val sendToVoicemail: Boolean?
+
     /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     /**
      * The number of times a contact has been contacted.
@@ -44,16 +54,6 @@ data class Options internal constructor(
      */
     val lastTimeContacted: Date?,
      */
-
-    /**
-     * URI for a custom ringtone associated with the contact.
-     */
-    val customRingtone: Uri?,
-
-    /**
-     * Whether the contact should always be sent to voicemail.
-     */
-    val sendToVoicemail: Boolean?
 
 ) : Entity {
 
@@ -89,6 +89,16 @@ data class MutableOptions internal constructor(
      */
     var starred: Boolean?,
 
+    /**
+     * See [Options.customRingtone].
+     */
+    var customRingtone: Uri?,
+
+    /**
+     * See [Options.sendToVoicemail].
+     */
+    var sendToVoicemail: Boolean?
+
     /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
     /**
      * See [Options.timesContacted].
@@ -100,16 +110,6 @@ data class MutableOptions internal constructor(
      */
     var lastTimeContacted: Date?,
      */
-
-    /**
-     * See [Options.customRingtone].
-     */
-    var customRingtone: Uri?,
-
-    /**
-     * See [Options.sendToVoicemail].
-     */
-    var sendToVoicemail: Boolean?
 
 ) : Entity {
 
