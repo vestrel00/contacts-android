@@ -47,6 +47,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
+ *
  * This is in the sample and not in the contacts-ui module because it requires concurrency. We
  * should not add coroutines and contacts-async as dependencies to contacts-ui just for this.
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
@@ -70,9 +71,9 @@ class ContactView @JvmOverloads constructor(
         }
 
     /**
-     * A RawContactView with a new empty RawContact. Used for creating a new Contact.
+     * A RawContactView with a new (empty) RawContact. Used for creating a new Contact.
      */
-    private var emptyRawContactView: RawContactView? = null
+    private var newRawContactView: RawContactView? = null
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
@@ -124,11 +125,11 @@ class ContactView @JvmOverloads constructor(
      */
     @JvmOverloads
     suspend fun createNewContact(contacts: Contacts = Contacts(context)): Long? {
-        val rawContact = emptyRawContactView?.rawContact ?: return null
+        val rawContact = newRawContactView?.rawContact ?: return null
 
         val newContact = contacts.insertWithPermission()
             .allowBlanks(true)
-            // TODO .forAccount()
+            // TODO .forAccount() reuse AccountsActivity in single choice mode to choose an account
             .rawContacts(rawContact)
             .commitWithContext()
             .contactWithContext(context, rawContact)
@@ -182,13 +183,13 @@ class ContactView @JvmOverloads constructor(
 
         val contact = contact
         if (contact != null) {
-            emptyRawContactView = null
+            newRawContactView = null
 
             contact.rawContacts.forEach { rawContact ->
                 addRawContactView(rawContact)
             }
         } else {
-            emptyRawContactView = addRawContactView(MutableRawContact())
+            newRawContactView = addRawContactView(MutableRawContact())
         }
     }
 

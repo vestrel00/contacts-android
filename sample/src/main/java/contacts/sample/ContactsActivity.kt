@@ -30,10 +30,19 @@ import kotlinx.coroutines.launch
  * Provider general matching algorithm. All matching contacts are displayed in a list view. Tapping
  * a contact in the list view will open the details activity, where more details are shown.
  *
- * #### Action Menu
+ * #### Options Menu
  *
+ * - Create: Opens an activity to create a new contact.
  * - Accounts: Opens the accounts activity to select which accounts to include in the search.
- * - Refresh: Performs the search query again.
+ * - Refresh: Performs the search query again to refresh the contacts list.
+ *
+ * ## Note
+ *
+ * This is a very rudimentary activity that is not styled or made to look good. It may not follow
+ * any good practices and may even implement bad practices. This is for demonstration purposes only!
+ *
+ * This does not support state retention (e.g. device rotation). The OSS community may contribute to
+ * this by implementing it.
  */
 class ContactsActivity : BaseActivity() {
 

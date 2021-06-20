@@ -11,16 +11,39 @@ import contacts.sample.view.ContactView
 import contacts.ui.view.setEnabledIncludingDescendants
 import kotlinx.coroutines.launch
 
-// TODO Handle activity recreation
-
 /**
- * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_ID].
+ * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_ID]. Also
+ * provides functions to create new contacts, edit existing contacts, and deleting existing
+ * contacts.
  *
  * #### Modes
  *
  * - [Mode.VIEW]: Displays all existing Contact/RawContact(s) Data. Modifications are NOT allowed.
  * - [Mode.EDIT]: Displays all existing Contact/RawContact(s) Data. Modifications are allowed.
  * - [Mode.CREATE]: Displays an empty Contact/RawContact form for creating a new Contact/RawContact.
+ *
+ * #### Options Menu
+ *
+ * - Edit: Allow contact details to be edited.
+ * - Save:
+ *     - In edit mode, save changes to the existing contact.
+ *     - In create mode, creates a new contact.
+ * - Delete:
+ *     - In view and edit mode, deletes the existing contact.
+ *     - In create mode, aborts creation of a new contact.
+ * - Refresh:
+ *     - In view mode, refreshes the existing contact data to make sure up-to-date data is shown.
+ *     - In edit mode, refreshes the existing contact data to make sure up-to-date data is shown.
+ *       Unsaved changes will be discarded.
+ *     - In create mode, resets the new contact form to a blank state.
+ *
+ * ## Note
+ *
+ * This is a very rudimentary activity that is not styled or made to look good. It may not follow
+ * any good practices and may even implement bad practices. This is for demonstration purposes only!
+ *
+ * This does not support state retention (e.g. device rotation). The OSS community may contribute to
+ * this by implementing it.
  */
 class ContactDetailsActivity : BaseActivity() {
 
