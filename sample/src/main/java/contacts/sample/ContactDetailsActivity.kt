@@ -32,7 +32,7 @@ class ContactDetailsActivity : BaseActivity() {
             field = value
 
             invalidateOptionsMenu()
-            initializeViewWithMode()
+            setViewMode()
         }
 
     // Not using any view binding libraries or plugins just for this.
@@ -104,14 +104,14 @@ class ContactDetailsActivity : BaseActivity() {
         outState.putSerializable(MODE, mode)
     }
 
-    private fun initializeViewWithMode() {
+    private fun setViewMode() {
         when (mode) {
-            Mode.VIEW -> {
-                loaContact()
+            Mode.VIEW -> launch {
+                loadContact()
                 contactView.setEnabledIncludingDescendants(false)
             }
-            Mode.EDIT -> {
-                loaContact()
+            Mode.EDIT -> launch {
+                loadContact()
                 contactView.setEnabledIncludingDescendants(true)
             }
             Mode.CREATE -> {
@@ -121,7 +121,7 @@ class ContactDetailsActivity : BaseActivity() {
         }
     }
 
-    private fun loaContact() = launch {
+    private suspend fun loadContact() {
         val loadSuccess = contactId?.let { contactView.loadContactWithId(it) } == true
         if (!loadSuccess) {
             Toast
