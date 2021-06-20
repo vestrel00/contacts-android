@@ -22,7 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-// TODO Add top level account details like display name and contact options
+// TODO Add top level account details like display name and contact options. Include the contact photo.
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableContact] and handles the modifications to the

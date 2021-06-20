@@ -12,7 +12,6 @@ import contacts.ui.view.setEnabledIncludingDescendants
 import kotlinx.coroutines.launch
 
 // TODO Handle activity recreation
-// TODO BUG: First RawContact Photo is not set!!!
 
 /**
  * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_ID].

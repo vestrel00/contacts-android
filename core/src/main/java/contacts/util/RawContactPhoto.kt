@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.provider.ContactsContract
 import android.provider.ContactsContract.RawContacts
 import contacts.*
 import contacts.entities.MimeType
@@ -46,28 +45,19 @@ fun RawContactEntity.photoInputStream(context: Context): InputStream? {
         return null
     }
 
-    val photoFileId = context.contentResolver.query(
-        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
-        Include(Fields.Photo.PhotoFileId),
-        (Fields.RawContact.Id equalTo rawContactId) and (Fields.MimeType equalTo MimeType.Photo)
-    ) {
-        it.getNextOrNull { it.photoCursor().photoFileId }
+    val photoUri = Uri.withAppendedPath(
+        // This is also used to set Profile photos along with non-Profile photos.
+        ContentUris.withAppendedId(RawContacts.CONTENT_URI, rawContactId),
+        RawContacts.DisplayPhoto.CONTENT_DIRECTORY
+    )
+
+    var inputStream: InputStream? = null
+    try {
+        val fd = context.contentResolver.openAssetFileDescriptor(photoUri, "r")
+        inputStream = fd?.createInputStream()
+    } finally {
+        return inputStream
     }
-
-    if (photoFileId != null) {
-        val photoUri =
-            ContentUris.withAppendedId(ContactsContract.DisplayPhoto.CONTENT_URI, photoFileId)
-
-        var inputStream: InputStream? = null
-        try {
-            val fd = context.contentResolver.openAssetFileDescriptor(photoUri, "r")
-            inputStream = fd?.createInputStream()
-        } finally {
-            return inputStream
-        }
-    }
-
-    return null
 }
 
 /**
