@@ -67,13 +67,14 @@ class ContactsActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
+            R.id.create -> {
+                ContactDetailsActivity.createContact(this)
+            }
             R.id.accounts -> {
                 AccountsActivity.selectAccounts(this, true, ArrayList(selectedAccounts))
-                return true
             }
             R.id.refresh -> {
                 showContacts()
-                return true
             }
         }
 
@@ -82,6 +83,10 @@ class ContactsActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         ContactDetailsActivity.onViewContactDetailsResult(requestCode) {
+            showContacts()
+        }
+
+        ContactDetailsActivity.onCreateContactResult(requestCode) {
             showContacts()
         }
 

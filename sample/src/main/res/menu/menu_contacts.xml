@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-    Can't be bothered to find an icon for accounts so I'm just using the calendar icon,
-    which IMO could pass for an accounts icon =)
-    -->
+    <item
+        android:id="@+id/create"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="ifRoom"
+        android:title="@string/contacts_create" />
+
     <item
         android:id="@+id/accounts"
         android:icon="@android:drawable/ic_menu_my_calendar"
         android:showAsAction="ifRoom"
         android:title="@string/accounts" />
 
-    <!--
-    Can't be bothered to find an icon for refresh so I'm just using the rotate icon,
-    which IMO could pass for a refresh icon =)
-    -->
     <item
         android:id="@+id/refresh"
         android:icon="@android:drawable/ic_menu_rotate"

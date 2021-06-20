@@ -6,13 +6,24 @@
     <string name="contacts_search_field_hint">Find contacts</string>
     <string name="contacts_refresh">Refresh</string>
 
+    <string name="contacts_create">Create</string>
+
     <!-- Contact details activity -->
     <string name="contact_details">Edit contact</string>
 
-    <string name="contact_details_save_success">Contact saved</string>
-    <string name="contact_details_save_error">Unable to save contact</string>
-
     <string name="contact_details_fetch_error">Unable to get contact details</string>
+
+    <string name="contact_details_edit">Edit</string>
+
+    <string name="contact_details_save">Save</string>
+    <string name="contact_details_create_success">Contact created</string>
+    <string name="contact_details_create_error">Unable to create contact</string>
+    <string name="contact_details_update_success">Contact updated</string>
+    <string name="contact_details_update_error">Unable to update contact</string>
+    <string name="contact_details_delete_success">Contact deleted</string>
+    <string name="contact_details_delete_error">Unable to delete contact</string>
+
+    <string name="contact_details_delete">Delete</string>
 
     <!-- Accounts activity -->
     <string name="accounts">Accounts</string>

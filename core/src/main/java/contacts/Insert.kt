@@ -110,6 +110,21 @@ interface Insert {
      * If not provided, or null is provided, or if an incorrect account is provided, the raw
      * contacts inserted here will not be associated with an account. RawContacts inserted without
      * an associated account are considered local or device-only contacts, which are not synced.
+     *
+     * **For Lollipop (API 22) and below**
+     *
+     * When an Account is added, from a state where no accounts have yet been added to the system, the
+     * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
+     * RawContacts table to that Account's name and type.
+     *
+     * RawContacts inserted without an associated account will automatically get assigned to an account
+     * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
+     * to do it.
+     *
+     * **For Marshmallow (API 23) and above**
+     *
+     * The Contacts Provider no longer associates local contacts to an account when an account is or
+     * becomes available.
      */
     fun forAccount(account: Account?): Insert
 

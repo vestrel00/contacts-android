@@ -5,9 +5,16 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.Contacts
+import contacts.Fields
 import contacts.async.commitWithContext
+import contacts.async.findWithContext
+import contacts.async.util.contactWithContext
 import contacts.entities.MutableContact
 import contacts.entities.MutableRawContact
+import contacts.equalTo
+import contacts.permissions.deleteWithPermission
+import contacts.permissions.insertWithPermission
+import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +22,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
+// TODO Add top level account details like display name and contact options
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableContact] and handles the modifications to the
  * given [contact]. Each of the RawContact is displayed in a [RawContactView].
  *
- * Setting the [contact] will automatically update the views. Any modifications in the views will
+ * Loading the [contact] will automatically update the views. Any modifications in the views will
  * also be made to the [contact].
  *
  * ## Note
@@ -39,7 +47,6 @@ import kotlin.coroutines.CoroutineContext
  *
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
- *
  * This is in the sample and not in the contacts-ui module because it requires concurrency. We
  * should not add coroutines and contacts-async as dependencies to contacts-ui just for this.
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
@@ -55,12 +62,17 @@ class ContactView @JvmOverloads constructor(
      * The Contact that is shown in this view. Setting this will automatically update the views. Any
      * modifications in the views will also be made to the this.
      */
-    var contact: MutableContact? = null
+    private var contact: MutableContact? = null
         set(value) {
             field = value
 
             setContactView()
         }
+
+    /**
+     * A RawContactView with a new empty RawContact. Used for creating a new Contact.
+     */
+    private var emptyRawContactView: RawContactView? = null
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
@@ -79,48 +91,112 @@ class ContactView @JvmOverloads constructor(
     }
 
     /**
-     * Saves the [contact] and all of the associated RawContacts.
+     * Loads the contact with the given [contactId].
      *
-     * Returns true if the save succeeded regardless of whether the RawContact photos save succeeded
-     * of not.
+     * Returns true if the load succeeded.
      */
-    suspend fun saveContact(contacts: Contacts = Contacts(context)): Boolean {
+    @JvmOverloads
+    suspend fun loadContactWithId(
+        contactId: Long, contacts: Contacts = Contacts(context)
+    ): Boolean {
+        contact = contacts.queryWithPermission()
+            .where(Fields.Contact.Id equalTo contactId)
+            .findWithContext()
+            .firstOrNull()
+            ?.toMutableContact()
+
+        return contact != null
+    }
+
+    /**
+     * Removes any loaded contact and loads an empty new (raw) contact.
+     *
+     * To insert the new (raw) contact into the Contacts database, call [createNewContact].
+     */
+    fun loadNewContact() {
+        contact = null
+    }
+
+    /**
+     * Inserts the new (raw) contact to the Contacts database.
+     *
+     * Returns the newly created contact's ID. Returns null if the insert failed.
+     */
+    @JvmOverloads
+    suspend fun createNewContact(contacts: Contacts = Contacts(context)): Long? {
+        val rawContact = emptyRawContactView?.rawContact ?: return null
+
+        val newContact = contacts.insertWithPermission()
+            .allowBlanks(true)
+            // TODO .forAccount()
+            .rawContacts(rawContact)
+            .commitWithContext()
+            .contactWithContext(context, rawContact)
+
+        return newContact?.id
+    }
+
+    /**
+     * Updates the [contact] and all of the associated RawContacts.
+     *
+     * Returns true if the update succeeded regardless of whether the RawContact photos update
+     * succeeded of not.
+     */
+    @JvmOverloads
+    suspend fun updateContact(contacts: Contacts = Contacts(context)): Boolean {
         val contact = contact ?: return false
 
-        // Save photos first so that the (Raw)Contacts does not get deleted if it only has a photo.
+        // Update photos first so that the (Raw)Contacts does not get deleted if it only has a photo.
         // Blank (Raw)Contacts are by default deleted in updates.
         for (index in 0 until childCount) {
             val rawContactView = getChildAt(index) as RawContactView
             rawContactView.savePhoto()
         }
 
-        // Save changes. Ignore if photos save succeeded or not :D
-        val contactSaveResult = contacts.updateWithPermission()
+        // Perform the update. Ignore if photos update succeeded or not :D
+        return contacts.updateWithPermission()
             // This is implicitly true by default. We are just being explicitly verbose here.
             .deleteBlanks(true)
             .contacts(contact)
             .commitWithContext()
+            .isSuccessful
+    }
 
-        return contactSaveResult.isSuccessful
+    /**
+     * Deletes the [contact] and all of the associated RawContacts.
+     *
+     * Returns true if the delete succeeded.
+     */
+    @JvmOverloads
+    suspend fun deleteContact(contacts: Contacts = Contacts(context)): Boolean {
+        val contact = contact ?: return false
+
+        return contacts.deleteWithPermission()
+            .contacts(contact)
+            .commitWithContext()
+            .isSuccessful
     }
 
     private fun setContactView() {
         removeAllViews()
 
-        contact?.rawContacts?.forEach { rawContact ->
-            addRawContactView(rawContact)
+        val contact = contact
+        if (contact != null) {
+            emptyRawContactView = null
+
+            contact.rawContacts.forEach { rawContact ->
+                addRawContactView(rawContact)
+            }
+        } else {
+            emptyRawContactView = addRawContactView(MutableRawContact())
         }
     }
 
-    private fun addRawContactView(rawContact: MutableRawContact) {
+    private fun addRawContactView(rawContact: MutableRawContact): RawContactView {
         val rawContactView = RawContactView(context).also {
             it.rawContact = rawContact
         }
         addView(rawContactView)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        job.cancel()
+        return rawContactView
     }
 }

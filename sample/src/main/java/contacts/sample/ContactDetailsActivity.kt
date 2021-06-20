@@ -7,17 +7,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import contacts.Contacts
-import contacts.Fields
-import contacts.async.findWithContext
-import contacts.entities.MutableContact
-import contacts.equalTo
-import contacts.permissions.queryWithPermission
-import contacts.sample.ContactDetailsActivity.Companion.CONTACT_ID
-import contacts.sample.ContactDetailsActivity.Companion.Mode
 import contacts.sample.view.ContactView
 import contacts.ui.view.setEnabledIncludingDescendants
 import kotlinx.coroutines.launch
+
+// TODO Handle activity recreation
+// TODO BUG: First RawContact Photo is not set!!!
 
 /**
  * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_ID].
@@ -30,6 +25,16 @@ import kotlinx.coroutines.launch
  */
 class ContactDetailsActivity : BaseActivity() {
 
+    private var contactId: Long? = null
+
+    private var mode: Mode = Mode.VIEW
+        set(value) {
+            field = value
+
+            invalidateOptionsMenu()
+            initializeViewWithMode()
+        }
+
     // Not using any view binding libraries or plugins just for this.
     private lateinit var contactView: ContactView
 
@@ -38,22 +43,51 @@ class ContactDetailsActivity : BaseActivity() {
         setContentView(R.layout.activity_contact_details)
         contactView = findViewById(R.id.contactView)
 
-        launch {
-            initializeMode()
+        if (savedInstanceState != null) {
+            contactId = savedInstanceState.getLong(CONTACT_ID)
+            mode = savedInstanceState.getSerializable(MODE) as Mode
+        } else {
+            contactId = intent.contactId
+            mode = intent.mode
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_edit_contact_details, menu)
+        menuInflater.inflate(R.menu.menu_contact_details, menu)
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (menu != null) {
+            val editMenuItem = menu.findItem(R.id.edit)
+            val saveMenuItem = menu.findItem(R.id.save)
+
+            when (mode) {
+                Mode.VIEW -> {
+                    editMenuItem.isVisible = true
+                    saveMenuItem.isVisible = false
+                }
+                Mode.EDIT, Mode.CREATE -> {
+                    editMenuItem.isVisible = false
+                    saveMenuItem.isVisible = true
+                }
+            }
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.save -> {
-                launch { save() }
-                return true
+            R.id.save -> when (mode) {
+                Mode.VIEW, Mode.EDIT -> updateContact()
+                Mode.CREATE -> createNewContact()
             }
+            R.id.edit -> mode = Mode.EDIT
+            R.id.delete -> when (mode) {
+                Mode.VIEW, Mode.EDIT -> deleteContact()
+                Mode.CREATE -> finish()
+            }
+            R.id.refresh -> mode = mode
         }
 
         return super.onOptionsItemSelected(menuItem)
@@ -64,59 +98,98 @@ class ContactDetailsActivity : BaseActivity() {
         contactView.onActivityResult(requestCode, resultCode, data)
     }
 
-    private suspend fun initializeMode() {
-        when (intent.mode) {
-            Mode.VIEW -> initializeViewMode()
-            Mode.EDIT -> initializeEditMode()
-            Mode.CREATE -> initializeCreateMode()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(CONTACT_ID, contactId)
+        outState.putSerializable(MODE, mode)
+    }
+
+    private fun initializeViewWithMode() {
+        when (mode) {
+            Mode.VIEW -> {
+                loaContact()
+                contactView.setEnabledIncludingDescendants(false)
+            }
+            Mode.EDIT -> {
+                loaContact()
+                contactView.setEnabledIncludingDescendants(true)
+            }
+            Mode.CREATE -> {
+                contactView.loadNewContact()
+                contactView.setEnabledIncludingDescendants(true)
+            }
         }
     }
 
-    private suspend fun initializeViewMode() {
-        fetchAndSetContact()
-        contactView.setEnabledIncludingDescendants(false)
-    }
-
-    private suspend fun initializeEditMode() {
-        fetchAndSetContact()
-    }
-
-    private fun initializeCreateMode() {
-        TODO("initializeCreateMode")
-    }
-
-    private suspend fun fetchAndSetContact() {
-        val contact = fetchContact()
-        if (contact == null) {
-            Toast.makeText(this, R.string.contact_details_fetch_error, LENGTH_SHORT)
+    private fun loaContact() = launch {
+        val loadSuccess = contactId?.let { contactView.loadContactWithId(it) } == true
+        if (!loadSuccess) {
+            Toast
+                .makeText(
+                    this@ContactDetailsActivity, R.string.contact_details_fetch_error, LENGTH_SHORT
+                )
                 .show()
+
             finish()
-            return
         }
-
-        contactView.contact = contact
     }
 
-    private suspend fun fetchContact(): MutableContact? {
-        val result = Contacts(this).queryWithPermission()
-            .where(Fields.Contact.Id equalTo intent.contactId)
-            .findWithContext()
-            .firstOrNull()
-
-        return result?.toMutableContact()
-    }
-
-    private suspend fun save() {
+    private fun createNewContact() = launch {
         showProgressDialog()
 
-        val resultMessageRes = if (contactView.saveContact()) {
-            R.string.contact_details_save_success
+        contactId = contactView.createNewContact()
+        val createSuccess = contactId != null
+
+        val resultMessageRes = if (createSuccess) {
+            R.string.contact_details_create_success
         } else {
-            R.string.contact_details_save_error
+            R.string.contact_details_create_error
         }
-        Toast.makeText(this, resultMessageRes, LENGTH_SHORT).show()
+        Toast.makeText(this@ContactDetailsActivity, resultMessageRes, LENGTH_SHORT).show()
 
         dismissProgressDialog()
+
+        if (createSuccess) {
+            mode = Mode.VIEW
+        }
+    }
+
+    private fun updateContact() = launch {
+        showProgressDialog()
+
+        val updateSuccess = contactView.updateContact()
+
+        val resultMessageRes = if (updateSuccess) {
+            R.string.contact_details_update_success
+        } else {
+            R.string.contact_details_update_error
+        }
+        Toast.makeText(this@ContactDetailsActivity, resultMessageRes, LENGTH_SHORT).show()
+
+        dismissProgressDialog()
+
+        if (updateSuccess) {
+            mode = Mode.VIEW
+        }
+    }
+
+    private fun deleteContact() = launch {
+        showProgressDialog()
+
+        val deleteSuccess = contactView.deleteContact()
+
+        val resultMessageRes = if (deleteSuccess) {
+            R.string.contact_details_delete_success
+        } else {
+            R.string.contact_details_delete_error
+        }
+        Toast.makeText(this@ContactDetailsActivity, resultMessageRes, LENGTH_SHORT).show()
+
+        if (deleteSuccess) {
+            finish()
+        } else {
+            dismissProgressDialog()
+        }
     }
 
     companion object {
@@ -166,58 +239,56 @@ class ContactDetailsActivity : BaseActivity() {
             activity.startActivityForResult(intent, REQUEST_CREATE)
         }
 
-        fun onCreateContactResult(requestCode: Int, contactDetailsViewed: () -> Unit) {
+        fun onCreateContactResult(requestCode: Int, contactCreated: () -> Unit) {
             if (requestCode == REQUEST_CREATE) {
-                contactDetailsViewed()
+                contactCreated()
             }
         }
         // endregion
-
-        private enum class Mode {
-            VIEW, EDIT, CREATE
-        }
-
-        private val Intent.mode: Mode
-            get() = when (requestCode) {
-                REQUEST_VIEW -> Mode.VIEW
-                REQUEST_EDIT -> Mode.EDIT
-                REQUEST_CREATE -> Mode.CREATE
-                else -> {
-                    throw IllegalArgumentException("There is no mode for request code $requestCode")
-                }
-            }
-
-        /**
-         * The type of request. Defaults to -1 if not provided.
-         *
-         * #### Dev note
-         *
-         * I'm aware that [Intent.getAction] paired with [Intent.getData] are more appropriate tools
-         * to use than the request code. Using these tools with the correct scheme will enable deep
-         * linking into this sample app. For example, launching an intent from any app with matching
-         * action and scheme will result in the suggestion of the native Contacts app or this sample
-         * app to handle the intent. See [android.provider.ContactsContract.Intents].
-         *
-         * TODO? Implement deep linking?
-         * Anyways, this is not something I'll be implementing in this sample app, at least
-         * initially, as it requires a bit of work to get right. This is something actual apps may
-         * implement but this sample app may implement it too so it can be used as reference. We may
-         * even create a library containing deep linking functions?
-         */
-        private val Intent.requestCode: Int
-            get() = getIntExtra(REQUEST_CODE, -1)
-
-        /**
-         * The id of an existing Contact. Defaults to -1 if not provided.
-         */
-        private val Intent.contactId: Long
-            get() = getLongExtra(CONTACT_ID, -1L)
-
-        private const val REQUEST_VIEW = 111
-        private const val REQUEST_EDIT = 222
-        private const val REQUEST_CREATE = 333
-
-        private const val REQUEST_CODE = "requestCode"
-        private const val CONTACT_ID = "contactId"
     }
 }
+
+private enum class Mode {
+    VIEW, EDIT, CREATE
+}
+
+/**
+ * The type of request. Defaults to -1 if not provided.
+ *
+ * #### Dev note
+ *
+ * I'm aware that [Intent.getAction] paired with [Intent.getData] are more appropriate tools
+ * to use than the request code. Using these tools with the correct scheme will enable deep
+ * linking into this sample app. For example, launching an intent from any app with matching
+ * action and scheme will result in the suggestion of the native Contacts app or this sample
+ * app to handle the intent. See [android.provider.ContactsContract.Intents].
+ *
+ * TODO? Implement deep linking?
+ * Anyways, this is not something I'll be implementing in this sample app, at least
+ * initially, as it requires a bit of work to get right. This is something actual apps may
+ * implement but this sample app may implement it too so it can be used as reference. We may
+ * even create a library containing deep linking functions?
+ */
+private val Intent.mode: Mode
+    get() = when (val requestCode = getIntExtra(REQUEST_CODE, -1)) {
+        REQUEST_VIEW -> Mode.VIEW
+        REQUEST_EDIT -> Mode.EDIT
+        REQUEST_CREATE -> Mode.CREATE
+        else -> {
+            throw IllegalArgumentException("There is no mode for request code $requestCode")
+        }
+    }
+
+/**
+ * The id of an existing Contact. Defaults to -1 if not provided.
+ */
+private val Intent.contactId: Long
+    get() = getLongExtra(CONTACT_ID, -1L)
+
+private const val REQUEST_VIEW = 111
+private const val REQUEST_EDIT = 222
+private const val REQUEST_CREATE = 333
+
+private const val REQUEST_CODE = "requestCode"
+private const val CONTACT_ID = "contactId"
+private const val MODE = "mode"

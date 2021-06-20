@@ -48,6 +48,9 @@ class PhonesView @JvmOverloads constructor(
             setPhonesViews()
         }
 
+    /**
+     * A PhoneView with a new empty phone. Used to add a new phone to the list of [phones].
+     */
     private lateinit var emptyPhoneView: PhoneView
 
     private fun setPhonesViews() {

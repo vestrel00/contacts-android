@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import contacts.accounts.Accounts
 import contacts.async.accounts.accountForWithContext
-import contacts.entities.MutableContact
 import contacts.entities.MutableName
 import contacts.entities.MutableRawContact
 import contacts.sample.R
@@ -98,19 +97,17 @@ class RawContactView @JvmOverloads constructor(
         // TODO
     }
 
-    private fun setRawContactInfoView() {
-        launch {
-            val account = Accounts(context, rawContact.isProfile)
-                .query()
-                .accountForWithContext(rawContact)
-            rawContactInfoView.text = if (account == null) {
-                "Local Account"
-            } else {
-                """
-                    Account Name: ${account.name}
-                    Account Type: ${account.type}
-                """.trimIndent()
-            }
+    private fun setRawContactInfoView() = launch {
+        val account = Accounts(context, rawContact.isProfile)
+            .query()
+            .accountForWithContext(rawContact)
+        rawContactInfoView.text = if (account == null) {
+            "Local Account"
+        } else {
+            """
+                Account Name: ${account.name}
+                Account Type: ${account.type}
+            """.trimIndent()
         }
     }
 
