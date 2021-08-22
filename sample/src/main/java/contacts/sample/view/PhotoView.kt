@@ -8,10 +8,6 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.widget.ImageView
-import contacts.async.util.photoBitmapDrawableWithContext
-import contacts.async.util.removePhotoWithContext
-import contacts.async.util.setPhotoWithContext
-import contacts.entities.MutableRawContact
 import contacts.sample.R
 import contacts.ui.util.onPhotoPicked
 import contacts.ui.util.showPhotoPickerDialog
@@ -20,11 +16,8 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
- * An [ImageView] that displays a [MutableRawContact]'s photo and handles photo addition,
- * modification, and removal.
- *
- * Setting the [rawContact] will automatically update the views. Any modifications in the views will
- * also be made to the [rawContact]'s photo upon [savePhoto].
+ * An abstract [ImageView] that displays a photo and handles photo addition, modification, and
+ * removal.
  *
  * ## Note
  *
@@ -48,33 +41,24 @@ import kotlin.coroutines.CoroutineContext
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
  * move this to a separate module (contacts-ui-async).
  */
-class PhotoView @JvmOverloads constructor(
+abstract class PhotoView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ImageView(context, attributeSet, defStyleAttr), CoroutineScope {
 
-    /**
-     * The RawContact whose photo is shown in this view. Setting this will automatically update the
-     * views. Any modifications in the views will also be made to the [rawContact]'s photo upon
-     * [savePhoto].
-     */
-    var rawContact: MutableRawContact? = null
-        set(value) {
-            field = value
-
-            setPhotoDrawableFromMutableRawContact()
-        }
-
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
     private val job: Job = SupervisorJob()
-    private var setRawContactPhotoJob: Job? = null
 
     private var photoDrawable: BitmapDrawable? = null
     private var shouldSavePhoto: Boolean = false
     private var isPickingPhoto: Boolean = false
+
+    protected abstract val photoOwnerIsNull: Boolean
+    protected abstract suspend fun savePhotoToDb(photoDrawable: BitmapDrawable): Boolean
+    protected abstract suspend fun removePhotoFromDb(): Boolean
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -138,25 +122,22 @@ class PhotoView @JvmOverloads constructor(
     }
 
     /**
-     * Saves the photo to the given [rawContact]. If there is no photo, then the photo is removed
-     * from the [rawContact].
+     * Saves the photo to the DB. If there is no photo, then the photo is removed from the DB.
      */
     suspend fun savePhoto(): Boolean {
         if (!shouldSavePhoto) {
             return true
         }
 
-        val rawContact = rawContact
-        val photoDrawable = photoDrawable
-
-        if (rawContact == null) {
+        if (photoOwnerIsNull) {
             return false
         }
 
+        val photoDrawable = photoDrawable
         val success = if (photoDrawable != null) {
-            rawContact.setPhotoWithContext(context, photoDrawable)
+            savePhotoToDb(photoDrawable)
         } else {
-            rawContact.removePhotoWithContext(context)
+            removePhotoFromDb()
         }
 
         if (success) {
@@ -166,14 +147,7 @@ class PhotoView @JvmOverloads constructor(
         return success
     }
 
-    private fun setPhotoDrawableFromMutableRawContact() {
-        setRawContactPhotoJob?.cancel()
-        setRawContactPhotoJob = launch {
-            setPhotoDrawable(rawContact?.photoBitmapDrawableWithContext(context))
-        }
-    }
-
-    private suspend fun setPhotoDrawable(photoDrawable: BitmapDrawable?) {
+    protected suspend fun setPhotoDrawable(photoDrawable: BitmapDrawable?) {
         this.photoDrawable = photoDrawable
 
         if (photoDrawable != null) {
@@ -197,6 +171,6 @@ class PhotoView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        job.cancel()
+        cancel()
     }
 }

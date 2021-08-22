@@ -6,26 +6,36 @@
     <!-- Divider -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@android:color/darker_gray" />
 
-    <!-- RawContact -->
-    <TextView
-        android:id="@+id/rawContactInfo"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+        android:layout_marginTop="@dimen/activity_vertical_margin">
 
-    <!-- Photo -->
-    <contacts.sample.view.PhotoView
-        android:id="@+id/photoView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/contact_detail_photo_height"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:scaleType="fitCenter"
-        android:src="@drawable/placeholder_photo" />
+        <!-- Photo -->
+        <contacts.sample.view.RawContactPhotoThumbnailView
+            android:id="@+id/photoThumbnail"
+            android:layout_width="@dimen/raw_contact_detail_photo_thumbnail_size"
+            android:layout_height="@dimen/raw_contact_detail_photo_thumbnail_size"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/placeholder_photo" />
+
+        <!-- Account -->
+        <TextView
+            android:id="@+id/account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/photoThumbnail"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_toEndOf="@id/photoThumbnail"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+    </RelativeLayout>
 
     <!-- Name -->
     <TextView
@@ -36,7 +46,7 @@
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.NameView
-        android:id="@+id/nameView"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -50,7 +60,7 @@
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.PhonesView
-        android:id="@+id/phonesView"
+        android:id="@+id/phones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"

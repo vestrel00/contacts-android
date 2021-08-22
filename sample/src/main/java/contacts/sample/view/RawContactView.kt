@@ -68,8 +68,8 @@ class RawContactView @JvmOverloads constructor(
     private val job: Job = SupervisorJob()
 
     // Not using any view binding libraries or plugins just for this.
-    private val rawContactInfoView: TextView
-    private val photoView: PhotoView
+    private val accountView: TextView
+    private val photoThumbnailView: RawContactPhotoThumbnailView
     private val nameView: NameView
     private val phonesView: PhonesView
 
@@ -77,31 +77,31 @@ class RawContactView @JvmOverloads constructor(
         orientation = VERTICAL
         inflate(context, R.layout.view_raw_contact, this)
 
-        rawContactInfoView = findViewById(R.id.rawContactInfo)
-        photoView = findViewById(R.id.photoView)
-        nameView = findViewById(R.id.nameView)
-        phonesView = findViewById(R.id.phonesView)
+        accountView = findViewById(R.id.account)
+        photoThumbnailView = findViewById(R.id.photoThumbnail)
+        nameView = findViewById(R.id.name)
+        phonesView = findViewById(R.id.phones)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        photoView.onActivityResult(requestCode, resultCode, data)
+        photoThumbnailView.onActivityResult(requestCode, resultCode, data)
     }
 
-    suspend fun savePhoto(): Boolean = photoView.savePhoto()
+    suspend fun savePhoto(): Boolean = photoThumbnailView.savePhoto()
 
     private fun setRawContactView() {
-        setRawContactInfoView()
+        setRawContactAccountView()
         setPhotoView()
         setNameView()
         setPhonesView()
         // TODO
     }
 
-    private fun setRawContactInfoView() = launch {
+    private fun setRawContactAccountView() = launch {
         val account = Accounts(context, rawContact.isProfile)
             .query()
             .accountForWithContext(rawContact)
-        rawContactInfoView.text = if (account == null) {
+        accountView.text = if (account == null) {
             "Local Account"
         } else {
             """
@@ -112,7 +112,7 @@ class RawContactView @JvmOverloads constructor(
     }
 
     private fun setPhotoView() {
-        photoView.rawContact = rawContact
+        photoThumbnailView.rawContact = rawContact
     }
 
     private fun setNameView() {

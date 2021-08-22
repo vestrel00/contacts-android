@@ -1,10 +1,12 @@
 package contacts.sample.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import contacts.Contacts
 import contacts.Fields
 import contacts.async.commitWithContext
@@ -24,7 +26,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-// TODO Add top level account details like display name and contact options. Include the contact photo.
+// TODO Add top level account; contact options. Include the contact photo.
+// TODO Show thumbnail in RawContactView to the right of the account info
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableContact] and handles the modifications to the
@@ -69,7 +72,8 @@ class ContactView @JvmOverloads constructor(
         set(value) {
             field = value
 
-            setContactView()
+            setContactDetailsView()
+            setRawContactsView()
         }
 
     /**
@@ -81,6 +85,11 @@ class ContactView @JvmOverloads constructor(
         get() = job + Dispatchers.Main
 
     private val job: Job = SupervisorJob()
+
+    private val photoView: ContactPhotoView
+    private val displayNamePrimaryView: TextView
+    private val displayNameAltView: TextView
+    private val lastUpdatedView: TextView
 
     // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
     // Also, I'm too lazy to use a ListView for this. So, I'm just using a LinearLayout. No view
@@ -94,10 +103,16 @@ class ContactView @JvmOverloads constructor(
         orientation = VERTICAL
         inflate(context, R.layout.view_contact, this)
 
+        photoView = findViewById(R.id.photo)
+        displayNamePrimaryView = findViewById(R.id.displayNamePrimary)
+        displayNameAltView = findViewById(R.id.displayNameAlt)
+        lastUpdatedView = findViewById(R.id.lastUpdated)
         rawContactsView = findViewById(R.id.rawContacts)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        photoView.onActivityResult(requestCode, resultCode, data)
+
         for (index in 0 until rawContactsView.childCount) {
             val rawContactView = rawContactsView.getChildAt(index) as RawContactView
             rawContactView.onActivityResult(requestCode, resultCode, data)
@@ -132,13 +147,15 @@ class ContactView @JvmOverloads constructor(
     }
 
     /**
-     * Inserts the new (raw) contact to the Contacts database.
+     * Inserts the new (raw) contact to the database.
      *
      * Returns the newly created contact's ID. Returns null if the insert failed.
      */
     @JvmOverloads
     suspend fun createNewContact(contacts: Contacts = Contacts(context)): Long? {
         val rawContact = newRawContactView?.rawContact ?: return null
+
+        // TODO Contact photo!
 
         val newContact = contacts.insertWithPermission()
             .allowBlanks(true)
@@ -159,6 +176,8 @@ class ContactView @JvmOverloads constructor(
     @JvmOverloads
     suspend fun updateContact(contacts: Contacts = Contacts(context)): Boolean {
         val contact = contact ?: return false
+
+        // TODO save contact photo (before or after raw contact photo save?)
 
         // Update photos first so that the (Raw)Contacts does not get deleted if it only has a photo.
         // Blank (Raw)Contacts are by default deleted in updates.
@@ -191,7 +210,14 @@ class ContactView @JvmOverloads constructor(
             .isSuccessful
     }
 
-    private fun setContactView() {
+    @SuppressLint("SetTextI18n")
+    private fun setContactDetailsView() {
+        displayNamePrimaryView.text = "Display name primary: ${contact?.displayNamePrimary}"
+        displayNameAltView.text = "Display name alt: ${contact?.displayNameAlt}"
+        lastUpdatedView.text = "Last updated: ${contact?.lastUpdatedTimestamp}"
+    }
+
+    private fun setRawContactsView() {
         rawContactsView.removeAllViews()
 
         val contact = contact

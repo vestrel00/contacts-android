@@ -3,5 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="raw_contact_detail_photo_thumbnail_size">48dp</dimen>
     <dimen name="contact_detail_photo_height">200dp</dimen>
 </resources>
