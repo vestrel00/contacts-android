@@ -1,3 +1,5 @@
+Move async UI code in sample to new ui-async module. Don’t forget to remove the documentation about it being in the sample module because of async. Also rename stings and dimens.
+
 #### Complete sample app
 
 Build the sample app as simple as possible, referencing new and older versions to ensure all
