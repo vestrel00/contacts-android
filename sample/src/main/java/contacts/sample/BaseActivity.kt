@@ -5,11 +5,10 @@ import android.app.AlertDialog
 import android.widget.ProgressBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 /**
- * A coroutine-scoped activity that defines a [SupervisorJob], which automatically cancels all jobs
+ * A coroutine-scoped activity that defines a SupervisorJob, which automatically cancels all jobs
  * launched in scope of this activity in [onDestroy].
  *
  * #### Convenience functions
