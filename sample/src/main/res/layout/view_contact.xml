@@ -5,6 +5,7 @@
 
     <!-- Contact details -->
     <LinearLayout
+        android:id="@+id/details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -37,6 +38,7 @@
 
     <!-- Contact options -->
     <LinearLayout
+        android:id="@+id/options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">

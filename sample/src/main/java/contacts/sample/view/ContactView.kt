@@ -26,15 +26,32 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-// TODO Add top level account; contact options. Include the contact photo.
-// TODO Show thumbnail in RawContactView to the right of the account info
-
 /**
  * A (vertical) [LinearLayout] that displays a [MutableContact] and handles the modifications to the
  * given [contact]. Each of the RawContact is displayed in a [RawContactView].
  *
  * Loading the [contact] will automatically update the views. Any modifications in the views will
  * also be made to the [contact].
+ *
+ * ## Contact and RawContact Photos
+ *
+ * A Contact shows the photo of one of its RawContacts. If the photo of a Contact is changed, then
+ * that change is propagated to the corresponding RawContact. Likewise, if the photo of a RawContact
+ * (whose photo represents the Contact's photo), then the Contact's photo receives the same change.
+ *
+ * With this in mind, the native Android Contacts app does not allow changing the Contact and
+ * RawContact photo in the same screen (activity/fragment) in order to reduce the code complexity
+ * of the UI. As such, this API will not be providing any functions to help with supporting this
+ * use case in order to keep code complexity low.
+ *
+ * This means that when the Contact photo is updated in the view, the RawContact photo displayed
+ * will not change. The same applies in the other direction.
+ *
+ * When the [updateContact] function is invoked, the photos of the RawContact(s) will be saved
+ * first. Then, the photo of the Contact will be saved afterwards **only if** there has been a
+ * change in the Contact photo view. This mitigates the issue. However, the issue still exists if
+ * the Contact photo and RawContact photo have both been modified. In that case, the Contact photo
+ * will override the RawContact photo.
  *
  * ## Note
  *
@@ -177,14 +194,15 @@ class ContactView @JvmOverloads constructor(
     suspend fun updateContact(contacts: Contacts = Contacts(context)): Boolean {
         val contact = contact ?: return false
 
-        // TODO save contact photo (before or after raw contact photo save?)
-
-        // Update photos first so that the (Raw)Contacts does not get deleted if it only has a photo.
-        // Blank (Raw)Contacts are by default deleted in updates.
+        // Update RawContact photos that have changed first so that the (Raw)Contacts does not get
+        // deleted if it only has a photo. Blank (Raw)Contacts are by default deleted in updates.
         for (index in 0 until rawContactsView.childCount) {
             val rawContactView = rawContactsView.getChildAt(index) as RawContactView
             rawContactView.savePhoto()
         }
+
+        // Update the Contact photo iff it has changed.
+        photoView.savePhoto()
 
         // Perform the update. Ignore if photos update succeeded or not :D
         return contacts.updateWithPermission()
@@ -212,6 +230,7 @@ class ContactView @JvmOverloads constructor(
 
     @SuppressLint("SetTextI18n")
     private fun setContactDetailsView() {
+        photoView.contact = contact
         displayNamePrimaryView.text = "Display name primary: ${contact?.displayNamePrimary}"
         displayNameAltView.text = "Display name alt: ${contact?.displayNameAlt}"
         lastUpdatedView.text = "Last updated: ${contact?.lastUpdatedTimestamp}"

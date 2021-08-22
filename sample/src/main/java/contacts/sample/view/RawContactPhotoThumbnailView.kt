@@ -60,9 +60,6 @@ class RawContactPhotoThumbnailView @JvmOverloads constructor(
 
     private var setRawContactPhotoJob: Job? = null
 
-    override val photoOwnerIsNull: Boolean
-        get() = rawContact == null
-
     override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable): Boolean =
         rawContact?.setPhotoWithContext(context, photoDrawable) == true
 

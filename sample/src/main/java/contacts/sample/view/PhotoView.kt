@@ -53,10 +53,9 @@ abstract class PhotoView @JvmOverloads constructor(
     private val job: Job = SupervisorJob()
 
     private var photoDrawable: BitmapDrawable? = null
-    private var shouldSavePhoto: Boolean = false
     private var isPickingPhoto: Boolean = false
+    private var photoHasChanged: Boolean = false
 
-    protected abstract val photoOwnerIsNull: Boolean
     protected abstract suspend fun savePhotoToDb(photoDrawable: BitmapDrawable): Boolean
     protected abstract suspend fun removePhotoFromDb(): Boolean
 
@@ -67,7 +66,7 @@ abstract class PhotoView @JvmOverloads constructor(
                 isPickingPhoto = true
                 it.showPhotoPickerDialog(withRemovePhotoOption = photoDrawable != null,
                     removePhoto = {
-                        shouldSavePhoto = true
+                        photoHasChanged = true
                         isPickingPhoto = false
                         launch { setPhotoDrawable(null) }
                     },
@@ -89,12 +88,12 @@ abstract class PhotoView @JvmOverloads constructor(
         }
         onPhotoPicked(requestCode, resultCode, data,
             photoBitmapPicked = { bitmap ->
-                shouldSavePhoto = true
+                photoHasChanged = true
                 isPickingPhoto = false
                 launch { setPhotoDrawable(BitmapDrawable(resources, bitmap)) }
             },
             photoUriPicked = { uri ->
-                shouldSavePhoto = true
+                photoHasChanged = true
                 isPickingPhoto = false
                 launch {
                     // FIXME This suppression should no longer be necessary once the compiler is
@@ -122,15 +121,12 @@ abstract class PhotoView @JvmOverloads constructor(
     }
 
     /**
-     * Saves the photo to the DB. If there is no photo, then the photo is removed from the DB.
+     * Saves the photo to the DB if it has changed. If there is no photo, then the photo is removed
+     * from the DB.
      */
     suspend fun savePhoto(): Boolean {
-        if (!shouldSavePhoto) {
+        if (!photoHasChanged) {
             return true
-        }
-
-        if (photoOwnerIsNull) {
-            return false
         }
 
         val photoDrawable = photoDrawable
@@ -141,7 +137,7 @@ abstract class PhotoView @JvmOverloads constructor(
         }
 
         if (success) {
-            shouldSavePhoto = false
+            photoHasChanged = false
         }
 
         return success

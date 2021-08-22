@@ -90,8 +90,8 @@ class RawContactView @JvmOverloads constructor(
     suspend fun savePhoto(): Boolean = photoThumbnailView.savePhoto()
 
     private fun setRawContactView() {
+        setPhotoThumbnailView()
         setRawContactAccountView()
-        setPhotoView()
         setNameView()
         setPhonesView()
         // TODO
@@ -111,7 +111,7 @@ class RawContactView @JvmOverloads constructor(
         }
     }
 
-    private fun setPhotoView() {
+    private fun setPhotoThumbnailView() {
         photoThumbnailView.rawContact = rawContact
     }
 

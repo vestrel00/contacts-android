@@ -60,9 +60,6 @@ class ContactPhotoView @JvmOverloads constructor(
 
     private var setContactPhotoJob: Job? = null
 
-    override val photoOwnerIsNull: Boolean
-        get() = contact == null
-
     override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable): Boolean =
         contact?.setPhotoWithContext(context, photoDrawable) == true
 
