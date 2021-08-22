@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import contacts.sample.view.ContactView
-import contacts.ui.view.setEnabledIncludingDescendants
 import kotlinx.coroutines.launch
 
 /**
@@ -130,15 +129,15 @@ class ContactDetailsActivity : BaseActivity() {
         when (mode) {
             Mode.VIEW -> launch {
                 loadContact()
-                contactView.setEnabledIncludingDescendants(false)
+                contactView.isEnabled = false
             }
             Mode.EDIT -> launch {
                 loadContact()
-                contactView.setEnabledIncludingDescendants(true)
+                contactView.isEnabled = true
             }
             Mode.CREATE -> {
                 contactView.loadNewContact()
-                contactView.setEnabledIncludingDescendants(true)
+                contactView.isEnabled = true
             }
         }
     }

@@ -3,8 +3,10 @@ package contacts.sample.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.util.AttributeSet
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import contacts.Contacts
@@ -12,7 +14,10 @@ import contacts.Fields
 import contacts.async.commitWithContext
 import contacts.async.findWithContext
 import contacts.async.util.contactWithContext
+import contacts.async.util.optionsWithContext
+import contacts.async.util.setOptionsWithContext
 import contacts.entities.MutableContact
+import contacts.entities.MutableOptions
 import contacts.entities.MutableRawContact
 import contacts.equalTo
 import contacts.permissions.deleteWithPermission
@@ -20,10 +25,8 @@ import contacts.permissions.insertWithPermission
 import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
 import contacts.sample.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import contacts.ui.view.setChildrenAndDescendantsEnabled
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -89,7 +92,8 @@ class ContactView @JvmOverloads constructor(
         set(value) {
             field = value
 
-            setContactDetailsView()
+            setDetailsView()
+            launch { setStarredView(contact?.options?.starred == true) }
             setRawContactsView()
         }
 
@@ -103,11 +107,16 @@ class ContactView @JvmOverloads constructor(
 
     private val job: Job = SupervisorJob()
 
+    // options
+    private val starredView: ImageView
+
+    // details
     private val photoView: ContactPhotoView
     private val displayNamePrimaryView: TextView
     private val displayNameAltView: TextView
     private val lastUpdatedView: TextView
 
+    // RawContacts
     // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
     // Also, I'm too lazy to use a ListView for this. So, I'm just using a LinearLayout. No view
     // recycling. There shouldn't typically be more than a few (if not just one) RawContact per
@@ -124,6 +133,10 @@ class ContactView @JvmOverloads constructor(
         displayNamePrimaryView = findViewById(R.id.displayNamePrimary)
         displayNameAltView = findViewById(R.id.displayNameAlt)
         lastUpdatedView = findViewById(R.id.lastUpdated)
+
+        starredView = findViewById(R.id.starred)
+        starredView.setOnClickListener { launch { toggleStarred() } }
+
         rawContactsView = findViewById(R.id.rawContacts)
     }
 
@@ -135,6 +148,14 @@ class ContactView @JvmOverloads constructor(
             rawContactView.onActivityResult(requestCode, resultCode, data)
         }
     }
+
+    override fun setEnabled(enabled: Boolean) {
+        // super.setEnabled(enabled) intentionally not calling this
+        // Do not ever disable the contact options and details.
+        photoView.isEnabled = enabled
+        rawContactsView.setChildrenAndDescendantsEnabled(enabled)
+    }
+
 
     /**
      * Loads the contact with the given [contactId].
@@ -229,11 +250,25 @@ class ContactView @JvmOverloads constructor(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setContactDetailsView() {
+    private fun setDetailsView() {
         photoView.contact = contact
         displayNamePrimaryView.text = "Display name primary: ${contact?.displayNamePrimary}"
         displayNameAltView.text = "Display name alt: ${contact?.displayNameAlt}"
         lastUpdatedView.text = "Last updated: ${contact?.lastUpdatedTimestamp}"
+    }
+
+    private suspend fun setStarredView(starred: Boolean) {
+        val starBitmap = withContext(Dispatchers.IO) {
+            BitmapFactory.decodeResource(
+                resources, if (starred) {
+                    android.R.drawable.star_big_on
+                } else {
+                    android.R.drawable.star_big_off
+                }
+            )
+        }
+
+        starredView.setImageBitmap(starBitmap)
     }
 
     private fun setRawContactsView() {
@@ -257,5 +292,20 @@ class ContactView @JvmOverloads constructor(
         }
         rawContactsView.addView(rawContactView)
         return rawContactView
+    }
+
+    private suspend fun toggleStarred() {
+        // The starred value from DB needs to be retrieved.
+        val options = contact?.optionsWithContext(context)?.toMutableOptions() ?: MutableOptions()
+        val starred = options.starred == true
+
+        options.starred = !starred
+
+        // Update immediately, separate from the general update/save.
+        val success = contact?.setOptionsWithContext(context, options) == true
+
+        if (success) {
+            setStarredView(!starred)
+        }
     }
 }
