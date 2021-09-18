@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -27,6 +28,9 @@ import contacts.permissions.insertWithPermission
 import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
 import contacts.sample.R
+import contacts.ui.util.onRingtoneSelected
+import contacts.ui.util.selectRingtone
+import contacts.ui.view.activity
 import contacts.ui.view.setChildrenAndDescendantsEnabled
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -42,7 +46,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * From top to bottom;
  *
- * 1. Contact's options; starred, sendToVoicemail, and ringtone.
+ * 1. Contact's options; starred, sendToVoicemail, and customRingtone.
  *     - These options may be changed in edit or view mode. The changes are immediate and does not
  *     require pressing the save button.
  * 2. Contact photo.
@@ -125,6 +129,7 @@ class ContactView @JvmOverloads constructor(
     // options
     private val starredView: ImageView
     private val sendToVoicemailView: CheckBox
+    private val customRingtoneView: ImageView
 
     // details
     private val photoView: ContactPhotoView
@@ -151,17 +156,28 @@ class ContactView @JvmOverloads constructor(
         lastUpdatedView = findViewById(R.id.lastUpdated)
 
         starredView = findViewById(R.id.starred)
-        starredView.setOnClickListener { launch { toggleStarred() } }
+        starredView.setOnClickListener {
+            launch { toggleStarred() }
+        }
 
         sendToVoicemailView = findViewById(R.id.sendToVoicemail)
         sendToVoicemailView.setOnCheckedChangeListener { _, isChecked ->
             launch { sendToVoicemail(isChecked) }
         }
 
+        customRingtoneView = findViewById(R.id.customRingtone)
+        customRingtoneView.setOnClickListener {
+            launch { selectCustomRingtone() }
+        }
+
         rawContactsView = findViewById(R.id.rawContacts)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        onRingtoneSelected(requestCode, resultCode, data) { ringtoneUri ->
+            launch { setCustomRingtone(ringtoneUri) }
+        }
+
         photoView.onActivityResult(requestCode, resultCode, data)
 
         for (index in 0 until rawContactsView.childCount) {
@@ -338,6 +354,18 @@ class ContactView @JvmOverloads constructor(
         // Update immediately, separate from the general update/save.
         contact?.updateOptionsWithContext(context) {
             this.sendToVoicemail = sendToVoicemail
+        }
+    }
+
+    private suspend fun selectCustomRingtone() {
+        // The customRingtone value from DB needs to be retrieved.
+        activity?.selectRingtone(contact?.optionsWithContext(context)?.customRingtone)
+    }
+
+    private suspend fun setCustomRingtone(customRingtone: Uri?) {
+        // Update immediately, separate from the general update/save.
+        contact?.updateOptionsWithContext(context) {
+            this.customRingtone = customRingtone
         }
     }
 }
