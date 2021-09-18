@@ -131,6 +131,9 @@ data class Address internal constructor(
         OTHER(CommonDataKinds.StructuredPostal.TYPE_OTHER),
         CUSTOM(CommonDataKinds.StructuredPostal.TYPE_CUSTOM);
 
+        override val typeLabelResource: Int
+            get() = CommonDataKinds.StructuredPostal.getTypeLabelResource(value)
+
         internal companion object {
 
             fun fromValue(value: Int?): Type? = values().find { it.value == value }

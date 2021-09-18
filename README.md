@@ -75,6 +75,7 @@ functionality is included (though may look different).
 #### Final steps!
 
 1. Update AS, Kotlin stdlib + coroutines, Gradle, Dexter, and all other dependencies before releasing.
+    - Use sealed interface in Fields when upgrading to Kotlin 1.5+
 2. Review remaining TODOs and FIXMEs.
 3. Add consumerProguardFiles?
 4. Create howto folder containing an md file for each;

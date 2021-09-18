@@ -19,14 +19,10 @@ import contacts.entities.Phone
  * sealed classes with the library's design.
  */
 data class PhoneType internal constructor(
-    val type: Phone.Type,
-    val typeLabel: String,
-
-    /**
-     * True if this is a user created custom type.
-     */
-    val userCustomType: Boolean
-) {
+    override val type: Phone.Type,
+    override val typeLabel: String,
+    override val userCustomType: Boolean
+) : CommonDataEntityType<Phone.Type> {
 
     override fun toString(): String = typeLabel
 
@@ -37,7 +33,7 @@ data class PhoneType internal constructor(
         /**
          * Returns all the system phone types.
          */
-        fun all(resources: Resources): MutableList<PhoneType> = Phone.Type.values()
+        fun systemTypes(resources: Resources): MutableList<PhoneType> = Phone.Type.values()
             .asSequence()
             .map { type -> PhoneType(type, resources.getString(type.typeLabelResource), false) }
             .toMutableList()

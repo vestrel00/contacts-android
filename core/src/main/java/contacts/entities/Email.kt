@@ -65,6 +65,9 @@ data class Email internal constructor(
         MOBILE(CommonDataKinds.Email.TYPE_MOBILE),
         CUSTOM(CommonDataKinds.Email.TYPE_CUSTOM);
 
+        override val typeLabelResource: Int
+            get() = CommonDataKinds.Email.getTypeLabelResource(value)
+
         internal companion object {
 
             fun fromValue(value: Int?): Type? = values().find { it.value == value }

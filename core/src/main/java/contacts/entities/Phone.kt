@@ -108,13 +108,9 @@ data class Phone internal constructor(
         MMS(CommonDataKinds.Phone.TYPE_MMS),
          */
 
-        /**
-         * The string resource representing this type.
-         *
-         * This is typically the resource to the string displayed in the type spinner.
-         */
-        // [ANDROID X] @StringRes (not using annotation to avoid dependency on androidx.annotation)
-        val typeLabelResource: Int
+        override val isCustomType: Boolean = value == CommonDataKinds.Phone.TYPE_CUSTOM
+                
+        override val typeLabelResource: Int
             get() = CommonDataKinds.Phone.getTypeLabelResource(value)
 
         /**

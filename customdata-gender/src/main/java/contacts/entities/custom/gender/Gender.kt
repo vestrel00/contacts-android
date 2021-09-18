@@ -6,6 +6,7 @@ import contacts.entities.MimeType
 import contacts.entities.custom.CustomDataEntity
 import contacts.entities.custom.MutableCustomDataEntity
 import contacts.entities.custom.gender.Gender.Type
+import contacts.entities.custom.gender.Gender.Type.*
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -73,6 +74,13 @@ data class Gender internal constructor(
         MALE(1),
         FEMALE(2),
         CUSTOM(ContactsContract.CommonDataKinds.BaseTypes.TYPE_CUSTOM);
+
+        override val typeLabelResource: Int
+            get() = when (this) {
+                MALE -> R.string.customdata_gender_male
+                FEMALE -> R.string.customdata_gender_female
+                CUSTOM -> R.string.customdata_gender_custom
+            }
 
         internal companion object {
 

@@ -32,6 +32,6 @@
     <string name="contacts_ui_ringtone_select_error">Unable to select a ringtone</string>
 
     <!-- Custom label input dialog -->
-    <string name="contacts_ui__custom_label_input_dialog_title">Custom label name</string>
+    <string name="contacts_ui_custom_label_input_dialog_title">Custom label name</string>
 
 </resources>

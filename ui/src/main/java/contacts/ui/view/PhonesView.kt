@@ -31,6 +31,7 @@ import contacts.entities.removeAll
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
+// TODO generalize this like with PhoneView?
 class PhonesView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -65,10 +66,14 @@ class PhonesView @JvmOverloads constructor(
 
     private fun addPhoneView(phone: MutablePhone): PhoneView {
         val phoneView = PhoneView(context).apply {
-            this.phone = phone
-            onPhoneDeleteButtonClicked = ::onPhoneDeleteButtonClicked
-            onPhoneNumberCleared = ::onPhoneNumberCleared
-            onPhoneNumberBegin = ::onPhoneNumberBegin
+            data = phone
+            onDataDeleteButtonClicked = {
+                onPhoneDeleteButtonClicked(it as PhoneView)
+            }
+            onDataCleared = {
+                onPhoneNumberCleared(it as PhoneView)
+            }
+            onDataBegin = ::onPhoneNumberBegin
         }
 
         addView(phoneView)
@@ -85,7 +90,7 @@ class PhonesView @JvmOverloads constructor(
             ?: DEFAULT_PHONE_TYPES.last()
 
         emptyPhoneView = addPhoneView(MutablePhone().apply { type = phoneType })
-        phones.add(emptyPhoneView.phone)
+        phones.add(emptyPhoneView.data)
     }
 
     private fun onPhoneNumberCleared(phoneView: PhoneView) {
@@ -104,7 +109,7 @@ class PhonesView @JvmOverloads constructor(
     private fun removePhoneView(phoneView: PhoneView) {
         // There may be duplicate phones. Therefore, we need to remove the exact phone instance.
         // Thus, we remove the phone by reference equality instead of by content/structure equality.
-        phones.removeAll(phoneView.phone, byReference = true)
+        phones.removeAll(phoneView.data, byReference = true)
         removeView(phoneView)
     }
 }

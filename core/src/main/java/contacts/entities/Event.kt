@@ -77,6 +77,9 @@ data class Event internal constructor(
         OTHER(CommonDataKinds.Event.TYPE_OTHER),
         CUSTOM(CommonDataKinds.Event.TYPE_CUSTOM);
 
+        override val typeLabelResource: Int
+            get() = CommonDataKinds.Event.getTypeResource(value)
+
         internal companion object {
 
             fun fromValue(value: Int?): Type? = values().find { it.value == value }

@@ -74,6 +74,9 @@ data class Im internal constructor(
         NET_MEETING(CommonDataKinds.Im.PROTOCOL_NETMEETING),
         CUSTOM(CommonDataKinds.Im.PROTOCOL_CUSTOM);
 
+        override val typeLabelResource: Int
+            get() = CommonDataKinds.Im.getTypeLabelResource(value)
+
         internal companion object {
 
             fun fromValue(value: Int?): Protocol? = values().find { it.value == value }

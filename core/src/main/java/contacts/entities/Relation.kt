@@ -75,6 +75,9 @@ data class Relation internal constructor(
         SPOUSE(CommonDataKinds.Relation.TYPE_SPOUSE),
         CUSTOM(CommonDataKinds.Relation.TYPE_CUSTOM);
 
+        override val typeLabelResource: Int
+            get() = CommonDataKinds.Relation.getTypeLabelResource(value)
+
         internal companion object {
 
             fun fromValue(value: Int?): Type? = values().find { it.value == value }
