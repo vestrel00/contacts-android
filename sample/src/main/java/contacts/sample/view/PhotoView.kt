@@ -155,10 +155,10 @@ abstract class PhotoView @JvmOverloads constructor(
 
             val placeHolderImageDrawable = withContext(Dispatchers.IO) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    context.getDrawable(R.drawable.placeholder_photo)
+                    context.getDrawable(R.drawable.contact_placeholder_photo)
                 } else {
                     @Suppress("Deprecation")
-                    context.resources.getDrawable(R.drawable.placeholder_photo)
+                    context.resources.getDrawable(R.drawable.contact_placeholder_photo)
                 }
             }
             setImageDrawable(placeHolderImageDrawable)

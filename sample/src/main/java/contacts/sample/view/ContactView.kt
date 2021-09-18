@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.util.AttributeSet
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,6 +17,7 @@ import contacts.async.findWithContext
 import contacts.async.util.contactWithContext
 import contacts.async.util.optionsWithContext
 import contacts.async.util.setOptionsWithContext
+import contacts.async.util.updateOptionsWithContext
 import contacts.entities.MutableContact
 import contacts.entities.MutableOptions
 import contacts.entities.MutableRawContact
@@ -35,6 +37,17 @@ import kotlin.coroutines.CoroutineContext
  *
  * Loading the [contact] will automatically update the views. Any modifications in the views will
  * also be made to the [contact].
+ *
+ * ## View layout
+ *
+ * From top to bottom;
+ *
+ * 1. Contact's options; starred, sendToVoicemail, and ringtone.
+ *     - These options may be changed in edit or view mode. The changes are immediate and does not
+ *     require pressing the save button.
+ * 2. Contact photo.
+ * 3. Contact details; display name primary and alternate, and last updated timestamp.
+ * 4. List of RawContacts associated with this Contact.
  *
  * ## Contact and RawContact Photos
  *
@@ -92,8 +105,10 @@ class ContactView @JvmOverloads constructor(
         set(value) {
             field = value
 
-            setDetailsView()
             launch { setStarredView(contact?.options?.starred == true) }
+            setSendToVoicemailView(contact?.options?.sendToVoicemail == true)
+
+            setDetailsView()
             setRawContactsView()
         }
 
@@ -109,6 +124,7 @@ class ContactView @JvmOverloads constructor(
 
     // options
     private val starredView: ImageView
+    private val sendToVoicemailView: CheckBox
 
     // details
     private val photoView: ContactPhotoView
@@ -136,6 +152,11 @@ class ContactView @JvmOverloads constructor(
 
         starredView = findViewById(R.id.starred)
         starredView.setOnClickListener { launch { toggleStarred() } }
+
+        sendToVoicemailView = findViewById(R.id.sendToVoicemail)
+        sendToVoicemailView.setOnCheckedChangeListener { _, isChecked ->
+            launch { sendToVoicemail(isChecked) }
+        }
 
         rawContactsView = findViewById(R.id.rawContacts)
     }
@@ -271,6 +292,10 @@ class ContactView @JvmOverloads constructor(
         starredView.setImageBitmap(starBitmap)
     }
 
+    private fun setSendToVoicemailView(sendToVoicemail: Boolean) {
+        sendToVoicemailView.isChecked = sendToVoicemail
+    }
+
     private fun setRawContactsView() {
         rawContactsView.removeAllViews()
 
@@ -306,6 +331,13 @@ class ContactView @JvmOverloads constructor(
 
         if (success) {
             setStarredView(!starred)
+        }
+    }
+
+    private suspend fun sendToVoicemail(sendToVoicemail: Boolean) {
+        // Update immediately, separate from the general update/save.
+        contact?.updateOptionsWithContext(context) {
+            this.sendToVoicemail = sendToVoicemail
         }
     }
 }

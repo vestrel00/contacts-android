@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
@@ -20,11 +21,28 @@
             android:layout_weight="1"
             android:scaleType="fitCenter" />
 
-        <ImageView
+        <!-- TODO Send to voicemail -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/contact_send_to_voicemail"
+                android:src="@android:drawable/stat_notify_voicemail" />
+
+            <CheckBox
+                android:id="@+id/sendToVoicemail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <!-- TODO custom ringtone -->
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -40,7 +58,7 @@
         android:layout_height="@dimen/contact_detail_photo_height"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:scaleType="fitCenter"
-        android:src="@drawable/placeholder_photo" />
+        android:src="@drawable/contact_placeholder_photo" />
 
     <!-- Contact details -->
     <LinearLayout
