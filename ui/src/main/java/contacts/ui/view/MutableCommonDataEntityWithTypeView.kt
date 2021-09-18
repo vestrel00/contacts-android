@@ -57,20 +57,7 @@ abstract class MutableCommonDataEntityWithTypeView
             setDataDeleteButton()
         }
 
-    /**
-     * Invoked when the delete button is clicked.
-     */
-    var onDataDeleteButtonClicked: (() -> Unit)? = null
-
-    /**
-     * Invoked when the data field is cleared.
-     */
-    var onDataCleared: (() -> Unit)? = null
-
-    /**
-     * Invoked when the a piece of the data field is entered from a blank state.
-     */
-    var onDataBegin: (() -> Unit)? = null
+    private var eventListener: EventListener? = null
 
     private var selectedType: V? = null
         set(value) {
@@ -96,6 +83,10 @@ abstract class MutableCommonDataEntityWithTypeView
     private val dataTypesAdapter: ArrayAdapter<V> =
         ArrayAdapter(context, android.R.layout.simple_list_item_1)
 
+    fun setEventListener(eventListener: EventListener?) {
+        this.eventListener = eventListener
+    }
+
     // Must be called by subclass after immediately after creation to complete initialization.
     protected fun initViews() {
         dataField.apply {
@@ -111,7 +102,7 @@ abstract class MutableCommonDataEntityWithTypeView
         }
 
         dataDeleteButton.setOnClickListener {
-            onDataDeleteButtonClicked?.invoke()
+            eventListener?.onDataDeleteButtonClicked()
         }
     }
 
@@ -198,11 +189,11 @@ abstract class MutableCommonDataEntityWithTypeView
             setDataValue(s?.toString())
 
             if (s.isNullOrEmpty()) {
-                onDataCleared?.invoke()
+                eventListener?.onDataCleared()
             }
 
             if (start == 0 && count > 0) {
-                onDataBegin?.invoke()
+                eventListener?.onDataBegin()
             }
 
             setDataDeleteButtonVisibility()
@@ -237,6 +228,23 @@ abstract class MutableCommonDataEntityWithTypeView
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
         }
+    }
+
+    interface EventListener {
+        /**
+         * Invoked when the delete button is clicked.
+         */
+        fun onDataDeleteButtonClicked()
+
+        /**
+         * Invoked when the data field is cleared.
+         */
+        fun onDataCleared()
+
+        /**
+         * Invoked when the a piece of the data field is entered from a blank state.
+         */
+        fun onDataBegin()
     }
 }
 

@@ -67,9 +67,7 @@ class PhonesView @JvmOverloads constructor(
     private fun addPhoneView(phone: MutablePhone): PhoneView {
         val phoneView = PhoneView(context).apply {
             data = phone
-            onDataDeleteButtonClicked = { onPhoneDeleteButtonClicked(this) }
-            onDataCleared = { onPhoneNumberCleared(this) }
-            onDataBegin = ::onPhoneNumberBegin
+            setEventListener(PhoneViewEventListener(this))
         }
 
         addView(phoneView)
@@ -107,6 +105,22 @@ class PhonesView @JvmOverloads constructor(
         // Thus, we remove the phone by reference equality instead of by content/structure equality.
         phones.removeAll(phoneView.data, byReference = true)
         removeView(phoneView)
+    }
+
+    private inner class PhoneViewEventListener(private val phoneView: PhoneView) :
+        MutableCommonDataEntityWithTypeView.EventListener {
+
+        override fun onDataDeleteButtonClicked() {
+            onPhoneDeleteButtonClicked(phoneView)
+        }
+
+        override fun onDataCleared() {
+            onPhoneNumberCleared(phoneView)
+        }
+
+        override fun onDataBegin() {
+            onPhoneNumberBegin()
+        }
     }
 }
 
