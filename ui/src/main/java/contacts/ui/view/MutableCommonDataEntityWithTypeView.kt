@@ -60,16 +60,12 @@ abstract class MutableCommonDataEntityWithTypeView
     /**
      * Invoked when the delete button is clicked.
      */
-    var onDataDeleteButtonClicked: (
-        (dataEntityWithTypeView: MutableCommonDataEntityWithTypeView<K, T, V>) -> Unit
-    )? = null
+    var onDataDeleteButtonClicked: (() -> Unit)? = null
 
     /**
      * Invoked when the data field is cleared.
      */
-    var onDataCleared: (
-        (dataEntityWithTypeView: MutableCommonDataEntityWithTypeView<K, T, V>) -> Unit
-    )? = null
+    var onDataCleared: (() -> Unit)? = null
 
     /**
      * Invoked when the a piece of the data field is entered from a blank state.
@@ -115,7 +111,7 @@ abstract class MutableCommonDataEntityWithTypeView
         }
 
         dataDeleteButton.setOnClickListener {
-            onDataDeleteButtonClicked?.invoke(this)
+            onDataDeleteButtonClicked?.invoke()
         }
     }
 
@@ -202,7 +198,7 @@ abstract class MutableCommonDataEntityWithTypeView
             setDataValue(s?.toString())
 
             if (s.isNullOrEmpty()) {
-                onDataCleared?.invoke(this@MutableCommonDataEntityWithTypeView)
+                onDataCleared?.invoke()
             }
 
             if (start == 0 && count > 0) {

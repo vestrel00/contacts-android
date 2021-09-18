@@ -67,12 +67,8 @@ class PhonesView @JvmOverloads constructor(
     private fun addPhoneView(phone: MutablePhone): PhoneView {
         val phoneView = PhoneView(context).apply {
             data = phone
-            onDataDeleteButtonClicked = {
-                onPhoneDeleteButtonClicked(it as PhoneView)
-            }
-            onDataCleared = {
-                onPhoneNumberCleared(it as PhoneView)
-            }
+            onDataDeleteButtonClicked = { onPhoneDeleteButtonClicked(this) }
+            onDataCleared = { onPhoneNumberCleared(this) }
             onDataBegin = ::onPhoneNumberBegin
         }
 

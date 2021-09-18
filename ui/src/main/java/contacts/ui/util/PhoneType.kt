@@ -44,18 +44,18 @@ data class PhoneType internal constructor(
         fun userCustomType(typeLabel: String): PhoneType = from(Phone.Type.CUSTOM, typeLabel)
 
         /**
+         * See [from].
+         */
+        fun from(resources: Resources, phone: MutablePhone): PhoneType =
+            from(resources, phone.type, phone.label)
+
+        /**
          * Returns the [PhoneType] of the given [phone].
          *
          * If the [Phone.type] is null, it will default to [DEFAULT_TYPE]. If it is
          * [Phone.Type.CUSTOM], [PhoneType.userCustomType] will be true.
          */
-        fun from(resources: Resources, phone: Phone): PhoneType =
-            from(resources, phone.type, phone.label)
-
-        /**
-         * See [from].
-         */
-        fun from(resources: Resources, phone: MutablePhone): PhoneType =
+        private fun from(resources: Resources, phone: Phone): PhoneType =
             from(resources, phone.type, phone.label)
 
         private fun from(resources: Resources, type: Phone.Type?, label: String?): PhoneType {
