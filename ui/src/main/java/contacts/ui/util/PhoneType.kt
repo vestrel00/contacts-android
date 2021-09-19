@@ -24,38 +24,23 @@ data class PhoneType internal constructor(
 
     override fun toString(): String = typeLabel
 
-    companion object {
+    class Factory : CommonDataEntityType.Factory<MutablePhone, Phone.Type, PhoneType> {
 
-        private val DEFAULT_TYPE = Phone.Type.MOBILE
-
-        /**
-         * Returns all the system phone types.
-         *
-         * The [typeLabel] is assigned by the system.
-         */
-        fun systemTypes(resources: Resources): MutableList<PhoneType> = Phone.Type.values()
+        override fun systemTypes(resources: Resources): MutableList<PhoneType> = Phone.Type.values()
             .asSequence()
             .map { type -> PhoneType(type, type.labelStr(resources, null)) }
             .toMutableList()
 
-        /**
-         * Creates a new [PhoneType] with the given [typeLabel] with a type of [Phone.Type.CUSTOM].
-         *
-         * The [typeLabel] is assigned by the user (assuming that the [typeLabel] came from user
-         * input).
-         */
-        fun userCustomType(typeLabel: String): PhoneType = PhoneType(Phone.Type.CUSTOM, typeLabel)
+        override fun userCustomType(labelStr: String): PhoneType =
+            PhoneType(Phone.Type.CUSTOM, labelStr)
 
-        /**
-         * Returns the [PhoneType] of the given [phone].
-         *
-         * If the [Phone.type] is null, it will default to [DEFAULT_TYPE].
-         *
-         * The [typeLabel] is assigned by the [Phone.label].
-         */
-        fun from(resources: Resources, phone: MutablePhone): PhoneType =
-            (phone.type ?: DEFAULT_TYPE).let { type ->
-                PhoneType(type, type.labelStr(resources, phone.label))
+        override fun from(resources: Resources, data: MutablePhone): PhoneType =
+            (data.type ?: DEFAULT_TYPE).let { type ->
+                PhoneType(type, type.labelStr(resources, data.label))
+            }
+
+        companion object {
+            private val DEFAULT_TYPE = Phone.Type.MOBILE
         }
     }
 }

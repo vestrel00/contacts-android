@@ -40,6 +40,7 @@ abstract class MutableCommonDataEntityWithTypeView
 @JvmOverloads constructor(
     context: Context,
     initialData: K,
+    private val dataTypeFactory: CommonDataEntityType.Factory<K, T, V>,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
@@ -73,10 +74,7 @@ abstract class MutableCommonDataEntityWithTypeView
     protected abstract val dataDeleteButton: View
 
     protected abstract val dataValue: String?
-    protected abstract val dataType: V
-    protected abstract val systemDataTypes: List<V>
 
-    protected abstract fun createUserCustomDataTypeWithLabel(typeLabel: String): V
     protected abstract fun setDataValue(value: String?)
     protected abstract fun setDataTypeAndTypeLabelValue(type: T, typeLabel: String?)
 
@@ -111,6 +109,8 @@ abstract class MutableCommonDataEntityWithTypeView
     }
 
     private fun setDataTypeField() {
+        val dataType = dataTypeFactory.from(resources, data)
+
         dataTypesAdapter.apply {
             setNotifyOnChange(false)
             clear()
@@ -122,7 +122,7 @@ abstract class MutableCommonDataEntityWithTypeView
             }
 
             // Add all system data types.
-            addAll(systemDataTypes)
+            addAll(dataTypeFactory.systemTypes(resources))
 
             notifyDataSetChanged()
         }
@@ -160,7 +160,7 @@ abstract class MutableCommonDataEntityWithTypeView
         CustomLabelInputDialog(context)
             .show(R.string.contacts_ui_custom_label_input_dialog_title,
                 onLabelEntered = { label ->
-                    replaceUserCustomType(createUserCustomDataTypeWithLabel(label))
+                    replaceUserCustomType(dataTypeFactory.userCustomType(label))
                 }, onCancelled = {
                     // Revert the selection to the current selected type.
                     dataTypeField.setSelection(dataTypesAdapter.getPosition(selectedType))

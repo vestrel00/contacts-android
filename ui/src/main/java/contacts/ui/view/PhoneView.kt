@@ -41,7 +41,7 @@ class PhoneView @JvmOverloads constructor(
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : MutableCommonDataEntityWithTypeView<MutablePhone, Phone.Type, PhoneType>(
-    context, MutablePhone(), attributeSet, defStyleAttr
+    context, MutablePhone(), PhoneType.Factory(), attributeSet, defStyleAttr
 ) {
 
     // Not using any view binding libraries or plugins just for this.
@@ -64,15 +64,6 @@ class PhoneView @JvmOverloads constructor(
 
     override val dataValue: String?
         get() = data.number
-
-    override val dataType: PhoneType
-        get() = PhoneType.from(resources, data)
-
-    override val systemDataTypes: List<PhoneType>
-        get() = PhoneType.systemTypes(resources)
-
-    override fun createUserCustomDataTypeWithLabel(typeLabel: String): PhoneType =
-        PhoneType.userCustomType(typeLabel)
 
     override fun setDataValue(value: String?) {
         data.number = value
