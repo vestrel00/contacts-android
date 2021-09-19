@@ -5,16 +5,15 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import contacts.entities.CommonDataEntity
-import contacts.entities.MutableCommonDataEntity
 import contacts.ui.R
 import contacts.ui.dialog.CustomLabelInputDialog
+import contacts.ui.entities.CommonDataEntityType
+import contacts.ui.entities.CommonDataEntityTypeFactory
 import contacts.ui.text.AbstractTextWatcher
-import contacts.ui.util.CommonDataEntityType
 
 /**
- * A [RelativeLayout] that displays a [MutableCommonDataEntity] [K] that has a
- * [CommonDataEntityType] [V] (which wraps a [CommonDataEntity.Type] [T]) and handles the
- * modifications to it.
+ * A [RelativeLayout] that displays a [CommonDataEntity] [K] that has a [CommonDataEntityType] and
+ * handles the modifications to it.
  *
  * Setting the [data] will automatically update the views and vice versa.
  *
@@ -35,12 +34,11 @@ import contacts.ui.util.CommonDataEntityType
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-abstract class MutableCommonDataEntityWithTypeView
-<K : MutableCommonDataEntity, T : CommonDataEntity.Type, V : CommonDataEntityType<T>>
+abstract class CommonDataEntityWithTypeView<K : CommonDataEntity, T : CommonDataEntity.Type>
 @JvmOverloads constructor(
     context: Context,
     initialData: K,
-    private val dataTypeFactory: CommonDataEntityType.Factory<K, T, V>,
+    private val dataTypeFactory: CommonDataEntityTypeFactory<K, T>,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
@@ -60,7 +58,7 @@ abstract class MutableCommonDataEntityWithTypeView
 
     private var eventListener: EventListener? = null
 
-    private var selectedType: V? = null
+    private var selectedType: CommonDataEntityType<T>? = null
         set(value) {
             field = value
 
@@ -78,7 +76,7 @@ abstract class MutableCommonDataEntityWithTypeView
     protected abstract fun setDataValue(value: String?)
     protected abstract fun setDataTypeAndTypeLabelValue(type: T, typeLabel: String?)
 
-    private val dataTypesAdapter: ArrayAdapter<V> =
+    private val dataTypesAdapter: ArrayAdapter<CommonDataEntityType<T>> =
         ArrayAdapter(context, android.R.layout.simple_list_item_1)
 
     fun setEventListener(eventListener: EventListener?) {
@@ -117,7 +115,7 @@ abstract class MutableCommonDataEntityWithTypeView
 
             // If this field's data type is a custom type whose label has been created by the user,
             // add it as first entry.
-            if (dataType.type.isCustomType) {
+            if (dataType.isUserCustomType) {
                 add(dataType)
             }
 
@@ -167,13 +165,12 @@ abstract class MutableCommonDataEntityWithTypeView
                 })
     }
 
-    private fun replaceUserCustomType(userCustomType: V) {
+    private fun replaceUserCustomType(userCustomType: CommonDataEntityType<T>) {
         dataTypesAdapter.apply {
             setNotifyOnChange(false)
 
             selectedType?.let {
-                val selectedTypePosition = getPosition(it)
-                if (it.type.isCustomType && selectedTypePosition == USER_CUSTOM_DATA_TYPE_INDEX) {
+                if (it.isUserCustomType) {
                     // Remove the currently selected type if it is a user custom type.
                     remove(it)
                 }
@@ -207,21 +204,19 @@ abstract class MutableCommonDataEntityWithTypeView
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val dataType = dataTypesAdapter.getItem(position) ?: return
-            if (dataType.type.isCustomType) {
-                if (position != USER_CUSTOM_DATA_TYPE_INDEX) {
-                    // If generic custom type is selected, show an input prompt for creating a new
-                    // custom type label.
-                    showCreateUserCustomTypeInputPrompt()
-                } else {
-                    // Else existing user custom type is selected.
-                    selectedType = dataType
-                }
+            if (dataType.isUserCustomType) {
+                // Existing user custom type is selected. Nothing to do here.
+                selectedType = dataType
+            } else if (dataType.isSystemCustomType) {
+                // If generic custom type is selected, show an input prompt for creating a new
+                // user custom type.
+                showCreateUserCustomTypeInputPrompt()
             } else {
                 // A generic, non custom type is selected. Set the data type to this.
                 selectedType = dataType
                 //  Then, remove user custom type, if exist.
                 dataTypesAdapter.getItem(USER_CUSTOM_DATA_TYPE_INDEX)?.let { maybeUserCustomType ->
-                    if (maybeUserCustomType.type.isCustomType) {
+                    if (maybeUserCustomType.isUserCustomType) {
                         dataTypesAdapter.remove(maybeUserCustomType)
                     }
                 }

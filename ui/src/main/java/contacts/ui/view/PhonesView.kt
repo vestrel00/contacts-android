@@ -108,7 +108,7 @@ class PhonesView @JvmOverloads constructor(
     }
 
     private inner class PhoneViewEventListener(private val phoneView: PhoneView) :
-        MutableCommonDataEntityWithTypeView.EventListener {
+        CommonDataEntityWithTypeView.EventListener {
 
         override fun onDataDeleteButtonClicked() {
             onPhoneDeleteButtonClicked(phoneView)

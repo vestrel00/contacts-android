@@ -10,11 +10,10 @@ import android.widget.Spinner
 import contacts.entities.MutablePhone
 import contacts.entities.Phone
 import contacts.ui.R
-import contacts.ui.util.PhoneType
+import contacts.ui.entities.PhoneTypeFactory
 
 /**
- * A [RelativeLayout] that displays a [MutablePhone] and handles the modifications to the given
- * [data].
+ * A [RelativeLayout] that displays a [MutablePhone] and handles the modifications to it.
  *
  * Setting the [data] will automatically update the views. Any modifications in the views will also
  * be made to the [data].
@@ -40,8 +39,8 @@ class PhoneView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : MutableCommonDataEntityWithTypeView<MutablePhone, Phone.Type, PhoneType>(
-    context, MutablePhone(), PhoneType.Factory(), attributeSet, defStyleAttr
+) : CommonDataEntityWithTypeView<MutablePhone, Phone.Type>(
+    context, MutablePhone(), PhoneTypeFactory, attributeSet, defStyleAttr
 ) {
 
     // Not using any view binding libraries or plugins just for this.
