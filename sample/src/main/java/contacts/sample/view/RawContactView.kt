@@ -120,7 +120,7 @@ class RawContactView @JvmOverloads constructor(
     }
 
     private fun setPhonesView() {
-        phonesView.phones = rawContact.phones
+        phonesView.dataList = rawContact.phones
     }
 
     override fun onDetachedFromWindow() {
