@@ -134,12 +134,12 @@ data class MutablePhone internal constructor(
     /**
      * See [Phone.type].
      */
-    var type: Type?,
+    override var type: Type?,
 
     /**
      * See [Phone.label].
      */
-    var label: String?,
+    override var label: String?,
 
     /**
      * See [Phone.number].
@@ -151,7 +151,7 @@ data class MutablePhone internal constructor(
      */
     var normalizedNumber: String?
 
-) : MutableCommonDataEntity {
+) : MutableCommonDataEntityWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false,
@@ -164,4 +164,10 @@ data class MutablePhone internal constructor(
     // type and label are excluded from this check as they are useless information by themselves
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
+
+    override var primaryValue: String?
+        get() = number
+        set(value) {
+            number = value
+        }
 }

@@ -93,6 +93,33 @@ interface CommonDataEntity : Entity {
 }
 
 /**
- * A [CommonDataEntity] that is mutable.
+ * A [CommonDataEntity] that is mutable, allowing the [primaryValue] to be mutated among others.
  */
-interface MutableCommonDataEntity : CommonDataEntity
+interface MutableCommonDataEntity : CommonDataEntity {
+
+    /**
+     * The main value encapsulated by this entity.
+     */
+    var primaryValue: String?
+}
+
+/**
+ * A [MutableCommonDataEntity], with a mutable [type] and [label].
+ */
+interface MutableCommonDataEntityWithType<T : CommonDataEntity.Type> :
+    MutableCommonDataEntity {
+
+    /**
+     * The [CommonDataEntity.Type] of the [primaryValue].
+     */
+    var type: T?
+
+    /**
+     * Used as the string representation of the [type] if this is not null and the [type] is custom.
+     * Otherwise, the system's string representation of the type is used.
+     *
+     * This is the string value displayed in the UI for user-created custom types. This is only used
+     * when the [type] is custom.
+     */
+    var label: String?
+}

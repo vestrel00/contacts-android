@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import contacts.entities.CommonDataEntity
+import contacts.entities.MutableCommonDataEntityWithType
 import contacts.ui.R
 import contacts.ui.dialog.CustomLabelInputDialog
 import contacts.ui.entities.CommonDataEntityType
@@ -12,8 +13,8 @@ import contacts.ui.entities.CommonDataEntityTypeFactory
 import contacts.ui.text.AbstractTextWatcher
 
 /**
- * A [RelativeLayout] that displays a [CommonDataEntity] [K] that has a [CommonDataEntityType] and
- * handles the modifications to it.
+ * A [RelativeLayout] that displays a [MutableCommonDataEntityWithType] [K] that has a
+ * [CommonDataEntityType] and handles the modifications to it.
  *
  * Setting the [data] will automatically update the views and vice versa.
  *
@@ -34,20 +35,23 @@ import contacts.ui.text.AbstractTextWatcher
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-abstract class CommonDataEntityWithTypeView<K : CommonDataEntity, T : CommonDataEntity.Type>
+class CommonDataEntityWithTypeView
+<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>>
 @JvmOverloads constructor(
     context: Context,
-    initialData: K,
-    private val dataTypeFactory: CommonDataEntityTypeFactory<K, T>,
     attributeSet: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
+    initialData: K? = null,
+    dataFieldInputType: Int? = null,
+    dataFieldHintResId: Int? = null,
+    private val dataTypeFactory: CommonDataEntityTypeFactory<K, T>? = null,
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
 
     /**
      * The data entity that is shown in this view. Changing this will automatically update the views
      * and vice versa.
      */
-    var data: K = initialData
+    var data: K? = initialData
         set(value) {
             field = value
 
@@ -63,28 +67,25 @@ abstract class CommonDataEntityWithTypeView<K : CommonDataEntity, T : CommonData
             field = value
 
             value?.let {
-                setDataTypeAndTypeLabelValue(it.type, it.typeLabel)
+                data?.type = it.type
+                data?.label = if (it.type.isCustomType) it.typeLabel else null
             }
         }
 
-    protected abstract val dataField: EditText
-    protected abstract val dataTypeField: Spinner
-    protected abstract val dataDeleteButton: View
+    private val dataField: EditText
+    private val dataTypeField: Spinner
+    private val dataDeleteButton: View
 
-    protected abstract val dataValue: String?
+    init {
+        inflate(context, R.layout.view_mutable_common_data_entity_with_type, this)
 
-    protected abstract fun setDataValue(value: String?)
-    protected abstract fun setDataTypeAndTypeLabelValue(type: T, typeLabel: String?)
+        dataField = findViewById(R.id.dataField)
+        dataTypeField = findViewById(R.id.dataTypeField)
+        dataDeleteButton = findViewById(R.id.dataDeleteButton)
 
-    private val dataTypesAdapter: ArrayAdapter<CommonDataEntityType<T>> =
-        ArrayAdapter(context, android.R.layout.simple_list_item_1)
+        dataFieldHintResId?.let(dataField::setHint)
+        dataFieldInputType?.let(dataField::setInputType)
 
-    fun setEventListener(eventListener: EventListener?) {
-        this.eventListener = eventListener
-    }
-
-    // Must be called by subclass after immediately after creation to complete initialization.
-    protected fun initViews() {
         dataField.apply {
             setOnFocusChangeListener { _, _ ->
                 setDataTypeFieldVisibility()
@@ -102,11 +103,23 @@ abstract class CommonDataEntityWithTypeView<K : CommonDataEntity, T : CommonData
         }
     }
 
+    private val dataTypesAdapter: ArrayAdapter<CommonDataEntityType<T>> =
+        ArrayAdapter(context, android.R.layout.simple_list_item_1)
+
+    fun setEventListener(eventListener: EventListener?) {
+        this.eventListener = eventListener
+    }
+
     private fun setDataField() {
-        dataField.setText(dataValue)
+        dataField.setText(data?.primaryValue)
     }
 
     private fun setDataTypeField() {
+        val data = data
+        if (dataTypeFactory == null || data == null) {
+            return
+        }
+
         val dataType = dataTypeFactory.from(resources, data)
 
         dataTypesAdapter.apply {
@@ -158,14 +171,16 @@ abstract class CommonDataEntityWithTypeView<K : CommonDataEntity, T : CommonData
         CustomLabelInputDialog(context)
             .show(R.string.contacts_ui_custom_label_input_dialog_title,
                 onLabelEntered = { label ->
-                    replaceUserCustomType(dataTypeFactory.userCustomType(label))
+                    replaceUserCustomTypeWithLabel(label)
                 }, onCancelled = {
                     // Revert the selection to the current selected type.
                     dataTypeField.setSelection(dataTypesAdapter.getPosition(selectedType))
                 })
     }
 
-    private fun replaceUserCustomType(userCustomType: CommonDataEntityType<T>) {
+    private fun replaceUserCustomTypeWithLabel(label: String) {
+        val userCustomType = dataTypeFactory?.userCustomType(label) ?: return
+
         dataTypesAdapter.apply {
             setNotifyOnChange(false)
 
@@ -186,7 +201,7 @@ abstract class CommonDataEntityWithTypeView<K : CommonDataEntity, T : CommonData
 
     private inner class DataFieldTextChangeListener : AbstractTextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            setDataValue(s?.toString())
+            data?.primaryValue = s?.toString()
 
             if (s.isNullOrEmpty()) {
                 eventListener?.onDataCleared()

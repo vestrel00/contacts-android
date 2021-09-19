@@ -1,11 +1,14 @@
 package contacts.ui.view
 
 import android.content.Context
+import android.text.InputType
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.entities.MutablePhone
 import contacts.entities.Phone
 import contacts.entities.removeAll
+import contacts.ui.R
+import contacts.ui.entities.PhoneTypeFactory
 
 /**
  * A (vertical) [LinearLayout] that displays a list of [MutablePhone]s and handles the modifications
@@ -65,9 +68,14 @@ class PhonesView @JvmOverloads constructor(
     }
 
     private fun addPhoneView(phone: MutablePhone): PhoneView {
-        val phoneView = PhoneView(context).apply {
-            data = phone
-            setEventListener(PhoneViewEventListener(this))
+        val phoneView = PhoneView(
+            context,
+            initialData = phone,
+            dataFieldInputType = InputType.TYPE_CLASS_PHONE,
+            dataFieldHintResId = R.string.contacts_ui_phone_number_hint,
+            dataTypeFactory = PhoneTypeFactory
+        ).also {
+            it.setEventListener(PhoneViewEventListener(it))
         }
 
         addView(phoneView)
@@ -84,7 +92,7 @@ class PhonesView @JvmOverloads constructor(
             ?: DEFAULT_PHONE_TYPES.last()
 
         emptyPhoneView = addPhoneView(MutablePhone().apply { type = phoneType })
-        phones.add(emptyPhoneView.data)
+        phones.add(emptyPhoneView.data ?: throw IllegalStateException("Phone view data is null"))
     }
 
     private fun onPhoneNumberCleared(phoneView: PhoneView) {
@@ -103,7 +111,10 @@ class PhonesView @JvmOverloads constructor(
     private fun removePhoneView(phoneView: PhoneView) {
         // There may be duplicate phones. Therefore, we need to remove the exact phone instance.
         // Thus, we remove the phone by reference equality instead of by content/structure equality.
-        phones.removeAll(phoneView.data, byReference = true)
+        phones.removeAll(
+            emptyPhoneView.data ?: throw IllegalStateException("Phone view data is null"),
+            byReference = true
+        )
         removeView(phoneView)
     }
 
@@ -127,3 +138,5 @@ class PhonesView @JvmOverloads constructor(
 private val DEFAULT_PHONE_TYPES = sequenceOf(
     Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.OTHER
 )
+
+private typealias PhoneView = CommonDataEntityWithTypeView<Phone.Type, MutablePhone>
