@@ -116,7 +116,7 @@ open class CommonDataEntityWithTypeListView
         // There may be duplicate data. Therefore, we need to remove the exact data instance.
         // Thus, we remove the data by reference equality instead of by content/structure equality.
         dataList.removeAll(
-            emptyDataView.data ?: throw IllegalStateException("View data is null"),
+            dataView.data ?: throw IllegalStateException("View data is null"),
             byReference = true
         )
         removeView(dataView)
