@@ -71,4 +71,10 @@ data class MutableNickname internal constructor(
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(name)
+
+    override var primaryValue: String?
+        get() = name
+        set(value) {
+            name = value
+        }
 }

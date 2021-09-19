@@ -106,8 +106,7 @@ interface MutableCommonDataEntity : CommonDataEntity {
 /**
  * A [MutableCommonDataEntity], with a mutable [type] and [label].
  */
-interface MutableCommonDataEntityWithType<T : CommonDataEntity.Type> :
-    MutableCommonDataEntity {
+interface MutableCommonDataEntityWithType<T : CommonDataEntity.Type> : MutableCommonDataEntity {
 
     /**
      * The [CommonDataEntity.Type] of the [primaryValue].

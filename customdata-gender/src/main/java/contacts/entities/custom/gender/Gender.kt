@@ -1,10 +1,11 @@
 package contacts.entities.custom.gender
 
+import android.content.res.Resources
 import android.provider.ContactsContract
 import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
 import contacts.entities.custom.CustomDataEntity
-import contacts.entities.custom.MutableCustomDataEntity
+import contacts.entities.custom.MutableCustomDataEntityWithType
 import contacts.entities.custom.gender.Gender.Type
 import contacts.entities.custom.gender.Gender.Type.*
 import kotlinx.parcelize.IgnoredOnParcel
@@ -75,7 +76,14 @@ data class Gender internal constructor(
         FEMALE(2),
         CUSTOM(ContactsContract.CommonDataKinds.BaseTypes.TYPE_CUSTOM);
 
-        override val typeLabelResource: Int
+        override fun labelStr(resources: Resources, label: String?): String =
+            if (this == CUSTOM && label?.isNotEmpty() == true) {
+                label
+            } else {
+                resources.getText(typeLabelResource).toString()
+            }
+
+        private val typeLabelResource: Int
             get() = when (this) {
                 MALE -> R.string.customdata_gender_male
                 FEMALE -> R.string.customdata_gender_female
@@ -108,14 +116,14 @@ data class MutableGender internal constructor(
     /**
      * See [Gender.type].
      */
-    var type: Type?,
+    override var type: Type?,
 
     /**
      * See [Gender.label].
      */
-    var label: String?
+    override var label: String?
 
-) : MutableCustomDataEntity {
+) : MutableCustomDataEntityWithType<Type> {
 
     constructor() : this(null, null, null, false, false, null, null)
 
@@ -136,4 +144,8 @@ data class MutableGender internal constructor(
         type = type,
         label = label
     )
+
+    override var primaryValue: String?
+        get() = null
+        set(_) {}
 }

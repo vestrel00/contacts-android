@@ -1,5 +1,6 @@
 package contacts.entities
 
+import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Relation.Type
 import kotlinx.parcelize.IgnoredOnParcel
@@ -75,8 +76,8 @@ data class Relation internal constructor(
         SPOUSE(CommonDataKinds.Relation.TYPE_SPOUSE),
         CUSTOM(CommonDataKinds.Relation.TYPE_CUSTOM);
 
-        override val typeLabelResource: Int
-            get() = CommonDataKinds.Relation.getTypeLabelResource(value)
+        override fun labelStr(resources: Resources, label: String?): String =
+            CommonDataKinds.Relation.getTypeLabel(resources, value, label).toString()
 
         internal companion object {
 
@@ -101,19 +102,19 @@ data class MutableRelation internal constructor(
     /**
      * See [Relation.type].
      */
-    var type: Type?,
+    override var type: Type?,
 
     /**
      * See [Relation.label].
      */
-    var label: String?,
+    override var label: String?,
 
     /**
      * See [Relation.name].
      */
     var name: String?
 
-) : MutableCommonDataEntity {
+) : MutableCommonDataEntityWithType<Type> {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Relation
@@ -126,4 +127,10 @@ data class MutableRelation internal constructor(
     // type and label are excluded from this check as they are useless information by themselves
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(name)
+
+    override var primaryValue: String?
+        get() = name
+        set(value) {
+            name = value
+        }
 }

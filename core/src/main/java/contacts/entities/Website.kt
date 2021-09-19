@@ -71,4 +71,10 @@ data class MutableWebsite internal constructor(
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(url)
+
+    override var primaryValue: String?
+        get() = url
+        set(value) {
+            url = value
+        }
 }

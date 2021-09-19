@@ -1,5 +1,6 @@
 package contacts.entities
 
+import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Email.Type
 import kotlinx.parcelize.IgnoredOnParcel
@@ -65,8 +66,8 @@ data class Email internal constructor(
         MOBILE(CommonDataKinds.Email.TYPE_MOBILE),
         CUSTOM(CommonDataKinds.Email.TYPE_CUSTOM);
 
-        override val typeLabelResource: Int
-            get() = CommonDataKinds.Email.getTypeLabelResource(value)
+        override fun labelStr(resources: Resources, label: String?): String =
+            CommonDataKinds.Email.getTypeLabel(resources, value, label).toString()
 
         internal companion object {
 
@@ -91,19 +92,19 @@ data class MutableEmail internal constructor(
     /**
      * See [Email.type].
      */
-    var type: Type?,
+    override var type: Type?,
 
     /**
      * See [Email.label].
      */
-    var label: String?,
+    override var label: String?,
 
     /**
      * See [Email.address].
      */
     var address: String?
 
-) : MutableCommonDataEntity {
+) : MutableCommonDataEntityWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false,
@@ -116,4 +117,10 @@ data class MutableEmail internal constructor(
     // type and label are excluded from this check as they are useless information by themselves
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(address)
+
+    override var primaryValue: String?
+        get() = address
+        set(value) {
+            address = value
+        }
 }

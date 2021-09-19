@@ -1,5 +1,6 @@
 package contacts.entities
 
+import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Address.Type
 import kotlinx.parcelize.IgnoredOnParcel
@@ -131,8 +132,9 @@ data class Address internal constructor(
         OTHER(CommonDataKinds.StructuredPostal.TYPE_OTHER),
         CUSTOM(CommonDataKinds.StructuredPostal.TYPE_CUSTOM);
 
-        override val typeLabelResource: Int
-            get() = CommonDataKinds.StructuredPostal.getTypeLabelResource(value)
+
+        override fun labelStr(resources: Resources, label: String?): String =
+            CommonDataKinds.StructuredPostal.getTypeLabel(resources, value, label).toString()
 
         internal companion object {
 
@@ -157,12 +159,12 @@ data class MutableAddress internal constructor(
     /**
      * See [Address.type].
      */
-    var type: Type?,
+    override var type: Type?,
 
     /**
      * See [Address.label].
      */
-    var label: String?,
+    override var label: String?,
 
     /**
      * See [Address.formattedAddress].
@@ -204,7 +206,7 @@ data class MutableAddress internal constructor(
      */
     var country: String?
 
-) : MutableCommonDataEntity {
+) : MutableCommonDataEntityWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false, null, null, null,
@@ -219,4 +221,10 @@ data class MutableAddress internal constructor(
         get() = propertiesAreAllNullOrBlank(
             formattedAddress, street, poBox, neighborhood, city, region, postcode, country
         )
+
+    override var primaryValue: String?
+        get() = formattedAddress
+        set(value) {
+            formattedAddress = value
+        }
 }

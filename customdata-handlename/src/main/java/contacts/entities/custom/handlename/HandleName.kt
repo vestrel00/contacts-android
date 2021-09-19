@@ -95,4 +95,10 @@ data class MutableHandleName internal constructor(
 
         handle = handle
     )
+
+    override var primaryValue: String?
+        get() = handle
+        set(value) {
+            handle = value
+        }
 }

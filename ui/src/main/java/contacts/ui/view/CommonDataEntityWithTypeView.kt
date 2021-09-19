@@ -41,7 +41,6 @@ class CommonDataEntityWithTypeView
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    initialData: K? = null,
     dataFieldInputType: Int? = null,
     dataFieldHintResId: Int? = null,
     private val dataTypeFactory: CommonDataEntityTypeFactory<K, T>? = null,
@@ -50,8 +49,10 @@ class CommonDataEntityWithTypeView
     /**
      * The data entity that is shown in this view. Changing this will automatically update the views
      * and vice versa.
+     *
+     * This must be set after view creation.
      */
-    var data: K? = initialData
+    var data: K? = null
         set(value) {
             field = value
 
@@ -71,6 +72,8 @@ class CommonDataEntityWithTypeView
                 data?.label = if (it.type.isCustomType) it.typeLabel else null
             }
         }
+
+    private val dataTypesAdapter: ArrayAdapter<CommonDataEntityType<T>>
 
     private val dataField: EditText
     private val dataTypeField: Spinner
@@ -94,6 +97,7 @@ class CommonDataEntityWithTypeView
         }
 
         dataTypeField.apply {
+            dataTypesAdapter = ArrayAdapter(context, android.R.layout.simple_list_item_1)
             adapter = dataTypesAdapter
             onItemSelectedListener = OnDataTypeSelectedListener()
         }
@@ -102,9 +106,6 @@ class CommonDataEntityWithTypeView
             eventListener?.onDataDeleteButtonClicked()
         }
     }
-
-    private val dataTypesAdapter: ArrayAdapter<CommonDataEntityType<T>> =
-        ArrayAdapter(context, android.R.layout.simple_list_item_1)
 
     fun setEventListener(eventListener: EventListener?) {
         this.eventListener = eventListener
@@ -233,6 +234,9 @@ class CommonDataEntityWithTypeView
                 dataTypesAdapter.getItem(USER_CUSTOM_DATA_TYPE_INDEX)?.let { maybeUserCustomType ->
                     if (maybeUserCustomType.isUserCustomType) {
                         dataTypesAdapter.remove(maybeUserCustomType)
+                        // There is one less item so the indices shifter by 1. We could just do
+                        // position - 1 but let's re-evaluate the position to be safe.
+                        dataTypeField.setSelection(dataTypesAdapter.getPosition(selectedType))
                     }
                 }
             }

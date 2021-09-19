@@ -68,4 +68,10 @@ data class MutableNote internal constructor(
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(note)
+
+    override var primaryValue: String?
+        get() = note
+        set(value) {
+            note = value
+        }
 }

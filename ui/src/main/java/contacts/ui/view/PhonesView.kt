@@ -70,11 +70,11 @@ class PhonesView @JvmOverloads constructor(
     private fun addPhoneView(phone: MutablePhone): PhoneView {
         val phoneView = PhoneView(
             context,
-            initialData = phone,
             dataFieldInputType = InputType.TYPE_CLASS_PHONE,
             dataFieldHintResId = R.string.contacts_ui_phone_number_hint,
             dataTypeFactory = PhoneTypeFactory
         ).also {
+            it.data = phone
             it.setEventListener(PhoneViewEventListener(it))
         }
 
@@ -136,7 +136,7 @@ class PhonesView @JvmOverloads constructor(
 }
 
 private val DEFAULT_PHONE_TYPES = sequenceOf(
-    Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.OTHER
+    Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.MAIN, Phone.Type.OTHER
 )
 
 private typealias PhoneView = CommonDataEntityWithTypeView<Phone.Type, MutablePhone>

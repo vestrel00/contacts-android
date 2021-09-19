@@ -145,4 +145,10 @@ data class MutableOrganization internal constructor(
         get() = propertiesAreAllNullOrBlank(
             company, title, department, jobDescription, officeLocation, symbol, phoneticName
         )
+
+    override var primaryValue: String?
+        get() = company
+        set(value) {
+            company = value
+        }
 }

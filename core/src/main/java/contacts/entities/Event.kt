@@ -1,7 +1,10 @@
 package contacts.entities
 
+import android.content.res.Resources
+import android.os.Build
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Event.Type
+import contacts.entities.mapper.EventMapper
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -77,8 +80,18 @@ data class Event internal constructor(
         OTHER(CommonDataKinds.Event.TYPE_OTHER),
         CUSTOM(CommonDataKinds.Event.TYPE_CUSTOM);
 
-        override val typeLabelResource: Int
-            get() = CommonDataKinds.Event.getTypeResource(value)
+        override fun labelStr(resources: Resources, label: String?): String =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                CommonDataKinds.Event.getTypeLabel(resources, value, label).toString()
+            } else {
+                // Copy pasted from CommonDataKinds.Event.getTypeLabel function body.
+                if (this == CUSTOM && label?.isNotEmpty() == true) {
+                    label
+                } else {
+                    val labelRes = CommonDataKinds.Event.getTypeResource(value)
+                    resources.getText(labelRes).toString()
+                }
+            }
 
         internal companion object {
 
@@ -103,19 +116,19 @@ data class MutableEvent internal constructor(
     /**
      * See [Event.type].
      */
-    var type: Type?,
+    override var type: Type?,
 
     /**
      * See [Event.label].
      */
-    var label: String?,
+    override var label: String?,
 
     /**
      * See [Event.date].
      */
     var date: Date?
 
-) : MutableCommonDataEntity {
+) : MutableCommonDataEntityWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false,
@@ -128,4 +141,10 @@ data class MutableEvent internal constructor(
     // type and label are excluded from this check as they are useless information by themselves
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(date)
+
+    override var primaryValue: String?
+        get() = EventMapper.dateToString(date)
+        set(value) {
+            date = EventMapper.dateFromString(value)
+        }
 }

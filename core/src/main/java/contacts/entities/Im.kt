@@ -1,5 +1,6 @@
 package contacts.entities
 
+import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.entities.Im.Protocol
 import kotlinx.parcelize.IgnoredOnParcel
@@ -74,8 +75,8 @@ data class Im internal constructor(
         NET_MEETING(CommonDataKinds.Im.PROTOCOL_NETMEETING),
         CUSTOM(CommonDataKinds.Im.PROTOCOL_CUSTOM);
 
-        override val typeLabelResource: Int
-            get() = CommonDataKinds.Im.getTypeLabelResource(value)
+        override fun labelStr(resources: Resources, label: String?): String =
+            CommonDataKinds.Im.getTypeLabel(resources, value, label).toString()
 
         internal companion object {
 
@@ -112,7 +113,7 @@ data class MutableIm internal constructor(
      */
     var data: String?
 
-) : MutableCommonDataEntity {
+) : MutableCommonDataEntityWithType<Protocol> {
 
     constructor() : this(
         null, null, null, false, false,
@@ -126,4 +127,22 @@ data class MutableIm internal constructor(
     // themselves
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(data)
+
+    override var primaryValue: String?
+        get() = data
+        set(value) {
+            data = value
+        }
+
+    override var type: Protocol?
+        get() = protocol
+        set(value) {
+            protocol = value
+        }
+    
+    override var label: String?
+        get() = customProtocol
+        set(value) {
+            customProtocol = value
+        }
 }

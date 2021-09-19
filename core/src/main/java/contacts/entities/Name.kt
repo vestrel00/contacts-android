@@ -211,4 +211,10 @@ data class MutableName internal constructor(
             prefix, suffix,
             phoneticGivenName, phoneticMiddleName, phoneticFamilyName
         )
+
+    override var primaryValue: String?
+        get() = displayName
+        set(value) {
+            displayName = value
+        }
 }

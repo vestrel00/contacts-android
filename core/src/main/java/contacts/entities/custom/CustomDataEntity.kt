@@ -3,6 +3,7 @@ package contacts.entities.custom
 import contacts.entities.CommonDataEntity
 import contacts.entities.MimeType
 import contacts.entities.MutableCommonDataEntity
+import contacts.entities.MutableCommonDataEntityWithType
 
 /**
  * A custom [CommonDataEntity].
@@ -27,19 +28,11 @@ interface CustomDataEntity : CommonDataEntity {
 
 /**
  * A custom [MutableCommonDataEntity].
- *
- * ## Developer notes
- *
- * This does not also inherit from [CustomDataEntity] even though it is possible. This is done to
- * promote clear separation between the immutable and mutable entities, which follow the pattern of
- * the entire API. This prevents developer error where a [CustomDataEntity] is expected but a
- * [MutableCustomDataEntity] is produced or vice versa. Given that there is really no relationship
- * between the two, this must be prevented in order to prevent bugs at runtime. This is not
- * possible; CustomDataEntity<T: MutableCustomDataEntity>,
- * MutableCustomDataEntity<T: CustomDataEntity>
  */
-interface MutableCustomDataEntity : /* CustomDataEntity, */ MutableCommonDataEntity {
+interface MutableCustomDataEntity : CustomDataEntity, MutableCommonDataEntity
 
-    // Override this to cast type from MimeType to MimeType.Custom
-    override val mimeType: MimeType.Custom
-}
+/**
+ * A custom [MutableCommonDataEntityWithType].
+ */
+interface MutableCustomDataEntityWithType<T : CommonDataEntity.Type> :
+    MutableCustomDataEntity, MutableCommonDataEntityWithType<T>
