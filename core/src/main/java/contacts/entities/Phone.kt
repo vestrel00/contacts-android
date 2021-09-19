@@ -22,16 +22,16 @@ data class Phone internal constructor(
     /**
      * The [Type] of phone.
      *
-     * Use [Type.typeLabel] to get the display name of the type.
+     * Use [Type.labelStr] to get the display name of the type.
      */
     val type: Type?,
 
     /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
+     * Used as the string representation of the [type] if this is not null and the [type] is
+     * [Type.CUSTOM]. Otherwise, the system's string representation of the type is used.
      *
-     * This should be null if the [type] is not [Type.CUSTOM]!
-     *
-     * Use [Type.typeLabel] to get the display name of the type.
+     * This is the string value displayed in the UI for user-created custom types. This is only used
+     * when the [type] is [Type.CUSTOM].
      */
     val label: String?,
 
@@ -108,18 +108,7 @@ data class Phone internal constructor(
         MMS(CommonDataKinds.Phone.TYPE_MMS),
          */
 
-        override val isCustomType: Boolean = value == CommonDataKinds.Phone.TYPE_CUSTOM
-                
-        override val typeLabelResource: Int
-            get() = CommonDataKinds.Phone.getTypeLabelResource(value)
-
-        /**
-         * The string representing the [type].
-         *
-         * If the [type] is [Type.CUSTOM] then the [label] is used. Otherwise, the Android default
-         * string for the [type] is used.
-         */
-        fun typeLabel(resources: Resources, label: String?): String =
+        override fun labelStr(resources: Resources, label: String?): String =
             CommonDataKinds.Phone.getTypeLabel(resources, value, label).toString()
 
         internal companion object {

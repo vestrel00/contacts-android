@@ -1,5 +1,6 @@
 package contacts.entities
 
+import android.content.res.Resources
 import android.provider.ContactsContract
 import contacts.util.isProfileId
 
@@ -76,18 +77,18 @@ interface CommonDataEntity : Entity {
         val value: Int
 
         /**
-         * The string resource representing this type.
-         *
-         * This is typically the resource to the string displayed in the type spinner.
-         */
-        // [ANDROID X] @StringRes (not using annotation to avoid dependency on androidx.annotation)
-        val typeLabelResource: Int
-
-        /**
          * True if this type is the custom type.
          */
         val isCustomType: Boolean
             get() = value == ContactsContract.CommonDataKinds.BaseTypes.TYPE_CUSTOM
+
+        /**
+         * The string representation of this type.
+         *
+         * If this [isCustomType] then the [label] is used (if not null). Otherwise, the
+         * Android default string for this type is used.
+         */
+        fun labelStr(resources: Resources, label: String?): String
     }
 }
 

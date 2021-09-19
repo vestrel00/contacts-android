@@ -76,9 +76,9 @@ abstract class MutableCommonDataEntityWithTypeView
     protected abstract val dataType: V
     protected abstract val systemDataTypes: List<V>
 
+    protected abstract fun createUserCustomDataTypeWithLabel(typeLabel: String): V
     protected abstract fun setDataValue(value: String?)
     protected abstract fun setDataTypeAndTypeLabelValue(type: T, typeLabel: String?)
-    protected abstract fun createUserCustomDataTypeWithLabel(typeLabel: String): V
 
     private val dataTypesAdapter: ArrayAdapter<V> =
         ArrayAdapter(context, android.R.layout.simple_list_item_1)
@@ -115,8 +115,9 @@ abstract class MutableCommonDataEntityWithTypeView
             setNotifyOnChange(false)
             clear()
 
-            // If this field's data type is a user custom type, add it as first entry.
-            if (dataType.userCustomType) {
+            // If this field's data type is a custom type whose label has been created by the user,
+            // add it as first entry.
+            if (dataType.type.isCustomType) {
                 add(dataType)
             }
 
@@ -161,7 +162,7 @@ abstract class MutableCommonDataEntityWithTypeView
                 onLabelEntered = { label ->
                     replaceUserCustomType(createUserCustomDataTypeWithLabel(label))
                 }, onCancelled = {
-                    // Revert the selection to the current data type.
+                    // Revert the selection to the current selected type.
                     dataTypeField.setSelection(dataTypesAdapter.getPosition(selectedType))
                 })
     }
@@ -171,7 +172,9 @@ abstract class MutableCommonDataEntityWithTypeView
             setNotifyOnChange(false)
 
             selectedType?.let {
-                if (it.userCustomType) {
+                val selectedTypePosition = getPosition(it)
+                if (it.type.isCustomType && selectedTypePosition == USER_CUSTOM_DATA_TYPE_INDEX) {
+                    // Remove the currently selected type if it is a user custom type.
                     remove(it)
                 }
             }
@@ -205,24 +208,23 @@ abstract class MutableCommonDataEntityWithTypeView
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val dataType = dataTypesAdapter.getItem(position) ?: return
             if (dataType.type.isCustomType) {
-                // If generic custom type is selected, show an input prompt for creating a new
-                // custom type label.
-                if (!dataType.userCustomType) {
+                if (position != USER_CUSTOM_DATA_TYPE_INDEX) {
+                    // If generic custom type is selected, show an input prompt for creating a new
+                    // custom type label.
                     showCreateUserCustomTypeInputPrompt()
                 } else {
                     // Else existing user custom type is selected.
                     selectedType = dataType
                 }
             } else {
-                // A generic, non custom type is selected. Set the data type to this and remove
-                // user custom type, if exist.
+                // A generic, non custom type is selected. Set the data type to this.
+                selectedType = dataType
+                //  Then, remove user custom type, if exist.
                 dataTypesAdapter.getItem(USER_CUSTOM_DATA_TYPE_INDEX)?.let { maybeUserCustomType ->
-                    if (maybeUserCustomType.userCustomType) {
+                    if (maybeUserCustomType.type.isCustomType) {
                         dataTypesAdapter.remove(maybeUserCustomType)
                     }
                 }
-
-                selectedType = dataType
             }
         }
 
@@ -248,4 +250,8 @@ abstract class MutableCommonDataEntityWithTypeView
     }
 }
 
+/**
+ * The index of the user custom type. It should be the first on the list just like in the native
+ * Contacts app.
+ */
 private const val USER_CUSTOM_DATA_TYPE_INDEX = 0

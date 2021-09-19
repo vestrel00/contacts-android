@@ -4,7 +4,9 @@ import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.RelativeLayout
+import android.widget.Spinner
 import contacts.entities.MutablePhone
 import contacts.entities.Phone
 import contacts.ui.R
@@ -69,6 +71,9 @@ class PhoneView @JvmOverloads constructor(
     override val systemDataTypes: List<PhoneType>
         get() = PhoneType.systemTypes(resources)
 
+    override fun createUserCustomDataTypeWithLabel(typeLabel: String): PhoneType =
+        PhoneType.userCustomType(typeLabel)
+
     override fun setDataValue(value: String?) {
         data.number = value
     }
@@ -77,7 +82,4 @@ class PhoneView @JvmOverloads constructor(
         data.type = type
         data.label = if (type.isCustomType) typeLabel else null
     }
-
-    override fun createUserCustomDataTypeWithLabel(typeLabel: String): PhoneType =
-        PhoneType.userCustomType(typeLabel)
 }

@@ -20,9 +20,4 @@ interface CommonDataEntityType<T : CommonDataEntity.Type> {
      * The string value representing the [type].
      */
     val typeLabel: String
-
-    /**
-     * True if this is a user created custom type.
-     */
-    val userCustomType: Boolean
 }
