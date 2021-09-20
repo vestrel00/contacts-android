@@ -1,9 +1,7 @@
 package contacts.ui.entities
 
 import android.content.res.Resources
-import contacts.entities.CommonDataEntity
-import contacts.entities.MutablePhone
-import contacts.entities.Phone
+import contacts.entities.*
 
 /**
  * Creates instance of [CommonDataEntityType].
@@ -51,4 +49,23 @@ object PhoneTypeFactory : CommonDataEntityTypeFactory<MutablePhone, Phone.Type> 
         }
 
     private val DEFAULT_TYPE = Phone.Type.MOBILE
+}
+
+object EmailTypeFactory : CommonDataEntityTypeFactory<MutableEmail, Email.Type> {
+
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Email.Type>> =
+        Email.Type.values()
+            .asSequence()
+            .map { type -> CommonDataEntityType(type, type.labelStr(resources, null), false) }
+            .toMutableList()
+
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Email.Type> =
+        CommonDataEntityType(Email.Type.CUSTOM, labelStr, true)
+
+    override fun from(resources: Resources, data: MutableEmail): CommonDataEntityType<Email.Type> =
+        (data.type ?: DEFAULT_TYPE).let { type ->
+            CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
+        }
+
+    private val DEFAULT_TYPE = Email.Type.MOBILE
 }

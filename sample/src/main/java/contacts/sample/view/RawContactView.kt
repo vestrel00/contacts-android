@@ -10,6 +10,7 @@ import contacts.async.accounts.accountForWithContext
 import contacts.entities.MutableName
 import contacts.entities.MutableRawContact
 import contacts.sample.R
+import contacts.ui.view.EmailsView
 import contacts.ui.view.NameView
 import contacts.ui.view.PhonesView
 import contacts.util.setName
@@ -72,6 +73,7 @@ class RawContactView @JvmOverloads constructor(
     private val photoThumbnailView: RawContactPhotoThumbnailView
     private val nameView: NameView
     private val phonesView: PhonesView
+    private val emailsView: EmailsView
 
     init {
         orientation = VERTICAL
@@ -81,6 +83,7 @@ class RawContactView @JvmOverloads constructor(
         photoThumbnailView = findViewById(R.id.photoThumbnail)
         nameView = findViewById(R.id.name)
         phonesView = findViewById(R.id.phones)
+        emailsView = findViewById(R.id.emails)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -91,13 +94,14 @@ class RawContactView @JvmOverloads constructor(
 
     private fun setRawContactView() {
         setPhotoThumbnailView()
-        setRawContactAccountView()
+        setAccountView()
         setNameView()
         setPhonesView()
+        setEmailsView()
         // TODO
     }
 
-    private fun setRawContactAccountView() = launch {
+    private fun setAccountView() = launch {
         val account = Accounts(context, rawContact.isProfile)
             .query()
             .accountForWithContext(rawContact)
@@ -121,6 +125,10 @@ class RawContactView @JvmOverloads constructor(
 
     private fun setPhonesView() {
         phonesView.dataList = rawContact.phones
+    }
+
+    private fun setEmailsView() {
+        emailsView.dataList = rawContact.emails
     }
 
     override fun onDetachedFromWindow() {

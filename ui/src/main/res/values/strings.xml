@@ -11,6 +11,9 @@
     <!-- Phone -->
     <string name="contacts_ui_phone_number_hint">Phone number</string>
 
+    <!-- Email -->
+    <string name="contacts_ui_email_hint">Email</string>
+
     <!-- Photo picker -->
     <string name="contacts_ui_photo_take_error">Unable to take a photo</string>
     <string name="contacts_ui_photo_select_error">Unable to select a photo</string>
