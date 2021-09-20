@@ -60,11 +60,14 @@ data class Email internal constructor(
     enum class Type(override val value: Int) : CommonDataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
-        MOBILE(CommonDataKinds.Email.TYPE_MOBILE), // Default
-        HOME(CommonDataKinds.Email.TYPE_HOME),
+        HOME(CommonDataKinds.Email.TYPE_HOME), // Default
         WORK(CommonDataKinds.Email.TYPE_WORK),
         OTHER(CommonDataKinds.Email.TYPE_OTHER),
         CUSTOM(CommonDataKinds.Email.TYPE_CUSTOM);
+
+        // For some reason, the native contacts app does not show this type in the UI. Thus, we will
+        // do the same =)
+        // MOBILE(CommonDataKinds.Email.TYPE_MOBILE)
 
         override fun labelStr(resources: Resources, label: String?): String =
             CommonDataKinds.Email.getTypeLabel(resources, value, label).toString()

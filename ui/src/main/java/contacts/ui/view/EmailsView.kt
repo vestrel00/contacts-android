@@ -26,5 +26,5 @@ class EmailsView @JvmOverloads constructor(
 )
 
 private val DEFAULT_EMAIL_TYPES = listOf(
-    Email.Type.MOBILE, Email.Type.HOME, Email.Type.WORK, Email.Type.OTHER
+    Email.Type.HOME, Email.Type.WORK, Email.Type.OTHER
 )

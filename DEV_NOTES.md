@@ -799,6 +799,12 @@ The native Contacts app does not support group deletion or updates perhaps becau
 isn't implemented or at least not to the same extent as contacts syncing. Therefore, this library
 will also not support group deletion.
 
+#### Groups; UI
+
+In newer Android versions of the native Contacts app, "groups" are now being referred to as
+"labels". However, the underlying code still uses groups. Google is probably just trying to make it
+more user friendly by calling it label instead of group.
+
 #### User Profile
 
 There exist one (profile) Contacts row that identifies the user;
