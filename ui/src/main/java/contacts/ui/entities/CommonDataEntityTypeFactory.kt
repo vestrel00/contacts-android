@@ -67,5 +67,5 @@ object EmailTypeFactory : CommonDataEntityTypeFactory<MutableEmail, Email.Type> 
             CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Email.Type.MOBILE
+    private val DEFAULT_TYPE = Email.Type.HOME
 }
