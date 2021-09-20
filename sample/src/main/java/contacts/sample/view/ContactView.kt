@@ -122,9 +122,7 @@ class ContactView @JvmOverloads constructor(
     private var newRawContactView: RawContactView? = null
 
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
-    private val job: Job = SupervisorJob()
+        get() = SupervisorJob() + Dispatchers.Main
 
     // options
     private val starredView: ImageView
@@ -367,5 +365,10 @@ class ContactView @JvmOverloads constructor(
         contact?.updateOptionsWithContext(context) {
             this.customRingtone = customRingtone
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        cancel()
     }
 }

@@ -48,9 +48,7 @@ abstract class PhotoView @JvmOverloads constructor(
 ) : ImageView(context, attributeSet, defStyleAttr), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
-    private val job: Job = SupervisorJob()
+        get() = SupervisorJob() + Dispatchers.Main
 
     private var photoDrawable: BitmapDrawable? = null
     private var isPickingPhoto: Boolean = false

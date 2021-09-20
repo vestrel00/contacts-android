@@ -4,9 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import android.widget.TextView
-import contacts.accounts.Accounts
-import contacts.async.accounts.accountForWithContext
 import contacts.entities.MutableName
 import contacts.entities.MutableRawContact
 import contacts.sample.R
@@ -14,8 +11,6 @@ import contacts.ui.view.EmailsView
 import contacts.ui.view.NameView
 import contacts.ui.view.PhonesView
 import contacts.util.setName
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableRawContact] and handles the modifications to
@@ -50,7 +45,7 @@ class RawContactView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : LinearLayout(context, attributeSet, defStyleAttr), CoroutineScope {
+) : LinearLayout(context, attributeSet, defStyleAttr) {
 
     /**
      * The RawContact that is shown in this view. Setting this will automatically update the views.
@@ -63,13 +58,8 @@ class RawContactView @JvmOverloads constructor(
             setRawContactView()
         }
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
-    private val job: Job = SupervisorJob()
-
     // Not using any view binding libraries or plugins just for this.
-    private val accountView: TextView
+    private val accountView: AccountView
     private val photoThumbnailView: RawContactPhotoThumbnailView
     private val nameView: NameView
     private val phonesView: PhonesView
@@ -101,18 +91,8 @@ class RawContactView @JvmOverloads constructor(
         // TODO
     }
 
-    private fun setAccountView() = launch {
-        val account = Accounts(context, rawContact.isProfile)
-            .query()
-            .accountForWithContext(rawContact)
-        accountView.text = if (account == null) {
-            "Local Account"
-        } else {
-            """
-                Account Name: ${account.name}
-                Account Type: ${account.type}
-            """.trimIndent()
-        }
+    private fun setAccountView() {
+        accountView.rawContact = rawContact
     }
 
     private fun setPhotoThumbnailView() {
@@ -129,10 +109,5 @@ class RawContactView @JvmOverloads constructor(
 
     private fun setEmailsView() {
         emailsView.dataList = rawContact.emails
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        job.cancel()
     }
 }
