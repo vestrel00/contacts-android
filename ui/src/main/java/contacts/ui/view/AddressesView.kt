@@ -19,7 +19,7 @@ class AddressesView @JvmOverloads constructor(
 ) : CommonDataEntityWithTypeListView<Address.Type, MutableAddress>(
     context, attributeSet, defStyleAttr,
     dataFieldInputType = InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS,
-    dataFieldHintResId = R.string.contacts_ui_email_hint,
+    dataFieldHintResId = R.string.contacts_ui_address_hint,
     dataFactory = AddressFactory,
     dataTypeFactory = AddressTypeFactory,
     defaultUnderlyingDataTypes = DEFAULT_ADDRESS_TYPES

@@ -7,10 +7,7 @@ import android.widget.LinearLayout
 import contacts.entities.MutableName
 import contacts.entities.MutableRawContact
 import contacts.sample.R
-import contacts.ui.view.AddressesView
-import contacts.ui.view.EmailsView
-import contacts.ui.view.NameView
-import contacts.ui.view.PhonesView
+import contacts.ui.view.*
 import contacts.util.setName
 
 /**
@@ -66,6 +63,7 @@ class RawContactView @JvmOverloads constructor(
     private val phonesView: PhonesView
     private val emailsView: EmailsView
     private val addressesView: AddressesView
+    private val imsView: ImsView
 
     init {
         orientation = VERTICAL
@@ -77,6 +75,7 @@ class RawContactView @JvmOverloads constructor(
         phonesView = findViewById(R.id.phones)
         emailsView = findViewById(R.id.emails)
         addressesView = findViewById(R.id.addresses)
+        imsView = findViewById(R.id.ims)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -92,6 +91,7 @@ class RawContactView @JvmOverloads constructor(
         setPhonesView()
         setEmailsView()
         setAddressesView()
+        setImsView()
         // TODO
     }
 
@@ -117,5 +117,9 @@ class RawContactView @JvmOverloads constructor(
 
     private fun setAddressesView() {
         addressesView.dataList = rawContact.addresses
+    }
+
+    private fun setImsView() {
+        imsView.dataList = rawContact.ims
     }
 }

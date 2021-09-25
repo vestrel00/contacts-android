@@ -1,9 +1,6 @@
 package contacts.ui.entities
 
-import contacts.entities.CommonDataEntity
-import contacts.entities.MutableAddress
-import contacts.entities.MutableEmail
-import contacts.entities.MutablePhone
+import contacts.entities.*
 
 /**
  * Creates instances of [CommonDataEntity].
@@ -26,4 +23,8 @@ object EmailFactory : CommonDataEntityFactory<MutableEmail> {
 
 object AddressFactory : CommonDataEntityFactory<MutableAddress> {
     override fun create() = MutableAddress()
+}
+
+object ImFactory : CommonDataEntityFactory<MutableIm> {
+    override fun create() = MutableIm()
 }

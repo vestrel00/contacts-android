@@ -63,6 +63,12 @@ data class Im internal constructor(
 
     enum class Protocol(override val value: Int) : CommonDataEntity.Type {
 
+        // Type is also defined within CmmonDataKinds.Im... Ignore those. Type (and label) may have
+        // been deprecated by protocol and protocol label. Or what probably happened was that there
+        // was one dev that did not want to use "type and label" for IM so he/she used "protocol"
+        // \_-_-_/. One thing is for sure IMO. The dev who wrote this code is different from the dev
+        // that wrote most of the CommonDataKinds.
+
         // Order of declaration is the same as seen in the native contacts app
         AIM(CommonDataKinds.Im.PROTOCOL_AIM), // Default
         MSN(CommonDataKinds.Im.PROTOCOL_MSN),
@@ -72,11 +78,20 @@ data class Im internal constructor(
         HANGOUTS(CommonDataKinds.Im.PROTOCOL_GOOGLE_TALK),
         ICQ(CommonDataKinds.Im.PROTOCOL_ICQ),
         JABBER(CommonDataKinds.Im.PROTOCOL_JABBER),
-        NET_MEETING(CommonDataKinds.Im.PROTOCOL_NETMEETING),
         CUSTOM(CommonDataKinds.Im.PROTOCOL_CUSTOM);
 
+        // Not including the rest of these because they are not shown in the native contacts app.
+        // Probably because they aren't useful? Or is there another reason? Maybe these should be
+        // visible too? Community will speak up if they want to on this matter.
+        // NET_MEETING(CommonDataKinds.Im.PROTOCOL_NETMEETING),
+
+        // Unlike the other CommonDataKinds that use TYPE_CUSTOM (0), Im uses PROTOCOL_CUSTOM (-1).
+        override val isCustomType: Boolean
+            get() = value == CommonDataKinds.Im.PROTOCOL_CUSTOM
+
         override fun labelStr(resources: Resources, label: String?): String =
-            CommonDataKinds.Im.getTypeLabel(resources, value, label).toString()
+            // Make sure not to use getTypeLabel here!
+            CommonDataKinds.Im.getProtocolLabel(resources, value, label).toString()
 
         internal companion object {
 
@@ -139,7 +154,7 @@ data class MutableIm internal constructor(
         set(value) {
             protocol = value
         }
-    
+
     override var label: String?
         get() = customProtocol
         set(value) {

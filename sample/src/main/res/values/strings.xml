@@ -37,4 +37,5 @@
     <string name="raw_contact_phone_label">Phone</string>
     <string name="raw_contact_email_label">Email</string>
     <string name="raw_contact_address_label">Address</string>
+    <string name="raw_contact_im_label">Instant Messaging</string>
 </resources>

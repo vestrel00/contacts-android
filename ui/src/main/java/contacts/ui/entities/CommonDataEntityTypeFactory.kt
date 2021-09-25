@@ -90,3 +90,30 @@ object AddressTypeFactory : CommonDataEntityTypeFactory<MutableAddress, Address.
 
     private val DEFAULT_TYPE = Address.Type.HOME
 }
+
+object ImsTypeFactory : CommonDataEntityTypeFactory<MutableIm, Im.Protocol> {
+
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Im.Protocol>> =
+        Im.Protocol.values()
+            .asSequence()
+            .map { protocol ->
+                CommonDataEntityType(protocol, protocol.labelStr(resources, null), false)
+            }
+            .toMutableList()
+
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Im.Protocol> =
+        CommonDataEntityType(Im.Protocol.CUSTOM, labelStr, true)
+
+    override fun from(
+        resources: Resources, data: MutableIm
+    ): CommonDataEntityType<Im.Protocol> =
+        (data.type ?: DEFAULT_TYPE).let { protocol ->
+            CommonDataEntityType(
+                protocol,
+                protocol.labelStr(resources, data.label),
+                protocol.isCustomType
+            )
+        }
+
+    private val DEFAULT_TYPE = Im.Protocol.AIM
+}
