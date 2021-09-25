@@ -69,3 +69,24 @@ object EmailTypeFactory : CommonDataEntityTypeFactory<MutableEmail, Email.Type> 
 
     private val DEFAULT_TYPE = Email.Type.HOME
 }
+
+object AddressTypeFactory : CommonDataEntityTypeFactory<MutableAddress, Address.Type> {
+
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Address.Type>> =
+        Address.Type.values()
+            .asSequence()
+            .map { type -> CommonDataEntityType(type, type.labelStr(resources, null), false) }
+            .toMutableList()
+
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Address.Type> =
+        CommonDataEntityType(Address.Type.CUSTOM, labelStr, true)
+
+    override fun from(
+        resources: Resources, data: MutableAddress
+    ): CommonDataEntityType<Address.Type> =
+        (data.type ?: DEFAULT_TYPE).let { type ->
+            CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
+        }
+
+    private val DEFAULT_TYPE = Address.Type.HOME
+}

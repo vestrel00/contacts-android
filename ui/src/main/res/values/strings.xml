@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Address -->
+    <string name="contacts_ui_address_hint">Address</string>
+
+    <!-- Email -->
+    <string name="contacts_ui_email_hint">Email</string>
+
     <!-- Name -->
     <string name="contacts_ui_name_prefix_hint">Name prefix</string>
     <string name="contacts_ui_name_first_hint">First name</string>
@@ -10,9 +16,6 @@
 
     <!-- Phone -->
     <string name="contacts_ui_phone_number_hint">Phone number</string>
-
-    <!-- Email -->
-    <string name="contacts_ui_email_hint">Email</string>
 
     <!-- Photo picker -->
     <string name="contacts_ui_photo_take_error">Unable to take a photo</string>
