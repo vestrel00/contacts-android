@@ -32,23 +32,25 @@ interface CommonDataEntityTypeFactory<K : CommonDataEntity, T : CommonDataEntity
     fun from(resources: Resources, data: K): CommonDataEntityType<T>
 }
 
-object PhoneTypeFactory : CommonDataEntityTypeFactory<MutablePhone, Phone.Type> {
+object AddressTypeFactory : CommonDataEntityTypeFactory<MutableAddress, Address.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Phone.Type>> =
-        Phone.Type.values()
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Address.Type>> =
+        Address.Type.values()
             .asSequence()
             .map { type -> CommonDataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
 
-    override fun userCustomType(labelStr: String): CommonDataEntityType<Phone.Type> =
-        CommonDataEntityType(Phone.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Address.Type> =
+        CommonDataEntityType(Address.Type.CUSTOM, labelStr, true)
 
-    override fun from(resources: Resources, data: MutablePhone): CommonDataEntityType<Phone.Type> =
+    override fun from(
+        resources: Resources, data: MutableAddress
+    ): CommonDataEntityType<Address.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Phone.Type.MOBILE
+    private val DEFAULT_TYPE = Address.Type.HOME
 }
 
 object EmailTypeFactory : CommonDataEntityTypeFactory<MutableEmail, Email.Type> {
@@ -70,25 +72,25 @@ object EmailTypeFactory : CommonDataEntityTypeFactory<MutableEmail, Email.Type> 
     private val DEFAULT_TYPE = Email.Type.HOME
 }
 
-object AddressTypeFactory : CommonDataEntityTypeFactory<MutableAddress, Address.Type> {
+object EventTypeFactory : CommonDataEntityTypeFactory<MutableEvent, Event.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Address.Type>> =
-        Address.Type.values()
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Event.Type>> =
+        Event.Type.values()
             .asSequence()
             .map { type -> CommonDataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
 
-    override fun userCustomType(labelStr: String): CommonDataEntityType<Address.Type> =
-        CommonDataEntityType(Address.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Event.Type> =
+        CommonDataEntityType(Event.Type.CUSTOM, labelStr, true)
 
     override fun from(
-        resources: Resources, data: MutableAddress
-    ): CommonDataEntityType<Address.Type> =
+        resources: Resources, data: MutableEvent
+    ): CommonDataEntityType<Event.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Address.Type.HOME
+    private val DEFAULT_TYPE = Event.Type.BIRTHDAY
 }
 
 object ImsTypeFactory : CommonDataEntityTypeFactory<MutableIm, Im.Protocol> {
@@ -118,23 +120,42 @@ object ImsTypeFactory : CommonDataEntityTypeFactory<MutableIm, Im.Protocol> {
     private val DEFAULT_TYPE = Im.Protocol.AIM
 }
 
-object EventTypeFactory : CommonDataEntityTypeFactory<MutableEvent, Event.Type> {
+object PhoneTypeFactory : CommonDataEntityTypeFactory<MutablePhone, Phone.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Event.Type>> =
-        Event.Type.values()
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Phone.Type>> =
+        Phone.Type.values()
             .asSequence()
             .map { type -> CommonDataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
 
-    override fun userCustomType(labelStr: String): CommonDataEntityType<Event.Type> =
-        CommonDataEntityType(Event.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Phone.Type> =
+        CommonDataEntityType(Phone.Type.CUSTOM, labelStr, true)
 
-    override fun from(
-        resources: Resources, data: MutableEvent
-    ): CommonDataEntityType<Event.Type> =
+    override fun from(resources: Resources, data: MutablePhone): CommonDataEntityType<Phone.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Event.Type.BIRTHDAY
+    private val DEFAULT_TYPE = Phone.Type.MOBILE
+}
+
+object RelationTypeFactory : CommonDataEntityTypeFactory<MutableRelation, Relation.Type> {
+
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Relation.Type>> =
+        Relation.Type.values()
+            .asSequence()
+            .map { type -> CommonDataEntityType(type, type.labelStr(resources, null), false) }
+            .toMutableList()
+
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Relation.Type> =
+        CommonDataEntityType(Relation.Type.CUSTOM, labelStr, true)
+
+    override fun from(
+        resources: Resources, data: MutableRelation
+    ): CommonDataEntityType<Relation.Type> =
+        (data.type ?: DEFAULT_TYPE).let { type ->
+            CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
+        }
+
+    private val DEFAULT_TYPE = Relation.Type.ASSISTANT
 }

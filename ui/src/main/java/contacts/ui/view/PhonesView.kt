@@ -21,6 +21,7 @@ class PhonesView @JvmOverloads constructor(
     dataFactory = PhoneFactory,
     dataViewFactory = PhoneViewFactory,
     defaultUnderlyingDataTypes = listOf(
+        // The other non-custom types are excluded in the native Contacts app so we'll do the same.
         Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.MAIN, Phone.Type.OTHER
     )
 )

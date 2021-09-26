@@ -20,10 +20,7 @@ class ImsView @JvmOverloads constructor(
     context, attributeSet, defStyleAttr,
     dataFactory = ImFactory,
     dataViewFactory = ImViewFactory,
-    defaultUnderlyingDataTypes = listOf(
-        Im.Protocol.AIM, Im.Protocol.MSN, Im.Protocol.YAHOO, Im.Protocol.SKYPE, Im.Protocol.QQ,
-        Im.Protocol.HANGOUTS, Im.Protocol.ICQ, Im.Protocol.JABBER
-    )
+    defaultUnderlyingDataTypes = Im.Protocol.values().filter { !it.isCustomType }
 )
 
 private object ImViewFactory :

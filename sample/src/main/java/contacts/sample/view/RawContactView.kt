@@ -65,6 +65,7 @@ class RawContactView @JvmOverloads constructor(
     private val addressesView: AddressesView
     private val imsView: ImsView
     private val eventsView: EventsView
+    private val relationsView: RelationsView
 
     init {
         orientation = VERTICAL
@@ -78,6 +79,7 @@ class RawContactView @JvmOverloads constructor(
         addressesView = findViewById(R.id.addresses)
         imsView = findViewById(R.id.ims)
         eventsView = findViewById(R.id.events)
+        relationsView = findViewById(R.id.relations)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -95,6 +97,7 @@ class RawContactView @JvmOverloads constructor(
         addressesView.dataList = rawContact.addresses
         imsView.dataList = rawContact.ims
         eventsView.dataList = rawContact.events
+        relationsView.dataList = rawContact.relations
         // TODO
     }
 }

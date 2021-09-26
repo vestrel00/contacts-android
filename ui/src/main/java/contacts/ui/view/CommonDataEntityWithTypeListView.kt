@@ -88,7 +88,7 @@ abstract class CommonDataEntityWithTypeListView
         // In the native Contacts app, using phones as an example, the new empty phone that is added
         // has a phone type of either mobile, home, work, main, or other in that other (depends on
         // SDK version); which ever has not yet been added. If all of those phone types already
-        // exist, it defaults to other (the last on the list).
+        // exist, it defaults to the last on the list. The custom type is excluded from this.
         val existingUnderlyingDataTypes = dataList.map { it.type }
         val underlyingDataType = defaultUnderlyingDataTypes
             .minus(existingUnderlyingDataTypes)

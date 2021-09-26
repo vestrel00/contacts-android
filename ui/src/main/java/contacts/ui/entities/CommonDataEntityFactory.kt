@@ -13,22 +13,26 @@ interface CommonDataEntityFactory<K : CommonDataEntity> {
     fun create(): K
 }
 
-object PhoneFactory : CommonDataEntityFactory<MutablePhone> {
-    override fun create() = MutablePhone()
+object AddressFactory : CommonDataEntityFactory<MutableAddress> {
+    override fun create() = MutableAddress()
 }
 
 object EmailFactory : CommonDataEntityFactory<MutableEmail> {
     override fun create() = MutableEmail()
 }
 
-object AddressFactory : CommonDataEntityFactory<MutableAddress> {
-    override fun create() = MutableAddress()
+object EventFactory : CommonDataEntityFactory<MutableEvent> {
+    override fun create() = MutableEvent()
 }
 
 object ImFactory : CommonDataEntityFactory<MutableIm> {
     override fun create() = MutableIm()
 }
 
-object EventFactory : CommonDataEntityFactory<MutableEvent> {
-    override fun create() = MutableEvent()
+object PhoneFactory : CommonDataEntityFactory<MutablePhone> {
+    override fun create() = MutablePhone()
+}
+
+object RelationFactory : CommonDataEntityFactory<MutableRelation> {
+    override fun create() = MutableRelation()
 }

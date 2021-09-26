@@ -40,6 +40,9 @@
         <item>Select new photo</item>
     </string-array>
 
+    <!-- Relation -->
+    <string name="contacts_ui_relation_hint">Relationship</string>
+
     <!-- Ringtone picker -->
     <string name="contacts_ui_ringtone_select_error">Unable to select a ringtone</string>
 

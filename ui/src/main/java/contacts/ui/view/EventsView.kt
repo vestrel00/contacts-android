@@ -23,9 +23,7 @@ class EventsView @JvmOverloads constructor(
     context, attributeSet, defStyleAttr,
     dataFactory = EventFactory,
     dataViewFactory = EventsViewFactory,
-    defaultUnderlyingDataTypes = listOf(
-        Event.Type.BIRTHDAY, Event.Type.ANNIVERSARY, Event.Type.OTHER
-    )
+    defaultUnderlyingDataTypes = Event.Type.values().filter { !it.isCustomType }
 )
 
 private class EventView(context: Context) : CommonDataEntityWithTypeView<Event.Type, MutableEvent>(
