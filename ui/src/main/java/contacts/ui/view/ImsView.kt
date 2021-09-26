@@ -18,14 +18,21 @@ class ImsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CommonDataEntityWithTypeListView<Im.Protocol, MutableIm>(
     context, attributeSet, defStyleAttr,
-    dataFieldInputType = InputType.TYPE_CLASS_TEXT,
-    dataFieldHintResId = R.string.contacts_ui_im_hint,
     dataFactory = ImFactory,
-    dataTypeFactory = ImsTypeFactory,
-    defaultUnderlyingDataTypes = DEFAULT_IM_TYPES
+    dataViewFactory = ImViewFactory,
+    defaultUnderlyingDataTypes = listOf(
+        Im.Protocol.AIM, Im.Protocol.MSN, Im.Protocol.YAHOO, Im.Protocol.SKYPE, Im.Protocol.QQ,
+        Im.Protocol.HANGOUTS, Im.Protocol.ICQ, Im.Protocol.JABBER
+    )
 )
 
-private val DEFAULT_IM_TYPES = listOf(
-    Im.Protocol.AIM, Im.Protocol.MSN, Im.Protocol.YAHOO, Im.Protocol.SKYPE, Im.Protocol.QQ,
-    Im.Protocol.HANGOUTS, Im.Protocol.ICQ, Im.Protocol.JABBER
-)
+private object ImViewFactory :
+    CommonDataEntityWithTypeView.Factory<Im.Protocol, MutableIm> {
+    override fun create(context: Context): CommonDataEntityWithTypeView<Im.Protocol, MutableIm> =
+        CommonDataEntityWithTypeView(
+            context,
+            dataFieldInputType = InputType.TYPE_CLASS_TEXT,
+            dataFieldHintResId = R.string.contacts_ui_im_hint,
+            dataTypeFactory = ImsTypeFactory
+        )
+}

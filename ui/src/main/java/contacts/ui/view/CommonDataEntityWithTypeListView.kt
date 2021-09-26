@@ -7,7 +7,6 @@ import contacts.entities.CommonDataEntity
 import contacts.entities.MutableCommonDataEntityWithType
 import contacts.entities.removeAll
 import contacts.ui.entities.CommonDataEntityFactory
-import contacts.ui.entities.CommonDataEntityTypeFactory
 
 /**
  * A (vertical) [LinearLayout] that displays a list of [MutableCommonDataEntityWithType] and handles
@@ -36,17 +35,14 @@ import contacts.ui.entities.CommonDataEntityTypeFactory
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-open class CommonDataEntityWithTypeListView
-<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>>
-@JvmOverloads constructor(
+abstract class CommonDataEntityWithTypeListView
+<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>>(
     context: Context,
-    attributeSet: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    private var dataFieldInputType: Int? = null,
-    private var dataFieldHintResId: Int? = null,
-    private var dataFactory: CommonDataEntityFactory<K>? = null,
-    private var dataTypeFactory: CommonDataEntityTypeFactory<K, T>? = null,
-    private var defaultUnderlyingDataTypes: List<T>? = null
+    attributeSet: AttributeSet?,
+    defStyleAttr: Int,
+    private val dataFactory: CommonDataEntityFactory<K>,
+    private val dataViewFactory: CommonDataEntityWithTypeView.Factory<T, K>,
+    private val defaultUnderlyingDataTypes: List<T>
 ) : LinearLayout(context, attributeSet, defStyleAttr) {
 
     /**
@@ -78,13 +74,7 @@ open class CommonDataEntityWithTypeListView
     }
 
     private fun addDataView(data: K): CommonDataEntityWithTypeView<T, K> {
-        // FIXME? Extract this into a factory?
-        val dataView = CommonDataEntityWithTypeView(
-            context,
-            dataFieldInputType = dataFieldInputType,
-            dataFieldHintResId = dataFieldHintResId,
-            dataTypeFactory = dataTypeFactory
-        ).also {
+        val dataView = dataViewFactory.create(context).also {
             it.data = data
             it.setEventListener(DataViewEventListener(it))
         }
@@ -95,9 +85,6 @@ open class CommonDataEntityWithTypeListView
     }
 
     private fun addEmptyDataView() {
-        val dataFactory = dataFactory ?: return
-        val defaultUnderlyingDataTypes = defaultUnderlyingDataTypes ?: return
-
         // In the native Contacts app, using phones as an example, the new empty phone that is added
         // has a phone type of either mobile, home, work, main, or other in that other (depends on
         // SDK version); which ever has not yet been added. If all of those phone types already

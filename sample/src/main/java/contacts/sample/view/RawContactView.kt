@@ -64,6 +64,7 @@ class RawContactView @JvmOverloads constructor(
     private val emailsView: EmailsView
     private val addressesView: AddressesView
     private val imsView: ImsView
+    private val eventsView: EventsView
 
     init {
         orientation = VERTICAL
@@ -76,6 +77,7 @@ class RawContactView @JvmOverloads constructor(
         emailsView = findViewById(R.id.emails)
         addressesView = findViewById(R.id.addresses)
         imsView = findViewById(R.id.ims)
+        eventsView = findViewById(R.id.events)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,41 +87,14 @@ class RawContactView @JvmOverloads constructor(
     suspend fun savePhoto(): Boolean = photoThumbnailView.savePhoto()
 
     private fun setRawContactView() {
-        setPhotoThumbnailView()
-        setAccountView()
-        setNameView()
-        setPhonesView()
-        setEmailsView()
-        setAddressesView()
-        setImsView()
-        // TODO
-    }
-
-    private fun setAccountView() {
-        accountView.rawContact = rawContact
-    }
-
-    private fun setPhotoThumbnailView() {
         photoThumbnailView.rawContact = rawContact
-    }
-
-    private fun setNameView() {
+        accountView.rawContact = rawContact
         nameView.name = rawContact.name ?: MutableName().apply(rawContact::setName)
-    }
-
-    private fun setPhonesView() {
         phonesView.dataList = rawContact.phones
-    }
-
-    private fun setEmailsView() {
         emailsView.dataList = rawContact.emails
-    }
-
-    private fun setAddressesView() {
         addressesView.dataList = rawContact.addresses
-    }
-
-    private fun setImsView() {
         imsView.dataList = rawContact.ims
+        eventsView.dataList = rawContact.events
+        // TODO
     }
 }

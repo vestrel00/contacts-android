@@ -35,7 +35,7 @@ import contacts.ui.text.AbstractTextWatcher
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-class CommonDataEntityWithTypeView
+open class CommonDataEntityWithTypeView
 <T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>>
 @JvmOverloads constructor(
     context: Context,
@@ -43,6 +43,7 @@ class CommonDataEntityWithTypeView
     defStyleAttr: Int = 0,
     dataFieldInputType: Int? = null,
     dataFieldHintResId: Int? = null,
+    dataFieldIsFocusable: Boolean = true,
     private val dataTypeFactory: CommonDataEntityTypeFactory<K, T>? = null,
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
 
@@ -86,14 +87,12 @@ class CommonDataEntityWithTypeView
         dataTypeField = findViewById(R.id.dataTypeField)
         dataDeleteButton = findViewById(R.id.dataDeleteButton)
 
-        dataFieldHintResId?.let(dataField::setHint)
-        dataFieldInputType?.let(dataField::setInputType)
-
         dataField.apply {
-            setOnFocusChangeListener { _, _ ->
-                setDataTypeFieldVisibility()
-            }
+            dataFieldHintResId?.let(::setHint)
+            dataFieldInputType?.let(::setInputType)
+            setOnClickListener { onDataFieldClicked() }
             addTextChangedListener(DataFieldTextChangeListener())
+            isFocusable = dataFieldIsFocusable
         }
 
         dataTypeField.apply {
@@ -111,7 +110,11 @@ class CommonDataEntityWithTypeView
         this.eventListener = eventListener
     }
 
-    private fun setDataField() {
+    protected open fun onDataFieldClicked() {
+        // Optional override for subclasses
+    }
+
+    protected fun setDataField() {
         dataField.setText(data?.primaryValue)
     }
 
@@ -141,18 +144,6 @@ class CommonDataEntityWithTypeView
 
         // Set the selected data type to this field.
         dataTypeField.setSelection(dataTypesAdapter.getPosition(dataType))
-
-        setDataTypeFieldVisibility()
-    }
-
-    // Hide the dataTypeField if the dataField is empty and not focused.
-    private fun setDataTypeFieldVisibility() {
-        dataTypeField.visibility =
-            if (dataField.text.isEmpty() && !dataField.hasFocus()) {
-                View.GONE
-            } else {
-                View.VISIBLE
-            }
     }
 
     private fun setDataDeleteButton() {
@@ -208,7 +199,7 @@ class CommonDataEntityWithTypeView
                 eventListener?.onDataCleared()
             }
 
-            if (start == 0 && count > 0) {
+            if (start == 0 && before == 0 && count > 0) {
                 eventListener?.onDataBegin()
             }
 
@@ -261,6 +252,10 @@ class CommonDataEntityWithTypeView
          * Invoked when the a piece of the data field is entered from a blank state.
          */
         fun onDataBegin()
+    }
+
+    interface Factory<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>> {
+        fun create(context: Context): CommonDataEntityWithTypeView<T, K>
     }
 }
 

@@ -18,13 +18,20 @@ class AddressesView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CommonDataEntityWithTypeListView<Address.Type, MutableAddress>(
     context, attributeSet, defStyleAttr,
-    dataFieldInputType = InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS,
-    dataFieldHintResId = R.string.contacts_ui_address_hint,
     dataFactory = AddressFactory,
-    dataTypeFactory = AddressTypeFactory,
-    defaultUnderlyingDataTypes = DEFAULT_ADDRESS_TYPES
+    dataViewFactory = AddressViewFactory,
+    defaultUnderlyingDataTypes = listOf(
+        Address.Type.HOME, Address.Type.WORK, Address.Type.OTHER
+    )
 )
 
-private val DEFAULT_ADDRESS_TYPES = listOf(
-    Address.Type.HOME, Address.Type.WORK, Address.Type.OTHER
-)
+private object AddressViewFactory :
+    CommonDataEntityWithTypeView.Factory<Address.Type, MutableAddress> {
+    override fun create(context: Context): CommonDataEntityWithTypeView<Address.Type, MutableAddress> =
+        CommonDataEntityWithTypeView(
+            context,
+            dataFieldInputType = InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS,
+            dataFieldHintResId = R.string.contacts_ui_address_hint,
+            dataTypeFactory = AddressTypeFactory
+        )
+}

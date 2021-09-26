@@ -28,3 +28,7 @@ object AddressFactory : CommonDataEntityFactory<MutableAddress> {
 object ImFactory : CommonDataEntityFactory<MutableIm> {
     override fun create() = MutableIm()
 }
+
+object EventFactory : CommonDataEntityFactory<MutableEvent> {
+    override fun create() = MutableEvent()
+}

@@ -18,13 +18,20 @@ class PhonesView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CommonDataEntityWithTypeListView<Phone.Type, MutablePhone>(
     context, attributeSet, defStyleAttr,
-    dataFieldInputType = InputType.TYPE_CLASS_PHONE,
-    dataFieldHintResId = R.string.contacts_ui_phone_number_hint,
     dataFactory = PhoneFactory,
-    dataTypeFactory = PhoneTypeFactory,
-    defaultUnderlyingDataTypes = DEFAULT_PHONE_TYPES
+    dataViewFactory = PhoneViewFactory,
+    defaultUnderlyingDataTypes = listOf(
+        Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.MAIN, Phone.Type.OTHER
+    )
 )
 
-private val DEFAULT_PHONE_TYPES = listOf(
-    Phone.Type.MOBILE, Phone.Type.HOME, Phone.Type.WORK, Phone.Type.MAIN, Phone.Type.OTHER
-)
+private object PhoneViewFactory :
+    CommonDataEntityWithTypeView.Factory<Phone.Type, MutablePhone> {
+    override fun create(context: Context): CommonDataEntityWithTypeView<Phone.Type, MutablePhone> =
+        CommonDataEntityWithTypeView(
+            context,
+            dataFieldInputType = InputType.TYPE_CLASS_PHONE,
+            dataFieldHintResId = R.string.contacts_ui_phone_number_hint,
+            dataTypeFactory = PhoneTypeFactory
+        )
+}

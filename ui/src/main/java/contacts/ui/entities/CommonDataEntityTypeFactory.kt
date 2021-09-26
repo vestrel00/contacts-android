@@ -117,3 +117,24 @@ object ImsTypeFactory : CommonDataEntityTypeFactory<MutableIm, Im.Protocol> {
 
     private val DEFAULT_TYPE = Im.Protocol.AIM
 }
+
+object EventTypeFactory : CommonDataEntityTypeFactory<MutableEvent, Event.Type> {
+
+    override fun systemTypes(resources: Resources): MutableList<CommonDataEntityType<Event.Type>> =
+        Event.Type.values()
+            .asSequence()
+            .map { type -> CommonDataEntityType(type, type.labelStr(resources, null), false) }
+            .toMutableList()
+
+    override fun userCustomType(labelStr: String): CommonDataEntityType<Event.Type> =
+        CommonDataEntityType(Event.Type.CUSTOM, labelStr, true)
+
+    override fun from(
+        resources: Resources, data: MutableEvent
+    ): CommonDataEntityType<Event.Type> =
+        (data.type ?: DEFAULT_TYPE).let { type ->
+            CommonDataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
+        }
+
+    private val DEFAULT_TYPE = Event.Type.BIRTHDAY
+}

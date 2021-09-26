@@ -50,6 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <!-- TODO Organization -->
+
     <!-- Phones -->
     <TextView
         android:layout_width="match_parent"
@@ -64,6 +66,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
+
+    <!-- TODO SIP -->
 
     <!-- Email -->
     <TextView
@@ -110,5 +114,21 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
+    <!-- TODO website -->
+
+    <!-- Event -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_event_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <contacts.ui.view.EventsView
+        android:id="@+id/events"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true" />
 
 </merge>

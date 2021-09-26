@@ -18,13 +18,20 @@ class EmailsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CommonDataEntityWithTypeListView<Email.Type, MutableEmail>(
     context, attributeSet, defStyleAttr,
-    dataFieldInputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
-    dataFieldHintResId = R.string.contacts_ui_email_hint,
     dataFactory = EmailFactory,
-    dataTypeFactory = EmailTypeFactory,
-    defaultUnderlyingDataTypes = DEFAULT_EMAIL_TYPES
+    dataViewFactory = EmailViewFactory,
+    defaultUnderlyingDataTypes = listOf(
+        Email.Type.HOME, Email.Type.WORK, Email.Type.OTHER
+    )
 )
 
-private val DEFAULT_EMAIL_TYPES = listOf(
-    Email.Type.HOME, Email.Type.WORK, Email.Type.OTHER
-)
+private object EmailViewFactory :
+    CommonDataEntityWithTypeView.Factory<Email.Type, MutableEmail> {
+    override fun create(context: Context): CommonDataEntityWithTypeView<Email.Type, MutableEmail> =
+        CommonDataEntityWithTypeView(
+            context,
+            dataFieldInputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
+            dataFieldHintResId = R.string.contacts_ui_email_hint,
+            dataTypeFactory = EmailTypeFactory
+        )
+}
