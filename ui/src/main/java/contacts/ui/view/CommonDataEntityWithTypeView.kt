@@ -3,14 +3,16 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.RelativeLayout
+import android.widget.Spinner
 import contacts.entities.CommonDataEntity
 import contacts.entities.MutableCommonDataEntityWithType
 import contacts.ui.R
 import contacts.ui.dialog.CustomLabelInputDialog
 import contacts.ui.entities.CommonDataEntityType
 import contacts.ui.entities.CommonDataEntityTypeFactory
-import contacts.ui.text.AbstractTextWatcher
 
 /**
  * A [RelativeLayout] that displays a [MutableCommonDataEntityWithType] [K] that has a
@@ -45,24 +47,13 @@ open class CommonDataEntityWithTypeView
     dataFieldHintResId: Int? = null,
     dataFieldIsFocusable: Boolean = true,
     private val dataTypeFactory: CommonDataEntityTypeFactory<K, T>? = null,
-) : RelativeLayout(context, attributeSet, defStyleAttr) {
-
-    /**
-     * The data entity that is shown in this view. Changing this will automatically update the views
-     * and vice versa.
-     *
-     * This must be set after view creation.
-     */
-    var data: K? = null
-        set(value) {
-            field = value
-
-            setDataField()
-            setDataTypeField()
-            setDataDeleteButton()
-        }
-
-    private var eventListener: EventListener? = null
+) : CommonDataEntityView<K>(
+    context, attributeSet, defStyleAttr,
+    layoutRes = R.layout.view_common_data_entity_with_type,
+    dataFieldInputType = dataFieldInputType,
+    dataFieldHintResId = dataFieldHintResId,
+    dataFieldIsFocusable = dataFieldIsFocusable
+) {
 
     private var selectedType: CommonDataEntityType<T>? = null
         set(value) {
@@ -74,48 +65,20 @@ open class CommonDataEntityWithTypeView
             }
         }
 
+    private val dataTypeField: Spinner = findViewById(R.id.dataTypeField)
     private val dataTypesAdapter: ArrayAdapter<CommonDataEntityType<T>>
 
-    private val dataField: EditText
-    private val dataTypeField: Spinner
-    private val dataDeleteButton: View
-
     init {
-        inflate(context, R.layout.view_mutable_common_data_entity_with_type, this)
-
-        dataField = findViewById(R.id.dataField)
-        dataTypeField = findViewById(R.id.dataTypeField)
-        dataDeleteButton = findViewById(R.id.dataDeleteButton)
-
-        dataField.apply {
-            dataFieldHintResId?.let(::setHint)
-            dataFieldInputType?.let(::setInputType)
-            setOnClickListener { onDataFieldClicked() }
-            addTextChangedListener(DataFieldTextChangeListener())
-            isFocusable = dataFieldIsFocusable
-        }
-
         dataTypeField.apply {
             dataTypesAdapter = ArrayAdapter(context, android.R.layout.simple_list_item_1)
             adapter = dataTypesAdapter
             onItemSelectedListener = OnDataTypeSelectedListener()
         }
-
-        dataDeleteButton.setOnClickListener {
-            eventListener?.onDataDeleteButtonClicked()
-        }
     }
 
-    fun setEventListener(eventListener: EventListener?) {
-        this.eventListener = eventListener
-    }
-
-    protected open fun onDataFieldClicked() {
-        // Optional override for subclasses
-    }
-
-    protected fun setDataField() {
-        dataField.setText(data?.primaryValue)
+    override fun onDataSet() {
+        super.onDataSet()
+        setDataTypeField()
     }
 
     private fun setDataTypeField() {
@@ -144,19 +107,6 @@ open class CommonDataEntityWithTypeView
 
         // Set the selected data type to this field.
         dataTypeField.setSelection(dataTypesAdapter.getPosition(dataType))
-    }
-
-    private fun setDataDeleteButton() {
-        setDataDeleteButtonVisibility()
-    }
-
-    private fun setDataDeleteButtonVisibility() {
-        dataDeleteButton.visibility = if (dataField.text.isNullOrEmpty()) {
-            View.INVISIBLE
-        } else {
-            View.VISIBLE
-        }
-
     }
 
     private fun showCreateUserCustomTypeInputPrompt() {
@@ -191,22 +141,6 @@ open class CommonDataEntityWithTypeView
         dataTypeField.setSelection(USER_CUSTOM_DATA_TYPE_INDEX)
     }
 
-    private inner class DataFieldTextChangeListener : AbstractTextWatcher {
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            data?.primaryValue = s?.toString()
-
-            if (s.isNullOrEmpty()) {
-                eventListener?.onDataCleared()
-            }
-
-            if (start == 0 && before == 0 && count > 0) {
-                eventListener?.onDataBegin()
-            }
-
-            setDataDeleteButtonVisibility()
-        }
-    }
-
     private inner class OnDataTypeSelectedListener : AdapterView.OnItemSelectedListener {
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -237,26 +171,8 @@ open class CommonDataEntityWithTypeView
         }
     }
 
-    interface EventListener {
-        /**
-         * Invoked when the delete button is clicked.
-         */
-        fun onDataDeleteButtonClicked()
-
-        /**
-         * Invoked when the data field is cleared.
-         */
-        fun onDataCleared()
-
-        /**
-         * Invoked when the a piece of the data field is entered from a blank state.
-         */
-        fun onDataBegin()
-    }
-
-    interface Factory<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>> {
-        fun create(context: Context): CommonDataEntityWithTypeView<T, K>
-    }
+    interface Factory<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>> :
+        CommonDataEntityView.Factory<K, CommonDataEntityWithTypeView<T, K>>
 }
 
 /**

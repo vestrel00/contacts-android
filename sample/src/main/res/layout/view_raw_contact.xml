@@ -50,6 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <!-- TODO Nickname -->
+
     <!-- TODO Organization -->
 
     <!-- Phones -->
@@ -145,5 +147,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
+
+    <!-- TODO group memberships / labels -->
 
 </merge>

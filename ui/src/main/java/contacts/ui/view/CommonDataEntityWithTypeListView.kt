@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.entities.CommonDataEntity
 import contacts.entities.MutableCommonDataEntityWithType
-import contacts.entities.removeAll
 import contacts.ui.entities.CommonDataEntityFactory
 
 /**
@@ -40,51 +39,18 @@ abstract class CommonDataEntityWithTypeListView
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,
-    private val dataFactory: CommonDataEntityFactory<K>,
-    private val dataViewFactory: CommonDataEntityWithTypeView.Factory<T, K>,
+    dataFactory: CommonDataEntityFactory<K>,
+    dataViewFactory: CommonDataEntityWithTypeView.Factory<T, K>,
     private val defaultUnderlyingDataTypes: List<T>
-) : LinearLayout(context, attributeSet, defStyleAttr) {
+) : CommonDataEntityListView<K, CommonDataEntityWithTypeView<T, K>>(
+    context,
+    attributeSet,
+    defStyleAttr,
+    dataFactory,
+    dataViewFactory
+) {
 
-    /**
-     * The list of data that is shown in this view. Setting this will automatically update the
-     * views. Any modifications in the views will also be made to the this.
-     */
-    var dataList: MutableList<K> = mutableListOf()
-        set(value) {
-            field = value
-
-            setDataViews()
-        }
-
-    /**
-     * A [CommonDataEntityWithTypeView] with empty data. Used to add a new data to the [dataList].
-     */
-    private lateinit var emptyDataView: CommonDataEntityWithTypeView<T, K>
-
-    init {
-        orientation = VERTICAL
-    }
-
-    private fun setDataViews() {
-        removeAllViews()
-
-        dataList.forEach(::addDataView)
-
-        addEmptyDataView()
-    }
-
-    private fun addDataView(data: K): CommonDataEntityWithTypeView<T, K> {
-        val dataView = dataViewFactory.create(context).also {
-            it.data = data
-            it.setEventListener(DataViewEventListener(it))
-        }
-
-        addView(dataView)
-
-        return dataView
-    }
-
-    private fun addEmptyDataView() {
+    override fun onEmptyDataCreated(data: K) {
         // In the native Contacts app, using phones as an example, the new empty phone that is added
         // has a phone type of either mobile, home, work, main, or other in that other (depends on
         // SDK version); which ever has not yet been added. If all of those phone types already
@@ -95,35 +61,6 @@ abstract class CommonDataEntityWithTypeListView
             .firstOrNull()
             ?: defaultUnderlyingDataTypes.last()
 
-        emptyDataView = addDataView(dataFactory.create().apply { type = underlyingDataType })
-        dataList.add(emptyDataView.data ?: throw IllegalStateException("View data is null"))
-    }
-
-    private fun removeDataView(dataView: CommonDataEntityWithTypeView<T, K>) {
-        // There may be duplicate data. Therefore, we need to remove the exact data instance.
-        // Thus, we remove the data by reference equality instead of by content/structure equality.
-        dataList.removeAll(
-            dataView.data ?: throw IllegalStateException("View data is null"),
-            byReference = true
-        )
-        removeView(dataView)
-    }
-
-    private inner class DataViewEventListener(
-        private val dataView: CommonDataEntityWithTypeView<T, K>
-    ) : CommonDataEntityWithTypeView.EventListener {
-
-        override fun onDataDeleteButtonClicked() {
-            removeDataView(dataView)
-        }
-
-        override fun onDataCleared() {
-            removeDataView(emptyDataView)
-            emptyDataView = dataView
-        }
-
-        override fun onDataBegin() {
-            addEmptyDataView()
-        }
+        data.type = underlyingDataType
     }
 }
