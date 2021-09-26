@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/raw_contact_phone_label"
+        android:text="@string/raw_contact_phones_label"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.PhonesView
@@ -71,13 +71,13 @@
 
     <!-- TODO SIP -->
 
-    <!-- Email -->
+    <!-- Emails -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/raw_contact_email_label"
+        android:text="@string/raw_contact_emails_label"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.EmailsView
@@ -86,13 +86,13 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
-    <!-- Address -->
+    <!-- Addresses -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/raw_contact_address_label"
+        android:text="@string/raw_contact_addresses_label"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.AddressesView
@@ -101,13 +101,13 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
-    <!-- Im -->
+    <!-- Ims -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/raw_contact_im_label"
+        android:text="@string/raw_contact_ims_label"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.ImsView
@@ -116,15 +116,28 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
-    <!-- TODO website -->
-
-    <!-- Event -->
+    <!-- Websites -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/raw_contact_event_label"
+        android:text="@string/raw_contact_websites_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <contacts.ui.view.WebsitesView
+        android:id="@+id/websites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true" />
+
+    <!-- Events -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_events_label"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.EventsView
@@ -133,13 +146,13 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
-    <!-- Relation -->
+    <!-- Relations -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/raw_contact_relation_label"
+        android:text="@string/raw_contact_relations_label"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <contacts.ui.view.RelationsView

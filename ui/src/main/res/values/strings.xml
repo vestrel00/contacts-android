@@ -4,6 +4,9 @@
     <!-- Address -->
     <string name="contacts_ui_address_hint">Address</string>
 
+    <!-- Custom label input dialog -->
+    <string name="contacts_ui_custom_label_input_dialog_title">Custom label name</string>
+
     <!-- Email -->
     <string name="contacts_ui_email_hint">Email</string>
 
@@ -46,7 +49,7 @@
     <!-- Ringtone picker -->
     <string name="contacts_ui_ringtone_select_error">Unable to select a ringtone</string>
 
-    <!-- Custom label input dialog -->
-    <string name="contacts_ui_custom_label_input_dialog_title">Custom label name</string>
+    <!-- Website -->
+    <string name="contacts_ui_website_hint">Website</string>
 
 </resources>

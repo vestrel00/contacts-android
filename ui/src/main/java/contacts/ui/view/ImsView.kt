@@ -10,7 +10,7 @@ import contacts.ui.entities.ImFactory
 import contacts.ui.entities.ImsTypeFactory
 
 /**
- * A [CommonDataEntityWithTypeListView] for [MutableIm]es.
+ * A [CommonDataEntityWithTypeListView] for [MutableIm]s.
  */
 class ImsView @JvmOverloads constructor(
     context: Context,

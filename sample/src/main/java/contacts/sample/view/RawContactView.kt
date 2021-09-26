@@ -64,6 +64,7 @@ class RawContactView @JvmOverloads constructor(
     private val emailsView: EmailsView
     private val addressesView: AddressesView
     private val imsView: ImsView
+    private val websiteView: WebsitesView
     private val eventsView: EventsView
     private val relationsView: RelationsView
 
@@ -78,6 +79,7 @@ class RawContactView @JvmOverloads constructor(
         emailsView = findViewById(R.id.emails)
         addressesView = findViewById(R.id.addresses)
         imsView = findViewById(R.id.ims)
+        websiteView = findViewById(R.id.websites)
         eventsView = findViewById(R.id.events)
         relationsView = findViewById(R.id.relations)
     }
@@ -96,6 +98,7 @@ class RawContactView @JvmOverloads constructor(
         emailsView.dataList = rawContact.emails
         addressesView.dataList = rawContact.addresses
         imsView.dataList = rawContact.ims
+        websiteView.dataList = rawContact.websites
         eventsView.dataList = rawContact.events
         relationsView.dataList = rawContact.relations
         // TODO

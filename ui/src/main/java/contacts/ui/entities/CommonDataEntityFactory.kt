@@ -36,3 +36,7 @@ object PhoneFactory : CommonDataEntityFactory<MutablePhone> {
 object RelationFactory : CommonDataEntityFactory<MutableRelation> {
     override fun create() = MutableRelation()
 }
+
+object WebsiteFactory : CommonDataEntityFactory<MutableWebsite> {
+    override fun create() = MutableWebsite()
+}
