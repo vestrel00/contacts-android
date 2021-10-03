@@ -11,10 +11,10 @@ import contacts.ui.text.AbstractTextWatcher
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableName] and handles the modifications to the
- * given [name].
+ * given [data].
  *
- * Setting the [name] will automatically update the views. Any modifications in the views will also
- * be made to the [name].
+ * Setting the [data] will automatically update the views. Any modifications in the views will also
+ * be made to the [data].
  *
  * ## Note
  *
@@ -43,7 +43,7 @@ class NameView @JvmOverloads constructor(
      * The name that is shown in this view. Setting this will automatically update the views. Any
      * modifications in the views will also be made to the this.
      */
-    var name: MutableName = MutableName()
+    var data = MutableName()
         set(value) {
             field = value
 
@@ -73,40 +73,40 @@ class NameView @JvmOverloads constructor(
     private fun setNameFieldsListeners() {
         namePrefixField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                name.prefix = s?.toString()
+                data.prefix = s?.toString()
             }
         })
 
         firstNameField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                name.givenName = s?.toString()
+                data.givenName = s?.toString()
             }
         })
 
         middleNameField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                name.middleName = s?.toString()
+                data.middleName = s?.toString()
             }
         })
 
         lastNameField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                name.familyName = s?.toString()
+                data.familyName = s?.toString()
             }
         })
 
         nameSuffixField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                name.suffix = s?.toString()
+                data.suffix = s?.toString()
             }
         })
     }
 
     private fun setNameFields() {
-        namePrefixField.setText(name.prefix)
-        firstNameField.setText(name.givenName)
-        middleNameField.setText(name.middleName)
-        lastNameField.setText(name.familyName)
-        nameSuffixField.setText(name.suffix)
+        namePrefixField.setText(data.prefix)
+        firstNameField.setText(data.givenName)
+        middleNameField.setText(data.middleName)
+        lastNameField.setText(data.familyName)
+        nameSuffixField.setText(data.suffix)
     }
 }

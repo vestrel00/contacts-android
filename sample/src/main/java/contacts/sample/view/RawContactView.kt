@@ -5,10 +5,12 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.entities.MutableName
+import contacts.entities.MutableNickname
 import contacts.entities.MutableRawContact
 import contacts.sample.R
 import contacts.ui.view.*
 import contacts.util.setName
+import contacts.util.setNickname
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableRawContact] and handles the modifications to
@@ -60,6 +62,7 @@ class RawContactView @JvmOverloads constructor(
     private val accountView: AccountView
     private val photoThumbnailView: RawContactPhotoThumbnailView
     private val nameView: NameView
+    private val nicknameView: NicknameView
     private val phonesView: PhonesView
     private val emailsView: EmailsView
     private val addressesView: AddressesView
@@ -75,6 +78,7 @@ class RawContactView @JvmOverloads constructor(
         accountView = findViewById(R.id.account)
         photoThumbnailView = findViewById(R.id.photoThumbnail)
         nameView = findViewById(R.id.name)
+        nicknameView = findViewById(R.id.nickname)
         phonesView = findViewById(R.id.phones)
         emailsView = findViewById(R.id.emails)
         addressesView = findViewById(R.id.addresses)
@@ -93,7 +97,8 @@ class RawContactView @JvmOverloads constructor(
     private fun setRawContactView() {
         photoThumbnailView.rawContact = rawContact
         accountView.rawContact = rawContact
-        nameView.name = rawContact.name ?: MutableName().apply(rawContact::setName)
+        nameView.data = rawContact.name ?: MutableName().apply(rawContact::setName)
+        nicknameView.data = rawContact.nickname ?: MutableNickname().apply(rawContact::setNickname)
         phonesView.dataList = rawContact.phones
         emailsView.dataList = rawContact.emails
         addressesView.dataList = rawContact.addresses

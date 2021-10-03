@@ -23,6 +23,9 @@
     <string name="contacts_ui_name_last_hint">Last name</string>
     <string name="contacts_ui_name_suffix_hint">Name suffix</string>
 
+    <!-- Nickname -->
+    <string name="contacts_ui_nickname_hint">Nickname</string>
+
     <!-- Phone -->
     <string name="contacts_ui_phone_number_hint">Phone number</string>
 

@@ -34,6 +34,7 @@
 
     <!-- RawContactView -->
     <string name="raw_contact_name_label">Name</string>
+    <string name="raw_contact_nickname_label">Nickname</string>
     <string name="raw_contact_phones_label">Phones</string>
     <string name="raw_contact_emails_label">Emails</string>
     <string name="raw_contact_addresses_label">Addresses</string>
