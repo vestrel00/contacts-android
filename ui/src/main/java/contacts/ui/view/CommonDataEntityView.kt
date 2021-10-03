@@ -103,7 +103,7 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
 
     private fun setDataDeleteButtonVisibility() {
         dataDeleteButton.visibility = if (!dataDeleteButtonIsVisible || dataField.text.isNullOrEmpty()) {
-            View.GONE
+            View.INVISIBLE
         } else {
             View.VISIBLE
         }

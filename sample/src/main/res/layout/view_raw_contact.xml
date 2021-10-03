@@ -80,7 +80,19 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
-    <!-- TODO SIP -->
+    <!-- SIP -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_sip_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <contacts.ui.view.SipAddressView
+        android:id="@+id/sipAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <!-- Emails -->
     <TextView

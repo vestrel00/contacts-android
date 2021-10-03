@@ -64,6 +64,7 @@ class RawContactView @JvmOverloads constructor(
     private val nameView: NameView
     private val nicknameView: NicknameView
     private val phonesView: PhonesView
+    private val sipAddressView: SipAddressView
     private val emailsView: EmailsView
     private val addressesView: AddressesView
     private val imsView: ImsView
@@ -80,6 +81,7 @@ class RawContactView @JvmOverloads constructor(
         nameView = findViewById(R.id.name)
         nicknameView = findViewById(R.id.nickname)
         phonesView = findViewById(R.id.phones)
+        sipAddressView = findViewById(R.id.sipAddress)
         emailsView = findViewById(R.id.emails)
         addressesView = findViewById(R.id.addresses)
         imsView = findViewById(R.id.ims)
@@ -100,6 +102,7 @@ class RawContactView @JvmOverloads constructor(
         nameView.data = rawContact.name ?: MutableName().apply(rawContact::setName)
         nicknameView.data = rawContact.nickname ?: MutableNickname().apply(rawContact::setNickname)
         phonesView.dataList = rawContact.phones
+        sipAddressView.data = rawContact.sipAddress
         emailsView.dataList = rawContact.emails
         addressesView.dataList = rawContact.addresses
         imsView.dataList = rawContact.ims

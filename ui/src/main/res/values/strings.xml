@@ -52,6 +52,9 @@
     <!-- Ringtone picker -->
     <string name="contacts_ui_ringtone_select_error">Unable to select a ringtone</string>
 
+    <!-- Address -->
+    <string name="contacts_ui_sip_address_hint">SIP</string>
+
     <!-- Website -->
     <string name="contacts_ui_website_hint">Website</string>
 

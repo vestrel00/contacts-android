@@ -36,6 +36,7 @@
     <string name="raw_contact_name_label">Name</string>
     <string name="raw_contact_nickname_label">Nickname</string>
     <string name="raw_contact_phones_label">Phones</string>
+    <string name="raw_contact_sip_label">SIP Address</string>
     <string name="raw_contact_emails_label">Emails</string>
     <string name="raw_contact_addresses_label">Addresses</string>
     <string name="raw_contact_ims_label">Instant Messaging</string>
