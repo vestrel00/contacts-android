@@ -40,6 +40,7 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
     dataFieldInputType: Int? = null,
     dataFieldHintResId: Int? = null,
     dataFieldIsFocusable: Boolean = true,
+    private val dataDeleteButtonIsVisible: Boolean = true
 ) : RelativeLayout(context, attributeSet, defStyleAttr) {
 
     /**
@@ -101,8 +102,8 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
     }
 
     private fun setDataDeleteButtonVisibility() {
-        dataDeleteButton.visibility = if (dataField.text.isNullOrEmpty()) {
-            View.INVISIBLE
+        dataDeleteButton.visibility = if (!dataDeleteButtonIsVisible || dataField.text.isNullOrEmpty()) {
+            View.GONE
         } else {
             View.VISIBLE
         }
