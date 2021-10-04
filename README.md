@@ -1,5 +1,4 @@
-[![Release](https://jitpack.io/v/User/Repo.svg)]
-(https://jitpack.io/#vestrel00/contacts-android)
+[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 # Contacts, Reborn!
 
