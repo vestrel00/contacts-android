@@ -7,6 +7,7 @@ import android.widget.TextView
 import contacts.accounts.Accounts
 import contacts.async.accounts.accountForWithContext
 import contacts.entities.RawContactEntity
+import contacts.permissions.accounts.queryWithPermission
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -54,10 +55,10 @@ class AccountView @JvmOverloads constructor(
         }
 
     private fun setAccount() = launch {
-        val account = rawContact?.let {
-            Accounts(context, it.isProfile)
-                .query()
-                .accountForWithContext(it)
+        val account = rawContact?.let { rawContact ->
+            Accounts(context, rawContact.isProfile)
+                .queryWithPermission()
+                .accountForWithContext(rawContact)
         }
 
         text = if (account == null) {
@@ -69,7 +70,6 @@ class AccountView @JvmOverloads constructor(
             """.trimIndent()
         }
     }
-
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
