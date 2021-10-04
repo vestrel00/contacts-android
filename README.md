@@ -56,7 +56,7 @@ To import all modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.0'
+     implementation 'com.github.vestrel00.contacts-android:0.1.0'
 }
 ```
 
@@ -64,7 +64,7 @@ To import specific modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:core:0.1.0'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.0'
 }
 ```
 
@@ -72,12 +72,12 @@ SNAPSHOTs of branches are also available,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:master-SNAPSHOT'
+     implementation 'com.github.vestrel00.contacts-android:master-SNAPSHOT'
 }
 ```
 
 This library is a multi-module project published with JitPack. For all release artifacts published,
-visit [![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#vestrel00/contacts-android).
+visit [![Release](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android).
 
 For general JitPack project installations, visit https://jitpack.io/docs/BUILDING/#multi-module-projects
 
