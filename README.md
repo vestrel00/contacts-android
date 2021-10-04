@@ -48,7 +48,6 @@ First, include JitPack in the repositories list,
 
 ```
 repositories {
-    jcenter() // TODO Do we really need this? JCenter is shutting down... Check in a separate project.
     maven { url "https://jitpack.io" }
 }
 ```
