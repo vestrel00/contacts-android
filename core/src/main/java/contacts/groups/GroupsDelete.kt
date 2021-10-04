@@ -11,6 +11,7 @@ import contacts.util.unsafeLazy
 // TODO this works with newer versions of Android but not with older versions.
 // Figure out what version of Android this started working and then gate it!
 // Use the native contacts app to figure it out!
+// TODO Update this to match GroupsUpdate in terms of readOnly usages
 /**
  * Deletes one or more groups from the groups table.
  *
@@ -71,7 +72,7 @@ internal interface GroupsDelete {
      * Requires [ContactsPermissions.WRITE_PERMISSION].
      *
      * ## Thread Safety
-     *
+
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)

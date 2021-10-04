@@ -85,11 +85,17 @@ data class RawContact internal constructor(
 
     /**
      * An immutable list of events.
+     *
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
      */
     val events: List<Event>,
 
     /**
      * An immutable list of group memberships.
+     *
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
      */
     val groupMemberships: List<GroupMembership>,
 
@@ -121,6 +127,9 @@ data class RawContact internal constructor(
 
     /**
      * An immutable list of relations.
+     *
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
      */
     val relations: List<Relation>,
 
@@ -219,13 +228,19 @@ data class MutableRawContact internal constructor(
 
     /**
      * Mutable version of [RawContact.events].
+     *
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
      */
     var events: MutableList<MutableEvent>,
 
     /**
      * Mutable version of [RawContact.groupMemberships].
      *
-     * Only group memberships to groups that belong to the same account as this contact will be
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
+     *
+     * Only group memberships to groups that belong to the same account as the raw contact will be
      * inserted. Group membership to the account's default group will not be deleted even if it
      * is removed in this list!
      */
@@ -271,6 +286,9 @@ data class MutableRawContact internal constructor(
 
     /**
      * Mutable version of [RawContact.relations].
+     *
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
      */
     var relations: MutableList<MutableRelation>,
 

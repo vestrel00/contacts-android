@@ -95,6 +95,7 @@ internal class GroupMembershipOperation(isProfile: Boolean) :
         groupMembershipsInDB.values
             .asSequence()
             .filter {
+                // Do no delete memberships to the default group!
                 val group = accountGroups.getValue(it.groupId)
                 !group.isDefaultGroup
             }

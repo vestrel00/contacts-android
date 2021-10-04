@@ -233,7 +233,11 @@ private class ProfileUpdateImpl(
                 } else if (rawContact.isBlank && deleteBlanks) {
                     applicationContext.contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    applicationContext.updateRawContact(customDataRegistry, rawContact)
+                    applicationContext.updateRawContact(
+                        applicationContext,
+                        customDataRegistry,
+                        rawContact
+                    )
                 }
             } else {
                 results[INVALID_ID] = false

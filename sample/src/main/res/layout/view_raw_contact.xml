@@ -167,6 +167,7 @@
 
     <!-- Events -->
     <TextView
+        android:id="@+id/eventsLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -182,6 +183,7 @@
 
     <!-- Relations -->
     <TextView
+        android:id="@+id/relationsLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -197,6 +199,7 @@
 
     <!-- Group memberships / labels -->
     <TextView
+        android:id="@+id/groupMembershipsLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"

@@ -3,16 +3,22 @@ package contacts.sample.view
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
+import contacts.accounts.Accounts
+import contacts.async.accounts.accountForWithContext
 import contacts.entities.MutableName
 import contacts.entities.MutableNickname
 import contacts.entities.MutableOrganization
 import contacts.entities.MutableRawContact
+import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.R
 import contacts.ui.view.*
 import contacts.util.setName
 import contacts.util.setNickname
 import contacts.util.setOrganization
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableRawContact] and handles the modifications to
@@ -47,7 +53,10 @@ class RawContactView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : LinearLayout(context, attributeSet, defStyleAttr) {
+) : LinearLayout(context, attributeSet, defStyleAttr), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Main
 
     /**
      * The RawContact that is shown in this view. Setting this will automatically update the views.
@@ -76,6 +85,8 @@ class RawContactView @JvmOverloads constructor(
     private val relationsView: RelationsView
     private val groupMembershipsView: GroupMembershipsView
 
+    private val accountRequiredViews: Set<View>
+
     init {
         orientation = VERTICAL
         inflate(context, R.layout.view_raw_contact, this)
@@ -94,6 +105,14 @@ class RawContactView @JvmOverloads constructor(
         eventsView = findViewById(R.id.events)
         relationsView = findViewById(R.id.relations)
         groupMembershipsView = findViewById(R.id.groupMemberships)
+
+        accountRequiredViews = setOf(
+            eventsView, relationsView, groupMembershipsView,
+            findViewById(R.id.eventsLabel),
+            findViewById(R.id.relationsLabel),
+            findViewById(R.id.groupMembershipsLabel)
+        )
+
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,8 +134,28 @@ class RawContactView @JvmOverloads constructor(
         addressesView.dataList = rawContact.addresses
         imsView.dataList = rawContact.ims
         websiteView.dataList = rawContact.websites
-        eventsView.dataList = rawContact.events
-        relationsView.dataList = rawContact.relations
-        groupMembershipsView.memberships = rawContact.groupMemberships
+
+        launch {
+            val account = Accounts(context, rawContact.isProfile)
+                .queryWithPermission()
+                .accountForWithContext(rawContact)
+
+            // The native Contacts app hides these from the UI for local raw contacts. Let's follow
+            // in the footsteps of the native Contacts app...
+            if (account != null) {
+                eventsView.dataList = rawContact.events
+                relationsView.dataList = rawContact.relations
+                groupMembershipsView.memberships = rawContact.groupMemberships
+            } else {
+                accountRequiredViews.forEach {
+                    it.visibility = GONE
+                }
+            }
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        cancel()
     }
 }

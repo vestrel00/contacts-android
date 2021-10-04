@@ -37,7 +37,7 @@ import contacts.util.unsafeLazy
  * **For Marshmallow (API 23) and above**
  *
  * The Contacts Provider no longer associates local contacts to an account when an account is or
- * becomes available.
+ * becomes available. Local contacts remain local.
  *
  * **Account removal**
  *
@@ -339,13 +339,17 @@ internal fun Context.insertRawContactForAccount(
 
     operations.addAll(EmailOperation(isProfile).insert(rawContact.emails))
 
-    operations.addAll(EventOperation(isProfile).insert(rawContact.events))
-
-    // The account can only be null if there are no available accounts. In this case, it should
-    // not be possible for consumers to obtain group memberships unless they have saved them
-    // as parcelables and then restored them after the accounts have been removed.
-    // Still we should have this null check just in case.
     if (account != null) {
+        // I'm not sure why the native Contacts app hides events from the UI for local raw contacts.
+        // The Contacts Provider does support having events for local raw contacts. Anyways, let's
+        // follow in the footsteps of the native Contacts app...
+        operations.addAll(EventOperation(isProfile).insert(rawContact.events))
+    }
+
+    if (account != null) {
+        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
+        // It should not be possible for consumers to get access to group memberships.
+        // The Contacts Provider does support having events for local raw contacts.
         operations.addAll(
             GroupMembershipOperation(isProfile).insert(rawContact.groupMemberships, account, this)
         )
@@ -371,7 +375,12 @@ internal fun Context.insertRawContactForAccount(
 
     operations.addAll(PhoneOperation(isProfile).insert(rawContact.phones))
 
-    operations.addAll(RelationOperation(isProfile).insert(rawContact.relations))
+    if (account != null) {
+        // I'm not sure why the native Contacts app hides relations from the UI for local raw
+        // contacts. The Contacts Provider does support having events for local raw contacts.
+        // Anyways, let's follow in the footsteps of the native Contacts app...
+        operations.addAll(RelationOperation(isProfile).insert(rawContact.relations))
+    }
 
     rawContact.sipAddress?.let {
         SipAddressOperation(isProfile).insert(it)?.let(operations::add)

@@ -31,7 +31,7 @@ import contacts.sample.R
 import contacts.ui.util.onRingtoneSelected
 import contacts.ui.util.selectRingtone
 import contacts.ui.view.activity
-import contacts.ui.view.setChildrenAndDescendantsEnabled
+import contacts.ui.view.setThisAndDescendantsEnabled
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -187,8 +187,7 @@ class ContactView @JvmOverloads constructor(
     override fun setEnabled(enabled: Boolean) {
         // super.setEnabled(enabled) intentionally not calling this
         // Do not ever disable the contact options and details.
-        photoView.isEnabled = enabled
-        rawContactsView.setChildrenAndDescendantsEnabled(enabled)
+        rawContactsView.setThisAndDescendantsEnabled(enabled)
     }
 
 

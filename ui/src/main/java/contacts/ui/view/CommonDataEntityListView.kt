@@ -77,6 +77,10 @@ abstract class CommonDataEntityListView<K : MutableCommonDataEntity, V : CommonD
         val dataView = dataViewFactory.create(context).also {
             it.data = data
             it.setEventListener(DataViewEventListener(it))
+
+            // In case this new view gets added after the parent view has been disabled, it should
+            // also be disabled.
+            it.setThisAndDescendantsEnabled(isEnabled)
         }
 
         addView(dataView)

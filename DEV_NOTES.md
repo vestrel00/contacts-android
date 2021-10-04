@@ -91,9 +91,9 @@ The kind of data used as the display for the Contact is set in
 
 **A note about `StructuredName`**
 
-There may be a scenario where the unstructed `StructuredName.DISPLAY_NAME` does not match the
+There may be a scenario where the unstructured `StructuredName.DISPLAY_NAME` does not match the
 structured components. Such scenarios are possible but is considered incorrect. For example,
-it is possible to programatically set the display name to "Ice Cold" but set the given and family
+it is possible to programmatically set the display name to "Ice Cold" but set the given and family
 name to "Hot Fire". The `Contacts.DISPLAY_NAME` is made up of the prefix, given, middle, family
 name, and suffix ("Hot Fire") and not the unstructured display name.
 
@@ -168,10 +168,17 @@ Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
 
 **Local Contacts / RawContacts**
 
-RawContacts inserted without an associated account are considered local or device-only contacts,
+RawContacts inserted without an associated account are considered local or device-only raw contacts,
 which are not synced.
 
-**Account addition, Lollipop (API 22) and below**
+The native Contacts app hides the following UI fields when inserting or updating local raw contacts;
+- Event
+- Relation
+- Group memberships
+To enforce this behavior, this library ignores all of the above during inserts and updates for local
+raw contacts.
+
+**Lollipop (API 22) and below**
 
 When an Account is added, from a state where no accounts have yet been added to the system, the
 Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
@@ -189,15 +196,15 @@ there are any available. This may take a few seconds, whenever the Contacts Prov
 it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
 back to an Account.
 
-**Account addition, Marshmallow (API 23) and above**
+**Marshmallow (API 23) and above**
 
 The Contacts Provider no longer associates local contacts to an account when an account is or
-becomes available.
+becomes available. Local contacts remain local.
 
 **Account removal**
 
 Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
-Groups tables. This includes user Profile data in those tables.
+Groups tables locally. This includes user Profile data in those tables.
 
 **SyncColumns modifications**
 
@@ -734,12 +741,6 @@ across all copies of Android. Notes;
 
 Removing the Account will delete all of the associated rows in the Groups table.
 
-**Groups, no available accounts**
-
-The native Contacts app does not display the groups field when creating or updating raw contacts
-when there are no available accounts present. To enforce this behavior, this library does not allow
-creation of groups without associated accounts.
-
 **Groups, duplicate titles**
 
 The Contacts Provider allows multiple groups with the same title belonging to the same account to
@@ -775,7 +776,8 @@ dependent on the existence of a favorites group membership.
 
 #### Group memberships & Local RawContacts
 
-Local RawContacts may have a group membership to a default system group.
+Local RawContacts may have a group membership to the default system group of an Account without
+being associated with the Account...
 
 The native Contacts app may not have an edit-RawContact option for newly inserted RawContacts that
 have no group membership to the default group when an Account is available. Though, edits can still

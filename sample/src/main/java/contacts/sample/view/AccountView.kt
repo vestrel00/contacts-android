@@ -55,14 +55,14 @@ class AccountView @JvmOverloads constructor(
         }
 
     private fun setAccount() = launch {
-        val account = rawContact?.let { rawContact ->
-            Accounts(context, rawContact.isProfile)
+        val account = rawContact?.let {
+            Accounts(context, it.isProfile)
                 .queryWithPermission()
-                .accountForWithContext(rawContact)
+                .accountForWithContext(it)
         }
 
         text = if (account == null) {
-            "Local Account"
+            "Local Account (Device only)"
         } else {
             """
                 Account Name: ${account.name}

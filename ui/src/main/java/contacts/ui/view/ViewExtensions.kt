@@ -24,14 +24,16 @@ val View.activity: Activity?
     }
 
 /**
- * Sets [View.isEnabled] to this view group's children and all of their descendants.
+ * Sets [View.isEnabled] to this and this view group's descendants.
  */
-fun ViewGroup.setChildrenAndDescendantsEnabled(isEnabled: Boolean) {
+fun ViewGroup.setThisAndDescendantsEnabled(isEnabled: Boolean) {
+    this.isEnabled = isEnabled
     for (i in 0 until childCount) {
         val child = getChildAt(i)
-        child.isEnabled = isEnabled
         if (child is ViewGroup) {
-            child.setChildrenAndDescendantsEnabled(isEnabled)
+            child.setThisAndDescendantsEnabled(isEnabled)
+        } else {
+            child.isEnabled = isEnabled
         }
     }
 }

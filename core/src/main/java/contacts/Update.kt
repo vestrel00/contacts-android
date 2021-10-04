@@ -3,6 +3,7 @@ package contacts
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
+import contacts.accounts.Accounts
 import contacts.entities.MutableContact
 import contacts.entities.MutableRawContact
 import contacts.entities.custom.*
@@ -18,8 +19,10 @@ import contacts.util.unsafeLazy
  *
  * ## Permissions
  *
- * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
- * examples for brevity. All updates will do nothing if these permissions are not granted.
+ * The [ContactsPermissions.WRITE_PERMISSION] and
+ * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been granted
+ * already in these examples for brevity. All updates will do nothing if these permissions are not
+ * granted.
  *
  * ## Accounts
  *
@@ -261,7 +264,11 @@ private class UpdateImpl(
                 } else if (rawContact.isBlank && deleteBlanks) {
                     applicationContext.contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    applicationContext.updateRawContact(customDataRegistry, rawContact)
+                    applicationContext.updateRawContact(
+                        applicationContext,
+                        customDataRegistry,
+                        rawContact
+                    )
                 }
             } else {
                 results[INVALID_ID] = false
@@ -286,6 +293,7 @@ private class UpdateImpl(
  * if it does not yet exist.
  */
 internal fun Context.updateRawContact(
+    context: Context,
     customDataRegistry: CustomDataRegistry,
     rawContact: MutableRawContact
 ): Boolean {
@@ -294,6 +302,8 @@ internal fun Context.updateRawContact(
     }
 
     val isProfile = rawContact.isProfile
+    val account = Accounts(context, isProfile).query().accountFor(rawContact)
+
     val operations = arrayListOf<ContentProviderOperation>()
 
     operations.addAll(
@@ -308,17 +318,27 @@ internal fun Context.updateRawContact(
         )
     )
 
-    operations.addAll(
-        EventOperation(isProfile).updateInsertOrDelete(
-            rawContact.events, rawContact.id, contentResolver
+    if (account != null) {
+        // I'm not sure why the native Contacts app hides events from the UI for local raw contacts.
+        // The Contacts Provider does support having events for local raw contacts. Anyways, let's
+        // follow in the footsteps of the native Contacts app...
+        operations.addAll(
+            EventOperation(isProfile).updateInsertOrDelete(
+                rawContact.events, rawContact.id, contentResolver
+            )
         )
-    )
+    }
 
-    operations.addAll(
-        GroupMembershipOperation(isProfile).updateInsertOrDelete(
-            rawContact.groupMemberships, rawContact.id, this
+    if (account != null) {
+        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
+        // It should not be possible for consumers to get access to group memberships.
+        // The Contacts Provider does support having events for local raw contacts.
+        operations.addAll(
+            GroupMembershipOperation(isProfile).updateInsertOrDelete(
+                rawContact.groupMemberships, rawContact.id, this
+            )
         )
-    )
+    }
 
     operations.addAll(
         ImOperation(isProfile).updateInsertOrDelete(
@@ -356,11 +376,16 @@ internal fun Context.updateRawContact(
         )
     )
 
-    operations.addAll(
-        RelationOperation(isProfile).updateInsertOrDelete(
-            rawContact.relations, rawContact.id, contentResolver
+    if (account != null) {
+        // I'm not sure why the native Contacts app hides relations from the UI for local raw
+        // contacts. The Contacts Provider does support having events for local raw contacts.
+        // Anyways, let's follow in the footsteps of the native Contacts app...
+        operations.addAll(
+            RelationOperation(isProfile).updateInsertOrDelete(
+                rawContact.relations, rawContact.id, contentResolver
+            )
         )
-    )
+    }
 
     operations.add(
         SipAddressOperation(isProfile).updateInsertOrDelete(
@@ -418,7 +443,7 @@ private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
 
 private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy {  rawContactIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
 
     override fun isSuccessful(rawContact: MutableRawContact): Boolean = isSuccessful(rawContact.id)
 
