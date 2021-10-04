@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.
  */
+// TODO Replace with ContactsToDisplayActivity
 class AccountsActivity : BaseActivity() {
 
     // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.

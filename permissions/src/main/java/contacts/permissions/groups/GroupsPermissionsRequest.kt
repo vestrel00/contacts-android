@@ -1,10 +1,7 @@
 package contacts.permissions.groups
 
 import contacts.ContactsPermissions
-import contacts.groups.Groups
-import contacts.groups.GroupsInsert
-import contacts.groups.GroupsQuery
-import contacts.groups.GroupsUpdate
+import contacts.groups.*
 import contacts.permissions.accounts.requestGetAccountsPermission
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
@@ -51,4 +48,18 @@ suspend fun Groups.updateWithPermission(): GroupsUpdate {
     }
 
     return update()
+}
+
+/**
+ * If [ContactsPermissions.WRITE_PERMISSION] is not yet  granted, suspends the current coroutine,
+ * requests for the permissions, and then returns a new [GroupsDelete] instance.
+ *
+ * If permissions are already granted, then immediately returns a new [GroupsDelete] instance.
+ */
+suspend fun Groups.deleteWithPermission(): GroupsDelete? {
+    if (!permissions.canUpdateDelete()) {
+        applicationContext.requestWritePermission()
+    }
+
+    return delete()
 }

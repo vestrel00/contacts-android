@@ -2,63 +2,8 @@ Move async UI code in sample to new ui-async module. Don’t forget to remove th
 
 #### Complete sample app
 
-Build the sample app as simple as possible, referencing new and older versions to ensure all
-functionality is included (though may look different).
-
-- View Contact
-    - Star (favorite) contact
-    - Edit
-    - Join/Separate (API 22-), Merge/Unmerge (API 23), Link/unlink (API 24+) Contacts.
-    - Delete
-    - Share (post v1)
-    - Create shortcut / Place on Home screen
-    - Set ringtone
-    - Route to voicemail / All calls to voicemail
-    - Press action for each data
-    - Long press options for each data
-      - Data
-      - Copy to clipboard
-      - Set default / clear default (isSuperPrimary)
-      
-- Edit Contact / RawContact
-    - Saving to which account (uneditable)
-    - Combined edit mode (editing multiple linked raw contacts) available in API 24 but removed in
-      API (28?) and not in API 22. Try all supported API levels! Choose behavior of simplest API. 
-      Document this.
-    - Save
-    - Discard changes
-    
-- Create contact
-    - Saving to which account (editable)
-        - What happens to fields (groups) that have been filled out when different account is picked?
-        - Preference for default account for new contacts
-        
-- Contacts list
-    - Long press options
-      - Share (post v1)
-      - Delete
-      - Link (when multiple selected)
-                
-- View starred (favorites only) contacts
-
-- No account & no contacts screen
-    - Add account
-
-- Settings (see native Contacts App pre Nougat and post Nougat)
-  - User profile
-  - Accounts
-  - Default account for new contacts
-    - Contacts to display
-        - All contacts
-        - ... account(s) ...
-        - Customize (Define custom view)
-            - ... account(s) ...
-                - ... groups ...
-                    - Long press -> Remove sync group
-                    - More groups... (Add sync group)
-                    - All other contacts
-  - Sort by first or last name
-  - Name format first name first or last name first
+Build the sample app as simple as possible. Use API 30 as reference- study behavior when there are
+0, 1, or more accounts
 
 ----------------------------------------------------------------------------------------------------
 

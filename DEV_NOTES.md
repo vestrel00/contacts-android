@@ -791,13 +791,13 @@ RawContact that has a group membership AND a RawContact that has no group member
 
 #### Groups; Deletion
 
-Prior to Android API version TODO, group deletion is unpredictable. Groups that are marked for
+Prior to Android 8.0 (Oreo, API 26), group deletion is unpredictable. Groups that are marked for
 deletion remain in the DB and is still shown in the native Contacts app. Sometimes they do get
 deleted at some point but the trigger for the actual deletion eludes me.
 
-The native Contacts app (prior to API version TODO) does NOT support group deletion or updates
-perhaps because groups syncing isn't implemented or at least not to the same extent as contacts
-syncing. Therefore, this library will also not support group deletion for API versions lower than TODO.
+The native Contacts app (prior to API 26) does NOT support group deletion perhaps because groups
+syncing isn't implemented or at least not to the same extent as contacts syncing. Therefore, this
+library will also not support group deletion for API versions lower than 26.
 
 #### Groups; UI
 

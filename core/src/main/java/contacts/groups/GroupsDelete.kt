@@ -8,10 +8,6 @@ import contacts.entities.operation.GroupsOperation
 import contacts.util.applyBatch
 import contacts.util.unsafeLazy
 
-// TODO this works with newer versions of Android but not with older versions.
-// Figure out what version of Android this started working and then gate it!
-// Use the native contacts app to figure it out!
-// TODO Update this to match GroupsUpdate in terms of readOnly usages
 /**
  * Deletes one or more groups from the groups table.
  *
@@ -29,8 +25,20 @@ import contacts.util.unsafeLazy
  *      .groups(groups)
  *      .commit()
  * ```
+ *
+ * ## Notes
+ *
+ * Prior to Android 8.0 (Oreo, API 26), group deletion is unpredictable. Groups that are marked for
+ * deletion remain in the DB and is still shown in the native Contacts app. Sometimes they do get
+ * deleted at some point but the trigger for the actual deletion eludes me.
+ *
+ * The native Contacts app (prior to API 26) does NOT support group deletion perhaps because groups
+ * syncing isn't implemented or at least not to the same extent as contacts syncing. Therefore, this
+ * library will also not support group deletion for API versions lower than 26.
+ *
+ * DO NOT USE THIS ON API VERSION BELOW 26! Or use at your own peril =)
  */
-internal interface GroupsDelete {
+interface GroupsDelete {
 
     /**
      * Adds the given [groups] to the delete queue, which will be deleted on [commit].
@@ -116,7 +124,13 @@ private class GroupsDeleteImpl(
     override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<Group>): GroupsDelete = apply {
-        groupIds.addAll(groups.map { it.id ?: INVALID_ID })
+        groupIds.addAll(groups.map {
+            if (it.readOnly) { // do not attempt to delete read-only groups
+                INVALID_ID
+            } else {
+                it.id ?: INVALID_ID
+            }
+        })
     }
 
     override fun commit(): GroupsDelete.Result {

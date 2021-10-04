@@ -1,6 +1,5 @@
 package contacts.util
 
-import android.annotation.TargetApi
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.os.Build
@@ -385,7 +384,8 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
  *
  * Returns null if the [Contacts.DISPLAY_NAME_SOURCE] is not [DisplayNameSources.STRUCTURED_NAME].
  */
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+// [ANDROID X] @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+// (not using annotation to avoid dependency on androidx.annotation)
 private fun nameRawContactId(context: Context, contactId: Long): Long? =
     context.contentResolver.query(
         Table.Contacts,

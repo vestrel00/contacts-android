@@ -1,16 +1,17 @@
 package contacts.groups
 
 import android.content.Context
+import android.os.Build
 import contacts.ContactsPermissions
 
 /**
- * Provides new [GroupsQuery], [GroupsInsert], and [GroupsUpdate] instances.
+ * Provides new [GroupsQuery], [GroupsInsert], [GroupsUpdate], and [GroupsDelete] instances.
  *
  * ## Permissions
  *
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
- * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert] and
- * [update].
+ * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
+ *   [update], and [delete].
  *
  * Use [permissions] convenience functions to check for required permissions.
  *
@@ -36,12 +37,10 @@ interface Groups {
      */
     fun update(): GroupsUpdate
 
-    /*
     /**
-     * Returns a new [GroupsDelete] instance.
+     * Returns a new [GroupsDelete] instance if API level is 26 or above. Returns null otherwise.
      */
-    fun delete(): GroupsDelete
-     */
+    fun delete(): GroupsDelete?
 
     /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
@@ -73,5 +72,9 @@ private class GroupsImpl(
 
     override fun update() = GroupsUpdate(applicationContext)
 
-    // override fun delete(): GroupsDelete = GroupsDelete(applicationContext)
+    override fun delete() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        GroupsDelete(applicationContext)
+    } else {
+        null
+    }
 }

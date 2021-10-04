@@ -38,6 +38,7 @@ import kotlin.coroutines.CoroutineContext
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
  * move this to a separate module (contacts-ui-async).
  */
+// TODO Support selecting account when creating new RawContact
 class AccountView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -62,13 +63,16 @@ class AccountView @JvmOverloads constructor(
         }
 
         text = if (account == null) {
-            "Local Account (Device only)"
+            """
+                Local account (device only)
+                Not synced
+            """
         } else {
             """
                 Account Name: ${account.name}
                 Account Type: ${account.type}
-            """.trimIndent()
-        }
+            """
+        }.trimIndent()
     }
 
     override fun onDetachedFromWindow() {

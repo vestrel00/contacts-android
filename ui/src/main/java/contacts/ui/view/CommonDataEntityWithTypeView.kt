@@ -10,9 +10,9 @@ import android.widget.Spinner
 import contacts.entities.CommonDataEntity
 import contacts.entities.MutableCommonDataEntityWithType
 import contacts.ui.R
-import contacts.ui.util.CustomLabelInputDialog
 import contacts.ui.entities.CommonDataEntityType
 import contacts.ui.entities.CommonDataEntityTypeFactory
+import contacts.ui.util.CustomLabelInputDialog
 
 /**
  * A [RelativeLayout] that displays a [MutableCommonDataEntityWithType] [K] that has a

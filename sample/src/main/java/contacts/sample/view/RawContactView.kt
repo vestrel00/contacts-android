@@ -7,16 +7,14 @@ import android.view.View
 import android.widget.LinearLayout
 import contacts.accounts.Accounts
 import contacts.async.accounts.accountForWithContext
-import contacts.entities.MutableName
-import contacts.entities.MutableNickname
-import contacts.entities.MutableOrganization
-import contacts.entities.MutableRawContact
+import contacts.entities.*
 import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.R
 import contacts.ui.view.*
 import contacts.util.setName
 import contacts.util.setNickname
 import contacts.util.setOrganization
+import contacts.util.setSipAddress
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -49,6 +47,7 @@ import kotlin.coroutines.CoroutineContext
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
  * move this to a separate module (contacts-ui-async).
  */
+// TODO make this extendable for custom views after moving this to ui-async module
 class RawContactView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -129,7 +128,8 @@ class RawContactView @JvmOverloads constructor(
         organizationView.data =
             rawContact.organization ?: MutableOrganization().apply(rawContact::setOrganization)
         phonesView.dataList = rawContact.phones
-        sipAddressView.data = rawContact.sipAddress
+        sipAddressView.data =
+            rawContact.sipAddress ?: MutableSipAddress().apply(rawContact::setSipAddress)
         emailsView.dataList = rawContact.emails
         addressesView.dataList = rawContact.addresses
         imsView.dataList = rawContact.ims

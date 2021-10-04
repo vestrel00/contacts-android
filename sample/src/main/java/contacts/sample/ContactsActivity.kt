@@ -11,10 +11,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
-import contacts.Contacts
-import contacts.ContactsFields
-import contacts.Fields
-import contacts.asc
+import contacts.*
 import contacts.async.findWithContext
 import contacts.debug.logContactsProviderTables
 import contacts.entities.Contact
