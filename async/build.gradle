@@ -1,7 +1,10 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'maven-publish'
 }
+
+apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
     compileSdkVersion versions.build.android.compileSdk

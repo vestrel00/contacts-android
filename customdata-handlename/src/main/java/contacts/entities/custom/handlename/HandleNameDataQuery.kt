@@ -1,7 +1,7 @@
 package contacts.entities.custom.handlename
 
-import contacts.data.CommonDataQuery
-import contacts.data.DataQuery
+import contacts.core.data.CommonDataQuery
+import contacts.core.data.DataQuery
 
 /**
  * Queries for [HandleName]s.

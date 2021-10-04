@@ -2,11 +2,11 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import contacts.entities.Group
-import contacts.entities.MutableGroup
-import contacts.groups.GroupsInsert
-import contacts.util.group
-import contacts.util.groups
+import contacts.core.entities.Group
+import contacts.core.entities.MutableGroup
+import contacts.core.groups.GroupsInsert
+import contacts.core.util.group
+import contacts.core.util.groups
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

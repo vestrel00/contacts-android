@@ -1,9 +1,9 @@
 package contacts.entities.custom.handlename
 
-import contacts.entities.MutableRawContact
-import contacts.entities.RawContact
-import contacts.entities.custom.CustomDataRegistry
-import contacts.entities.custom.GlobalCustomDataRegistry
+import contacts.core.entities.MutableRawContact
+import contacts.core.entities.RawContact
+import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the sequence of [HandleName]s of this RawContact. Empty if none available (e.g. does not

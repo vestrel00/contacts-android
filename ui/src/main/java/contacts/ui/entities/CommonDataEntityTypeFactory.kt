@@ -1,7 +1,7 @@
 package contacts.ui.entities
 
 import android.content.res.Resources
-import contacts.entities.*
+import contacts.core.entities.*
 
 /**
  * Creates instance of [CommonDataEntityType].

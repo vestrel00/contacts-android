@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.ListView.*
-import contacts.accounts.Accounts
+import contacts.core.accounts.Accounts
 import contacts.permissions.accounts.queryWithPermission
 import kotlinx.coroutines.launch
 
@@ -25,7 +25,8 @@ import kotlinx.coroutines.launch
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.
  */
-// TODO Replace with ContactsToDisplayActivity
+// TODO This is ugly and may be confusing. Just do the same thing that the native Contacts app is doing!
+// Scrap this!!!
 class AccountsActivity : BaseActivity() {
 
     // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.

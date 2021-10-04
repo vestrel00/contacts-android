@@ -2,10 +2,10 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import contacts.entities.CommonDataEntity
-import contacts.entities.custom.CustomDataRegistry
-import contacts.entities.custom.GlobalCustomDataRegistry
-import contacts.util.refresh
+import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.GlobalCustomDataRegistry
+import contacts.core.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

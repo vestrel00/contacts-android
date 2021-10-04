@@ -1,6 +1,6 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.custom.CustomDataCountRestriction
+import contacts.core.entities.custom.CustomDataCountRestriction
 
 /**
  * A RawContact may have at most 1 gender.

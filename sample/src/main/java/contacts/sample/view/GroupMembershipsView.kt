@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.util.groupsWithContext
-import contacts.entities.GroupMembership
+import contacts.core.entities.GroupMembership
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

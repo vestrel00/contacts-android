@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import android.widget.EditText
-import contacts.entities.MutableOrganization
+import contacts.core.entities.MutableOrganization
 import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 

@@ -1,7 +1,7 @@
 package contacts.async.data
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.data.DataDelete
+import contacts.core.data.DataDelete
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

@@ -1,7 +1,7 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.MimeType
-import contacts.entities.custom.AbstractCustomDataOperation
+import contacts.core.entities.MimeType
+import contacts.core.entities.custom.AbstractCustomDataOperation
 
 internal class GenderDataOperationFactory : AbstractCustomDataOperation.Factory<GenderField,
         MutableGender> {

@@ -1,6 +1,6 @@
 package contacts.async
 
-import contacts.Delete
+import contacts.core.Delete
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

@@ -1,0 +1,20 @@
+// Going to use JitPack.io because it's so simple. Less "non-code" in the repo, the better! This
+// definitely is in the spirit of Contacts, Reborn! On a side note, we've come a long way...
+// Publishing artifacts used to be... a headache. Now it's just come to this XD. All we need to do
+// no is apply this script into every library module. That's it... HOW CAN ANYONE NOT BE EXCITED
+// ABOUT THIS! IT IS MIND BLOWING! Okay, enough talk. Time for the publish code... But really...
+// JitPack + GitHub = LOVE
+
+// Additionally, the maven-publish plugin needs to be applied to the library module.
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
+}
+
+// That's really it. More in https://jitpack.io/docs/ANDROID/

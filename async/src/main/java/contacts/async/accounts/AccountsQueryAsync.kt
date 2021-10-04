@@ -1,9 +1,9 @@
 package contacts.async.accounts
 
 import android.accounts.Account
-import contacts.accounts.AccountsQuery
 import contacts.async.ASYNC_DISPATCHER
-import contacts.entities.RawContactEntity
+import contacts.core.accounts.AccountsQuery
+import contacts.core.entities.RawContactEntity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -22,7 +22,7 @@ suspend fun AccountsQuery.accountForWithContext(
 /**
  * Suspends the current coroutine, performs the operation in the given [context], then returns the
  * result.
- *
+ *´
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [AccountsQuery.accountsFor].

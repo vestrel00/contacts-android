@@ -1,9 +1,9 @@
 package contacts.entities.custom.gender
 
-import contacts.AbstractCustomDataField
-import contacts.AbstractCustomDataField.ColumnName
-import contacts.AbstractCustomDataFieldSet
-import contacts.entities.MimeType
+import contacts.core.AbstractCustomDataField
+import contacts.core.AbstractCustomDataField.ColumnName
+import contacts.core.AbstractCustomDataFieldSet
+import contacts.core.entities.MimeType
 
 data class GenderField internal constructor(private val columnName: ColumnName) :
     AbstractCustomDataField(columnName) {

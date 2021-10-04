@@ -1,6 +1,6 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.custom.CustomDataRegistry.Entry
+import contacts.core.entities.custom.CustomDataRegistry.Entry
 
 // Keep this internal. Consumers don't need to see this stuff. Less visibility the better!
 internal class GenderEntry : Entry<GenderField, GenderDataCursor, MutableGender> {

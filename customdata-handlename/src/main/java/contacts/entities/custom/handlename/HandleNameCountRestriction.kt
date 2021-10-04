@@ -1,6 +1,6 @@
 package contacts.entities.custom.handlename
 
-import contacts.entities.custom.CustomDataCountRestriction
+import contacts.core.entities.custom.CustomDataCountRestriction
 
 /**
  * A RawContact may have 0, 1, or more handle names.

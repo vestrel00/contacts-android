@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
 import android.widget.RelativeLayout
-import contacts.entities.MutableCommonDataEntity
+import contacts.core.entities.MutableCommonDataEntity
 import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 

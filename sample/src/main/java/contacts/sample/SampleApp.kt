@@ -1,7 +1,7 @@
 package contacts.sample
 
 import android.app.Application
-import contacts.entities.custom.GlobalCustomDataRegistry
+import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.entities.custom.gender.GenderRegistration
 import contacts.entities.custom.handlename.HandleNameRegistration
 

@@ -2,9 +2,9 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import contacts.entities.CommonDataEntity
-import contacts.util.clearDefault
-import contacts.util.setAsDefault
+import contacts.core.entities.CommonDataEntity
+import contacts.core.util.clearDefault
+import contacts.core.util.setAsDefault
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

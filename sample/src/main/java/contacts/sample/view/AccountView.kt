@@ -4,9 +4,9 @@ import android.accounts.Account
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
-import contacts.accounts.Accounts
 import contacts.async.accounts.accountForWithContext
-import contacts.entities.RawContactEntity
+import contacts.core.accounts.Accounts
+import contacts.core.entities.RawContactEntity
 import contacts.permissions.accounts.queryWithPermission
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext

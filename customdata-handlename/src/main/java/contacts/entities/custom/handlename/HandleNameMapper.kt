@@ -1,7 +1,7 @@
 package contacts.entities.custom.handlename
 
 import android.database.Cursor
-import contacts.entities.custom.AbstractCustomEntityMapper
+import contacts.core.entities.custom.AbstractCustomEntityMapper
 
 internal class HandleNameMapperFactory :
     AbstractCustomEntityMapper.Factory<HandleNameField, HandleNameDataCursor, MutableHandleName> {

@@ -1,7 +1,7 @@
 package contacts.entities.custom.gender
 
 import android.database.Cursor
-import contacts.entities.custom.AbstractCustomEntityMapper
+import contacts.core.entities.custom.AbstractCustomEntityMapper
 
 internal class GenderMapperFactory :
     AbstractCustomEntityMapper.Factory<GenderField, GenderDataCursor, MutableGender> {

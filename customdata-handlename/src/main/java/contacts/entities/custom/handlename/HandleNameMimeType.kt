@@ -1,6 +1,6 @@
 package contacts.entities.custom.handlename
 
-import contacts.entities.MimeType
+import contacts.core.entities.MimeType
 
 internal object HandleNameMimeType : MimeType.Custom() {
 

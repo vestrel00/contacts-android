@@ -1,7 +1,7 @@
 package contacts.async.accounts
 
-import contacts.accounts.AccountsRawContactsQuery
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.accounts.AccountsRawContactsQuery
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

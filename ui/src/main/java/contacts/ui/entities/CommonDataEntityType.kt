@@ -1,6 +1,6 @@
 package contacts.ui.entities
 
-import contacts.entities.CommonDataEntity
+import contacts.core.entities.CommonDataEntity
 
 /**
  * A wrapper around a [CommonDataEntity.Type] [T] that pairs the underlying type with its string

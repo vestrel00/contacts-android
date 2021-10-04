@@ -1,6 +1,6 @@
 package contacts.entities.custom.handlename
 
-import contacts.entities.custom.CustomDataRegistry.Entry
+import contacts.core.entities.custom.CustomDataRegistry.Entry
 
 // Keep this internal. Consumers don't need to see this stuff. Less visibility the better!
 internal class HandleNameEntry : Entry<HandleNameField, HandleNameDataCursor, MutableHandleName> {

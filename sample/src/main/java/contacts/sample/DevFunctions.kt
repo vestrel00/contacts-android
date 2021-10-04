@@ -1,11 +1,11 @@
 package contacts.sample
 
 import android.content.Context
-import contacts.Contacts
 import contacts.async.commitInOneTransactionWithContext
 import contacts.async.commitWithContext
-import contacts.entities.*
-import contacts.util.*
+import contacts.core.Contacts
+import contacts.core.entities.*
+import contacts.core.util.*
 import java.util.*
 
 // TODO Delete this file before releasing code to public!

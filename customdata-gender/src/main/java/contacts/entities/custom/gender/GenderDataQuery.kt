@@ -1,7 +1,7 @@
 package contacts.entities.custom.gender
 
-import contacts.data.CommonDataQuery
-import contacts.data.DataQuery
+import contacts.core.data.CommonDataQuery
+import contacts.core.data.DataQuery
 
 /**
  * Queries for [Gender]s.

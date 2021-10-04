@@ -1,8 +1,8 @@
 package contacts.permissions.accounts
 
 import android.content.Context
-import contacts.ContactsPermissions
-import contacts.accounts.*
+import contacts.core.ContactsPermissions
+import contacts.core.accounts.*
 import contacts.permissions.R
 import contacts.permissions.requestPermission
 import contacts.permissions.requestReadPermission

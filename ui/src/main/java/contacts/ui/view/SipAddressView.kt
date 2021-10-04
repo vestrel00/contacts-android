@@ -3,7 +3,7 @@ package contacts.ui.view
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import contacts.entities.MutableSipAddress
+import contacts.core.entities.MutableSipAddress
 import contacts.ui.R
 
 /**

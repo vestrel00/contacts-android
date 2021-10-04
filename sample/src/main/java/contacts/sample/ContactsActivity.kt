@@ -11,14 +11,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
-import contacts.*
 import contacts.async.findWithContext
-import contacts.debug.logContactsProviderTables
-import contacts.entities.Contact
+import contacts.core.Contacts
+import contacts.core.ContactsFields
+import contacts.core.Fields
+import contacts.core.asc
+import contacts.core.entities.Contact
+import contacts.core.util.emails
+import contacts.core.util.phones
 import contacts.permissions.broadQueryWithPermission
 import contacts.ui.text.AbstractTextWatcher
-import contacts.util.emails
-import contacts.util.phones
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -148,7 +150,7 @@ class ContactsActivity : BaseActivity() {
             // Uncommenting this may make the UI thread choppy because it may result in logging
             // thousands of table rows. Only use this for debugging purposes.
             // TODO Make sure to comment out the below and remove all logging before going public!
-            this@ContactsActivity.logContactsProviderTables()
+            // this@ContactsActivity.logContactsProviderTables()
         }
     }
 

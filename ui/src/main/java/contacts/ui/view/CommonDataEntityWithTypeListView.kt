@@ -3,8 +3,8 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import contacts.entities.CommonDataEntity
-import contacts.entities.MutableCommonDataEntityWithType
+import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.MutableCommonDataEntityWithType
 import contacts.ui.entities.CommonDataEntityFactory
 
 /**

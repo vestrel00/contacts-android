@@ -1,6 +1,6 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.custom.CustomDataFieldMapper
+import contacts.core.entities.custom.CustomDataFieldMapper
 
 internal class GenderFieldMapper : CustomDataFieldMapper<GenderField, MutableGender> {
 

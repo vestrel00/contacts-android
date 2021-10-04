@@ -1,7 +1,7 @@
 package contacts.entities.custom.gender
 
 import android.database.Cursor
-import contacts.entities.custom.AbstractCustomDataCursor
+import contacts.core.entities.custom.AbstractCustomDataCursor
 
 internal class GenderDataCursor(cursor: Cursor) : AbstractCustomDataCursor<GenderField>(cursor) {
 

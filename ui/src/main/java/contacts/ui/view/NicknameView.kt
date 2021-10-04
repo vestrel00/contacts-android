@@ -3,7 +3,7 @@ package contacts.ui.view
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import contacts.entities.MutableNickname
+import contacts.core.entities.MutableNickname
 import contacts.ui.R
 
 /**

@@ -1,7 +1,7 @@
 package contacts.async.groups
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.groups.GroupsDelete
+import contacts.core.groups.GroupsDelete
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

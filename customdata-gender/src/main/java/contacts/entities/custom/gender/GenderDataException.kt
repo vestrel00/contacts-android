@@ -1,6 +1,6 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.custom.CustomDataException
+import contacts.core.entities.custom.CustomDataException
 
 /**
  * Exception thrown for any gender data errors.

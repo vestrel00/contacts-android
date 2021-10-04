@@ -1,10 +1,10 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.Contact
-import contacts.entities.MutableContact
-import contacts.entities.RawContact
-import contacts.entities.custom.CustomDataRegistry
-import contacts.entities.custom.GlobalCustomDataRegistry
+import contacts.core.entities.Contact
+import contacts.core.entities.MutableContact
+import contacts.core.entities.RawContact
+import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the sequence of [Gender]s from all [Contact.rawContacts] ordered by the [Gender.id].

@@ -1,6 +1,6 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.CustomDataRegistry
 
 /**
  * Provides functions for consumers to register [Gender] components to a [CustomDataRegistry]

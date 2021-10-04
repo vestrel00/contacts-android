@@ -2,7 +2,10 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-parcelize'
+    id 'maven-publish'
 }
+
+apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
     compileSdkVersion versions.build.android.compileSdk
@@ -15,6 +18,14 @@ android {
     compileOptions {
         sourceCompatibility versions.build.java.sourceCompatibility
         targetCompatibility versions.build.java.targetCompatibility
+    }
+
+    lintOptions {
+        // This class implements Parcelable but does not provide a CREATOR field [ParcelCreator]
+        // Lint does not detect that Parcelize is generating the Parcelable implementations...
+        // FIXME? Revisit this later after upgrading all dependencies and tools to the latest
+        // version. That might do the trick?
+        abortOnError false
     }
 }
 

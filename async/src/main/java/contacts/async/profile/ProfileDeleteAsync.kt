@@ -1,7 +1,7 @@
 package contacts.async.profile
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.profile.ProfileDelete
+import contacts.core.profile.ProfileDelete
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async

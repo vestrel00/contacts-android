@@ -3,8 +3,8 @@ package contacts.ui.view
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import contacts.entities.Email
-import contacts.entities.MutableEmail
+import contacts.core.entities.Email
+import contacts.core.entities.MutableEmail
 import contacts.ui.R
 import contacts.ui.entities.EmailFactory
 import contacts.ui.entities.EmailTypeFactory

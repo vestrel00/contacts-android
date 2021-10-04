@@ -1,13 +1,10 @@
 buildscript {
-
-    // We could declare these in Kotlin objects in buildSrc/ but let's just declare it here.
-    // We'll utilize the buildSrc/ if absolutely necessary.
     ext {
         versions = [
                 build : [
                         java   : [
-                                targetCompatibility: '1.7',
-                                sourceCompatibility: '1.7'
+                                targetCompatibility: JavaVersion.VERSION_1_8,
+                                sourceCompatibility: JavaVersion.VERSION_1_8
                         ],
                         android: [
                                 minSdk    : 19,
@@ -45,7 +42,7 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -57,7 +54,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

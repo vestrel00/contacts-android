@@ -5,16 +5,16 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import contacts.accounts.Accounts
 import contacts.async.accounts.accountForWithContext
-import contacts.entities.*
+import contacts.core.accounts.Accounts
+import contacts.core.entities.*
+import contacts.core.util.setName
+import contacts.core.util.setNickname
+import contacts.core.util.setOrganization
+import contacts.core.util.setSipAddress
 import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.R
 import contacts.ui.view.*
-import contacts.util.setName
-import contacts.util.setNickname
-import contacts.util.setOrganization
-import contacts.util.setSipAddress
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

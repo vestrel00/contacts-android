@@ -1,7 +1,7 @@
 package contacts.async.data
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.data.DataUpdate
+import contacts.core.data.DataUpdate
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

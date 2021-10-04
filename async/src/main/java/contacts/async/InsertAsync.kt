@@ -1,6 +1,6 @@
 package contacts.async
 
-import contacts.Insert
+import contacts.core.Insert
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

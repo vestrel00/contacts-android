@@ -1,6 +1,6 @@
 package contacts.entities.custom.handlename
 
-import contacts.entities.custom.CustomDataFieldMapper
+import contacts.core.entities.custom.CustomDataFieldMapper
 
 internal class HandleNameFieldMapper : CustomDataFieldMapper<HandleNameField, MutableHandleName> {
 

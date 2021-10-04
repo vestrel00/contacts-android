@@ -1,7 +1,7 @@
 package contacts.async
 
-import contacts.Query
-import contacts.entities.Contact
+import contacts.core.Query
+import contacts.core.entities.Contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

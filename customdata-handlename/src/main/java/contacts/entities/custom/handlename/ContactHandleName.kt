@@ -1,9 +1,9 @@
 package contacts.entities.custom.handlename
 
-import contacts.entities.Contact
-import contacts.entities.MutableContact
-import contacts.entities.custom.CustomDataRegistry
-import contacts.entities.custom.GlobalCustomDataRegistry
+import contacts.core.entities.Contact
+import contacts.core.entities.MutableContact
+import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the sequence of [HandleName]s from all [Contact.rawContacts] ordered by the

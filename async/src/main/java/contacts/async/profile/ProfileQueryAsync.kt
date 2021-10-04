@@ -1,8 +1,8 @@
 package contacts.async.profile
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.entities.Contact
-import contacts.profile.ProfileQuery
+import contacts.core.entities.Contact
+import contacts.core.profile.ProfileQuery
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

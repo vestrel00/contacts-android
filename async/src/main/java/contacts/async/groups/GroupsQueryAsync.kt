@@ -1,7 +1,7 @@
 package contacts.async.groups
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.groups.GroupsQuery
+import contacts.core.groups.GroupsQuery
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

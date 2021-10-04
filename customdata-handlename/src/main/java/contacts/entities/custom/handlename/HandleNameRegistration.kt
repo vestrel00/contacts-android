@@ -1,6 +1,6 @@
 package contacts.entities.custom.handlename
 
-import contacts.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.CustomDataRegistry
 
 /**
  * Provides functions for consumers to register [HandleName] components to a [CustomDataRegistry]

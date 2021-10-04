@@ -1,9 +1,9 @@
 package contacts.async.data
 
-import contacts.CommonDataField
 import contacts.async.ASYNC_DISPATCHER
-import contacts.data.CommonDataQuery
-import contacts.entities.CommonDataEntity
+import contacts.core.CommonDataField
+import contacts.core.data.CommonDataQuery
+import contacts.core.entities.CommonDataEntity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

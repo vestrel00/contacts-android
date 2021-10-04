@@ -7,7 +7,7 @@ import android.widget.ImageView
 import contacts.async.util.photoThumbnailBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
-import contacts.entities.MutableRawContact
+import contacts.core.entities.MutableRawContact
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 

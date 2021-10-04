@@ -1,6 +1,6 @@
 package contacts.ui.entities
 
-import contacts.entities.*
+import contacts.core.entities.*
 
 /**
  * Creates instances of [CommonDataEntity].

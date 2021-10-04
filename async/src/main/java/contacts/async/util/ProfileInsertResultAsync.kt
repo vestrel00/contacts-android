@@ -2,13 +2,13 @@ package contacts.async.util
 
 import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
-import contacts.entities.Contact
-import contacts.entities.RawContact
-import contacts.entities.custom.CustomDataRegistry
-import contacts.entities.custom.GlobalCustomDataRegistry
-import contacts.profile.ProfileInsert
-import contacts.util.contact
-import contacts.util.rawContact
+import contacts.core.entities.Contact
+import contacts.core.entities.RawContact
+import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.GlobalCustomDataRegistry
+import contacts.core.profile.ProfileInsert
+import contacts.core.util.contact
+import contacts.core.util.rawContact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

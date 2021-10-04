@@ -1,10 +1,10 @@
 package contacts.permissions.data
 
-import contacts.ContactsPermissions
-import contacts.data.Data
-import contacts.data.DataDelete
-import contacts.data.DataQuery
-import contacts.data.DataUpdate
+import contacts.core.ContactsPermissions
+import contacts.core.data.Data
+import contacts.core.data.DataDelete
+import contacts.core.data.DataQuery
+import contacts.core.data.DataUpdate
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
 

@@ -3,7 +3,7 @@ package contacts.ui.view
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import contacts.entities.MutableWebsite
+import contacts.core.entities.MutableWebsite
 import contacts.ui.R
 import contacts.ui.entities.WebsiteFactory
 

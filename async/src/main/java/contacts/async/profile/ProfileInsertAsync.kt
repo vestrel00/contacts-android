@@ -1,7 +1,7 @@
 package contacts.async.profile
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.profile.ProfileInsert
+import contacts.core.profile.ProfileInsert
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

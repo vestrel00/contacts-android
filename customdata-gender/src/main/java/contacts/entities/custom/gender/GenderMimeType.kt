@@ -1,6 +1,6 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.MimeType
+import contacts.core.entities.MimeType
 
 internal object GenderMimeType : MimeType.Custom() {
 

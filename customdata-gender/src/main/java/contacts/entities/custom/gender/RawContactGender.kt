@@ -1,9 +1,9 @@
 package contacts.entities.custom.gender
 
-import contacts.entities.MutableRawContact
-import contacts.entities.RawContact
-import contacts.entities.custom.CustomDataRegistry
-import contacts.entities.custom.GlobalCustomDataRegistry
+import contacts.core.entities.MutableRawContact
+import contacts.core.entities.RawContact
+import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the [Gender] of this RawContact. Null if not available (e.g. does not exist in the

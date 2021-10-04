@@ -1,7 +1,7 @@
 package contacts.permissions
 
 import android.content.Context
-import contacts.*
+import contacts.core.*
 import contacts.permissions.accounts.requestGetAccountsPermission
 
 /**
@@ -34,8 +34,9 @@ suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
 
 /**
  * If [ContactsPermissions.WRITE_PERMISSION] and
- * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted, suspends the
- * current coroutine, requests for the permissions, and then returns a new [Insert] instance.
+ * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
+ * suspends the current coroutine, requests for the permissions, and then returns a new [Insert]
+ * instance.
  *
  * If permissions are already granted, then immediately returns a new [Insert] instance.
  */

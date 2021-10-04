@@ -2,10 +2,10 @@ package contacts.entities.custom.gender
 
 import android.content.res.Resources
 import android.provider.ContactsContract
-import contacts.entities.CommonDataEntity
-import contacts.entities.MimeType
-import contacts.entities.custom.CustomDataEntity
-import contacts.entities.custom.MutableCustomDataEntityWithType
+import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.MimeType
+import contacts.core.entities.custom.CustomDataEntity
+import contacts.core.entities.custom.MutableCustomDataEntityWithType
 import contacts.entities.custom.gender.Gender.Type
 import contacts.entities.custom.gender.Gender.Type.*
 import kotlinx.parcelize.IgnoredOnParcel

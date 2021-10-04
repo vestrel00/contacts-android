@@ -1,7 +1,7 @@
 package contacts.permissions.groups
 
-import contacts.ContactsPermissions
-import contacts.groups.*
+import contacts.core.ContactsPermissions
+import contacts.core.groups.*
 import contacts.permissions.accounts.requestGetAccountsPermission
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
@@ -22,8 +22,9 @@ suspend fun Groups.queryWithPermission(): GroupsQuery {
 
 /**
  * If [ContactsPermissions.WRITE_PERMISSION] and
- * [contacts.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted, suspends the
- * current coroutine, requests for the permissions, and then returns a new [GroupsInsert] instance.
+ * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
+ * suspends the current coroutine, requests for the permissions, and then returns a new
+ * [GroupsInsert] instance.
  *
  * If permissions are already granted, then immediately returns a new [GroupsInsert] instance.
  */
