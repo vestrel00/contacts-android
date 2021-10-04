@@ -1,5 +1,3 @@
-[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#vestrel00/contacts-android)
-
 # Contacts, Reborn!
 
 Looking for the easiest way to get full-access to the breadth of Contacts in Android without having
@@ -46,7 +44,43 @@ Also included are some pre-baked goodies to be used as is or just for reference;
 
 ## Installation
 
-TODO
+First, include JitPack in the repositories list,
+
+```
+repositories {
+    jcenter() // TODO Do we really need this? JCenter is shutting down... Check in a separate project.
+    maven { url "https://jitpack.io" }
+}
+```
+
+To import all modules,
+
+```
+dependencies {
+     implementation 'com.github.vestrel00:contacts-android:0.1.0'
+}
+```
+
+To import specific modules,
+
+```
+dependencies {
+     implementation 'com.github.vestrel00:contacts-android:core:0.1.0'
+}
+```
+
+SNAPSHOTs of branches are also available,
+
+```
+dependencies {
+     implementation 'com.github.vestrel00:contacts-android:master-SNAPSHOT'
+}
+```
+
+This library is a multi-module project published with JitPack. For all release artifacts published,
+visit [![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#vestrel00/contacts-android).
+
+For general JitPack project installations, visit https://jitpack.io/docs/BUILDING/#multi-module-projects
 
 ## Quick Start
 

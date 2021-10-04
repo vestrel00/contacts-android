@@ -3,6 +3,8 @@ buildscript {
         versions = [
                 build : [
                         java   : [
+                                // We don't really need Java 8. Java 7 is fine but I think most
+                                // people should be on 8 now. Meh.
                                 targetCompatibility: JavaVersion.VERSION_1_8,
                                 sourceCompatibility: JavaVersion.VERSION_1_8
                         ],
