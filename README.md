@@ -83,12 +83,164 @@ For general JitPack project installations, visit https://jitpack.io/docs/BUILDIN
 
 ## Quick Start
 
-TODO
+To retrieve all contacts containing all available contact data,
+
+```
+Contacts(context).query().find()
+```
+
+To simply search for Contacts, yielding the exact same results as the native Contacts app,
+
+```
+Contacts(context)
+    .broadQuery()
+    .whereAnyContactDataPartiallyMatches(searchText)
+    .find()
+ ```
+
+That's it! BUT, THAT IS BORING! Let's take a look at something more advanced…
+
+To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
+the results) ordered by display name in descending order, matching ALL of these rules;
+- a first name starting with "leo" 
+- has emails from gmail or hotmail
+- lives in the US
+- has been born prior to making this query
+- is favorited
+- has a nickname of "DarEdEvil" (case sensitive)
+- works for Facebook
+- has a note
+- belongs to the account of "jerry@gmail.com" or "jerry@myspace.com"
+
+```
+val contacts = Contacts(context)
+    .query()
+    .where(
+        (Fields.Name.GivenName startsWith "leo") and
+                ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
+                (Fields.Address.Country equalToIgnoreCase "us") and
+                ((Fields.Event.Date lessThan Date()) and (Fields.Event.Type equalTo Event.Type.BIRTHDAY)) and
+                (Fields.Contact.Options.Starred equalTo true) and
+                (Fields.Nickname.Name equalTo "DarEdEvil") and
+                (Fields.Organization.Company `in` listOf("facebook", "FB")) and
+                (Fields.Note.Note.isNotNullOrEmpty())
+    )
+    .accounts(
+        Account("jerry@gmail.com", "com.google"),
+        Account("jerry@myspace.com", "com.myspace"),
+    )
+    .include(Fields.Contact.Id, Fields.Contact.DisplayNamePrimary, Fields.Phone.Number, Fields.Phone.NormalizedNumber)
+    .orderBy(ContactsFields.DisplayNamePrimary.desc())
+    .offset(0)
+    .limit(5)
+    .find()
+```
+
+Imagine what this would look like if you use ContactsContract directly. Now, you don't have to! The
+above snippet is in Kotlin but, like I mentioned, all of the core APIs are usable in Java too
+(though it won't look as pretty).
+
+#### There's a lot more
+
+This library is capable of doing more than just queries. Let's take a look at a few of them here.
+
+To get the first 20 gmail emails ordered by email address in descending order,
+
+```
+val emails = Contacts(context).data()
+    .query()
+    .emails()
+    .where(Fields.Email.Address endsWith  "gmail.com")
+    .orderBy(Fields.Email.Address.desc(ignoreCase = true))
+    .offset(0)
+    .limit(20)
+```
+
+It's not just for emails. It's for all common data kinds (including custom data).
+
+To create a contact with a name of "John Doe" who works at Amazon with a work email of
+"john.doe@amazon.com" (in Kotlin),
+
+```
+val insertResult = Contacts(context)
+    .insert()
+    .rawContact {
+        setName {
+            givenName = "John"
+            familyName = "Doe"
+        }
+        setOrganization {
+            company = "Amazon"
+            title = "Superstar"
+        }
+        addEmail {
+            address = "john.doe@amazon.com"
+            type = Email.Type.WORK
+        }
+    }
+    .commit()
+```
+
+If John Doe switches jobs and heads over to Microsoft, we can update his data,
+
+```
+Contacts(context)
+    .update()
+    .contacts(johnDoe.toMutableContact().apply {
+        setOrganization {
+            company = "Microsoft"
+            title = "Newb"
+        }
+        emails().first().apply {
+            address = "john.doe@microsoft.com"
+        }
+    })
+    .commit()
+```
+
+If we no longer like John Doe, we can remove  him from our life,
+
+```
+Contacts(context)
+    .delete()
+    .contacts(johnDoe)
+    .commit()
+```
+
+#### There's even more…
+
+This library provides Kotlin coroutine extensions for all API functions to handle permissions
+(shoutouts to the Dexter team) and executing work in background threads.
+
+```
+launch {
+    Contacts(context)
+        .queryWithPermission()
+        ...
+        .findWithContext()
+    Contacts(context)
+        .insertWithPermission()
+        ...
+        .commitWithContext()
+}
+```
+
+So, if we call the above function and we don't yet have permission. The user will be prompted to
+give the appropriate permissions before the query proceeds. Then, the work is done in the coroutine
+context of choice (default is Dispatchers.IO). If the user does not give permission, the query will
+return no results.
+
+Extensions for Kotlin Flow and RxJava is also in the v1 roadmap.
+
+#### There's too much…
+
+**The above examples barely scratches the surface of what this library provides.** For more in-depth
+Howtos, visit the [howto directory](/howto/). For a sample app reference, take a look at and run the
+`sample` module.
 
 ## Requirements
 
 - Min SDK 19+
-- Java 7+
 
 ## Proguard
 

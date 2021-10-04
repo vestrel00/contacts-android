@@ -3,6 +3,7 @@ package contacts.core
 import android.database.DatabaseUtils
 import contacts.core.entities.CommonDataEntity
 import contacts.core.entities.MimeType
+import contacts.core.entities.mapper.EventMapper
 import contacts.core.util.isEmpty
 import java.util.*
 
@@ -528,7 +529,9 @@ private fun Any?.toSqlString(): String = when (this) {
     is Sequence<*> -> this.map { it?.toSqlString() }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
     is CommonDataEntity.Type -> value.toSqlString()
-    is Date -> time.toSqlString()
+    // Assume that this comparison is for Event mimetypes
+    // We can change this later if people complain about this assumption =)
+    is Date -> EventMapper.dateToString(this).toSqlString()
     is MimeType -> value.toSqlString()
     else -> this.toString().toSqlString()
 }
