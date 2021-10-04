@@ -63,7 +63,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!-- TODO Organization -->
+    <!-- Organization -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_organization_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <contacts.ui.view.OrganizationView
+        android:id="@+id/organization"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <!-- Phones -->
     <TextView

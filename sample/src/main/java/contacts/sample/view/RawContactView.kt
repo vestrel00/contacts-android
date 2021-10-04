@@ -6,11 +6,13 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.entities.MutableName
 import contacts.entities.MutableNickname
+import contacts.entities.MutableOrganization
 import contacts.entities.MutableRawContact
 import contacts.sample.R
 import contacts.ui.view.*
 import contacts.util.setName
 import contacts.util.setNickname
+import contacts.util.setOrganization
 
 /**
  * A (vertical) [LinearLayout] that displays a [MutableRawContact] and handles the modifications to
@@ -63,6 +65,7 @@ class RawContactView @JvmOverloads constructor(
     private val photoThumbnailView: RawContactPhotoThumbnailView
     private val nameView: NameView
     private val nicknameView: NicknameView
+    private val organizationView: OrganizationView
     private val phonesView: PhonesView
     private val sipAddressView: SipAddressView
     private val emailsView: EmailsView
@@ -80,6 +83,7 @@ class RawContactView @JvmOverloads constructor(
         photoThumbnailView = findViewById(R.id.photoThumbnail)
         nameView = findViewById(R.id.name)
         nicknameView = findViewById(R.id.nickname)
+        organizationView = findViewById(R.id.organization)
         phonesView = findViewById(R.id.phones)
         sipAddressView = findViewById(R.id.sipAddress)
         emailsView = findViewById(R.id.emails)
@@ -101,6 +105,8 @@ class RawContactView @JvmOverloads constructor(
         accountView.rawContact = rawContact
         nameView.data = rawContact.name ?: MutableName().apply(rawContact::setName)
         nicknameView.data = rawContact.nickname ?: MutableNickname().apply(rawContact::setNickname)
+        organizationView.data =
+            rawContact.organization ?: MutableOrganization().apply(rawContact::setOrganization)
         phonesView.dataList = rawContact.phones
         sipAddressView.data = rawContact.sipAddress
         emailsView.dataList = rawContact.emails

@@ -58,7 +58,7 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
     private var eventListener: EventListener? = null
 
     private val dataField: EditText
-    private val dataDeleteButton: View
+    private val dataDeleteButton: View?
 
     init {
         inflate(context, layoutRes, this)
@@ -67,14 +67,14 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
         dataDeleteButton = findViewById(R.id.dataDeleteButton)
 
         dataField.apply {
-            dataFieldHintResId?.let(::setHint)
             dataFieldInputType?.let(::setInputType)
+            dataFieldHintResId?.let(::setHint)
             setOnClickListener { onDataFieldClicked() }
             addTextChangedListener(DataFieldTextChangeListener())
             isFocusable = dataFieldIsFocusable
         }
 
-        dataDeleteButton.setOnClickListener {
+        dataDeleteButton?.setOnClickListener {
             eventListener?.onDataDeleteButtonClicked()
         }
     }
@@ -102,11 +102,12 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
     }
 
     private fun setDataDeleteButtonVisibility() {
-        dataDeleteButton.visibility = if (!dataDeleteButtonIsVisible || dataField.text.isNullOrEmpty()) {
-            View.INVISIBLE
-        } else {
-            View.VISIBLE
-        }
+        dataDeleteButton?.visibility =
+            if (!dataDeleteButtonIsVisible || dataField.text.isNullOrEmpty()) {
+                View.INVISIBLE
+            } else {
+                View.VISIBLE
+            }
     }
 
     private inner class DataFieldTextChangeListener : AbstractTextWatcher {
