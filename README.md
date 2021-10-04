@@ -1,3 +1,6 @@
+[![Release](https://jitpack.io/v/User/Repo.svg)]
+(https://jitpack.io/#vestrel00/contacts-android)
+
 # Contacts, Reborn!
 
 Looking for the easiest way to get full-access to the breadth of Contacts in Android without having
