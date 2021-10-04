@@ -789,16 +789,13 @@ RawContact that has a group membership AND a RawContact that has no group member
 
 #### Groups; Deletion
 
-Deleting a group simply sets the "deleted" column of the row to true. It's up to a sync adapter to
-actually perform the group deletion. The RawContacts table shares the same mechanism as the Groups
-table. Both have columns defined in `SyncColumns`. However, unlike the RawContacts syncing where
-deletion is immediate (even without internet connection), group deletion is unpredictable. Groups
-that are marked for deletion remain in the DB and is still shown in the native Contacts app. 
-Sometimes they do get deleted at some point but the trigger for the actual deletion eludes me.
+Prior to Android API version TODO, group deletion is unpredictable. Groups that are marked for
+deletion remain in the DB and is still shown in the native Contacts app. Sometimes they do get
+deleted at some point but the trigger for the actual deletion eludes me.
 
-The native Contacts app does not support group deletion or updates perhaps because groups syncing 
-isn't implemented or at least not to the same extent as contacts syncing. Therefore, this library
-will also not support group deletion.
+The native Contacts app (prior to API version TODO) does NOT support group deletion or updates
+perhaps because groups syncing isn't implemented or at least not to the same extent as contacts
+syncing. Therefore, this library will also not support group deletion for API versions lower than TODO.
 
 #### Groups; UI
 

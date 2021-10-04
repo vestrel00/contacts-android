@@ -8,11 +8,11 @@ import contacts.entities.operation.GroupsOperation
 import contacts.util.applyBatch
 import contacts.util.unsafeLazy
 
+// TODO this works with newer versions of Android but not with older versions.
+// Figure out what version of Android this started working and then gate it!
+// Use the native contacts app to figure it out!
 /**
  * Deletes one or more groups from the groups table.
- *
- * FIXME? Expose this to consumers? For more details, see the DEV_NOTES "Groups; Deletion" section.
- * Marked as internal until it can be exposed to consumers (if ever).
  *
  * ## Permissions
  *
@@ -148,9 +148,7 @@ private class GroupsDeleteImpl(
 private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolean>) :
     GroupsDelete.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy {
-        groupIdsResultMap.isNotEmpty() && groupIdsResultMap.all { it.value }
-    }
+    override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
 
     override fun isSuccessful(group: Group): Boolean = group.id != null
             && groupIdsResultMap.getOrElse(group.id) { false }

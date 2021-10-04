@@ -238,8 +238,7 @@ private class ProfileDeleteResult(
 ) : ProfileDelete.Result {
 
     override val isSuccessful: Boolean by unsafeLazy {
-        profileContactDeleteSuccess ||
-                (rawContactIdsResultMap.isNotEmpty() && rawContactIdsResultMap.all { it.value })
+        profileContactDeleteSuccess || rawContactIdsResultMap.all { it.value }
     }
 
     override fun isSuccessful(rawContact: RawContactEntity): Boolean =

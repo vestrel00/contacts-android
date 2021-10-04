@@ -203,9 +203,7 @@ private class DataDeleteResult(
     private val dataIdsResultMap: Map<Long, Boolean>
 ) : DataDelete.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy {
-        dataIdsResultMap.isNotEmpty() && dataIdsResultMap.all { it.value }
-    }
+    override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
 
     override fun isSuccessful(data: CommonDataEntity): Boolean =
         data.id?.let { dataId ->

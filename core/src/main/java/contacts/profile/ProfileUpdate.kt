@@ -251,9 +251,7 @@ private class ProfileUpdateImpl(
 private class ProfileUpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) :
     ProfileUpdate.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy {
-        rawContactIdsResultMap.isNotEmpty() && rawContactIdsResultMap.all { it.value }
-    }
+    override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
 
     override fun isSuccessful(rawContact: MutableRawContact): Boolean {
         val rawContactId = rawContact.id

@@ -159,7 +159,7 @@ private class DataUpdateImpl(
             if (cancel()) {
                 break
             }
-            
+
             val dataId = data.id
             if (dataId != null) {
                 results[dataId] = if (data.isProfile != isProfile) {
@@ -191,9 +191,7 @@ private fun ContentResolver.updateData(
 private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>) :
     DataUpdate.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy {
-        dataIdsResultMap.isNotEmpty() && dataIdsResultMap.all { it.value }
-    }
+    override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
 
     override fun isSuccessful(data: MutableCommonDataEntity): Boolean {
         val dataId = data.id

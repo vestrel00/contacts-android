@@ -418,9 +418,7 @@ private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
 
 private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy {
-        rawContactIdsResultMap.isNotEmpty() && rawContactIdsResultMap.all { it.value }
-    }
+    override val isSuccessful: Boolean by unsafeLazy {  rawContactIdsResultMap.all { it.value } }
 
     override fun isSuccessful(rawContact: MutableRawContact): Boolean = isSuccessful(rawContact.id)
 
