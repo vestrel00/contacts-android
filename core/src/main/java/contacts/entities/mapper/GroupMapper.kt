@@ -8,6 +8,7 @@ internal class GroupMapper(private val groupsCursor: GroupsCursor) : EntityMappe
     override val value: Group
         get() = Group(
             id = groupsCursor.id,
+            systemId = groupsCursor.systemId,
 
             title = groupsCursor.title,
 

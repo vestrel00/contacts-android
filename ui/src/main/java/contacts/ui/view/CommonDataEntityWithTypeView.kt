@@ -10,7 +10,7 @@ import android.widget.Spinner
 import contacts.entities.CommonDataEntity
 import contacts.entities.MutableCommonDataEntityWithType
 import contacts.ui.R
-import contacts.ui.dialog.CustomLabelInputDialog
+import contacts.ui.util.CustomLabelInputDialog
 import contacts.ui.entities.CommonDataEntityType
 import contacts.ui.entities.CommonDataEntityTypeFactory
 

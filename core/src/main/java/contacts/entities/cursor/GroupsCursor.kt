@@ -15,6 +15,8 @@ internal class GroupsCursor(cursor: Cursor) : AbstractEntityCursor<GroupsField>(
 
     val id: Long? by long(GroupsFields.Id)
 
+    val systemId: String? by string(GroupsFields.SystemId)
+
     val title: String by nonNullString(GroupsFields.Title, "Null")
 
     val readOnly: Boolean by nonNullBoolean(GroupsFields.ReadOnly)

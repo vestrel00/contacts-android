@@ -722,39 +722,40 @@ Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, aut
 The actual groups are in a separate table; Groups. Each group is associated with an Account. No
 group can exist without an account. It is account-exclusive.
 
-> Note that the **ids will vary** as the user adds and removes accounts! Furthermore, each account
-> will have its own set of the above groups. This means that there may be multiple groups with the
-> same title belonging to different accounts.
+Each account will have its own set of the above system groups. This means that there may be multiple
+groups with the same title belonging to different accounts.
 
-The first 5 (this number depends on the OS / manufacturer) are system groups that are read-only.
-Newly created contacts are automatically assigned to group 1 (notice autoAdd is true). Group 2
-is usually the favorites group, though other custom groups can also be marked as favorites. Custom
-groups created by users can be written to, deleted, set as favorites, and set to auto add.
+System ids are typically Contacts, Friends, Family, and Coworkers. These ids are typically the same
+across all copies of Android. Notes;
+- The Contacts system group is the default group in which all raw contacts of an account belongs to.
+  Therefore, it is typically hidden when showing the list of groups in the UI.
+- The starred (favorites) group is not a system group as it has null system id. However, it behaves
+  like one in that it is read only and it comes with most (if not all) copies of the native app.
 
 Removing the Account will delete all of the associated rows in the Groups table.
 
 **Groups, no available accounts**
 
-The native Contacts app does not display the groups field when creating or updating contacts when
-there are no available accounts present. To enforce this behavior, this library does not allow
+The native Contacts app does not display the groups field when creating or updating raw contacts
+when there are no available accounts present. To enforce this behavior, this library does not allow
 creation of groups without associated accounts.
 
 **Groups, duplicate titles**
 
-The Contacts Provider and the native Contacts app allows multiple groups with the same title 
-belonging to the same account to exist. Therefore, this library also allows this behavior even 
-though it is considered a bug for most consumers. If desired, it is up to consumers to protect 
-against multiple groups from the same account having the same titles.
+The Contacts Provider allows multiple groups with the same title belonging to the same account to
+exist. In older versions of Android, the native Contacts app does not prevent creation of new groups
+with existing titles. In newer versions, existing titles may not be used for new groups. This
+library will follow the latter.
 
 #### Groups Table & GroupMemberships (Data Table)
 
 There may be multiple groups with the same title from different accounts. Therefore, the group
-membership should point to the group belonging to the same account as the contact. The native 
+membership should point to the group belonging to the same account as the raw contact. The native
 Contacts app displays only the groups belonging to the selected account.
 
-Updating group memberships of existing contacts seem to be almost instant. All contacts must be a 
-part of at least the default contact group. Contacts with no group membership will be asynchronously
-added to the default group by the Contacts Provider.
+Updating group memberships of existing raw contacts seem to be almost instant. All raw contacts must
+be a part of at least the default group (system id is "Contacts"). Raw contacts with no group
+membership will be asynchronously added to the Account's default group by the Contacts Provider.
 
 Membership to the default group should never be deleted!
 
@@ -767,22 +768,22 @@ false removes that membership.
 The inverse works too. Adding a group membership to the favorites group results in 
 `ContactOptionsColumns.STARRED` being set to true. Removing the membership sets it to false.
 
-Contacts that are not associated with an account do not have any group memberships. Even though
-these contacts may not have a membership to the favorites group, these contacts may still be
-"starred" (favortied) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is
-not dependent on the existence of a favorites group membership.
+Raw contacts that are not associated with an account do not have any group memberships. Even though
+these raw contacts may not have a membership to the favorites group, they may still be "starred"
+(favortied) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is not
+dependent on the existence of a favorites group membership.
 
 #### Group memberships & Local RawContacts
 
 Local RawContacts may have a group membership to a default system group.
 
-The native Contacts app may not have an edit option for newly inserted RawContacts that have no
-group membership to the default group when an Account is available. Edits can still be made in other
-ways. Instead, an option to "Add to contacts" is shown that adds a membership to a default group but
-does not associate the RawContact to the Account that owns the group. The edit UI does not show the
-group membership field.
+The native Contacts app may not have an edit-RawContact option for newly inserted RawContacts that
+have no group membership to the default group when an Account is available. Though, edits can still
+be made in other ways. Instead, an option to "Add to contacts" is shown that adds a membership to
+the default group but does not associate the raw contact to the Account that owns the group. The
+edit UI does not show the group membership field.
 
-Weirdly, this only occurs when there is exactly only one Account. If there are no Account or there
+Weirdly, this only occurs when there is exactly only one Account. If there are no Accounts or there
 are two or more Accounts, then this does not occur. Also, this does not occur for a Contact with a
 RawContact that has a group membership AND a RawContact that has no group membership.
 

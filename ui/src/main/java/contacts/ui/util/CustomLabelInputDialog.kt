@@ -1,4 +1,4 @@
-package contacts.ui.dialog
+package contacts.ui.util
 
 import android.app.AlertDialog
 import android.content.Context

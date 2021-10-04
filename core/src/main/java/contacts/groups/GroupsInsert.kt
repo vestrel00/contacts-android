@@ -149,6 +149,15 @@ interface GroupsInsert {
          * Returns null if the insert operation failed.
          */
         fun groupId(group: MutableGroup): Long?
+
+        /**
+         * Returns the reason why the insert failed for this [group]. Null if it did not fail.
+         */
+        fun failureReason(group: MutableGroup): FailureReason?
+
+        enum class FailureReason {
+            TITLE_ALREADY_EXIST, INVALID_ACCOUNT, UNKNOWN
+        }
     }
 }
 
@@ -161,12 +170,14 @@ internal fun GroupsInsert(context: Context): GroupsInsert = GroupsInsertImpl(
         // functions.
         false
     ),
+    GroupsQuery(context),
     ContactsPermissions(context)
 )
 
 private class GroupsInsertImpl(
     private val contentResolver: ContentResolver,
     private val accountsQuery: AccountsQuery,
+    private val groupsQuery: GroupsQuery,
     private val permissions: ContactsPermissions,
     private val groups: MutableSet<MutableGroup> = mutableSetOf()
 ) : GroupsInsert {
@@ -192,26 +203,54 @@ private class GroupsInsertImpl(
     override fun commit(): GroupsInsert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsInsert.Result {
-        val accounts = accountsQuery.allAccounts()
-        if (accounts.isEmpty() || groups.isEmpty() || !permissions.canInsert() || cancel()) {
+        if (groups.isEmpty() || !permissions.canInsert() || cancel()) {
             return GroupsInsertFailed()
         }
 
+        val accounts = accountsQuery.allAccounts()
+        if (accounts.isEmpty()) {
+            // Fail if there are no accounts. A group requires Accounts in the system to exist!
+            return GroupsInsertFailed()
+        }
+
+        // Gather the existing titles per account to prevent duplicates =)
+        val existingGroups = groupsQuery.find()
+        val existingAccountGroupsTitles = mutableMapOf<Account, MutableList<String>>()
+        for (group in existingGroups) {
+            val existingTitles = existingAccountGroupsTitles
+                .getOrPut(group.account) { mutableListOf() }
+            existingTitles.add(group.title)
+        }
+
         val results = mutableMapOf<MutableGroup, Long?>()
+        val failureReasons = mutableMapOf<MutableGroup, GroupsInsert.Result.FailureReason>()
+
         for (group in groups) {
             if (cancel()) {
                 break
             }
 
-            results[group] = if (accounts.contains(group.account)) {
-                // No need to propagate the cancel function to within insertGroup as that operation
-                // should be fast and CPU time should be trivial.
-                contentResolver.insertGroup(group)
-            } else {
+            results[group] = if (accounts.contains(group.account)) { // Group has a valid account.
+                val existingTitles = existingAccountGroupsTitles
+                    .getOrPut(group.account) { mutableListOf() }
+                if (existingTitles.contains(group.title)) { // Group title already exist.
+                    failureReasons[group] = GroupsInsert.Result.FailureReason.TITLE_ALREADY_EXIST
+                    null
+                } else { // Group title does not yet exist. Proceed to insert.
+                    contentResolver.insertGroup(group).also { id ->
+                        if (id == null) { // Insert failed.
+                            failureReasons[group] = GroupsInsert.Result.FailureReason.UNKNOWN
+                        } else { // Insert succeeded. Add title to existing titles list.
+                            existingTitles.add(group.title)
+                        }
+                    }
+                }
+            } else { // Group has an invalid account.
+                failureReasons[group] = GroupsInsert.Result.FailureReason.INVALID_ACCOUNT
                 null
             }
         }
-        return GroupsInsertResult(results)
+        return GroupsInsertResult(results, failureReasons)
     }
 }
 
@@ -235,8 +274,10 @@ private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
     }
 }
 
-private class GroupsInsertResult(private val groupsMap: Map<MutableGroup, Long?>) :
-    GroupsInsert.Result {
+private class GroupsInsertResult(
+    private val groupsMap: Map<MutableGroup, Long?>,
+    private val failureReasons: Map<MutableGroup, GroupsInsert.Result.FailureReason>
+) : GroupsInsert.Result {
 
     override val groupIds: List<Long> by unsafeLazy {
         groupsMap.asSequence()
@@ -249,6 +290,8 @@ private class GroupsInsertResult(private val groupsMap: Map<MutableGroup, Long?>
     override fun isSuccessful(group: MutableGroup): Boolean = groupId(group) != null
 
     override fun groupId(group: MutableGroup): Long? = groupsMap.getOrElse(group) { null }
+
+    override fun failureReason(group: MutableGroup) = failureReasons[group]
 }
 
 private class GroupsInsertFailed : GroupsInsert.Result {
@@ -260,4 +303,6 @@ private class GroupsInsertFailed : GroupsInsert.Result {
     override fun isSuccessful(group: MutableGroup): Boolean = false
 
     override fun groupId(group: MutableGroup): Long? = null
+
+    override fun failureReason(group: MutableGroup) = GroupsInsert.Result.FailureReason.UNKNOWN
 }

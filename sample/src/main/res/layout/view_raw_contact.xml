@@ -195,6 +195,17 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
-    <!-- TODO group memberships / labels -->
+    <!-- Group memberships / labels -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_group_memberships_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
+    <contacts.sample.view.GroupMembershipsView
+        android:id="@+id/groupMemberships"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </merge>

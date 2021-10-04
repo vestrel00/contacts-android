@@ -1,19 +1,18 @@
 package contacts.sample.view
 
-import android.accounts.Account
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
-import contacts.accounts.Accounts
-import contacts.async.accounts.accountForWithContext
-import contacts.entities.RawContactEntity
+import contacts.async.util.groupsWithContext
+import contacts.entities.GroupMembership
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [TextView] that displays an immutable [Account] from the given [RawContactEntity].
+ * A [TextView] that displays the [GroupMembership] of a of a RawContact and handles the
+ * modifications to it.
  *
- * Setting the [rawContact] will automatically update the views.
+ * Setting the [memberships] will automatically update the views and vice versa.
  *
  * ## Note
  *
@@ -37,7 +36,7 @@ import kotlin.coroutines.CoroutineContext
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
  * move this to a separate module (contacts-ui-async).
  */
-class AccountView @JvmOverloads constructor(
+class GroupMembershipsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -46,30 +45,26 @@ class AccountView @JvmOverloads constructor(
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main
 
-    var rawContact: RawContactEntity? = null
+    var memberships: MutableList<GroupMembership> = mutableListOf()
         set(value) {
             field = value
 
-            setAccount()
+            setMemberships()
         }
 
-    private fun setAccount() = launch {
-        val account = rawContact?.let {
-            Accounts(context, it.isProfile)
-                .query()
-                .accountForWithContext(it)
-        }
-
-        text = if (account == null) {
-            "Local Account"
-        } else {
-            """
-                Account Name: ${account.name}
-                Account Type: ${account.type}
-            """.trimIndent()
+    init {
+        setOnClickListener { _ ->
+            TODO()
         }
     }
 
+    private fun setMemberships() = launch {
+        val groups = memberships.groupsWithContext(context)
+            // Hide the default group, just like in the native Contacts app.
+            .filter { !it.isDefaultGroup }
+
+        text = groups.joinToString { it.title }
+    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()

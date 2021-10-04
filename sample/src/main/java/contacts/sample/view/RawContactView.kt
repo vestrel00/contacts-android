@@ -74,6 +74,7 @@ class RawContactView @JvmOverloads constructor(
     private val websiteView: WebsitesView
     private val eventsView: EventsView
     private val relationsView: RelationsView
+    private val groupMembershipsView: GroupMembershipsView
 
     init {
         orientation = VERTICAL
@@ -92,6 +93,7 @@ class RawContactView @JvmOverloads constructor(
         websiteView = findViewById(R.id.websites)
         eventsView = findViewById(R.id.events)
         relationsView = findViewById(R.id.relations)
+        groupMembershipsView = findViewById(R.id.groupMemberships)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,6 +117,6 @@ class RawContactView @JvmOverloads constructor(
         websiteView.dataList = rawContact.websites
         eventsView.dataList = rawContact.events
         relationsView.dataList = rawContact.relations
-        // TODO
+        groupMembershipsView.memberships = rawContact.groupMemberships
     }
 }

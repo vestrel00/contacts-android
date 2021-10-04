@@ -1053,6 +1053,9 @@ object GroupsFields : FieldSet<GroupsField>() {
     val Id = GroupsField(Groups._ID)
 
     @JvmField
+    val SystemId = GroupsField(Groups.SYSTEM_ID)
+
+    @JvmField
     val Title = GroupsField(Groups.TITLE)
 
     @JvmField
@@ -1073,7 +1076,7 @@ object GroupsFields : FieldSet<GroupsField>() {
     val AccountType = GroupsField(Groups.ACCOUNT_TYPE)
 
     override val all by unsafeLazy {
-        setOf(Id, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
+        setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
     }
 }
 
