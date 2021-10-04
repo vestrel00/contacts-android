@@ -241,6 +241,7 @@ Howtos, visit the [howto directory](/howto/). For a sample app reference, take a
 ## Requirements
 
 - Min SDK 19+
+- Java 8+
 
 ## Proguard
 
