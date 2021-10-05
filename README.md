@@ -355,14 +355,18 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
   - Purpose:
     - Provide alternative asynchronous extensions for consumers prefer to use Flow over withContext
       and async await functions
+    - Provide a way to proactively listen for changes in the Contacts database
   - Work required to be done for this version;
     - Add Flow function extensions in existing async module
+    - Listen for changes in the Contacts database
 - **(0.7.0) Reactive extensions**
   - Purpose:
     - Provide alternative asynchronous extensions for consumers that are not using Kotlin coroutines
+    - Provide a way to proactively listen for changes in the Contacts database
   - Work required to be done for this version;
     - Create rx module
     - Implement rx-equivalent of async module functions
+    - Listen for changes in the Contacts database
 - **(0.8.0) Update dependencies and tools**
   - Purpose:
     - Ensure that the library and all of its dependencies and tools are up-to-date
