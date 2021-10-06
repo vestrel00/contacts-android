@@ -89,18 +89,24 @@ This library is a multi-module project published with [JitPack](https://jitpack.
 
 To retrieve all contacts containing all available contact data,
 
-```
+```kotlin
 Contacts(context).query().find()
 ```
 
 To simply search for Contacts, yielding the exact same results as the native Contacts app,
 
-```
+```kotlin
 Contacts(context)
     .broadQuery()
     .whereAnyContactDataPartiallyMatches(searchText)
     .find()
  ```
+
+ > Note that for queries, you will need to add the `android.permission.READ_CONTACTS` permission
+ > to your app's AndroidManifest. Additionally, the user will have to have given your app that
+ > permission at runtime (starting with Android Marshmallow). Without permissions being granted,
+ > query functions will return empty results. To make permission handling much easier, Kotlin
+ > coroutine extensions are available in the `async` module.
 
 That's it! BUT, THAT IS BORING! Let's take a look at something more advanced…
 
@@ -116,7 +122,7 @@ the results) ordered by display name in descending order, matching ALL of these 
 - has a note
 - belongs to the account of "jerry@gmail.com" or "jerry@myspace.com"
 
-```
+```kotlin
 val contacts = Contacts(context)
     .query()
     .where(
@@ -150,7 +156,7 @@ This library is capable of doing more than just queries. Let's take a look at a 
 
 To get the first 20 gmail emails ordered by email address in descending order,
 
-```
+```kotlin
 val emails = Contacts(context).data()
     .query()
     .emails()
@@ -158,6 +164,7 @@ val emails = Contacts(context).data()
     .orderBy(Fields.Email.Address.desc(ignoreCase = true))
     .offset(0)
     .limit(20)
+    .find()
 ```
 
 It's not just for emails. It's for all common data kinds (including custom data).
@@ -165,7 +172,7 @@ It's not just for emails. It's for all common data kinds (including custom data)
 To **create** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
 
-```
+```kotlin
 val insertResult = Contacts(context)
     .insert()
     .rawContact {
@@ -187,7 +194,7 @@ val insertResult = Contacts(context)
 
 If John Doe switches jobs and heads over to Microsoft, we can **update** his data,
 
-```
+```kotlin
 Contacts(context)
     .update()
     .contacts(johnDoe.toMutableContact().apply {
@@ -204,28 +211,39 @@ Contacts(context)
 
 If we no longer like John Doe, we can **delete** him from our life,
 
-```
+```kotlin
 Contacts(context)
     .delete()
     .contacts(johnDoe)
     .commit()
 ```
 
+ > Note that for insert, update, and delete functions, you will need to add the
+ > `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS` permissions
+ > to your app's AndroidManifest. Additionally, the user will have to have given your app that
+ > permission at runtime (starting with Android Marshmallow). Without permissions being granted,
+ > these functions will do nothing and return a failed result. To make permission handling much
+ > easier, Kotlin coroutine extensions are available in the `async` module.
+
 #### There's even more…
 
-This library provides Kotlin coroutine extensions for all API functions to handle permissions
-(shoutouts to the Dexter team) and executing work in background threads.
+This library provides Kotlin coroutine extensions in the `async` module for all API functions to
+handle permissions (shoutouts to the Dexter team) and executing work in background threads.
 
-```
+```kotlin
 launch {
-    Contacts(context)
+    val contacts = Contacts(context)
         .queryWithPermission()
         ...
         .findWithContext()
-    Contacts(context)
-        .insertWithPermission()
+}
+
+val deferredResult = Contacts(context)
+        .insert()
         ...
-        .commitWithContext()
+        .commitAsync()
+launch {
+    val result = deferredResult.await()
 }
 ```
 
