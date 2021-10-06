@@ -10,37 +10,44 @@ as the native Android Contacts app, this library has you covered!
 For more context, read the [introductory, hype blog][medium-blog]!
 
 The core library supports;
-- All of the kinds of Data in the Contacts Provider; address, email, event, group membership, IM,
-  name, nickname, note, organization, phone, photo, relation, SIP address, and website.
-- Custom data.
-- Broad and specific queries of Contacts and RawContacts from zero or more Accounts. Include only
-  desired fields in the results (e.g. name and phone number) for optimization. Specify matching
-  criteria in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table
-  columns. Limit and offset functions.
-- Insert one or more RawContacts with an associated Account, which leads to the insertion of a new
-  Contact subject to automatic aggregation by the Contacts Provider.
-- Update one or more Contacts, RawContacts, and Data.
-- Delete one or more Contacts, RawContacts, and Data.
-- Query, insert, update, and delete Profile (device owner) Contact, RawContact, and Data.
-- Query, insert, and update Groups per Account.
-- Query, update, and delete specific types of Data.
-- Query, insert, update, and delete custom Data. 
-- Query Accounts in the system or RawContacts table. 
-- Associate local RawContacts (no Account) to an Account.
-- Join/merge/link and separate/unmerge/unlink two or more Contacts.
-- Get and set Contact and RawContact Options; starred (favorite), custom ringtone, send to voicemail.
-- Get and set Contacts/RawContact photo and thumbnail.
-- Get and set default (primary) Contact Data (e.g. default/primary phone number, email, etc).
-- Miscellaneous convenience functions.
+- All of the kinds of Data in the Contacts Provider;
+  [address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website](/howto/howto-get-familiar-with-api-entities.md).
+- [Custom data](/howto/howto-integrate-custom-data.md).
+- [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
+  of Contacts and RawContacts from zero or more Accounts. Include only desired fields in the results
+  (e.g. name and phone number) for optimization. Specify matching criteria in an SQL WHERE clause
+  fashion using Kotlin infix functions. Order by contact table columns. Limit and offset functions.
+- [Insert](/howto/howto-create-contacts.md) one or more RawContacts with an associated Account,
+  which leads to the insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
+- [Update](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
+- [Delete](/howto/howto-delete-contacts.md) one or more Contacts, RawContacts, and Data.
+- [Query](/howto/howto-query-profile.md), [insert](/howto/howto-create-profile.md),
+  [update](/howto/howto-update-profile.md), and [delete](/howto/howto-delete-profile.md)
+   Profile (device owner) Contact, RawContact, and Data.
+- [Query](/howto/howto-query-groups.md), [insert](/howto/howto-create-groups.md),
+  [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) Groups per Account.
+- [Query](/howto/howto-query-specific-data-types.md), [update](/howto/howto-update-data-sets.md ),
+  and [delete](/howto/howto-delete-data-sets.md) specific types of Data, including custom Data.
+- [Query](/howto/howto-query-accounts.md) Accounts in the system or RawContacts table.
+- [Query](/howto/howto-query-blank-raw-contacts.md) for just RawContacts.
+- [Associate local RawContacts (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
+- [Join/merge/link and separate/unmerge/unlink two or more Contacts](/howto/howto-link-unlink-contacts.md).
+- [Get and set Contact and RawContact Options](/howto/howto-get-set-contact-raw-contact-options.md);
+  starred (favorite), custom ringtone, send to voicemail.
+- [Get, set, and remove Contacts/RawContact photo and thumbnail](/howto/howto-get-set-remove-contact-raw-contact-photo.md).
+- [Get, set, and clear default (primary) Contact Data](/howto/howto-get-set-clear-default-data.md)
+  (e.g. default/primary phone number, email, etc).
+- [Miscellaneous convenience functions](/howto/howto-use-miscellaneous-extensions.md).
 
 There are also extensions that add functionality to every core function;
-- Asynchronous work using Kotlin Coroutines.
-- Permissions request/handling using Kotlin Coroutines and Dexter.
+- [Asynchronous work using Kotlin Coroutines](/howto/howto-use-api-with-kotlin-coroutines.md).
+- [Permissions request/handling using Kotlin Coroutines and Dexter](/howto/howto-use-api-with-permissions-handling.md).
 
 Also included are some pre-baked goodies to be used as is or just for reference;
-- Gender custom Data.
-- Handle name custom Data.
-- Rudimentary contacts-integrated UI components.
+- [Gender custom Data](/howto/howto-integrate-gender-custom-data.md).
+- [Handle name custom Data](/howto/howto-integrate-handlename-custom-data.md).
+- [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
+- [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md   )
 
 ## Installation
 
@@ -76,10 +83,7 @@ dependencies {
 }
 ```
 
-This library is a multi-module project published with JitPack. For all release artifacts published,
-visit [![Release](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android).
-
-For general JitPack project installations, visit https://jitpack.io/docs/BUILDING/#multi-module-projects
+This library is a multi-module project published with [JitPack](https://jitpack.io/p/vestrel00/contacts-android).
 
 ## Quick Start
 
@@ -158,7 +162,7 @@ val emails = Contacts(context).data()
 
 It's not just for emails. It's for all common data kinds (including custom data).
 
-To create a contact with a name of "John Doe" who works at Amazon with a work email of
+To **create** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
 
 ```
@@ -181,7 +185,7 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-If John Doe switches jobs and heads over to Microsoft, we can update his data,
+If John Doe switches jobs and heads over to Microsoft, we can **update** his data,
 
 ```
 Contacts(context)
@@ -198,7 +202,7 @@ Contacts(context)
     .commit()
 ```
 
-If we no longer like John Doe, we can remove  him from our life,
+If we no longer like John Doe, we can **delete** him from our life,
 
 ```
 Contacts(context)
@@ -230,13 +234,24 @@ give the appropriate permissions before the query proceeds. Then, the work is do
 context of choice (default is Dispatchers.IO). If the user does not give permission, the query will
 return no results.
 
-Extensions for Kotlin Flow and RxJava is also in the v1 roadmap.
+Extensions for Kotlin Flow and RxJava is also in the v1 roadmap, which includes APIs for listening 
+to Contacts database changes.
 
 #### There's too much…
 
 **The above examples barely scratches the surface of what this library provides.** For more in-depth
 Howtos, visit the [howto directory](/howto/). For a sample app reference, take a look at and run the
 `sample` module.
+
+#### Setup
+
+There is no setup required. It's up to you how you want to create and retain instances of the
+`contacts.core.Contacts(context)` API. It is stateless, unless you are integrating custom data
+without using the global data registry. So either create instances of it on demand or inject it into
+your dependency graph as a singleton. It's all up to you. Note that the `context` you pass to it
+can be the application, activity, fragment, or view context. The API will only use and keep references
+to the application context internally to avoid leaks. For more info, take a look at the
+[howto setup](/howto/howto-setup-contacts-api.md).
 
 ## Requirements
 
@@ -419,6 +434,6 @@ implement a specific part of the native Android Contacts app.
       E.G. customdata-whatsapp, customdata-messenger, customdata-twitter
         - Read more in the DEV_NOTES "Custom Data / MimeTypes" section.
 
-[medium-blog]: TODO
+[medium-blog]: https://proandroiddev.com/android-contacts-reborn-19985c73ad43
 [contacts-provider]: https://developer.android.com/guide/topics/providers/contacts-provider
 [coroutines-proguard]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
