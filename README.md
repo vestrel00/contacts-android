@@ -107,7 +107,7 @@ Contacts(context)
  > to your app's AndroidManifest. Additionally, the user will have to have given your app that
  > permission at runtime (starting with Android Marshmallow). Without permissions being granted,
  > query functions will return empty results. To make permission handling much easier, Kotlin
- > coroutine extensions are available in the `async` module.
+ > coroutine extensions are available in the `permissions` module.
 
 That's it! BUT, THAT IS BORING! Let's take a look at something more advanced…
 
@@ -224,12 +224,13 @@ Contacts(context)
  > to your app's AndroidManifest. Additionally, the user will have to have given your app that
  > permission at runtime (starting with Android Marshmallow). Without permissions being granted,
  > these functions will do nothing and return a failed result. To make permission handling much
- > easier, Kotlin coroutine extensions are available in the `async` module.
+ > easier, Kotlin coroutine extensions are available in the `permissions` module.
 
 #### There's even more…
 
-This library provides Kotlin coroutine extensions in the `async` module for all API functions to
-handle permissions (shoutouts to the Dexter team) and executing work in background threads.
+This library provides Kotlin coroutine extensions in the `permissions` module for all API functions to
+handle permissions (shoutouts to the Dexter team) and `async` module for executing work in
+background threads.
 
 ```kotlin
 launch {
@@ -265,12 +266,7 @@ Howtos, visit the [howto directory](/howto/). For a sample app reference, take a
 #### Setup
 
 There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. It is stateless, unless you are integrating custom data
-without using the global data registry. So either create instances of it on demand or inject it into
-your dependency graph as a singleton. It's all up to you. Note that the `context` you pass to it
-can be the application, activity, fragment, or view context. The API will only use and keep references
-to the application context internally to avoid leaks. For more info, take a look at the
-[howto setup](/howto/howto-setup-contacts-api.md).
+`contacts.core.Contacts(context)` API. For more info, read [howto setup](/howto/howto-setup-contacts-api.md).
 
 ## Requirements
 
@@ -332,7 +328,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
       - Not including features that require post v1 functions
     - Find bugs in API
   - Use Pixel 3a API 30 native Contacts app as reference
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - Create/edit/view contact screen
       - Select group memberships
       - Choose account to associate with the new (raw) contact (create-only)
@@ -364,7 +360,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
   - Purpose:
     - Prove that additional (advanced) functions not in native Contacts app works
     - Find bugs in API
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - Integrate Query (for more advance querying compared to BroadQuery).
     - Integrate DataQuery, DataUpdate, and DataDelete functions
     - Integrate handlename custom data
@@ -373,14 +369,14 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
   - Purpose:
     - Move/refactor as much code as possible from the sample app into reusable modules
     - Promote code reuse, including rudimentary code (that couldbe refined)
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - Move view page to new module; ui-async
 - **(0.5.0) Code quality and integrity**
   - Purpose:
     - Ensure that code follows language and community standards
     - Ensure that code is covered with automated tests
     - Prevent new code from breaking existing API
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - androidTest/ for all core functions
     - Static analysis; lint / code quality checks (checkstyle, lint, etc)
     - Code coverage reporting tool
@@ -390,21 +386,21 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
     - Provide alternative asynchronous extensions for consumers prefer to use Flow over withContext
       and async await functions
     - Provide a way to proactively listen for changes in the Contacts database
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - Add Flow function extensions in existing async module
     - Listen for changes in the Contacts database
 - **(0.7.0) Reactive extensions**
   - Purpose:
     - Provide alternative asynchronous extensions for consumers that are not using Kotlin coroutines
     - Provide a way to proactively listen for changes in the Contacts database
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - Create rx module
     - Implement rx-equivalent of async module functions
     - Listen for changes in the Contacts database
 - **(0.8.0) Update dependencies and tools**
   - Purpose:
     - Ensure that the library and all of its dependencies and tools are up-to-date
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - Update Kotlin stdlib and coroutines
       - Use sealed interface in Fields when upgrading to Kotlin 1.5+
     - Update Dexter
@@ -413,7 +409,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
 - **(0.9.0) v1 release prep**
   - Purpose:
     - Ensure that the library is ready for v1.0.0 production release
-  - Work required to be done for this version;
+  - Remaining work to be done for this version;
     - Setup continuous integration (CI/CD) pipeline (if not yet done)
     - Review remaining TODOs and FIXMEs, if any
     - Ensure all functions are covered with automated tests

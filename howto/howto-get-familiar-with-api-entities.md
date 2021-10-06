@@ -3,8 +3,8 @@
 First, it's important to understand the most basic concept of the [Android Contacts Provider / ContactsContract][1].
 Afterwards, everything in this library should just make sense.
 
-There is only one thing you need to outside of this library. The library handles the rest of the details
-so you don't have to =)
+There is only one thing you need to know outside of this library. The library handles the rest of
+the details so you don't have to =)
 
 #### Contacts Provider / ContactsContract Basic Concept
 
@@ -38,8 +38,8 @@ and vice versa (depending on system contact sync settings). Read more in
 That's all you need to know! Hopefully it wasn't too much. I know it was difficult for me to grasp
 in the beginning =P.
 
-Once you internalize this one to many relationship of **Contacts -> RawContacts -> Data**, you have
-unlocked the full potential of this library and **the world is at the palm of your hands**!
+Once you internalize this one to many relationship between **Contacts -> RawContacts -> Data**, you
+have unlocked the full potential of this library and **the world is at the palm of your hands**!
 
 #### Contacts API Entities
 
