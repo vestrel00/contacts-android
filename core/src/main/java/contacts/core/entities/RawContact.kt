@@ -39,7 +39,7 @@ sealed class RawContactEntity : Entity {
 }
 
 /**
- * Contact data specific to an [android.accounts.Account].
+ * Contains contact data that belong to an [android.accounts.Account].
  *
  * ## Note
  *

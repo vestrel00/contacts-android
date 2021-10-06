@@ -38,6 +38,7 @@ The core library supports;
 - [Get, set, and clear default (primary) Contact Data](/howto/howto-get-set-clear-default-data.md)
   (e.g. default/primary phone number, email, etc).
 - [Miscellaneous convenience functions](/howto/howto-use-miscellaneous-extensions.md).
+- [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md)
 
 There are also extensions that add functionality to every core function;
 - [Asynchronous work using Kotlin Coroutines](/howto/howto-use-api-with-kotlin-coroutines.md).

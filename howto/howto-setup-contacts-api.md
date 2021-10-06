@@ -28,4 +28,4 @@ not matter what context you pass in. The API will only use and store the Applica
 avoid leaks :D
 
 For how to create instances of the `Contacts` API with custom data integration, read
-[How to integrate custom data](/howto/howto-integrate-custom-data.md).
+[How do I integrate custom data?](/howto/howto-integrate-custom-data.md).

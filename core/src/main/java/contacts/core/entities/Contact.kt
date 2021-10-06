@@ -123,7 +123,7 @@ sealed class ContactEntity : Entity {
 }
 
 /**
- * Contains contact data and [rawContacts] that are associated with this contact.
+ * Primarily contains a list of RawContacts that are associated with this contact.
  *
  * ## [RawContact]
  *

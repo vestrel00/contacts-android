@@ -14,11 +14,13 @@ It is important to get familiar with the [official documentation of the Contact'
 
 Here is a summary;
 
-There are 3 database tables used in dealing with contacts;
+There are 3 main database tables used in dealing with contacts;
 
 1. Contacts
 2. RawContacts
 3. Data
+
+> There are more but that is covered later.
 
 All of these tables and their fields are enumerated and documented in
 `android.provider.ContactsContract`. 
