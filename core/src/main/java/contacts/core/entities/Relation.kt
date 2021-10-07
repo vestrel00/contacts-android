@@ -6,6 +6,14 @@ import contacts.core.entities.Relation.Type
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data kind representing a relation.
+ *
+ * A RawContact may have 0, 1, or more entries of this data kind.
+ *
+ * Local RawContacts (those that are not associated with an Account) **should not** have any entries
+ * of this data kind.
+ */
 @Parcelize
 data class Relation internal constructor(
 
@@ -86,6 +94,9 @@ data class Relation internal constructor(
     }
 }
 
+/**
+ * A mutable [Relation].
+ */
 @Parcelize
 data class MutableRelation internal constructor(
 

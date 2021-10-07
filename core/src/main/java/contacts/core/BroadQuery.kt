@@ -237,7 +237,7 @@ interface BroadQuery {
      *
      * Do not perform updates on Contacts or RawContacts returned by a query where all fields are
      * not included as it may result in data loss! To include all fields, including those that are
-     * not exposed to consumer (you), do one of the following;
+     * not exposed to consumers (you), do one of the following;
      *
      * - Do no call this function.
      * - Call this function with no fields (empty).

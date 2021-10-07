@@ -3,6 +3,11 @@ package contacts.core.entities
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data kind representing a website related to the contact.
+ *
+ * A RawContact may have 0, 1, or more entries of this data kind.
+ */
 @Parcelize
 data class Website internal constructor(
 
@@ -44,6 +49,9 @@ data class Website internal constructor(
     )
 }
 
+/**
+ * A mutable [Website].
+ */
 @Parcelize
 data class MutableWebsite internal constructor(
 

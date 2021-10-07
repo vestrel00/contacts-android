@@ -52,9 +52,8 @@ This library provides entities that model everything in the Contacts Provider da
 - `RawContact`
     - Contains contact data that belong to an account.
 - `CommonDataEntity`
-    - A specific type of data of a RawContact. These entities model the common data kinds that are
-      provided by the Contacts Provider. These should be self-explanatory from just the class names.
-      For more info, look at the individual class/member variable documentation.
+    - A specific kind of data of a RawContact. These entities model the common data kinds that are
+      provided by the Contacts Provider.
     - `Address`
     - `Email`
     - `Event`
@@ -70,8 +69,8 @@ This library provides entities that model everything in the Contacts Provider da
     - `SipAddress`
     - `Website`
 
-> You can find all of the above in the `contacts.core.entities` package. Note that there are other
-> entities that are not mentioned in this howto fo brevity.
+You can find all of the above in the `contacts.core.entities` package. Note that there are other
+entities that are not mentioned in this howto for brevity.
 
 All entities are `Parcelable` to support state retention during app/activity/fragment/view recreation.
 
@@ -82,5 +81,74 @@ mutating API functions).
 
 Custom data types may also be integrated into the contacts database (though not synced across devices).
 Read more in [How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
+
+###### Common data kinds count restrictions
+
+A `RawContact` may have at most one OR no limits of certain kinds of data.
+
+A RawContact may have 0 or 1 one of each these data kinds;
+
+- `Name`
+- `Nickname`
+- `Note`
+- `Organization`
+- `Photo`
+- `SipAddress`
+
+A RawContact may have 0, 1, or more of each these data kinds;
+
+- `Address`
+- `Email`
+- `Event`
+- `GroupMembership`
+- `Im`
+- `Phone`
+- `Relation`
+- `Website`
+
+The Contacts Provider may or may not enforce these count restrictions. However, the native Contacts
+app imposes these restrictions. Therefore, this library also imposes these restrictions and
+disables consumers from violating them.
+
+The core library does not explicitly expose count restrictions to consumers. However, it is exposed
+when integrating custom data via the `CustomDataCountRestriction`.
+
+###### Common data kinds Account restrictions
+
+Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
+associated with an Account). These data kinds are;
+
+- `GroupMembership`
+    - Groups can only exist if it is associated with an Account. Therefore, memberships to groups
+      is not possible when there is no associated Account.
+- `Event`
+    - It is not clear why this requires an associated Account. Maybe because these are typically
+      birth dates that users expect to be synced with their calendar across devices?
+- `Relation`
+    - It is not clear why this requires an associated Account...
+
+The Contacts Provider may or may not enforce these Account restrictions. However, the native Contacts
+app imposes these restrictions. Therefore, this library also imposes these restrictions and
+disables consumers from violating them.
+
+###### Automatic common data kinds creation
+
+An entry of each of the following data kinds are automatically created for all contacts, if not
+provided;
+
+- `GroupMembership`, underlying value defaults to the account's default system group
+- `Name`, underlying value defaults to null
+- `Nickname`, underlying value defaults to null
+- `Note`, underlying value defaults to null
+
+This automatic creation occur automatically in the background (typically after creation) only for
+RawContacts that are associated with an Account. If a valid account is provided, membership to the
+(auto add) system group is automatically created immediately by the Contacts Provider at the time of
+creation. The name, nickname, and note are automatically created at a later time.
+
+If a valid account is not provided, no entries of the above are automatically created.
+
+To determine if a RawContact is associated with an Account or not, read
+[How do I query for Accounts?](/howto/howto-query-accounts.md).
 
 [1]: https://developer.android.com/guide/topics/providers/contacts-provider

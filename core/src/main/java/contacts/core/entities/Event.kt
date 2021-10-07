@@ -9,6 +9,14 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
+/**
+ * A data kind representing an event.
+ *
+ * A RawContact may have 0, 1, or more entries of this data kind.
+ *
+ * Local RawContacts (those that are not associated with an Account) **should not** have any entries
+ * of this data kind.
+ */
 @Parcelize
 data class Event internal constructor(
 
@@ -40,8 +48,8 @@ data class Event internal constructor(
      * ## Query matching
      *
      * To match event dates in queries, the [Date] must be converted to a string first before using
-     * it in the where clause. Use [contacts.util.toWhereString] to convert [Date]s to the correct
-     * format required to match event dates.
+     * it in the where clause. Use [contacts.core.util.toWhereString] to convert [Date]s to the
+     * correct format required to match event dates.
      *
      * Unlike other dates in other entities in this library that are stored as milliseconds, these
      * dates are stored in the Content Provider DB as strings in the format of yyyy-MM-dd
@@ -100,6 +108,9 @@ data class Event internal constructor(
     }
 }
 
+/**
+ * A mutable [Event].
+ */
 @Parcelize
 data class MutableEvent internal constructor(
 

@@ -3,6 +3,11 @@ package contacts.core.entities
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * Notes about the contact.
+ *
+ * A RawContact may have 0 or 1 entry of this data kind.
+ */
 @Parcelize
 data class Note internal constructor(
 
@@ -41,6 +46,9 @@ data class Note internal constructor(
     )
 }
 
+/**
+ * A mutable [Note].
+ */
 @Parcelize
 data class MutableNote internal constructor(
 

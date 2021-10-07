@@ -3,6 +3,11 @@ package contacts.core.entities
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data kind representing an organization.
+ *
+ * A RawContact may have 0 or 1 entry of this data kind.
+ */
 @Parcelize
 data class Organization internal constructor(
 
@@ -83,6 +88,9 @@ data class Organization internal constructor(
     )
 }
 
+/**
+ * A mutable [Organization].
+ */
 @Parcelize
 data class MutableOrganization internal constructor(
 

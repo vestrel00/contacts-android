@@ -2,7 +2,7 @@
 
 The main library functions are all accessible via the `contacts.core.Contacts` API.
 
-There's no setup required. Just create an instance oc `Contacts` and the world of contacts is at
+There's no setup required. Just create an instance of `Contacts` and the world of contacts is at
 your disposal =)
 
 In Kotlin,
@@ -17,9 +17,6 @@ in Java,
 ContactsFactory.create(context)
 ```
 
-Instances of `Contacts` are stateless, unless you integrate custom data without using the
-`GlobalCustomDataRegistry`.
-
 It's up to you if you want to hold on to instances as a singleton that is injected to your
 dependency graph (via something like dagger) or just create instances on demand.
 
@@ -27,5 +24,6 @@ The `context` parameter can come from anywhere; Application, Activity, Fragment,
 not matter what context you pass in. The API will only use and store the Application context, to
 avoid leaks :D
 
-For how to create instances of the `Contacts` API with custom data integration, read
-[How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
+Instances of `Contacts` are stateless, unless you integrate custom data without using the
+`GlobalCustomDataRegistry`. For how to create instances of the `Contacts` API with custom data
+integration, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md).

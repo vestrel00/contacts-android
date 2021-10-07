@@ -6,6 +6,11 @@ import contacts.core.entities.Address.Type
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data kind representing a postal addresses.
+ *
+ * A RawContact may have 0, 1, or more entries of this data kind.
+ */
 @Parcelize
 data class Address internal constructor(
 
@@ -143,6 +148,9 @@ data class Address internal constructor(
     }
 }
 
+/**
+ * A mutable [Address].
+ */
 @Parcelize
 data class MutableAddress internal constructor(
 

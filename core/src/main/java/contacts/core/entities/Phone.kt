@@ -6,6 +6,11 @@ import contacts.core.entities.Phone.Type
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data kind representing a telephone number.
+ *
+ * A RawContact may have 0, 1, or more entries of this data kind.
+ */
 @Parcelize
 data class Phone internal constructor(
 
@@ -118,6 +123,9 @@ data class Phone internal constructor(
     }
 }
 
+/**
+ * A mutable [Phone].
+ */
 @Parcelize
 data class MutablePhone internal constructor(
 

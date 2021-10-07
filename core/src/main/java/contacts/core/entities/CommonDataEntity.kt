@@ -6,6 +6,11 @@ import contacts.core.util.isProfileId
 
 /**
  * [Entity] in the data table that belong to a [RawContact].
+ *
+ * A RawContact may either have;
+ * - only 0 or 1
+ * - 0, 1, or more
+ * of this type of entity
  */
 interface CommonDataEntity : Entity {
 

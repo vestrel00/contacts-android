@@ -3,6 +3,8 @@
 This document contains useful developer notes that should be kept in mind during development. It 
 serves as a memory of all the quirks and gotcha's of things like Android's `ContactsContract`.
 
+This is only meant to be read by contributors to this library, not consumers!
+
 ## Contacts Provider / ContactsContract
 
 It is important to know about the ins and outs of Android's Contacts Provider. After all, this API 
@@ -651,21 +653,21 @@ contacts without email addresses.
 
 #### Data Required
 
-Creating new RawContacts without email address (or other fields), results in no row in the Data 
+Creating blank RawContacts without email address (or other fields), results in no rows in the Data
 table for the email address, and all other fields. There are a few exceptions. The following 
 Data rows are automatically created for all contacts, if not provided;
 
-- Group membership?, defaults to the account's default system group
-- Name, defaults to null 
-- Nickname, defaults to null 
-- Note, defaults to null
+- Group membership, underlying value defaults to the account's default system group
+- Name, underlying value defaults to null
+- Nickname, underlying value defaults to null
+- Note, underlying value defaults to null
 
 > Note that all of the above rows are only automatically created for RawContacts that are associated
 > with an Account.
 
-If a valid account is provided, the default (auto add) group membership row is automatically created
-immediately by the Contacts Provider at the time of contact insertion. The name, nickname, and note
-are automatically created at a later time.
+If a valid account is provided, the default (auto add) system group membership row is automatically
+created immediately by the Contacts Provider at the time of contact insertion. The name, nickname,
+and note are automatically created at a later time.
 
 If a valid account is not provided, none of the above data rows are automatically created.
 
@@ -965,6 +967,9 @@ on Google's `AutoValue`. Furthermore, having "mutable" entities as data classes 
 defined in the constructor allows it to be `Parcelize`d. Besides, one of the main benefits of the
 conventional builder pattern really only benefits Java users. That is function chaining. Kotlin
 users may just use `apply` (and other similar ones).
+
+Mutable entities also allow for realtime updates to occur. Kinda like LiveData. This is not
+supported yet but may be supported in future work.
 
 ## Why Not Add Android X / Support Library Dependencies?
 

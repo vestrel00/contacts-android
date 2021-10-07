@@ -3,6 +3,11 @@ package contacts.core.entities
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data kind representing the contact's nickname.
+ *
+ * A RawContact may have 0 or 1 entry of this data kind.
+ */
 @Parcelize
 data class Nickname internal constructor(
 
@@ -44,6 +49,9 @@ data class Nickname internal constructor(
     )
 }
 
+/**
+ * A mutable [Nickname].
+ */
 @Parcelize
 data class MutableNickname internal constructor(
 

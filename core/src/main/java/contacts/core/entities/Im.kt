@@ -6,6 +6,11 @@ import contacts.core.entities.Im.Protocol
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data kind representing an instant messaging address.
+ *
+ * A RawContact may have 0, 1, or more entries of this data kind.
+ */
 @Parcelize
 data class Im internal constructor(
 
@@ -100,6 +105,9 @@ data class Im internal constructor(
     }
 }
 
+/**
+ * A mutable [Im].
+ */
 @Parcelize
 data class MutableIm internal constructor(
 

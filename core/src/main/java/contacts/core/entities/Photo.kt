@@ -4,24 +4,26 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
+ * A data kind representing a photo for the contact.
+ *
+ * A RawContact may have 0 or 1 entry of this data kind.
+ *
+ * **This class is internal** as it is of no use to consumers.
+ *
+ * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
+ * photos and thumbnails.
+ *
+ * ## Dev notes
+ *
  * This class does not have any real functional value. This exist only to prevent RawContacts from
  * being considered blanks, which may result in unwanted deletion in updates. Instances of this have
  * no data but is never blank.
  *
- * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set photos.
- *
- * TODO Add the thumbnail here to seamlessly support showing thumbnails for each contact shown in
- * a list. This would be much faster and less CPU-intensive than using a get thumbnail function for
- * each contact shown in a list. Memory consumption is about the same. Do not include this in Fields.all.
- * It should be explicitly included in the query by the API user to prevent unintentional CPU and memory usage.
- *
- * ## Developer notes
- *
  * Note that this is a class instead of an object to prevent future internal and consumer side
- * refactorings in case we need to add state.
+ * refactorings in case we need to add state. Also, Parcelize does not work on objects.
  */
 @Parcelize
-class Photo : CommonDataEntity {
+internal class Photo : CommonDataEntity {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Photo
