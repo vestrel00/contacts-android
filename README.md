@@ -64,7 +64,7 @@ To import all modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:0.1.0'
+     implementation 'com.github.vestrel00.contacts-android:0.1.1'
 }
 ```
 
@@ -72,7 +72,7 @@ To import specific modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.0'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.1'
 }
 ```
 
@@ -130,7 +130,7 @@ val contacts = Contacts(context)
         (Fields.Name.GivenName startsWith "leo") and
                 ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
                 (Fields.Address.Country equalToIgnoreCase "us") and
-                ((Fields.Event.Date lessThan Date()) and (Fields.Event.Type equalTo Event.Type.BIRTHDAY)) and
+                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo Event.Type.BIRTHDAY)) and
                 (Fields.Contact.Options.Starred equalTo true) and
                 (Fields.Nickname.Name equalTo "DarEdEvil") and
                 (Fields.Organization.Company `in` listOf("facebook", "FB")) and
