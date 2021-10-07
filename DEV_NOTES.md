@@ -980,6 +980,8 @@ modules (not in the core modules). I'm tempted to remove the Dexter dependency a
 permissions handling myself because Dexter brings in a lot of other dependencies with it. However,
 it is not part of the core module so I'm able to live with this.
 
+TODO Remove/replace Dexter. It is no longer being maintained.
+
 Keeping dependencies to a minimum is just a small challenge I made up. We will see how long it can
 last!
 

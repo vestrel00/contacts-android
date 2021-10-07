@@ -42,7 +42,7 @@ The core library supports;
 
 There are also extensions that add functionality to every core function;
 - [Asynchronous work using Kotlin Coroutines](/howto/howto-use-api-with-kotlin-coroutines.md).
-- [Permissions request/handling using Kotlin Coroutines and Dexter](/howto/howto-use-api-with-permissions-handling.md).
+- [Permissions request/handling using Kotlin Coroutines](/howto/howto-use-api-with-permissions-handling.md).
 
 Also included are some pre-baked goodies to be used as is or just for reference;
 - [Gender custom Data](/howto/howto-integrate-gender-custom-data.md).
@@ -228,9 +228,8 @@ Contacts(context)
 
 #### There's even more…
 
-This library provides Kotlin coroutine extensions in the `permissions` module for all API functions to
-handle permissions (shoutouts to the Dexter team) and `async` module for executing work in
-background threads.
+This library provides Kotlin coroutine extensions in the `permissions` module for all API functions
+to handle permissions and `async` module for executing work in background threads.
 
 ```kotlin
 launch {
@@ -271,7 +270,7 @@ There is no setup required. It's up to you how you want to create and retain ins
 ## Requirements
 
 - Min SDK 19+
-- Java 8+
+- Java 7+
 
 ## Proguard
 
@@ -373,10 +372,13 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
     - Move view page to new module; ui-async
 - **(0.5.0) Code quality and integrity**
   - Purpose:
+    - Prevent new code from breaking existing API
+    - Ensure consumers have an easy way to mock the API in both white box unit tests and black box ui tests
     - Ensure that code follows language and community standards
     - Ensure that code is covered with automated tests
-    - Prevent new code from breaking existing API
   - Remaining work to be done for this version;
+    - Create test version of the Contacts API for consumer use in both white box unit tests and black box ui tests
+      - Ensure that test versions do not actually read from or write to the underlying database.
     - androidTest/ for all core functions
     - Static analysis; lint / code quality checks (checkstyle, lint, etc)
     - Code coverage reporting tool
@@ -403,7 +405,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
   - Remaining work to be done for this version;
     - Update Kotlin stdlib and coroutines
       - Use sealed interface in Fields when upgrading to Kotlin 1.5+
-    - Update Dexter
+    - Remove/replace the no-longer maintained Dexter
     - Update Gradle
     - Update Android Studio
 - **(0.9.0) v1 release prep**
