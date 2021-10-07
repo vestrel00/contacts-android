@@ -17,8 +17,8 @@ in Java,
 ContactsFactory.create(context)
 ```
 
-It's up to you if you want to hold on to instances as a singleton that is injected to your
-dependency graph (via something like dagger) or just create instances on demand.
+It's up to you if you just want to create instances on demand or hold on to instances as a singleton
+that is injected to your dependency graph (via something like dagger) to easily mock it during tests.
 
 The `context` parameter can come from anywhere; Application, Activity, Fragment, or View. It does
 not matter what context you pass in. The API will only use and store the Application context, to

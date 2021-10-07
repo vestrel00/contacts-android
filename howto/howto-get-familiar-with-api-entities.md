@@ -1,6 +1,7 @@
 ## How do I get familiarized with the Contacts entities?
 
-First, it's important to understand the most basic concept of the [Android Contacts Provider / ContactsContract][1].
+First, it's important to understand the most basic concept of the
+[Android Contacts Provider / ContactsContract](https://developer.android.com/guide/topics/providers/contacts-provider).
 Afterwards, everything in this library should just make sense.
 
 There is only one thing you need to know outside of this library. The library handles the rest of
@@ -47,10 +48,9 @@ This library provides entities that model everything in the Contacts Provider da
 
 - `Contact`
     - Primarily contains a list of RawContacts that are associated with this contact.
-    - To easily access aggregate data from all RawContacts in the list, read
-      [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
 - `RawContact`
     - Contains contact data that belong to an account.
+    - There may be more than one RawContact per Contact.
 - `CommonDataEntity`
     - A specific kind of data of a RawContact. These entities model the common data kinds that are
       provided by the Contacts Provider.
@@ -82,7 +82,7 @@ mutating API functions).
 Custom data types may also be integrated into the contacts database (though not synced across devices).
 Read more in [How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
 
-###### Common data kinds count restrictions
+#### Common data kinds count restrictions
 
 A `RawContact` may have at most one OR no limits of certain kinds of data.
 
@@ -113,7 +113,7 @@ disables consumers from violating them.
 The core library does not explicitly expose count restrictions to consumers. However, it is exposed
 when integrating custom data via the `CustomDataCountRestriction`.
 
-###### Common data kinds Account restrictions
+#### Common data kinds Account restrictions
 
 Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
 associated with an Account). These data kinds are;
@@ -151,4 +151,78 @@ If a valid account is not provided, no entries of the above are automatically cr
 To determine if a RawContact is associated with an Account or not, read
 [How do I query for Accounts?](/howto/howto-query-accounts.md).
 
-[1]: https://developer.android.com/guide/topics/providers/contacts-provider
+#### Accessing contact data
+
+When you have an instance of `Contact`, you have complete (and correct) access to data stored in it.
+
+To access data of a Contact with only one RawContact,
+
+```kotlin
+val contact: Contact
+val rawContact: RawContact = contact.rawContacts.first()
+Log.d(
+    "Contact",
+    """
+        Display name: ${contact.displayNamePrimary}
+        Last updated: ${contact.lastUpdatedTimestamp}
+        Starred?: ${contact.options?.starred}
+        Send to voicemail?: ${contact.options?.sendToVoicemail}
+        Ringtone: ${contact.options?.customRingtone}
+
+        Addresses: ${rawContact.addresses}
+        Emails: ${rawContact.emails}
+        Events: ${rawContact.events}
+        IMs: ${rawContact.ims}
+        Name: ${rawContact.name}
+        Nickname: ${rawContact.nickname}
+        Note: ${rawContact.note}
+        Organization: ${rawContact.organization}
+        Phones: ${rawContact.phones}
+        Relations: ${rawContact.relations}
+        SipAddress: ${rawContact.sipAddress}
+        Websites: ${rawContact.websites}
+    """.trimIndent()
+    // Groups and photo require separate blocking function calls.
+)
+```
+
+To access data of a Contact with possibly more than one RawContact, we can use `ContactData`
+extensions to make our life easier,
+
+```kotlin
+val contact: Contact
+Log.d(
+    "Contact",
+    """
+        Display name: ${contact.displayNamePrimary}
+        Last updated: ${contact.lastUpdatedTimestamp}
+        Starred?: ${contact.options?.starred}
+        Send to voicemail?: ${contact.options?.sendToVoicemail}
+        Ringtone: ${contact.options?.customRingtone}
+
+        Aggregate data from all RawContacts of the contact
+        -----------------------------------
+        Addresses: ${contact.addressList()}
+        Emails: ${contact.emailList()}
+        Events: ${contact.eventList()}
+        IMs: ${contact.imList()}
+        Names: ${contact.nameList()}
+        Nicknames: ${contact.nicknameList()}
+        Notes: ${contact.noteList()}
+        Organizations: ${contact.organizationList()}
+        Phones: ${contact.phoneList()}
+        Relations: ${contact.relationList()}
+        SipAddresses: ${contact.sipAddressList()}
+        Websites: ${contact.websiteList()}
+        -----------------------------------
+    """.trimIndent()
+    // Groups and photos require separate blocking function calls.
+    // There are also aggregate data functions that return a sequence instead of a list.
+)
+```
+
+Each Contact may have more than one of the following data if the Contact is made up of 2 or more
+RawContacts; name, nickname, note, organization, sip address.
+
+For more info on how to easily aggregate data from all RawContacts in a Contact, read
+[How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
