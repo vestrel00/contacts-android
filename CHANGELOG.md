@@ -14,3 +14,11 @@ Error: Jitpack artifacts not being generated.
 #### 0.1.2
 
 Fixed Jitpack artifacts not being generated.
+
+#### 0.1.3
+
+Fixed query order by functions causing lint warnings for Java consumers.
+
+#### 0.1.4
+
+Expose photoUri and photoThumbnailUri in ContactsEntity.
