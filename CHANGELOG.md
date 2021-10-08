@@ -21,4 +21,4 @@ Fixed query order by functions causing lint warnings for Java consumers.
 
 #### 0.1.4
 
-Expose photoUri and photoThumbnailUri in ContactsEntity.
+Exposed photoUri and photoThumbnailUri in ContactsEntity.

@@ -84,7 +84,8 @@ dependencies {
 }
 ```
 
-This library is a multi-module project published with [JitPack](https://jitpack.io/p/vestrel00/contacts-android).
+This library is a multi-module project published with JitPack;
+[![](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 ## Quick Start
 
