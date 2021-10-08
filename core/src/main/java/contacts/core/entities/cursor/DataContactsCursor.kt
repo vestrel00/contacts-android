@@ -1,6 +1,7 @@
 package contacts.core.entities.cursor
 
 import android.database.Cursor
+import android.net.Uri
 import contacts.core.DataContactsField
 import contacts.core.Fields
 import java.util.*
@@ -21,4 +22,8 @@ internal class DataContactsCursor(cursor: Cursor) : AbstractDataCursor<DataConta
     override val displayNameAlt: String? by string(Fields.Contact.DisplayNameAlt)
 
     override val lastUpdatedTimestamp: Date? by date(Fields.Contact.LastUpdatedTimestamp)
+
+    override val photoUri: Uri? by uri(Fields.Contact.PhotoUri)
+
+    override val photoThumbnailUri: Uri? by uri(Fields.Contact.PhotoThumbnailUri)
 }

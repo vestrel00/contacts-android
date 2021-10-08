@@ -24,6 +24,9 @@ import java.io.InputStream
 /**
  * Returns the full-sized photo as an [InputStream]. Returns null if a photo has not yet been set.
  *
+ * This does not use the [ContactEntity.photoUri] from this instance. Instead, a query is made to
+ * retrieve the latest photo uri from the database in order to ensure validity.
+ *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
@@ -61,6 +64,9 @@ fun ContactEntity.photoInputStream(context: Context): InputStream? {
 /**
  * Returns the full-sized photo as a [ByteArray]. Returns null if a photo has not yet been set.
  *
+ * This does not use the [ContactEntity.photoUri] from this instance. Instead, a query is made to
+ * retrieve the latest photo uri from the database in order to ensure validity.
+ *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
@@ -83,6 +89,9 @@ fun ContactEntity.photoBytes(context: Context): ByteArray? = photoInputStream(co
 /**
  * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
  *
+ * This does not use the [ContactEntity.photoUri] from this instance. Instead, a query is made to
+ * retrieve the latest photo uri from the database in order to ensure validity.
+ *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
@@ -104,6 +113,9 @@ fun ContactEntity.photoBitmap(context: Context): Bitmap? = photoInputStream(cont
 
 /**
  * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ *
+ * This does not use the [ContactEntity.photoUri] from this instance. Instead, a query is made to
+ * retrieve the latest photo uri from the database in order to ensure validity.
  *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
@@ -146,6 +158,9 @@ private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
 /**
  * Returns the photo thumbnail as an [InputStream]. Returns null if a photo has not yet been set.
  *
+ * This does not use the [ContactEntity.photoThumbnailUri] from this instance. Instead, a query is
+ * made to retrieve the latest photo thumbnail uri from the database in order to ensure validity.
+ *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
@@ -183,6 +198,9 @@ fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
 /**
  * Returns the photo thumbnail as a [ByteArray]. Returns null if a photo has not yet been set.
  *
+ * This does not use the [ContactEntity.photoThumbnailUri] from this instance. Instead, a query is
+ * made to retrieve the latest photo thumbnail uri from the database in order to ensure validity.
+ *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
@@ -208,6 +226,9 @@ fun ContactEntity.photoThumbnailBytes(context: Context): ByteArray? =
 /**
  * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
  *
+ * This does not use the [ContactEntity.photoThumbnailUri] from this instance. Instead, a query is
+ * made to retrieve the latest photo thumbnail uri from the database in order to ensure validity.
+ *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending
  * on query filters.
@@ -230,6 +251,9 @@ fun ContactEntity.photoThumbnailBitmap(context: Context): Bitmap? =
 
 /**
  * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ *
+ * This does not use the [ContactEntity.photoThumbnailUri] from this instance. Instead, a query is
+ * made to retrieve the latest photo thumbnail uri from the database in order to ensure validity.
  *
  * This photo is picked from one of the associated [android.provider.ContactsContract.RawContacts]s
  * by the Contacts Provider, which may not be in the list of [ContactEntity.rawContacts] depending

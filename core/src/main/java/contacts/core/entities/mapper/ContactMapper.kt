@@ -22,7 +22,8 @@ internal class ContactMapper(
             displayNamePrimary = contactsCursor.displayNamePrimary,
             displayNameAlt = contactsCursor.displayNameAlt,
             lastUpdatedTimestamp = contactsCursor.lastUpdatedTimestamp,
-
-            options = optionsMapper.value
+            options = optionsMapper.value,
+            photoUri = contactsCursor.photoUri,
+            photoThumbnailUri = contactsCursor.photoThumbnailUri,
         )
 }

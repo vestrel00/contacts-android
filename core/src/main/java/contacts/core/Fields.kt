@@ -290,9 +290,16 @@ class DataContactsFields internal constructor() : AbstractDataFieldSet<DataConta
     @JvmField
     val Options = DataContactsOptionsFields()
 
+    @JvmField
+    val PhotoUri = DataContactsField(Contacts.PHOTO_URI)
+
+    @JvmField
+    val PhotoThumbnailUri = DataContactsField(Contacts.PHOTO_THUMBNAIL_URI)
+
     override val all by unsafeLazy {
         mutableSetOf(
-            Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp
+            Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
+            PhotoUri, PhotoThumbnailUri
         ).apply {
             addAll(Options.all)
         }.toSet() // ensure that this is not modifiable at runtime
@@ -992,9 +999,11 @@ object ContactsFields : FieldSet<ContactsField>() {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     internal val NameRawContactId = ContactsField(Contacts.NAME_RAW_CONTACT_ID)
 
-    internal val PhotoUri = ContactsField(Contacts.PHOTO_URI)
+    @JvmField
+    val PhotoUri = ContactsField(Contacts.PHOTO_URI)
 
-    internal val PhotoThumbnailUri = ContactsField(Contacts.PHOTO_THUMBNAIL_URI)
+    @JvmField
+    val PhotoThumbnailUri = ContactsField(Contacts.PHOTO_THUMBNAIL_URI)
 
     internal val PhotoFileId = ContactsField(Contacts.PHOTO_FILE_ID)
 

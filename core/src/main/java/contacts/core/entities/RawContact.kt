@@ -27,7 +27,8 @@ sealed class RawContactEntity : Entity {
      * The [Photo] class does not have any real functional value. This exist only to prevent
      * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
      *
-     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set photos.
+     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
+     * photos.
      */
     internal abstract var photo: Photo?
 

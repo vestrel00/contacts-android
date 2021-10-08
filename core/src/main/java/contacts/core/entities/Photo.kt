@@ -4,7 +4,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
- * A data kind representing a photo for the contact.
+ * A data kind representing a photo for the (raw) contact.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
  *

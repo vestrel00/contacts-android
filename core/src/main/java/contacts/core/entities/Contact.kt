@@ -1,5 +1,6 @@
 package contacts.core.entities
 
+import android.net.Uri
 import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -99,21 +100,27 @@ sealed class ContactEntity : Entity {
      */
     abstract val options: Options?
 
-    /* Intentionally not including these to ensure consumers obtain Contact photos the same way that
-     * RawContact photos are obtained. The ContactPhoto extension functions ensures that only the
-     * most up-to-date photos are exposed to consumers.
-
+    /**
      * The uri to the full-sized image of this contact. This full sized image is from the associated
      * [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this photo
      * belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
-    val photoUri: Uri?,
+     *
+     * This may be the same as the [photoThumbnailUri] if a full sized photo is not available.
+     *
+     * To ensure valid, non-stale photos are shown, use the ContactPhoto extensions to
+     * get/set/remove photos.
+     */
+    abstract val photoUri: Uri?
 
+    /**
      * The uri to the thumbnail-sized version of the [photoUri]. This thumbnail image is from the
      * associated [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this
-     * photo belongs to is not guaranteed to be in the [rawContacts] list depending on query
-     * filters.
-    val photoThumbnailUri: Uri?
+     * photo belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
+     *
+     * To ensure valid, non-stale photos are shown, use the ContactPhoto extensions to
+     * get/set/remove photos.
      */
+    abstract val photoThumbnailUri: Uri?
 
     /**
      * True if this contact represents the user's personal profile entry.
@@ -168,7 +175,17 @@ data class Contact internal constructor(
     /**
      * See [ContactEntity.options].
      */
-    override val options: Options?
+    override val options: Options?,
+
+    /**
+     * See [ContactEntity.options].
+     */
+    override val photoUri: Uri?,
+
+    /**
+     * See [ContactEntity.photoThumbnailUri].
+     */
+    override val photoThumbnailUri: Uri?
 
 ) : ContactEntity() {
 
@@ -186,7 +203,9 @@ data class Contact internal constructor(
         displayNamePrimary = displayNamePrimary,
         displayNameAlt = displayNameAlt,
         lastUpdatedTimestamp = lastUpdatedTimestamp,
-        options = options
+        options = options,
+        photoUri = photoUri,
+        photoThumbnailUri = photoThumbnailUri
     )
 }
 
@@ -227,7 +246,17 @@ data class MutableContact internal constructor(
     /**
      * See [ContactEntity.options].
      */
-    override val options: Options?
+    override val options: Options?,
+
+    /**
+     * See [ContactEntity.options].
+     */
+    override val photoUri: Uri?,
+
+    /**
+     * See [ContactEntity.photoThumbnailUri].
+     */
+    override val photoThumbnailUri: Uri?
 
 ) : ContactEntity() {
 

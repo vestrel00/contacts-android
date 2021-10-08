@@ -28,9 +28,9 @@ internal class ContactsCursor(cursor: Cursor) : AbstractEntityCursor<ContactsFie
     // @TargetApi(Build.VERSION_CODES.LOLLIPOP) Not applicable to delegated properties
     val nameRawContactId: Long? by long(ContactsFields.NameRawContactId)
 
-    val photoUri: Uri? by uri(ContactsFields.PhotoUri)
+    override val photoUri: Uri? by uri(ContactsFields.PhotoUri)
 
-    val photoThumbnailUri: Uri? by uri(ContactsFields.PhotoThumbnailUri)
+    override val photoThumbnailUri: Uri? by uri(ContactsFields.PhotoThumbnailUri)
 
     val photoFileId: Long?
         get() {

@@ -164,7 +164,9 @@ internal class ContactsMapper(
                     displayNamePrimary = null,
                     displayNameAlt = null,
                     lastUpdatedTimestamp = null,
-                    options = null
+                    options = null,
+                    photoUri = null,
+                    photoThumbnailUri = null
                 )
             )
 

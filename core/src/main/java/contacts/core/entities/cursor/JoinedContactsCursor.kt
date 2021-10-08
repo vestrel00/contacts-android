@@ -1,5 +1,6 @@
 package contacts.core.entities.cursor
 
+import android.net.Uri
 import java.util.*
 
 /**
@@ -21,4 +22,8 @@ internal interface JoinedContactsCursor : ContactIdCursor {
     val displayNameAlt: String?
 
     val lastUpdatedTimestamp: Date?
+
+    val photoUri: Uri?
+
+    val photoThumbnailUri: Uri?
 }
