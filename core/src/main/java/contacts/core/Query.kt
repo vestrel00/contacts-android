@@ -278,6 +278,7 @@ interface Query {
      * including [NameFields.DisplayName] ('data1') will also result in the inclusion of
      * [AddressFields.FormattedAddress] ('data1').
      */
+    @SafeVarargs
     fun orderBy(vararg orderBy: OrderBy<ContactsField>): Query
 
     /**

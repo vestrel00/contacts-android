@@ -33,6 +33,7 @@ class CustomDataRegistry {
     /**
      * Register custom data [entries].
      */
+    @SafeVarargs
     fun register(vararg entries: Entry<*, *, *>) {
         for (entry in entries) {
             @Suppress("UNCHECKED_CAST")

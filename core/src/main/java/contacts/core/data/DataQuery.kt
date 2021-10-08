@@ -309,6 +309,7 @@ interface CommonDataQuery<K : CommonDataField, V : CommonDataEntity> {
      * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase` as an
      * optional parameter.
      */
+    @SafeVarargs
     fun orderBy(vararg orderBy: OrderBy<K>): CommonDataQuery<K, V>
 
     /**

@@ -85,6 +85,7 @@ interface GroupsQuery {
      *
      * Use [GroupsFields] to construct the [orderBy].
      */
+    @SafeVarargs
     fun orderBy(vararg orderBy: OrderBy<GroupsField>): GroupsQuery
 
     /**

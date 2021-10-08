@@ -88,6 +88,7 @@ interface AccountsRawContactsQuery {
      *
      * Use [RawContactsFields] to construct the [orderBy].
      */
+    @SafeVarargs
     fun orderBy(vararg orderBy: OrderBy<RawContactsField>): AccountsRawContactsQuery
 
     /**
