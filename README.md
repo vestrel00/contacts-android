@@ -50,6 +50,19 @@ Also included are some pre-baked goodies to be used as is or just for reference;
 - [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
 - [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md   )
 
+**Framework-agnostic design**
+
+**The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!**
+All core functions of the API live in the `core` module, which you can import to your project all by
+itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D 
+
+So, feel free to use the core API however you want with whatever frameworks you want, such as
+Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions handling
+APIs you want to use.
+
+All other modules in this library are **optional** and are just there for your convenience or for
+reference.
+
 ## Installation
 
 First, include JitPack in the repositories list,
@@ -241,7 +254,7 @@ val insertResult = Contacts(context)
 
 Or alternatively, in a more Kotlinized style,
 
-```
+```kotlin
 val insertResult = Contacts(context)
     .insert()
     .rawContact {

@@ -23,10 +23,11 @@ don't need to know that =) These tables are all connected.
     - E.G. John Doe from Gmail's name and email, John Doe from Hotmail's phone and address
 
 In the example given (E.G.) above,
-    - there is one row in the Contacts table for the person John Doe
-    - there are 2 rows in the RawContacts table that make up the Contact John Doe
-    - there are 4 rows in the Data table belonging to the Contact John Doe.
-        - 2 of these rows belong to John Doe from Gmail and the other 2 belong to John Doe from Hotmail
+
+- there is one row in the Contacts table for the person John Doe
+- there are 2 rows in the RawContacts table that make up the Contact John Doe
+- there are 4 rows in the Data table belonging to the Contact John Doe.
+    - 2 of these rows belong to John Doe from Gmail and the other 2 belong to John Doe from Hotmail
 
 In the background, the Contacts Provider automatically performs the RawContacts linking/aggregation
 into a single Contact. To forcefully link or unlink sets of RawContacts, read
