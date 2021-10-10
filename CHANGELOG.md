@@ -22,3 +22,7 @@ Fixed query order by functions causing lint warnings for Java consumers.
 #### 0.1.4
 
 Exposed photoUri and photoThumbnailUri in ContactsEntity.
+
+#### 0.1.5
+
+Added groupMemberships aggregation extension function in ContactData.

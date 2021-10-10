@@ -77,7 +77,7 @@ To import all modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:0.1.4'
+     implementation 'com.github.vestrel00.contacts-android:0.1.5'
 }
 ```
 
@@ -85,7 +85,7 @@ To import specific modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.4'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.5'
 }
 ```
 
