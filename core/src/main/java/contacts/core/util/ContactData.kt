@@ -49,9 +49,76 @@ fun Contact.events(): Sequence<Event> = rawContacts
  */
 fun Contact.eventList(): List<Event> = events().toList()
 
-// GroupMemberships are intentionally left out because they should never be combined.
-// The native Contacts app hides the group membership UI field when viewing/editing a contact
-// with more than one RawContact.
+/**
+ * Sequence of group memberships from all [Contact.rawContacts] ordered by the [GroupMembership.id].
+ *
+ * ## Adding or removing group memberships
+ *
+ * Adding or removing group memberships must be done at the RawContact level, not via Contact.
+ * Keep reading for why.
+ *
+ * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
+ *
+ * Groups are tied to an [android.accounts.Account]. There can be no group that exist without an
+ * associated Account. Therefore, memberships to groups ([GroupMembership]s) are also tied to an
+ * Account. This means that Contacts do NOT have group memberships. Rather, only RawContacts can
+ * have group memberships.
+ *
+ * For example, if there are two Accounts in the device,
+ *
+ * 1. "john@gmail.com"
+ * 2. "doe@gmail.com"
+ *
+ * Then there are two sets of the same system groups plus any other groups that come with the
+ * account via sync. While this set of groups may differ slightly from one OEM to another, they are
+ * generally the same. The above two accounts could have the following groups.
+ *
+ * Groups from "john@gmail.com" account;
+ *
+ * - Group id: 1, systemId: Contacts, title: My Contacts, accountName: john@gmail.com, accountType: com.google
+ * - Group id: 2, systemId: null, title: Starred in Android, accountName: john@gmail.com, accountType: com.google
+ * - Group id: 3, systemId: Friends,title: Friends, accountName: john@gmail.com, accountType: com.google
+ * - Group id: 4, systemId: Family, title: Family, accountName: john@gmail.com, accountType: com.google
+ * - Group id: 5, systemId: Coworkers, title: Coworkers, accountName: john@gmail.com, accountType: com.google
+ *
+ * Groups from "doe@gmail.com" account;
+ *
+ * - Group id: 6, systemId: Contacts, title: My Contacts, accountName: doe@gmail.com, accountType: com.google
+ * - Group id: 7, systemId: null, title: Starred in Android, accountName: doe@gmail.com, accountType: com.google
+ * - Group id: 8, systemId: Friends,title: Friends, accountName: doe@gmail.com, accountType: com.google
+ * - Group id: 9, systemId: Family, title: Family, accountName: doe@gmail.com, accountType: com.google
+ * - Group id: 10, systemId: Coworkers, title: Coworkers, accountName: doe@gmail.com, accountType: com.google
+ *
+ * Notice that there are two sets of the same systemId and title but they come from different accounts
+ * and have their own unique id in the Groups table.
+ *
+ * ## What is the whole point of the above lecture?
+ *
+ * The point is that if this [Contact] is made up of two or more [RawContact]s that belong to
+ * different accounts, then this set of group memberships may contain two memberships to what
+ * may seem like the same group. For example, a membership to;
+ *
+ * - Group id: 1, systemId: Contacts, title: My Contacts, accountName: john@gmail.com, accountType: com.google
+ * - Group id: 6, systemId: Contacts, title: My Contacts, accountName: doe@gmail.com, accountType: com.google
+ *
+ * In the above examples, groups 1 and 6 are the default system group, which all RawContacts for the
+ * respective accounts get automatically added to. Consumers may think this is a bug BUT it should
+ * be clear that the two memberships are different given that they have different
+ * [GroupMembership.groupId]s!
+ *
+ * **Furthermore**, this all means that adding or removing group memberships must be done at the
+ * RawContact level! Remember, group memberships are RawContact-specific. This convenience function
+ * just provides a list of all group memberships of all RawContacts associated with this Contact.
+ */
+fun Contact.groupMemberships(): Sequence<GroupMembership> = rawContacts
+    .asSequence()
+    .flatMap { it.groupMemberships.asSequence() }
+    .sortedBy { it.id }
+
+/**
+ * The [groupMemberships] as a list.
+ */
+fun Contact.groupMembershipList(): List<GroupMembership> = groupMemberships().toList()
 
 /**
  * Sequence of Ims from all [Contact.rawContacts] ordered by the [Im.id].
@@ -350,9 +417,18 @@ fun MutableContact.removeAllEvents() {
     }
 }
 
-// GroupMemberships are intentionally left out because they should never be combined.
-// The native Contacts app hides the group membership UI field when viewing/editing a contact
-// with more than one RawContact.
+/**
+ * The [groupMemberships] as a sequence.
+ */
+fun MutableContact.groupMemberships(): Sequence<GroupMembership> = rawContacts
+    .asSequence()
+    .flatMap { it.groupMemberships.asSequence() }
+    .sortedBy { it.id }
+
+/**
+ * The [groupMemberships] as a list.
+ */
+fun MutableContact.groupMembershipList(): List<GroupMembership> = groupMemberships().toList()
 
 /**
  * Sequence of Ims from all [MutableContact.rawContacts] ordered by the [MutableIm.id].
