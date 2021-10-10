@@ -107,8 +107,8 @@ sealed class ContactEntity : Entity {
      *
      * This may be the same as the [photoThumbnailUri] if a full sized photo is not available.
      *
-     * To ensure valid, non-stale photos are shown, use the ContactPhoto extensions to
-     * get/set/remove photos.
+     * To get the latest photo as an InputStream/Bytes/Bitmap/BitmapDrawable or set or remove photo,
+     * use the ContactPhoto extensions.
      */
     abstract val photoUri: Uri?
 
@@ -117,8 +117,8 @@ sealed class ContactEntity : Entity {
      * associated [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this
      * photo belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
      *
-     * To ensure valid, non-stale photos are shown, use the ContactPhoto extensions to
-     * get/set/remove photos.
+     * To get the latest photo thumbnail as an InputStream/Bytes/Bitmap/BitmapDrawable or set or
+     * remove photo thumbnail, use the ContactPhoto extensions.
      */
     abstract val photoThumbnailUri: Uri?
 

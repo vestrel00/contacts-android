@@ -195,8 +195,16 @@ val contact: Contact
 Log.d(
     "Contact",
     """
+        ID: ${contact.id}
+
         Display name: ${contact.displayNamePrimary}
+        Display name alt: ${contact.displayNameAlt}
+
+        Photo Uri: ${contact.photoUri}
+        Thumbnail Uri: ${contact.photoThumbnailUri}
+
         Last updated: ${contact.lastUpdatedTimestamp}
+
         Starred?: ${contact.options?.starred}
         Send to voicemail?: ${contact.options?.sendToVoicemail}
         Ringtone: ${contact.options?.customRingtone}
@@ -206,6 +214,7 @@ Log.d(
         Addresses: ${contact.addressList()}
         Emails: ${contact.emailList()}
         Events: ${contact.eventList()}
+        Group memberships: ${contact.groupMembershipList()}
         IMs: ${contact.imList()}
         Names: ${contact.nameList()}
         Nicknames: ${contact.nicknameList()}
@@ -217,7 +226,6 @@ Log.d(
         Websites: ${contact.websiteList()}
         -----------------------------------
     """.trimIndent()
-    // Groups and photos require separate blocking function calls.
     // There are also aggregate data functions that return a sequence instead of a list.
 )
 ```

@@ -171,36 +171,43 @@ above snippet is in Kotlin but, like I mentioned, all of the core APIs are usabl
 Once you have the contacts, you now have access to all of their data!
 
  ```kotlin
+val contact: Contact
 Log.d(
-    "Contacts",
-    contacts.joinToString("\n\n") { contact ->
-        """
-            Display name: ${contact.displayNamePrimary}
-            Last updated: ${contact.lastUpdatedTimestamp}
-            Starred?: ${contact.options?.starred}
-            Send to voicemail?: ${contact.options?.sendToVoicemail}
-            Ringtone: ${contact.options?.customRingtone}
+    "Contact",
+    """
+        ID: ${contact.id}
 
-            Aggregate data from all RawContacts
-            -----------------------------------
-            Addresses: ${contact.addressList()}
-            Emails: ${contact.emailList()}
-            Events: ${contact.eventList()}
-            IMs: ${contact.imList()}
-            Names: ${contact.nameList()}
-            Nicknames: ${contact.nicknameList()}
-            Notes: ${contact.noteList()}
-            Organizations: ${contact.organizationList()}
-            Phones: ${contact.phoneList()}
-            Relations: ${contact.relationList()}
-            SipAddresses: ${contact.sipAddressList()}
-            Websites: ${contact.websiteList()}
-            -----------------------------------
-        """.trimIndent()
-    }
+        Display name: ${contact.displayNamePrimary}
+        Display name alt: ${contact.displayNameAlt}
+
+        Photo Uri: ${contact.photoUri}
+        Thumbnail Uri: ${contact.photoThumbnailUri}
+
+        Last updated: ${contact.lastUpdatedTimestamp}
+
+        Starred?: ${contact.options?.starred}
+        Send to voicemail?: ${contact.options?.sendToVoicemail}
+        Ringtone: ${contact.options?.customRingtone}
+
+        Aggregate data from all RawContacts of the contact
+        -----------------------------------
+        Addresses: ${contact.addressList()}
+        Emails: ${contact.emailList()}
+        Events: ${contact.eventList()}
+        Group memberships: ${contact.groupMembershipList()}
+        IMs: ${contact.imList()}
+        Names: ${contact.nameList()}
+        Nicknames: ${contact.nicknameList()}
+        Notes: ${contact.noteList()}
+        Organizations: ${contact.organizationList()}
+        Phones: ${contact.phoneList()}
+        Relations: ${contact.relationList()}
+        SipAddresses: ${contact.sipAddressList()}
+        Websites: ${contact.websiteList()}
+        -----------------------------------
+    """.trimIndent()
+    // There are also aggregate data functions that return a sequence instead of a list.
 )
-// Groups and photos require separate blocking function calls.
-// There are also aggregate data functions that return a sequence instead of a list.
  ```
 
 > Each Contact may have more than one of the following data if the Contact is made up of 2 or more
