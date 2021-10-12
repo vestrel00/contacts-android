@@ -233,7 +233,7 @@ interface BroadQuery {
      * There is no workaround for this because the [ContentResolver.query] function only takes in
      * an array of column names.
      *
-     * ## Data Loss
+     * ## IMPORTANT - Potential Data Loss
      *
      * Do not perform updates on Contacts or RawContacts returned by a query where all fields are
      * not included as it may result in data loss! To include all fields, including those that are
@@ -241,8 +241,19 @@ interface BroadQuery {
      *
      * - Do no call this function.
      * - Call this function with no fields (empty).
-     * - Use [Fields].
-     * - Use [Fields.all].
+     * - Pass in [Fields].
+     * - Pass in [Fields.all].
+     *
+     * // FIXME? **Dev notes:** should we change the API such that it supports only mutating and
+     * updating included fields? That would add complexity to both developers of the API and its
+     * consumers... Or we can just be consenting adults and read&follow the documentation. The only
+     * way data loss may occur is if consumers explicitly call these [include]s functions. It is up
+     * to them to read this documentation. Besides keeping code complexity lower, another upside to
+     * not checking for included fields on update is that it allows consumers to clear unwanted data
+     * easily. So, this is a feature, not a bug! (LOL) All jokes aside, we'll see if the community
+     * wants to change this (or make it configurable). Keep in mind that update operations on
+     * contacts/raw contacts are typically done in a full screen singular contact form. So, we
+     * should cater for that main use case.
      */
     fun include(vararg fields: AbstractDataField): BroadQuery
 

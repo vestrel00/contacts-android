@@ -269,6 +269,27 @@ interface CommonDataQuery<K : CommonDataField, V : CommonDataEntity> {
      * object instances.
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * ## IMPORTANT - Potential Data Loss
+     *
+     * Do not perform updates on Data returned by a query where all of the Data fields are not
+     * included as it may result in data loss! To include all fields, including those that are not
+     * exposed to consumers (you), do one of the following;
+     *
+     * - Do no call this function.
+     * - Call this function with no fields (empty).
+     * - Pass in all of the particular data's fields.
+     *
+     * // FIXME? **Dev notes:** should we change the API such that it supports only mutating and
+     * updating included fields? That would add complexity to both developers of the API and its
+     * consumers... Or we can just be consenting adults and read&follow the documentation. The only
+     * way data loss may occur is if consumers explicitly call these [include]s functions. It is up
+     * to them to read this documentation. Besides keeping code complexity lower, another upside to
+     * not checking for included fields on update is that it allows consumers to clear unwanted data
+     * easily. So, this is a feature, not a bug! (LOL) All jokes aside, we'll see if the community
+     * wants to change this (or make it configurable). Keep in mind that update operations on
+     * contacts/raw contacts are typically done in a full screen singular contact form. So, we
+     * should cater for that main use case.
      */
     fun include(vararg fields: K): CommonDataQuery<K, V>
 
