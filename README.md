@@ -415,9 +415,13 @@ concerned, this library is production-ready as is, especially for daring/experim
 However, I cannot _professionally_ proclaim this to be production-ready without doing things that I
 consider are essential for any API to do. So, here is my v1.0.0 release checklist!
 
-- **(v0.1.0) Ready for public alpha development (current version)**
+- **(v0.1.x) Complete core functions and documentations**
   - All v1 functions have been implemented and _manually tested_, with full documentation.
-- **(v0.2.0) Sample app complete**
+  - Remaining work to be done for this version;
+    - Complete all howto guides
+    - Fix any bugs that are discovered along the way.
+        - Fix Event date not handling events with no year... *facepalm* See `EventMapper`.
+- **(v0.2.x) Complete the sample app**
   - Purpose:
     - Prove that library produces same results as native Contacts app in actual usage
     - Prove that 0, 1, or more accounts are handled properly
@@ -454,22 +458,22 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
       - Export (placeholder only - show toast saying it's coming post v1 release)
       - Blocked numbers (placeholder only - show toast saying it's coming post v1 release)
       - About Contacts
-- **(v0.3.0) Sample app enhanced**
+- **(v0.3.x) Integrate additional APIs to sample app**
   - Purpose:
     - Prove that additional (advanced) functions not in native Contacts app works
-    - Find bugs in API
+    - Fix any bugs that are discovered along the way.
   - Remaining work to be done for this version;
     - Integrate Query (for more advance querying compared to BroadQuery).
     - Integrate DataQuery, DataUpdate, and DataDelete functions
     - Integrate handlename custom data
     - Integrate gender custom data
-- **(v0.4.0) Sample app reuse**
+- **(v0.4.x) Extract code from sample app for reuse or reference**
   - Purpose:
     - Move/refactor as much code as possible from the sample app into reusable modules
-    - Promote code reuse, including rudimentary code (that couldbe refined)
+    - Promote code reuse, including rudimentary code (that could be refined)
   - Remaining work to be done for this version;
     - Move view page to new module; ui-async
-- **(0.5.0) Code quality and integrity**
+- **(0.5.x) Code quality and integrity**
   - Purpose:
     - Prevent new code from breaking existing API
     - Ensure consumers have an easy way to mock the API in both white box unit tests and black box ui tests
@@ -482,7 +486,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
     - Static analysis; lint / code quality checks (checkstyle, lint, etc)
     - Code coverage reporting tool
     - SonarQube?
-- **(0.6.0) Kotlin Flow extensions**
+- **(0.6.x) Kotlin Flow extensions**
   - Purpose:
     - Provide alternative asynchronous extensions for consumers prefer to use Flow over withContext
       and async await functions
@@ -490,7 +494,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
   - Remaining work to be done for this version;
     - Add Flow function extensions in existing async module
     - Listen for changes in the Contacts database
-- **(0.7.0) Reactive extensions**
+- **(0.7.x) Reactive extensions**
   - Purpose:
     - Provide alternative asynchronous extensions for consumers that are not using Kotlin coroutines
     - Provide a way to proactively listen for changes in the Contacts database
@@ -498,7 +502,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
     - Create rx module
     - Implement rx-equivalent of async module functions
     - Listen for changes in the Contacts database
-- **(0.8.0) Update dependencies and tools**
+- **(0.8.x) Update dependencies and tools**
   - Purpose:
     - Ensure that the library and all of its dependencies and tools are up-to-date
   - Remaining work to be done for this version;
@@ -507,7 +511,7 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
     - Remove/replace the no-longer maintained Dexter
     - Update Gradle
     - Update Android Studio
-- **(0.9.0) v1 release prep**
+- **(0.9.x) Prep for v1 release**
   - Purpose:
     - Ensure that the library is ready for v1.0.0 production release
   - Remaining work to be done for this version;
