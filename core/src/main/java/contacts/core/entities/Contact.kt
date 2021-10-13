@@ -7,6 +7,10 @@ import java.util.*
 
 /**
  * [Entity] in the Contacts table.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 sealed class ContactEntity : Entity {
     /**
@@ -141,6 +145,10 @@ sealed class ContactEntity : Entity {
  * The Contacts Provider may combine [RawContact] from several different Accounts. The same effect
  * is achieved when merging / linking multiple contacts. Instances of this class also provides
  * aggregate data from all [RawContact]s in the set of [rawContacts].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Contact internal constructor(
@@ -212,6 +220,10 @@ data class Contact internal constructor(
 /**
  * A mutable [Contact]. Well, nothing is really mutable here except for the [MutableRawContact] in
  * the immutable [rawContacts] list.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableContact internal constructor(

@@ -937,10 +937,13 @@ cater exclusively to Java users.
 
 ## Creating Entities
 
-Entities (e.g. `MutableContact`) are done my constructing an instance using the default no-parameter
-constructor. Then, the individual attributes / properties are set afterwards (Kotlin's `apply` 
-comes in handy here). The constructor is made internal so that consumers do not have the option
-to set read-only and private or internal variables such as `id` and `rawId`. 
+First, consumers are not allowed to create immutable entities. Those must come from the API itself
+to ensure data integrity. Whether or not we will change this in the future is debatable =)
+
+Creating mutable entities (e.g. `MutableContact`) are done my constructing an instance using the
+default no-parameter constructor. Then, the individual attributes / properties are set afterwards
+(Kotlin's `apply` comes in handy here). The constructor is made internal so that consumers do not
+have the option to set read-only and private or internal variables such as `id` and `rawId`.
 
 > FIXME? Make constructors public if Kotlin ever supports private setter for an attribute in the 
 > constructor. https://discuss.kotlinlang.org/t/private-setter-for-var-in-primary-constructor/3640
@@ -953,23 +956,159 @@ Studio: "Private data class constructor is exposed via the 'copy' method.
 
 There is currently no way to disable the `copy` function of data classes (that I know of). The only
 thing we can do is to provide documentation to consumers, insisting against the use of the `copy`
-method as it may lead to unwanted modifications when updating and deleting contacts.
+method as it may lead to unwanted side effects when updating and deleting contacts.
 
 > We could just use regular classes instead of data classes but entities should be data classes
-> because it is what they are (know what I mean?!).
+> because it is what they are (know what I mean?!). Also, I'd hate to have to generate equals and
+> hashcode functions for them, which will make the code harder to maintain. Though, we might do this
+> anyways at some point if we want to make it possible for a mutable entity to equal an immutable
+> entity. Time will tell =)
 > FIXME? Hide / disable data class `copy` function if kotlin ever allows it. 
 
-## Mutable Entities? 
+## Immutable vs Mutable Entities
 
-Why not use a more conventional builder pattern? Why "mutable"? Because it's the simplest way to 
-implement a form of the builder pattern without having the write builder code or adding a dependency
-on Google's `AutoValue`. Furthermore, having "mutable" entities as data classes with all properties
-defined in the constructor allows it to be `Parcelize`d. Besides, one of the main benefits of the
-conventional builder pattern really only benefits Java users. That is function chaining. Kotlin
-users may just use `apply` (and other similar ones).
+This library provides **true immutability** for immutable entities.
 
-Mutable entities also allow for realtime updates to occur. Kinda like LiveData. This is not
-supported yet but may be supported in future work.
+Take a look at the current hierarchy;
+
+```kotlin
+sealed class ContactEntity {
+    abstract val rawContacts: List<RawContactEntity>
+}
+data class Contact(
+    override val rawContacts: List<RawContact>
+) : ContactEntity()
+data class MutableContact(
+    override val rawContacts: List<MutableRawContact>
+) : ContactEntity()
+
+sealed class RawContactEntity
+data class RawContact(
+    val addresses: List<Address>
+) : RawContactEntity()
+data class MutableRawContact(
+    val addresses: MutableList<MutableAddress>
+) : RawContactEntity()
+
+data class Address(
+    val formattedAddress: String?
+)
+data class MutableAddress(
+    var formattedAddress: String?
+)
+```
+
+> Note the use of `sealed class` is to prevent consumers from defining their own entities. This
+> restriction may or may not change in the future.
+
+Notice that there is nothing mutable in the immutable `Contact`. Everything are `val`s and the data
+structures used (i.e. `RawContact`, `Address`, and `List`) are all immutable. This provides
+consumers 100% confidence that immutable entities are not mutable. They will not change or mutate
+in any way. Once they are constructed, they will always remain the same.
+
+Why immutability is so important will not be covered in this dev notes because it would be too big
+(that's what she said) and there are blogs and books written about this. One of the most important
+advantages of immutability is that it is thread-safe. Immutable instances can be used in several
+different threads without the need for synchronization and worries about deadlocks. In other words,
+they are thread-safe and faster than the mutable version.
+
+The current structure also allows consumers are able to distinguish between immutable and mutable
+entities exhaustively. E.G.
+
+```kotlin
+fun doSomethingAndReturn(contact: ContactEntity) = when (contact) {
+    is contacts.core.entities.Contact -> {}
+    is contacts.core.entities.MutableContact -> {}
+}
+```
+
+> Note that the **mutable entities provided in this library are NOT thread-safe**. Consumers will
+> have to perform their own synchronizations if they want to use and mutate mutable entities in
+> multi-threaded scenarios.
+
+#### The cost of current the immutability implementation
+
+The cost of implementing true immutability is more lines of code. Notice that the `MutableContact`
+does not inherit from `Contact`. The same goes for the other entities. This leads to having to write
+seemingly duplicate code when writing functions and extensions.
+
+// FIXME? Furthermore, equality between immutable and mutable entities are not yet implemented. This
+means that `Contact("john") == MutableContact("john")` will return false even though their
+underlying contents are the same. This can be fixed by overriding the equals and hashcode functions
+of all entities. However, that is a lot more code that I would like to avoid, which is why I'm
+using `data class` for all entities in the first place! This mean change in the future if the
+community really wants to change it =)
+
+On a side note, the same cost is incurred by Kotlin's standard libs. For example, notice that
+`AbstractMutableList` does not inherit from and is completely separate from `AbstractList`. I'm sure
+stdlib devs also had to write seemingly duplicate code in implementations of the `List` interface.
+
+#### Avoiding the cost... Shortcuts and pitfalls.
+
+One thing that may come to mind in attempts to reduce lines of seemingly duplicate code is to have
+just a mutable implementation of an immutable declaration. For example, we can restructure the
+hierarchy to;
+
+```kotlin
+sealed class Contact {
+    abstract val rawContacts: List<RawContact>
+}
+data class MutableContact(
+    override val rawContacts: List<MutableRawContact>
+) : Contact()
+
+sealed class RawContact {
+    abstract val addresses: List<Address>
+}
+data class MutableRawContact(
+    override val addresses: MutableList<MutableAddress>
+) : RawContact()
+
+sealed class Address {
+    abstract val formattedAddress: String?
+}
+data class MutableAddress(
+    override var formattedAddress: String?
+) : Address()
+```
+
+Notice that there is a non-concrete declaration (i.e. `Contact`, `RawContact`, and `Address`) and
+just one concrete implementation (i.e. `MutableContact`, `MutableRawContact`, and `MutableAddress`).
+
+> Note that a `val` declaration can be overridden by a `var`. Keep in mind that `val` only requires
+> getters whereas `var` requires both getters and setters. Therefore, a `var` cannot be overridden
+> by a `val`. Or maybe there is different reason Kotlin imposes this restriction =)
+
+We, as API contributors, can avoid having to write seemingly duplicate functions and extensions!
+
+However! Can you see what's wrong with this setup? If we do this, we would either be deceiving
+consumers to think that the instances of "immutable" class signatures (i.e. `Contact`, `RawContact`,
+and `Address`) are actually immutable OR we would have to let consumers know that the API does not
+really provide true immutability. Neither option is ideal (nor is it acceptable IMO).
+
+Consumers would have a reference to a `Contact`, which they may assume is immutable because of the
+usage of `val` instead of `var`, but in actuality the underlying implementation is mutable... This
+could be a cause of really hard to find bugs in multi-threaded usage. Consumers may use `Contact`
+with the assumption that it is immutable only to find that it can actually be mutated! We could
+fix this by just making the mutable implementation thread-safe but since that is the only
+implementation, consumers will be forced to use thread-safe code when they don't have to thereby
+negatively affecting performance.
+
+Keep in mind that thread safety is only one of several reasons for immutability. Those other
+reasons will be violated too.
+
+Consumers will be shocked if they ever do the following or something similar.
+
+```kotlin
+fun x(contact: Contact) = when(contact) {
+    is MutableContact -> {} // this is always true
+    is Contact -> {} // this is always true
+}
+```
+
+In any case, I have to admit, it is a nice trick that would save API contributors time. But that's
+just it! It's just a trick. A shortcut. A nice little time save at the cost of integrity. It is not
+worth it (IMO).
 
 ## Why Not Add Android X / Support Library Dependencies?
 

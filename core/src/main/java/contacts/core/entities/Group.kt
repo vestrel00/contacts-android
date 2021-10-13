@@ -6,6 +6,10 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * [Entity] in the Groups table.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 sealed class GroupsEntity : Entity {
 
@@ -109,6 +113,13 @@ sealed class GroupsEntity : Entity {
     override val isBlank: Boolean = false
 }
 
+/**
+ * See [GroupsEntity].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ */
 @Parcelize
 data class Group internal constructor(
 
@@ -159,6 +170,13 @@ data class Group internal constructor(
     }
 }
 
+/**
+ * A mutable [Group].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ */
 @Parcelize
 data class MutableGroup internal constructor(
 

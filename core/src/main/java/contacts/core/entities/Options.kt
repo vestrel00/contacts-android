@@ -3,14 +3,18 @@ package contacts.core.entities
 import android.net.Uri
 import kotlinx.parcelize.Parcelize
 
+/**
+ * Options for a Contact or RawContact.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ */
 @Parcelize
 data class Options internal constructor(
 
     /**
      * The id of this row in the Contacts, RawContacts, or Data table.
-     *
-     * The columns here technically belong to the Contacts table but are accessible via joins in the
-     * RawContacts and Data table.
      */
     override val id: Long?,
 
@@ -18,7 +22,7 @@ data class Options internal constructor(
     // rawContactId here because this option may belong to a Contact rather than a RawContact.
 
     /**
-     * True if the contact is starred (favorite). Use this to mark favorite contacts.
+     * True if the contact or raw contact is starred (favorite). Use this to mark favorite contacts.
      *
      * Setting this to true results in the addition of a group membership to the favorites group of
      * the associated account. Setting it to false removes that membership. The inverse works too.
@@ -34,12 +38,12 @@ data class Options internal constructor(
     val starred: Boolean?,
 
     /**
-     * URI for a custom ringtone associated with the contact.
+     * URI for a custom ringtone associated with the contact or raw contact.
      */
     val customRingtone: Uri?,
 
     /**
-     * Whether the contact should always be sent to voicemail.
+     * Whether the contact or raw contact should always be sent to voicemail.
      */
     val sendToVoicemail: Boolean?
 
@@ -76,6 +80,13 @@ data class Options internal constructor(
     )
 }
 
+/**
+ * A mutable [Options].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ */
 @Parcelize
 data class MutableOptions internal constructor(
 

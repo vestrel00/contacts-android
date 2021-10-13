@@ -10,6 +10,10 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing a telephone number.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Phone internal constructor(
@@ -125,6 +129,10 @@ data class Phone internal constructor(
 
 /**
  * A mutable [Phone].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutablePhone internal constructor(

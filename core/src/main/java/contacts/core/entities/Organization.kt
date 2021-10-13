@@ -7,6 +7,10 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing an organization.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Organization internal constructor(
@@ -90,6 +94,10 @@ data class Organization internal constructor(
 
 /**
  * A mutable [Organization].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableOrganization internal constructor(

@@ -13,6 +13,10 @@ import kotlinx.parcelize.Parcelize
  *
  * Local RawContacts (those that are not associated with an Account) **should not** have any entries
  * of this data kind.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Relation internal constructor(
@@ -96,6 +100,10 @@ data class Relation internal constructor(
 
 /**
  * A mutable [Relation].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableRelation internal constructor(

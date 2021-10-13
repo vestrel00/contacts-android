@@ -10,6 +10,10 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing a postal addresses.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Address internal constructor(
@@ -150,6 +154,10 @@ data class Address internal constructor(
 
 /**
  * A mutable [Address].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableAddress internal constructor(

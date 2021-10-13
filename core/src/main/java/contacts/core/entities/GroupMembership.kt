@@ -24,7 +24,7 @@ import kotlinx.parcelize.Parcelize
  *
  * ## Dev notes
  *
- * The actual Group lives in a separate table that is not joined with the Data table.
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class GroupMembership internal constructor(

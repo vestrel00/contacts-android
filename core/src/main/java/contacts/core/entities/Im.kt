@@ -10,6 +10,10 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing an instant messaging address.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Im internal constructor(
@@ -107,6 +111,10 @@ data class Im internal constructor(
 
 /**
  * A mutable [Im].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableIm internal constructor(

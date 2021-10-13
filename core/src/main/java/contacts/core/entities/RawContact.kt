@@ -7,6 +7,10 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * [Entity] in the RawContacts table.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 sealed class RawContactEntity : Entity {
     /**
@@ -51,13 +55,9 @@ sealed class RawContactEntity : Entity {
  * The Contacts Provider may combine [RawContact] from several different Accounts. The same effect
  * is achieved when merging / linking multiple contacts.
  *
- * ## Developer notes
+ * ## Dev notes
  *
- * MutableLists are used instead of MutableSets to allow for duplicates, which are allowed in the
- * native Contacts app. Technically, sets could be used here because each data has different row id.
- * However, [MutableRawContact] data all have invalid ids, which disallows duplicates for consumer-
- * created data instances. Therefore, lists are also used here for parity. Besides, lists are more
- * commonly used in Android development and are more supported than sets.
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class RawContact internal constructor(
@@ -201,6 +201,10 @@ data class RawContact internal constructor(
 
 /**
  * A mutable [RawContact].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableRawContact internal constructor(

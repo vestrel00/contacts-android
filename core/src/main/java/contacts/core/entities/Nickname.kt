@@ -7,6 +7,10 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing the contact's nickname.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Nickname internal constructor(
@@ -51,6 +55,10 @@ data class Nickname internal constructor(
 
 /**
  * A mutable [Nickname].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableNickname internal constructor(

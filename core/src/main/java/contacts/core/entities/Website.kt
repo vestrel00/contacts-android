@@ -7,6 +7,10 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing a website related to the contact.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class Website internal constructor(
@@ -51,6 +55,10 @@ data class Website internal constructor(
 
 /**
  * A mutable [Website].
+ *
+ * ## Dev notes
+ *
+ * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 @Parcelize
 data class MutableWebsite internal constructor(
