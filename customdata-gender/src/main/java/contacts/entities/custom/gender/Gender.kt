@@ -145,6 +145,8 @@ data class MutableGender internal constructor(
         label = label
     )
 
+    // The primary value is type AND label (if custom). So, this does nothing to avoid complicating
+    // the API implementation.
     override var primaryValue: String?
         get() = null
         set(_) {}

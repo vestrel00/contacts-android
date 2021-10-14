@@ -162,9 +162,6 @@ data class MutableOrganization internal constructor(
             company, title, department, jobDescription, officeLocation, symbol, phoneticName
         )
 
-    override var primaryValue: String?
-        get() = company
-        set(value) {
-            company = value
-        }
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::company
 }

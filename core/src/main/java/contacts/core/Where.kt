@@ -2,7 +2,9 @@ package contacts.core
 
 import android.database.DatabaseUtils
 import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.EventDate
 import contacts.core.entities.MimeType
+import contacts.core.entities.toWhereString
 import contacts.core.util.isEmpty
 import java.util.*
 
@@ -528,7 +530,8 @@ private fun Any?.toSqlString(): String = when (this) {
     is Sequence<*> -> this.map { it?.toSqlString() }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
     is CommonDataEntity.Type -> value.toSqlString()
-    is Date -> time.toString()
+    is Date -> time.toString() // we will not assume that all dates are for EventDate comparisons.
+    is EventDate -> toWhereString()
     is MimeType -> value.toSqlString()
     else -> this.toString().toSqlString()
 }

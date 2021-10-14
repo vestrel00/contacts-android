@@ -181,9 +181,6 @@ data class MutablePhone internal constructor(
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
-    override var primaryValue: String?
-        get() = number
-        set(value) {
-            number = value
-        }
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::number
 }

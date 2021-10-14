@@ -6,6 +6,7 @@ import contacts.core.entities.Contact
 import contacts.core.entities.Entity
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.custom.GlobalCustomDataRegistry
+import contacts.core.entities.toDbString
 import java.util.*
 
 // Developer notes
@@ -204,7 +205,7 @@ private fun AbstractDataField.compare(
         it.label
     }
     Fields.Event.Date -> lhs.events().compareTo(ignoreCase, rhs.events()) {
-        it.date?.time.toString()
+        it.date?.toDbString()
     }
 
     // GROUP MEMBERSHIP intentionally excluded because they should never be combined.

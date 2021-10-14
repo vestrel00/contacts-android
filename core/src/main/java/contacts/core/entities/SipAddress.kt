@@ -88,9 +88,6 @@ data class MutableSipAddress internal constructor(
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(sipAddress)
 
-    override var primaryValue: String?
-        get() = sipAddress
-        set(value) {
-            sipAddress = value
-        }
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::sipAddress
 }

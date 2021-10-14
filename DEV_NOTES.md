@@ -940,7 +940,7 @@ cater exclusively to Java users.
 First, consumers are not allowed to create immutable entities. Those must come from the API itself
 to ensure data integrity. Whether or not we will change this in the future is debatable =)
 
-Creating mutable entities (e.g. `MutableContact`) are done my constructing an instance using the
+Creating mutable entities (e.g. `MutableContact`) are done by constructing an instance using the
 default no-parameter constructor. Then, the individual attributes / properties are set afterwards
 (Kotlin's `apply` comes in handy here). The constructor is made internal so that consumers do not
 have the option to set read-only and private or internal variables such as `id` and `rawId`.
@@ -1012,13 +1012,13 @@ advantages of immutability is that it is thread-safe. Immutable instances can be
 different threads without the need for synchronization and worries about deadlocks. In other words,
 they are thread-safe and faster than the mutable version.
 
-The current structure also allows consumers are able to distinguish between immutable and mutable
+The current structure also allows consumers to be able to distinguish between immutable and mutable
 entities exhaustively. E.G.
 
 ```kotlin
 fun doSomethingAndReturn(contact: ContactEntity) = when (contact) {
-    is contacts.core.entities.Contact -> {}
-    is contacts.core.entities.MutableContact -> {}
+    is Contact -> {}
+    is MutableContact -> {}
 }
 ```
 
@@ -1036,7 +1036,7 @@ seemingly duplicate code when writing functions and extensions.
 means that `Contact("john") == MutableContact("john")` will return false even though their
 underlying contents are the same. This can be fixed by overriding the equals and hashcode functions
 of all entities. However, that is a lot more code that I would like to avoid, which is why I'm
-using `data class` for all entities in the first place! This mean change in the future if the
+using `data class` for all entities in the first place! This may change in the future if the
 community really wants to change it =)
 
 On a side note, the same cost is incurred by Kotlin's standard libs. For example, notice that
@@ -1077,7 +1077,7 @@ just one concrete implementation (i.e. `MutableContact`, `MutableRawContact`, an
 
 > Note that a `val` declaration can be overridden by a `var`. Keep in mind that `val` only requires
 > getters whereas `var` requires both getters and setters. Therefore, a `var` cannot be overridden
-> by a `val`. Or maybe there is different reason Kotlin imposes this restriction =)
+> by a `val`. Or maybe there is a different reason Kotlin imposes this restriction =)
 
 We, as API contributors, can avoid having to write seemingly duplicate functions and extensions!
 

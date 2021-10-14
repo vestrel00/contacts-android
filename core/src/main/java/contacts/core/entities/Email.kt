@@ -137,9 +137,6 @@ data class MutableEmail internal constructor(
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(address)
 
-    override var primaryValue: String?
-        get() = address
-        set(value) {
-            address = value
-        }
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::address
 }

@@ -6,6 +6,7 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.widget.DatePicker
 import contacts.core.entities.Event
+import contacts.core.entities.EventDate
 import contacts.core.entities.MutableEvent
 import contacts.ui.R
 import contacts.ui.entities.EventFactory
@@ -39,11 +40,7 @@ private class EventView(context: Context) : CommonDataEntityWithTypeView<Event.T
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        val date = Calendar.getInstance().let {
-            it.set(year, month, dayOfMonth)
-            it.time
-        }
-        data?.date = date
+        data?.date = EventDate.from(year, month, dayOfMonth)
         setDataField()
     }
 

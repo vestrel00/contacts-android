@@ -159,11 +159,8 @@ data class MutableIm internal constructor(
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(data)
 
-    override var primaryValue: String?
-        get() = data
-        set(value) {
-            data = value
-        }
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::data
 
     override var type: Protocol?
         get() = protocol

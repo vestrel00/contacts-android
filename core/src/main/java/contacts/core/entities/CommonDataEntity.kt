@@ -103,7 +103,7 @@ interface CommonDataEntity : Entity {
 interface MutableCommonDataEntity : CommonDataEntity {
 
     /**
-     * The main value encapsulated by this entity.
+     * The main value encapsulated by this entity as a string for consumer usage.
      */
     var primaryValue: String?
 }

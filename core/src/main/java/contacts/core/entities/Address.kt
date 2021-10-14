@@ -238,9 +238,6 @@ data class MutableAddress internal constructor(
             formattedAddress, street, poBox, neighborhood, city, region, postcode, country
         )
 
-    override var primaryValue: String?
-        get() = formattedAddress
-        set(value) {
-            formattedAddress = value
-        }
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::formattedAddress
 }

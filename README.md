@@ -420,7 +420,6 @@ consider are essential for any API to do. So, here is my v1.0.0 release checklis
   - Remaining work to be done for this version;
     - Complete all howto guides
     - Fix any bugs that are discovered along the way.
-        - Fix Event date not handling events with no year... *facepalm* See `EventMapper`.
 - **(v0.2.x) Complete the sample app**
   - Purpose:
     - Prove that library produces same results as native Contacts app in actual usage

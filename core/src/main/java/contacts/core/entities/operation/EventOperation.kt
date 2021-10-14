@@ -4,7 +4,7 @@ import contacts.core.EventField
 import contacts.core.Fields
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableEvent
-import contacts.core.entities.mapper.EventMapper
+import contacts.core.entities.toDbString
 
 internal class EventOperation(isProfile: Boolean) :
     AbstractCommonDataOperation<EventField, MutableEvent>(isProfile) {
@@ -16,6 +16,6 @@ internal class EventOperation(isProfile: Boolean) :
     ) {
         setValue(Fields.Event.Type, data.type?.value)
         setValue(Fields.Event.Label, data.label)
-        setValue(Fields.Event.Date, EventMapper.dateToString(data.date))
+        setValue(Fields.Event.Date, data.date?.toDbString())
     }
 }

@@ -228,9 +228,6 @@ data class MutableName internal constructor(
             phoneticGivenName, phoneticMiddleName, phoneticFamilyName
         )
 
-    override var primaryValue: String?
-        get() = displayName
-        set(value) {
-            displayName = value
-        }
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::displayName
 }
