@@ -24,8 +24,8 @@ import contacts.core.util.query
  *
  * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] OR
  * [contacts.core.ContactsPermissions.READ_PERMISSION] (see function documentation) is assumed to
- * have been granted already in these examples for brevity. All queries will return an empty list if
- * the permission is not granted.
+ * have been granted already in these examples for brevity. If not granted, the query will do
+ * nothing and return an empty list.
  *
  * ## Usage
  *
@@ -98,9 +98,8 @@ interface AccountsQuery {
      *
      * ## Cancellation
      *
-     * The number of contacts and contact data found and processed may be large, which results
-     * in this operation to take a while. Therefore, cancellation is supported while the contacts
-     * list is being built. To cancel at any time, the [cancel] function should return true.
+     * Cancellation is supported while the query is in progress. To cancel at any time, the
+     * [cancel] function should return true.
      *
      * This is useful when running this function in a background thread or coroutine.
      *
@@ -112,6 +111,12 @@ interface AccountsQuery {
     // @JvmOverloads cannot be used in interface methods...
     // fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean = { false })
     fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean): AccountsList
+
+    /**
+     * See [accountsFor].
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean): AccountsList
 
     /**
      * See [accountsFor].
@@ -130,12 +135,6 @@ interface AccountsQuery {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun accountsFor(rawContacts: Sequence<RawContactEntity>): AccountsList
-
-    /**
-     * See [accountsFor].
-     */
-    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean): AccountsList
 
     /**
      * See [accountsFor].

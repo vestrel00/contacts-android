@@ -1,4 +1,4 @@
-## How do I get familiarized with the Contacts entities?
+## How do I learn more about the API entities?
 
 First, it's important to understand the most basic concept of the
 [Android Contacts Provider / ContactsContract](https://developer.android.com/guide/topics/providers/contacts-provider).
@@ -132,7 +132,7 @@ The Contacts Provider may or may not enforce these Account restrictions. However
 app imposes these restrictions. Therefore, this library also imposes these restrictions and
 disables consumers from violating them.
 
-###### Automatic common data kinds creation
+#### Automatic common data kinds creation
 
 An entry of each of the following data kinds are automatically created for all contacts, if not
 provided;

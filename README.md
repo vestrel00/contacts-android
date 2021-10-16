@@ -11,8 +11,8 @@ For more context, read the [introductory, hype blog][medium-blog]!
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
-  [address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website](/howto/howto-get-familiar-with-api-entities.md).
-- [Custom data](/howto/howto-integrate-custom-data.md).
+  [address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website](/howto/howto-learn-more-about-api-entities.md).
+- [Custom data integration](/howto/howto-integrate-custom-data.md).
 - [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
   of Contacts and RawContacts from zero or more Accounts. Include only desired fields in the results
   (e.g. name and phone number) for optimization. Specify matching criteria in an SQL WHERE clause
@@ -26,10 +26,12 @@ The core library supports;
    Profile (device owner) Contact, RawContact, and Data.
 - [Query](/howto/howto-query-groups.md), [insert](/howto/howto-insert-groups.md),
   [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) Groups per Account.
-- [Query](/howto/howto-query-specific-data-kinds.md), [update](/howto/howto-update-data-sets.md ),
-  and [delete](/howto/howto-delete-data-sets.md) specific types of Data, including custom Data.
+- [Query](/howto/howto-query-specific-data-kinds.md), [insert](howto/howto-insert-specific-data-kinds.md)
+  [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
+- [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
+  [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.
 - [Query](/howto/howto-query-accounts.md) Accounts in the system or RawContacts table.
-- [Query](/howto/howto-query-blank-raw-contacts.md) for just RawContacts.
+- [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
 - [Associate local RawContacts (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
 - [Join/merge/link and separate/unmerge/unlink two or more Contacts](/howto/howto-link-unlink-contacts.md).
 - [Get and set Contact and RawContact Options](/howto/howto-get-set-contact-raw-contact-options.md);
@@ -131,7 +133,7 @@ the results) ordered by display name in descending order, matching ALL of these 
 - has emails from gmail or hotmail
 - lives in the US
 - has been born prior to making this query
-- is favorited
+- is favorited (starred)
 - has a nickname of "DarEdEvil" (case sensitive)
 - works for Facebook
 - has a note
@@ -213,7 +215,7 @@ Log.d(
 > Each Contact may have more than one of the following data if the Contact is made up of 2 or more
 > RawContacts; name, nickname, note, organization, sip address.
 
-> For more info, read [How do I get familiarized with the Contacts entities?](/howto/howto-get-familiar-with-api-entities.md)
+> For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
 
 #### There's a lot more
 
@@ -350,7 +352,7 @@ give the appropriate permissions before the query proceeds. Then, the work is do
 context of choice (default is Dispatchers.IO). If the user does not give permission, the query will
 return no results.
 
-Extensions for Kotlin Flow and RxJava is also in the v1 roadmap, which includes APIs for listening 
+Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for listening
 to Contacts database changes.
 
 #### There's too much…
@@ -362,9 +364,9 @@ Howtos, visit the [howto directory](/howto/). For a sample app reference, take a
 #### Setup
 
 There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. For more info, read [howto setup](/howto/howto-setup-contacts-api.md).
+`contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/howto/howto-setup-contacts-api.md)
 
-It is also useful to read [How do I get familiarized with the Contacts entities?](/howto/howto-get-familiar-with-api-entities.md).
+It is also useful to read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
 
 ## Requirements
 

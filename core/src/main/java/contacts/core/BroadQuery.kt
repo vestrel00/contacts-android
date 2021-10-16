@@ -16,7 +16,8 @@ import contacts.core.util.unsafeLazy
 
 /**
  * A generalized version of [Query], that lets the Contacts Provider perform the search using its
- * own custom matching algorithm.
+ * own custom matching algorithm. It allows you to get the exact same search results as the native
+ * Contacts app!
  *
  * This type of query is the basis of an app that does a broad search of the Contacts Provider. The
  * technique is useful for apps that want to implement functionality similar to the People app's
@@ -25,17 +26,14 @@ import contacts.core.util.unsafeLazy
  * Custom mimetypes / data are excluded from the search! Use [Query] to search for contacts using
  * custom data.
  *
- * See https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
- *
  * If you need more granularity and customizations when providing matching criteria, use [Query].
- * For example, getting a Contact by ID is not supported by [BroadQuery] but can be achieve by
+ * For example, getting a Contact by ID is not supported by [BroadQuery] but can be achieved by
  * [Query].
  *
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
- * examples for brevity. All queries will return an empty list or null result if the permission
- * is not granted.
+ * examples for brevity. If not granted, the query will do nothing and return an empty list.
  *
  * ## Usage
  *
@@ -61,7 +59,9 @@ import contacts.core.util.unsafeLazy
  *      .find()
  * ```
  *
- * ## Which Contact data are matched and how?
+ * ## How does the matching process work?
+ *
+ * This query lets the Contacts Provider perform the search using its own custom matching algorithm.
  *
  * Most, but not all, Contact data are included in the matching process. Some are not probably
  * because some data may result in unintentional matching.
@@ -131,7 +131,7 @@ interface BroadQuery {
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
      * blanks are not guaranteed to be included. This flag is set to true by default, which results
-     * in  more database queries so setting this to false will increase performance, especially for
+     * in more database queries so setting this to false will increase performance, especially for
      * large Contacts databases.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
@@ -214,37 +214,42 @@ interface BroadQuery {
     fun groups(groups: Sequence<Group>): BroadQuery
 
     /**
-     * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
-     * object(s).
+     * Includes only the given set of [fields] (data) in each of the matching contacts.
+     *
+     * The matching contacts **may** have non-null data for each of the included fields. Fields
+     * that are included will not guarantee non-null data in the returned contact instances because
+     * some data may actually be null in the database.
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to [Fields.Required], which are always included.
+     * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
+     * which are always included.
      *
-     * Fields that are included will not guarantee non-null attributes in the returned contact
-     * object instances.
+     * Note that this may affect performance. It is recommended to only include fields that will be
+     * used to save CPU and memory.
      *
-     * It is recommended to only include fields that will be used to save CPU and memory.
+     * ## Other fields may inadvertently be included
      *
-     * Note that the Android contacts **data table** uses generic column names (e.g. data1, data2,
-     * ...) using the column 'mimetype' to distinguish the type of data in that generic column. For
-     * example, the column name of [NameFields.DisplayName] is the same as
-     * [AddressFields.FormattedAddress], which is 'data1'. This means that
-     * [AddressFields.FormattedAddress] is also included when [NameFields.DisplayName] is included.
-     * There is no workaround for this because the [ContentResolver.query] function only takes in
-     * an array of column names.
+     * Note that the Android contacts Data table uses generic column names (e.g. data1, data2, ...)
+     * to distinguish between the different kinds of data it represents. For example, the column
+     * name of [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is
+     * 'data1'. This means that [AddressFields.FormattedAddress] is also included when
+     * [NameFields.DisplayName] is included. There is no workaround for this because the
+     * [ContentResolver.query] function only takes in an array of column names.
      *
-     * ## IMPORTANT - Potential Data Loss
+     * ## Potential Data Loss
      *
-     * Do not perform updates on Contacts or RawContacts returned by a query where all fields are
-     * not included as it may result in data loss! To include all fields, including those that are
-     * not exposed to consumers (you), do one of the following;
+     * Do not perform updates on Contacts, RawContacts, or Data returned by a query where all
+     * fields are not included as it may result in data loss! To include all fields, do one of the
+     * following;
      *
      * - Do no call this function.
      * - Call this function with no fields (empty).
      * - Pass in [Fields].
      * - Pass in [Fields.all].
      *
-     * // FIXME? **Dev notes:** should we change the API such that it supports only mutating and
+     * ## Dev notes
+     *
+     * // FIXME? Should we change the API such that it supports only mutating and
      * updating included fields? That would add complexity to both developers of the API and its
      * consumers... Or we can just be consenting adults and read&follow the documentation. The only
      * way data loss may occur is if consumers explicitly call these [include]s functions. It is up
@@ -271,7 +276,7 @@ interface BroadQuery {
      * Filters the [Contact]s partially matching the [searchString]. If not specified or null or
      * empty, then all [Contact]s are returned.
      *
-     * For more info, see [BroadQuery] **Which Contact data are matched and how?** section.
+     * For more info, see [BroadQuery] **How does the matching process work?** section.
      *
      * ## Performance
      *
@@ -290,8 +295,31 @@ interface BroadQuery {
      *
      * Use [ContactsFields] to construct the [orderBy].
      *
-     * If you need to sort a collection of [Contact] **objects** retrieved from this query using any
-     * field from [Fields], use the ContactsComparator extension functions.
+     * If you need to sort a collection of Contacts outside of a database query using any field
+     * (in addition to [ContactsFields]), use [contacts.core.util.ContactsComparator].
+     *
+     * ## Developer Notes
+     *
+     * This API DOES NOT support ordering by Data table columns ([Fields]). It used to support it
+     * but it has been removed for optimization purposes. This now only supports ordering by
+     * Contacts table fields ([ContactsFields]).
+     *
+     * **If this supported ordering by Data table fields**, then it would be unable to use the
+     * ORDER BY, LIMIT, and OFFSET functions of a raw database query and custom ordering via
+     * Comparators is required.
+     *
+     * The Data table uses generic column names (e.g. data1, data2, ...) using the column 'mimetype'
+     * to distinguish the type of data in that generic column. For example, the column name of
+     * [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is 'data1'.
+     * This means that if you order by the display name, you are also ordering by the formatted
+     * address and all other columns whose value is 'data1'. This API could work around this
+     * limitation by performing the ordering, limiting, and offsetting manually after
+     * **all matching** contacts have been retrieved before returning it to the consumer.
+     *
+     * Note that there is no workaround for the [include] function because the
+     * [ContentResolver.query] function only takes in an array of column names. This means that
+     * including [NameFields.DisplayName] ('data1') will also result in the inclusion of
+     * [AddressFields.FormattedAddress] ('data1').
      */
     @SafeVarargs
     fun orderBy( vararg orderBy: OrderBy<ContactsField>): BroadQuery

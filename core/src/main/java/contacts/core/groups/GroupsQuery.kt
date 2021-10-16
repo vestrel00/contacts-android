@@ -18,7 +18,7 @@ import contacts.core.util.unsafeLazy
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
- * examples for brevity. All queries will return an empty list if the permission is not granted.
+ * examples for brevity. If not granted, the query will do nothing and return an empty list.
  *
  * ## Usage
  *

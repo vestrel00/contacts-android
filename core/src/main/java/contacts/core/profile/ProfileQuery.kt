@@ -21,7 +21,7 @@ import contacts.core.util.unsafeLazy
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
- * examples for brevity. All queries will return null if the permission is not granted.
+ * examples for brevity.  If not granted, the query will do nothing and return null.
  *
  * For API 22 and below, the permission "android.permission.READ_PROFILE" is also required.
  *
@@ -103,36 +103,42 @@ interface ProfileQuery {
     fun accounts(accounts: Sequence<Account?>): ProfileQuery
 
     /**
-     * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
-     * object.
+     * Includes only the given set of [fields] (data) in each of the matching contacts.
+     *
+     * The matching contacts **may** have non-null data for each of the included fields. Fields
+     * that are included will not guarantee non-null data in the returned contact instances because
+     * some data may actually be null in the database.
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to [Fields.Required], which are always included.
+     * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
+     * which are always included.
      *
-     * Fields that are included will not guarantee non-null attributes in the returned contact
-     * object instances.
+     * Note that this may affect performance. It is recommended to only include fields that will be
+     * used to save CPU and memory.
      *
-     * It is recommended to only include fields that will be used to save CPU and memory.
+     * ## Other fields may inadvertently be included
      *
-     * Note that the Android contacts **data table** uses generic column names (e.g. data1, data2,
-     * ...) using the column 'mimetype' to distinguish the type of data in that generic column. For
-     * example, the column name of name display name is the same as address formatted address, which
-     * is 'data1'. This means that formatted address is also included when the name display name is
-     * included. There is no workaround for this because the [ContentResolver.query] function only
-     * takes in an array of column names.
+     * Note that the Android contacts Data table uses generic column names (e.g. data1, data2, ...)
+     * to distinguish between the different kinds of data it represents. For example, the column
+     * name of [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is
+     * 'data1'. This means that [AddressFields.FormattedAddress] is also included when
+     * [NameFields.DisplayName] is included. There is no workaround for this because the
+     * [ContentResolver.query] function only takes in an array of column names.
      *
-     * ## IMPORTANT - Potential Data Loss
+     * ## Potential Data Loss
      *
-     * Do not perform updates on Contacts or RawContacts returned by a query where all fields are
-     * not included as it may result in data loss! To include all fields, including those that are
-     * not exposed to consumers (you), do one of the following;
+     * Do not perform updates on Contacts, RawContacts, or Data returned by a query where all
+     * fields are not included as it may result in data loss! To include all fields, do one of the
+     * following;
      *
      * - Do no call this function.
      * - Call this function with no fields (empty).
      * - Pass in [Fields].
      * - Pass in [Fields.all].
      *
-     * // FIXME? **Dev notes:** should we change the API such that it supports only mutating and
+     * ## Dev notes
+     *
+     * // FIXME? Should we change the API such that it supports only mutating and
      * updating included fields? That would add complexity to both developers of the API and its
      * consumers... Or we can just be consenting adults and read&follow the documentation. The only
      * way data loss may occur is if consumers explicitly call these [include]s functions. It is up

@@ -199,8 +199,7 @@ private class DataQueryImpl(
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
- * examples for brevity. All queries will return an empty list or null result if the permission
- * is not granted.
+ * examples for brevity.  If not granted, the query will do nothing and return an empty list.
  *
  * ## Usage
  *
@@ -266,7 +265,7 @@ interface CommonDataQuery<K : CommonDataField, V : CommonDataEntity> {
      * fields will be included in addition to [Fields.Required], which are always included.
      *
      * Fields that are included will not guarantee non-null attributes in the returned entity
-     * object instances.
+     * instances.
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      *

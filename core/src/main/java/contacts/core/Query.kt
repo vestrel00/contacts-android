@@ -16,17 +16,16 @@ import contacts.core.util.toRawContactsWhere
 import contacts.core.util.unsafeLazy
 
 /**
- * Queries the Contacts Provider tables and returns one or more contacts matching the search
- * criteria. All RawContacts of matching Contacts are included in the resulting Contacts objects.
+ * Queries the Contacts Provider tables and returns a list of contacts matching a specific search
+ * criteria. All RawContacts of matching Contacts are included in the resulting Contact instances.
  *
  * This provides a great deal of granularity and customizations when providing matching criteria
- * via [where]. For a broader and more native Contacts app like query, use [BroadQuery].
+ * via [where]. For a broader, and more native Contacts app like query, use [BroadQuery].
  *
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
- * examples for brevity. All queries will return an empty list or null result if the permission
- * is not granted.
+ * examples for brevity. If not granted, the query will do nothing and return an empty list.
  *
  * ## Usage
  *
@@ -137,37 +136,42 @@ interface Query {
     // No groups function here like in BroadQuery. Use [Fields.GroupMembership] with [where].
 
     /**
-     * Includes the given set of [fields] from [Fields] ([DataFields]) in the resulting contact
-     * object(s).
+     * Includes only the given set of [fields] (data) in each of the matching contacts.
+     *
+     * The matching contacts **may** have non-null data for each of the included fields. Fields
+     * that are included will not guarantee non-null data in the returned contact instances because
+     * some data may actually be null in the database.
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to [Fields.Required], which are always included.
+     * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
+     * which are always included.
      *
-     * Fields that are included will not guarantee non-null attributes in the returned contact
-     * object instances.
+     * Note that this may affect performance. It is recommended to only include fields that will be
+     * used to save CPU and memory.
      *
-     * It is recommended to only include fields that will be used to save CPU and memory.
+     * ## Other fields may inadvertently be included
      *
-     * Note that the Android contacts **data table** uses generic column names (e.g. data1, data2,
-     * ...) using the column 'mimetype' to distinguish the type of data in that generic column. For
-     * example, the column name of [NameFields.DisplayName] is the same as
-     * [AddressFields.FormattedAddress], which is 'data1'. This means that
-     * [AddressFields.FormattedAddress] is also included when [NameFields.DisplayName] is included.
-     * There is no workaround for this because the [ContentResolver.query] function only takes in
-     * an array of column names.
+     * Note that the Android contacts Data table uses generic column names (e.g. data1, data2, ...)
+     * to distinguish between the different kinds of data it represents. For example, the column
+     * name of [NameFields.DisplayName] is the same as [AddressFields.FormattedAddress], which is
+     * 'data1'. This means that [AddressFields.FormattedAddress] is also included when
+     * [NameFields.DisplayName] is included. There is no workaround for this because the
+     * [ContentResolver.query] function only takes in an array of column names.
      *
-     * ## IMPORTANT - Potential Data Loss
+     * ## Potential Data Loss
      *
-     * Do not perform updates on Contacts or RawContacts returned by a query where all fields are
-     * not included as it may result in data loss! To include all fields, including those that are
-     * not exposed to consumers (you), do one of the following;
+     * Do not perform updates on Contacts, RawContacts, or Data returned by a query where all
+     * fields are not included as it may result in data loss! To include all fields, do one of the
+     * following;
      *
      * - Do no call this function.
      * - Call this function with no fields (empty).
      * - Pass in [Fields].
      * - Pass in [Fields.all].
      *
-     * // FIXME? **Dev notes:** should we change the API such that it supports only mutating and
+     * ## Dev notes
+     *
+     * // FIXME? Should we change the API such that it supports only mutating and
      * updating included fields? That would add complexity to both developers of the API and its
      * consumers... Or we can just be consenting adults and read&follow the documentation. The only
      * way data loss may occur is if consumers explicitly call these [include]s functions. It is up
@@ -196,7 +200,13 @@ interface Query {
      *
      * Use [Fields] to construct the [where].
      *
-     * ## Read this part if you are a Contacts Provider expert
+     * ## Performance
+     *
+     * This may require one or more additional queries, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
+     *
+     * ## Blank Contacts
      *
      * This where clause is only used to query the Data table. Some contacts do not have any Data
      * table rows (see [includeBlanks]). However, this library exposes some fields that belong to
@@ -210,13 +220,7 @@ interface Query {
      *
      * See [includeBlanks] for more info about blank Contacts and RawContacts.
      *
-     * ## Performance
-     *
-     * This may require one or more additional queries, internally performed in this function, which
-     * increases the time it takes for [find] to complete. Therefore, you should only specify this
-     * if you actually need it.
-     *
-     * ## Limitations
+     * #### Limitations
      *
      * Blank RawContacts and blank Contacts do not have any rows in the Data table so a [where]
      * clause that uses any fields from the Data table [Fields] will **exclude** blanks in the
@@ -225,29 +229,28 @@ interface Query {
      *
      * - [Fields.Contact] enables matching blank Contacts. The result will include all RawContact(s)
      *   belonging to the Contact(s), including blank(s). Examples;
-     *
-     *   - Fields.Contact.Id equalTo 5
-     *   - Fields.Contact.Id in [1,2,3] and Fields.Contact.DisplayNamePrimary contains "a"
-     *   - Fields.Contact.LastUpdatedTimestamp greaterThan ...
-     *       and Fields.Contact.Options.Starred equalTo [true|1]
+     *      - `Fields.Contact.Id equalTo 5`
+     *      - `Fields.Contact.Id in listOf(1,2,3) and Fields.Contact.DisplayNamePrimary contains "a"`
+     *      - `Fields.Contact.Options.Starred equalTo true`
      *
      * - [Fields.RawContact] enables matching blank RawContacts. The result will include all
      *   Contact(s) these belong to, including sibling RawContacts (blank and not blank). Examples;
      *
-     *   - Fields.RawContact.Id equalTo 5
-     *   - Fields.RawContact.Id notIn [1,2,3]
+     *   - `Fields.RawContact.Id equalTo 5`
+     *   - `Fields.RawContact.Id notIn listOf(1,2,3)`
      *
      * Blanks will not be included in the results even if they technically should **if** joined
-     * fields from other tables are in the [where]. In the below example, matching the Contact.Id
+     * fields from other tables are in the [where]. In the below example, matching the `Contact.Id`
      * to an existing blank Contact with Id of 5 will yield no results because it is joined by
-     * Fields.Email, which is not a part of Fields.Contact. It should technically return the blank
-     * Contact with Id of 5 because the OR operator is used. However, because we internally need to
-     * query the Contacts table to match the blanks, a DB exception will be thrown by the Contacts
-     * Provider because Fields.Email.Address ("data1" and "mimetype") are columns from the Data
-     * table that do not exist in the Contacts table. The same applies to the Fields.RawContact.
+     * [Fields.Email], which is not a part of [Fields.Contact]. It should technically return the
+     * blank Contact with Id of 5 because the OR operator is used. However, because we internally
+     * need to query the Contacts table to match the blanks, a DB exception will be thrown by the
+     * Contacts Provider because `Fields.Email.Address` ("data1" and "mimetype") are columns from
+     * the Data table that do not exist in the Contacts table. The same applies to the
+     * [Fields.RawContact].
      *
-     * - Fields.Contact.Id equalTo 5 OR (Fields.Email.Address.isNotNull())
-     * - Fields.RawContact.Id ... OR (Fields.Phone.Number...)
+     * - `Fields.Contact.Id equalTo 5 OR (Fields.Email.Address.isNotNull())`
+     * - `Fields.RawContact.Id ... OR (Fields.Phone.Number...)`
      */
     fun where(where: Where<AbstractDataField>?): Query
 
@@ -263,8 +266,8 @@ interface Query {
      *
      * Use [ContactsFields] to construct the [orderBy].
      *
-     * If you need to sort a collection of [Contact] **objects** retrieved from this query using any
-     * field from [Fields], use the ContactsComparator extension functions.
+     * If you need to sort a collection of [Contact]s retrieved from this query using any field
+     * from [Fields], use the ContactsComparator extension functions.
      *
      * ## Developer Notes
      *
