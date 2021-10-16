@@ -26,3 +26,9 @@ Exposed photoUri and photoThumbnailUri in ContactsEntity.
 #### 0.1.5
 
 Added groupMemberships aggregation extension function in ContactData.
+
+#### 0.1.6
+
+- Fixed Event date not handling no-year option.
+- MutableCommonDataEntity implementations are now using property delegate for primaryValue.
+- Wrote up howto pages for basic and advanced queries and others.
