@@ -28,4 +28,4 @@ Instances of `Accounts` are stateless.
 
 
 > The main functions of this library are about contacts. For more info, read
-> [How do I setup the Contacts API?](/contacts-android/howto-setup-contacts-api.md)
+> [How do I setup the Contacts API?](/contacts-android/howto/howto-setup-contacts-api.md)

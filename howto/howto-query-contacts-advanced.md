@@ -7,7 +7,7 @@ This provides a great deal of granularity and customizations when providing matc
 the `where` function.
 
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
-> For more info, read [How do I get a list of contacts in the simplest way?](/contacts-android/howto-query-contacts.md).
+> For more info, read [How do I get a list of contacts in the simplest way?](/contacts-android/howto/howto-query-contacts.md).
 
 #### An advanced query
 
@@ -69,7 +69,7 @@ The API allows you to specify if you want to include blank contacts or not,
 .includeBlanks(true|false)
 ```
 
-For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto-learn-more-about-blank-contacts.md).
+For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto/howto-learn-more-about-blank-contacts.md).
 
 #### Specifying Accounts
 
@@ -85,7 +85,7 @@ For example, to limit the search to contacts belonging to only one account.
 .accounts(Account("jerry@gmail.com", "com.google")))
 ```
 
-> For more info, read [How do I query for Accounts?](/contacts-android/howto-query-accounts.md).
+> For more info, read [How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.md).
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
@@ -98,7 +98,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto-learn-more-about-local-contacts.md).
+For more info, read [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto/howto-learn-more-about-local-contacts.md).
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -112,7 +112,7 @@ To limit the search to only those RawContacts associated with at least one of th
 .where(Fields.GroupMembership.GroupId `in` groups.mapNotNull { it.id })
 ```
 
-> For more info, read [How do I retrieve groups?](/contacts-android/howto-query-groups.md).
+> For more info, read [How do I retrieve groups?](/contacts-android/howto/howto-query-groups.md).
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
@@ -132,7 +132,7 @@ To include only the given set of fields (data) in each of the matching contacts,
 .include(fields)
 ```
 
-For more info, read [How do I include only the data that I want?](/contacts-android/howto-include-only-desired-data.md).
+For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.md).
 
 #### Ordering
 
@@ -160,7 +160,7 @@ Use `ContactsFields` to construct the orderBys.
 
 > If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
-> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto-use-miscellaneous-extensions.md).
+> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto/howto-use-miscellaneous-extensions.md).
 
 #### Limiting and offsetting
 
@@ -223,7 +223,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the extensions provided in the `async` module.
-For more info, read [How do I use the async extensions to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto-use-api-with-async-execution.md)
+For more info, read [How do I use the async extensions to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -236,7 +236,7 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions extensions to simplify permission handling using coroutines?](/contacts-android/howto-use-api-with-permissions-handling.md)
+For more info, read [How do I use the permissions extensions to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
      
@@ -252,7 +252,7 @@ Data table with joins;
 Using these fields in the where clause does not have any effect in matching blank Contacts or 
 RawContacts simply because they have no Data rows containing these joined fields.
 
-For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto-learn-more-about-blank-contacts.md).
+For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto/howto-learn-more-about-blank-contacts.md).
 
 ###### Limitations
 
