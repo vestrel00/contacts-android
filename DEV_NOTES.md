@@ -891,32 +891,40 @@ permissions. There is no need to ask for profile permissions at runtime because 
 permissions in the AndroidManifest have to be accepted prior to installation.
 
 #### Syncing Data / Sync Adapters
+First, it’s good to know the official documentation of sync adapters; 
+https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters
 
-Data that is "synced" belong to a RawContact that is linked to an Account. Such data is available
-in the same Account across different platforms. For example, native contacts data (e.g. address,
-email, phone, etc) will be available in Gmail iOS, Gmail Android, Gmail Web, and anything else
-Google. In other words, native Contacts data is hosted by / lives in Google servers.
+Now, let’s ingest the official docs… Data belonging to a RawContact that is associated with a Google 
+account will be available anywhere the Google account is used; in any Android or iOS device, a web 
+browser, etc… Data is synced by Google’s sync adapters to and from their remote servers. Syncing 
+depends on the account sync settings, which can be configured in the native system settings app and 
+possibly through some remote configuration.
 
-This library relies on the default system sync adapters and settings to sync native Contacts
-data.
+This library does not provide any sync adapters. Instead, it relies on existing sync adapters to do 
+the syncing. Sync adapters and syncing are really out of scope of this library. Syncing is its own 
+thing that typically happens outside of an application UI. This library is focused on reading and 
+writing native and custom data to and from the local database. Syncing the local database to and 
+from a remote service is a different story altogether =)
 
 #### Custom Data / MimeTypes
 
-Custom mimetypes do not belong the the native Contacts Provider mimetype set (e.g. address, email,
-phone, etc). The Contacts Provider allows for the creation of new / custom mimetypes. This is
-especially useful for social media apps (Facebook, Twitter, WhatsApp, etc) that want to attach extra
-pieces of data to a particular RawContact.
+First, it’s good to know the official documentation of custom data rows; 
+https://developer.android.com/guide/topics/providers/contacts-provider#CustomData
 
-Custom data are NOT synced event those that belong to RawContacts that are linked to an Account.
-Custom sync adapters are required to sync custom data. This library currently does NOT provide
-custom sync adapters to sync custom data!
+Now, let’s ingest the official docs… Custom mimetypes do not belong to the native Contacts Provider 
+mimetype set (e.g. address, email, phone, etc). The Contacts Provider allows for the creation of 
+new / custom mimetypes. This is especially useful for social media apps (Facebook, Twitter, 
+WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
 
-Custom data from other apps such as Facebook, Twitter, and WhatsApp may or may not be synced. It all
-depends on those apps and their custom sync adapters (if they have any) and sync settings.
+Custom data are NOT synced, including those that belong to RawContacts that are associated with an 
+Account. Custom sync adapters are required to sync custom data. This library currently does NOT 
+provide custom sync adapters to sync custom data!
 
-This library does not provide any custom sync adapters. If, or when, custom data from other apps
-get implemented here, they should rely on their respective custom sync adapters that come with the
-app (if any).
+Custom data from other apps such as Facebook, Twitter, WhatsApp, etc may or may not be synced. It 
+all depends on those applications and their custom sync adapters (if they have any) and sync settings.
+
+For insight on how aforementioned social media services may be syncing their data, read through the 
+official documentation; https://developer.android.com/guide/topics/providers/contacts-provider#SocialStream
 
 #### Unused ContactsContract Stuff
 

@@ -20,7 +20,7 @@ To explicitly include everything,
 query.include(Fields.all)
 ```
 
-> Note that not invoking he `include` function will default to including everything.
+> Note that not invoking the `include` function will default to including everything.
 
 The matching contacts **may** have non-null data for each of the included fields. Fields that are
 included will not guarantee non-null data in the returned contact instances because some data may
@@ -47,7 +47,6 @@ names.
 Do not perform updates on Contacts, RawContacts, or Data returned by a query where all fields are
 not included as it may result in data loss! To include all fields, do one of the following;
 
-- Do no call this function.
-- Call this function with no fields (empty).
-- Pass in `Fields`.
+- Do no call this `include` function.
+- Call this `include` function with no fields (empty).
 - Pass in `Fields.all`.

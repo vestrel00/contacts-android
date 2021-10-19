@@ -7,7 +7,8 @@ Whether you just need to get all or some Contacts for a small part of your app (
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
 as the native Android Contacts app, this library has you covered!
 
-For more context, read the [introductory, hype blog][medium-blog]!
+This repo was open-sourced on October 4, 2021. It was private prior to that. For more context, read 
+the [introductory, hype blog][medium-blog]!
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
@@ -30,7 +31,7 @@ The core library supports;
   [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
 - [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
   [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.
-- [Query](/howto/howto-query-accounts.md) Accounts in the system or RawContacts table.
+- [Query](/howto/howto-query-accounts.md) for Accounts in the system or RawContacts table.
 - [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
 - [Associate local RawContacts (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
 - [Join/merge/link and separate/unmerge/unlink two or more Contacts](/howto/howto-link-unlink-contacts.md).

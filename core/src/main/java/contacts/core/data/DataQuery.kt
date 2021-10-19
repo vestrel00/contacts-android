@@ -269,15 +269,15 @@ interface CommonDataQuery<K : CommonDataField, V : CommonDataEntity> {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      *
-     * ## IMPORTANT - Potential Data Loss
+     * ## Potential Data Loss
      *
      * Do not perform updates on Data returned by a query where all of the Data fields are not
      * included as it may result in data loss! To include all fields, including those that are not
      * exposed to consumers (you), do one of the following;
      *
-     * - Do no call this function.
+     * - Do no call this [include] function.
      * - Call this function with no fields (empty).
-     * - Pass in all of the particular data's fields.
+     * - Pass in [Fields.all].
      *
      * // FIXME? **Dev notes:** should we change the API such that it supports only mutating and
      * updating included fields? That would add complexity to both developers of the API and its
