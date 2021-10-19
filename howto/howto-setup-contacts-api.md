@@ -26,7 +26,7 @@ avoid leaks :D
 
 Instances of `Contacts` are stateless, unless you integrate custom data without using the
 `GlobalCustomDataRegistry`. For how to create instances of the `Contacts` API with custom data
-integration, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
+integration, read [How do I integrate custom data?](/contacts-android/howto-integrate-custom-data.md).
 
 > This library also provides an API for accounts related stuff. For more info, read 
-> [How do I setup the Accounts API?](/howto/howto-setup-accounts-api.md)
+> [How do I setup the Accounts API?](/contacts-android/howto-setup-accounts-api.md)
