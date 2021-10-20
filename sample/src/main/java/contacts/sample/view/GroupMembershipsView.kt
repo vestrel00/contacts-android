@@ -54,7 +54,7 @@ class GroupMembershipsView @JvmOverloads constructor(
 
     init {
         setOnClickListener { _ ->
-            TODO("Create GroupsPickerDialog to set group memberships")
+            // TODO "Create GroupsPickerDialog to set group memberships"
         }
     }
 
