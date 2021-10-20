@@ -7,8 +7,12 @@ Whether you just need to get all or some Contacts for a small part of your app (
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
 as the native Android Contacts app, this library has you covered!
 
-This repo was open-sourced on October 4, 2021. It was private prior to that. For more context, read 
-the [introductory, hype blog][medium-blog]!
+For more context and hype, read the [introduction of Contacts, Reborn][medium-blog]!
+
+> This repo was open-sourced on October 4, 2021. It was private prior to that.
+> 
+> Documentation and how-to guides are all available and linked in GitHub. Although, if you prefer to 
+> browse prettier pages, visit the GitHub Pages; https://vestrel00.github.io/contacts-android/
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
@@ -27,7 +31,7 @@ The core library supports;
    Profile (device owner) Contact, RawContact, and Data.
 - [Query](/howto/howto-query-groups.md), [insert](/howto/howto-insert-groups.md),
   [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) Groups per Account.
-- [Query](/howto/howto-query-specific-data-kinds.md), [insert](howto/howto-insert-specific-data-kinds.md)
+- [Query](/howto/howto-query-specific-data-kinds.md), [insert](/howto/howto-insert-specific-data-kinds.md)
   [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
 - [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
   [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.

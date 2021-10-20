@@ -3,7 +3,7 @@
 This document contains useful developer notes that should be kept in mind during development. It 
 serves as a memory of all the quirks and gotcha's of things like Android's `ContactsContract`.
 
-This is only meant to be read by contributors to this library, not consumers!
+This is only meant to be read by contributors of this library, not consumers!
 
 ## Contacts Provider / ContactsContract
 
@@ -1034,7 +1034,7 @@ fun doSomethingAndReturn(contact: ContactEntity) = when (contact) {
 > have to perform their own synchronizations if they want to use and mutate mutable entities in
 > multi-threaded scenarios.
 
-#### The cost of current the immutability implementation
+#### The cost of the current immutability implementation
 
 The cost of implementing true immutability is more lines of code. Notice that the `MutableContact`
 does not inherit from `Contact`. The same goes for the other entities. This leads to having to write
@@ -1086,6 +1086,7 @@ just one concrete implementation (i.e. `MutableContact`, `MutableRawContact`, an
 > Note that a `val` declaration can be overridden by a `var`. Keep in mind that `val` only requires
 > getters whereas `var` requires both getters and setters. Therefore, a `var` cannot be overridden
 > by a `val`. Or maybe there is a different reason Kotlin imposes this restriction =)
+> On a similar note, the `List` interface can be overridden to a `MutableList`.
 
 We, as API contributors, can avoid having to write seemingly duplicate functions and extensions!
 
