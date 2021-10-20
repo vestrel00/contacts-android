@@ -1,5 +1,7 @@
 # Contacts, Reborn!
 
+![Android Contacts, Reborn banner](/banner.png)
+
 Looking for the easiest way to get full-access to the breadth of Contacts in Android without having
 to deal with the [Contacts Provider][contacts-provider] and cursors? Well, look no further =)
 
