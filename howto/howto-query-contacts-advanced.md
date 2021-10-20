@@ -50,7 +50,7 @@ val contacts = Contacts(context)
 
 ## A simple query
 
-This query may also be used to make simpler queries.
+This query API may also be used to make simpler queries.
 
 To get all contacts with a phone number AND email,
 

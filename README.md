@@ -1,5 +1,7 @@
 # Contacts, Reborn!
 
+![Android Contacts, Reborn banner](/banner.png)
+
 Looking for the easiest way to get full-access to the breadth of Contacts in Android without having
 to deal with the [Contacts Provider][contacts-provider] and cursors? Well, look no further =)
 
@@ -9,10 +11,10 @@ as the native Android Contacts app, this library has you covered!
 
 For more context and hype, read the [introduction of Contacts, Reborn][medium-blog]!
 
+> Documentation and how-to guides are all available and linked in the repository. Although, if you 
+> prefer to browse prettier pages, visit the GitHub Pages; https://vestrel00.github.io/contacts-android/
+>
 > This repo was open-sourced on October 4, 2021. It was private prior to that.
-> 
-> Documentation and how-to guides are all available and linked in GitHub. Although, if you prefer to 
-> browse prettier pages, visit the GitHub Pages; https://vestrel00.github.io/contacts-android/
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
@@ -549,16 +551,10 @@ implement a specific part of the native Android Contacts app.
     - Enables sharing a contact.
     - Dev note: search ContactsContract for "vcard".
 4. Social media custom data.
-    - WhatsApp (vnd.com.whatsapp.profile)
-    - Facebook Messenger
+    - WhatsApp 
+    - Facebook
     - Twitter
-    - Etc
-    - I will need help from the community to implement these because I don't participate in
-      social media. Use the `debug` module to look into the data table and look for social media
-      mimetypes. Then, create a new custom data module using the existing `customdata-x` modules as
-      reference. A separate module should be created for different social media.
-      E.G. customdata-whatsapp, customdata-messenger, customdata-twitter
-        - Read more in the DEV_NOTES "Custom Data / MimeTypes" section.
+    - (and more?)
 
 [medium-blog]: https://proandroiddev.com/android-contacts-reborn-19985c73ad43
 [contacts-provider]: https://developer.android.com/guide/topics/providers/contacts-provider

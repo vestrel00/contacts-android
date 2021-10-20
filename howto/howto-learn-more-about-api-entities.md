@@ -152,6 +152,41 @@ If a valid account is not provided, no entries of the above are automatically cr
 To determine if a RawContact is associated with an Account or not, read
 [How do I query for Accounts?](/howto/howto-query-accounts.md).
 
+## Data integrity
+
+There is a section in the official Contacts Provider documentation has a section on "Data Integrity";
+https://developer.android.com/guide/topics/providers/contacts-provider#DataIntegrity
+
+It enumerates four general rules to follow to retain the "integrity of data" :D Paraphrasing in terms 
+of this library, the rules are as follows; 
+
+1. Always add a `Name` for every `RawContact`.
+2. Always link new Data to their parent `RawContact`.
+3. Change data only for those raw contacts that you own.
+4. Always use the constants defined in `ContactsContract` and its subclasses for authorities, 
+   content URIs, URI paths, column names, MIME types, and TYPE values.
+   
+This library follows rules 2 and 4. 
+
+Rule 1 is ignored because the native Contacts app also ignores that rule. Enforcing this rule means 
+that a name has to be provided for every `RawContact`, which is not practical at all. Users should 
+be able to create contacts with just an email or phone number, without a name. This library follows 
+the native Contacts app behavior, which also disregards this rule =P
+
+Rule 3 is intentionally ignored. There are two types of data; 
+
+a. those that are defined in the Contacts Provider (e.g. name, email, phone number, etc)
+b. those that are defined by other apps (e.g. custom data from social media)
+
+This library allows modification of native data kinds and custom data kinds. Native data kinds should 
+obviously be modifiable as it is the entire reason why the Contacts Provider exposes these data kinds
+to us in the first place. The question is, should this library provide functions for modifying 
+(insert, update, delete) custom data defined by other apps/services such as social media 
+(e.g. WhatsApp, Facebook, etc)? The answer to that will be determined when the time comes to support 
+custom data from social media in the future... (Probably, yes!)
+
+For more info, read [How do I integrate custom data from social media?](/howto/howto-integrate-custom-data-from-social-media.md)
+
 ## Accessing contact data
 
 When you have an instance of `Contact`, you have complete (and correct) access to data stored in it.
