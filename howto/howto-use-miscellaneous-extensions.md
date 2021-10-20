@@ -1,4 +1,4 @@
-## How do I use some miscellaneous extension functions to make my life easier?
+# How do I use some miscellaneous extension functions to make my life easier?
 
 Show case;
 - util.ContactData
