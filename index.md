@@ -1,4 +1,4 @@
-# Contacts, Reborn!
+# Android Contacts, Reborn!
 
 ![Android Contacts, Reborn banner](/banner.png)
 
