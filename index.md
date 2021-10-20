@@ -7,8 +7,9 @@ Whether you just need to get all or some Contacts for a small part of your app (
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
 as the native Android Contacts app, this library has you covered!
 
-This repo was open-sourced on October 4, 2021. It was private prior to that. For more context, read 
-the [introductory, hype blog][medium-blog]!
+For more context and hype, read the [introduction of Contacts, Reborn][medium-blog]!
+
+> This repo was open-sourced on October 4, 2021. It was private prior to that.
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
