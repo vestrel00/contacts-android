@@ -1,4 +1,4 @@
-## How do I sync contact data across devices?
+# How do I sync contact data across devices?
 
 TODO
 

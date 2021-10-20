@@ -1,4 +1,4 @@
-## How do I learn more about "local" (device-only) contacts?
+# How do I learn more about "local" (device-only) contacts?
 
 TODO
 

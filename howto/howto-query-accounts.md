@@ -1,4 +1,4 @@
-## How do I query for Accounts?
+# How do I query for Accounts?
 
 This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the 
 `AccountManager` or from the Contacts Provider RawContacts table.
@@ -34,7 +34,7 @@ val accounts = Accounts(context).query().accountsFor(rawContacts)
 > The list of accounts may contain nulls in case of local RawContacts. You are also able to retrieve
 > the account for the specific RawContact in the given RawContacts list using the result.
 
-#### Cancelling the query
+## Cancelling the query
 
 To cancel an `accountsFor` query amid execution,
 
@@ -60,7 +60,7 @@ launch {
 }
 ```
 
-#### Performing the query asynchronously
+## Performing the query asynchronously
 
 Queries are executed in the same thread as the call-site. This may result in a choppy UI.
 
@@ -72,7 +72,7 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 > Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 > listening to Contacts database changes.
 
-#### Performing the query with permission
+## Performing the query with permission
 
 Queries using `allAccounts` or `accountsWithType` require the `android.permission.GET_ACCOUNTS`. If 
 not granted, the query will do nothing and return an empty list.

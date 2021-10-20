@@ -1,4 +1,4 @@
-## How do I retrieve groups?
+# How do I retrieve groups?
 
 TODO
 

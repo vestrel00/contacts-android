@@ -1,4 +1,4 @@
-## How do I get a list of contacts in a more advanced way?
+# How do I get a list of contacts in a more advanced way?
 
 This library provides the `Query` API, which returns a list of Contacts matching a specific search
 criteria. All RawContacts of matching Contacts are included in the resulting Contact instances.
@@ -9,7 +9,7 @@ the `where` function.
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
 > For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md).
 
-#### An advanced query
+## An advanced query
 
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
 the results) ordered by display name in descending order, matching ALL of these rules;
@@ -48,7 +48,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-#### A simple query
+## A simple query
 
 This query may also be used to make simpler queries.
 
@@ -61,7 +61,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-#### Including blank contacts
+## Including blank contacts
 
 The API allows you to specify if you want to include blank contacts or not,
 
@@ -71,7 +71,7 @@ The API allows you to specify if you want to include blank contacts or not,
 
 For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md).
 
-#### Specifying Accounts
+## Specifying Accounts
 
 To limit the search to only those RawContacts associated with one of the given accounts,
 
@@ -104,7 +104,7 @@ For more info, read [How do I learn more about "local" (device-only) contacts?](
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
-#### Specifying Groups
+## Specifying Groups
 
 To limit the search to only those RawContacts associated with at least one of the given groups,
 
@@ -124,7 +124,7 @@ If no groups are specified, then all RawContacts of Contacts are included in the
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
-#### Including only specific data
+## Including only specific data
 
 To include only the given set of fields (data) in each of the matching contacts,
 
@@ -134,7 +134,7 @@ To include only the given set of fields (data) in each of the matching contacts,
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md).
 
-#### Ordering
+## Ordering
 
 To order resulting Contacts using one or more fields,
 
@@ -162,7 +162,7 @@ Use `ContactsFields` to construct the orderBys.
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
 > For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md).
 
-#### Limiting and offsetting
+## Limiting and offsetting
 
 To limit the amount of contacts returned and/or offset (skip) a specified number of contacts,
 
@@ -183,7 +183,7 @@ This is useful for pagination =)
 > Note that it is recommended to limit the number of contacts when querying to increase performance
 > and decrease memory cost.
 
-#### Executing the query
+## Executing the query
 
 To execute the query,
 
@@ -191,7 +191,7 @@ To execute the query,
 .find()
 ```
 
-#### Cancelling the query
+## Cancelling the query
 
 To cancel a query amid execution,
 
@@ -217,7 +217,7 @@ launch {
 }
 ```
 
-#### Performing the query asynchronously
+## Performing the query asynchronously
 
 Queries are executed when the `find` function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.
@@ -230,7 +230,7 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 > Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 > listening to Contacts database changes.
 
-#### Performing the query with permission
+## Performing the query with permission
 
 Queries require the `android.permission.READ_CONTACTS` permission. If not granted, the query will 
 do nothing and return an empty list.
@@ -240,7 +240,7 @@ For more info, read [How do I use the permissions extensions to simplify permiss
 
 You may, of course, use other permission handling libraries or just do it yourself =)
      
-#### Blank Contacts and the `where` function
+## Blank Contacts and the `where` function
 
 The `where` function is only used to query the Data table. Some contacts do not have any Data table 
 rows. However, this library exposes some fields that belong to other tables, accessible via the 
@@ -254,7 +254,7 @@ RawContacts simply because they have no Data rows containing these joined fields
 
 For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md).
 
-###### Limitations
+### Limitations
 
 Blank RawContacts and blank Contacts do not have any rows in the Data table so a `where` clause that 
 uses any fields from the Data table `Fields` will **exclude** blanks in the result (even if they are 

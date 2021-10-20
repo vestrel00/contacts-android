@@ -1,4 +1,4 @@
-## How do I update contacts?
+# How do I update contacts?
 
 TODO
 

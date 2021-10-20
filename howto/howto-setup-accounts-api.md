@@ -1,4 +1,4 @@
-## How do I setup the Accounts API?
+# How do I setup the Accounts API?
 
 There are extra library functions that revolve around `android.accounts.Account`. The functions are 
 all accessible via the `contacts.core.accounts.Accounts` API.

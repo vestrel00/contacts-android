@@ -1,4 +1,4 @@
-## How do I learn more about the API entities?
+# How do I learn more about the API entities?
 
 First, it's important to understand the most basic concept of the
 [Android Contacts Provider / ContactsContract](https://developer.android.com/guide/topics/providers/contacts-provider).
@@ -7,7 +7,7 @@ Afterwards, everything in this library should just make sense.
 There is only one thing you need to know outside of this library. The library handles the rest of
 the details so you don't have to =)
 
-#### Contacts Provider / ContactsContract Basic Concept
+## Contacts Provider / ContactsContract Basic Concept
 
 There are 3 main database tables used in dealing with contacts.  There are more tables but you
 don't need to know that =) These tables are all connected.
@@ -43,7 +43,7 @@ in the beginning =P.
 Once you internalize this one to many relationship between **Contacts -> RawContacts -> Data**, you
 have unlocked the full potential of this library and **the world is at the palm of your hands**!
 
-#### Contacts API Entities
+## Contacts API Entities
 
 This library provides entities that model everything in the Contacts Provider database.
 
@@ -83,7 +83,7 @@ mutating API functions).
 Custom data types may also be integrated into the contacts database (though not synced across devices).
 Read more in [How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
 
-#### Common data kinds count restrictions
+## Common data kinds count restrictions
 
 A `RawContact` may have at most one OR no limits of certain kinds of data.
 
@@ -114,7 +114,7 @@ disables consumers from violating them.
 The core library does not explicitly expose count restrictions to consumers. However, it is exposed
 when integrating custom data via the `CustomDataCountRestriction`.
 
-#### Common data kinds Account restrictions
+## Common data kinds Account restrictions
 
 Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
 associated with an Account). These data kinds are;
@@ -132,7 +132,7 @@ The Contacts Provider may or may not enforce these Account restrictions. However
 app imposes these restrictions. Therefore, this library also imposes these restrictions and
 disables consumers from violating them.
 
-#### Automatic common data kinds creation
+## Automatic common data kinds creation
 
 An entry of each of the following data kinds are automatically created for all contacts, if not
 provided;
@@ -152,7 +152,7 @@ If a valid account is not provided, no entries of the above are automatically cr
 To determine if a RawContact is associated with an Account or not, read
 [How do I query for Accounts?](/howto/howto-query-accounts.md).
 
-#### Accessing contact data
+## Accessing contact data
 
 When you have an instance of `Contact`, you have complete (and correct) access to data stored in it.
 

@@ -1,4 +1,4 @@
-## How do I link/unlink Contacts?
+# How do I link/unlink Contacts?
 
 TODO
 

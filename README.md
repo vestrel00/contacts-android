@@ -222,7 +222,7 @@ Log.d(
 
 > For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
 
-#### There's a lot more
+### There's a lot more
 
 This library is capable of doing more than just querying contacts. Let's take a look at a few of them here.
 
@@ -327,7 +327,7 @@ Contacts(context)
 > these functions will do nothing and return a failed result. To make permission handling much
 > easier, Kotlin coroutine extensions are available in the `permissions` module.
 
-#### There's even more…
+### There's even more…
 
 This library provides Kotlin coroutine extensions in the `permissions` module for all API functions
 to handle permissions and `async` module for executing work in background threads.
@@ -360,13 +360,13 @@ return no results.
 Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for listening
 to Contacts database changes.
 
-#### There's too much…
+### There's too much…
 
 **The above examples barely scratches the surface of what this library provides.** For more in-depth
 Howtos, visit the [howto directory](/howto/). For a sample app reference, take a look at and run the
 `sample` module.
 
-#### Setup
+### Setup
 
 There is no setup required. It's up to you how you want to create and retain instances of the
 `contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/howto/howto-setup-contacts-api.md)

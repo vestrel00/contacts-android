@@ -1,4 +1,4 @@
-## How do I setup the Contacts API?
+# How do I setup the Contacts API?
 
 The main library functions are all accessible via the `contacts.core.Contacts` API.
 

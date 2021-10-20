@@ -1,4 +1,4 @@
-## How do I get a list of contacts in the simplest way?
+# How do I get a list of contacts in the simplest way?
 
 This library provides the `BroadQuery` API, which allows you to get the exact same search results
 as the native Contacts app! This query lets the Contacts Provider perform the search using its own
@@ -9,7 +9,7 @@ useful for apps that want to implement functionality similar to the People app's
 > For a more granular, advanced queries, use the `Query` API.
 > For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
-#### A basic query
+## A basic query
 
 To get all contacts that have any data that at least partially matches a given `searchText`, ordered
 by the primary display name,
@@ -22,7 +22,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-#### Including blank contacts
+## Including blank contacts
 
 The API allows you to specify if you want to include blank contacts or not,
 
@@ -32,7 +32,7 @@ The API allows you to specify if you want to include blank contacts or not,
 
 For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
 
-#### Specifying Accounts
+## Specifying Accounts
 
 To limit the search to only those RawContacts associated with one of the given accounts,
 
@@ -65,7 +65,7 @@ For more info, read [How do I learn more about "local" (device-only) contacts?](
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
-#### Specifying Groups
+## Specifying Groups
 
 To limit the search to only those RawContacts associated with at least one of the given groups,
 
@@ -92,7 +92,7 @@ RawContacts of Contacts are included in the search.
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
-#### Including only specific data
+## Including only specific data
 
 To include only the given set of fields (data) in each of the matching contacts,
 
@@ -102,7 +102,7 @@ To include only the given set of fields (data) in each of the matching contacts,
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
-#### Ordering
+## Ordering
 
 To order resulting Contacts using one or more fields,
 
@@ -130,7 +130,7 @@ Use `ContactsFields` to construct the orderBys.
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
 > For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
 
-#### Limiting and offsetting
+## Limiting and offsetting
 
 To limit the amount of contacts returned and/or offset (skip) a specified number of contacts,
 
@@ -151,7 +151,7 @@ This is useful for pagination =)
 > Note that it is recommended to limit the number of contacts when querying to increase performance
 > and decrease memory cost.
 
-#### Executing the query
+## Executing the query
 
 To execute the query,
 
@@ -159,7 +159,7 @@ To execute the query,
 .find()
 ```
 
-#### Cancelling the query
+## Cancelling the query
 
 To cancel a query amid execution,
 
@@ -185,7 +185,7 @@ launch {
 }
 ```
 
-#### Performing the query asynchronously
+## Performing the query asynchronously
 
 Queries are executed when the `find` function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.
@@ -198,7 +198,7 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 > Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 > listening to Contacts database changes.
 
-#### Performing the query with permission
+## Performing the query with permission
 
 Queries require the `android.permission.READ_CONTACTS` permission. If not granted, the query will 
 do nothing and return an empty list.
@@ -208,7 +208,7 @@ For more info, read [How do I use the permissions extensions to simplify permiss
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
-#### How does the matching process work?
+## How does the matching process work?
 
 The `BroadQuery` API lets the Contacts Provider perform the search using its own custom matching
 algorithm via the `whereAnyContactDataPartiallyMatches` function.
