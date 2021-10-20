@@ -31,11 +31,11 @@ In the example given (E.G.) above,
 
 In the background, the Contacts Provider automatically performs the RawContacts linking/aggregation
 into a single Contact. To forcefully link or unlink sets of RawContacts, read
-[How do I link/unlink Contacts?](/contacts-android/howto/howto-link-unlink-contacts.md).
+[How do I link/unlink Contacts?](/contacts-android/howto/howto-link-unlink-contacts.html).
 
 In the background, the Contacts Provider syncs all data from the local database to the remote database
 and vice versa (depending on system contact sync settings). Read more in
-[How does contact data get synced across devices?](/contacts-android/howto/howto-sync-contact-data.md).
+[How does contact data get synced across devices?](/contacts-android/howto/howto-sync-contact-data.html).
 
 That's all you need to know! Hopefully it wasn't too much. I know it was difficult for me to grasp
 in the beginning =P.
@@ -81,7 +81,7 @@ function that returns a mutable copy (typically to be used for inserts and updat
 mutating API functions).
 
 Custom data types may also be integrated into the contacts database (though not synced across devices).
-Read more in [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.md).
+Read more in [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html).
 
 #### Common data kinds count restrictions
 
@@ -150,7 +150,7 @@ creation. The name, nickname, and note are automatically created at a later time
 If a valid account is not provided, no entries of the above are automatically created.
 
 To determine if a RawContact is associated with an Account or not, read
-[How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.md).
+[How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.html).
 
 #### Accessing contact data
 
@@ -234,4 +234,4 @@ Each Contact may have more than one of the following data if the Contact is made
 RawContacts; name, nickname, note, organization, sip address.
 
 For more info on how to easily aggregate data from all RawContacts in a Contact, read
-[How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto/howto-use-miscellaneous-extensions.md)
+[How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto/howto-use-miscellaneous-extensions.html)
