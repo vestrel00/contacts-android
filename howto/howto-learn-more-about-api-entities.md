@@ -9,8 +9,8 @@ the details so you don't have to =)
 
 ## Contacts Provider / ContactsContract Basic Concept
 
-There are 3 main database tables used in dealing with contacts.  There are more tables but you
-don't need to know that =) These tables are all connected.
+There are 3 main database tables used in dealing with contacts. There are more tables but you don't
+need to know that =) These tables are all connected.
 
 1. Contacts
     - Rows representing different people.
@@ -154,7 +154,7 @@ To determine if a RawContact is associated with an Account or not, read
 
 ## Data integrity
 
-There is a section in the official Contacts Provider documentation has a section on "Data Integrity";
+There is a section in the official Contacts Provider documentation about "Data Integrity";
 https://developer.android.com/guide/topics/providers/contacts-provider#DataIntegrity
 
 It enumerates four general rules to follow to retain the "integrity of data" :D Paraphrasing in terms 

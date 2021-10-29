@@ -1,6 +1,6 @@
 # How do I include only the data that I want?
 
-When using query APIs such as `Query`, `BroadQuery`, and `ProfileQuery`, you are able to specify  
+When using query APIs such as `Query`, `BroadQuery`, and `ProfileQuery`, you are able to specify
 all or only some kinds of data that you want to be included in the matching contacts.
 
 For example, to include only name, email, and phone number data,

@@ -1069,7 +1069,7 @@ sealed class RawContact {
     abstract val addresses: List<Address>
 }
 data class MutableRawContact(
-    override val addresses: MutableList<MutableAddress>
+    override var addresses: MutableList<MutableAddress>
 ) : RawContact()
 
 sealed class Address {
