@@ -80,7 +80,10 @@ internal fun <T : CommonDataEntity> CursorHolder<AbstractDataField>.entityMapper
     is MimeType.Custom -> customDataRegistry
         .entryOf(mimeType)
         .mapperFactory
-        .create(cursor)
+        .create(
+            cursor,
+            includeFields as Set<AbstractCustomDataField>
+        )
     MimeType.Unknown -> throw ContactsException(
         "No entity mapper for mime type ${mimeType.value}"
     )

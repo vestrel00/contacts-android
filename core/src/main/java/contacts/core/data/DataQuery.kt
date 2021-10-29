@@ -269,17 +269,35 @@ interface CommonDataQuery<K : CommonDataField, V : CommonDataEntity> {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      *
-     * ## Potential Data Loss
+     * ## Performing updates on entities with partial includes
      *
-     * Do not perform updates on Data returned by a query where all of the Data fields are not
-     * included as it may result in data loss! To include all fields, including those that are not
-     * exposed to consumers (you), do one of the following;
+     * When the query [include] function is used, only certain data will be included in the returned
+     * entities. All other data are guaranteed to be null (except for those in [Fields.Required]).
+     * When performing updates on entities that have only partial data included, make sure to use
+     * the same included fields in the update operation as the included fields used in the query.
+     * This will ensure that the set of data queried and updated are the same. For example, in order
+     * to get and set only email addresses and leave everything the same in the database...
      *
-     * - Do no call this [include] function.
-     * - Call this function with no fields (empty).
-     * - Pass in [Fields.all].
+     * ```kotlin
+     * val contacts = query.include(Fields.Email.Address).find()
+     * val mutableContacts = setEmailAddresses(contacts)
+     * update.contacts(mutableContacts).include(Fields.Email.Address).commit()
+     * ```
      *
-     * // FIXME? **Dev notes:** should we change the API such that it supports only mutating and
+     * On the other hand, you may intentionally include only some data and perform updates without
+     * on all data (not just the included ones) to effectively delete all non-included data. This
+     * is, currently, a feature- not a bug! For example, in order to get and set only email
+     * addresses and set all other data to null (such as phone numbers, name, etc) in the database..
+     *
+     * ```kotlin
+     * val contacts = query.include(Fields.Email.Address).find()
+     * val mutableContacts = setEmailAddresses(contacts)
+     * update.contacts(mutableContacts).include(Fields.all).commit()
+     * ```
+     *
+     * ## Dev notes
+     *
+     * // FIXME? Should we change the API such that it supports only mutating and
      * updating included fields? That would add complexity to both developers of the API and its
      * consumers... Or we can just be consenting adults and read&follow the documentation. The only
      * way data loss may occur is if consumers explicitly call these [include]s functions. It is up
@@ -543,7 +561,8 @@ internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
         mutableListOf<T>().apply {
             val entityMapper = it.entityMapperFor<T>(mimeType, customDataRegistry)
             while (!cancel() && it.moveToNext()) {
-                add(entityMapper.value)
+                // Do not add blanks.
+                entityMapper.nonBlankValueOrNull?.let(::add)
             }
 
             // Ensure only complete data sets are returned.

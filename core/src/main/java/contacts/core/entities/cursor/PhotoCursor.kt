@@ -10,7 +10,8 @@ import contacts.core.PhotoField
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class PhotoCursor(cursor: Cursor) : AbstractDataCursor<PhotoField>(cursor) {
+internal class PhotoCursor(cursor: Cursor, includeFields: Set<PhotoField>) :
+    AbstractDataCursor<PhotoField>(cursor, includeFields) {
 
     val photoFileId: Long?
         get() {

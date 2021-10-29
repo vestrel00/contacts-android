@@ -10,7 +10,8 @@ import contacts.core.OrganizationField
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class OrganizationCursor(cursor: Cursor) : AbstractDataCursor<OrganizationField>(cursor) {
+internal class OrganizationCursor(cursor: Cursor, includeFields: Set<OrganizationField>) :
+    AbstractDataCursor<OrganizationField>(cursor, includeFields) {
 
     val company: String? by string(Fields.Organization.Company)
 

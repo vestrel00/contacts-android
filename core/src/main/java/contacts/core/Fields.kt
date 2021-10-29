@@ -29,7 +29,16 @@ import contacts.core.util.unsafeLazy
  */
 sealed class Field {
 
+    /**
+     * The column name in the database that this field represents.
+     */
     internal abstract val columnName: String
+
+    /**
+     * True if this field is required for create, read, update, and delete (CRUD) operations. For
+     * example, fields that return true cannot be excluded from query results.
+     */
+    internal open val required: Boolean = false
 
     // Force concrete implementations to implements equals and hashCode, which can be manually
     // written or provided by being a data class.
@@ -88,7 +97,10 @@ sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {
     abstract val forMatching: Set<T>
 }
 
-data class DataField internal constructor(override val columnName: String) : AbstractDataField()
+data class DataField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false,
+) : AbstractDataField()
 
 /**
  * Contains all fields / columns that are accessible via the Data table with joins from the
@@ -116,7 +128,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Contact = DataContactsFields()
 
     @JvmField
-    val DataId = DataField(Data._ID)
+    val DataId = DataField(Data._ID, required = true)
 
     @JvmField
     val Email = EmailFields()
@@ -131,12 +143,12 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Im = ImFields()
 
     @JvmField
-    val IsPrimary = DataField(Data.IS_PRIMARY)
+    val IsPrimary = DataField(Data.IS_PRIMARY, required = true)
 
     @JvmField
-    val IsSuperPrimary = DataField(Data.IS_SUPER_PRIMARY)
+    val IsSuperPrimary = DataField(Data.IS_SUPER_PRIMARY, required = true)
 
-    internal val MimeType = DataField(Data.MIMETYPE)
+    internal val MimeType = DataField(Data.MIMETYPE, required = true)
 
     @JvmField
     val Name = NameFields()
@@ -268,15 +280,17 @@ object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
 
 // region Joined Data Fields
 
-data class DataContactsField internal constructor(override val columnName: String) :
-    AbstractDataField()
+data class DataContactsField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : AbstractDataField()
 
 class DataContactsFields internal constructor() : AbstractDataFieldSet<DataContactsField>() {
 
     // The Data.CONTACT_ID, which is not the same as the column name Contacts._ID. This is only
     // meant to be used for Data table operations.
     @JvmField
-    val Id = DataContactsField(Data.CONTACT_ID)
+    val Id = DataContactsField(Data.CONTACT_ID, required = true)
 
     @JvmField
     val DisplayNamePrimary = DataContactsField(Data.DISPLAY_NAME_PRIMARY)
@@ -313,7 +327,7 @@ class DataContactsFields internal constructor() : AbstractDataFieldSet<DataConta
 // but with a different Field type.
 class DataContactsOptionsFields internal constructor() : AbstractDataFieldSet<DataContactsField>() {
 
-    internal val Id = DataContactsField(Data._ID)
+    internal val Id = DataContactsField(Data._ID, required = true)
 
     @JvmField
     val Starred = DataContactsField(Data.STARRED)
@@ -342,13 +356,15 @@ class DataContactsOptionsFields internal constructor() : AbstractDataFieldSet<Da
     override val forMatching = emptySet<DataContactsField>()
 }
 
-data class DataRawContactsField internal constructor(override val columnName: String) :
-    AbstractDataField()
+data class DataRawContactsField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : AbstractDataField()
 
 class DataRawContactsFields internal constructor() : AbstractDataFieldSet<DataRawContactsField>() {
 
     @JvmField
-    val Id = DataRawContactsField(Data.RAW_CONTACT_ID)
+    val Id = DataRawContactsField(Data.RAW_CONTACT_ID, required = true)
 
     override val all by unsafeLazy {
         setOf(Id)
@@ -970,7 +986,10 @@ internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsFiel
 
 // region Contacts Table Fields
 
-data class ContactsField internal constructor(override val columnName: String) : Field()
+data class ContactsField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : Field()
 
 /**
  * Fields for Contacts table operations.
@@ -978,7 +997,7 @@ data class ContactsField internal constructor(override val columnName: String) :
 object ContactsFields : FieldSet<ContactsField>() {
 
     @JvmField
-    val Id = ContactsField(Contacts._ID)
+    val Id = ContactsField(Contacts._ID, required = true)
 
     @JvmField
     val DisplayNamePrimary = ContactsField(Contacts.DISPLAY_NAME_PRIMARY)
@@ -1021,7 +1040,7 @@ object ContactsFields : FieldSet<ContactsField>() {
 // RawContactsOptionsFields but with a different Field type.
 class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
 
-    internal val Id = ContactsField(Contacts._ID)
+    internal val Id = ContactsField(Contacts._ID, required = true)
 
     @JvmField
     val Starred = ContactsField(Contacts.STARRED)
@@ -1051,7 +1070,10 @@ class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
 
 // region Groups Table Fields
 
-data class GroupsField internal constructor(override val columnName: String) : Field()
+data class GroupsField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : Field()
 
 /**
  * Fields for Groups table operations.
@@ -1059,7 +1081,7 @@ data class GroupsField internal constructor(override val columnName: String) : F
 object GroupsFields : FieldSet<GroupsField>() {
 
     @JvmField
-    val Id = GroupsField(Groups._ID)
+    val Id = GroupsField(Groups._ID, required = true)
 
     @JvmField
     val SystemId = GroupsField(Groups.SYSTEM_ID)
@@ -1093,7 +1115,10 @@ object GroupsFields : FieldSet<GroupsField>() {
 
 // region RawContacts Table Fields
 
-data class RawContactsField internal constructor(override val columnName: String) : Field()
+data class RawContactsField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : Field()
 
 /**
  * Fields for RawContacts table operations.
@@ -1101,10 +1126,10 @@ data class RawContactsField internal constructor(override val columnName: String
 object RawContactsFields : FieldSet<RawContactsField>() {
 
     @JvmField
-    val Id = RawContactsField(RawContacts._ID)
+    val Id = RawContactsField(RawContacts._ID, required = true)
 
     @JvmField
-    val ContactId = RawContactsField(RawContacts.CONTACT_ID)
+    val ContactId = RawContactsField(RawContacts.CONTACT_ID, required = true)
 
     @JvmField
     val DisplayNamePrimary = RawContactsField(RawContacts.DISPLAY_NAME_PRIMARY)
@@ -1136,7 +1161,7 @@ object RawContactsFields : FieldSet<RawContactsField>() {
 // but with a different Field type.
 class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsField>() {
 
-    internal val Id = RawContactsField(RawContacts._ID)
+    internal val Id = RawContactsField(RawContacts._ID, required = true)
 
     @JvmField
     val Starred = RawContactsField(RawContacts.STARRED)

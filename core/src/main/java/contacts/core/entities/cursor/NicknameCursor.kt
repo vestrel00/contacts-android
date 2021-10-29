@@ -10,7 +10,8 @@ import contacts.core.NicknameField
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class NicknameCursor(cursor: Cursor) : AbstractDataCursor<NicknameField>(cursor) {
+internal class NicknameCursor(cursor: Cursor, includeFields: Set<NicknameField>) :
+    AbstractDataCursor<NicknameField>(cursor, includeFields) {
 
     val name: String? by string(Fields.Nickname.Name)
 }

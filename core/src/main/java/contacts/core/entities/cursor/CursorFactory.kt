@@ -1,37 +1,82 @@
 package contacts.core.entities.cursor
 
-import contacts.core.AbstractDataField
-import contacts.core.ContactsField
-import contacts.core.GroupsField
-import contacts.core.RawContactsField
+import contacts.core.*
 import contacts.core.entities.custom.CustomDataRegistry
 
-internal fun CursorHolder<AbstractDataField>.addressCursor() = AddressCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.dataContactsCursor() = DataContactsCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.dataCursor() = DataCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.emailCursor() = EmailCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.eventCursor() = EventCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.groupMembershipCursor() = GroupMembershipCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.imCursor() = ImCursor(cursor)
+// region AbstractDataField
+
+internal fun CursorHolder<AbstractDataField>.addressCursor() =
+    AddressCursor(cursor, Fields.Address.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.dataContactsCursor() =
+    DataContactsCursor(cursor, Fields.Contact.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.dataCursor() = DataCursor(cursor, includeFields)
+
+internal fun CursorHolder<AbstractDataField>.emailCursor() =
+    EmailCursor(cursor, Fields.Email.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.eventCursor() =
+    EventCursor(cursor, Fields.Event.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.groupMembershipCursor() =
+    GroupMembershipCursor(cursor, Fields.GroupMembership.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.imCursor() =
+    ImCursor(cursor, Fields.Im.intersect(includeFields))
+
 internal fun CursorHolder<AbstractDataField>.mimeTypeCursor(
     customDataRegistry: CustomDataRegistry
 ) = MimeTypeCursor(cursor, customDataRegistry)
 
-internal fun CursorHolder<AbstractDataField>.nameCursor() = NameCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.nicknameCursor() = NicknameCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.noteCursor() = NoteCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.dataContactsOptionsCursor() = OptionsCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.organizationCursor() = OrganizationCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.phoneCursor() = PhoneCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.photoCursor() = PhotoCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.relationCursor() = RelationCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.sipAddressCursor() = SipAddressCursor(cursor)
-internal fun CursorHolder<AbstractDataField>.websiteCursor() = WebsiteCursor(cursor)
+internal fun CursorHolder<AbstractDataField>.nameCursor() =
+    NameCursor(cursor, Fields.Name.intersect(includeFields))
 
-internal fun CursorHolder<RawContactsField>.rawContactsCursor() = RawContactsCursor(cursor)
-internal fun CursorHolder<RawContactsField>.rawContactsOptionsCursor() = OptionsCursor(cursor)
+internal fun CursorHolder<AbstractDataField>.nicknameCursor() =
+    NicknameCursor(cursor, Fields.Nickname.intersect(includeFields))
 
-internal fun CursorHolder<ContactsField>.contactsCursor() = ContactsCursor(cursor)
-internal fun CursorHolder<ContactsField>.optionsCursor() = OptionsCursor(cursor)
+internal fun CursorHolder<AbstractDataField>.noteCursor() =
+    NoteCursor(cursor, Fields.Note.intersect(includeFields))
 
-internal fun CursorHolder<GroupsField>.groupsCursor() = GroupsCursor(cursor)
+internal fun CursorHolder<AbstractDataField>.dataContactsOptionsCursor() =
+    DataContactsOptionsCursor(cursor, includeFields)
+
+internal fun CursorHolder<AbstractDataField>.organizationCursor() =
+    OrganizationCursor(cursor, Fields.Organization.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.phoneCursor() =
+    PhoneCursor(cursor, Fields.Phone.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.photoCursor() =
+    PhotoCursor(cursor, Fields.Photo.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.relationCursor() =
+    RelationCursor(cursor, Fields.Relation.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.sipAddressCursor() =
+    SipAddressCursor(cursor, Fields.SipAddress.intersect(includeFields))
+
+internal fun CursorHolder<AbstractDataField>.websiteCursor() =
+    WebsiteCursor(cursor, Fields.Website.intersect(includeFields))
+
+// endregion
+
+internal fun CursorHolder<RawContactsField>.rawContactsCursor() =
+    RawContactsCursor(cursor, includeFields)
+
+internal fun CursorHolder<RawContactsField>.rawContactsOptionsCursor() =
+    RawContactsOptionsCursor(cursor, includeFields)
+
+internal fun CursorHolder<ContactsField>.contactsCursor() = ContactsCursor(cursor, includeFields)
+
+internal fun CursorHolder<ContactsField>.optionsCursor() =
+    ContactsOptionsCursor(cursor, includeFields)
+
+internal fun CursorHolder<GroupsField>.groupsCursor() = GroupsCursor(cursor, includeFields)
+
+/**
+ * Returns a set of [T] that contains the intersection of this [FieldSet] with the given [fields].
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <T : AbstractDataField> FieldSet<T>.intersect(fields: Set<AbstractDataField>): Set<T> =
+    all.intersect(fields) as Set<T>

@@ -11,7 +11,8 @@ import contacts.core.entities.Relation
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class RelationCursor(cursor: Cursor) : AbstractDataCursor<RelationField>(cursor) {
+internal class RelationCursor(cursor: Cursor, includeFields: Set<RelationField>) :
+    AbstractDataCursor<RelationField>(cursor, includeFields) {
 
     val type: Relation.Type? by type(Fields.Relation.Type, typeFromValue = Relation.Type::fromValue)
 

@@ -11,7 +11,8 @@ import contacts.core.entities.Im
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class ImCursor(cursor: Cursor) : AbstractDataCursor<ImField>(cursor) {
+internal class ImCursor(cursor: Cursor, includeFields: Set<ImField>) :
+    AbstractDataCursor<ImField>(cursor, includeFields) {
 
     val protocol: Im.Protocol? by type(Fields.Im.Protocol, typeFromValue = Im.Protocol::fromValue)
 

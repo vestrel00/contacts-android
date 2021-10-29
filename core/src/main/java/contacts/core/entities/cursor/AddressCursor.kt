@@ -11,7 +11,8 @@ import contacts.core.entities.Address
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class AddressCursor(cursor: Cursor) : AbstractDataCursor<AddressField>(cursor) {
+internal class AddressCursor(cursor: Cursor, includeFields: Set<AddressField>) :
+    AbstractDataCursor<AddressField>(cursor, includeFields) {
 
     val type: Address.Type? by type(Fields.Address.Type, typeFromValue = Address.Type::fromValue)
 

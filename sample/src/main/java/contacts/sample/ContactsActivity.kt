@@ -132,8 +132,7 @@ class ContactsActivity : BaseActivity() {
                 .include(
                     Fields.Contact.DisplayNamePrimary,
                     Fields.Email.Address,
-                    Fields.Phone.Number,
-                    Fields.Phone.NormalizedNumber
+                    Fields.Phone.Number
                 )
                 .whereAnyContactDataPartiallyMatches(searchText)
                 .orderBy(ContactsFields.DisplayNamePrimary.asc())

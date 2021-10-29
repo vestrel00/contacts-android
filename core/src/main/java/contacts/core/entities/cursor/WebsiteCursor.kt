@@ -10,7 +10,8 @@ import contacts.core.WebsiteField
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class WebsiteCursor(cursor: Cursor) : AbstractDataCursor<WebsiteField>(cursor) {
+internal class WebsiteCursor(cursor: Cursor, includeFields: Set<WebsiteField>) :
+    AbstractDataCursor<WebsiteField>(cursor, includeFields) {
 
     val url: String? by string(Fields.Website.Url)
 }

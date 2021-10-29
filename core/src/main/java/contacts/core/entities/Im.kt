@@ -51,10 +51,8 @@ data class Im internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Im
 
-    // protocol and customProtocol are excluded from this check as they are useless information by
-    // themselves
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(data)
+        get() = propertiesAreAllNullOrBlank(protocol, customProtocol, data)
 
     fun toMutableIm() = MutableIm(
         id = id,
@@ -154,10 +152,8 @@ data class MutableIm internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Im
 
-    // protocol and customProtocol are excluded from this check as they are useless information by
-    // themselves
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(data)
+        get() = propertiesAreAllNullOrBlank(protocol, customProtocol, data)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::data

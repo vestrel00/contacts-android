@@ -1,5 +1,6 @@
 package contacts.core.entities.mapper
 
+import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractDataField
 import contacts.core.ContactsField
 import contacts.core.RawContactsField
@@ -185,24 +186,27 @@ private fun CursorHolder<AbstractDataField>.updateRawContact(
     rawContact: TempRawContact
 ) {
     // Each row in the cursor only contains a subset of contact data paired by the mime type.
-    // This is why full contact objects cannot be built per cursor row.
-    // Therefore, mutable contact objects must be updated with different pieces of data
-    // that each cursor row provides.
+    // This is why full contact objects cannot be built per cursor row. Therefore, mutable contact
+    // instances must be updated with different pieces of data that each cursor row provides.
+    // Do not add blank **data** as it is just noise.
     when (val mimeType = mimeTypeCursor(customDataRegistry).mimeType) {
-        Address -> rawContact.addresses.add(addressMapper().value)
-        Email -> rawContact.emails.add(emailMapper().value)
-        Event -> rawContact.events.add(eventMapper().value)
-        GroupMembership -> rawContact.groupMemberships.add(groupMembershipMapper().value)
-        Im -> rawContact.ims.add(imMapper().value)
-        Name -> rawContact.name = nameMapper().value
-        Nickname -> rawContact.nickname = nicknameMapper().value
-        Note -> rawContact.note = noteMapper().value
-        Organization -> rawContact.organization = organizationMapper().value
-        Phone -> rawContact.phones.add(phoneMapper().value)
-        Photo -> rawContact.photo = photoMapper().value
-        Relation -> rawContact.relations.add(relationMapper().value)
-        SipAddress -> rawContact.sipAddress = sipAddressMapper().value
-        Website -> rawContact.websites.add(websiteMapper().value)
+        Address -> addressMapper().nonBlankValueOrNull?.let(rawContact.addresses::add)
+        Email -> emailMapper().nonBlankValueOrNull?.let(rawContact.emails::add)
+        Event -> eventMapper().nonBlankValueOrNull?.let(rawContact.events::add)
+        GroupMembership ->
+            groupMembershipMapper().nonBlankValueOrNull?.let(rawContact.groupMemberships::add)
+        Im -> imMapper().nonBlankValueOrNull?.let(rawContact.ims::add)
+        Name -> nameMapper().nonBlankValueOrNull?.let { rawContact.name = it }
+        Nickname -> nicknameMapper().nonBlankValueOrNull?.let { rawContact.nickname = it }
+        Note -> noteMapper().nonBlankValueOrNull?.let { rawContact.note = it }
+        Organization -> organizationMapper().nonBlankValueOrNull?.let {
+            rawContact.organization = it
+        }
+        Phone -> phoneMapper().nonBlankValueOrNull?.let(rawContact.phones::add)
+        Photo -> photoMapper().nonBlankValueOrNull?.let { rawContact.photo = it }
+        Relation -> relationMapper().nonBlankValueOrNull?.let(rawContact.relations::add)
+        SipAddress -> sipAddressMapper().nonBlankValueOrNull?.let { rawContact.sipAddress = it }
+        Website -> websiteMapper().nonBlankValueOrNull?.let(rawContact.websites::add)
         is Custom -> updateRawContactCustomData(customDataRegistry, rawContact, mimeType)
         Unknown -> {
             // Do nothing
@@ -221,6 +225,12 @@ private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
         CustomDataEntityHolder(mutableListOf(), customDataEntry.countRestriction)
     }
 
-    val customDataMapper = customDataEntry.mapperFactory.create(cursor)
-    customDataEntityHolder.entities.add(customDataMapper.value)
+    @Suppress("UNCHECKED_CAST")
+    val customDataMapper = customDataEntry.mapperFactory.create(
+        cursor,
+        includeFields as Set<AbstractCustomDataField>
+    )
+
+    // Do not add blanks.
+    customDataMapper.nonBlankValueOrNull?.let(customDataEntityHolder.entities::add)
 }

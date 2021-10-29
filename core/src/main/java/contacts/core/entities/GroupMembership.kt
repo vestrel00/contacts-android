@@ -53,5 +53,5 @@ data class GroupMembership internal constructor(
     override val mimeType: MimeType = MimeType.GroupMembership
 
     @IgnoredOnParcel
-    override val isBlank: Boolean = false
+    override val isBlank: Boolean = propertiesAreAllNullOrBlank(groupId)
 }

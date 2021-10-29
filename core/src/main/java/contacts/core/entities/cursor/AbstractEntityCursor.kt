@@ -73,6 +73,9 @@ import kotlin.reflect.KProperty
  *
  * ## IMPORTANT!
  *
+ * Delegate and regular functions will return null if accessing a field that is not in
+ * [includeFields] and is not required.
+ *
  * Cursor positions are dynamic! They may change at any time and may point at different data. This
  * means that properties or functions should be able to return data dynamically.
  *
@@ -84,13 +87,26 @@ import kotlin.reflect.KProperty
  *
  * The value assigned to `formattedAddress` will most likely be null. Either way, the return value
  * of `formattedAddress` will always be the same. Bad!
+ *
+ * Do this;
+ *
+ * ```
+ * val formattedAddress: String? by string(Fields.Address.FormattedAddress)
+ * ```
  */
-abstract class AbstractEntityCursor<T : Field>(private val cursor: Cursor) {
+abstract class AbstractEntityCursor<T : Field>(
+    private val cursor: Cursor,
+    private val includeFields: Set<T>
+) {
 
     // region REGULAR FUNCTIONS - NULLABLE
 
     @JvmOverloads
     protected fun getString(field: T, default: String? = null): String? {
+        if (!includeFields.contains(field) && !field.required) {
+            return null
+        }
+
         val index = cursor.getColumnIndex(field.columnName)
         return if (index == -1) default else try {
             cursor.getString(index)
@@ -113,6 +129,10 @@ abstract class AbstractEntityCursor<T : Field>(private val cursor: Cursor) {
 
     @JvmOverloads
     protected fun getBlob(field: T, default: ByteArray? = null): ByteArray? {
+        if (!includeFields.contains(field)) {
+            return null
+        }
+
         val index = cursor.getColumnIndex(field.columnName)
         return if (index == -1) default else try {
             // Should probably not use getString for getting a byte array.
@@ -208,7 +228,10 @@ abstract class AbstractEntityCursor<T : Field>(private val cursor: Cursor) {
         default: String? = null
     ): ReadOnlyProperty<AbstractEntityCursor<T>, String?> = StringDelegate(field, default)
 
-    protected fun int(field: T, default: Int? = null): ReadOnlyProperty<AbstractEntityCursor<T>, Int?> =
+    protected fun int(
+        field: T,
+        default: Int? = null
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Int?> =
         IntDelegate(field, default)
 
     protected fun long(
@@ -226,7 +249,10 @@ abstract class AbstractEntityCursor<T : Field>(private val cursor: Cursor) {
         default: ByteArray? = null
     ): ReadOnlyProperty<AbstractEntityCursor<T>, ByteArray?> = BlobDelegate(field, default)
 
-    protected fun uri(field: T, default: Uri? = null): ReadOnlyProperty<AbstractEntityCursor<T>, Uri?> =
+    protected fun uri(
+        field: T,
+        default: Uri? = null
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Uri?> =
         UriDelegate(field, default)
 
     protected fun date(
@@ -250,7 +276,10 @@ abstract class AbstractEntityCursor<T : Field>(private val cursor: Cursor) {
     ): ReadOnlyProperty<AbstractEntityCursor<T>, String> =
         NonNullStringDelegate(field, default)
 
-    protected fun nonNullInt(field: T, default: Int = 0): ReadOnlyProperty<AbstractEntityCursor<T>, Int> =
+    protected fun nonNullInt(
+        field: T,
+        default: Int = 0
+    ): ReadOnlyProperty<AbstractEntityCursor<T>, Int> =
         NonNullIntDelegate(field, default)
 
     protected fun nonNullLong(
@@ -324,7 +353,10 @@ abstract class AbstractEntityCursor<T : Field>(private val cursor: Cursor) {
         private val field: T,
         private val default: ByteArray? = null
     ) : ReadOnlyProperty<AbstractEntityCursor<T>, ByteArray?> {
-        override fun getValue(thisRef: AbstractEntityCursor<T>, property: KProperty<*>): ByteArray? =
+        override fun getValue(
+            thisRef: AbstractEntityCursor<T>,
+            property: KProperty<*>
+        ): ByteArray? =
             getBlob(field, default)
     }
 

@@ -11,8 +11,8 @@ import contacts.core.RawContactsFields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class RawContactsCursor(cursor: Cursor) : AbstractEntityCursor<RawContactsField>(cursor),
-    RawContactIdCursor {
+internal class RawContactsCursor(cursor: Cursor, includeFields: Set<RawContactsField>) :
+    AbstractEntityCursor<RawContactsField>(cursor, includeFields), RawContactIdCursor {
 
     override val contactId: Long? by long(RawContactsFields.ContactId)
 

@@ -6,9 +6,10 @@ import contacts.core.entities.custom.AbstractCustomEntityMapper
 internal class HandleNameMapperFactory :
     AbstractCustomEntityMapper.Factory<HandleNameField, HandleNameDataCursor, MutableHandleName> {
 
-    override fun create(cursor: Cursor):
-            AbstractCustomEntityMapper<HandleNameField, HandleNameDataCursor, MutableHandleName> =
-        HandleNameMapper(HandleNameDataCursor(cursor))
+    override fun create(
+        cursor: Cursor, includeFields: Set<HandleNameField>
+    ): AbstractCustomEntityMapper<HandleNameField, HandleNameDataCursor, MutableHandleName> =
+        HandleNameMapper(HandleNameDataCursor(cursor, includeFields))
 }
 
 private class HandleNameMapper(cursor: HandleNameDataCursor) :

@@ -6,8 +6,10 @@ import contacts.core.entities.custom.AbstractCustomEntityMapper
 internal class GenderMapperFactory :
     AbstractCustomEntityMapper.Factory<GenderField, GenderDataCursor, MutableGender> {
 
-    override fun create(cursor: Cursor): AbstractCustomEntityMapper<GenderField, GenderDataCursor,
-            MutableGender> = GenderMapper(GenderDataCursor(cursor))
+    override fun create(
+        cursor: Cursor, includeFields: Set<GenderField>
+    ): AbstractCustomEntityMapper<GenderField, GenderDataCursor, MutableGender> =
+        GenderMapper(GenderDataCursor(cursor, includeFields))
 }
 
 private class GenderMapper(cursor: GenderDataCursor) :

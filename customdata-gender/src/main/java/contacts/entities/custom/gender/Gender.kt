@@ -6,6 +6,7 @@ import contacts.core.entities.CommonDataEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.custom.CustomDataEntity
 import contacts.core.entities.custom.MutableCustomDataEntityWithType
+import contacts.core.entities.propertiesAreAllNullOrBlank
 import contacts.entities.custom.gender.Gender.Type
 import contacts.entities.custom.gender.Gender.Type.*
 import kotlinx.parcelize.IgnoredOnParcel
@@ -44,14 +45,8 @@ data class Gender internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = GenderMimeType
 
-    /*
-     * Typically, we do not consider type and label when determining if a piece of data is blank or
-     * not. For example, phones have type, label, and number (the underlying primary data). Only the
-     * number is important in that case. However, the primary data we are interested in here is the
-     * actual type itself.
-     */
     override val isBlank: Boolean
-        get() = type == null
+        get() = propertiesAreAllNullOrBlank(type, label)
 
     fun toMutableGender() = MutableGender(
         id = id,
@@ -131,7 +126,7 @@ data class MutableGender internal constructor(
     override val mimeType: MimeType.Custom = GenderMimeType
 
     override val isBlank: Boolean
-        get() = type == null
+        get() = propertiesAreAllNullOrBlank(type, label)
 
     internal fun toGender() = Gender(
         id = id,

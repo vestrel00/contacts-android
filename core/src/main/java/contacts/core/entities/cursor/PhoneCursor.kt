@@ -11,7 +11,8 @@ import contacts.core.entities.Phone
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class PhoneCursor(cursor: Cursor) : AbstractDataCursor<PhoneField>(cursor) {
+internal class PhoneCursor(cursor: Cursor, includeFields: Set<PhoneField>) :
+    AbstractDataCursor<PhoneField>(cursor, includeFields) {
 
     val type: Phone.Type? by type(Fields.Phone.Type, typeFromValue = Phone.Type::fromValue)
 

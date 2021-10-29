@@ -109,6 +109,7 @@ sealed class GroupsEntity : Entity {
     val isFavoritesGroup: Boolean
         get() = readOnly && favorites
 
+    // This is never blank because of the non-nullable attributes such as readOnly, favorites, ...
     @IgnoredOnParcel
     override val isBlank: Boolean = false
 }

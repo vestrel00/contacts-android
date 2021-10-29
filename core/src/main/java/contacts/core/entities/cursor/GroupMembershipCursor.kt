@@ -10,8 +10,8 @@ import contacts.core.GroupMembershipField
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class GroupMembershipCursor(cursor: Cursor) :
-    AbstractDataCursor<GroupMembershipField>(cursor) {
+internal class GroupMembershipCursor(cursor: Cursor, includeFields: Set<GroupMembershipField>) :
+    AbstractDataCursor<GroupMembershipField>(cursor, includeFields) {
 
     val groupId: Long? by long(Fields.GroupMembership.GroupId)
 }

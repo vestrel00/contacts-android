@@ -11,7 +11,8 @@ import contacts.core.entities.Event
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class EventCursor(cursor: Cursor) : AbstractDataCursor<EventField>(cursor) {
+internal class EventCursor(cursor: Cursor, includeFields: Set<EventField>) :
+    AbstractDataCursor<EventField>(cursor, includeFields) {
 
     val type: Event.Type? by type(Fields.Event.Type, typeFromValue = Event.Type::fromValue)
 

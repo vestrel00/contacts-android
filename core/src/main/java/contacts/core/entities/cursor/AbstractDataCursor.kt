@@ -6,13 +6,13 @@ import contacts.core.AbstractDataField
 /**
  * An abstract cursor for data fields of type [T].
  */
-abstract class AbstractDataCursor<T : AbstractDataField>(cursor: Cursor) :
-    AbstractEntityCursor<T>(cursor), DataIdCursor {
+abstract class AbstractDataCursor<T : AbstractDataField>(cursor: Cursor, includeFields: Set<T>) :
+    AbstractEntityCursor<T>(cursor, includeFields), DataIdCursor {
 
     // Cannot be in the constructor as DataCursor is internal, which is why I couldn't use
     // DataIdCursor by dataCursor at the class declaration level and instead resort to delegation
     // at the property level.
-    private val dataCursor: DataCursor = DataCursor(cursor)
+    private val dataCursor: DataCursor = DataCursor(cursor, includeFields)
 
     override val dataId: Long? by dataCursor::dataId
 

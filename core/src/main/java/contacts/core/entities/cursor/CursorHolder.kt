@@ -8,14 +8,8 @@ import contacts.core.*
  * specific fields and convenience functions.
  *
  * Used mainly for cursor manipulations and used for factory extensions.
- *
- * ## Developer notes
- *
- * The type [T] is not exactly used in this class itself. Rather, it is used for adding type
- * restrictions when constructing instances at compile time.
  */
-internal sealed class CursorHolder<T : Field> {
-    abstract val cursor: Cursor
+internal class CursorHolder<T : Field>(val cursor: Cursor, val includeFields: Set<T>) {
 
     fun moveToNext(): Boolean = cursor.moveToNext()
 
@@ -26,20 +20,14 @@ internal sealed class CursorHolder<T : Field> {
     }
 }
 
-internal class DataCursorHolder(override val cursor: Cursor) : CursorHolder<AbstractDataField>()
-internal class RawContactsCursorHolder(override val cursor: Cursor) :
-    CursorHolder<RawContactsField>()
-
-internal class ContactsCursorHolder(override val cursor: Cursor) : CursorHolder<ContactsField>()
-internal class GroupsCursorHolder(override val cursor: Cursor) : CursorHolder<GroupsField>()
-
 @Suppress("UNCHECKED_CAST")
-internal inline fun <reified T : Field> Cursor.toEntityCursor(): CursorHolder<T> = when (T::class) {
-    AbstractDataField::class -> DataCursorHolder(this)
-    RawContactsField::class -> RawContactsCursorHolder(this)
-    ContactsField::class -> ContactsCursorHolder(this)
-    GroupsField::class -> GroupsCursorHolder(this)
-    else -> throw UnsupportedOperationException(
-        "No entity cursor for ${T::class.java.simpleName}"
-    )
-} as CursorHolder<T>
+internal inline fun <reified T : Field> Cursor.toEntityCursor(includeFields: Set<T>): CursorHolder<T> =
+    when (T::class) {
+        GroupsField::class -> CursorHolder(this, includeFields as Set<GroupsField>)
+        ContactsField::class -> CursorHolder(this, includeFields as Set<ContactsField>)
+        RawContactsField::class -> CursorHolder(this, includeFields as Set<RawContactsField>)
+        AbstractDataField::class -> CursorHolder(this, includeFields as Set<AbstractDataField>)
+        else -> throw UnsupportedOperationException(
+            "No entity cursor for ${T::class.java.simpleName}"
+        )
+    } as CursorHolder<T>

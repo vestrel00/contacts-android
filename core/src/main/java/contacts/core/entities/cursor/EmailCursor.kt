@@ -11,7 +11,8 @@ import contacts.core.entities.Email
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class EmailCursor(cursor: Cursor) : AbstractDataCursor<EmailField>(cursor) {
+internal class EmailCursor(cursor: Cursor, includeFields: Set<EmailField>) :
+    AbstractDataCursor<EmailField>(cursor, includeFields) {
 
     val type: Email.Type? by type(Fields.Email.Type, typeFromValue = Email.Type::fromValue)
 

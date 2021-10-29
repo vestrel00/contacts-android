@@ -3,6 +3,7 @@ package contacts.entities.custom.handlename
 import contacts.core.entities.MimeType
 import contacts.core.entities.custom.CustomDataEntity
 import contacts.core.entities.custom.MutableCustomDataEntity
+import contacts.core.entities.propertiesAreAllNullOrBlank
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -40,7 +41,7 @@ data class HandleName internal constructor(
     override val mimeType: MimeType.Custom = HandleNameMimeType
 
     override val isBlank: Boolean
-        get() = handle.isNullOrBlank()
+        get() = propertiesAreAllNullOrBlank(handle)
 
     fun toMutableHandleName() = MutableHandleName(
         id = id,
@@ -83,7 +84,7 @@ data class MutableHandleName internal constructor(
     override val mimeType: MimeType.Custom = HandleNameMimeType
 
     override val isBlank: Boolean
-        get() = handle.isNullOrBlank()
+        get() = propertiesAreAllNullOrBlank(handle)
 
     internal fun toHandleName() = HandleName(
         id = id,

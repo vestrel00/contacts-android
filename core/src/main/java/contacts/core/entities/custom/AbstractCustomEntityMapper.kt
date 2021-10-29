@@ -39,6 +39,6 @@ abstract class AbstractCustomEntityMapper<
         /**
          * Creates instances of [AbstractCustomEntityMapper] with the given [cursor].
          */
-        fun create(cursor: Cursor): AbstractCustomEntityMapper<F, K, V>
+        fun create(cursor: Cursor, includeFields: Set<F>): AbstractCustomEntityMapper<F, K, V>
     }
 }

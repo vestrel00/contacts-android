@@ -15,6 +15,13 @@ interface Entity : Parcelable {
     /**
      * Returns true if the underlying data contains at least one non-null and non-empty piece of
      * information.
+     *
+     * The following has no influence on the value this returns;
+     * - Contact ID
+     * - RawContact ID
+     * - Data ID
+     * - Data IS_PRIMARY
+     * - Data IS_SUPER_PRIMARY
      */
     val isBlank: Boolean
 }
@@ -52,7 +59,7 @@ private fun Collection<*>.isNotNullOrBlank(): Boolean {
     return false
 }
 
-internal fun propertiesAreAllNullOrBlank(vararg properties: Any?): Boolean {
+fun propertiesAreAllNullOrBlank(vararg properties: Any?): Boolean {
     for (property in properties) {
         if (property.isNotNullOrBlank()) {
             return false

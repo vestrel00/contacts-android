@@ -108,8 +108,8 @@ data class Address internal constructor(
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            // type and label are excluded from this check as they are useless information by themselves
-            formattedAddress, street, poBox, neighborhood, city, region, postcode, country
+            type, label, formattedAddress, street, poBox, neighborhood,
+            city, region, postcode, country
         )
 
     fun toMutableAddress() = MutableAddress(
@@ -232,10 +232,10 @@ data class MutableAddress internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Address
 
-    // type and label are excluded from this check as they are useless information by themselves
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            formattedAddress, street, poBox, neighborhood, city, region, postcode, country
+            type, label, formattedAddress, street, poBox, neighborhood,
+            city, region, postcode, country
         )
 
     @IgnoredOnParcel

@@ -3,7 +3,10 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Options
 import contacts.core.entities.cursor.OptionsCursor
 
-internal class OptionsMapper(private val optionsCursor: OptionsCursor) : EntityMapper<Options> {
+/**
+ * Mapper for Contacts or RawContacts options from the Data, RawContacts, or Contacts table.
+ */
+internal class OptionsMapper(private val optionsCursor: OptionsCursor<*>) : EntityMapper<Options> {
 
     override val value: Options
         get() = Options(

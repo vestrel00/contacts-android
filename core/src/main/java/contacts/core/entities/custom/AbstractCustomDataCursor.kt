@@ -10,5 +10,6 @@ import contacts.core.entities.cursor.DataCursor
  * allowed to be used in the functions defined in
  * [contacts.core.entities.cursor.AbstractEntityCursor].
  */
-abstract class AbstractCustomDataCursor<T : AbstractDataField>(cursor: Cursor) :
-    AbstractDataCursor<T>(cursor)
+abstract class AbstractCustomDataCursor<T : AbstractDataField>(
+    cursor: Cursor, includeFields: Set<T>
+) : AbstractDataCursor<T>(cursor, includeFields)

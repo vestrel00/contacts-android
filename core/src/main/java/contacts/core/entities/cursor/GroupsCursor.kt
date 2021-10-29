@@ -11,7 +11,8 @@ import contacts.core.GroupsFields
  * This does not modify the [cursor] position. Moving the cursor may result in different attribute
  * values.
  */
-internal class GroupsCursor(cursor: Cursor) : AbstractEntityCursor<GroupsField>(cursor) {
+internal class GroupsCursor(cursor: Cursor, includeFields: Set<GroupsField>) :
+    AbstractEntityCursor<GroupsField>(cursor, includeFields) {
 
     val id: Long? by long(GroupsFields.Id)
 

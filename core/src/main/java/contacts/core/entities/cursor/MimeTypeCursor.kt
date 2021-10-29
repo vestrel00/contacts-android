@@ -13,7 +13,7 @@ import contacts.core.entities.custom.CustomDataRegistry
  * values.
  */
 internal class MimeTypeCursor(cursor: Cursor, private val customDataRegistry: CustomDataRegistry) :
-    AbstractEntityCursor<DataField>(cursor) {
+    AbstractEntityCursor<DataField>(cursor, setOf(Fields.MimeType)) {
 
     val mimeType: MimeType
         get() = MimeType.fromValue(getString(Fields.MimeType), customDataRegistry)

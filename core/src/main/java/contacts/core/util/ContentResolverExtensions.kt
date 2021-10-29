@@ -78,7 +78,7 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
     var result: R? = null
 
     if (cursor != null) {
-        result = processCursor(cursor.toEntityCursor())
+        result = processCursor(cursor.toEntityCursor(include.fields))
         cursor.close()
     }
 
