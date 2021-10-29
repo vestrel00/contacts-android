@@ -73,10 +73,3 @@ internal fun CursorHolder<ContactsField>.optionsCursor() =
     ContactsOptionsCursor(cursor, includeFields)
 
 internal fun CursorHolder<GroupsField>.groupsCursor() = GroupsCursor(cursor, includeFields)
-
-/**
- * Returns a set of [T] that contains the intersection of this [FieldSet] with the given [fields].
- */
-@Suppress("UNCHECKED_CAST")
-private fun <T : AbstractDataField> FieldSet<T>.intersect(fields: Set<AbstractDataField>): Set<T> =
-    all.intersect(fields) as Set<T>

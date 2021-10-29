@@ -5,8 +5,8 @@ import contacts.core.Fields
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableEmail
 
-internal class EmailOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<EmailField, MutableEmail>(isProfile) {
+internal class EmailOperation(isProfile: Boolean, includeFields: Set<EmailField>) :
+    AbstractCommonDataOperation<EmailField, MutableEmail>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Email
 

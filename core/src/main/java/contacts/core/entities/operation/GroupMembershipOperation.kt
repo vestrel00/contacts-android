@@ -14,8 +14,9 @@ import contacts.core.entities.mapper.groupMembershipMapper
 import contacts.core.groups.GroupsQuery
 import contacts.core.util.query
 
-internal class GroupMembershipOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<GroupMembershipField, GroupMembership>(isProfile) {
+internal class GroupMembershipOperation(
+    isProfile: Boolean, includeFields: Set<GroupMembershipField>
+) : AbstractCommonDataOperation<GroupMembershipField, GroupMembership>(isProfile, includeFields) {
 
     override val mimeType = MimeType.GroupMembership
 
@@ -86,7 +87,7 @@ internal class GroupMembershipOperation(isProfile: Boolean) :
                 // Remove this groupMembership from the groupMembershipsInDB.
                 if (groupMembershipsInDB.remove(groupMembership.groupId) == null) {
                     // If the groupMembership is not in the DB, insert it.
-                    add(insertDataRow(groupMembership, rawContactId))
+                    insertDataRow(groupMembership, rawContactId)?.let(::add)
                 }
                 // Else if the groupMembership is in the DB, do nothing.
             }

@@ -15,7 +15,7 @@ import contacts.ui.entities.CommonDataEntityTypeFactory
 import contacts.ui.util.CustomLabelInputDialog
 
 /**
- * A [RelativeLayout] that displays a [MutableCommonDataEntityWithType] [K] that has a
+ * A [RelativeLayout] that displays a [MutableCommonDataEntityWithType] [E] that has a
  * [CommonDataEntityType] and handles the modifications to it.
  *
  * Setting the [data] will automatically update the views and vice versa.
@@ -38,7 +38,7 @@ import contacts.ui.util.CustomLabelInputDialog
  * an exception for this basic view that I don't really encourage consumers to use.
  */
 open class CommonDataEntityWithTypeView
-<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>>
+<T : CommonDataEntity.Type, E : MutableCommonDataEntityWithType<T>>
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -46,8 +46,8 @@ open class CommonDataEntityWithTypeView
     dataFieldInputType: Int? = null,
     dataFieldHintResId: Int? = null,
     dataFieldIsFocusable: Boolean = true,
-    private val dataTypeFactory: CommonDataEntityTypeFactory<K, T>? = null,
-) : CommonDataEntityView<K>(
+    private val dataTypeFactory: CommonDataEntityTypeFactory<E, T>? = null,
+) : CommonDataEntityView<E>(
     context, attributeSet, defStyleAttr,
     layoutRes = R.layout.view_common_data_entity_with_type,
     dataFieldInputType = dataFieldInputType,
@@ -171,8 +171,8 @@ open class CommonDataEntityWithTypeView
         }
     }
 
-    interface Factory<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>> :
-        CommonDataEntityView.Factory<K, CommonDataEntityWithTypeView<T, K>>
+    interface Factory<T : CommonDataEntity.Type, E : MutableCommonDataEntityWithType<T>> :
+        CommonDataEntityView.Factory<E, CommonDataEntityWithTypeView<T, E>>
 }
 
 /**

@@ -5,12 +5,12 @@ import contacts.core.entities.*
 /**
  * Creates instances of [CommonDataEntity].
  */
-interface CommonDataEntityFactory<K : CommonDataEntity> {
+interface CommonDataEntityFactory<E : CommonDataEntity> {
 
     /**
-     * Returns a new instance of [K].
+     * Returns a new instance of [E].
      */
-    fun create(): K
+    fun create(): E
 }
 
 object AddressFactory : CommonDataEntityFactory<MutableAddress> {

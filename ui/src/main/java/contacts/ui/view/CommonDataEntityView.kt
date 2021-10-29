@@ -31,7 +31,7 @@ import contacts.ui.text.AbstractTextWatcher
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-open class CommonDataEntityView<K : MutableCommonDataEntity>
+open class CommonDataEntityView<E : MutableCommonDataEntity>
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -49,7 +49,7 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
      *
      * This must be set after view creation.
      */
-    var data: K? = null
+    var data: E? = null
         set(value) {
             field = value
             onDataSet()
@@ -143,7 +143,7 @@ open class CommonDataEntityView<K : MutableCommonDataEntity>
         fun onDataBegin()
     }
 
-    interface Factory<K : MutableCommonDataEntity, V : CommonDataEntityView<K>> {
+    interface Factory<E : MutableCommonDataEntity, V : CommonDataEntityView<E>> {
         fun create(context: Context): V
     }
 }

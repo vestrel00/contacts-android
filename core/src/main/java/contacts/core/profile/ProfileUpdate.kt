@@ -1,12 +1,11 @@
 package contacts.core.profile
 
 import android.content.Context
-import contacts.core.ContactsPermissions
-import contacts.core.deleteRawContactWithId
+import contacts.core.*
 import contacts.core.entities.MutableContact
 import contacts.core.entities.MutableRawContact
 import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.updateRawContact
+import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
 
 /**
@@ -87,6 +86,58 @@ interface ProfileUpdate {
      * allowing blanks, the native Contacts app shows them.
      */
     fun deleteBlanks(deleteBlanks: Boolean): ProfileUpdate
+
+    /**
+     * Specifies that only the given set of [fields] (data) will be updated.
+     *
+     * If no fields are specified, then all fields will be updated. Otherwise, only the specified
+     * fields will be updating in addition to required API fields [Fields.Required] (e.g. IDs),
+     * which are always included.
+     *
+     * Note that this may affect performance. It is recommended to only include fields that will be
+     * used to save CPU and memory.
+     *
+     * ## Performing updates on entities with partial includes
+     *
+     * When the query include function is used, only certain data will be included in the returned
+     * entities. All other data are guaranteed to be null (except for those in [Fields.Required]).
+     * When performing updates on entities that have only partial data included, make sure to use
+     * the same included fields in the update operation as the included fields used in the query.
+     * This will ensure that the set of data queried and updated are the same. For example, in order
+     * to get and set only email addresses and leave everything the same in the database...
+     *
+     * ```kotlin
+     * val profile = query.include(Fields.Email.Address).find()
+     * val mutableProfile = setEmailAddresses(profile)
+     * update.contact(mutableProfile).include(Fields.Email.Address).commit()
+     * ```
+     *
+     * On the other hand, you may intentionally include only some data and perform updates without
+     * on all data (not just the included ones) to effectively delete all non-included data. This
+     * is, currently, a feature- not a bug! For example, in order to get and set only email
+     * addresses and set all other data to null (such as phone numbers, name, etc) in the database..
+     *
+     * ```kotlin
+     * val profile = query.include(Fields.Email.Address).find()
+     * val mutableProfile = setEmailAddresses(profile)
+     * update.contact(mutableProfile).include(Fields.all).commit()
+     * ```
+     *
+     * This gives you the most flexibility when it comes to specifying what fields to
+     * include/exclude in queries, inserts, and update, which will allow you to do things beyond
+     * your wildest imagination!
+     */
+    fun include(vararg fields: AbstractDataField): ProfileUpdate
+
+    /**
+     * See [ProfileUpdate.include].
+     */
+    fun include(fields: Collection<AbstractDataField>): ProfileUpdate
+
+    /**
+     * See [ProfileUpdate.include].
+     */
+    fun include(fields: Sequence<AbstractDataField>): ProfileUpdate
 
     /**
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
@@ -184,6 +235,7 @@ private class ProfileUpdateImpl(
     private val customDataRegistry: CustomDataRegistry,
 
     private var deleteBlanks: Boolean = true,
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : ProfileUpdate {
 
@@ -191,12 +243,25 @@ private class ProfileUpdateImpl(
         """
             ProfileUpdate {
                 deleteBlanks: $deleteBlanks
+                include: $include
                 rawContacts: $rawContacts
             }
         """.trimIndent()
 
     override fun deleteBlanks(deleteBlanks: Boolean): ProfileUpdate = apply {
         this.deleteBlanks = deleteBlanks
+    }
+
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+
+    override fun include(fields: Sequence<AbstractDataField>): ProfileUpdate = apply {
+        include = if (fields.isEmpty()) {
+            allDataFields(customDataRegistry)
+        } else {
+            Include(fields + Fields.Required.all.asSequence())
+        }
     }
 
     override fun rawContacts(vararg rawContacts: MutableRawContact) =
@@ -236,6 +301,7 @@ private class ProfileUpdateImpl(
                     applicationContext.updateRawContact(
                         applicationContext,
                         customDataRegistry,
+                        include.fields,
                         rawContact
                     )
                 }

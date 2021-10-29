@@ -62,6 +62,13 @@ sealed class FieldSet<out T : Field> {
 
 // region Data Table Fields
 
+/**
+ * Returns a set of [T] that contains the intersection of this [FieldSet] with the given [fields].
+ */
+@Suppress("UNCHECKED_CAST")
+internal fun <T : AbstractDataField> FieldSet<T>.intersect(fields: Set<AbstractDataField>): Set<T> =
+    all.intersect(fields) as Set<T>
+
 sealed class AbstractDataField : Field()
 
 sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {

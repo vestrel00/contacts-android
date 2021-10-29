@@ -6,12 +6,14 @@ import contacts.core.entities.custom.AbstractCustomDataOperation
 internal class GenderDataOperationFactory : AbstractCustomDataOperation.Factory<GenderField,
         MutableGender> {
 
-    override fun create(isProfile: Boolean): AbstractCustomDataOperation<GenderField,
-            MutableGender> = GenderDataOperation(isProfile)
+    override fun create(
+        isProfile: Boolean, includeFields: Set<GenderField>
+    ): AbstractCustomDataOperation<GenderField, MutableGender> =
+        GenderDataOperation(isProfile, includeFields)
 }
 
-private class GenderDataOperation(isProfile: Boolean) :
-    AbstractCustomDataOperation<GenderField, MutableGender>(isProfile) {
+private class GenderDataOperation(isProfile: Boolean, includeFields: Set<GenderField>) :
+    AbstractCustomDataOperation<GenderField, MutableGender>(isProfile, includeFields) {
 
     override val mimeType: MimeType.Custom = GenderMimeType
 

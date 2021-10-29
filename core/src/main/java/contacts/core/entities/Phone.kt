@@ -66,8 +66,9 @@ data class Phone internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Phone
 
+    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(type, label, number, normalizedNumber)
+        get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
     fun toMutablePhone() = MutablePhone(
         id = id,
@@ -176,8 +177,9 @@ data class MutablePhone internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Phone
 
+    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(type, label, number, normalizedNumber)
+        get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::number

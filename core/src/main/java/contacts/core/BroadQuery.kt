@@ -253,18 +253,9 @@ interface BroadQuery {
      * update.contacts(mutableContacts).include(Fields.all).commit()
      * ```
      *
-     * ## Dev notes
-     *
-     * // FIXME? Should we change the API such that it supports only mutating and
-     * updating included fields? That would add complexity to both developers of the API and its
-     * consumers... Or we can just be consenting adults and read&follow the documentation. The only
-     * way data loss may occur is if consumers explicitly call these [include]s functions. It is up
-     * to them to read this documentation. Besides keeping code complexity lower, another upside to
-     * not checking for included fields on update is that it allows consumers to clear unwanted data
-     * easily. So, this is a feature, not a bug! (LOL) All jokes aside, we'll see if the community
-     * wants to change this (or make it configurable). Keep in mind that update operations on
-     * contacts/raw contacts are typically done in a full screen singular contact form. So, we
-     * should cater for that main use case.
+     * This gives you the most flexibility when it comes to specifying what fields to
+     * include/exclude in queries, inserts, and update, which will allow you to do things beyond
+     * your wildest imagination!
      */
     fun include(vararg fields: AbstractDataField): BroadQuery
 
@@ -328,7 +319,7 @@ interface BroadQuery {
      * [AddressFields.FormattedAddress] ('data1').
      */
     @SafeVarargs
-    fun orderBy( vararg orderBy: OrderBy<ContactsField>): BroadQuery
+    fun orderBy(vararg orderBy: OrderBy<ContactsField>): BroadQuery
 
     /**
      * See [BroadQuery.orderBy].

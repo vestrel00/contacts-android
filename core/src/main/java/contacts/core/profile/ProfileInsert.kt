@@ -9,6 +9,7 @@ import contacts.core.entities.MutableRawContact
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.table.ProfileUris
+import contacts.core.util.isEmpty
 import contacts.core.util.nullIfNotInSystem
 import contacts.core.util.query
 import contacts.core.util.toRawContactsWhere
@@ -121,6 +122,36 @@ interface ProfileInsert {
     ): ProfileInsert
 
     /**
+     * Specifies that only the given set of [fields] (data) will be insert.
+     *
+     * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
+     * fields will be inserted.
+     *
+     * ## Note
+     *
+     * The use case for this function is probably not common. You can simply not set a particular
+     * data instead of using this function. For example, if you want to create a new RawContact
+     * with only name and email data, just set only name and email...
+     *
+     * There may be some cases where this function may come in handy. For example, if you have a
+     * mutable RawContact that has all data filled in but you only want some of those data to be
+     * inserted (in the database), then this function is exactly what you need =) This can also come
+     * in handy if you are trying to make copies of an existing RawContact but only want some data
+     * to be copied.
+     */
+    fun include(vararg fields: AbstractDataField): ProfileInsert
+
+    /**
+     * See [ProfileInsert.include].
+     */
+    fun include(fields: Collection<AbstractDataField>): ProfileInsert
+
+    /**
+     * See [ProfileInsert.include].
+     */
+    fun include(fields: Sequence<AbstractDataField>): ProfileInsert
+
+    /**
      * The RawContact that is inserted on [commit] will belong to the given [account].
      *
      * If not provided, or null is provided, or if an incorrect account is provided, the raw
@@ -223,6 +254,7 @@ private class ProfileInsertImpl(
 
     private var allowBlanks: Boolean = false,
     private var allowMultipleRawContactsPerAccount: Boolean = false,
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
     private var account: Account? = null,
     private var rawContact: MutableRawContact? = null
 ) : ProfileInsert {
@@ -232,6 +264,7 @@ private class ProfileInsertImpl(
             ProfileInsert {
                 allowBlanks: $allowBlanks
                 allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
+                include: $include
                 account: $account
                 rawContact: $rawContact
             }
@@ -245,6 +278,18 @@ private class ProfileInsertImpl(
         allowMultipleRawContactsPerAccount: Boolean
     ): ProfileInsert = apply {
         this.allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount
+    }
+
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+
+    override fun include(fields: Sequence<AbstractDataField>): ProfileInsert = apply {
+        include = if (fields.isEmpty()) {
+            allDataFields(customDataRegistry)
+        } else {
+            Include(fields + Fields.Required.all.asSequence())
+        }
     }
 
     override fun forAccount(account: Account?): ProfileInsert = apply {
@@ -286,7 +331,7 @@ private class ProfileInsertImpl(
         // as that operation should be fast and CPU time should be trivial.
         val rawContactId =
             applicationContext.insertRawContactForAccount(
-                customDataRegistry, account, rawContact, IS_PROFILE
+                customDataRegistry, account, include.fields, rawContact, IS_PROFILE
             )
 
         return ProfileInsertResult(rawContactId)

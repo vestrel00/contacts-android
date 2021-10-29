@@ -70,8 +70,9 @@ data class Event internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Event
 
+    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(type, label, date)
+        get() = propertiesAreAllNullOrBlank(date)
 
     fun toMutableEvent() = MutableEvent(
         id = id,
@@ -160,8 +161,9 @@ data class MutableEvent internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Event
 
+    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(type, label, date)
+        get() = propertiesAreAllNullOrBlank(date)
 
     /**
      * The [date] as a string.

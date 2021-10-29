@@ -6,7 +6,7 @@ import contacts.core.entities.*
 /**
  * Creates instance of [CommonDataEntityType].
  */
-interface CommonDataEntityTypeFactory<K : CommonDataEntity, T : CommonDataEntity.Type> {
+interface CommonDataEntityTypeFactory<E : CommonDataEntity, T : CommonDataEntity.Type> {
 
     /**
      * Returns all the system types.
@@ -23,13 +23,13 @@ interface CommonDataEntityTypeFactory<K : CommonDataEntity, T : CommonDataEntity
     fun userCustomType(labelStr: String): CommonDataEntityType<T>
 
     /**
-     * Returns the [CommonDataEntityType] of the given [data] [K].
+     * Returns the [CommonDataEntityType] of the given [data] [E].
      *
      * If the [CommonDataEntity.Type] [T] is null, it will default to a non-null system type.
      *
      * The [CommonDataEntityType.typeLabel] may be a user input string or a system-defined string.
      */
-    fun from(resources: Resources, data: K): CommonDataEntityType<T>
+    fun from(resources: Resources, data: E): CommonDataEntityType<T>
 }
 
 object AddressTypeFactory : CommonDataEntityTypeFactory<MutableAddress, Address.Type> {

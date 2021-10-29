@@ -6,8 +6,8 @@ import contacts.core.entities.MimeType
 import contacts.core.entities.MutableEvent
 import contacts.core.entities.toDbString
 
-internal class EventOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<EventField, MutableEvent>(isProfile) {
+internal class EventOperation(isProfile: Boolean, includeFields: Set<EventField>) :
+    AbstractCommonDataOperation<EventField, MutableEvent>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Event
 

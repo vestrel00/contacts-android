@@ -5,8 +5,8 @@ import contacts.core.NoteField
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableNote
 
-internal class NoteOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<NoteField, MutableNote>(isProfile) {
+internal class NoteOperation(isProfile: Boolean, includeFields: Set<NoteField>) :
+    AbstractCommonDataOperation<NoteField, MutableNote>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Note
 

@@ -2,11 +2,12 @@ package contacts.core.data
 
 import android.content.ContentResolver
 import android.content.Context
-import contacts.core.ContactsPermissions
+import contacts.core.*
 import contacts.core.entities.MutableCommonDataEntity
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.updateOperation
 import contacts.core.util.applyBatch
+import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
 
 /**
@@ -38,6 +39,58 @@ import contacts.core.util.unsafeLazy
  * ```
  */
 interface DataUpdate {
+
+    /**
+     * Specifies that only the given set of [fields] (data) will be updated.
+     *
+     * If no fields are specified, then all fields will be updated. Otherwise, only the specified
+     * fields will be updated in addition to required API fields [Fields.Required] (e.g. IDs),
+     * which are always included.
+     *
+     * Note that this may affect performance. It is recommended to only include fields that will be
+     * used to save CPU and memory.
+     *
+     * ## Performing updates on entities with partial includes
+     *
+     * When the query include function is used, only certain data will be included in the returned
+     * entities. All other data are guaranteed to be null (except for those in [Fields.Required]).
+     * When performing updates on entities that have only partial data included, make sure to use
+     * the same included fields in the update operation as the included fields used in the query.
+     * This will ensure that the set of data queried and updated are the same. For example, in order
+     * to get and set only email addresses and leave everything the same in the database...
+     *
+     * ```kotlin
+     * val data = emailQuery.include(Fields.Email.Address).find()
+     * val mutableData = setEmailAddresses(data)
+     * update.data(mutableData).include(Fields.Email.Address).commit()
+     * ```
+     *
+     * On the other hand, you may intentionally include only some data and perform updates without
+     * on all data (not just the included ones) to effectively delete all non-included data. This
+     * is, currently, a feature- not a bug! For example, in order to get and set only email
+     * addresses and set all other data to null (such as phone numbers, name, etc) in the database..
+     *
+     * ```kotlin
+     * val data = emailQuery.include(Fields.Email.Address).find()
+     * val mutableData = setEmailAddresses(data)
+     * update.data(mutableData).include(Fields.Email.all).commit()
+     * ```
+     *
+     * This gives you the most flexibility when it comes to specifying what fields to
+     * include/exclude in queries, inserts, and update, which will allow you to do things beyond
+     * your wildest imagination!
+     */
+    fun include(vararg fields: AbstractDataField): DataUpdate
+
+    /**
+     * See [DataUpdate.include].
+     */
+    fun include(fields: Collection<AbstractDataField>): DataUpdate
+
+    /**
+     * See [DataUpdate.include].
+     */
+    fun include(fields: Sequence<AbstractDataField>): DataUpdate
 
     /**
      * Adds the given [data] to the update queue, which will be updated on [commit].
@@ -100,7 +153,6 @@ interface DataUpdate {
     fun commit(cancel: () -> Boolean): Result
 
     interface Result {
-
         /**
          * True if all data have successfully been updated. False if even one update failed.
          */
@@ -128,6 +180,7 @@ private class DataUpdateImpl(
     private val permissions: ContactsPermissions,
     private val customDataRegistry: CustomDataRegistry,
     private val isProfile: Boolean,
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
     private val data: MutableSet<MutableCommonDataEntity> = mutableSetOf()
 ) : DataUpdate {
 
@@ -135,9 +188,22 @@ private class DataUpdateImpl(
         """
             DataUpdate {
                 isProfile: $isProfile
+                include: $include
                 data: $data
             }
         """.trimIndent()
+
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+
+    override fun include(fields: Sequence<AbstractDataField>): DataUpdate = apply {
+        include = if (fields.isEmpty()) {
+            allDataFields(customDataRegistry)
+        } else {
+            Include(fields + Fields.Required.all.asSequence())
+        }
+    }
 
     override fun data(vararg data: MutableCommonDataEntity) = data(data.asSequence())
 
@@ -168,7 +234,7 @@ private class DataUpdateImpl(
                     // succeed. This is only done to enforce API design.
                     false
                 } else {
-                    contentResolver.updateData(data, customDataRegistry)
+                    contentResolver.updateData(include.fields, data, customDataRegistry)
                 }
             } else {
                 results[INVALID_ID] = false
@@ -184,9 +250,10 @@ private class DataUpdateImpl(
 }
 
 private fun ContentResolver.updateData(
+    includeFields: Set<AbstractDataField>,
     data: MutableCommonDataEntity,
     customDataRegistry: CustomDataRegistry
-): Boolean = data.updateOperation(customDataRegistry)?.let { applyBatch(it) } != null
+): Boolean = data.updateOperation(includeFields, customDataRegistry)?.let { applyBatch(it) } != null
 
 private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>) :
     DataUpdate.Result {

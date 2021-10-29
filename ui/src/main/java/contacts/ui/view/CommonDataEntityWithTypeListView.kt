@@ -35,14 +35,14 @@ import contacts.ui.entities.CommonDataEntityFactory
  * an exception for this basic view that I don't really encourage consumers to use.
  */
 abstract class CommonDataEntityWithTypeListView
-<T : CommonDataEntity.Type, K : MutableCommonDataEntityWithType<T>>(
+<T : CommonDataEntity.Type, E : MutableCommonDataEntityWithType<T>>(
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,
-    dataFactory: CommonDataEntityFactory<K>,
-    dataViewFactory: CommonDataEntityWithTypeView.Factory<T, K>,
+    dataFactory: CommonDataEntityFactory<E>,
+    dataViewFactory: CommonDataEntityWithTypeView.Factory<T, E>,
     private val defaultUnderlyingDataTypes: List<T>
-) : CommonDataEntityListView<K, CommonDataEntityWithTypeView<T, K>>(
+) : CommonDataEntityListView<E, CommonDataEntityWithTypeView<T, E>>(
     context,
     attributeSet,
     defStyleAttr,
@@ -50,7 +50,7 @@ abstract class CommonDataEntityWithTypeListView
     dataViewFactory
 ) {
 
-    override fun onEmptyDataCreated(data: K) {
+    override fun onEmptyDataCreated(data: E) {
         // In the native Contacts app, using phones as an example, the new empty phone that is added
         // has a phone type of either mobile, home, work, main, or other in that other (depends on
         // SDK version); which ever has not yet been added. If all of those phone types already

@@ -10,6 +10,7 @@ import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
 import contacts.core.util.applyBatch
+import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
 
 /**
@@ -87,6 +88,58 @@ interface Update {
      * allowing blanks, the native Contacts app shows them.
      */
     fun deleteBlanks(deleteBlanks: Boolean): Update
+
+    /**
+     * Specifies that only the given set of [fields] (data) will be updated.
+     *
+     * If no fields are specified, then all fields will be updated. Otherwise, only the specified
+     * fields will be updated in addition to required API fields [Fields.Required] (e.g. IDs),
+     * which are always included.
+     *
+     * Note that this may affect performance. It is recommended to only include fields that will be
+     * used to save CPU and memory.
+     *
+     * ## Performing updates on entities with partial includes
+     *
+     * When the query include function is used, only certain data will be included in the returned
+     * entities. All other data are guaranteed to be null (except for those in [Fields.Required]).
+     * When performing updates on entities that have only partial data included, make sure to use
+     * the same included fields in the update operation as the included fields used in the query.
+     * This will ensure that the set of data queried and updated are the same. For example, in order
+     * to get and set only email addresses and leave everything the same in the database...
+     *
+     * ```kotlin
+     * val contacts = query.include(Fields.Email.Address).find()
+     * val mutableContacts = setEmailAddresses(contacts)
+     * update.contacts(mutableContacts).include(Fields.Email.Address).commit()
+     * ```
+     *
+     * On the other hand, you may intentionally include only some data and perform updates without
+     * on all data (not just the included ones) to effectively delete all non-included data. This
+     * is, currently, a feature- not a bug! For example, in order to get and set only email
+     * addresses and set all other data to null (such as phone numbers, name, etc) in the database..
+     *
+     * ```kotlin
+     * val contacts = query.include(Fields.Email.Address).find()
+     * val mutableContacts = setEmailAddresses(contacts)
+     * update.contacts(mutableContacts).include(Fields.all).commit()
+     * ```
+     *
+     * This gives you the most flexibility when it comes to specifying what fields to
+     * include/exclude in queries, inserts, and update, which will allow you to do things beyond
+     * your wildest imagination!
+     */
+    fun include(vararg fields: AbstractDataField): Update
+
+    /**
+     * See [Update.include].
+     */
+    fun include(fields: Collection<AbstractDataField>): Update
+
+    /**
+     * See [Update.include].
+     */
+    fun include(fields: Sequence<AbstractDataField>): Update
 
     /**
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
@@ -209,6 +262,7 @@ private class UpdateImpl(
     private val customDataRegistry: CustomDataRegistry,
 
     private var deleteBlanks: Boolean = true,
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : Update {
 
@@ -216,12 +270,25 @@ private class UpdateImpl(
         """
             Update {
                 deleteBlanks: $deleteBlanks
+                include: $include
                 rawContacts: $rawContacts
             }
         """.trimIndent()
 
     override fun deleteBlanks(deleteBlanks: Boolean): Update = apply {
         this.deleteBlanks = deleteBlanks
+    }
+
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+
+    override fun include(fields: Sequence<AbstractDataField>): Update = apply {
+        include = if (fields.isEmpty()) {
+            allDataFields(customDataRegistry)
+        } else {
+            Include(fields + Fields.Required.all.asSequence())
+        }
     }
 
     override fun rawContacts(vararg rawContacts: MutableRawContact) =
@@ -268,6 +335,7 @@ private class UpdateImpl(
                     applicationContext.updateRawContact(
                         applicationContext,
                         customDataRegistry,
+                        include.fields,
                         rawContact
                     )
                 }
@@ -296,6 +364,7 @@ private class UpdateImpl(
 internal fun Context.updateRawContact(
     context: Context,
     customDataRegistry: CustomDataRegistry,
+    includeFields: Set<AbstractDataField>,
     rawContact: MutableRawContact
 ): Boolean {
     if (rawContact.id == null) {
@@ -308,13 +377,13 @@ internal fun Context.updateRawContact(
     val operations = arrayListOf<ContentProviderOperation>()
 
     operations.addAll(
-        AddressOperation(isProfile).updateInsertOrDelete(
+        AddressOperation(isProfile, Fields.Address.intersect(includeFields)).updateInsertOrDelete(
             rawContact.addresses, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        EmailOperation(isProfile).updateInsertOrDelete(
+        EmailOperation(isProfile, Fields.Email.intersect(includeFields)).updateInsertOrDelete(
             rawContact.emails, rawContact.id, contentResolver
         )
     )
@@ -324,7 +393,7 @@ internal fun Context.updateRawContact(
         // The Contacts Provider does support having events for local raw contacts. Anyways, let's
         // follow in the footsteps of the native Contacts app...
         operations.addAll(
-            EventOperation(isProfile).updateInsertOrDelete(
+            EventOperation(isProfile, Fields.Event.intersect(includeFields)).updateInsertOrDelete(
                 rawContact.events, rawContact.id, contentResolver
             )
         )
@@ -335,44 +404,39 @@ internal fun Context.updateRawContact(
         // It should not be possible for consumers to get access to group memberships.
         // The Contacts Provider does support having events for local raw contacts.
         operations.addAll(
-            GroupMembershipOperation(isProfile).updateInsertOrDelete(
+            GroupMembershipOperation(
+                isProfile, Fields.GroupMembership.intersect(includeFields)
+            ).updateInsertOrDelete(
                 rawContact.groupMemberships, rawContact.id, this
             )
         )
     }
 
     operations.addAll(
-        ImOperation(isProfile).updateInsertOrDelete(
+        ImOperation(isProfile, Fields.Im.intersect(includeFields)).updateInsertOrDelete(
             rawContact.ims, rawContact.id, contentResolver
         )
     )
 
-    operations.add(
-        NameOperation(isProfile).updateInsertOrDelete(
-            rawContact.name, rawContact.id, contentResolver
-        )
-    )
+    NameOperation(isProfile, Fields.Name.intersect(includeFields)).updateInsertOrDelete(
+        rawContact.name, rawContact.id, contentResolver
+    )?.let(operations::add)
 
-    operations.add(
-        NicknameOperation(isProfile).updateInsertOrDelete(
-            rawContact.nickname, rawContact.id, contentResolver
-        )
-    )
+    NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields)).updateInsertOrDelete(
+        rawContact.nickname, rawContact.id, contentResolver
+    )?.let(operations::add)
 
-    operations.add(
-        NoteOperation(isProfile).updateInsertOrDelete(
-            rawContact.note, rawContact.id, contentResolver
-        )
-    )
+    NoteOperation(isProfile, Fields.Note.intersect(includeFields)).updateInsertOrDelete(
+        rawContact.note, rawContact.id, contentResolver
+    )?.let(operations::add)
 
-    operations.add(
-        OrganizationOperation(isProfile).updateInsertOrDelete(
+    OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields))
+        .updateInsertOrDelete(
             rawContact.organization, rawContact.id, contentResolver
-        )
-    )
+        )?.let(operations::add)
 
     operations.addAll(
-        PhoneOperation(isProfile).updateInsertOrDelete(
+        PhoneOperation(isProfile, Fields.Phone.intersect(includeFields)).updateInsertOrDelete(
             rawContact.phones, rawContact.id, contentResolver
         )
     )
@@ -382,27 +446,29 @@ internal fun Context.updateRawContact(
         // contacts. The Contacts Provider does support having events for local raw contacts.
         // Anyways, let's follow in the footsteps of the native Contacts app...
         operations.addAll(
-            RelationOperation(isProfile).updateInsertOrDelete(
-                rawContact.relations, rawContact.id, contentResolver
-            )
+            RelationOperation(isProfile, Fields.Relation.intersect(includeFields))
+                .updateInsertOrDelete(
+                    rawContact.relations, rawContact.id, contentResolver
+                )
         )
     }
 
-    operations.add(
-        SipAddressOperation(isProfile).updateInsertOrDelete(
+    SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields))
+        .updateInsertOrDelete(
             rawContact.sipAddress, rawContact.id, contentResolver
-        )
-    )
+        )?.let(operations::add)
 
     operations.addAll(
-        WebsiteOperation(isProfile).updateInsertOrDelete(
+        WebsiteOperation(isProfile, Fields.Website.intersect(includeFields)).updateInsertOrDelete(
             rawContact.websites, rawContact.id, contentResolver
         )
     )
 
     // Process custom data
     operations.addAll(
-        rawContact.customDataUpdateInsertOrDeleteOperations(contentResolver, customDataRegistry)
+        rawContact.customDataUpdateInsertOrDeleteOperations(
+            contentResolver, includeFields, customDataRegistry
+        )
     )
 
     /*
@@ -414,6 +480,7 @@ internal fun Context.updateRawContact(
 
 private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
     contentResolver: ContentResolver,
+    includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
     if (id == null) {
@@ -424,14 +491,17 @@ private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
 
         val countRestriction = customDataEntry.countRestriction
-        val customDataOperation = customDataEntry.operationFactory.create(isProfile)
+        val customDataOperation = customDataEntry.operationFactory.create(
+            isProfile,
+            customDataEntry.fieldSet.intersect(includeFields)
+        )
 
         when (countRestriction) {
             CustomDataCountRestriction.AT_MOST_ONE -> {
                 customDataOperation
                     .updateInsertOrDelete(
                         customDataEntityHolder.entities.firstOrNull(), id, contentResolver
-                    ).let(::add)
+                    )?.let(::add)
             }
             CustomDataCountRestriction.NO_LIMIT -> {
                 customDataOperation

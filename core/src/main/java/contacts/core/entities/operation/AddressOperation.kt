@@ -5,8 +5,8 @@ import contacts.core.Fields
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableAddress
 
-internal class AddressOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<AddressField, MutableAddress>(isProfile) {
+internal class AddressOperation(isProfile: Boolean, includeFields: Set<AddressField>) :
+    AbstractCommonDataOperation<AddressField, MutableAddress>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Address
 

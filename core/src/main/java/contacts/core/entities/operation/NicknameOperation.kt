@@ -5,8 +5,8 @@ import contacts.core.NicknameField
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableNickname
 
-internal class NicknameOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<NicknameField, MutableNickname>(isProfile) {
+internal class NicknameOperation(isProfile: Boolean, includeFields: Set<NicknameField>) :
+    AbstractCommonDataOperation<NicknameField, MutableNickname>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Nickname
 

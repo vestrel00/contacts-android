@@ -77,13 +77,15 @@ internal fun <T : CommonDataEntity> CursorHolder<AbstractDataField>.entityMapper
     MimeType.Relation -> relationMapper()
     MimeType.SipAddress -> sipAddressMapper()
     MimeType.Website -> websiteMapper()
-    is MimeType.Custom -> customDataRegistry
-        .entryOf(mimeType)
-        .mapperFactory
-        .create(
-            cursor,
-            includeFields as Set<AbstractCustomDataField>
-        )
+    is MimeType.Custom -> {
+        val customDataEntry = customDataRegistry.entryOf(mimeType)
+        customDataEntry.mapperFactory
+            .create(
+                cursor,
+                // Only include custom data fields assigned by this entry.
+                customDataEntry.fieldSet.intersect(includeFields)
+            )
+    }
     MimeType.Unknown -> throw ContactsException(
         "No entity mapper for mime type ${mimeType.value}"
     )

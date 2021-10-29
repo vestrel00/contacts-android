@@ -73,6 +73,32 @@ interface CommonDataEntity : Entity {
         get() = id.isProfileId
 
     /**
+     * Returns true if the underlying data contains at least one non-null and non-empty piece of
+     * information.
+     *
+     * Blank data are typically;
+     *
+     * - Not returned in any query results, even if the corresponding fields are included.
+     * - Not inserted.
+     * - Deleted upon update.
+     *
+     * The following has no influence on the value this returns.
+     *
+     * - [id]
+     * - [rawContactId]
+     * - [contactId]
+     * - [isPrimary]
+     * - [isSuperPrimary]
+     * - `type`
+     * - `label`
+     *
+     * ## Dev notes
+     *
+     * This is overridden for documentation purposes.
+     */
+    override val isBlank: Boolean
+
+    /**
      * A type of data. Used by data that may have several types.
      */
     interface Type {

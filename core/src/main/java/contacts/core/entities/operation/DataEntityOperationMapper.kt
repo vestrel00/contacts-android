@@ -1,44 +1,60 @@
 package contacts.core.entities.operation
 
 import android.content.ContentProviderOperation
+import contacts.core.AbstractDataField
 import contacts.core.ContactsException
+import contacts.core.Fields
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableCommonDataEntity
 import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.intersect
 
 /**
  * Returns a new [ContentProviderOperation] for updating [this].
+ *
+ * Only the fields specified in [includeFields] will be updated.
  */
 internal fun MutableCommonDataEntity.updateOperation(
+    includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry
-): ContentProviderOperation? = dataOperation(customDataRegistry).updateDataRowOrDeleteIfBlank(this)
+): ContentProviderOperation? = dataOperation(includeFields, customDataRegistry)
+    .updateDataRowOrDeleteIfBlank(this)
 
 @Suppress("UNCHECKED_CAST")
 private fun MutableCommonDataEntity.dataOperation(
-    customDataRegistry: CustomDataRegistry
+    includeFields: Set<AbstractDataField>, customDataRegistry: CustomDataRegistry
 ): AbstractCommonDataOperation<*, MutableCommonDataEntity> = when (mimeType) {
     // We could instead do when (this) is MutableAddress -> AddressOperation()
     // However, using mimeType instead of the class allows for exhaustive compilation checks.
     // Not requiring an 'else' branch.
-    MimeType.Address -> AddressOperation(isProfile)
-    MimeType.Email -> EmailOperation(isProfile)
-    MimeType.Event -> EventOperation(isProfile)
-    MimeType.Im -> ImOperation(isProfile)
-    MimeType.Name -> NameOperation(isProfile)
-    MimeType.Nickname -> NicknameOperation(isProfile)
-    MimeType.Note -> NoteOperation(isProfile)
-    MimeType.Organization -> OrganizationOperation(isProfile)
-    MimeType.Phone -> PhoneOperation(isProfile)
-    MimeType.Relation -> RelationOperation(isProfile)
-    MimeType.SipAddress -> SipAddressOperation(isProfile)
-    MimeType.Website -> WebsiteOperation(isProfile)
-    is MimeType.Custom -> customDataRegistry
-        // Smart cast doesn't work here like this because mimeType has a custom getter. We can fix
-        // this by declaring a local val mimeType = this.mimeType but this looks okay.
-        .entryOf(mimeType as MimeType.Custom)
-        .operationFactory
-        .create(isProfile)
+    MimeType.Address -> AddressOperation(isProfile, Fields.Address.intersect(includeFields))
+    MimeType.Email -> EmailOperation(isProfile, Fields.Email.intersect(includeFields))
+    MimeType.Event -> EventOperation(isProfile, Fields.Event.intersect(includeFields))
+    MimeType.Im -> ImOperation(isProfile, Fields.Im.intersect(includeFields))
+    MimeType.Name -> NameOperation(isProfile, Fields.Name.intersect(includeFields))
+    MimeType.Nickname -> NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields))
+    MimeType.Note -> NoteOperation(isProfile, Fields.Note.intersect(includeFields))
+    MimeType.Organization -> OrganizationOperation(
+        isProfile, Fields.Organization.intersect((includeFields))
+    )
+    MimeType.Phone -> PhoneOperation(isProfile, Fields.Phone.intersect(includeFields))
+    MimeType.Relation -> RelationOperation(isProfile, Fields.Relation.intersect(includeFields))
+    MimeType.SipAddress -> SipAddressOperation(
+        isProfile, Fields.SipAddress.intersect(includeFields)
+    )
+    MimeType.Website -> WebsiteOperation(isProfile, Fields.Website.intersect(includeFields))
+    is MimeType.Custom -> {
+        val customDataEntry = customDataRegistry
+            // Smart cast doesn't work here like this because mimeType has a custom getter. We can fix
+            // this by declaring a local val mimeType = this.mimeType but this looks okay.
+            .entryOf(mimeType as MimeType.Custom)
 
+        customDataEntry.operationFactory
+            .create(
+                isProfile,
+                customDataEntry.fieldSet.intersect(includeFields)
+            )
+    }
     // The GroupMembership and Photo class intentionally does not have a mutable version unlike the
     // other entities. Manage group memberships via the RawContactGroupMemberships extension
     // functions. Manage photos via the (Raw)ContactPhoto extension functions.

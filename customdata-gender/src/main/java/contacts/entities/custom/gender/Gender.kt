@@ -45,8 +45,9 @@ data class Gender internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = GenderMimeType
 
+    // The type is typically not a part of this check but it is the primary data in this case
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(type, label)
+        get() = propertiesAreAllNullOrBlank(type)
 
     fun toMutableGender() = MutableGender(
         id = id,
@@ -125,8 +126,9 @@ data class MutableGender internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = GenderMimeType
 
+    // The type is typically not a part of this check but it is the primary data in this case
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(type, label)
+        get() = propertiesAreAllNullOrBlank(type)
 
     internal fun toGender() = Gender(
         id = id,

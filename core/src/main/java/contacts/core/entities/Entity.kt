@@ -16,12 +16,7 @@ interface Entity : Parcelable {
      * Returns true if the underlying data contains at least one non-null and non-empty piece of
      * information.
      *
-     * The following has no influence on the value this returns;
-     * - Contact ID
-     * - RawContact ID
-     * - Data ID
-     * - Data IS_PRIMARY
-     * - Data IS_SUPER_PRIMARY
+     * The [id] has no influence on the value this returns.
      */
     val isBlank: Boolean
 }

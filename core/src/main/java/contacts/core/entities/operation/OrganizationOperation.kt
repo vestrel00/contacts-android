@@ -5,8 +5,8 @@ import contacts.core.OrganizationField
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableOrganization
 
-internal class OrganizationOperation(isProfile: Boolean) :
-    AbstractCommonDataOperation<OrganizationField, MutableOrganization>(isProfile) {
+internal class OrganizationOperation(isProfile: Boolean, includeFields: Set<OrganizationField>) :
+    AbstractCommonDataOperation<OrganizationField, MutableOrganization>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Organization
 

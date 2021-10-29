@@ -1,6 +1,5 @@
 package contacts.core.entities.mapper
 
-import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractDataField
 import contacts.core.ContactsField
 import contacts.core.RawContactsField
@@ -11,6 +10,7 @@ import contacts.core.entities.TempRawContact
 import contacts.core.entities.cursor.*
 import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.intersect
 
 /**
  * Returns a list of [Contact]s from the given cursor, which assumed to have been retrieved from the
@@ -228,7 +228,8 @@ private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
     @Suppress("UNCHECKED_CAST")
     val customDataMapper = customDataEntry.mapperFactory.create(
         cursor,
-        includeFields as Set<AbstractCustomDataField>
+        // Only include custom data fields assigned by this entry.
+        customDataEntry.fieldSet.intersect(includeFields)
     )
 
     // Do not add blanks.

@@ -3,14 +3,14 @@ package contacts.core.entities.custom
 import contacts.core.AbstractCustomDataField
 
 /**
- * Provides a piece of data as a nullable String from the custom entity [V] corresponding to the
- * field [K].
+ * Provides a piece of data as a nullable String from the custom entity [E] corresponding to the
+ * field [F].
  */
-interface CustomDataFieldMapper<K : AbstractCustomDataField, V : MutableCustomDataEntity> {
+interface CustomDataFieldMapper<F : AbstractCustomDataField, E : MutableCustomDataEntity> {
 
     /**
      * Return a piece of data as a nullable String from the [customEntity] corresponding to the
      * given [field].
      */
-    fun valueOf(field: K, customEntity: V): String?
+    fun valueOf(field: F, customEntity: E): String?
 }

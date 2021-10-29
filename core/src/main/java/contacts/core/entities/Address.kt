@@ -106,9 +106,10 @@ data class Address internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Address
 
+    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            type, label, formattedAddress, street, poBox, neighborhood,
+            formattedAddress, street, poBox, neighborhood,
             city, region, postcode, country
         )
 
@@ -232,9 +233,10 @@ data class MutableAddress internal constructor(
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Address
 
+    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            type, label, formattedAddress, street, poBox, neighborhood,
+            formattedAddress, street, poBox, neighborhood,
             city, region, postcode, country
         )
 

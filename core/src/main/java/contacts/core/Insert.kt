@@ -8,6 +8,7 @@ import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
 import contacts.core.util.applyBatch
+import contacts.core.util.isEmpty
 import contacts.core.util.nullIfNotInSystem
 import contacts.core.util.unsafeLazy
 
@@ -103,6 +104,36 @@ interface Insert {
      * allowing blanks, the native Contacts app shows them.
      */
     fun allowBlanks(allowBlanks: Boolean): Insert
+
+    /**
+     * Specifies that only the given set of [fields] (data) will be insert.
+     *
+     * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
+     * fields will be inserted.
+     *
+     * ## Note
+     *
+     * The use case for this function is probably not common. You can simply not set a particular
+     * data instead of using this function. For example, if you want to create a new RawContact
+     * with only name and email data, just set only name and email...
+     *
+     * There may be some cases where this function may come in handy. For example, if you have a
+     * mutable RawContact that has all data filled in but you only want some of those data to be
+     * inserted (in the database), then this function is exactly what you need =) This can also come
+     * in handy if you are trying to make copies of an existing RawContact but only want some data
+     * to be copied.
+     */
+    fun include(vararg fields: AbstractDataField): Insert
+
+    /**
+     * See [Insert.include].
+     */
+    fun include(fields: Collection<AbstractDataField>): Insert
+
+    /**
+     * See [Insert.include].
+     */
+    fun include(fields: Sequence<AbstractDataField>): Insert
 
     /**
      * All of the raw contacts that are inserted on [commit] will belong to the given [account].
@@ -242,6 +273,7 @@ private class InsertImpl(
     private val customDataRegistry: CustomDataRegistry,
 
     private var allowBlanks: Boolean = false,
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
     private var account: Account? = null,
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : Insert {
@@ -250,6 +282,7 @@ private class InsertImpl(
         """
             Insert {
                 allowBlanks: $allowBlanks
+                include: $include
                 account: $account
                 rawContacts: $rawContacts
             }
@@ -257,6 +290,18 @@ private class InsertImpl(
 
     override fun allowBlanks(allowBlanks: Boolean): Insert = apply {
         this.allowBlanks = allowBlanks
+    }
+
+    override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
+
+    override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
+
+    override fun include(fields: Sequence<AbstractDataField>): Insert = apply {
+        include = if (fields.isEmpty()) {
+            allDataFields(customDataRegistry)
+        } else {
+            Include(fields + Fields.Required.all.asSequence())
+        }
     }
 
     override fun forAccount(account: Account?): Insert = apply {
@@ -298,7 +343,7 @@ private class InsertImpl(
                 // No need to propagate the cancel function to within insertRawContactForAccount
                 // as that operation should be fast and CPU time should be trivial.
                 applicationContext.insertRawContactForAccount(
-                    customDataRegistry, account, rawContact, IS_PROFILE
+                    customDataRegistry, account, include.fields, rawContact, IS_PROFILE
                 )
             }
         }
@@ -321,6 +366,7 @@ private class InsertImpl(
 internal fun Context.insertRawContactForAccount(
     customDataRegistry: CustomDataRegistry,
     account: Account?,
+    includeFields: Set<AbstractDataField>,
     rawContact: MutableRawContact,
     isProfile: Boolean
 ): Long? {
@@ -335,15 +381,27 @@ internal fun Context.insertRawContactForAccount(
      */
     operations.add(RawContactsOperation(isProfile).insert(account))
 
-    operations.addAll(AddressOperation(isProfile).insert(rawContact.addresses))
+    operations.addAll(
+        AddressOperation(isProfile, Fields.Address.intersect(includeFields)).insert(
+            rawContact.addresses
+        )
+    )
 
-    operations.addAll(EmailOperation(isProfile).insert(rawContact.emails))
+    operations.addAll(
+        EmailOperation(isProfile, Fields.Email.intersect(includeFields)).insert(
+            rawContact.emails
+        )
+    )
 
     if (account != null) {
         // I'm not sure why the native Contacts app hides events from the UI for local raw contacts.
         // The Contacts Provider does support having events for local raw contacts. Anyways, let's
         // follow in the footsteps of the native Contacts app...
-        operations.addAll(EventOperation(isProfile).insert(rawContact.events))
+        operations.addAll(
+            EventOperation(isProfile, Fields.Event.intersect(includeFields)).insert(
+                rawContact.events
+            )
+        )
     }
 
     if (account != null) {
@@ -351,45 +409,66 @@ internal fun Context.insertRawContactForAccount(
         // It should not be possible for consumers to get access to group memberships.
         // The Contacts Provider does support having events for local raw contacts.
         operations.addAll(
-            GroupMembershipOperation(isProfile).insert(rawContact.groupMemberships, account, this)
+            GroupMembershipOperation(
+                isProfile, Fields.GroupMembership.intersect(includeFields)
+            ).insert(rawContact.groupMemberships, account, this)
         )
     }
 
-    operations.addAll(ImOperation(isProfile).insert(rawContact.ims))
+    operations.addAll(
+        ImOperation(isProfile, Fields.Im.intersect(includeFields)).insert(rawContact.ims)
+    )
 
     rawContact.name?.let {
-        NameOperation(isProfile).insert(it)?.let(operations::add)
+        NameOperation(isProfile, Fields.Name.intersect(includeFields)).insert(it)
+            ?.let(operations::add)
     }
 
     rawContact.nickname?.let {
-        NicknameOperation(isProfile).insert(it)?.let(operations::add)
+        NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields)).insert(it)
+            ?.let(operations::add)
     }
 
     rawContact.note?.let {
-        NoteOperation(isProfile).insert(it)?.let(operations::add)
+        NoteOperation(isProfile, Fields.Note.intersect(includeFields)).insert(it)
+            ?.let(operations::add)
     }
 
     rawContact.organization?.let {
-        OrganizationOperation(isProfile).insert(it)?.let(operations::add)
+        OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields)).insert(it)
+            ?.let(operations::add)
     }
 
-    operations.addAll(PhoneOperation(isProfile).insert(rawContact.phones))
+    operations.addAll(
+        PhoneOperation(isProfile, Fields.Phone.intersect(includeFields)).insert(
+            rawContact.phones
+        )
+    )
 
     if (account != null) {
         // I'm not sure why the native Contacts app hides relations from the UI for local raw
         // contacts. The Contacts Provider does support having events for local raw contacts.
         // Anyways, let's follow in the footsteps of the native Contacts app...
-        operations.addAll(RelationOperation(isProfile).insert(rawContact.relations))
+        operations.addAll(
+            RelationOperation(
+                isProfile, Fields.Relation.intersect(includeFields)
+            ).insert(rawContact.relations)
+        )
     }
 
     rawContact.sipAddress?.let {
-        SipAddressOperation(isProfile).insert(it)?.let(operations::add)
+        SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields)).insert(it)
+            ?.let(operations::add)
     }
 
-    operations.addAll(WebsiteOperation(isProfile).insert(rawContact.websites))
+    operations.addAll(
+        WebsiteOperation(isProfile, Fields.Website.intersect(includeFields)).insert(
+            rawContact.websites
+        )
+    )
 
     // Process custom data
-    operations.addAll(rawContact.customDataInsertOperations(customDataRegistry))
+    operations.addAll(rawContact.customDataInsertOperations(includeFields, customDataRegistry))
 
     /*
      * Atomically create the RawContact row and all of the associated Data rows. All of the
@@ -415,13 +494,16 @@ internal fun Context.insertRawContactForAccount(
 }
 
 private fun MutableRawContact.customDataInsertOperations(
-    customDataRegistry: CustomDataRegistry
+    includeFields: Set<AbstractDataField>, customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
 
         val countRestriction = customDataEntry.countRestriction
-        val customDataOperation = customDataEntry.operationFactory.create(isProfile)
+        val customDataOperation = customDataEntry.operationFactory.create(
+            isProfile,
+            customDataEntry.fieldSet.intersect(includeFields)
+        )
 
         when (countRestriction) {
             CustomDataCountRestriction.AT_MOST_ONE -> {

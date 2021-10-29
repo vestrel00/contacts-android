@@ -16,10 +16,17 @@ import contacts.core.entities.table.Table
 import contacts.core.util.query
 
 /**
- * Builds [ContentProviderOperation]s for [Table.Data] using the field [K] and entity [V].
+ * Builds [ContentProviderOperation]s for [Table.Data] using the field [F] and entity [E].
+ *
+ * ## IMPORTANT!
+ *
+ * Insert and update functions will do nothing for data that is not specified in [includeFields],
+ * except for data that are required.
  */
-abstract class AbstractCommonDataOperation<K : CommonDataField,
-        V : CommonDataEntity>(isProfile: Boolean) {
+abstract class AbstractCommonDataOperation<F : CommonDataField, E : CommonDataEntity>(
+    isProfile: Boolean,
+    private val includeFields: Set<F>
+) {
 
     internal val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
 
@@ -28,7 +35,7 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
     /**
      * Sets the [data] values into the operation via the provided [setValue] function.
      */
-    protected abstract fun setData(data: V, setValue: (field: K, value: Any?) -> Unit)
+    protected abstract fun setData(data: E, setValue: (field: F, value: Any?) -> Unit)
 
     /**
      * There [Where] clause used as the selection for queries, updates, and deletes.
@@ -41,21 +48,31 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
      * operation.  This assumes that this will be used in a batch of operations where the first
      * operation is the insertion of a new RawContact.
      *
-     * Returns null if [entity] is blank.
+     * Returns null if [entity] is blank or no values have been set due to not being included.
      */
-    internal fun insert(entity: V): ContentProviderOperation? {
+    internal fun insert(entity: E): ContentProviderOperation? {
         if (entity.isBlank) {
             return null
         }
 
         val operation = ContentProviderOperation.newInsert(contentUri)
 
+        var hasValueSet = false
+
         setData(entity) { field, dataValue ->
-            if (dataValue.isNotNullOrBlank()) {
+            if ((includeFields.contains(field) || field.required) && dataValue.isNotNullOrBlank()) {
+                // Only add the operation if the field should be included or is required.
                 // No need to insert null values. Empty values are treated the same as null, same as
                 // the native Android Contacts app.
                 operation.withValue(field, dataValue)
+                hasValueSet = true
             }
+        }
+
+        if (!hasValueSet) {
+            // If there is actually no data set due to not being included or required, then do not
+            // construct an actual operation.
+            return null
         }
 
         return operation
@@ -76,7 +93,7 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
      *
      * Blank entities are excluded.
      */
-    internal fun insert(entities: List<V>): List<ContentProviderOperation> =
+    internal fun insert(entities: List<E>): List<ContentProviderOperation> =
         mutableListOf<ContentProviderOperation>().apply {
             for (entity in entities) {
                 insert(entity)?.let(::add)
@@ -91,11 +108,11 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
      * For example, a contact may have more than 1 data row for address, email, phone, etc.
      */
     internal fun updateInsertOrDelete(
-        entities: Collection<V>, rawContactId: Long, contentResolver: ContentResolver
+        entities: Collection<E>, rawContactId: Long, contentResolver: ContentResolver
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
         if (!entitiesAreAllBlank(entities)) {
             // Get all entities with a valid Id, which means they are (or have been) in the DB.
-            val validEntitiesMap = mutableMapOf<Long, V>().apply {
+            val validEntitiesMap = mutableMapOf<Long, E>().apply {
                 for (entity in entities) {
                     val dataRowId = entity.id
                     if (dataRowId != null) {
@@ -124,7 +141,7 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
                         // a single operation but code will get messier.
                         deleteDataRowWithId(dataRowId)
                     }
-                    add(operation)
+                    operation?.let(::add)
                 }
             }
 
@@ -136,7 +153,7 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
                 validEntitiesMap.values.asSequence().filter { !it.isBlank }
 
             for (entity in nonBlankValidEntities) {
-                add(insertDataRow(entity, rawContactId))
+                insertDataRow(entity, rawContactId)?.let(::add)
             }
 
             // Insert all invalid entities.
@@ -146,7 +163,7 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
                 entities.asSequence().filter { it.id == null && !it.isBlank }
 
             for (entity in nonBlankInvalidEntities) {
-                add(insertDataRow(entity, rawContactId))
+                insertDataRow(entity, rawContactId)?.let(::add)
             }
         } else {
             // Entities' empty or contains no data. Delete all data rows of this type.
@@ -162,8 +179,8 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
      * For example, a contact may only have 1 data row for company, name, note, etc.
      */
     internal fun updateInsertOrDelete(
-        entity: V?, rawContactId: Long, contentResolver: ContentResolver
-    ): ContentProviderOperation =
+        entity: E?, rawContactId: Long, contentResolver: ContentResolver
+    ): ContentProviderOperation? =
         if (entity != null && !entity.isBlank) {
             // Entity contains some data. Query for the (first) row.
             val dataRowId: Long? = contentResolver.dataRowIdsFor(rawContactId) {
@@ -185,18 +202,32 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
     /**
      * Provides the [ContentProviderOperation] for inserting the data row (represented by the
      * [entity]) for the given RawContact with [rawContactId].
+     *
+     * Returns null if no values have been set due to not being included.
      */
-    internal fun insertDataRow(entity: V, rawContactId: Long): ContentProviderOperation {
+    internal fun insertDataRow(entity: E, rawContactId: Long): ContentProviderOperation? {
         val operation = ContentProviderOperation.newInsert(contentUri)
             .withValue(Fields.RawContact.Id, rawContactId)
             .withValue(Fields.MimeType, mimeType.value)
 
+        var hasValueSet = false
+
         setData(entity) { field, dataValue ->
-            if (dataValue.isNotNullOrBlank()) {
+            if ((includeFields.contains(field) || field.required) && dataValue.isNotNullOrBlank()) {
+                // Only add the operation if the field should be included or is required.
                 // No need to insert null values. Empty values are treated the same as null, same as
                 // the native Android Contacts app.
                 operation.withValue(field, dataValue)
+                hasValueSet = true
             }
+        }
+
+        if (!hasValueSet) {
+            // If there is actually no data set due to not being included or required, then do not
+            // construct an actual operation. This is not just an optimization but also to prevent
+            // an exception from being thrown by the operation builder.
+            // java.lang.IllegalArgumentException: Empty values
+            return null
         }
 
         return operation.build()
@@ -210,7 +241,7 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
      * Use this function for updating an existing data row. If the data row no longer exists in the
      * DB, the operation will fail.
      */
-    internal fun updateDataRowOrDeleteIfBlank(entity: V): ContentProviderOperation? =
+    internal fun updateDataRowOrDeleteIfBlank(entity: E): ContentProviderOperation? =
         entity.id?.let { dataRowId ->
             if (entity.isBlank) {
                 deleteDataRowWithId(dataRowId)
@@ -223,22 +254,40 @@ abstract class AbstractCommonDataOperation<K : CommonDataField,
      * Provides the [ContentProviderOperation] for updating the data row (represented by the
      * [entity]) with the given [dataRowId].
      *
-     * Note that this function does not check if the [entity] is blank.
+     * Note that this function does not check if the [entity] is blank. Checking for blanks should
+     * be done at the call-site.
+     *
+     * Returns null if no values have been set due to not being included.
      */
-    private fun updateDataRow(entity: V, dataRowId: Long): ContentProviderOperation {
+    private fun updateDataRow(entity: E, dataRowId: Long): ContentProviderOperation? {
         val operation = ContentProviderOperation.newUpdate(contentUri)
             .withSelection(Fields.DataId equalTo dataRowId)
 
+        var hasValueSet = false
+
         setData(entity) { field, dataValue ->
-            // Intentionally allow to update values to null.
-            operation.withValue(field, dataValue)
+            if (includeFields.contains(field) || field.required) {
+                // Only add the operation if the field should be included or is required.
+                // Intentionally allow to update values to null. Checking for blanks should be done at
+                // the call-site.
+                operation.withValue(field, dataValue)
+                hasValueSet = true
+            }
+        }
+
+        if (!hasValueSet) {
+            // If there is actually no data set due to not being included or required, then do not
+            // construct an actual operation. This is not just an optimization but also to prevent
+            // an exception from being thrown by the operation builder.
+            // java.lang.IllegalArgumentException: Empty values
+            return null
         }
 
         return operation.build()
     }
 
     /**
-     * Provides the [ContentProviderOperation] for deleting the data rows of type [V] of the
+     * Provides the [ContentProviderOperation] for deleting the data rows of type [E] of the
      * RawContact with [rawContactId].
      */
     private fun deleteDataRows(rawContactId: Long): ContentProviderOperation =

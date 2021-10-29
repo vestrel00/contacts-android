@@ -33,19 +33,19 @@ import contacts.ui.entities.CommonDataEntityFactory
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-abstract class CommonDataEntityListView<K : MutableCommonDataEntity, V : CommonDataEntityView<K>>(
+abstract class CommonDataEntityListView<E : MutableCommonDataEntity, V : CommonDataEntityView<E>>(
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,
-    private val dataFactory: CommonDataEntityFactory<K>,
-    private val dataViewFactory: CommonDataEntityView.Factory<K, V>,
+    private val dataFactory: CommonDataEntityFactory<E>,
+    private val dataViewFactory: CommonDataEntityView.Factory<E, V>,
 ) : LinearLayout(context, attributeSet, defStyleAttr) {
 
     /**
      * The list of data that is shown in this view. Setting this will automatically update the
      * views. Any modifications in the views will also be made to the this.
      */
-    var dataList: MutableList<K> = mutableListOf()
+    var dataList: MutableList<E> = mutableListOf()
         set(value) {
             field = value
 
@@ -61,7 +61,7 @@ abstract class CommonDataEntityListView<K : MutableCommonDataEntity, V : CommonD
         orientation = VERTICAL
     }
 
-    protected open fun onEmptyDataCreated(data: K) {
+    protected open fun onEmptyDataCreated(data: E) {
         // optional override for subclasses
     }
 
@@ -73,7 +73,7 @@ abstract class CommonDataEntityListView<K : MutableCommonDataEntity, V : CommonD
         addEmptyDataView()
     }
 
-    private fun addDataView(data: K): V {
+    private fun addDataView(data: E): V {
         val dataView = dataViewFactory.create(context).also {
             it.data = data
             it.setEventListener(DataViewEventListener(it))

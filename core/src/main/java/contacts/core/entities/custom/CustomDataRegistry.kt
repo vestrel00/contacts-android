@@ -157,14 +157,14 @@ class CustomDataRegistry {
      * A custom common data entry provides all the required implementations to support queries,
      * inserts, updates, and deletes.
      */
-    interface Entry<F : AbstractCustomDataField, K : AbstractCustomDataCursor<F>,
-            V : MutableCustomDataEntity> {
+    interface Entry<F : AbstractCustomDataField, C : AbstractCustomDataCursor<F>,
+            E : MutableCustomDataEntity> {
         val mimeType: MimeType.Custom
         val fieldSet: AbstractCustomDataFieldSet<F>
-        val fieldMapper: CustomDataFieldMapper<F, V>
+        val fieldMapper: CustomDataFieldMapper<F, E>
         val countRestriction: CustomDataCountRestriction
-        val mapperFactory: AbstractCustomEntityMapper.Factory<F, K, V>
-        val operationFactory: AbstractCustomDataOperation.Factory<F, V>
+        val mapperFactory: AbstractCustomEntityMapper.Factory<F, C, E>
+        val operationFactory: AbstractCustomDataOperation.Factory<F, E>
     }
 
     /**
