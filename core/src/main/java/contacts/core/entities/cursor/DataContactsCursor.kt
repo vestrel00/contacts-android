@@ -24,4 +24,6 @@ internal class DataContactsCursor(cursor: Cursor, includeFields: Set<DataContact
     override val photoUri: Uri? by uri(Fields.Contact.PhotoUri)
 
     override val photoThumbnailUri: Uri? by uri(Fields.Contact.PhotoThumbnailUri)
+
+    override val hasPhoneNumber: Boolean? by boolean(Fields.Contact.HasPhoneNumber)
 }

@@ -26,4 +26,6 @@ internal interface JoinedContactsCursor : ContactIdCursor {
     val photoUri: Uri?
 
     val photoThumbnailUri: Uri?
+
+    val hasPhoneNumber: Boolean?
 }

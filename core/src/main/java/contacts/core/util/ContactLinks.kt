@@ -171,6 +171,8 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
 
     // Get the new Contact id of the RawContacts from the queried name. If no name is found,
     // then use the contact id of the first RawContact.
+    // Technically, the LOOKUP_KEY would be best suited for this but we already have the name so
+    // we might as well just use that.
     val contactId = name?.contactId ?: contactIdOfRawContact(context, sortedRawContactIds.first())
 
     return ContactLinkSuccess(contactId)

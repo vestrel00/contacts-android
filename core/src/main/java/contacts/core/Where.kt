@@ -214,10 +214,14 @@ infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != nul
  *
  * Removing a piece of existing data results in the deletion of the row in the Data table if that
  * row no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is
- * the behavior of the native Android Contacts app. Therefore, querying for null fields is not
- * possible. For example, there may be no Data rows that exist where the email address is null.
- * Thus, a query to search for all contacts with null email address may return 0 contacts even if
- * there are some contacts without email addresses.
+ * the behavior of the native Contacts app. Therefore, querying for null fields is not possible.
+ * For example, there may be no Data rows that exist where the email address is null. Thus, a query
+ * to search for all contacts with no email addresses may return 0 contacts even if there are some
+ * contacts that do not have at least one email address.
+ *
+ * If you want to match contacts that has no particular type of data, you will have to make two
+ * queries. One to get contacts that have that particular type of data and another to get contacts
+ * that were not part of the first query results.
  */
 fun <T : Field> T.isNotNull(): Where<T> = IsNotNull(this)
 
@@ -227,10 +231,14 @@ fun <T : Field> T.isNotNull(): Where<T> = IsNotNull(this)
  *
  * Removing a piece of existing data results in the deletion of the row in the Data table if that
  * row no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is
- * the behavior of the native Android Contacts app. Therefore, querying for null fields is not
- * possible. For example, there may be no Data rows that exist where the email address is null.
- * Thus, a query to search for all contacts with null email address may return 0 contacts even if
- * there are some contacts without email addresses.
+ * the behavior of the native Contacts app. Therefore, querying for null fields is not possible.
+ * For example, there may be no Data rows that exist where the email address is null. Thus, a query
+ * to search for all contacts with no email addresses may return 0 contacts even if there are some
+ * contacts that do not have at least one email address.
+ *
+ * If you want to match contacts that has no particular type of data, you will have to make two
+ * queries. One to get contacts that have that particular type of data and another to get contacts
+ * that were not part of the first query results.
  */
 fun <T : Field> T.isNotNullOrEmpty(): Where<T> = isNotNull() and notEqualTo("")
 

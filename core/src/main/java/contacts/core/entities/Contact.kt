@@ -106,9 +106,7 @@ sealed class ContactEntity : Entity {
 
     /**
      * The uri to the full-sized image of this contact. This full sized image is from the associated
-     * [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this photo
-     * belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
-     *
+     * [RawContact] of the ContactsProvider's choosing.
      * This may be the same as the [photoThumbnailUri] if a full sized photo is not available.
      *
      * To get the latest photo as an InputStream/Bytes/Bitmap/BitmapDrawable or set or remove photo,
@@ -118,13 +116,29 @@ sealed class ContactEntity : Entity {
 
     /**
      * The uri to the thumbnail-sized version of the [photoUri]. This thumbnail image is from the
-     * associated [RawContact] of the ContactsProvider's choosing. Note that the [RawContact] this
-     * photo belongs to is not guaranteed to be in the [rawContacts] list depending on query filters.
+     * associated [RawContact] of the ContactsProvider's choosing.
      *
      * To get the latest photo thumbnail as an InputStream/Bytes/Bitmap/BitmapDrawable or set or
      * remove photo thumbnail, use the ContactPhoto extensions.
      */
     abstract val photoThumbnailUri: Uri?
+
+    /**
+     * True if this contact has at least one RawContact that has at least one phone number
+     * **in the database Data table**.
+     *
+     * ## Note
+     *
+     * The phone number is the only kind of data that the ContactsContract provides with an indexed
+     * value such as this. The ContactsContract does NOT provide things like "hasEmail",
+     * "hasWebsite", etc.
+     *
+     * Regardless, this library provide functions to match contacts that "has at least one instance
+     * of a kind of data". This [hasPhoneNumber] is not necessary to get contacts that have a phone
+     * number. However, this does provide an easy way to get contacts that have no phone numbers
+     * without having to make two queries.
+     */
+    abstract val hasPhoneNumber: Boolean?
 
     /**
      * True if this contact represents the user's personal profile entry.
@@ -193,7 +207,12 @@ data class Contact internal constructor(
     /**
      * See [ContactEntity.photoThumbnailUri].
      */
-    override val photoThumbnailUri: Uri?
+    override val photoThumbnailUri: Uri?,
+
+    /**
+     * See [ContactEntity.hasPhoneNumber].
+     */
+    override val hasPhoneNumber: Boolean?
 
 ) : ContactEntity() {
 
@@ -213,7 +232,8 @@ data class Contact internal constructor(
         lastUpdatedTimestamp = lastUpdatedTimestamp,
         options = options,
         photoUri = photoUri,
-        photoThumbnailUri = photoThumbnailUri
+        photoThumbnailUri = photoThumbnailUri,
+        hasPhoneNumber = hasPhoneNumber
     )
 }
 
@@ -268,7 +288,12 @@ data class MutableContact internal constructor(
     /**
      * See [ContactEntity.photoThumbnailUri].
      */
-    override val photoThumbnailUri: Uri?
+    override val photoThumbnailUri: Uri?,
+
+    /**
+     * See [ContactEntity.hasPhoneNumber].
+     */
+    override val hasPhoneNumber: Boolean?
 
 ) : ContactEntity() {
 

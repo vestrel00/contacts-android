@@ -25,5 +25,6 @@ internal class ContactMapper(
             options = optionsMapper.value,
             photoUri = contactsCursor.photoUri,
             photoThumbnailUri = contactsCursor.photoThumbnailUri,
+            hasPhoneNumber = contactsCursor.hasPhoneNumber
         )
 }

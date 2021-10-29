@@ -30,7 +30,8 @@ internal fun Context.logContactsTable(contentUri: Uri) {
             ContactsContract.Contacts.SEND_TO_VOICEMAIL,
             ContactsContract.Contacts.PHOTO_FILE_ID,
             ContactsContract.Contacts.PHOTO_URI,
-            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER
         ),
         null,
         null,
@@ -53,6 +54,7 @@ internal fun Context.logContactsTable(contentUri: Uri) {
         val photoFileId = cursor.getString(6)
         val photoUri = cursor.getString(7)
         val photoThumbnailUri = cursor.getString(8)
+        val hasPhoneNumber = cursor.getString(9)
 
         log(
             """
@@ -60,7 +62,8 @@ internal fun Context.logContactsTable(contentUri: Uri) {
                  displayNameAlt: $displayNameAlt, starred: $starred,
                  customRingtone: $customRingtone, sendToVoicemail: $sendToVoicemail,
                  photoFileId: $photoFileId, photoUri: $photoUri,
-                 photoThumbnailUri: $photoThumbnailUri
+                 photoThumbnailUri: $photoThumbnailUri,
+                 hasPhoneNumber: $hasPhoneNumber
             """.trimIndent().replace("\n", "")
         )
     }
