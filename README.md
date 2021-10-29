@@ -58,7 +58,7 @@ Also included are some pre-baked goodies to be used as is or just for reference;
 - [Gender custom Data](/howto/howto-integrate-gender-custom-data.md).
 - [Handle name custom Data](/howto/howto-integrate-handlename-custom-data.md).
 - [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
-- [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md   )
+- [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
 
 **Framework-agnostic design**
 
@@ -87,7 +87,7 @@ To import all modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:0.1.6'
+     implementation 'com.github.vestrel00.contacts-android:0.1.7'
 }
 ```
 
@@ -95,7 +95,7 @@ To import specific modules,
 
 ```
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.6'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.7'
 }
 ```
 
