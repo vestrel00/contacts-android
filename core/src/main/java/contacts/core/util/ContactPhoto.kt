@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import android.content.ContentProviderOperation.newDelete
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -44,20 +43,20 @@ import java.io.InputStream
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoInputStream(context: Context): InputStream? {
+fun ContactEntity.photoInputStream(contacts: Contacts): InputStream? {
     val contactId = id
 
-    if (!ContactsPermissions(context).canQuery || contactId == null) {
+    if (!contacts.permissions.canQuery || contactId == null) {
         return null
     }
 
-    return context.contentResolver.query(
+    return contacts.applicationContext.contentResolver.query(
         if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoUri),
         ContactsFields.Id equalTo contactId
     ) {
         val photoUri = it.getNextOrNull { it.contactsCursor().photoUri }
-        uriInputStream(context, photoUri)
+        uriInputStream(contacts, photoUri)
     }
 }
 
@@ -82,7 +81,7 @@ fun ContactEntity.photoInputStream(context: Context): InputStream? {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoBytes(context: Context): ByteArray? = photoInputStream(context)?.apply {
+fun ContactEntity.photoBytes(contacts: Contacts): ByteArray? = photoInputStream(contacts)?.apply {
     it.readBytes()
 }
 
@@ -107,7 +106,7 @@ fun ContactEntity.photoBytes(context: Context): ByteArray? = photoInputStream(co
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoBitmap(context: Context): Bitmap? = photoInputStream(context)?.apply {
+fun ContactEntity.photoBitmap(contacts: Contacts): Bitmap? = photoInputStream(contacts)?.apply {
     BitmapFactory.decodeStream(it)
 }
 
@@ -132,19 +131,19 @@ fun ContactEntity.photoBitmap(context: Context): Bitmap? = photoInputStream(cont
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoBitmapDrawable(context: Context): BitmapDrawable? =
-    photoInputStream(context)?.apply {
-        BitmapDrawable(context.resources, it)
+fun ContactEntity.photoBitmapDrawable(contacts: Contacts): BitmapDrawable? =
+    photoInputStream(contacts)?.apply {
+        BitmapDrawable(contacts.applicationContext.resources, it)
     }
 
-private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
+private fun uriInputStream(contacts: Contacts, uri: Uri?): InputStream? {
     if (uri == null) {
         return null
     }
 
     var inputStream: InputStream? = null
     try {
-        val fd = context.contentResolver.openAssetFileDescriptor(uri, "r")
+        val fd = contacts.applicationContext.contentResolver.openAssetFileDescriptor(uri, "r")
         inputStream = fd?.createInputStream()
     } finally {
         return inputStream
@@ -178,20 +177,20 @@ private fun uriInputStream(context: Context, uri: Uri?): InputStream? {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
+fun ContactEntity.photoThumbnailInputStream(contacts: Contacts): InputStream? {
     val contactId = id
 
-    if (!ContactsPermissions(context).canQuery || contactId == null) {
+    if (!contacts.permissions.canQuery || contactId == null) {
         return null
     }
 
-    return context.contentResolver.query(
+    return contacts.applicationContext.contentResolver.query(
         if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoThumbnailUri),
         ContactsFields.Id equalTo contactId
     ) {
         val photoThumbnailUri = it.getNextOrNull { it.contactsCursor().photoThumbnailUri }
-        uriInputStream(context, photoThumbnailUri)
+        uriInputStream(contacts, photoThumbnailUri)
     }
 }
 
@@ -218,8 +217,8 @@ fun ContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoThumbnailBytes(context: Context): ByteArray? =
-    photoThumbnailInputStream(context)?.apply {
+fun ContactEntity.photoThumbnailBytes(contacts: Contacts): ByteArray? =
+    photoThumbnailInputStream(contacts)?.apply {
         it.readBytes()
     }
 
@@ -244,8 +243,8 @@ fun ContactEntity.photoThumbnailBytes(context: Context): ByteArray? =
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoThumbnailBitmap(context: Context): Bitmap? =
-    photoThumbnailInputStream(context)?.apply {
+fun ContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
+    photoThumbnailInputStream(contacts)?.apply {
         BitmapFactory.decodeStream(it)
     }
 
@@ -270,9 +269,9 @@ fun ContactEntity.photoThumbnailBitmap(context: Context): Bitmap? =
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable? =
-    photoThumbnailInputStream(context)?.apply {
-        BitmapDrawable(context.resources, it)
+fun ContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDrawable? =
+    photoThumbnailInputStream(contacts)?.apply {
+        BitmapDrawable(contacts.applicationContext.resources, it)
     }
 
 // endregion
@@ -307,52 +306,52 @@ fun ContactEntity.photoThumbnailBitmapDrawable(context: Context): BitmapDrawable
  * [ContactsContract.RawContacts.DisplayPhoto] class documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.setPhoto(context: Context, photoBytes: ByteArray): Boolean {
+fun ContactEntity.setPhoto(contacts: Contacts, photoBytes: ByteArray): Boolean {
     val contactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete || contactId == null) {
+    if (!contacts.permissions.canUpdateDelete || contactId == null) {
         return false
     }
 
-    val photoFileId = photoFileId(context, contactId)
+    val photoFileId = photoFileId(contacts, contactId)
 
     val rawContact = if (photoFileId != null) {
         // A photo exists for the Contact. Get the RawContact in the Data table that holds the photo
         // row with the same photo file id. Keep in mind that there may be multiple RawContacts
         // associated with a single Contact.
-        rawContactWithPhotoFileId(context, photoFileId)
+        rawContactWithPhotoFileId(contacts, photoFileId)
     } else {
         // No photo exists for the Contact or any of its associated RawContacts. Use the
         // first RawContact as the default or fail if also not available.
         rawContacts.firstOrNull()
     }
 
-    return rawContact?.doSetPhoto(context, photoBytes) == true
+    return rawContact?.doSetPhoto(contacts, photoBytes) == true
 }
 
 /**
  * See [ContactEntity.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.setPhoto(context: Context, photoInputStream: InputStream): Boolean =
-    setPhoto(context, photoInputStream.readBytes())
+fun ContactEntity.setPhoto(contacts: Contacts, photoInputStream: InputStream): Boolean =
+    setPhoto(contacts, photoInputStream.readBytes())
 
 /**
  * See [ContactEntity.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.setPhoto(context: Context, photoBitmap: Bitmap): Boolean =
-    setPhoto(context, photoBitmap.bytes())
+fun ContactEntity.setPhoto(contacts: Contacts, photoBitmap: Bitmap): Boolean =
+    setPhoto(contacts, photoBitmap.bytes())
 
 /**
  * See [ContactEntity.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): Boolean =
-    setPhoto(context, photoDrawable.bitmap.bytes())
+fun ContactEntity.setPhoto(contacts: Contacts, photoDrawable: BitmapDrawable): Boolean =
+    setPhoto(contacts, photoDrawable.bitmap.bytes())
 
-private fun ContactEntity.photoFileId(context: Context, contactId: Long): Long? =
-    context.contentResolver.query(
+private fun ContactEntity.photoFileId(contacts: Contacts, contactId: Long): Long? =
+    contacts.applicationContext.contentResolver.query(
         if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoFileId),
         ContactsFields.Id equalTo contactId
@@ -361,9 +360,9 @@ private fun ContactEntity.photoFileId(context: Context, contactId: Long): Long? 
     }
 
 private fun ContactEntity.rawContactWithPhotoFileId(
-    context: Context, photoFileId: Long
+    contacts: Contacts, photoFileId: Long
 ): TempRawContact? =
-    context.contentResolver.query(
+    contacts.applicationContext.contentResolver.query(
         if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         Include(Fields.RawContact.Id),
         Fields.Photo.PhotoFileId equalTo photoFileId
@@ -394,14 +393,14 @@ private fun ContactEntity.rawContactWithPhotoFileId(
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.removePhoto(context: Context): Boolean {
+fun ContactEntity.removePhoto(contacts: Contacts): Boolean {
     val contactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete || contactId == null) {
+    if (!contacts.permissions.canUpdateDelete || contactId == null) {
         return false
     }
 
-    val isSuccessful = context.contentResolver.applyBatch(
+    val isSuccessful = contacts.applicationContext.contentResolver.applyBatch(
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.Contact.Id equalTo contactId)

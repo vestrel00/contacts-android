@@ -7,6 +7,7 @@ import android.widget.ImageView
 import contacts.async.util.photoThumbnailBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
+import contacts.core.Contacts
 import contacts.core.entities.MutableRawContact
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -51,25 +52,29 @@ class RawContactPhotoThumbnailView @JvmOverloads constructor(
      * update the views. Any modifications in the views will also be made to the [rawContact]'s
      * photo upon [savePhoto].
      */
-    var rawContact: MutableRawContact? = null
-        set(value) {
-            field = value
+    private var rawContact: MutableRawContact? = null
 
-            setPhotoThumbnailDrawableFromMutableRawContact()
-        }
+    /**
+     * Sets the RawContact shown and managed by this view to the given [rawContact] and uses the
+     * given [contacts] API to perform operations on it.
+     */
+    fun setRawContact(rawContact: MutableRawContact?, contacts: Contacts) {
+        this.rawContact = rawContact
+        setPhotoThumbnailDrawableFromMutableRawContact(contacts)
+    }
 
     private var setRawContactPhotoJob: Job? = null
 
-    override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable): Boolean =
-        rawContact?.setPhotoWithContext(context, photoDrawable) == true
+    override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
+        rawContact?.setPhotoWithContext(contacts, photoDrawable) == true
 
-    override suspend fun removePhotoFromDb(): Boolean =
-        rawContact?.removePhotoWithContext(context) == true
+    override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =
+        rawContact?.removePhotoWithContext(contacts) == true
 
-    private fun setPhotoThumbnailDrawableFromMutableRawContact() {
+    private fun setPhotoThumbnailDrawableFromMutableRawContact(contacts: Contacts) {
         setRawContactPhotoJob?.cancel()
         setRawContactPhotoJob = launch {
-            setPhotoDrawable(rawContact?.photoThumbnailBitmapDrawableWithContext(context))
+            setPhotoDrawable(rawContact?.photoThumbnailBitmapDrawableWithContext(contacts))
         }
     }
 }

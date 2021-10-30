@@ -123,10 +123,10 @@ class RawContactView @JvmOverloads constructor(
         photoThumbnailView.onActivityResult(requestCode, resultCode, data)
     }
 
-    suspend fun savePhoto(): Boolean = photoThumbnailView.savePhoto()
+    suspend fun savePhoto(contacts: Contacts): Boolean = photoThumbnailView.savePhoto(contacts)
 
     private fun setRawContactView(contacts: Contacts) {
-        photoThumbnailView.rawContact = rawContact
+        photoThumbnailView.setRawContact(rawContact, contacts)
         accountView.setRawContact(rawContact, contacts)
         nameView.data = rawContact.name ?: MutableName().apply(rawContact::setName)
         nicknameView.data = rawContact.nickname ?: MutableNickname().apply(rawContact::setNickname)

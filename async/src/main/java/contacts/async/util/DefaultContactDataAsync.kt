@@ -1,7 +1,7 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.CommonDataEntity
 import contacts.core.util.clearDefault
 import contacts.core.util.setAsDefault
@@ -18,9 +18,9 @@ import kotlin.coroutines.CoroutineContext
  * See [CommonDataEntity.setAsDefault].
  */
 suspend fun CommonDataEntity.setAsDefaultWithContext(
-    context: Context,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(coroutineContext) { setAsDefault(context) }
+): Boolean = withContext(coroutineContext) { setAsDefault(contacts) }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -29,9 +29,9 @@ suspend fun CommonDataEntity.setAsDefaultWithContext(
  * See [CommonDataEntity.clearDefault].
  */
 suspend fun CommonDataEntity.clearDefaultWithContext(
-    context: Context,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(coroutineContext) { clearDefault(context) }
+): Boolean = withContext(coroutineContext) { clearDefault(contacts) }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -40,9 +40,9 @@ suspend fun CommonDataEntity.clearDefaultWithContext(
  * See [CommonDataEntity.setAsDefault].
  */
 fun CommonDataEntity.setAsDefaultAsync(
-    context: Context,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setAsDefault(context) }
+): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setAsDefault(contacts) }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -51,6 +51,6 @@ fun CommonDataEntity.setAsDefaultAsync(
  * See [CommonDataEntity.clearDefault].
  */
 fun CommonDataEntity.clearDefaultAsync(
-    context: Context,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(coroutineContext).async { clearDefault(context) }
+): Deferred<Boolean> = CoroutineScope(coroutineContext).async { clearDefault(contacts) }

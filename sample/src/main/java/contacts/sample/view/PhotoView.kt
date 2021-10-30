@@ -8,6 +8,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.widget.ImageView
+import contacts.core.Contacts
 import contacts.sample.R
 import contacts.ui.util.onPhotoPicked
 import contacts.ui.util.showPhotoPickerDialog
@@ -54,8 +55,11 @@ abstract class PhotoView @JvmOverloads constructor(
     private var isPickingPhoto: Boolean = false
     private var photoHasChanged: Boolean = false
 
-    protected abstract suspend fun savePhotoToDb(photoDrawable: BitmapDrawable): Boolean
-    protected abstract suspend fun removePhotoFromDb(): Boolean
+    protected abstract suspend fun savePhotoToDb(
+        photoDrawable: BitmapDrawable, contacts: Contacts
+    ): Boolean
+
+    protected abstract suspend fun removePhotoFromDb(contacts: Contacts): Boolean
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -122,16 +126,16 @@ abstract class PhotoView @JvmOverloads constructor(
      * Saves the photo to the DB if it has changed. If there is no photo, then the photo is removed
      * from the DB.
      */
-    suspend fun savePhoto(): Boolean {
+    suspend fun savePhoto(contacts: Contacts): Boolean {
         if (!photoHasChanged) {
             return true
         }
 
         val photoDrawable = photoDrawable
         val success = if (photoDrawable != null) {
-            savePhotoToDb(photoDrawable)
+            savePhotoToDb(photoDrawable, contacts)
         } else {
-            removePhotoFromDb()
+            removePhotoFromDb(contacts)
         }
 
         if (success) {

@@ -2,16 +2,12 @@ package contacts.core.util
 
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newUpdate
-import android.content.Context
-import contacts.core.ContactsPermissions
-import contacts.core.Fields
-import contacts.core.and
+import contacts.core.*
 import contacts.core.entities.CommonDataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.operation.withValue
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
-import contacts.core.equalTo
 
 /**
  * Returns the default data entity in the collection or null if not found.
@@ -38,12 +34,12 @@ fun Sequence<CommonDataEntity>.default(): CommonDataEntity? = firstOrNull { it.i
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun CommonDataEntity.setAsDefault(context: Context): Boolean {
+fun CommonDataEntity.setAsDefault(contacts: Contacts): Boolean {
     val dataId = id
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!ContactsPermissions(context).canUpdateDelete
+    if (!contacts.permissions.canUpdateDelete
         || dataId == null
         || rawContactId == null
         || contactId == null
@@ -51,7 +47,7 @@ fun CommonDataEntity.setAsDefault(context: Context): Boolean {
         return false
     }
 
-    return context.contentResolver.applyBatch(
+    return contacts.applicationContext.contentResolver.applyBatch(
         clearPrimary(rawContactId),
         clearSuperPrimary(contactId),
         setPrimaryAndSuperPrimary(dataId)
@@ -87,18 +83,18 @@ fun CommonDataEntity.setAsDefault(context: Context): Boolean {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun CommonDataEntity.clearDefault(context: Context): Boolean {
+fun CommonDataEntity.clearDefault(contactsApi: Contacts): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!ContactsPermissions(context).canUpdateDelete
+    if (!contactsApi.permissions.canUpdateDelete
         || rawContactId == null
         || contactId == null
     ) {
         return false
     }
 
-    return context.contentResolver.applyBatch(
+    return contactsApi.applicationContext.contentResolver.applyBatch(
         clearPrimary(rawContactId),
         clearSuperPrimary(contactId)
     ) != null

@@ -7,6 +7,7 @@ import android.widget.ImageView
 import contacts.async.util.photoBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
+import contacts.core.Contacts
 import contacts.core.entities.MutableContact
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -46,30 +47,34 @@ class ContactPhotoView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : PhotoView(context, attributeSet, defStyleAttr) {
 
+    private var setContactPhotoJob: Job? = null
+
     /**
      * The Contact whose photo is shown in this view. Setting this will automatically update the
      * views. Any modifications in the views will also be made to the [contact]'s photo upon
      * [savePhoto].
      */
-    var contact: MutableContact? = null
-        set(value) {
-            field = value
+    private var contact: MutableContact? = null
 
-            setPhotoDrawableFromMutableContact()
-        }
+    /**
+     * Sets the Contact shown and managed by this view to the given [contact] and uses the given
+     * [contacts] API to perform operations on it.
+     */
+    fun setContact(contact: MutableContact?, contacts: Contacts) {
+        this.contact = contact
+        setPhotoDrawableFromMutableContact(contacts)
+    }
 
-    private var setContactPhotoJob: Job? = null
+    override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
+        contact?.setPhotoWithContext(contacts, photoDrawable) == true
 
-    override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable): Boolean =
-        contact?.setPhotoWithContext(context, photoDrawable) == true
+    override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =
+        contact?.removePhotoWithContext(contacts) == true
 
-    override suspend fun removePhotoFromDb(): Boolean =
-        contact?.removePhotoWithContext(context) == true
-
-    private fun setPhotoDrawableFromMutableContact() {
+    private fun setPhotoDrawableFromMutableContact(contacts: Contacts) {
         setContactPhotoJob?.cancel()
         setContactPhotoJob = launch {
-            setPhotoDrawable(contact?.photoBitmapDrawableWithContext(context))
+            setPhotoDrawable(contact?.photoBitmapDrawableWithContext(contacts))
         }
     }
 }

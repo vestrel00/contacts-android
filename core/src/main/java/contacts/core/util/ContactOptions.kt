@@ -1,16 +1,13 @@
 package contacts.core.util
 
-import android.content.Context
-import contacts.core.ContactsFields
-import contacts.core.ContactsPermissions
-import contacts.core.Include
+import contacts.core.*
 import contacts.core.entities.ContactEntity
 import contacts.core.entities.MutableOptions
 import contacts.core.entities.Options
 import contacts.core.entities.mapper.optionsMapper
 import contacts.core.entities.operation.OptionsOperation
+import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
-import contacts.core.equalTo
 
 /**
  * Returns the most up-to-date [Options] of this [ContactEntity], which may be different from this
@@ -31,15 +28,15 @@ import contacts.core.equalTo
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.options(context: Context): Options {
+fun ContactEntity.options(contacts: Contacts): Options {
     val contactId = id
 
-    if (!ContactsPermissions(context).canQuery || contactId == null) {
+    if (!contacts.permissions.canQuery || contactId == null) {
         return Options()
     }
 
-    return context.contentResolver.query(
-        if (isProfile) contacts.core.entities.table.ProfileUris.CONTACTS.uri else Table.Contacts.uri,
+    return contacts.applicationContext.contentResolver.query(
+        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.Options),
         ContactsFields.Id equalTo contactId
     ) {
@@ -69,14 +66,14 @@ fun ContactEntity.options(context: Context): Options {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.setOptions(context: Context, options: MutableOptions): Boolean {
+fun ContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Boolean {
     val contactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete || contactId == null) {
+    if (!contacts.permissions.canUpdateDelete || contactId == null) {
         return false
     }
 
-    return context.contentResolver.applyBatch(
+    return contacts.applicationContext.contentResolver.applyBatch(
         OptionsOperation().updateContactOptions(contactId, options)
     ) != null
 }
@@ -102,8 +99,8 @@ fun ContactEntity.setOptions(context: Context, options: MutableOptions): Boolean
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.updateOptions(context: Context, update: MutableOptions.() -> Unit): Boolean {
-    val optionsToUse = options(context).toMutableOptions()
+fun ContactEntity.updateOptions(contacts: Contacts, update: MutableOptions.() -> Unit): Boolean {
+    val optionsToUse = options(contacts).toMutableOptions()
     optionsToUse.update()
-    return setOptions(context, optionsToUse)
+    return setOptions(contacts, optionsToUse)
 }

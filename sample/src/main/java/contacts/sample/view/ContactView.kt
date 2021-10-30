@@ -111,13 +111,11 @@ class ContactView @JvmOverloads constructor(
      * Set the Contact shown and managed by this view to the given [contact] and uses the given
      * [contacts] API to perform operations on it.
      */
-    fun setContact(contact: MutableContact?, contacts: Contacts) {
+    private fun setContact(contact: MutableContact?, contacts: Contacts) {
         this.contact = contact
 
-        launch { setStarredView(contact?.options?.starred == true) }
-        setSendToVoicemailView(contact?.options?.sendToVoicemail == true)
-
-        setDetailsView()
+        setOptionsView(contacts)
+        setDetailsView(contacts)
         setRawContactsView(contacts)
     }
 
@@ -130,6 +128,7 @@ class ContactView @JvmOverloads constructor(
         get() = SupervisorJob() + Dispatchers.Main
 
     // options
+    private val optionsView: ViewGroup
     private val starredView: ImageView
     private val sendToVoicemailView: CheckBox
     private val customRingtoneView: ImageView
@@ -153,32 +152,23 @@ class ContactView @JvmOverloads constructor(
         orientation = VERTICAL
         inflate(context, R.layout.view_contact, this)
 
+        optionsView = findViewById(R.id.options)
+        starredView = findViewById(R.id.starred)
+        sendToVoicemailView = findViewById(R.id.sendToVoicemail)
+        customRingtoneView = findViewById(R.id.customRingtone)
+
         photoView = findViewById(R.id.photo)
+
         displayNamePrimaryView = findViewById(R.id.displayNamePrimary)
         displayNameAltView = findViewById(R.id.displayNameAlt)
         lastUpdatedView = findViewById(R.id.lastUpdated)
 
-        starredView = findViewById(R.id.starred)
-        starredView.setOnClickListener {
-            launch { toggleStarred() }
-        }
-
-        sendToVoicemailView = findViewById(R.id.sendToVoicemail)
-        sendToVoicemailView.setOnCheckedChangeListener { _, isChecked ->
-            launch { sendToVoicemail(isChecked) }
-        }
-
-        customRingtoneView = findViewById(R.id.customRingtone)
-        customRingtoneView.setOnClickListener {
-            launch { selectCustomRingtone() }
-        }
-
         rawContactsView = findViewById(R.id.rawContacts)
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?, contacts: Contacts) {
         onRingtoneSelected(requestCode, resultCode, data) { ringtoneUri ->
-            launch { setCustomRingtone(ringtoneUri) }
+            launch { setCustomRingtone(ringtoneUri, contacts) }
         }
 
         photoView.onActivityResult(requestCode, resultCode, data)
@@ -194,7 +184,6 @@ class ContactView @JvmOverloads constructor(
         // Do not ever disable the contact options and details.
         rawContactsView.setThisAndDescendantsEnabled(enabled)
     }
-
 
     /**
      * Loads the contact with the given [contactId] using the given [contacts] API.
@@ -230,8 +219,6 @@ class ContactView @JvmOverloads constructor(
     suspend fun createNewContact(contacts: Contacts): Long? {
         val rawContact = newRawContactView?.rawContact ?: return null
 
-        // TODO Contact photo!
-
         val newContact = contacts.insertWithPermission()
             .allowBlanks(true)
             // TODO .forAccount() reuse AccountsActivity in single choice mode to choose an account
@@ -239,6 +226,8 @@ class ContactView @JvmOverloads constructor(
             .commitWithContext()
             .contactWithContext(contacts, rawContact)
 
+        // TODO RawContact photo!
+        
         return newContact?.id
     }
 
@@ -255,11 +244,11 @@ class ContactView @JvmOverloads constructor(
         // deleted if it only has a photo. Blank (Raw)Contacts are by default deleted in updates.
         for (index in 0 until rawContactsView.childCount) {
             val rawContactView = rawContactsView.getChildAt(index) as RawContactView
-            rawContactView.savePhoto()
+            rawContactView.savePhoto(contacts)
         }
 
         // Update the Contact photo iff it has changed.
-        photoView.savePhoto()
+        photoView.savePhoto(contacts)
 
         // Perform the update. Ignore if photos update succeeded or not :D
         return contacts.updateWithPermission()
@@ -284,9 +273,34 @@ class ContactView @JvmOverloads constructor(
             .isSuccessful
     }
 
+    private fun setOptionsView(contacts: Contacts) {
+        val contact = contact
+
+        optionsView.visibility = if (contact != null) VISIBLE else GONE
+
+        // A contact must exist in order to update options. This means that options are not
+        // available in create mode. This is the same behavior as the native Contacts app.
+        if (contact == null) {
+            return
+        }
+
+        launch { setStarredView(contact.options?.starred == true) }
+        setSendToVoicemailView(contact.options?.sendToVoicemail == true)
+
+        starredView.setOnClickListener {
+            launch { toggleStarred(contacts) }
+        }
+        sendToVoicemailView.setOnCheckedChangeListener { _, isChecked ->
+            launch { sendToVoicemail(isChecked, contacts) }
+        }
+        customRingtoneView.setOnClickListener {
+            launch { selectCustomRingtone(contacts) }
+        }
+    }
+
     @SuppressLint("SetTextI18n")
-    private fun setDetailsView() {
-        photoView.contact = contact
+    private fun setDetailsView(contacts: Contacts) {
+        photoView.setContact(contact, contacts)
         displayNamePrimaryView.text = "Display name primary: ${contact?.displayNamePrimary}"
         displayNameAltView.text = "Display name alt: ${contact?.displayNameAlt}"
         lastUpdatedView.text = "Last updated: ${contact?.lastUpdatedTimestamp}"
@@ -335,36 +349,36 @@ class ContactView @JvmOverloads constructor(
         return rawContactView
     }
 
-    private suspend fun toggleStarred() {
+    private suspend fun toggleStarred(contacts: Contacts) {
         // The starred value from DB needs to be retrieved.
-        val options = contact?.optionsWithContext(context)?.toMutableOptions() ?: MutableOptions()
+        val options = contact?.optionsWithContext(contacts)?.toMutableOptions() ?: MutableOptions()
         val starred = options.starred == true
 
         options.starred = !starred
 
         // Update immediately, separate from the general update/save.
-        val success = contact?.setOptionsWithContext(context, options) == true
+        val success = contact?.setOptionsWithContext(contacts, options) == true
 
         if (success) {
             setStarredView(!starred)
         }
     }
 
-    private suspend fun sendToVoicemail(sendToVoicemail: Boolean) {
+    private suspend fun sendToVoicemail(sendToVoicemail: Boolean, contacts: Contacts) {
         // Update immediately, separate from the general update/save.
-        contact?.updateOptionsWithContext(context) {
+        contact?.updateOptionsWithContext(contacts) {
             this.sendToVoicemail = sendToVoicemail
         }
     }
 
-    private suspend fun selectCustomRingtone() {
+    private suspend fun selectCustomRingtone(contacts: Contacts) {
         // The customRingtone value from DB needs to be retrieved.
-        activity?.selectRingtone(contact?.optionsWithContext(context)?.customRingtone)
+        activity?.selectRingtone(contact?.optionsWithContext(contacts)?.customRingtone)
     }
 
-    private suspend fun setCustomRingtone(customRingtone: Uri?) {
+    private suspend fun setCustomRingtone(customRingtone: Uri?, contacts: Contacts) {
         // Update immediately, separate from the general update/save.
-        contact?.updateOptionsWithContext(context) {
+        contact?.updateOptionsWithContext(contacts) {
             this.customRingtone = customRingtone
         }
     }

@@ -15,7 +15,7 @@ fun TestContacts(
     context: Context,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry()
 ): Contacts = TestContacts(Contacts(context, customDataRegistry)).also {
-    TestDataRegistration().registerTo(customDataRegistry)
+    customDataRegistry.register(TestDataRegistration())
 }
 
 object ContactsFactory {

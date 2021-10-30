@@ -1,7 +1,7 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.ContactEntity
 import contacts.core.util.ContactLinkResult
 import contacts.core.util.ContactUnlinkResult
@@ -22,10 +22,10 @@ import kotlin.coroutines.CoroutineContext
  * See [ContactEntity.link].
  */
 suspend fun ContactEntity.linkWithContext(
-    context: Context,
+    contactsApi: Contacts,
     vararg contacts: ContactEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-) = linkWithContext(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkWithContext(contactsApi, contacts.asSequence(), coroutineContext = coroutineContext)
 
 
 /**
@@ -35,10 +35,10 @@ suspend fun ContactEntity.linkWithContext(
  * See [ContactEntity.link].
  */
 suspend fun ContactEntity.linkWithContext(
-    context: Context,
+    contactsApi: Contacts,
     contacts: Collection<ContactEntity>,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-) = linkWithContext(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkWithContext(contactsApi, contacts.asSequence(), coroutineContext = coroutineContext)
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -47,10 +47,10 @@ suspend fun ContactEntity.linkWithContext(
  * See [ContactEntity.link].
  */
 suspend fun ContactEntity.linkWithContext(
-    context: Context,
+    contactsApi: Contacts,
     contacts: Sequence<ContactEntity>,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): ContactLinkResult = withContext(coroutineContext) { link(context, contacts) }
+): ContactLinkResult = withContext(coroutineContext) { link(contactsApi, contacts) }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -59,9 +59,9 @@ suspend fun ContactEntity.linkWithContext(
  * See [ContactEntity.link].
  */
 suspend fun Collection<ContactEntity>.linkWithContext(
-    context: Context,
+    contactsApi: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): ContactLinkResult = asSequence().linkWithContext(context, coroutineContext)
+): ContactLinkResult = asSequence().linkWithContext(contactsApi, coroutineContext)
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -70,9 +70,9 @@ suspend fun Collection<ContactEntity>.linkWithContext(
  * See [ContactEntity.link].
  */
 suspend fun Sequence<ContactEntity>.linkWithContext(
-    context: Context,
+    contactsApi: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): ContactLinkResult = withContext(coroutineContext) { link(context) }
+): ContactLinkResult = withContext(coroutineContext) { link(contactsApi) }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -81,9 +81,9 @@ suspend fun Sequence<ContactEntity>.linkWithContext(
  * See [ContactEntity.unlink].
  */
 suspend fun ContactEntity.unlinkWithContext(
-    context: Context,
+    contactsApi: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): ContactUnlinkResult = withContext(coroutineContext) { unlink(context) }
+): ContactUnlinkResult = withContext(coroutineContext) { unlink(contactsApi) }
 
 // endregion
 
@@ -96,10 +96,10 @@ suspend fun ContactEntity.unlinkWithContext(
  * See [ContactEntity.link].
  */
 fun ContactEntity.linkAsync(
-    context: Context,
+    contactsApi: Contacts,
     vararg contacts: ContactEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-) = linkAsync(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkAsync(contactsApi, contacts.asSequence(), coroutineContext = coroutineContext)
 
 
 /**
@@ -109,10 +109,10 @@ fun ContactEntity.linkAsync(
  * See [ContactEntity.link].
  */
 fun ContactEntity.linkAsync(
-    context: Context,
+    contactsApi: Contacts,
     contacts: Collection<ContactEntity>,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-) = linkAsync(context, contacts.asSequence(), coroutineContext = coroutineContext)
+) = linkAsync(contactsApi, contacts.asSequence(), coroutineContext = coroutineContext)
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -121,10 +121,11 @@ fun ContactEntity.linkAsync(
  * See [ContactEntity.link].
  */
 fun ContactEntity.linkAsync(
-    context: Context,
+    contactsApi: Contacts,
     contacts: Sequence<ContactEntity>,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<ContactLinkResult> = CoroutineScope(coroutineContext).async { link(context, contacts) }
+): Deferred<ContactLinkResult> =
+    CoroutineScope(coroutineContext).async { link(contactsApi, contacts) }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -133,9 +134,9 @@ fun ContactEntity.linkAsync(
  * See [ContactEntity.link].
  */
 fun Collection<ContactEntity>.linkAsync(
-    context: Context,
+    contactsApi: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<ContactLinkResult> = asSequence().linkAsync(context, coroutineContext)
+): Deferred<ContactLinkResult> = asSequence().linkAsync(contactsApi, coroutineContext)
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -144,9 +145,9 @@ fun Collection<ContactEntity>.linkAsync(
  * See [ContactEntity.link].
  */
 fun Sequence<ContactEntity>.linkAsync(
-    context: Context,
+    contactsApi: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<ContactLinkResult> = CoroutineScope(coroutineContext).async { link(context) }
+): Deferred<ContactLinkResult> = CoroutineScope(coroutineContext).async { link(contactsApi) }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -155,8 +156,8 @@ fun Sequence<ContactEntity>.linkAsync(
  * See [ContactEntity.unlink].
  */
 fun ContactEntity.unlinkAsync(
-    context: Context,
+    contactsApi: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<ContactUnlinkResult> = CoroutineScope(coroutineContext).async { unlink(context) }
+): Deferred<ContactUnlinkResult> = CoroutineScope(coroutineContext).async { unlink(contactsApi) }
 
 // endregion

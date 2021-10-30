@@ -1,10 +1,10 @@
 package contacts.core.util
 
 import android.content.ContentProviderOperation
-import android.content.Context
 import android.os.Build
 import android.provider.ContactsContract.*
 import contacts.core.*
+import contacts.core.Contacts
 import contacts.core.entities.ContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.Name
@@ -100,24 +100,27 @@ import contacts.core.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(context: Context, vararg contacts: ContactEntity) =
-    link(context, contacts.asSequence())
+fun ContactEntity.link(contactsApi: Contacts, vararg contacts: ContactEntity) =
+    link(contactsApi, contacts.asSequence())
 
 /**
  * See [ContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(context: Context, contacts: Collection<ContactEntity>) =
-    link(context, contacts.asSequence())
+fun ContactEntity.link(contactsApi: Contacts, contacts: Collection<ContactEntity>) =
+    link(contactsApi, contacts.asSequence())
 
 /**
  * See [ContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): ContactLinkResult {
+fun ContactEntity.link(
+    contactsApi: Contacts,
+    contacts: Sequence<ContactEntity>
+): ContactLinkResult {
     val mainContactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete ||
+    if (!contactsApi.permissions.canUpdateDelete ||
         mainContactId == null ||
         mainContactId.isProfileId ||
         contacts.find { it.isProfile } != null
@@ -142,17 +145,17 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
 
     val prioritizedContactIds = sortedContactIds.toSet()
 
-    val sortedRawContactIds = sortedRawContactIds(context, prioritizedContactIds)
+    val sortedRawContactIds = contactsApi.sortedRawContactIds(prioritizedContactIds)
 
     if (sortedRawContactIds.size < 2) {
         // At least 2 RawContacts are required to link.
         return ContactLinkFailed()
     }
 
-    val nameRowIdToUseAsDefault = nameRowIdToUseAsDefault(context, prioritizedContactIds)
+    val nameRowIdToUseAsDefault = contactsApi.nameRowIdToUseAsDefault(prioritizedContactIds)
 
     // Note that the result uri is null. There is no meaningful information we can get here.
-    context.contentResolver.applyBatch(
+    contactsApi.applicationContext.contentResolver.applyBatch(
         aggregateExceptionsOperations(
             sortedRawContactIds,
             AggregationExceptions.TYPE_KEEP_TOGETHER
@@ -164,8 +167,8 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
     // any name to set as default. Plus, we use a reference to the name row with updated contactId
     // after the link / aggregation.
     val name = nameRowIdToUseAsDefault?.let {
-        nameWithId(context, it)?.apply {
-            setAsDefault(context)
+        contactsApi.nameWithId(it)?.apply {
+            setAsDefault(contactsApi)
         }
     }
 
@@ -173,7 +176,8 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
     // then use the contact id of the first RawContact.
     // Technically, the LOOKUP_KEY would be best suited for this but we already have the name so
     // we might as well just use that.
-    val contactId = name?.contactId ?: contactIdOfRawContact(context, sortedRawContactIds.first())
+    val contactId =
+        name?.contactId ?: contactsApi.contactIdOfRawContact(sortedRawContactIds.first())
 
     return ContactLinkSuccess(contactId)
 }
@@ -183,19 +187,20 @@ fun ContactEntity.link(context: Context, contacts: Sequence<ContactEntity>): Con
  *
  * See [ContactEntity.link].
  */
-fun Collection<ContactEntity>.link(context: Context): ContactLinkResult = asSequence().link(context)
+fun Collection<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult =
+    asSequence().link(contactsApi)
 
 /**
  * Links the first Contact in this sequence with the rest in the sequence.
  *
  * See [ContactEntity.link].
  */
-fun Sequence<ContactEntity>.link(context: Context): ContactLinkResult {
+fun Sequence<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
     val mainContact = firstOrNull()
     val contacts = filterIndexed { index, _ -> index > 0 }
 
     return if (mainContact != null && contacts.isNotEmpty()) {
-        mainContact.link(context, contacts)
+        mainContact.link(contactsApi, contacts)
     } else {
         ContactLinkFailed()
     }
@@ -249,24 +254,24 @@ private class ContactLinkFailed : ContactLinkResult {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.unlink(context: Context): ContactUnlinkResult {
+fun ContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
     val contactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete ||
+    if (!contactsApi.permissions.canUpdateDelete ||
         contactId == null ||
         contactId.isProfileId
     ) {
         return ContactUnlinkFailed()
     }
 
-    val sortedRawContactIds = sortedRawContactIds(context, setOf(contactId))
+    val sortedRawContactIds = contactsApi.sortedRawContactIds(setOf(contactId))
 
     if (sortedRawContactIds.size < 2) {
         // At least 2 RawContacts are required to unlink.
         return ContactUnlinkFailed()
     }
 
-    context.contentResolver.applyBatch(
+    contactsApi.applicationContext.contentResolver.applyBatch(
         aggregateExceptionsOperations(
             sortedRawContactIds,
             AggregationExceptions.TYPE_KEEP_SEPARATE
@@ -341,7 +346,7 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
  * Returns null if no name row is found or if the API version this is running on is less than
  * 21 (Lollipop).
  */
-private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Long? {
+private fun Contacts.nameRowIdToUseAsDefault(contactIds: Set<Long>): Long? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
         // Contacts.NAME_RAW_CONTACT_ID is not available
         return null
@@ -350,7 +355,7 @@ private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Lo
     var nameRowIdToUseAsDefault: Long? = null
 
     for (contactId in contactIds) {
-        nameRowIdToUseAsDefault = nameRawContactIdStructuredNameId(context, contactId)
+        nameRowIdToUseAsDefault = nameRawContactIdStructuredNameId(contactId)
 
         if (nameRowIdToUseAsDefault != null) {
             break
@@ -367,10 +372,10 @@ private fun nameRowIdToUseAsDefault(context: Context, contactIds: Set<Long>): Lo
  * Returns null if the [ContactNameColumns.DISPLAY_NAME_SOURCE] is not
  * [DisplayNameSources.STRUCTURED_NAME] or if the name row is not found.
  */
-private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long): Long? {
-    val nameRawContactId = nameRawContactId(context, contactId) ?: return null
+private fun Contacts.nameRawContactIdStructuredNameId(contactId: Long): Long? {
+    val nameRawContactId = nameRawContactId(contactId) ?: return null
 
-    return context.contentResolver.query(
+    return applicationContext.contentResolver.query(
         Table.Data,
         Include(Fields.DataId),
         (Fields.RawContact.Id equalTo nameRawContactId)
@@ -388,8 +393,8 @@ private fun nameRawContactIdStructuredNameId(context: Context, contactId: Long):
  */
 // [ANDROID X] @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 // (not using annotation to avoid dependency on androidx.annotation)
-private fun nameRawContactId(context: Context, contactId: Long): Long? =
-    context.contentResolver.query(
+private fun Contacts.nameRawContactId(contactId: Long): Long? =
+    applicationContext.contentResolver.query(
         Table.Contacts,
         Include(ContactsFields.DisplayNameSource, ContactsFields.NameRawContactId),
         ContactsFields.Id equalTo contactId
@@ -413,8 +418,8 @@ private fun nameRawContactId(context: Context, contactId: Long): Long? =
 /**
  * Returns the RawContact IDs of the Contacts with the given [contactIds] in ascending order.
  */
-private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<Long> =
-    context.contentResolver.query(
+private fun Contacts.sortedRawContactIds(contactIds: Set<Long>): List<Long> =
+    applicationContext.contentResolver.query(
         Table.RawContacts,
         Include(RawContactsFields.Id),
         RawContactsFields.ContactId `in` contactIds,
@@ -428,7 +433,7 @@ private fun sortedRawContactIds(context: Context, contactIds: Set<Long>): List<L
         }
     } ?: emptyList()
 
-private fun nameWithId(context: Context, nameRowId: Long): Name? = context.contentResolver.query(
+private fun Contacts.nameWithId(nameRowId: Long): Name? = applicationContext.contentResolver.query(
     Table.Data,
     Include(Fields.Required),
     Fields.DataId equalTo nameRowId
@@ -436,8 +441,8 @@ private fun nameWithId(context: Context, nameRowId: Long): Name? = context.conte
     it.getNextOrNull { it.nameMapper().value }
 }
 
-private fun contactIdOfRawContact(context: Context, rawContactId: Long): Long? =
-    context.contentResolver.query(
+private fun Contacts.contactIdOfRawContact(rawContactId: Long): Long? =
+    applicationContext.contentResolver.query(
         Table.RawContacts,
         Include(RawContactsFields.ContactId),
         RawContactsFields.Id equalTo rawContactId
