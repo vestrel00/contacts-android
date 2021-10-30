@@ -125,21 +125,7 @@ class RawContactView @JvmOverloads constructor(
 
     suspend fun savePhoto(contacts: Contacts): Boolean = photoThumbnailView.savePhoto(contacts)
 
-    private fun setRawContactView(contacts: Contacts) {
-        photoThumbnailView.setRawContact(rawContact, contacts)
-        accountView.setRawContact(rawContact, contacts)
-        nameView.data = rawContact.name ?: MutableName().apply(rawContact::setName)
-        nicknameView.data = rawContact.nickname ?: MutableNickname().apply(rawContact::setNickname)
-        organizationView.data =
-            rawContact.organization ?: MutableOrganization().apply(rawContact::setOrganization)
-        phonesView.dataList = rawContact.phones
-        sipAddressView.data =
-            rawContact.sipAddress ?: MutableSipAddress().apply(rawContact::setSipAddress)
-        emailsView.dataList = rawContact.emails
-        addressesView.dataList = rawContact.addresses
-        imsView.dataList = rawContact.ims
-        websiteView.dataList = rawContact.websites
-
+    fun setAccountRequiredViews(contacts: Contacts) {
         launch {
             val account = contacts.accounts(rawContact.isProfile)
                 .queryWithPermission()
@@ -157,6 +143,24 @@ class RawContactView @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    private fun setRawContactView(contacts: Contacts) {
+        photoThumbnailView.setRawContact(rawContact, contacts)
+        accountView.setRawContact(rawContact, contacts)
+        nameView.data = rawContact.name ?: MutableName().apply(rawContact::setName)
+        nicknameView.data = rawContact.nickname ?: MutableNickname().apply(rawContact::setNickname)
+        organizationView.data =
+            rawContact.organization ?: MutableOrganization().apply(rawContact::setOrganization)
+        phonesView.dataList = rawContact.phones
+        sipAddressView.data =
+            rawContact.sipAddress ?: MutableSipAddress().apply(rawContact::setSipAddress)
+        emailsView.dataList = rawContact.emails
+        addressesView.dataList = rawContact.addresses
+        imsView.dataList = rawContact.ims
+        websiteView.dataList = rawContact.websites
+
+        setAccountRequiredViews(contacts)
     }
 
     override fun onDetachedFromWindow() {

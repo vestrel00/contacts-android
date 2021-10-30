@@ -52,6 +52,28 @@ fun RawContactEntity.options(contacts: Contacts): Options {
  *
  * Supports profile and non-profile RawContacts.
  *
+ * ## Starred in Android and group membership to the favorites group
+ *
+ * When a Contact is starred, the Contacts Provider automatically adds a group membership to the
+ * favorites group for all RawContacts linked to the Contact. Setting starred to false removes all
+ * group memberships to the favorites group.
+ *
+ * If the RawContact is not associated with an Account, then no group memberships that are created.
+ *
+ * The starred option is interdependent with group memberships to the favorites group. Adding a
+ * group membership to the favorites group results in starred being set to true. Removing the
+ * membership sets it to false.
+ *
+ * RawContacts that are not associated with an account do not have any group memberships. Even
+ * though these raw contacts may not have a membership to the favorites group, they may still be
+ * "starred" (favorited), which is not dependent on the existence of a favorites group membership.
+ *
+ * **Refresh RawContact instances after changing the starred value.** Otherwise, performing an
+ * update on the RawContact with a stale set of group memberships may revert the star/unstar
+ * operation. For example, query returns a starred RawContact -> set starred to false -> update
+ * RawContact (still containing a group membership to the favorites group) -> starred will be set
+ * back to true.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.WRITE_PERMISSION].
@@ -82,6 +104,28 @@ fun RawContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Bo
  * RawContact options.
  *
  * Supports profile and non-profile RawContacts.
+ *
+ * ## Starred in Android and group membership to the favorites group
+ *
+ * When a Contact is starred, the Contacts Provider automatically adds a group membership to the
+ * favorites group for all RawContacts linked to the Contact. Setting starred to false removes all
+ * group memberships to the favorites group.
+ *
+ * If the RawContact is not associated with an Account, then no group memberships that are created.
+ *
+ * The starred option is interdependent with group memberships to the favorites group. Adding a
+ * group membership to the favorites group results in starred being set to true. Removing the
+ * membership sets it to false.
+ *
+ * RawContacts that are not associated with an account do not have any group memberships. Even
+ * though these raw contacts may not have a membership to the favorites group, they may still be
+ * "starred" (favorited), which is not dependent on the existence of a favorites group membership.
+ *
+ * **Refresh RawContact instances after changing the starred value.** Otherwise, performing an
+ * update on the RawContact with a stale set of group memberships may revert the star/unstar
+ * operation. For example, query returns a starred RawContact -> set starred to false -> update
+ * RawContact (still containing a group membership to the favorites group) -> starred will be set
+ * back to true.
  *
  * ## Permissions
  *

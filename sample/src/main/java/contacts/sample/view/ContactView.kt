@@ -181,7 +181,8 @@ class ContactView @JvmOverloads constructor(
 
     override fun setEnabled(enabled: Boolean) {
         // super.setEnabled(enabled) intentionally not calling this
-        // Do not ever disable the contact options and details.
+        // Do not disable the contact options and details.
+        photoView.isEnabled = enabled
         rawContactsView.setThisAndDescendantsEnabled(enabled)
     }
 
@@ -227,7 +228,7 @@ class ContactView @JvmOverloads constructor(
             .contactWithContext(contacts, rawContact)
 
         // TODO RawContact photo!
-        
+
         return newContact?.id
     }
 
@@ -361,6 +362,13 @@ class ContactView @JvmOverloads constructor(
 
         if (success) {
             setStarredView(!starred)
+
+            // As documented in the setOptions extensions, we need to refresh the set of group
+            // memberships for all RawContacts belonging to the Contact because a group membership
+            // to the favorites group may have been added or removed automatically by the
+            // Contacts Provider. We can just refresh the entire contact but that will undo any
+            // pending changes the user has not yet saved.
+            refreshRawContactsGroupMemberships(contacts)
         }
     }
 
@@ -380,6 +388,38 @@ class ContactView @JvmOverloads constructor(
         // Update immediately, separate from the general update/save.
         contact?.updateOptionsWithContext(contacts) {
             this.customRingtone = customRingtone
+        }
+    }
+
+    private suspend fun refreshRawContactsGroupMemberships(contacts: Contacts) {
+        val contact = contact ?: return
+        val contactId = contact.id ?: return
+
+        // We could fetch the the set of groups for all linked RawContacts and then fetch group
+        // memberships to the favorites group. Or, we can just fetch the entire contact again but
+        // only to copy over the group memberships to the RawContacts =)
+        val refreshedContact = contacts.queryWithPermission()
+            .include(Fields.GroupMembership.all)
+            .where(Fields.Contact.Id equalTo contactId)
+            .findWithContext()
+            .firstOrNull()
+            ?.toMutableContact()
+            ?: return
+
+        // Copy over the refreshed group memberships to the RawContacts.
+        for (rawContact in contact.rawContacts) {
+            refreshedContact.rawContacts.find { it.id == rawContact.id }
+                ?.let { refreshedRawContact ->
+                    rawContact.groupMemberships = refreshedRawContact.groupMemberships
+                }
+        }
+
+        // Invalidate group membership views.
+        // Unsaved changes to the set of group memberships will be discarded. We could fix this but
+        // it's too much code and this is just a sample app so we'll leave it!
+        for (index in 0 until rawContactsView.childCount) {
+            val rawContactView = rawContactsView.getChildAt(index) as RawContactView
+            rawContactView.setAccountRequiredViews(contacts)
         }
     }
 

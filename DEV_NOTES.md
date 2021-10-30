@@ -764,19 +764,28 @@ membership will be asynchronously added to the Account's default group by the Co
 
 Membership to the default group should never be deleted!
 
-**Starred in Android (Favorites)**
+#### Starred in Android (Favorites)
 
-Setting the `ContactOptionsColumns.STARRED` of a contact in the Contacts table to true results in 
-the addition of a group membership to the favorites group of the associated account. Setting it to
-false removes that membership. 
+When the `ContactOptionsColumns.STARRED` column of a Contact in the Contacts table is set to true,
+the Contacts Provider automatically adds a group membership to the favorites group for all 
+RawContacts linked to the Contact. Setting `STARRED` to false removes all group memberships to the
+favorites group.
 
-The inverse works too. Adding a group membership to the favorites group results in 
-`ContactOptionsColumns.STARRED` being set to true. Removing the membership sets it to false.
+> If the RawContact is not associated with an Account, then no group memberships that are created.
+
+The `STARRED` is interdependent with group memberships to the favorites group. Adding a group 
+membership to the favorites group results in `STARRED` being set to true. Removing the membership 
+sets it to false.
 
 Raw contacts that are not associated with an account do not have any group memberships. Even though
 these raw contacts may not have a membership to the favorites group, they may still be "starred"
-(favortied) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is not
+(favorited) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is not
 dependent on the existence of a favorites group membership.
+
+**Refresh RawContact instances after changing the starred value.** Otherwise, performing an update 
+on the RawContact with a stale set of group memberships may revert the star/unstar operation. For 
+example, query returns a starred RawContact -> set starred to false -> update RawContact (still 
+containing a group membership to the favorites group) -> starred will be set back to true.
 
 #### Group memberships & Local RawContacts
 
