@@ -7,13 +7,16 @@ import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
 import contacts.core.profile.Profile
+import contacts.test.entities.TestDataRegistration
 
 @JvmOverloads
 @Suppress("FunctionName")
 fun TestContacts(
     context: Context,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-): Contacts = TestContacts(Contacts(context, customDataRegistry))
+): Contacts = TestContacts(Contacts(context, customDataRegistry)).also {
+    TestDataRegistration().registerTo(customDataRegistry)
+}
 
 object ContactsFactory {
 
@@ -34,9 +37,7 @@ object ContactsFactory {
  */
 private class TestContacts(private val contacts: Contacts) : Contacts {
 
-    override fun query(): Query {
-        TODO("Not yet implemented")
-    }
+    override fun query(): Query = TestQuery(contacts.query())
 
     override fun broadQuery(): BroadQuery {
         TODO("Not yet implemented")
