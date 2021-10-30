@@ -6,19 +6,19 @@ This library provides the `AccountsQuery` API that allows you to retrieve `Accou
 To get all available accounts in the system,
 
 ```kotlin
-val accounts = Accounts(context).query().allAccounts()
+val accounts = Contacts(context).accounts().query().allAccounts()
 ```
 
 To get all available accounts in the system with an account type of "com.google",
 
 ```kotlin
-val accounts = Accounts(context).query().accountsWithType("com.google")
+val accounts = Contacts(context).accounts().query().accountsWithType("com.google")
 ```
 
 To get the account for a given RawContact, 
 
 ```kotlin
-val account = Accounts(context).query().accountFor(rawContact)
+val account = Contacts(context).accounts().query().accountFor(rawContact)
 ```
 
 > The returned account may be null, indicating that the given RawContact is local (device-only) and 
@@ -28,7 +28,7 @@ val account = Accounts(context).query().accountFor(rawContact)
 To get the accounts for more than one RawContact in a single query,
 
 ```kotlin
-val accounts = Accounts(context).query().accountsFor(rawContacts)
+val accounts = Contacts(context).accounts().query().accountsFor(rawContacts)
 ```
 
 > The list of accounts may contain nulls in case of local RawContacts. You are also able to retrieve
@@ -65,7 +65,7 @@ launch {
 Queries are executed in the same thread as the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the extensions provided in the `async` module.
-For more info, read [How do I use the async extensions to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -81,6 +81,6 @@ Queries using `accountFor` or `accountsFor` require the `android.permission.READ
 not granted, the query will do nothing and return null or an empty list respectively.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions extensions to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)

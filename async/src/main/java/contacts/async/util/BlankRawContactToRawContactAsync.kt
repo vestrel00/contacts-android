@@ -1,11 +1,9 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.BlankRawContact
 import contacts.core.entities.RawContact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.util.toRawContact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -19,11 +17,10 @@ import kotlin.coroutines.CoroutineContext
  * See [BlankRawContact.toRawContact].
  */
 suspend fun BlankRawContact.toRawContactWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): RawContact? = withContext(coroutineContext) {
-    toRawContact(context, customDataRegistry) { !isActive }
+    toRawContact(contacts) { !isActive }
 }
 
 /**
@@ -35,9 +32,8 @@ suspend fun BlankRawContact.toRawContactWithContext(
  * See [BlankRawContact.toRawContact].
  */
 fun BlankRawContact.toRawContactAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
-    toRawContact(context, customDataRegistry) { !isActive }
+    toRawContact(contacts) { !isActive }
 }

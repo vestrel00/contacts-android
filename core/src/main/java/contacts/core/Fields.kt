@@ -7,6 +7,12 @@ import android.os.Build
 import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import contacts.core.AbstractCustomDataField.ColumnName
+import contacts.core.ContactsFields.all
+import contacts.core.Fields.all
+import contacts.core.Fields.forMatching
+import contacts.core.GroupsFields.all
+import contacts.core.RequiredDataFields.all
+import contacts.core.RequiredDataFields.forMatching
 import contacts.core.entities.MimeType
 import contacts.core.util.unsafeLazy
 
@@ -241,6 +247,20 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Website.forMatching)
         }.toSet() // ensure that this is not modifiable at runtime
     }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+
+    /**
+     * Same as [forMatching], but as a function. This makes it visible to Java consumers when
+     * accessing this using the object reference directly.
+     */
+    @JvmStatic
+    fun forMatching() = forMatching
 }
 
 /**
@@ -281,6 +301,20 @@ object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
     }
 
     override val forMatching = emptySet<AbstractDataField>()
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+
+    /**
+     * Same as [forMatching], but as a function. This makes it visible to Java consumers when
+     * accessing this using the object reference directly
+     */
+    @JvmStatic
+    fun forMatching() = forMatching
 }
 
 // endregion
@@ -1047,6 +1081,13 @@ object ContactsFields : FieldSet<ContactsField>() {
             addAll(Options.all)
         }
     }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
 }
 
 // Contains the same underlying column names as DataContactsOptionsFields and
@@ -1122,6 +1163,13 @@ object GroupsFields : FieldSet<GroupsField>() {
     override val all by unsafeLazy {
         setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
     }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
 }
 
 // endregion
@@ -1168,6 +1216,13 @@ object RawContactsFields : FieldSet<RawContactsField>() {
             addAll(Options.all)
         }.toSet() // ensure that this is not modifiable at runtime
     }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
 }
 
 // Contains the same underlying column names as DataContactsOptionsFields and ContactsOptionsFields

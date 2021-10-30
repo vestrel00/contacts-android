@@ -2,12 +2,10 @@ package contacts.core.data
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
 import contacts.core.*
 import contacts.core.entities.*
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.custom.CustomDataEntity
-import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.mapper.entityMapperFor
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
@@ -97,94 +95,74 @@ interface DataQuery {
 }
 
 @Suppress("FunctionName")
-internal fun DataQuery(
-    context: Context, customDataRegistry: CustomDataRegistry, isProfile: Boolean
-): DataQuery = DataQueryImpl(
-    context.contentResolver,
-    ContactsPermissions(context),
-    customDataRegistry,
-    isProfile
+internal fun DataQuery(contacts: Contacts, isProfile: Boolean): DataQuery = DataQueryImpl(
+    contacts, isProfile
 )
 
 private class DataQueryImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    private val contacts: Contacts,
     private val isProfile: Boolean
 ) : DataQuery {
 
     override fun addresses(): CommonDataQuery<AddressField, Address> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Address, MimeType.Address, isProfile
+        contacts, Fields.Address, MimeType.Address, isProfile
     )
 
     override fun emails(): CommonDataQuery<EmailField, Email> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Email, MimeType.Email, isProfile
+        contacts, Fields.Email, MimeType.Email, isProfile
     )
 
     override fun events(): CommonDataQuery<EventField, Event> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Event, MimeType.Event, isProfile
+        contacts, Fields.Event, MimeType.Event, isProfile
     )
 
     override fun groupMemberships(): CommonDataQuery<GroupMembershipField, GroupMembership> =
         CommonDataQueryImpl(
-            contentResolver, permissions, customDataRegistry,
-            Fields.GroupMembership, MimeType.GroupMembership, isProfile
+            contacts, Fields.GroupMembership, MimeType.GroupMembership, isProfile
         )
 
     override fun ims(): CommonDataQuery<ImField, Im> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Im, MimeType.Im, isProfile
+        contacts, Fields.Im, MimeType.Im, isProfile
     )
 
     override fun names(): CommonDataQuery<NameField, Name> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Name, MimeType.Name, isProfile
+        contacts, Fields.Name, MimeType.Name, isProfile
     )
 
     override fun nicknames(): CommonDataQuery<NicknameField, Nickname> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Nickname, MimeType.Nickname, isProfile
+        contacts, Fields.Nickname, MimeType.Nickname, isProfile
     )
 
     override fun notes(): CommonDataQuery<NoteField, Note> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Note, MimeType.Note, isProfile
+        contacts, Fields.Note, MimeType.Note, isProfile
     )
 
     override fun organizations(): CommonDataQuery<OrganizationField, Organization> =
         CommonDataQueryImpl(
-            contentResolver, permissions, customDataRegistry,
-            Fields.Organization, MimeType.Organization, isProfile
+            contacts, Fields.Organization, MimeType.Organization, isProfile
         )
 
     override fun phones(): CommonDataQuery<PhoneField, Phone> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Phone, MimeType.Phone, isProfile
+        contacts, Fields.Phone, MimeType.Phone, isProfile
     )
 
     override fun relations(): CommonDataQuery<RelationField, Relation> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Relation, MimeType.Relation, isProfile
+        contacts, Fields.Relation, MimeType.Relation, isProfile
     )
 
     override fun sipAddresses(): CommonDataQuery<SipAddressField, SipAddress> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.SipAddress, MimeType.SipAddress, isProfile
+        contacts, Fields.SipAddress, MimeType.SipAddress, isProfile
     )
 
     override fun websites(): CommonDataQuery<WebsiteField, Website> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        Fields.Website, MimeType.Website, isProfile
+        contacts, Fields.Website, MimeType.Website, isProfile
     )
 
     @Suppress("UNCHECKED_CAST")
     override fun <F : AbstractCustomDataField, E : CustomDataEntity>
             customData(mimeType: MimeType.Custom): CommonDataQuery<F, E> = CommonDataQueryImpl(
-        contentResolver, permissions, customDataRegistry,
-        customDataRegistry.entryOf(mimeType).fieldSet as AbstractCustomDataFieldSet<F>,
+        contacts,
+        contacts.customDataRegistry.entryOf(mimeType).fieldSet as AbstractCustomDataFieldSet<F>,
         mimeType, isProfile
     )
 }
@@ -405,9 +383,7 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
 }
 
 private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    private val contacts: Contacts,
 
     private val defaultIncludeFields: FieldSet<F>,
     private val mimeType: MimeType,
@@ -497,13 +473,12 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
     override fun find(): List<E> = find { false }
 
     override fun find(cancel: () -> Boolean): List<E> {
-        if (!permissions.canQuery()) {
+        if (!contacts.permissions.canQuery) {
             return emptyList()
         }
 
-        return contentResolver.resolveDataEntity(
-            customDataRegistry, isProfile, mimeType,
-            rawContactsWhere, include, where, orderBy, limit, offset, cancel
+        return contacts.resolveDataEntity(
+            isProfile, mimeType, rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
     }
 
@@ -517,8 +492,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
     }
 }
 
-internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
-    customDataRegistry: CustomDataRegistry,
+internal fun <T : CommonDataEntity> Contacts.resolveDataEntity(
     isProfile: Boolean,
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
@@ -536,7 +510,9 @@ internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
     if (rawContactsWhere != null) {
         // Limit the data to the set associated with the RawContacts found in the RawContacts
         // table matching the rawContactsWhere.
-        val rawContactIds = findRawContactIdsInRawContactsTable(isProfile, rawContactsWhere, cancel)
+        val rawContactIds = applicationContext.contentResolver
+            .findRawContactIdsInRawContactsTable(isProfile, rawContactsWhere, cancel)
+
         dataWhere = dataWhere and (Fields.RawContact.Id `in` rawContactIds)
     }
 
@@ -544,7 +520,7 @@ internal fun <T : CommonDataEntity> ContentResolver.resolveDataEntity(
         dataWhere = dataWhere and where
     }
 
-    return query(
+    return applicationContext.contentResolver.query(
         // mimeType.contentUri(),
         if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"

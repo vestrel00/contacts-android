@@ -2,15 +2,11 @@ package contacts.core.data
 
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
-import android.content.Context
-import contacts.core.ContactsPermissions
-import contacts.core.Fields
-import contacts.core.`in`
+import contacts.core.*
 import contacts.core.entities.CommonDataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
-import contacts.core.equalTo
 import contacts.core.util.applyBatch
 import contacts.core.util.isProfileId
 import contacts.core.util.unsafeLazy
@@ -113,9 +109,9 @@ interface DataDelete {
 }
 
 @Suppress("FunctionName")
-internal fun DataDelete(context: Context, isProfile: Boolean): DataDelete = DataDeleteImpl(
-    context.contentResolver,
-    ContactsPermissions(context),
+internal fun DataDelete(contacts: Contacts, isProfile: Boolean): DataDelete = DataDeleteImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions,
     isProfile
 )
 
@@ -143,7 +139,7 @@ private class DataDeleteImpl(
     }
 
     override fun commit(): DataDelete.Result {
-        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
+        if (dataIds.isEmpty() || !permissions.canUpdateDelete) {
             return DataDeleteFailed()
         }
 
@@ -164,7 +160,7 @@ private class DataDeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
+        if (dataIds.isEmpty() || !permissions.canUpdateDelete) {
             return false
         }
 

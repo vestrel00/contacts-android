@@ -2,7 +2,6 @@ package contacts.core.groups
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
 import contacts.core.*
 import contacts.core.entities.Group
 import contacts.core.entities.mapper.groupMapper
@@ -169,9 +168,9 @@ interface GroupsQuery {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsQuery(context: Context): GroupsQuery = GroupsQueryImpl(
-    context.contentResolver,
-    ContactsPermissions(context)
+internal fun GroupsQuery(contacts: Contacts): GroupsQuery = GroupsQueryImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions
 )
 
 private class GroupsQueryImpl(
@@ -242,7 +241,7 @@ private class GroupsQueryImpl(
     override fun find(): GroupsQuery.GroupsList = find { false }
 
     override fun find(cancel: () -> Boolean): GroupsQuery.GroupsList =
-        if (!permissions.canQuery()) {
+        if (!permissions.canQuery) {
             GroupsListImpl()
         } else {
             contentResolver.resolve(

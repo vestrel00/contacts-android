@@ -1,10 +1,8 @@
 package contacts.core.profile
 
-import android.content.Context
 import contacts.core.*
 import contacts.core.entities.MutableContact
 import contacts.core.entities.MutableRawContact
-import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
 
@@ -221,21 +219,13 @@ interface ProfileUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileUpdate(
-    context: Context, customDataRegistry: CustomDataRegistry
-): ProfileUpdate = ProfileUpdateImpl(
-    context.applicationContext,
-    ContactsPermissions(context),
-    customDataRegistry
-)
+internal fun ProfileUpdate(contacts: Contacts): ProfileUpdate = ProfileUpdateImpl(contacts)
 
 private class ProfileUpdateImpl(
-    private val applicationContext: Context,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    private val contacts: Contacts,
 
     private var deleteBlanks: Boolean = true,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+    private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : ProfileUpdate {
 
@@ -258,7 +248,7 @@ private class ProfileUpdateImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileUpdate = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(customDataRegistry)
+            allDataFields(contacts.customDataRegistry)
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -279,7 +269,7 @@ private class ProfileUpdateImpl(
     override fun commit(): ProfileUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): ProfileUpdate.Result {
-        if (rawContacts.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+        if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete || cancel()) {
             return ProfileUpdateFailed()
         }
 
@@ -296,14 +286,10 @@ private class ProfileUpdateImpl(
                     // design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    applicationContext.contentResolver.deleteRawContactWithId(rawContact.id)
+                    contacts.applicationContext.contentResolver
+                        .deleteRawContactWithId(rawContact.id)
                 } else {
-                    applicationContext.updateRawContact(
-                        applicationContext,
-                        customDataRegistry,
-                        include.fields,
-                        rawContact
-                    )
+                    contacts.updateRawContact(include.fields, rawContact)
                 }
             } else {
                 results[INVALID_ID] = false

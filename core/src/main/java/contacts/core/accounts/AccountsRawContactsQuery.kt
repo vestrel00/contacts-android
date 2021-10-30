@@ -2,7 +2,6 @@ package contacts.core.accounts
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
 import contacts.core.*
 import contacts.core.entities.BlankRawContact
 import contacts.core.entities.cursor.account
@@ -173,10 +172,10 @@ interface AccountsRawContactsQuery {
 
 @Suppress("FunctionName")
 internal fun AccountsRawContactsQuery(
-    context: Context, isProfile: Boolean
+    accounts: Accounts, isProfile: Boolean
 ): AccountsRawContactsQuery = AccountsRawContactsQueryImpl(
-    context.contentResolver,
-    AccountsPermissions(context),
+    accounts.applicationContext.contentResolver,
+    accounts.permissions,
     isProfile
 )
 
@@ -250,7 +249,7 @@ private class AccountsRawContactsQueryImpl(
     override fun find(): AccountsRawContactsQuery.BlankRawContactsList = find { false }
 
     override fun find(cancel: () -> Boolean): AccountsRawContactsQuery.BlankRawContactsList =
-        if (!permissions.canQueryRawContacts()) {
+        if (!permissions.canQueryRawContacts) {
             BlankRawContactsListImpl(emptyMap())
         } else {
             contentResolver.resolve(

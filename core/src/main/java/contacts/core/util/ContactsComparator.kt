@@ -5,14 +5,13 @@ import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.entities.Entity
 import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.entities.toDbString
 import java.util.*
 
 // Developer notes
 // This was originally used to order query results. However, due to how it was used, it has been
 // removed from use within the API. To prevent wasting hard work, it is now here for optional
-// consumer use.
+// consumer use =)
 
 /**0
  * Returns a [Comparator] of [Contact]s using [this] collection of [OrderBy]s.
@@ -41,21 +40,21 @@ import java.util.*
  * ```
  */
 fun Collection<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
  * See [contactsComparator].
  */
 fun Set<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, this)
 
 /**
  * See [contactsComparator].
  */
 fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
@@ -77,7 +76,7 @@ fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(
  * ```
  */
 fun OrderBy<AbstractDataField>.contactsComparator(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
+    customDataRegistry: CustomDataRegistry
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, setOf(this))
 
 /**

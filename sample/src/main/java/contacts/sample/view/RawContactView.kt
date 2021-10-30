@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import contacts.async.accounts.accountForWithContext
-import contacts.core.accounts.Accounts
+import contacts.core.Contacts
 import contacts.core.entities.*
 import contacts.core.util.setName
 import contacts.core.util.setNickname
@@ -62,11 +62,16 @@ class RawContactView @JvmOverloads constructor(
      * Any modifications in the views will also be made to the this.
      */
     var rawContact: MutableRawContact = MutableRawContact()
-        set(value) {
-            field = value
+        private set
 
-            setRawContactView()
-        }
+    /**
+     * Sets the RawContact shown and managed by this view to the given [rawContact] and uses the
+     * given [contacts] API to perform operations on it.
+     */
+    fun setRawContact(rawContact: MutableRawContact, contacts: Contacts) {
+        this.rawContact = rawContact
+        setRawContactView(contacts)
+    }
 
     // Not using any view binding libraries or plugins just for this.
     private val accountView: AccountView
@@ -120,9 +125,9 @@ class RawContactView @JvmOverloads constructor(
 
     suspend fun savePhoto(): Boolean = photoThumbnailView.savePhoto()
 
-    private fun setRawContactView() {
+    private fun setRawContactView(contacts: Contacts) {
         photoThumbnailView.rawContact = rawContact
-        accountView.rawContact = rawContact
+        accountView.setRawContact(rawContact, contacts)
         nameView.data = rawContact.name ?: MutableName().apply(rawContact::setName)
         nicknameView.data = rawContact.nickname ?: MutableNickname().apply(rawContact::setNickname)
         organizationView.data =
@@ -136,7 +141,7 @@ class RawContactView @JvmOverloads constructor(
         websiteView.dataList = rawContact.websites
 
         launch {
-            val account = Accounts(context, rawContact.isProfile)
+            val account = contacts.accounts(rawContact.isProfile)
                 .queryWithPermission()
                 .accountForWithContext(rawContact)
 
@@ -145,7 +150,7 @@ class RawContactView @JvmOverloads constructor(
             if (account != null) {
                 eventsView.dataList = rawContact.events
                 relationsView.dataList = rawContact.relations
-                groupMembershipsView.memberships = rawContact.groupMemberships
+                groupMembershipsView.setMemberships(rawContact.groupMemberships, contacts)
             } else {
                 accountRequiredViews.forEach {
                     it.visibility = GONE

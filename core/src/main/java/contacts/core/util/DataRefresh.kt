@@ -1,11 +1,8 @@
 package contacts.core.util
 
-import android.content.Context
 import contacts.core.*
 import contacts.core.data.resolveDataEntity
 import contacts.core.entities.CommonDataEntity
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.entities.fields
 
 /**
@@ -21,7 +18,7 @@ import contacts.core.entities.fields
  *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be 
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
  * returned if the permission is not granted.
  *
  * ## Thread Safety
@@ -30,19 +27,15 @@ import contacts.core.entities.fields
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun <T : CommonDataEntity> T.refresh(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
-    cancel: () -> Boolean = { false }
-): T? =
+fun <T : CommonDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? =
     if (id == null) {
         this
-    } else if (!ContactsPermissions(context).canQuery()) {
+    } else if (!contacts.permissions.canQuery) {
         null
     } else {
-        context.contentResolver.resolveDataEntity<T>(
-            customDataRegistry, isProfile, mimeType, null,
-            Include(fields(customDataRegistry) + Fields.Required.all),
+        contacts.resolveDataEntity<T>(
+            isProfile, mimeType, null,
+            Include(fields(contacts.customDataRegistry) + Fields.Required.all),
             null, CompoundOrderBy(setOf(Fields.DataId.asc())), 1, 0, cancel
         ).firstOrNull()
     }

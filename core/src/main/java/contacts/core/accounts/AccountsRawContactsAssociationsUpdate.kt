@@ -4,8 +4,6 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentProviderOperation.newUpdate
-import android.content.ContentResolver
-import android.content.Context
 import contacts.core.*
 import contacts.core.entities.MimeType
 import contacts.core.entities.RawContactEntity
@@ -371,14 +369,13 @@ interface AccountsRawContactsAssociationsUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsRawContactsAssociationsUpdate(context: Context, isProfile: Boolean):
+internal fun AccountsRawContactsAssociationsUpdate(accounts: Accounts, isProfile: Boolean):
         AccountsRawContactsAssociationsUpdate = AccountsRawContactsAssociationsUpdateImpl(
-    context.applicationContext, AccountsPermissions(context), isProfile
+    accounts, isProfile
 )
 
 private class AccountsRawContactsAssociationsUpdateImpl(
-    private val applicationContext: Context,
-    private val permissions: AccountsPermissions,
+    private val accounts: Accounts,
     private val isProfile: Boolean
 ) : AccountsRawContactsAssociationsUpdate {
 
@@ -402,8 +399,8 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     override fun associateAccountWithLocalRawContacts(
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean {
-        if (!permissions.canUpdateRawContactsAssociations() ||
-            account.isNotInSystem(applicationContext)
+        if (!accounts.permissions.canUpdateRawContactsAssociations ||
+            account.isNotInSystem(accounts)
         ) {
             return false
         }
@@ -414,7 +411,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
         }
 
         val rawContactIds = rawContacts.mapNotNull { it.id }
-        val localRawContactIds = applicationContext.contentResolver.rawContactIdsWhere(
+        val localRawContactIds = accounts.rawContactIdsWhere(
             // Not using and/or as infix because this formatting looks better in this case.
             (RawContactsFields.Id `in` rawContactIds)
                 .and(
@@ -427,18 +424,18 @@ private class AccountsRawContactsAssociationsUpdateImpl(
         // Succeed if there are no local RawContacts.
         // Using the || operator here is important because if it is true, then the update does
         // not occur. If && is used instead, the update will occur even if it is true.
-        return localRawContactIds.isEmpty() || applicationContext.contentResolver
+        return localRawContactIds.isEmpty() || accounts
             .updateRawContactsAccount(account, localRawContactIds, isProfile)
     }
 
     override fun associateAccountWithAllLocalRawContacts(account: Account): Boolean {
-        if (!permissions.canUpdateRawContactsAssociations() ||
-            account.isNotInSystem(applicationContext)
+        if (!accounts.permissions.canUpdateRawContactsAssociations ||
+            account.isNotInSystem(accounts)
         ) {
             return false
         }
 
-        val localRawContactIds = applicationContext.contentResolver.rawContactIdsWhere(
+        val localRawContactIds = accounts.rawContactIdsWhere(
             RawContactsFields.AccountName.isNull() or RawContactsFields.AccountType.isNull(),
             isProfile
         )
@@ -446,7 +443,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
         // Succeed if there are no local RawContacts.
         // Using the || operator here is important because if it is true, then the update does
         // not occur. If && is used instead, the update will occur even if it is true.
-        return localRawContactIds.isEmpty() || applicationContext.contentResolver
+        return localRawContactIds.isEmpty() || accounts
             .updateRawContactsAccount(account, localRawContactIds, isProfile)
     }
 
@@ -586,11 +583,11 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     // endregion
 }
 
-private fun ContentResolver.updateRawContactsAccount(
+private fun Accounts.updateRawContactsAccount(
     account: Account?, rawContactIds: Set<Long>, isProfile: Boolean
 ): Boolean = updateRawContactsAccount(account, rawContactIds.asSequence(), isProfile)
 
-private fun ContentResolver.updateRawContactsAccount(
+private fun Accounts.updateRawContactsAccount(
     account: Account?, rawContactIds: Sequence<Long>, isProfile: Boolean
 ): Boolean = updateRawContactsAccount(
     account,
@@ -610,12 +607,12 @@ private fun ContentResolver.updateRawContactsAccount(
  * be part of a visible group resulting in these RawContacts to not show up in the native Contacts
  * app.
  */
-private fun ContentResolver.updateRawContactsAccount(
+private fun Accounts.updateRawContactsAccount(
     account: Account?,
     dataWhere: Where<AbstractDataField>?,
     rawContactsWhere: Where<RawContactsField>,
     isProfile: Boolean
-): Boolean = applyBatch(
+): Boolean = applicationContext.contentResolver.applyBatch(
     arrayListOf<ContentProviderOperation>().apply {
         // First delete existing group memberships.
         if (account != null && dataWhere != null) {
@@ -635,10 +632,10 @@ private fun ContentResolver.updateRawContactsAccount(
     }
 ) != null
 
-private fun ContentResolver.rawContactIdsWhere(
+private fun Accounts.rawContactIdsWhere(
     where: Where<RawContactsField>?,
     isProfile: Boolean
-): Set<Long> = query(
+): Set<Long> = applicationContext.contentResolver.query(
     if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
     Include(RawContactsFields.Id),
     where

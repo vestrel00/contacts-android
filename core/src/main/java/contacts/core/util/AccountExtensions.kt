@@ -1,9 +1,8 @@
 package contacts.core.util
 
 import android.accounts.Account
-import android.content.Context
 import contacts.core.*
-import contacts.core.accounts.AccountsQuery
+import contacts.core.accounts.Accounts
 
 /**
  * Returns true if [this] is in the list of all accounts in the system.
@@ -12,7 +11,7 @@ import contacts.core.accounts.AccountsQuery
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
-internal fun Account.isInSystem(context: Context): Boolean = nullIfNotInSystem(context) != null
+internal fun Account.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
 
 /**
  * Returns true if [this] is NOT in the list of all accounts in the system.
@@ -21,7 +20,7 @@ internal fun Account.isInSystem(context: Context): Boolean = nullIfNotInSystem(c
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
-internal fun Account.isNotInSystem(context: Context): Boolean = !isInSystem(context)
+internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
 
 /**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
@@ -31,15 +30,8 @@ internal fun Account.isNotInSystem(context: Context): Boolean = !isInSystem(cont
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
-internal fun Account.nullIfNotInSystem(context: Context): Account? =
-    nullIfNotIn(
-        AccountsQuery(
-            context,
-            // Does not matter what value is passed to isProfile because we are not using
-            // profile-aware functions.
-            false
-        ).allAccounts()
-    )
+internal fun Account.nullIfNotInSystem(accounts: Accounts): Account? =
+    nullIfNotIn(accounts.query().allAccounts())
 
 /**
  * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.

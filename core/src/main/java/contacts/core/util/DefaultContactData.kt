@@ -43,7 +43,7 @@ fun CommonDataEntity.setAsDefault(context: Context): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!ContactsPermissions(context).canUpdateDelete()
+    if (!ContactsPermissions(context).canUpdateDelete
         || dataId == null
         || rawContactId == null
         || contactId == null
@@ -91,7 +91,7 @@ fun CommonDataEntity.clearDefault(context: Context): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!ContactsPermissions(context).canUpdateDelete()
+    if (!ContactsPermissions(context).canUpdateDelete
         || rawContactId == null
         || contactId == null
     ) {

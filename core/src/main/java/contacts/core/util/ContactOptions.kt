@@ -34,7 +34,7 @@ import contacts.core.equalTo
 fun ContactEntity.options(context: Context): Options {
     val contactId = id
 
-    if (!ContactsPermissions(context).canQuery() || contactId == null) {
+    if (!ContactsPermissions(context).canQuery || contactId == null) {
         return Options()
     }
 
@@ -72,7 +72,7 @@ fun ContactEntity.options(context: Context): Options {
 fun ContactEntity.setOptions(context: Context, options: MutableOptions): Boolean {
     val contactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete() || contactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete || contactId == null) {
         return false
     }
 

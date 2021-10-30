@@ -15,17 +15,17 @@ interface AccountsPermissions {
     /**
      * Returns true if [GET_ACCOUNTS_PERMISSION] and [READ_PERMISSION] are granted.
      */
-    fun canQueryAccounts(): Boolean
+    val canQueryAccounts: Boolean
 
     /**
      * Returns true if [READ_PERMISSION] is granted.
      */
-    fun canQueryRawContacts(): Boolean
+    val canQueryRawContacts: Boolean
 
     /**
      * Returns true if [GET_ACCOUNTS_PERMISSION] and [WRITE_PERMISSION] are granted.
      */
-    fun canUpdateRawContactsAssociations(): Boolean
+    val canUpdateRawContactsAssociations: Boolean
 
     companion object {
         const val GET_ACCOUNTS_PERMISSION: String = Manifest.permission.GET_ACCOUNTS
@@ -39,14 +39,14 @@ internal fun AccountsPermissions(context: Context): AccountsPermissions =
 private class AccountsPermissionsImpl(private val applicationContext: Context) :
     AccountsPermissions {
 
-    override fun canQueryAccounts(): Boolean =
-        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+    override val canQueryAccounts: Boolean
+        get() = applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
                 && applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
-    override fun canQueryRawContacts(): Boolean =
-        applicationContext.isPermissionGrantedFor(READ_PERMISSION)
+    override val canQueryRawContacts: Boolean
+        get() = applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
-    override fun canUpdateRawContactsAssociations(): Boolean =
-        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+    override val canUpdateRawContactsAssociations: Boolean
+        get() = applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
                 && applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
 }

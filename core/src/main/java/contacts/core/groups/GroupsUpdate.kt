@@ -1,7 +1,7 @@
 package contacts.core.groups
 
 import android.content.ContentResolver
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 import contacts.core.entities.MutableGroup
 import contacts.core.entities.operation.GroupsOperation
@@ -129,9 +129,9 @@ interface GroupsUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsUpdate(context: Context): GroupsUpdate = GroupsUpdateImpl(
-    context.contentResolver,
-    ContactsPermissions(context)
+internal fun GroupsUpdate(contacts: Contacts): GroupsUpdate = GroupsUpdateImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions
 )
 
 private class GroupsUpdateImpl(
@@ -158,7 +158,7 @@ private class GroupsUpdateImpl(
     override fun commit(): GroupsUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsUpdate.Result {
-        if (groups.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+        if (groups.isEmpty() || !permissions.canUpdateDelete || cancel()) {
             return GroupsUpdateFailed()
         }
 

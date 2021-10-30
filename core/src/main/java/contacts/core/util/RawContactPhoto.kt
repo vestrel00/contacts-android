@@ -41,7 +41,7 @@ import java.io.InputStream
 fun RawContactEntity.photoInputStream(context: Context): InputStream? {
     val rawContactId = id
 
-    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
+    if (!ContactsPermissions(context).canQuery || rawContactId == null) {
         return null
     }
 
@@ -144,7 +144,7 @@ internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
 fun RawContactEntity.photoThumbnailInputStream(context: Context): InputStream? {
     val rawContactId = id
 
-    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
+    if (!ContactsPermissions(context).canQuery || rawContactId == null) {
         return null
     }
 
@@ -277,7 +277,7 @@ fun RawContactEntity.setPhoto(context: Context, photoDrawable: BitmapDrawable): 
 internal fun RawContactEntity.doSetPhoto(context: Context, photoBytes: ByteArray): Boolean {
     val rawContactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete() || rawContactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete || rawContactId == null) {
         return false
     }
 
@@ -349,7 +349,7 @@ internal fun Bitmap.bytes(): ByteArray {
 fun RawContactEntity.removePhoto(context: Context): Boolean {
     val rawContactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete() || rawContactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete || rawContactId == null) {
         return false
     }
 

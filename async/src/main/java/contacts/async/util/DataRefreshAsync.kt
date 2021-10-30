@@ -1,10 +1,8 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.CommonDataEntity
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -18,11 +16,10 @@ import kotlin.coroutines.CoroutineContext
  * See [CommonDataEntity.refresh].
  */
 suspend fun <T : CommonDataEntity> T.refreshWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): T? = withContext(coroutineContext) {
-    refresh(context, customDataRegistry) { !isActive }
+    refresh(contacts) { !isActive }
 }
 
 /**
@@ -34,9 +31,8 @@ suspend fun <T : CommonDataEntity> T.refreshWithContext(
  * See [CommonDataEntity.refresh].
  */
 fun <T : CommonDataEntity> T.refreshAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<T?> = CoroutineScope(coroutineContext).async {
-    refresh(context, customDataRegistry) { !isActive }
+    refresh(contacts) { !isActive }
 }

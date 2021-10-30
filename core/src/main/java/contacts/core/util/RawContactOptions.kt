@@ -34,7 +34,7 @@ import contacts.core.equalTo
 fun RawContactEntity.options(context: Context): Options {
     val rawContactId = id
 
-    if (!ContactsPermissions(context).canQuery() || rawContactId == null) {
+    if (!ContactsPermissions(context).canQuery || rawContactId == null) {
         return Options()
     }
 
@@ -68,7 +68,7 @@ fun RawContactEntity.options(context: Context): Options {
 fun RawContactEntity.setOptions(context: Context, options: MutableOptions): Boolean {
     val rawContactId = id
 
-    if (!ContactsPermissions(context).canUpdateDelete() || rawContactId == null) {
+    if (!ContactsPermissions(context).canUpdateDelete || rawContactId == null) {
         return false
     }
 

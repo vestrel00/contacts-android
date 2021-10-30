@@ -1,11 +1,9 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.Contact
 import contacts.core.entities.RawContact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.profile.ProfileInsert
 import contacts.core.util.contact
 import contacts.core.util.rawContact
@@ -23,11 +21,10 @@ import kotlin.coroutines.CoroutineContext
  * See [ProfileInsert.Result.rawContact].
  */
 suspend fun ProfileInsert.Result.rawContactWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): RawContact? = withContext(coroutineContext) {
-    rawContact(context, customDataRegistry) { !isActive }
+    rawContact(contacts) { !isActive }
 }
 
 /**
@@ -39,11 +36,10 @@ suspend fun ProfileInsert.Result.rawContactWithContext(
  * See [ProfileInsert.Result.contact].
  */
 suspend fun ProfileInsert.Result.contactWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Contact? = withContext(coroutineContext) {
-    contact(context, customDataRegistry) { !isActive }
+    contact(contacts) { !isActive }
 }
 
 // endregion
@@ -59,11 +55,10 @@ suspend fun ProfileInsert.Result.contactWithContext(
  * See [ProfileInsert.Result.rawContact].
  */
 fun ProfileInsert.Result.rawContactAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
-    rawContact(context, customDataRegistry) { !isActive }
+    rawContact(contacts) { !isActive }
 }
 
 /**
@@ -75,11 +70,10 @@ fun ProfileInsert.Result.rawContactAsync(
  * See [ProfileInsert.Result.contact].
  */
 fun ProfileInsert.Result.contactAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> = CoroutineScope(coroutineContext).async {
-    contact(context, customDataRegistry) { !isActive }
+    contact(contacts) { !isActive }
 }
 
 // endregion

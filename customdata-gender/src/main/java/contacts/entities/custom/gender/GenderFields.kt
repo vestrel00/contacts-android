@@ -22,27 +22,23 @@ object GenderFields : AbstractCustomDataFieldSet<GenderField>() {
     override val all: Set<GenderField> = setOf(Type, Label)
 
     /**
-     * Same as [all], but as a function.
-     *
-     * This mainly exists for Java support.
-     */
-    @JvmStatic
-    fun all(): Set<GenderField> = all
-
-    /**
      * [Type] and [Label] are not meant for matching.
      *
      * See [AbstractCustomDataFieldSet.forMatching] for more info.
      */
     override val forMatching: Set<GenderField> = emptySet()
 
-
     /**
-     * Same as [forMatching], but as a function.
-     *
-     * This mainly exists for Java support.
+     * Same as [all], but as a function. This mainly exists for Java support. This makes it visible
+     * to Java consumers when accessing this using the object reference directly.
      */
     @JvmStatic
-    fun forMatching(): Set<GenderField> = forMatching
+    fun all() = all
 
+    /**
+     * Same as [forMatching], but as a function. This makes it visible to Java consumers when
+     * accessing this using the object reference directly.
+     */
+    @JvmStatic
+    fun forMatching() = forMatching
 }

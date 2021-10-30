@@ -2,7 +2,6 @@ package contacts.core
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
 import contacts.core.entities.Contact
@@ -385,12 +384,10 @@ interface BroadQuery {
 }
 
 @Suppress("FunctionName")
-internal fun BroadQuery(
-    context: Context, customDataRegistry: CustomDataRegistry
-): BroadQuery = BroadQueryImpl(
-    context.contentResolver,
-    ContactsPermissions(context),
-    customDataRegistry
+internal fun BroadQuery(contacts: Contacts): BroadQuery = BroadQueryImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions,
+    contacts.customDataRegistry
 )
 
 private class BroadQueryImpl(
@@ -496,7 +493,7 @@ private class BroadQueryImpl(
     override fun find(): List<Contact> = find { false }
 
     override fun find(cancel: () -> Boolean): List<Contact> {
-        if (!permissions.canQuery()) {
+        if (!permissions.canQuery) {
             return emptyList()
         }
 

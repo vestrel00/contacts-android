@@ -2,7 +2,6 @@ package contacts.core
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
 import contacts.core.entities.Contact
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataContactsCursor
@@ -358,11 +357,11 @@ interface Query {
 }
 
 @Suppress("FunctionName")
-internal fun Query(context: Context, customDataRegistry: CustomDataRegistry): Query =
+internal fun Query(contacts: Contacts): Query =
     QueryImpl(
-        context.contentResolver,
-        ContactsPermissions(context),
-        customDataRegistry
+        contacts.applicationContext.contentResolver,
+        contacts.permissions,
+        contacts.customDataRegistry
     )
 
 private class QueryImpl(
@@ -453,9 +452,16 @@ private class QueryImpl(
     override fun find(): List<Contact> = find { false }
 
     override fun find(cancel: () -> Boolean): List<Contact> {
-        if (!permissions.canQuery() || cancel()) {
+        if (!permissions.canQuery || cancel()) {
             return emptyList()
         }
+
+        // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
+        // attributes even if the consumer does not call these functions. This allows delegators to
+        // make necessary modifications to private attributes without having to make this class
+        // open for inheritance or exposing unnecessary attributes to consumers.
+        include(include.fields)
+        where(where)
 
         return contentResolver.resolve(
             customDataRegistry, includeBlanks,

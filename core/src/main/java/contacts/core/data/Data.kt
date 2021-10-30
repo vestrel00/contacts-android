@@ -1,9 +1,8 @@
 package contacts.core.data
 
 import android.content.Context
+import contacts.core.Contacts
 import contacts.core.ContactsPermissions
-import contacts.core.entities.MimeType
-import contacts.core.entities.custom.CustomDataRegistry
 
 /**
  * Provides new [DataQuery], [DataUpdate], and [DataDelete] for Profile OR non-Profile (depending on
@@ -51,33 +50,23 @@ interface Data {
      * modules. This is safe to hold on to. Not meant for consumer use.
      */
     val applicationContext: Context
-
-    /**
-     * Provides functions required to support custom common data, which have [MimeType.Custom].
-     */
-    val customDataRegistry: CustomDataRegistry
 }
 
 @Suppress("FunctionName")
-internal fun Data(
-    context: Context, customDataRegistry: CustomDataRegistry, isProfile: Boolean
-): Data = DataImpl(
-    context.applicationContext,
-    ContactsPermissions(context.applicationContext),
-    customDataRegistry,
-    isProfile
-)
+internal fun Data(contacts: Contacts, isProfile: Boolean): Data = DataImpl(contacts, isProfile)
 
 private class DataImpl(
-    override val applicationContext: Context,
-    override val permissions: ContactsPermissions,
-    override val customDataRegistry: CustomDataRegistry,
+    private val contacts: Contacts,
     private val isProfile: Boolean
 ) : Data {
 
-    override fun query() = DataQuery(applicationContext, customDataRegistry, isProfile)
+    override fun query() = DataQuery(contacts, isProfile)
 
-    override fun update() = DataUpdate(applicationContext, customDataRegistry, isProfile)
+    override fun update() = DataUpdate(contacts, isProfile)
 
-    override fun delete() = DataDelete(applicationContext, isProfile)
+    override fun delete() = DataDelete(contacts, isProfile)
+
+    override val permissions: ContactsPermissions = contacts.permissions
+
+    override val applicationContext: Context = contacts.applicationContext
 }

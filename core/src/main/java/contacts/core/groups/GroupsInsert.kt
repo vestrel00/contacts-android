@@ -2,7 +2,7 @@ package contacts.core.groups
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 import contacts.core.accounts.AccountsQuery
 import contacts.core.entities.MutableGroup
@@ -162,16 +162,11 @@ interface GroupsInsert {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsInsert(context: Context): GroupsInsert = GroupsInsertImpl(
-    context.contentResolver,
-    AccountsQuery(
-        context,
-        // Does not matter what value is passed to isProfile because we are not using profile-aware
-        // functions.
-        false
-    ),
-    GroupsQuery(context),
-    ContactsPermissions(context)
+internal fun GroupsInsert(contacts: Contacts): GroupsInsert = GroupsInsertImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.accounts().query(),
+    contacts.groups().query(),
+    contacts.permissions
 )
 
 private class GroupsInsertImpl(
@@ -203,7 +198,7 @@ private class GroupsInsertImpl(
     override fun commit(): GroupsInsert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsInsert.Result {
-        if (groups.isEmpty() || !permissions.canInsert() || cancel()) {
+        if (groups.isEmpty() || !permissions.canInsert || cancel()) {
             return GroupsInsertFailed()
         }
 

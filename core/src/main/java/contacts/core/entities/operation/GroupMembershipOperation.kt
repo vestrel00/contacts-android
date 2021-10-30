@@ -11,11 +11,13 @@ import contacts.core.accounts.accountForRawContactWithId
 import contacts.core.entities.GroupMembership
 import contacts.core.entities.MimeType
 import contacts.core.entities.mapper.groupMembershipMapper
-import contacts.core.groups.GroupsQuery
+import contacts.core.groups.Groups
 import contacts.core.util.query
 
 internal class GroupMembershipOperation(
-    isProfile: Boolean, includeFields: Set<GroupMembershipField>
+    isProfile: Boolean,
+    includeFields: Set<GroupMembershipField>,
+    private val groups: Groups
 ) : AbstractCommonDataOperation<GroupMembershipField, GroupMembership>(isProfile, includeFields) {
 
     override val mimeType = MimeType.GroupMembership
@@ -31,11 +33,10 @@ internal class GroupMembershipOperation(
      */
     fun insert(
         groupMemberships: Collection<GroupMembership>,
-        account: Account,
-        context: Context
+        account: Account
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
 
-        val accountGroups = GroupsQuery(context).accounts(account).find()
+        val accountGroups = groups.query().accounts(account).find()
             .associateBy { it.id }
             .toMutableMap()
 
@@ -65,7 +66,7 @@ internal class GroupMembershipOperation(
         // Groups must always be associated with an account. No account, no group operation.
         val account = context.contentResolver
             .accountForRawContactWithId(rawContactId) ?: return emptyList()
-        val accountGroups = GroupsQuery(context).accounts(account).find()
+        val accountGroups = groups.query().accounts(account).find()
             // This is the same as GroupMembership.groupId.
             .associateBy { it.id }
 

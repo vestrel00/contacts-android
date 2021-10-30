@@ -1,10 +1,8 @@
 package contacts.core.util
 
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.entities.BlankRawContact
 import contacts.core.entities.RawContact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the equivalent [RawContact] with all of the latest data.
@@ -25,10 +23,9 @@ import contacts.core.entities.custom.GlobalCustomDataRegistry
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun BlankRawContact.toRawContact(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): RawContact? =
     id?.let { rawContactId ->
-        context.findFirstRawContactWithId(rawContactId, customDataRegistry, cancel)
+        contacts.findFirstRawContactWithId(rawContactId, cancel)
     }

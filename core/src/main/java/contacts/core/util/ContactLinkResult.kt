@@ -1,12 +1,9 @@
 package contacts.core.util
 
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.Fields
-import contacts.core.Query
 import contacts.core.`in`
 import contacts.core.entities.Contact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.equalTo
 
 // Note that there is no need to handle isProfile here as ContactLinks operations do not support it.
@@ -26,16 +23,13 @@ import contacts.core.equalTo
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun ContactLinkResult.contact(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
-    cancel: () -> Boolean = { false }
-): Contact? = contactId?.let {
-    Query(context, customDataRegistry)
-        .where(Fields.Contact.Id equalTo it)
-        .find(cancel)
-        .firstOrNull()
-}
+fun ContactLinkResult.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
+    contactId?.let {
+        contacts.query()
+            .where(Fields.Contact.Id equalTo it)
+            .find(cancel)
+            .firstOrNull()
+    }
 
 /**
  * Returns all of the [Contact]s that are associated with each of the unlinked RawContacts.
@@ -53,12 +47,11 @@ fun ContactLinkResult.contact(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun ContactUnlinkResult.contacts(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): List<Contact> = if (rawContactIds.isEmpty()) {
     emptyList()
 } else {
-    Query(context, customDataRegistry).where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
+    contacts.query().where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
 }
 

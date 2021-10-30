@@ -15,5 +15,5 @@ internal class HandleNameEntry : Entry<HandleNameField, HandleNameDataCursor, Mu
 
     override val mapperFactory = HandleNameMapperFactory()
 
-    override val operationFactory = HandleNameDataOperationFactory()
+    override val operationFactory = HandleNameOperationFactory()
 }

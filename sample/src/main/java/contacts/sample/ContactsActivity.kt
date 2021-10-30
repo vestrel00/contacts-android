@@ -127,7 +127,7 @@ class ContactsActivity : BaseActivity() {
         queryJob = launch {
             // Using BroadQuery here so that it matches closely to the native Contacts app search
             // results. Consumers should try out Query too because it gives the most control.
-            searchResults = Contacts(this@ContactsActivity).broadQueryWithPermission()
+            searchResults = contacts.broadQueryWithPermission()
                 .accounts(selectedAccounts)
                 .include(
                     Fields.Contact.DisplayNamePrimary,

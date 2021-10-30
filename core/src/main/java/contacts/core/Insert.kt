@@ -2,7 +2,6 @@ package contacts.core
 
 import android.accounts.Account
 import android.content.ContentProviderOperation
-import android.content.Context
 import contacts.core.entities.MutableRawContact
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
@@ -259,21 +258,13 @@ interface Insert {
 }
 
 @Suppress("FunctionName")
-internal fun Insert(
-    context: Context, customDataRegistry: CustomDataRegistry
-): Insert = InsertImpl(
-    context.applicationContext,
-    ContactsPermissions(context),
-    customDataRegistry
-)
+internal fun Insert(contacts: Contacts): Insert = InsertImpl(contacts)
 
 private class InsertImpl(
-    private val applicationContext: Context,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    private val contacts: Contacts,
 
     private var allowBlanks: Boolean = false,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+    private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
     private var account: Account? = null,
     private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
 ) : Insert {
@@ -298,7 +289,7 @@ private class InsertImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Insert = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(customDataRegistry)
+            allDataFields(contacts.customDataRegistry)
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -324,12 +315,12 @@ private class InsertImpl(
     override fun commit(): Insert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Insert.Result {
-        if (rawContacts.isEmpty() || !permissions.canInsert() || cancel()) {
+        if (rawContacts.isEmpty() || !contacts.permissions.canInsert || cancel()) {
             return InsertFailed()
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
-        account = account?.nullIfNotInSystem(applicationContext)
+        account = account?.nullIfNotInSystem(contacts.accounts())
 
         val results = mutableMapOf<MutableRawContact, Long?>()
         for (rawContact in rawContacts) {
@@ -342,9 +333,7 @@ private class InsertImpl(
             } else {
                 // No need to propagate the cancel function to within insertRawContactForAccount
                 // as that operation should be fast and CPU time should be trivial.
-                applicationContext.insertRawContactForAccount(
-                    customDataRegistry, account, include.fields, rawContact, IS_PROFILE
-                )
+                contacts.insertRawContactForAccount(account, include.fields, rawContact, IS_PROFILE)
             }
         }
         return InsertResult(results)
@@ -363,8 +352,7 @@ private class InsertImpl(
  * providers may consolidate multiple RawContacts and associated Data rows to a single Contacts
  * row.
  */
-internal fun Context.insertRawContactForAccount(
-    customDataRegistry: CustomDataRegistry,
+internal fun Contacts.insertRawContactForAccount(
     account: Account?,
     includeFields: Set<AbstractDataField>,
     rawContact: MutableRawContact,
@@ -410,8 +398,10 @@ internal fun Context.insertRawContactForAccount(
         // The Contacts Provider does support having events for local raw contacts.
         operations.addAll(
             GroupMembershipOperation(
-                isProfile, Fields.GroupMembership.intersect(includeFields)
-            ).insert(rawContact.groupMemberships, account, this)
+                isProfile,
+                Fields.GroupMembership.intersect(includeFields),
+                groups()
+            ).insert(rawContact.groupMemberships, account)
         )
     }
 
@@ -474,7 +464,7 @@ internal fun Context.insertRawContactForAccount(
      * Atomically create the RawContact row and all of the associated Data rows. All of the
      * above operations will either succeed or fail.
      */
-    val results = contentResolver.applyBatch(operations)
+    val results = applicationContext.contentResolver.applyBatch(operations)
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the

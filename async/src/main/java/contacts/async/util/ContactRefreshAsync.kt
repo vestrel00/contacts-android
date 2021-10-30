@@ -1,11 +1,9 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.Contact
 import contacts.core.entities.MutableContact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -19,10 +17,9 @@ import kotlin.coroutines.CoroutineContext
  * See [Contact.refresh].
  */
 suspend fun Contact.refreshWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Contact? = withContext(coroutineContext) { refresh(context, customDataRegistry) { !isActive } }
+): Contact? = withContext(coroutineContext) { refresh(contacts) { !isActive } }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -33,11 +30,10 @@ suspend fun Contact.refreshWithContext(
  * See [Contact.refresh].
  */
 suspend fun MutableContact.refreshWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): MutableContact? = withContext(coroutineContext) {
-    refresh(context, customDataRegistry) { !isActive }
+    refresh(contacts) { !isActive }
 }
 
 /**
@@ -49,11 +45,10 @@ suspend fun MutableContact.refreshWithContext(
  * See [Contact.refresh].
  */
 fun Contact.refreshAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> = CoroutineScope(coroutineContext).async {
-    refresh(context, customDataRegistry) { !isActive }
+    refresh(contacts) { !isActive }
 }
 
 /**
@@ -65,8 +60,7 @@ fun Contact.refreshAsync(
  * See [Contact.refresh].
  */
 fun MutableContact.refreshAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<MutableContact?> =
-    CoroutineScope(coroutineContext).async { refresh(context, customDataRegistry) { !isActive } }
+    CoroutineScope(coroutineContext).async { refresh(contacts) { !isActive } }

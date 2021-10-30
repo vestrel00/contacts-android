@@ -1,14 +1,10 @@
 package contacts.core.util
 
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.Fields
-import contacts.core.Query
 import contacts.core.entities.Contact
 import contacts.core.entities.MutableContact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.equalTo
-import contacts.core.profile.ProfileQuery
 
 /**
  * Returns the contact with all of the latest data, including all
@@ -33,15 +29,11 @@ import contacts.core.profile.ProfileQuery
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Contact.refresh(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
-    cancel: () -> Boolean = { false }
-): Contact? =
+fun Contact.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
     if (id == null) {
         this
     } else {
-        context.findFirstContactWithId(id, customDataRegistry, cancel)
+        contacts.findFirstContactWithId(id, cancel)
     }
 
 /**
@@ -54,26 +46,25 @@ fun Contact.refresh(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun MutableContact.refresh(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): MutableContact? =
     if (id == null) {
         this
     } else {
-        context.findFirstContactWithId(id, customDataRegistry, cancel)?.toMutableContact()
+        contacts.findFirstContactWithId(id, cancel)?.toMutableContact()
     }
 
-internal fun Context.findFirstContactWithId(
+internal fun Contacts.findFirstContactWithId(
     contactId: Long,
-    customDataRegistry: CustomDataRegistry,
     cancel: () -> Boolean
 ): Contact? =
     if (contactId.isProfileId) {
-        ProfileQuery(this, customDataRegistry)
+        profile()
+            .query()
             .find(cancel)
     } else {
-        Query(this, customDataRegistry)
+        query()
             .where(Fields.Contact.Id equalTo contactId)
             .find(cancel)
             .firstOrNull()

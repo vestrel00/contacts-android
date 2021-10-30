@@ -136,14 +136,17 @@ class ContactDetailsActivity : BaseActivity() {
                 contactView.isEnabled = true
             }
             Mode.CREATE -> {
-                contactView.loadNewContact()
+                contactView.loadNewContact(contacts)
                 contactView.isEnabled = true
             }
         }
     }
 
     private suspend fun loadContact() {
-        val loadSuccess = contactId?.let { contactView.loadContactWithId(it) } == true
+        val loadSuccess = contactId?.let {
+            contactView.loadContactWithId(it, contacts)
+        } == true
+
         if (!loadSuccess) {
             Toast
                 .makeText(
@@ -158,7 +161,7 @@ class ContactDetailsActivity : BaseActivity() {
     private fun createNewContact() = launch {
         showProgressDialog()
 
-        contactId = contactView.createNewContact()
+        contactId = contactView.createNewContact(contacts)
         val createSuccess = contactId != null
 
         val resultMessageRes = if (createSuccess) {
@@ -178,7 +181,7 @@ class ContactDetailsActivity : BaseActivity() {
     private fun updateContact() = launch {
         showProgressDialog()
 
-        val updateSuccess = contactView.updateContact()
+        val updateSuccess = contactView.updateContact(contacts)
 
         val resultMessageRes = if (updateSuccess) {
             R.string.contact_details_update_success
@@ -197,7 +200,7 @@ class ContactDetailsActivity : BaseActivity() {
     private fun deleteContact() = launch {
         showProgressDialog()
 
-        val deleteSuccess = contactView.deleteContact()
+        val deleteSuccess = contactView.deleteContact(contacts)
 
         val resultMessageRes = if (deleteSuccess) {
             R.string.contact_details_delete_success

@@ -2,7 +2,7 @@ package contacts.core.profile
 
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 import contacts.core.deleteRawContactWithId
 import contacts.core.entities.ContactEntity
@@ -139,9 +139,9 @@ interface ProfileDelete {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileDelete(context: Context): ProfileDelete = ProfileDeleteImpl(
-    context.contentResolver,
-    ContactsPermissions(context)
+internal fun ProfileDelete(contacts: Contacts): ProfileDelete = ProfileDeleteImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions
 )
 
 private class ProfileDeleteImpl(
@@ -174,7 +174,7 @@ private class ProfileDeleteImpl(
     }
 
     override fun commit(): ProfileDelete.Result {
-        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
+        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete) {
             return ProfileDeleteFailed()
         }
 
@@ -202,7 +202,7 @@ private class ProfileDeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
+        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete) {
             return false
         }
 

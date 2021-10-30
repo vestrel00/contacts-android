@@ -1,12 +1,9 @@
 package contacts.core.util
 
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.entities.Contact
 import contacts.core.entities.RawContact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.profile.ProfileInsert
-import contacts.core.profile.ProfileQuery
 
 /**
  * Returns the newly created Profile [RawContact] or null if the insert operation failed.
@@ -25,11 +22,10 @@ import contacts.core.profile.ProfileQuery
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun ProfileInsert.Result.rawContact(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): RawContact? = rawContactId?.let { rawContactId ->
-    contact(context, customDataRegistry, cancel)
+    contact(contacts, cancel)
         ?.rawContacts
         ?.firstOrNull { it.id == rawContactId }
 }
@@ -51,8 +47,5 @@ fun ProfileInsert.Result.rawContact(
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun ProfileInsert.Result.contact(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
-    cancel: () -> Boolean = { false }
-): Contact? = if (isSuccessful) ProfileQuery(context, customDataRegistry).find(cancel) else null
+fun ProfileInsert.Result.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
+    if (isSuccessful) contacts.profile().query().find(cancel) else null

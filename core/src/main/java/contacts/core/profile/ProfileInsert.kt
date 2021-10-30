@@ -2,12 +2,10 @@ package contacts.core.profile
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
 import android.provider.ContactsContract
 import contacts.core.*
 import contacts.core.entities.MutableRawContact
 import contacts.core.entities.cursor.rawContactsCursor
-import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.table.ProfileUris
 import contacts.core.util.isEmpty
 import contacts.core.util.nullIfNotInSystem
@@ -239,22 +237,14 @@ interface ProfileInsert {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileInsert(
-    context: Context, customDataRegistry: CustomDataRegistry
-): ProfileInsert = ProfileInsertImpl(
-    context.applicationContext,
-    ContactsPermissions(context),
-    customDataRegistry
-)
+internal fun ProfileInsert(contacts: Contacts): ProfileInsert = ProfileInsertImpl(contacts)
 
 private class ProfileInsertImpl(
-    private val applicationContext: Context,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    private val contacts: Contacts,
 
     private var allowBlanks: Boolean = false,
     private var allowMultipleRawContactsPerAccount: Boolean = false,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+    private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
     private var account: Account? = null,
     private var rawContact: MutableRawContact? = null
 ) : ProfileInsert {
@@ -286,7 +276,7 @@ private class ProfileInsertImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileInsert = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(customDataRegistry)
+            allDataFields(contacts.customDataRegistry)
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -310,18 +300,20 @@ private class ProfileInsertImpl(
 
         if (rawContact == null
             || (!allowBlanks && rawContact.isBlank)
-            || !permissions.canInsert()
+            || !contacts.permissions.canInsert
             || cancel()
         ) {
             return ProfileInsertFailed()
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
-        account = account?.nullIfNotInSystem(applicationContext)
+        account = account?.nullIfNotInSystem(contacts.accounts())
 
         if (
-            (!allowMultipleRawContactsPerAccount
-                    && applicationContext.contentResolver.hasProfileRawContactForAccount(account))
+            (!allowMultipleRawContactsPerAccount &&
+                    contacts.applicationContext.contentResolver.hasProfileRawContactForAccount(
+                        account
+                    ))
             || cancel()
         ) {
             return ProfileInsertFailed()
@@ -330,9 +322,7 @@ private class ProfileInsertImpl(
         // No need to propagate the cancel function to within insertRawContactForAccount
         // as that operation should be fast and CPU time should be trivial.
         val rawContactId =
-            applicationContext.insertRawContactForAccount(
-                customDataRegistry, account, include.fields, rawContact, IS_PROFILE
-            )
+            contacts.insertRawContactForAccount(account, include.fields, rawContact, IS_PROFILE)
 
         return ProfileInsertResult(rawContactId)
     }

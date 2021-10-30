@@ -1,7 +1,7 @@
 package contacts.core.groups
 
 import android.content.ContentResolver
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 import contacts.core.entities.Group
 import contacts.core.entities.operation.GroupsOperation
@@ -101,9 +101,9 @@ interface GroupsDelete {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsDelete(context: Context): GroupsDelete = GroupsDeleteImpl(
-    context.contentResolver,
-    ContactsPermissions(context)
+internal fun GroupsDelete(contacts: Contacts): GroupsDelete = GroupsDeleteImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions
 )
 
 private class GroupsDeleteImpl(
@@ -134,7 +134,7 @@ private class GroupsDeleteImpl(
     }
 
     override fun commit(): GroupsDelete.Result {
-        if (groupIds.isEmpty() || !permissions.canUpdateDelete()) {
+        if (groupIds.isEmpty() || !permissions.canUpdateDelete) {
             return GroupsDeleteFailed()
         }
 
@@ -149,7 +149,7 @@ private class GroupsDeleteImpl(
         return GroupsDeleteResult(results)
     }
 
-    override fun commitInOneTransaction(): Boolean = permissions.canUpdateDelete()
+    override fun commitInOneTransaction(): Boolean = permissions.canUpdateDelete
             && groupIds.isNotEmpty()
             && !groupIds.contains(INVALID_ID)
             && contentResolver.applyBatch(GroupsOperation().delete(groupIds)) != null

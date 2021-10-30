@@ -1,10 +1,9 @@
 package contacts.core.profile
 
 import android.content.Context
+import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 import contacts.core.data.Data
-import contacts.core.entities.MimeType
-import contacts.core.entities.custom.CustomDataRegistry
 
 /**
  * Provides new [ProfileQuery], [ProfileInsert], [ProfileUpdate], and [ProfileDelete] instances.
@@ -58,34 +57,24 @@ interface Profile {
      * modules. This is safe to hold on to. Not meant for consumer use.
      */
     val applicationContext: Context
-
-    /**
-     * Provides functions required to support custom common data, which have [MimeType.Custom].
-     */
-    val customDataRegistry: CustomDataRegistry
 }
 
 @Suppress("FunctionName")
-internal fun Profile(context: Context, customDataRegistry: CustomDataRegistry): Profile =
-    ProfileImpl(
-        context.applicationContext,
-        ContactsPermissions(context.applicationContext),
-        customDataRegistry
-    )
+internal fun Profile(contacts: Contacts): Profile = ProfileImpl(contacts)
 
-private class ProfileImpl(
-    override val applicationContext: Context,
-    override val permissions: ContactsPermissions,
-    override val customDataRegistry: CustomDataRegistry
-) : Profile {
+private class ProfileImpl(private val contacts: Contacts) : Profile {
 
-    override fun query() = ProfileQuery(applicationContext, customDataRegistry)
+    override fun query() = ProfileQuery(contacts)
 
-    override fun insert() = ProfileInsert(applicationContext, customDataRegistry)
+    override fun insert() = ProfileInsert(contacts)
 
-    override fun update() = ProfileUpdate(applicationContext, customDataRegistry)
+    override fun update() = ProfileUpdate(contacts)
 
-    override fun delete() = ProfileDelete(applicationContext)
+    override fun delete() = ProfileDelete(contacts)
 
-    override fun data() = Data(applicationContext, customDataRegistry, true)
+    override fun data() = Data(contacts, true)
+
+    override val permissions: ContactsPermissions = contacts.permissions
+
+    override val applicationContext: Context = contacts.applicationContext
 }

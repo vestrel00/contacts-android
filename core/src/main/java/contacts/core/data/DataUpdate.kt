@@ -1,7 +1,6 @@
 package contacts.core.data
 
 import android.content.ContentResolver
-import android.content.Context
 import contacts.core.*
 import contacts.core.entities.MutableCommonDataEntity
 import contacts.core.entities.custom.CustomDataRegistry
@@ -166,12 +165,10 @@ interface DataUpdate {
 }
 
 @Suppress("FunctionName")
-internal fun DataUpdate(
-    context: Context, customDataRegistry: CustomDataRegistry, isProfile: Boolean
-): DataUpdate = DataUpdateImpl(
-    context.contentResolver,
-    ContactsPermissions(context),
-    customDataRegistry,
+internal fun DataUpdate(contacts: Contacts, isProfile: Boolean): DataUpdate = DataUpdateImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions,
+    contacts.customDataRegistry,
     isProfile
 )
 
@@ -216,7 +213,7 @@ private class DataUpdateImpl(
     override fun commit(): DataUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): DataUpdate.Result {
-        if (data.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+        if (data.isEmpty() || !permissions.canUpdateDelete || cancel()) {
             return DataUpdateFailed()
         }
 

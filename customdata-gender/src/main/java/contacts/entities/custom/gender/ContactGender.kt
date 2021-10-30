@@ -1,46 +1,37 @@
 package contacts.entities.custom.gender
 
+import contacts.core.Contacts
 import contacts.core.entities.Contact
 import contacts.core.entities.MutableContact
 import contacts.core.entities.RawContact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the sequence of [Gender]s from all [Contact.rawContacts] ordered by the [Gender.id].
  */
-fun Contact.genders(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
-): Sequence<Gender> = rawContacts
+fun Contact.genders(contacts: Contacts): Sequence<Gender> = rawContacts
     .asSequence()
-    .mapNotNull { it.gender(customDataRegistry) }
+    .mapNotNull { it.gender(contacts) }
     .sortedBy { it.id }
 
 /**
  * Returns the list of [Gender]s from all [Contact.rawContacts] ordered by the [Gender.id].
  */
-fun Contact.genderList(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
-): List<Gender> = genders(customDataRegistry).toList()
+fun Contact.genderList(contacts: Contacts): List<Gender> = genders(contacts).toList()
 
 /**
  * Returns the sequence of [MutableGender]s from all [Contact.rawContacts] ordered by the
  * [MutableGender.id].
  */
-fun MutableContact.genders(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
-): Sequence<MutableGender> = rawContacts
+fun MutableContact.genders(contacts: Contacts): Sequence<MutableGender> = rawContacts
     .asSequence()
-    .mapNotNull { it.gender(customDataRegistry) }
+    .mapNotNull { it.gender(contacts) }
     .sortedBy { it.id }
 
 /**
  * Returns the list of [MutableGender]s from all [Contact.rawContacts] ordered by the
  * [MutableGender.id].
  */
-fun MutableContact.genderList(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
-): List<MutableGender> = genders(customDataRegistry).toList()
+fun MutableContact.genderList(contacts: Contacts): List<MutableGender> = genders(contacts).toList()
 
 /**
  * Sets the [RawContact.gender] of the first RawContact in [MutableContact.rawContacts] sorted by
@@ -49,11 +40,8 @@ fun MutableContact.genderList(
  * This does not perform the actual insert/update to the database. You will need to perform an
  * insert/update operation on this [MutableContact] object.
  */
-fun MutableContact.setGender(
-    gender: MutableGender?,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
-) {
-    rawContacts.firstOrNull()?.setGender(gender, customDataRegistry)
+fun MutableContact.setGender(contacts: Contacts, gender: MutableGender?) {
+    rawContacts.firstOrNull()?.setGender(contacts, gender)
 }
 
 /**
@@ -63,9 +51,6 @@ fun MutableContact.setGender(
  * This does not perform the actual insert/update to the database. You will need to perform an
  * insert/update operation on this [MutableContact] object.
  */
-fun MutableContact.setGender(
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
-    configureGender: MutableGender.() -> Unit
-) {
-    setGender(MutableGender().apply(configureGender), customDataRegistry)
+fun MutableContact.setGender(contacts: Contacts, configureGender: MutableGender.() -> Unit) {
+    setGender(contacts, MutableGender().apply(configureGender))
 }

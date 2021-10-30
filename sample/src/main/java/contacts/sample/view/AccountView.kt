@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.accounts.accountForWithContext
-import contacts.core.accounts.Accounts
+import contacts.core.Contacts
 import contacts.core.entities.RawContactEntity
 import contacts.permissions.accounts.queryWithPermission
 import kotlinx.coroutines.*
@@ -48,16 +48,20 @@ class AccountView @JvmOverloads constructor(
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main
 
-    var rawContact: RawContactEntity? = null
-        set(value) {
-            field = value
+    private var rawContact: RawContactEntity? = null
 
-            setAccount()
-        }
+    /**
+     * Sets the RawContact account shown and managed by this view to the given [rawContact] and uses
+     * the given [contacts] API to perform operations on it.
+     */
+    fun setRawContact(rawContact: RawContactEntity?, contacts: Contacts) {
+        this.rawContact = rawContact
+        setAccount(contacts)
+    }
 
-    private fun setAccount() = launch {
+    private fun setAccount(contacts: Contacts) = launch {
         val account = rawContact?.let {
-            Accounts(context, it.isProfile)
+            contacts.accounts(it.isProfile)
                 .queryWithPermission()
                 .accountForWithContext(it)
         }

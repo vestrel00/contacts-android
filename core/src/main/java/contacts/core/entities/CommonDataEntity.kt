@@ -78,9 +78,9 @@ interface CommonDataEntity : Entity {
      *
      * Blank data are typically;
      *
-     * - Not returned in any query results, even if the corresponding fields are included.
-     * - Not inserted.
-     * - Deleted upon update.
+     * - Not returned in any query results
+     * - Not inserted
+     * - Deleted upon update
      *
      * The following has no influence on the value this returns.
      *

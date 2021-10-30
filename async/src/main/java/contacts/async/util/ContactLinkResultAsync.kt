@@ -1,10 +1,8 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.Contact
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.util.ContactLinkResult
 import contacts.core.util.ContactUnlinkResult
 import contacts.core.util.contact
@@ -21,11 +19,10 @@ import kotlin.coroutines.CoroutineContext
  * See [ContactLinkResult.contact].
  */
 suspend fun ContactLinkResult.contactWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Contact? = withContext(coroutineContext) {
-    contact(context, customDataRegistry) { !isActive }
+    contact(contacts) { !isActive }
 }
 
 /**
@@ -37,11 +34,10 @@ suspend fun ContactLinkResult.contactWithContext(
  * See [ContactUnlinkResult.contacts].
  */
 suspend fun ContactUnlinkResult.contactsWithContext(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): List<Contact> = withContext(coroutineContext) {
-    contacts(context, customDataRegistry) { !isActive }
+    contacts(contacts) { !isActive }
 }
 
 /**
@@ -53,11 +49,10 @@ suspend fun ContactUnlinkResult.contactsWithContext(
  * See [ContactLinkResult.contact].
  */
 fun ContactLinkResult.contactAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> = CoroutineScope(coroutineContext).async {
-    contact(context, customDataRegistry) { !isActive }
+    contact(contacts) { !isActive }
 }
 
 /**
@@ -69,9 +64,8 @@ fun ContactLinkResult.contactAsync(
  * See [ContactUnlinkResult.contacts].
  */
 fun ContactUnlinkResult.contactsAsync(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<List<Contact>> = CoroutineScope(coroutineContext).async {
-    contacts(context, customDataRegistry) { !isActive }
+    contacts(contacts) { !isActive }
 }

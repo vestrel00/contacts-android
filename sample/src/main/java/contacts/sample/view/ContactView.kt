@@ -106,15 +106,20 @@ class ContactView @JvmOverloads constructor(
      * modifications in the views will also be made to the this.
      */
     private var contact: MutableContact? = null
-        set(value) {
-            field = value
 
-            launch { setStarredView(contact?.options?.starred == true) }
-            setSendToVoicemailView(contact?.options?.sendToVoicemail == true)
+    /**
+     * Set the Contact shown and managed by this view to the given [contact] and uses the given
+     * [contacts] API to perform operations on it.
+     */
+    fun setContact(contact: MutableContact?, contacts: Contacts) {
+        this.contact = contact
 
-            setDetailsView()
-            setRawContactsView()
-        }
+        launch { setStarredView(contact?.options?.starred == true) }
+        setSendToVoicemailView(contact?.options?.sendToVoicemail == true)
+
+        setDetailsView()
+        setRawContactsView(contacts)
+    }
 
     /**
      * A RawContactView with a new (empty) RawContact. Used for creating a new Contact.
@@ -192,19 +197,18 @@ class ContactView @JvmOverloads constructor(
 
 
     /**
-     * Loads the contact with the given [contactId].
+     * Loads the contact with the given [contactId] using the given [contacts] API.
      *
      * Returns true if the load succeeded.
      */
-    @JvmOverloads
-    suspend fun loadContactWithId(
-        contactId: Long, contacts: Contacts = Contacts(context)
-    ): Boolean {
-        contact = contacts.queryWithPermission()
+    suspend fun loadContactWithId(contactId: Long, contacts: Contacts): Boolean {
+        val contact = contacts.queryWithPermission()
             .where(Fields.Contact.Id equalTo contactId)
             .findWithContext()
             .firstOrNull()
             ?.toMutableContact()
+
+        setContact(contact, contacts)
 
         return contact != null
     }
@@ -214,17 +218,16 @@ class ContactView @JvmOverloads constructor(
      *
      * To insert the new (raw) contact into the Contacts database, call [createNewContact].
      */
-    fun loadNewContact() {
-        contact = null
+    fun loadNewContact(contacts: Contacts) {
+        setContact(null, contacts)
     }
 
     /**
-     * Inserts the new (raw) contact to the database.
+     * Inserts the new (raw) contact to the database using the given [contacts] API.
      *
      * Returns the newly created contact's ID. Returns null if the insert failed.
      */
-    @JvmOverloads
-    suspend fun createNewContact(contacts: Contacts = Contacts(context)): Long? {
+    suspend fun createNewContact(contacts: Contacts): Long? {
         val rawContact = newRawContactView?.rawContact ?: return null
 
         // TODO Contact photo!
@@ -234,19 +237,18 @@ class ContactView @JvmOverloads constructor(
             // TODO .forAccount() reuse AccountsActivity in single choice mode to choose an account
             .rawContacts(rawContact)
             .commitWithContext()
-            .contactWithContext(context, rawContact)
+            .contactWithContext(contacts, rawContact)
 
         return newContact?.id
     }
 
     /**
-     * Updates the [contact] and all of the associated RawContacts.
+     * Updates the [contact] and all of the associated RawContacts using the given [contacts] API.
      *
      * Returns true if the update succeeded regardless of whether the RawContact photos update
      * succeeded of not.
      */
-    @JvmOverloads
-    suspend fun updateContact(contacts: Contacts = Contacts(context)): Boolean {
+    suspend fun updateContact(contacts: Contacts): Boolean {
         val contact = contact ?: return false
 
         // Update RawContact photos that have changed first so that the (Raw)Contacts does not get
@@ -269,12 +271,11 @@ class ContactView @JvmOverloads constructor(
     }
 
     /**
-     * Deletes the [contact] and all of the associated RawContacts.
+     * Deletes the [contact] and all of the associated RawContacts using the given [contacts] API.
      *
      * Returns true if the delete succeeded.
      */
-    @JvmOverloads
-    suspend fun deleteContact(contacts: Contacts = Contacts(context)): Boolean {
+    suspend fun deleteContact(contacts: Contacts): Boolean {
         val contact = contact ?: return false
 
         return contacts.deleteWithPermission()
@@ -309,7 +310,7 @@ class ContactView @JvmOverloads constructor(
         sendToVoicemailView.isChecked = sendToVoicemail
     }
 
-    private fun setRawContactsView() {
+    private fun setRawContactsView(contacts: Contacts) {
         rawContactsView.removeAllViews()
 
         val contact = contact
@@ -317,17 +318,19 @@ class ContactView @JvmOverloads constructor(
             newRawContactView = null
 
             contact.rawContacts.forEach { rawContact ->
-                addRawContactView(rawContact)
+                addRawContactView(rawContact, contacts)
             }
         } else {
-            newRawContactView = addRawContactView(MutableRawContact())
+            newRawContactView = addRawContactView(MutableRawContact(), contacts)
         }
     }
 
-    private fun addRawContactView(rawContact: MutableRawContact): RawContactView {
-        val rawContactView = RawContactView(context).also {
-            it.rawContact = rawContact
-        }
+    private fun addRawContactView(
+        rawContact: MutableRawContact,
+        contacts: Contacts
+    ): RawContactView {
+        val rawContactView = RawContactView(context)
+        rawContactView.setRawContact(rawContact, contacts)
         rawContactsView.addView(rawContactView)
         return rawContactView
     }

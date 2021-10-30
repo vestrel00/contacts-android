@@ -1,7 +1,7 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.Group
 import contacts.core.entities.GroupMembership
 import contacts.core.util.group
@@ -20,8 +20,8 @@ import kotlin.coroutines.CoroutineContext
  * See [group].
  */
 suspend fun GroupMembership.groupWithContext(
-    context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Group? = withContext(coroutineContext) { group(context) { !isActive } }
+    contacts: Contacts, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+): Group? = withContext(coroutineContext) { group(contacts) { !isActive } }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -32,8 +32,8 @@ suspend fun GroupMembership.groupWithContext(
  * See [groups].
  */
 suspend fun Collection<GroupMembership>.groupsWithContext(
-    context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): List<Group> = withContext(coroutineContext) { groups(context) { !isActive } }
+    contacts: Contacts, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+): List<Group> = withContext(coroutineContext) { groups(contacts) { !isActive } }
 
 // endregion
 
@@ -48,8 +48,8 @@ suspend fun Collection<GroupMembership>.groupsWithContext(
  * See [group].
  */
 fun GroupMembership.groupAsync(
-    context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Group?> = CoroutineScope(coroutineContext).async { group(context) { !isActive } }
+    contacts: Contacts, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<Group?> = CoroutineScope(coroutineContext).async { group(contacts) { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -60,7 +60,7 @@ fun GroupMembership.groupAsync(
  * See [groups].
  */
 fun Collection<GroupMembership>.groupsAsync(
-    context: Context, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<List<Group>> = CoroutineScope(coroutineContext).async { groups(context) { !isActive } }
+    contacts: Contacts, coroutineContext: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<List<Group>> = CoroutineScope(coroutineContext).async { groups(contacts) { !isActive } }
 
 // endregion

@@ -2,6 +2,7 @@ package contacts.core.groups
 
 import android.content.Context
 import android.os.Build
+import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 
 /**
@@ -56,25 +57,23 @@ interface Groups {
 }
 
 @Suppress("FunctionName")
-internal fun Groups(context: Context): Groups = GroupsImpl(
-    context.applicationContext,
-    ContactsPermissions(context.applicationContext)
-)
+internal fun Groups(contacts: Contacts): Groups = GroupsImpl(contacts)
 
-private class GroupsImpl(
-    override val applicationContext: Context,
-    override val permissions: ContactsPermissions
-) : Groups {
+private class GroupsImpl(private val contacts: Contacts) : Groups {
 
-    override fun query() = GroupsQuery(applicationContext)
+    override fun query() = GroupsQuery(contacts)
 
-    override fun insert() = GroupsInsert(applicationContext)
+    override fun insert() = GroupsInsert(contacts)
 
-    override fun update() = GroupsUpdate(applicationContext)
+    override fun update() = GroupsUpdate(contacts)
 
     override fun delete() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        GroupsDelete(applicationContext)
+        GroupsDelete(contacts)
     } else {
         null
     }
+
+    override val permissions: ContactsPermissions = contacts.permissions
+
+    override val applicationContext: Context = contacts.applicationContext
 }

@@ -1,10 +1,8 @@
 package contacts.core.util
 
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.entities.Contact
 import contacts.core.entities.RawContactEntity
-import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 
 /**
  * Returns the [Contact] with the [RawContactEntity.contactId].
@@ -16,7 +14,7 @@ import contacts.core.entities.custom.GlobalCustomDataRegistry
  *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be 
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
  * returned if the permission is not granted.
  *
  * ## Thread Safety
@@ -25,11 +23,7 @@ import contacts.core.entities.custom.GlobalCustomDataRegistry
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun RawContactEntity.contact(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry,
-    cancel: () -> Boolean = { false }
-): Contact? =
+fun RawContactEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
     contactId?.let { contactId ->
-        context.findFirstContactWithId(contactId, customDataRegistry, cancel)
+        contacts.findFirstContactWithId(contactId, cancel)
     }

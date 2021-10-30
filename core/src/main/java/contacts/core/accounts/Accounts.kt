@@ -1,6 +1,7 @@
 package contacts.core.accounts
 
 import android.content.Context
+import contacts.core.Contacts
 
 /**
  * Provides new [AccountsQuery], [AccountsRawContactsQuery], and
@@ -62,25 +63,11 @@ interface Accounts {
  * Creates a new [Accounts] instance for Profile or non-Profile operations.
  */
 @Suppress("FunctionName")
-@JvmOverloads
-fun Accounts(context: Context, isProfile: Boolean = false): Accounts = AccountsImpl(
-    context.applicationContext,
-    AccountsPermissions(context.applicationContext),
+internal fun Accounts(contacts: Contacts, isProfile: Boolean): Accounts = AccountsImpl(
+    contacts.applicationContext,
+    AccountsPermissions(contacts.applicationContext),
     isProfile
 )
-
-/**
- * Creates a new [Accounts] instance for Profile or non-Profile operations.
- *
- * This is mainly for Java convenience. Kotlin users should use [Accounts] function instead.
- */
-object AccountsFactory {
-
-    @JvmStatic
-    @JvmOverloads
-    fun create(context: Context, isProfile: Boolean = false): Accounts =
-        Accounts(context, isProfile)
-}
 
 @SuppressWarnings("MissingPermission")
 private class AccountsImpl(
@@ -89,12 +76,12 @@ private class AccountsImpl(
     private val isProfile: Boolean
 ) : Accounts {
 
-    override fun query() = AccountsQuery(applicationContext, isProfile)
+    override fun query() = AccountsQuery(this, isProfile)
 
-    override fun queryRawContacts() = AccountsRawContactsQuery(applicationContext, isProfile)
+    override fun queryRawContacts() = AccountsRawContactsQuery(this, isProfile)
 
     override fun updateRawContactsAssociations() =
-        AccountsRawContactsAssociationsUpdate(applicationContext, isProfile)
+        AccountsRawContactsAssociationsUpdate(this, isProfile)
 
-    override fun profile() = Accounts(applicationContext, true)
+    override fun profile(): Accounts = AccountsImpl(applicationContext, permissions, true)
 }

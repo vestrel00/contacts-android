@@ -8,15 +8,6 @@ import contacts.core.entities.RawContact
 import contacts.core.entities.removeAll
 
 /**
- * A global instance of [CustomDataRegistry] that is used as the default throughout the API.
- *
- * Use this instance to register custom data entries without having to keep a reference to it to
- * pass it around. For example, this is the default registry used in all util functions in the
- * [contacts.core.util] package.
- */
-val GlobalCustomDataRegistry = CustomDataRegistry()
-
-/**
  * Registry of custom data components, enabling queries, inserts, updates, and deletes for custom
  * data.
  */

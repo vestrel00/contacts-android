@@ -15,5 +15,5 @@ internal class GenderEntry : Entry<GenderField, GenderDataCursor, MutableGender>
 
     override val mapperFactory = GenderMapperFactory()
 
-    override val operationFactory = GenderDataOperationFactory()
+    override val operationFactory = GenderOperationFactory()
 }

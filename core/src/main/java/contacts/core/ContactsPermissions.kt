@@ -16,17 +16,17 @@ interface ContactsPermissions {
     /**
      * Returns true if [READ_PERMISSION] is granted.
      */
-    fun canQuery(): Boolean
+    val canQuery: Boolean
 
     /**
      * Returns true if [WRITE_PERMISSION] and [GET_ACCOUNTS_PERMISSION] are granted.
      */
-    fun canInsert(): Boolean
+    val canInsert: Boolean
 
     /**
      * Returns true if [WRITE_PERMISSION] is granted.
      */
-    fun canUpdateDelete(): Boolean
+    val canUpdateDelete: Boolean
 
     companion object {
         const val READ_PERMISSION: String = Manifest.permission.READ_CONTACTS
@@ -42,13 +42,15 @@ private class ContactsPermissionsImpl(
     private val applicationContext: Context
 ) : ContactsPermissions {
 
-    override fun canQuery(): Boolean = applicationContext.isPermissionGrantedFor(READ_PERMISSION)
+    override val canQuery: Boolean
+        get() = applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
-    override fun canInsert(): Boolean = applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
-            && applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+    override val canInsert: Boolean
+        get() = applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
+                && applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
 
-    override fun canUpdateDelete(): Boolean =
-        applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
+    override val canUpdateDelete: Boolean
+        get() = applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
 }
 
 // [ANDROID X] Same as ContextCompat.checkSelfPermission, which we are not using to avoid having

@@ -2,7 +2,6 @@ package contacts.core.profile
 
 import android.accounts.Account
 import android.content.ContentResolver
-import android.content.Context
 import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.entities.cursor.rawContactsCursor
@@ -198,17 +197,15 @@ interface ProfileQuery {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileQuery(
-    context: Context, customDataRegistry: CustomDataRegistry
-): ProfileQuery = ProfileQueryImpl(
-    ContactsPermissions(context),
-    context.contentResolver,
-    customDataRegistry
+internal fun ProfileQuery(contacts: Contacts): ProfileQuery = ProfileQueryImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions,
+    contacts.customDataRegistry
 )
 
 private class ProfileQueryImpl(
-    private val permissions: ContactsPermissions,
     private val contentResolver: ContentResolver,
+    private val permissions: ContactsPermissions,
     private val customDataRegistry: CustomDataRegistry,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
@@ -252,7 +249,7 @@ private class ProfileQueryImpl(
     override fun find(): Contact? = find { false }
 
     override fun find(cancel: () -> Boolean): Contact? {
-        if (!permissions.canQuery()) {
+        if (!permissions.canQuery) {
             return null
         }
 

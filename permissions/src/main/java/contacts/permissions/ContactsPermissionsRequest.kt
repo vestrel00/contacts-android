@@ -11,7 +11,7 @@ import contacts.permissions.accounts.requestGetAccountsPermission
  * If permission is already granted, then immediately returns a new [Query] instance.
  */
 suspend fun Contacts.queryWithPermission(): Query {
-    if (!permissions.canQuery()) {
+    if (!permissions.canQuery) {
         applicationContext.requestReadPermission()
     }
 
@@ -25,7 +25,7 @@ suspend fun Contacts.queryWithPermission(): Query {
  * If permission is already granted, then immediately returns a new [BroadQuery] instance.
  */
 suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
-    if (!permissions.canQuery()) {
+    if (!permissions.canQuery) {
         applicationContext.requestReadPermission()
     }
 
@@ -41,7 +41,7 @@ suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
  * If permissions are already granted, then immediately returns a new [Insert] instance.
  */
 suspend fun Contacts.insertWithPermission(): Insert {
-    if (!permissions.canInsert()) {
+    if (!permissions.canInsert) {
         applicationContext.requestWritePermission()
         applicationContext.requestGetAccountsPermission()
     }
@@ -56,7 +56,7 @@ suspend fun Contacts.insertWithPermission(): Insert {
  * If permissions are already granted, then immediately returns a new [Update] instance.
  */
 suspend fun Contacts.updateWithPermission(): Update {
-    if (!permissions.canUpdateDelete()) {
+    if (!permissions.canUpdateDelete) {
         applicationContext.requestWritePermission()
     }
 
@@ -70,7 +70,7 @@ suspend fun Contacts.updateWithPermission(): Update {
  * If permission is already granted, then immediately returns a new [Delete] instance.
  */
 suspend fun Contacts.deleteWithPermission(): Delete {
-    if (!permissions.canUpdateDelete()) {
+    if (!permissions.canUpdateDelete) {
         applicationContext.requestWritePermission()
     }
 

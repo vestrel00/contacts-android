@@ -2,7 +2,6 @@ package contacts.core
 
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
-import android.content.Context
 import contacts.core.entities.ContactEntity
 import contacts.core.entities.RawContactEntity
 import contacts.core.entities.operation.RawContactsOperation
@@ -146,9 +145,9 @@ interface Delete {
 }
 
 @Suppress("FunctionName")
-internal fun Delete(context: Context): Delete = DeleteImpl(
-    context.contentResolver,
-    ContactsPermissions(context)
+internal fun Delete(contacts: Contacts): Delete = DeleteImpl(
+    contacts.applicationContext.contentResolver,
+    contacts.permissions
 )
 
 private class DeleteImpl(
@@ -186,7 +185,7 @@ private class DeleteImpl(
     }
 
     override fun commit(): Delete.Result {
-        if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
+        if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete) {
             return DeleteFailed()
         }
 
@@ -219,7 +218,7 @@ private class DeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if ((rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete()) {
+        if ((rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete) {
             return false
         }
 

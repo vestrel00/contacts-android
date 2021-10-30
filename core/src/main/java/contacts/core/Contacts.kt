@@ -1,16 +1,16 @@
 package contacts.core
 
 import android.content.Context
+import contacts.core.accounts.Accounts
 import contacts.core.data.Data
 import contacts.core.entities.MimeType
 import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.custom.GlobalCustomDataRegistry
 import contacts.core.groups.Groups
 import contacts.core.profile.Profile
 
 /**
- * Provides new [Query], [BroadQuery], [Insert], [Update], [Delete], [Data], [Groups], and
- * [Profile] instances.
+ * Provides new [Query], [BroadQuery], [Insert], [Update], [Delete], [Data], [Groups], [Profile],
+ * and [Accounts] instances.
  *
  * ## Permissions
  *
@@ -20,7 +20,7 @@ import contacts.core.profile.Profile
  *   [update], and [delete].
  *
  * Use [permissions] convenience functions to check for required permissions. The same permissions
- * apply to [Data], [Groups], and [Profile].
+ * apply to [Data], [Groups], [Profile], and [Accounts].
  *
  * ## Data
  *
@@ -33,6 +33,10 @@ import contacts.core.profile.Profile
  * ## Profile
  *
  * For user profile operations, use [profile].
+ *
+ * ## Profile
+ *
+ * For accounts operations, use [accounts].
  */
 interface Contacts {
 
@@ -77,6 +81,19 @@ interface Contacts {
     fun profile(): Profile
 
     /**
+     * Returns a new [Accounts] instance for non-profile operations.
+     */
+    fun accounts(): Accounts
+
+    /**
+     * Returns a new [Accounts] instance that is for profile or non-profile operations based on the
+     * given [isProfile].
+     */
+    // @JvmOverloads cannot be used in interface methods...
+    // fun accounts(isProfile: Boolean = false): Accounts
+    fun accounts(isProfile: Boolean): Accounts
+
+    /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
      * permissions.
      */
@@ -114,7 +131,8 @@ interface Contacts {
 @JvmOverloads
 @Suppress("FunctionName")
 fun Contacts(
-    context: Context, customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
+    context: Context,
+    customDataRegistry: CustomDataRegistry = CustomDataRegistry()
 ): Contacts = ContactsImpl(
     context.applicationContext,
     ContactsPermissions(context.applicationContext),
@@ -131,7 +149,8 @@ object ContactsFactory {
     @JvmStatic
     @JvmOverloads
     fun create(
-        context: Context, customDataRegistry: CustomDataRegistry = GlobalCustomDataRegistry
+        context: Context,
+        customDataRegistry: CustomDataRegistry = CustomDataRegistry()
     ): Contacts = Contacts(context, customDataRegistry)
 }
 
@@ -141,19 +160,23 @@ private class ContactsImpl(
     override val customDataRegistry: CustomDataRegistry
 ) : Contacts {
 
-    override fun query() = Query(applicationContext, customDataRegistry)
+    override fun query() = Query(this)
 
-    override fun broadQuery() = BroadQuery(applicationContext, customDataRegistry)
+    override fun broadQuery() = BroadQuery(this)
 
-    override fun insert() = Insert(applicationContext, customDataRegistry)
+    override fun insert() = Insert(this)
 
-    override fun update() = Update(applicationContext, customDataRegistry)
+    override fun update() = Update(this)
 
-    override fun delete() = Delete(applicationContext)
+    override fun delete() = Delete(this)
 
-    override fun data() = Data(applicationContext, customDataRegistry, false)
+    override fun data() = Data(this, false)
 
-    override fun groups() = Groups(applicationContext)
+    override fun groups() = Groups(this)
 
-    override fun profile() = Profile(applicationContext, customDataRegistry)
+    override fun profile() = Profile(this)
+
+    override fun accounts() = accounts(false)
+
+    override fun accounts(isProfile: Boolean) = Accounts(this, isProfile)
 }

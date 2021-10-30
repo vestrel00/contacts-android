@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.util.groupsWithContext
+import contacts.core.Contacts
 import contacts.core.entities.GroupMembership
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -45,12 +46,16 @@ class GroupMembershipsView @JvmOverloads constructor(
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main
 
-    var memberships: MutableList<GroupMembership> = mutableListOf()
-        set(value) {
-            field = value
+    private var memberships: MutableList<GroupMembership> = mutableListOf()
 
-            setMemberships()
-        }
+    /**
+     * Sets the group memberships shown and managed by this view to the given [memberships] and uses
+     * the given [contacts] API to perform operations on it.
+     */
+    fun setMemberships(memberships: MutableList<GroupMembership>, contacts: Contacts) {
+        this.memberships = memberships
+        setMemberships(contacts)
+    }
 
     init {
         setOnClickListener { _ ->
@@ -58,8 +63,8 @@ class GroupMembershipsView @JvmOverloads constructor(
         }
     }
 
-    private fun setMemberships() = launch {
-        val groups = memberships.groupsWithContext(context)
+    private fun setMemberships(contacts: Contacts) = launch {
+        val groups = memberships.groupsWithContext(contacts)
             // Hide the default group, just like in the native Contacts app.
             .filter { !it.isDefaultGroup }
 

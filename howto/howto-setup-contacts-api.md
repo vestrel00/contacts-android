@@ -17,16 +17,43 @@ in Java,
 ContactsFactory.create(context);
 ```
 
-It's up to you if you just want to create instances on demand or hold on to instances as a singleton
-that is injected to your dependency graph (via something like dagger) to easily mock it during tests.
+> The `context` parameter can come from anywhere; Application, Activity, Fragment, or View. It does
+> not matter what context you pass in. The API will only use and store the Application context, to
+> avoid leaks :D
 
-The `context` parameter can come from anywhere; Application, Activity, Fragment, or View. It does
-not matter what context you pass in. The API will only use and store the Application context, to
-avoid leaks :D
+It's up to you if you just want to create instances on demand. Or, hold on to instances as a 
+[singleton][singleton] that is injected to your dependency graph (via something like 
+[dagger][dagger], [hilt][hilt], or [koin][koin]), which will make 
+[black box testing][black-box-testing] and [white box testing][white-box-testing] a walk in the
+park!
 
-Instances of `Contacts` are stateless, unless you integrate custom data without using the
-`GlobalCustomDataRegistry`. For how to create instances of the `Contacts` API with custom data
-integration, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
+Instances of `Contacts` hold on to an instance of `CustomDataRegistry` for custom data integration.
+For how to create instances of the `Contacts` API with custom data integration, read 
+[How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
 
-> This library also provides an API for accounts related stuff. For more info, read 
-> [How do I setup the Accounts API?](/howto/howto-setup-accounts-api.md)
+## Optional, but recommended setup
+
+It is recommended to use a single instance of the `Contacts` API throughout your application using 
+[dependency injection][di]. This will allow you to;
+
+1. Use the same `Contacts` API instance throughout your app.
+    - This especially important when integrating custom data.
+2. Easily substitute your `Contacts` API instance with an instance of `TestContacts`.
+    - This is useful in [black box testing][black-box-testing] (UI instrumentation tests; `androidTest/`).
+    - It may also be used in your production apps "test mode".
+3. Easily substitute your `Contacts` API instance with an instance of `MockContacts`
+    - This is useful in [white box testing][white-box-testing] (unit & integration tests; `test/`).
+    
+For more info, read [How do I use the test module to simplify testing in my app?](/howto/howto-use-api-for-testing.md)
+    
+> Of course, this library does not (and will not) force you to do things you don't want. If you 
+> don't care about all of the above and just want to get out a quick prototype of a feature in your 
+> app or an entire app, then go right ahead! 
+
+[singleton]: https://en.wikipedia.org/wiki/Singleton_pattern
+[dagger]: https://developer.android.com/training/dependency-injection/dagger-android
+[hilt]: https://developer.android.com/training/dependency-injection/hilt-android
+[koin]: https://insert-koin.io
+[black-box-testing]: https://en.wikipedia.org/wiki/Black-box_testing
+[white-box-testing]: https://en.wikipedia.org/wiki/White-box_testing
+[di]: https://developer.android.com/training/dependency-injection

@@ -1,7 +1,7 @@
 package contacts.async.util
 
-import android.content.Context
 import contacts.async.ASYNC_DISPATCHER
+import contacts.core.Contacts
 import contacts.core.entities.Group
 import contacts.core.entities.MutableGroup
 import contacts.core.groups.GroupsInsert
@@ -19,10 +19,10 @@ import kotlin.coroutines.CoroutineContext
  * See [GroupsInsert.Result.group].
  */
 suspend fun GroupsInsert.Result.groupWithContext(
-    context: Context,
+    contacts: Contacts,
     group: MutableGroup,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Group? = withContext(coroutineContext) { group(context, group) { !isActive } }
+): Group? = withContext(coroutineContext) { group(contacts, group) { !isActive } }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
@@ -33,9 +33,9 @@ suspend fun GroupsInsert.Result.groupWithContext(
  * See [GroupsInsert.Result.groups].
  */
 suspend fun GroupsInsert.Result.groupsWithContext(
-    context: Context,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): List<Group> = withContext(coroutineContext) { groups(context) { !isActive } }
+): List<Group> = withContext(coroutineContext) { groups(contacts) { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -46,10 +46,11 @@ suspend fun GroupsInsert.Result.groupsWithContext(
  * See [GroupsInsert.Result.group].
  */
 fun GroupsInsert.Result.groupAsync(
-    context: Context,
+    contacts: Contacts,
     group: MutableGroup,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Group?> = CoroutineScope(coroutineContext).async { group(context, group) { !isActive } }
+): Deferred<Group?> =
+    CoroutineScope(coroutineContext).async { group(contacts, group) { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
@@ -60,6 +61,6 @@ fun GroupsInsert.Result.groupAsync(
  * See [GroupsInsert.Result.groups].
  */
 fun GroupsInsert.Result.groupsAsync(
-    context: Context,
+    contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<List<Group>> = CoroutineScope(coroutineContext).async { groups(context) { !isActive } }
+): Deferred<List<Group>> = CoroutineScope(coroutineContext).async { groups(contacts) { !isActive } }

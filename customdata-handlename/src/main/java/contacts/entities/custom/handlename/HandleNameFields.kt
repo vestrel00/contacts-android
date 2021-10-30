@@ -19,27 +19,23 @@ object HandleNameFields : AbstractCustomDataFieldSet<HandleNameField>() {
     override val all: Set<HandleNameField> = setOf(Handle)
 
     /**
-     * Same as [all], but as a function.
-     *
-     * This mainly exists for Java support.
-     */
-    @JvmStatic
-    fun all(): Set<HandleNameField> = all
-
-    /**
      * The [Handle] may be used for matching.
      *
      * See [AbstractCustomDataFieldSet.forMatching] for more info.
      */
     override val forMatching: Set<HandleNameField> = setOf(Handle)
 
-
     /**
-     * Same as [forMatching], but as a function.
-     *
-     * This mainly exists for Java support.
+     * Same as [all], but as a function. This mainly exists for Java support. This makes it visible
+     * to Java consumers when accessing this using the object reference directly.
      */
     @JvmStatic
-    fun forMatching(): Set<HandleNameField> = forMatching
+    fun all() = all
 
+    /**
+     * Same as [forMatching], but as a function. This makes it visible to Java consumers when
+     * accessing this using the object reference directly.
+     */
+    @JvmStatic
+    fun forMatching() = forMatching
 }
