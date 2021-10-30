@@ -1,0 +1,28 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'maven-publish'
+}
+
+apply from: "$rootDir/jitpack-publish.gradle"
+
+android {
+    compileSdkVersion versions.build.android.compileSdk
+
+    defaultConfig {
+        minSdkVersion versions.build.android.minSdk
+        targetSdkVersion versions.build.android.targetSdk
+    }
+
+    compileOptions {
+        sourceCompatibility versions.build.java.sourceCompatibility
+        targetCompatibility versions.build.java.targetCompatibility
+    }
+}
+
+dependencies {
+    implementation project(':core')
+
+    implementation libraries.kotlin.standardLib
+}
