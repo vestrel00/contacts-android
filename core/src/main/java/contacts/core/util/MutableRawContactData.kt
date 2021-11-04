@@ -101,9 +101,44 @@ fun MutableRawContact.removeAllEvents() {
     events.clear()
 }
 
-// GroupMemberships are intentionally left out because they should never be combined.
-// The native Contacts app hides the group membership UI field when viewing/editing a contact
-// with more than one RawContact.
+/**
+ * Adds the given [groupMembership] to [MutableRawContact.groupMemberships].
+ *
+ * ## Note
+ *
+ * If this raw contact is not associated with an Account, then this will be ignored during inserts
+ * and updates. Only group memberships to groups that belong to the same account as the raw contact
+ * will be inserted.
+ */
+fun MutableRawContact.addGroupMembership(groupMembership: GroupMembership) {
+    groupMemberships.add(groupMembership)
+}
+
+/**
+ * Removes all instances of the given [groupMembership] from [MutableRawContact.groupMemberships].
+ *
+ * By default, all **structurally equal (same content but maybe different objects)** instances will
+ * be removed. Set [byReference] to true to remove all instances that are **equal by reference
+ * (same object)**.
+ *
+ * ## Note
+ *
+ * Group membership to the account's default group will not be deleted (in the database) even if it
+ * is removed from this list!
+ */
+@JvmOverloads
+fun MutableRawContact.removeGroupMembership(
+    groupMembership: GroupMembership, byReference: Boolean = false
+) {
+    groupMemberships.removeAll(groupMembership, byReference)
+}
+
+/**
+ * Clears [MutableRawContact.groupMemberships].
+ */
+fun MutableRawContact.removeAllGroupMemberships() {
+    groupMemberships.clear()
+}
 
 /**
  * Adds the given [im] to [MutableRawContact.ims].

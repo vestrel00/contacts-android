@@ -242,12 +242,14 @@ data class MutableRawContact internal constructor(
     /**
      * Mutable version of [RawContact.groupMemberships].
      *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
+     * ## Note
      *
-     * Only group memberships to groups that belong to the same account as the raw contact will be
-     * inserted. Group membership to the account's default group will not be deleted even if it
-     * is removed in this list!
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates. Only group memberships to groups that belong to the same account as the
+     * raw contact will be inserted.
+     *
+     * Group membership to the account's default group will not be deleted (in the database) even
+     * if it is removed from this list!
      */
     var groupMemberships: MutableList<GroupMembership>,
 

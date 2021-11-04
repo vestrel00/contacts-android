@@ -9,12 +9,18 @@ Whether you just need to get all or some Contacts for a small part of your app (
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
 as the native Android Contacts app, this library has you covered!
 
-For more context and hype, read the [introduction of Contacts, Reborn][medium-blog]!
+Documentation and how-to guides are all available and linked in the repository. You can browse the
+[Howto pages](/howto/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
+the GitHub pages are not guaranteed to be up-to-date. The GitHub wiki hosts the 
+[project roadmap][project-roadmap]. It contains all planned work and release schedules, which are 
+organized using issues, milestones, and projects.
 
-> Documentation and how-to guides are all available and linked in the repository. Although, if you 
-> prefer to browse prettier pages, visit the GitHub Pages; https://vestrel00.github.io/contacts-android/
->
-> This repo was open-sourced on October 4, 2021. It was private prior to that.
+You can also learn more about this library through the articles I wrote about it =) 
+ 
+1. [Android Contacts, Reborn][medium-blog]
+2. [I spent 3 years writing an Android Contacts API in Kotlin with Java interop. What I’ve learned…][devto-blog]
+
+**Note: This repo was open-sourced on October 4, 2021. It was private prior to that.**
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
@@ -42,13 +48,13 @@ The core library supports;
 - [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
 - [Associate local RawContacts (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
 - [Join/merge/link and separate/unmerge/unlink two or more Contacts](/howto/howto-link-unlink-contacts.md).
-- [Get and set Contact and RawContact Options](/howto/howto-get-set-contact-raw-contact-options.md);
+- [Get and set Contact and RawContact Options](/howto/howto-get-set-clear-contact-raw-contact-options.md).
   starred (favorite), custom ringtone, send to voicemail.
 - [Get, set, and remove Contacts/RawContact photo and thumbnail](/howto/howto-get-set-remove-contact-raw-contact-photo.md).
 - [Get, set, and clear default (primary) Contact Data](/howto/howto-get-set-clear-default-data.md)
   (e.g. default/primary phone number, email, etc).
 - [Miscellaneous convenience functions](/howto/howto-use-miscellaneous-extensions.md).
-- [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md)
+- [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md).
 
 There are also extensions that add functionality to every core function;
 - [Asynchronous work using Kotlin Coroutines](/howto/howto-use-api-with-async-execution.md).
@@ -59,6 +65,12 @@ Also included are some pre-baked goodies to be used as is or just for reference;
 - [Handle name custom Data](/howto/howto-integrate-handlename-custom-data.md).
 - [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
 - [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
+
+There are also more features that are on the way!
+1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
+2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
+3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
+4. [Social media custom data (WhatsApp, Twitter, Facebook, etc)](https://github.com/vestrel00/contacts-android/issues/27).
 
 **Framework-agnostic design**
 
@@ -77,7 +89,7 @@ reference.
 
 First, include JitPack in the repositories list,
 
-```
+```groovy
 repositories {
     maven { url "https://jitpack.io" }
 }
@@ -85,7 +97,7 @@ repositories {
 
 To import all modules,
 
-```
+```groovy
 dependencies {
      implementation 'com.github.vestrel00.contacts-android:0.1.7'
 }
@@ -93,7 +105,7 @@ dependencies {
 
 To import specific modules,
 
-```
+```groovy
 dependencies {
      implementation 'com.github.vestrel00.contacts-android:core:0.1.7'
 }
@@ -101,7 +113,7 @@ dependencies {
 
 SNAPSHOTs of branches are also available,
 
-```
+```groovy
 dependencies {
      implementation 'com.github.vestrel00.contacts-android:master-SNAPSHOT'
 }
@@ -227,7 +239,8 @@ Log.d(
 
 ### There's a lot more
 
-This library is capable of doing more than just querying contacts. Let's take a look at a few of them here.
+This library is capable of doing more than just querying contacts. Let's take a look at a few of 
+them here.
 
 To get the first 20 gmail emails ordered by email address in descending order,
 
@@ -415,148 +428,9 @@ maintaining it and making admin-level decisions.
 In any case, create issues for any bugs found and I'll get to it when I get the chance depending on
 severity of the issue.
 
-## v1.0.0 Release Roadmap
-
-These are the remaining work that is required for this library to be considered worthy of being
-v1.0.0 and safe for production.
-
-To be clear, all core functions have been implemented and manually tested by me. As far as I'm
-concerned, this library is production-ready as is, especially for daring/experimental consumers ;P
-However, I cannot _professionally_ proclaim this to be production-ready without doing things that I
-consider are essential for any API to do. So, here is my v1.0.0 release checklist!
-
-- **(v0.1.x) Complete core functions and documentations**
-  - All v1 functions have been implemented and _manually tested_, with full documentation.
-  - Remaining work to be done for this version;
-    - Complete all howto guides
-    - Fix any bugs that are discovered along the way.
-- **(v0.2.x) Complete the sample app**
-  - Purpose:
-    - Prove that library produces same results as native Contacts app in actual usage
-    - Prove that 0, 1, or more accounts are handled properly
-    - Ensure all v1 functions are used in the sample app
-    - All native Contacts app features are implemented in the sample app
-      - Not including features that require post v1 functions
-    - Find bugs in API
-  - Use Pixel 3a API 30 native Contacts app as reference
-  - Remaining work to be done for this version;
-    - Create/edit/view contact screen
-      - Select group memberships
-      - Choose account to associate with the new (raw) contact (create-only)
-      - Long press actions
-        - Primary action (e.g. call phone number, send email, etc)
-        - Copy to clipboard
-        - Set default
-    - Share contacts (export) (placeholder only - show toast saying it's coming post v1 release)
-    - Link contacts
-    - Create contact shortcut
-    - Delete multiple contacts
-    - Show all contacts (no filter)
-    - Filter contacts by label (group memberships)
-    - Create, update, delete non-system labels (group memberships)
-    - Filter contacts by account
-    - Settings
-      - Profile create, read, update, delete
-      - Show Accounts
-      - Default account for new contacts
-      - Contacts to display
-      - Sort by first or last name
-      - Name format
-      - Phonetic name
-      - Import (placeholder only - show toast saying it's coming post v1 release)
-      - Export (placeholder only - show toast saying it's coming post v1 release)
-      - Blocked numbers (placeholder only - show toast saying it's coming post v1 release)
-      - About Contacts
-- **(v0.3.x) Integrate additional APIs to sample app**
-  - Purpose:
-    - Prove that additional (advanced) functions not in native Contacts app works
-    - Fix any bugs that are discovered along the way.
-  - Remaining work to be done for this version;
-    - Integrate Query (for more advance querying compared to BroadQuery).
-    - Integrate DataQuery, DataUpdate, and DataDelete functions
-    - Integrate handlename custom data
-    - Integrate gender custom data
-- **(v0.4.x) Extract code from sample app for reuse or reference**
-  - Purpose:
-    - Move/refactor as much code as possible from the sample app into reusable modules
-    - Promote code reuse, including rudimentary code (that could be refined)
-  - Remaining work to be done for this version;
-    - Move view page to new module; ui-async
-- **(0.5.x) Code quality and integrity**
-  - Purpose:
-    - Prevent new code from breaking existing API
-    - Ensure consumers have an easy way to mock the API in both white box unit tests and black box ui tests
-    - Ensure that code follows language and community standards
-    - Ensure that code is covered with automated tests
-  - Remaining work to be done for this version;
-    - Create test version of the Contacts API for consumer use in both white box unit tests and black box ui tests
-      - Ensure that test versions do not actually read from or write to the underlying database.
-    - androidTest/ for all core functions
-    - Static analysis; lint / code quality checks (checkstyle, lint, etc)
-    - Code coverage reporting tool
-    - SonarQube?
-- **(0.6.x) Kotlin Flow extensions**
-  - Purpose:
-    - Provide alternative asynchronous extensions for consumers prefer to use Flow over withContext
-      and async await functions
-    - Provide a way to proactively listen for changes in the Contacts database
-  - Remaining work to be done for this version;
-    - Add Flow function extensions in existing async module
-    - Listen for changes in the Contacts database
-- **(0.7.x) Reactive extensions**
-  - Purpose:
-    - Provide alternative asynchronous extensions for consumers that are not using Kotlin coroutines
-    - Provide a way to proactively listen for changes in the Contacts database
-  - Remaining work to be done for this version;
-    - Create rx module
-    - Implement rx-equivalent of async module functions
-    - Listen for changes in the Contacts database
-- **(0.8.x) Update dependencies and tools**
-  - Purpose:
-    - Ensure that the library and all of its dependencies and tools are up-to-date
-  - Remaining work to be done for this version;
-    - Update Kotlin stdlib and coroutines
-      - Use sealed interface in Fields when upgrading to Kotlin 1.5+
-    - Remove/replace the no-longer maintained Dexter
-    - Update Gradle
-    - Update Android Studio
-- **(0.9.x) Prep for v1 release**
-  - Purpose:
-    - Ensure that the library is ready for v1.0.0 production release
-  - Remaining work to be done for this version;
-    - Setup continuous integration (CI/CD) pipeline (if not yet done)
-    - Review remaining TODOs and FIXMEs, if any
-    - Ensure all functions are covered with automated tests
-    - Ensure all functions are documented with samples / howtos
-
-## Post v1.0.0 Release Roadmap
-
-These functions/features will not make the v1 release because I want to get the production-ready v1
-version library out as soon as possible so that the community may benefit from it =)
-
-Most, if not all, of these functions are the missing components required to rebuild the native
-Android Contacts app from the ground up. In other words, each of these functions allow consumers to
-implement a specific part of the native Android Contacts app.
-
-1. Blocked phone numbers.
-    - The Android 7.0 release introduces a BlockedNumberProvider content provider that stores a list
-      of phone numbers the user has specified should not be able to contact them via telephony
-      communications (calls, SMS, MMS).
-    - See https://source.android.com/devices/tech/connect/block-numbers
-2. SIM card query, insert(?), update(?), and delete(?).
-    - Enables importing from and exporting(?) to SIM card.
-    - Query will definitely be possible. I'm not sure if insert, update, and delete operations
-      are possible. We will see.
-3. Contacts read/write .VCF file.
-    - Enables import from and export to .VCF file.
-    - Enables sharing a contact.
-    - Dev note: search ContactsContract for "vcard".
-4. Social media custom data.
-    - WhatsApp 
-    - Facebook
-    - Twitter
-    - (and more?)
-
+[project-roadmap]: https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap
+[github-pages]: https://vestrel00.github.io/contacts-android/
 [medium-blog]: https://proandroiddev.com/android-contacts-reborn-19985c73ad43
+[devto-blog]: https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp
 [contacts-provider]: https://developer.android.com/guide/topics/providers/contacts-provider
 [coroutines-proguard]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro

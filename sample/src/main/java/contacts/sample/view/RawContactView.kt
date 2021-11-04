@@ -88,6 +88,7 @@ class RawContactView @JvmOverloads constructor(
     private val eventsView: EventsView
     private val relationsView: RelationsView
     private val groupMembershipsView: GroupMembershipsView
+    // TODO note
 
     private val accountRequiredViews: Set<View>
 

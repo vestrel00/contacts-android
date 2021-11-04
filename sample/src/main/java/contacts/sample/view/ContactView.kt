@@ -227,7 +227,8 @@ class ContactView @JvmOverloads constructor(
             .commitWithContext()
             .contactWithContext(contacts, rawContact)
 
-        // TODO RawContact photo!
+        // TODO Save RawContact photo!
+        // TODO Save Contact photo!
 
         return newContact?.id
     }
@@ -249,6 +250,8 @@ class ContactView @JvmOverloads constructor(
         }
 
         // Update the Contact photo iff it has changed.
+        // Saving the contact photo will override the designated RawContact photo changes.
+        // This behavior is "buggy" maybe we should not allow this? I'll leave it for now.
         photoView.savePhoto(contacts)
 
         // Perform the update. Ignore if photos update succeeded or not :D
