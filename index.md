@@ -431,6 +431,6 @@ severity of the issue.
 [project-roadmap]: https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap
 [github-pages]: https://vestrel00.github.io/contacts-android/
 [medium-blog]: https://proandroiddev.com/android-contacts-reborn-19985c73ad43
-[devto-blog]: TODO
+[devto-blog]: https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp
 [contacts-provider]: https://developer.android.com/guide/topics/providers/contacts-provider
 [coroutines-proguard]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
