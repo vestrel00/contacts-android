@@ -50,7 +50,7 @@ val contacts = Contacts(context)
 
 ## A simple query
 
-This query may also be used to make simpler queries.
+This query API may also be used to make simpler queries.
 
 To get all contacts with a phone number AND email,
 
@@ -104,7 +104,17 @@ For more info, read [How do I learn more about "local" (device-only) contacts?](
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
-## Specifying Groups
+## Including only specific data
+
+To include only the given set of fields (data) in each of the matching contacts,
+
+```kotlin
+.include(fields)
+```
+
+For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html).
+
+### Specifying Groups
 
 To limit the search to only those RawContacts associated with at least one of the given groups,
 
@@ -123,16 +133,6 @@ If no groups are specified, then all RawContacts of Contacts are included in the
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
-
-## Including only specific data
-
-To include only the given set of fields (data) in each of the matching contacts,
-
-```kotlin
-.include(fields)
-```
-
-For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html).
 
 ## Ordering
 
@@ -223,7 +223,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the extensions provided in the `async` module.
-For more info, read [How do I use the async extensions to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -236,11 +236,66 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions extensions to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
      
-## Blank Contacts and the `where` function
+## Using the `where` function to specify matching criteria
+
+Use the `contacts.core.Fields` combined with the extensions from `contacts.core.Where` to form WHERE
+clauses. 
+
+This howto will not provide a tutorial on database where clauses. It assumes that you know
+the basics. If you don't know the basics, then search for 
+[sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
+
+**Limitations**
+
+This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
+the community may add more over time <3
+
+Furthermore, this library is constrained by rules and limitations set by the Contacts Provider and
+the behavior of the native Contacts app. One such rule/limitation has resulted in this library not
+providing WHERE functions such as `isNull` or `isNullOrEmpty` to prevent making misleading queries.
+
+Removing a piece of existing data results in the deletion of the row in the Data table if that row 
+no longer contains any meaningful data. This is the behavior of the native Contacts app. Therefore, 
+querying for null fields is not possible. For example, there may be no Data rows that exist where 
+the email address is null. Thus, a query to search for all contacts with no email addresses may 
+return 0 contacts even if there are some contacts that do not have at least one email address.
+
+If you want to match contacts that has no particular type of data, you will have to make two 
+queries. One to get contacts that have that particular type of data and another to get contacts
+that were not part of the first query results. For example,
+
+```kotlin
+val contactsWithEmails = query
+    .include(Fields.Contact.Id)
+    .where(Fields.Email.Address.isNotNullOrEmpty())
+    .find()
+
+val contactIdsWithEmails = contactsWithEmails.mapNotNull { it.id }
+val contactsWithoutEmails = query
+    .where(Fields.Contact.Id notIn contactIdsWithEmails)
+    .find()
+```
+
+There is a special case with phone numbers. The ContactsContract provides a field that is true if
+the contact has at least one phone number; `Fields.Contact.HasPhoneNumber`. The phone number is the 
+only kind of data that the ContactsContract provides with an indexed value such as this. The 
+ContactsContract does NOT provide things like "hasEmail", "hasWebsite", etc. Regardless, this 
+library provide functions to match contacts that "has at least one instance of a kind of data". 
+The `HasPhoneNumber` field is not necessary to get contacts that have a phone number. However, this 
+does provide an easy way to get contacts that have no phone numbers without having to make two 
+queries. For example,
+
+```kotlin
+val contactsWithNoPhoneNumbers = query
+    .where(Fields.Contact.HasPhoneNumber notEqualTo true)
+    .find()
+```
+     
+### Blank Contacts and the `where` function
 
 The `where` function is only used to query the Data table. Some contacts do not have any Data table 
 rows. However, this library exposes some fields that belong to other tables, accessible via the 
@@ -250,38 +305,6 @@ Data table with joins;
 - `Fields.RawContact`
 
 Using these fields in the where clause does not have any effect in matching blank Contacts or 
-RawContacts simply because they have no Data rows containing these joined fields.
+blank RawContacts simply because they have no Data rows containing these joined fields.
 
 For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto/howto-learn-more-about-blank-contacts.html).
-
-### Limitations
-
-Blank RawContacts and blank Contacts do not have any rows in the Data table so a `where` clause that 
-uses any fields from the Data table `Fields` will **exclude** blanks in the result (even if they are 
-OR'ed). There are some joined fields that can be used to match blanks **as long as no other fields 
-are in the where clause**;
-
-- `Fields.Contact` enables matching blank Contacts. The result will include all RawContact(s)
-  belonging to the Contact(s), including blank(s). Examples;
-
-  - `Fields.Contact.Id equalTo 5`
-  - `Fields.Contact.Id in listOf(1,2,3) and Fields.Contact.DisplayNamePrimary contains "a"`
-  - `Fields.Contact.Options.Starred equalTo true`
-
-- `Fields.RawContact` enables matching blank RawContacts. The result will include all Contact(s) 
-  these belong to, including sibling RawContacts (blank and not blank). Examples;
-
-  - `Fields.RawContact.Id equalTo 5`
-  - `Fields.RawContact.Id notIn listOf(1,2,3)`
-
-Blanks will not be included in the results even if they technically should **if** joined fields 
-from other tables are in the `where`. In the below example, matching the `Contact.Id` to an 
-existing blank Contact with Id of 5 will yield no results because it is joined by `Fields.Email`, 
-which is not a part of `Fields.Contact`. It should technically return the blank Contact with Id of 
-5 because the OR operator is used. However, because we internally need to query the Contacts table 
-to match the blanks, a DB exception will be thrown by the Contacts Provider because 
-`Fields.Email.Address` ("data1" and "mimetype") are columns from the Data table that do not exist 
-in the Contacts table. The same applies to the `Fields.RawContact`.
-
-- `Fields.Contact.Id equalTo 5 OR (Fields.Email.Address.isNotNull())`
-- `Fields.RawContact.Id ... OR (Fields.Phone.Number...)`

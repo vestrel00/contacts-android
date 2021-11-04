@@ -1,6 +1,6 @@
 # How do I include only the data that I want?
 
-When using query APIs such as `Query`, `BroadQuery`, and `ProfileQuery`, you are able to specify  
+When using query APIs such as `Query`, `BroadQuery`, and `ProfileQuery`, you are able to specify
 all or only some kinds of data that you want to be included in the matching contacts.
 
 For example, to include only name, email, and phone number data,
@@ -32,21 +32,32 @@ be included in addition to required API fields (e.g. IDs), which are always incl
 > Note that this may affect performance. It is recommended to only include fields that will be used
 > to save CPU and memory.
 
-## Other fields may inadvertently be included
+## Performing updates on entities with partial includes
 
-The Android contacts Data table uses generic column names (e.g. "data1", "data2", ...) using the
-column 'mimetype' to distinguish between the different kinds of data it represents. For
-example, the column name of `NameFields.DisplayName` is the same as
-`AddressFields.FormattedAddress`, which is "data1". This means that including
-`AddressFields.FormattedAddress` will inadvertently include `NameFields.DisplayName`. There is no
-workaround for this because the `ContentResolver.query` function only takes in an array of column
-names.
+When the query `include` function is used, only certain data will be included in the returned 
+entities. All other data are guaranteed to be null (except for those in `Fields.Required`).
 
-## Potential Data Loss
+When performing updates on entities that have only partial data included, make sure to use the same 
+included fields in the update operation as the included fields used in the query. This will ensure 
+that the set of data queried and updated are the same. For example, in order to get and set only 
+email addresses and leave everything the same in the database...
 
-Do not perform updates on Contacts, RawContacts, or Data returned by a query where all fields are
-not included as it may result in data loss! To include all fields, do one of the following;
+```kotlin
+val contacts = query.include(Fields.Email.Address).find()
+val mutableContacts = setEmailAddresses(contacts)
+update.contacts(mutableContacts).include(Fields.Email.Address).commit()
+```
 
-- Do no call this `include` function.
-- Call this `include` function with no fields (empty).
-- Pass in `Fields.all`.
+On the other hand, you may intentionally include only some data and perform updates without on all
+data (not just the included ones) to effectively delete all non-included data. This is, currently, 
+a feature- not a bug! For example, in order to get and set only email addresses and set all other 
+data to null (such as phone numbers, name, etc) in the database...
+
+```kotlin
+val contacts = query.include(Fields.Email.Address).find()
+val mutableContacts = setEmailAddresses(contacts)
+update.contacts(mutableContacts).include(Fields.all).commit()
+```
+
+This gives you the most flexibility when it comes to specifying what fields to include/exclude in 
+queries, inserts, and update, which will allow you to do things beyond your wildest imagination!
