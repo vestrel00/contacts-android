@@ -270,3 +270,5 @@ RawContacts; name, nickname, note, organization, sip address.
 
 For more info on how to easily aggregate data from all RawContacts in a Contact, read
 [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
+
+To look into the actual Contacts Provider tables, read [How do I debug the Contacts Provider tables?](/howto/howto-debug-contacts-provider-tables.md)

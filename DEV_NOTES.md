@@ -981,6 +981,7 @@ method as it may lead to unwanted side effects when updating and deleting contac
 > anyways at some point if we want to make it possible for a mutable entity to equal an immutable
 > entity. Time will tell =)
 > FIXME? Hide / disable data class `copy` function if kotlin ever allows it. 
+> https://discuss.kotlinlang.org/t/data-class-copy-visibility-modifier/19746
 
 ## Immutable vs Mutable Entities
 
