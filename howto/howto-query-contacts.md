@@ -6,19 +6,33 @@ custom matching algorithm via the `whereAnyContactDataPartiallyMatches` function
 query is the basis of an app that does a broad search of the Contacts Provider. The technique is
 useful for apps that want to implement functionality similar to the People app's contact list screen.
 
+An instance of the `BroadQuery` API is obtained by,
+
+```kotlin
+val query = Contacts(context).broadQuery()
+```
+
 > For a more granular, advanced queries, use the `Query` API.
 > For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
 ## A basic query
 
-To get all contacts that have any data that at least partially matches a given `searchText`, ordered
-by the primary display name,
+To get all contacts ordered by the primary display name,
 
 ```kotlin
 val contacts = Contacts(context)
     .broadQuery()
-    .whereAnyContactDataPartiallyMatches(searchText)
     .orderBy(ContactsFields.DisplayNamePrimary.asc())
+    .find()
+```
+
+To get all contacts that have any data that at least partially matches a given `searchText`,
+
+```kotlin
+val contacts = Contacts(context)
+    .broadQuery()
+    ...
+    .whereAnyContactDataPartiallyMatches(searchText)
     .find()
 ```
 
@@ -43,7 +57,7 @@ To limit the search to only those RawContacts associated with one of the given a
 For example, to limit the search to contacts belonging to only one account.
 
 ```kotlin
-.accounts(Account("jerry@gmail.com", "com.google")))
+.accounts(Account("jerry@gmail.com", "com.google"))
 ```
 
 > For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
@@ -190,7 +204,7 @@ launch {
 Queries are executed when the `find` function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the extensions provided in the `async` module.
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
 For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)

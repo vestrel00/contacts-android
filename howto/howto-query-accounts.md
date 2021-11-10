@@ -3,6 +3,12 @@
 This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the 
 `AccountManager` or from the Contacts Provider RawContacts table.
 
+An instance of the `AccountsQuery` API is obtained by,
+
+```kotlin
+val query = Contacts(context).accounts().query()
+```
+
 To get all available accounts in the system,
 
 ```kotlin
@@ -64,7 +70,7 @@ launch {
 
 Queries are executed in the same thread as the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the extensions provided in the `async` module.
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
 For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)

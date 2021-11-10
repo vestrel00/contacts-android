@@ -1,10 +1,17 @@
 # How do I get a list of contacts in a more advanced way?
 
-This library provides the `Query` API, which returns a list of Contacts matching a specific search
-criteria. All RawContacts of matching Contacts are included in the resulting Contact instances.
+This library provides the `Query` API, allows you to get a list of Contacts matching a specific 
+search criteria. All RawContacts of matching Contacts are included in the resulting Contact 
+instances.
 
 This provides a great deal of granularity and customizations when providing matching criteria via
 the `where` function.
+
+An instance of the `Query` API is obtained by,
+
+```kotlin
+val query = Contacts(context).query()
+```
 
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
 > For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md).
@@ -52,12 +59,32 @@ val contacts = Contacts(context)
 
 This query API may also be used to make simpler queries.
 
+To get all contacts ordered by the primary display name,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    .orderBy(ContactsFields.DisplayNamePrimary.asc())
+    .find()
+```
+
 To get all contacts with a phone number AND email,
 
 ```kotlin
 val contacts = Contacts(context)
     .query()
+    ...
     .where(Fields.Phone.Number.isNotNullOrEmpty() and Fields.Email.Address.isNotNullOrEmpty())
+    .find()
+```
+
+To get a list of contacts with the given IDs,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    ...
+    .where(Fields.Contact.Id `in` contactIds)
     .find()
 ```
 
@@ -82,7 +109,7 @@ To limit the search to only those RawContacts associated with one of the given a
 For example, to limit the search to contacts belonging to only one account.
 
 ```kotlin
-.accounts(Account("jerry@gmail.com", "com.google")))
+.accounts(Account("jerry@gmail.com", "com.google"))
 ```
 
 > For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
@@ -222,7 +249,7 @@ launch {
 Queries are executed when the `find` function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the extensions provided in the `async` module.
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
 For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
@@ -245,11 +272,10 @@ You may, of course, use other permission handling libraries or just do it yourse
 Use the `contacts.core.Fields` combined with the extensions from `contacts.core.Where` to form WHERE
 clauses. 
 
-This howto will not provide a tutorial on database where clauses. It assumes that you know
-the basics. If you don't know the basics, then search for 
-[sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
+This howto page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
+If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
-**Limitations**
+### Limitations
 
 This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
 the community may add more over time <3
