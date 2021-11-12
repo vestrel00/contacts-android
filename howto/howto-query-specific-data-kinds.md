@@ -45,7 +45,9 @@ val emails = Contacts(context).data().query().emails().find()
 To get all websites with a ".net" extension from contacts with the given IDs,
 
 ```kotlin
-val websites = Contacts(this).data().query()
+val websites = Contacts(this)
+    .data()
+    .query()
     .websites()
     .where(
         (Fields.Website.Url endsWith ".net")  
@@ -196,6 +198,10 @@ For more info, read [How do I use the permissions module to simplify permission 
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
+## Custom data support
+ 
+The `DataQuery` API supports custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+
 ## Using the `where` function to specify matching criteria
 
 Use the corresponding `contacts.core.Fields` combined with the extensions from `contacts.core.Where` 
@@ -213,13 +219,15 @@ val nicknames = Contacts(context).data().query().nicknames().find()
 To get all birthday events from all contacts,
 
 ```kotlin
-val birthdayEvents = Contacts(this).data().query()
+val birthdayEvents = Contacts(this)
+    .data()
+    .query()
     .events()
     .where(Fields.Event.Type equalTo Event.Type.BIRTHDAY)
     .find()
 ```
 
-#### Limitations
+### Limitations
 
 This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
 the community may add more over time <3
@@ -232,4 +240,4 @@ Removing a piece of existing data results in the deletion of the row in the Data
 no longer contains any meaningful data. This is the behavior of the native Contacts app. Therefore, 
 querying for null fields is not possible. For example, there may be no Data rows that exist where 
 the email address is null. Thus, a query to search for all emails where the address is null may
-return 0 results.
+always return no results.

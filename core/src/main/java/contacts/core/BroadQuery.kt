@@ -68,6 +68,8 @@ import contacts.core.util.unsafeLazy
  * See [AbstractDataFieldSet.forMatching] documentation on all the fields that are included in
  * this match.
  *
+ * **Custom data are not included in the matching process!** To match custom data, use [Query].
+ *
  * Data matching is more sophisticated under the hood than [Query]. The Contacts Provider matches
  * parts of several types of data in segments. For example, a Contact having the email
  * "hologram@gram.net" will be matched with the following texts;
@@ -271,6 +273,8 @@ interface BroadQuery {
     /**
      * Filters the [Contact]s partially matching the [searchString]. If not specified or null or
      * empty, then all [Contact]s are returned.
+     *
+     * **Custom data are not included in the matching process!** To match custom data, use [Query].
      *
      * For more info, see [BroadQuery] **How does the matching process work?** section.
      *

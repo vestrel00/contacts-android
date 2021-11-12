@@ -59,7 +59,7 @@ The tables are connected the following way;
 - RawContacts contains a reference to the Contacts row Id.
 - Data contains a reference to the RawContacts row Id and Contacts row Id. 
 
-#### Contacts; Display Name
+### Contacts; Display Name
 
 The `Contacts.DISPLAY_NAME` name may be different than the Data `StructuredName` display name! If a
 structured name in the Data table is not provided, then other kinds of data will be used as the 
@@ -110,7 +110,7 @@ that looks like a bug. The [general matching][3] algorithm will match the text "
 not "Hot" or "Fire". The end result is that searching for the Contact "Ice Cold" will show a
 Contact called "Hot Fire"!
 
-#### Contact Display Name and Default Name Rows
+### Contact Display Name and Default Name Rows
 
 If available, the "default" (isPrimary and isSuperPrimary set to 1) name row for a Contact is 
 automatically set as the Contact display name by the Contacts Provider. Otherwise, the Contacts
@@ -140,7 +140,7 @@ display name somehow. I'm not sure how. If someone figures it out, please let me
 updating the Contact DISPLAY_NAME directly but it does not work. Setting a name row as default also
 does not affect the Contact DISPLAY_NAME.
 
-#### RawContacts; Accounts + Contacts
+### RawContacts; Accounts + Contacts
 
 The RawContacts table links the Contact to the `android.accounts.Account` that it belongs to. 
 
@@ -275,7 +275,7 @@ Here are some other things to note.
 2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
    This has to be done manually to prevent duplicates.
 
-#### RawContacts; Deletion
+### RawContacts; Deletion
 
 Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained
 in the documentation in `ContactsContract.RawContacts`;
@@ -306,7 +306,7 @@ the Contacts Provider.
 Note that deleting a RawContacts row may not immediately (or at all) actually delete the RawContacts
 row. In this case, it is marked as deleted and its reference to a contact id is nulled.
 
-#### Multiple RawContacts Per Contact
+### Multiple RawContacts Per Contact
 
 Each row in the Contacts table may be associated with more than one row in the RawContacts table. 
 The Contacts Provider may consolidate multiple contacts belonging to different accounts and combine 
@@ -316,7 +316,7 @@ RawContacts table.
 A more common scenario that causes multiple RawContacts per Contact is when two or more Contacts are
 "linked" (or "merged" for API 23 and below, or "joined" for API 22 and below).
 
-#### Behavior of linking/merging/joining contacts (AggregationExceptions)
+### Behavior of linking/merging/joining contacts (AggregationExceptions)
 
 > The Contacts app terminology has changed over time;
 >   - API 22 and below; join / separate
@@ -330,15 +330,15 @@ A more common scenario that causes multiple RawContacts per Contact is when two 
 Given the following tables;
 
 ```
-#### Contacts table
+### Contacts table
 Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
 Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
 
-#### RawContacts table
+### RawContacts table
 RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
 RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
 
-#### Data table
+### Data table
 Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
 Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
 Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
@@ -352,14 +352,14 @@ Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/
 When Contact **X** links/merges/joins Contact **Y**, the tables becomes;
 
 ```
-#### Contacts table
+### Contacts table
 Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
 
-#### RawContacts table
+### RawContacts table
 RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
 RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
 
-#### Data table
+### Data table
 Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
 Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
 Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
@@ -433,7 +433,7 @@ In the native Contacts app, the name attribute used comes from the name row with
 set to true. This and all other "unique" mimetypes (organization) and non-unique mimetypes (email)
 per RawContact are shown only if they are not blank.
 
-#### AggregationExceptions table
+### AggregationExceptions table
 
 Given the following Contacts and their RawContacts;
 
@@ -489,7 +489,7 @@ Results in the same AggregationExceptions rows.
 Unlinking results in the same AggregationExceptions rows **except** the type is 2 
 (TYPE_KEEP_SEPARATE).
 
-#### Data Table
+### Data Table
 
 The Data table uses generic column names (e.g. "data1", "data2", ...) using the column "mimetype" to
 distinguish the type of data in that generic column. For example, the column name of 
@@ -525,7 +525,7 @@ mimetypes. Here is the list.
 Although some mimetypes are unique per RawContact, none of those mimetypes are unique per Contact
 because a Contact is an aggregate of one or more RawContacts!
 
-#### Data Primary and Super Primary Rows
+### Data Primary and Super Primary Rows
 
 As per documentation, for a set of data rows with the same mimetype (e.g. a set of emails), there 
 should only be one primary data row (e.g. email) per RawContact and one super primary data row per
@@ -625,7 +625,7 @@ aggregate Contact is referred to as the "default".
 > This library should follow what the native Contacts app is doing in spirit of recreating the
 > native experience as closely as possible, even if it seems like a lesser experience.
 
-#### Data Table Joins
+### Data Table Joins
 
 All columns accessible via cursors returned from Data table queries are specified in
 `DataColumnsWithJoins`, which includes the `DataColumns`, `ContactsColumns`, and
@@ -639,7 +639,7 @@ rows belonging to the same Contact.
 The `ContactOptionsColumns` values joined with the Data table are the values of the Contact, not
 the RawContact that the Data row belongs to! The same applies to the "display_name".
 
-#### Data Updates
+### Data Updates
 
 A new row in the Data table is created for each new piece of data (e.g. email address) entered for 
 the contact. 
@@ -651,7 +651,7 @@ For example, there may be no Data rows that exist where the email address is nul
 search for all contacts with null email address may return 0 contacts even if there are some
 contacts without email addresses.
 
-#### Data Required
+### Data Required
 
 Creating blank RawContacts without email address (or other fields), results in no rows in the Data
 table for the email address, and all other fields. There are a few exceptions. The following 
@@ -686,7 +686,7 @@ There are two scenarios where blanks may exist.
     - In this case, the Contact and the RawContact with Data row(s) are not blank but the RawContact
     with no Data row is blank.
 
-#### Data `StructuredName`
+### Data `StructuredName`
 
 The `DISPLAY_NAME` is the unstructured representation of the name. It is made up of structured
 components; `PREFIX`, `GIVEN_NAME`, `MIDDLE_NAME`, `FAMILY_NAME`, and `SUFFIX`.
@@ -701,7 +701,7 @@ When updating or inserting a row;
 - If the display name and structured components are not null, the Contacts Provider does nothing
   automatically.
 
-#### Data `StructuredPostal`
+### Data `StructuredPostal`
 
 The `FORMATTED_ADDRESS` is the unstructured representation of the postal address. It is made up of
 structured components; `STREET`, `POBOX`, `NEIGHBORHOOD`, `CITY`, `REGION`, `POSTCODE`, and
@@ -717,7 +717,7 @@ When updating or inserting a row;
 - If the formatted address and structured components are not null, the Contacts Provider does
   nothing automatically.
 
-#### Groups Table & Accounts
+### Groups Table & Accounts
 
 Contacts are assigned to one or more groups via the `GroupMembership`. It typically looks like this;
 
@@ -752,7 +752,7 @@ exist. In older versions of Android, the native Contacts app does not prevent cr
 with existing titles. In newer versions, existing titles may not be used for new groups. This
 library will follow the latter.
 
-#### Groups Table & GroupMemberships (Data Table)
+### Groups Table & GroupMemberships (Data Table)
 
 There may be multiple groups with the same title from different accounts. Therefore, the group
 membership should point to the group belonging to the same account as the raw contact. The native
@@ -764,7 +764,7 @@ membership will be asynchronously added to the Account's default group by the Co
 
 Membership to the default group should never be deleted!
 
-#### Starred in Android (Favorites)
+### Starred in Android (Favorites)
 
 When the `ContactOptionsColumns.STARRED` column of a Contact in the Contacts table is set to true,
 the Contacts Provider automatically adds a group membership to the favorites group for all 
@@ -787,7 +787,7 @@ on the RawContact with a stale set of group memberships may revert the star/unst
 example, query returns a starred RawContact -> set starred to false -> update RawContact (still 
 containing a group membership to the favorites group) -> starred will be set back to true.
 
-#### Group memberships & Local RawContacts
+### Group memberships & Local RawContacts
 
 Local RawContacts may have a group membership to the default system group of an Account without
 being associated with the Account...
@@ -802,7 +802,7 @@ Weirdly, this only occurs when there is exactly only one Account. If there are n
 are two or more Accounts, then this does not occur. Also, this does not occur for a Contact with a
 RawContact that has a group membership AND a RawContact that has no group membership.
 
-#### Groups; Deletion
+### Groups; Deletion
 
 Prior to Android 8.0 (Oreo, API 26), group deletion is unpredictable. Groups that are marked for
 deletion remain in the DB and is still shown in the native Contacts app. Sometimes they do get
@@ -812,13 +812,13 @@ The native Contacts app (prior to API 26) does NOT support group deletion perhap
 syncing isn't implemented or at least not to the same extent as contacts syncing. Therefore, this
 library will also not support group deletion for API versions lower than 26.
 
-#### Groups; UI
+### Groups; UI
 
 In newer Android versions of the native Contacts app, "groups" are now being referred to as
 "labels". However, the underlying code still uses groups. Google is probably just trying to make it
 more user friendly by calling it label instead of group.
 
-#### User Profile
+### User Profile
 
 There exist one (profile) Contacts row that identifies the user;
 `ContactsColumns.IS_USER_PROFILE`. There is at least one RawContacts row that is associated with the
@@ -899,7 +899,7 @@ are still required for API 22 and below. Reading and writing the profile is incl
 permissions. There is no need to ask for profile permissions at runtime because prior to API 23,
 permissions in the AndroidManifest have to be accepted prior to installation.
 
-#### Syncing Data / Sync Adapters
+### Syncing Data / Sync Adapters
 First, it’s good to know the official documentation of sync adapters; 
 https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters
 
@@ -915,7 +915,7 @@ thing that typically happens outside of an application UI. This library is focus
 writing native and custom data to and from the local database. Syncing the local database to and 
 from a remote service is a different story altogether =)
 
-#### Custom Data / MimeTypes
+### Custom Data / MimeTypes
 
 First, it’s good to know the official documentation of custom data rows; 
 https://developer.android.com/guide/topics/providers/contacts-provider#CustomData
@@ -935,7 +935,7 @@ all depends on those applications and their custom sync adapters (if they have a
 For insight on how aforementioned social media services may be syncing their data, read through the 
 official documentation; https://developer.android.com/guide/topics/providers/contacts-provider#SocialStream
 
-#### Unused ContactsContract Stuff
+### Unused ContactsContract Stuff
 
 We are currently not utilizing these things because I haven't found usages of them while using the
 native Contacts app. They are probably working behind the scenes but until we find uses for these,
@@ -1044,7 +1044,7 @@ fun doSomethingAndReturn(contact: ContactEntity) = when (contact) {
 > have to perform their own synchronizations if they want to use and mutate mutable entities in
 > multi-threaded scenarios.
 
-#### The cost of the current immutability implementation
+### The cost of the current immutability implementation
 
 The cost of implementing true immutability is more lines of code. Notice that the `MutableContact`
 does not inherit from `Contact`. The same goes for the other entities. This leads to having to write
@@ -1061,7 +1061,7 @@ On a side note, the same cost is incurred by Kotlin's standard libs. For example
 `AbstractMutableList` does not inherit from and is completely separate from `AbstractList`. I'm sure
 stdlib devs also had to write seemingly duplicate code in implementations of the `List` interface.
 
-#### Avoiding the cost... Shortcuts and pitfalls.
+### Avoiding the cost... Shortcuts and pitfalls.
 
 One thing that may come to mind in attempts to reduce lines of seemingly duplicate code is to have
 just a mutable implementation of an immutable declaration. For example, we can restructure the

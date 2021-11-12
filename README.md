@@ -254,7 +254,8 @@ them here.
 To get the first 20 gmail emails ordered by email address in descending order,
 
 ```kotlin
-val emails = Contacts(context).data()
+val emails = Contacts(context)
+    .data()
     .query()
     .emails()
     .where(Fields.Email.Address endsWith  "gmail.com")

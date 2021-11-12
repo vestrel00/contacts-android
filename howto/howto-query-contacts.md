@@ -230,6 +230,11 @@ For more info, read [How do I use the permissions module to simplify permission 
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
+## Custom data support
+ 
+The `BroadQuery` API does not include custom data in the matching process. However, you may still
+use the `include` function with custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+
 ##  Using the `whereAnyContactDataPartiallyMatches` function to specify matching criteria
 
 The `BroadQuery` API lets the Contacts Provider perform the search using its own custom matching
@@ -239,6 +244,9 @@ Most, but not all, Contact data are included in the matching process. Some are n
 because some data may result in unintentional matching.
 
 > See `AbstractDataFieldSet.forMatching` documentation on all the fields that are included in this match.
+
+**Custom data are not included in the matching process!** To match custom data, 
+read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
 Data matching is more sophisticated under the hood than `Query`. The Contacts Provider matches parts
 of several types of data in segments. For example, a Contact having the email "hologram@gram.net"

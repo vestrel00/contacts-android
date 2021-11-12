@@ -1,7 +1,7 @@
 # How do I include only the data that I want?
 
-When using query APIs such as `Query`, `BroadQuery`, and `ProfileQuery`, you are able to specify
-all or only some kinds of data that you want to be included in the matching contacts.
+When using query APIs such as `Query`, `BroadQuery`, `ProfileQuery`, `DataQuery`, you are able to 
+specify all or only some kinds of data that you want to be included in the returned results.
 
 For example, to include only name, email, and phone number data,
 
@@ -20,7 +20,8 @@ To explicitly include everything,
 query.include(Fields.all)
 ```
 
-> Note that not invoking the `include` function will default to including everything.
+> Not invoking the `include` function will default to including everything, including custom data.
+> The above code will **exclude** custom data. Read the **Custom data support** section for more info.
 
 The matching contacts **may** have non-null data for each of the included fields. Fields that are
 included will not guarantee non-null data in the returned contact instances because some data may
@@ -31,6 +32,25 @@ be included in addition to required API fields (e.g. IDs), which are always incl
 
 > Note that this may affect performance. It is recommended to only include fields that will be used
 > to save CPU and memory.
+
+## Custom data support
+
+The `include` function supports registered custom data fields, which my be combined with native
+(non-custom) data fields.
+
+By default, not calling the `include` function will include all fields, including custom data. 
+However, the below code will include all native fields but exclude custom data;
+
+```kotlin
+query.include(Fields.all)
+```
+
+If you want to include everything, including custom data, and for some reason you must invoke the 
+`include` function,
+
+```kotlin
+query.include(Fields.all + contactsApi.customDataRegistry.allFields())
+```
 
 ## Performing updates on entities with partial includes
 

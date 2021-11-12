@@ -140,7 +140,15 @@ class CustomDataRegistry {
         ?.mimeType
         ?: throw CustomDataException("Missing custom data entry for ${customDataField.mimeType}")
 
-    internal fun allFields(): Set<AbstractCustomDataField> = entryMap.values
+    /**
+     * Returns all registered custom data fields.
+     *
+     * ## Dev note
+     *
+     * Make sure this remains public (not internal) because consumers may find this useful when
+     * using include functions in query APIs.
+     */
+    fun allFields(): Set<AbstractCustomDataField> = entryMap.values
         .flatMap { it.fieldSet.all }
         .toSet()
 

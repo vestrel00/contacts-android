@@ -274,6 +274,10 @@ To perform the query with permission, use the extensions provided in the `permis
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Custom data support
+ 
+The `Query` API supports custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
      
 ## Using the `where` function to specify matching criteria
 
@@ -303,7 +307,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-#### Limitations
+### Limitations
 
 This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
 the community may add more over time <3
