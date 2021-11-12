@@ -5,12 +5,11 @@ First, it's important to understand the most basic concept of the
 Afterwards, everything in this library should just make sense.
 
 There is only one thing you need to know outside of this library. The library handles the rest of
-the details so you don't have to =)
+the details so you don't have to!
 
 ## Contacts Provider / ContactsContract Basic Concept
 
-There are 3 main database tables used in dealing with contacts. There are more tables but you don't
-need to know that =) These tables are all connected.
+There are 3 main database tables used in dealing with contacts. These tables are all connected.
 
 1. Contacts
     - Rows representing different people.
@@ -21,6 +20,8 @@ need to know that =) These tables are all connected.
 3. Data
     - Rows containing data (e.g. name, email) for a RawContacts row.
     - E.G. John Doe from Gmail's name and email, John Doe from Hotmail's phone and address
+
+> There are more tables but it won't be covered in this howto for brevity. 
 
 In the example given (E.G.) above,
 
@@ -87,7 +88,7 @@ Read more in [How do I integrate custom data?](/howto/howto-integrate-custom-dat
 
 A `RawContact` may have at most one OR no limits of certain kinds of data.
 
-A RawContact may have 0 or 1 one of each these data kinds;
+A RawContact may have 0 or 1 of each of these data kinds;
 
 - `Name`
 - `Nickname`
@@ -96,7 +97,7 @@ A RawContact may have 0 or 1 one of each these data kinds;
 - `Photo`
 - `SipAddress`
 
-A RawContact may have 0, 1, or more of each these data kinds;
+A RawContact may have 0, 1, or more of each of these data kinds;
 
 - `Address`
 - `Email`
@@ -142,10 +143,16 @@ provided;
 - `Nickname`, underlying value defaults to null
 - `Note`, underlying value defaults to null
 
+
+
 This automatic creation occur automatically in the background (typically after creation) only for
 RawContacts that are associated with an Account. If a valid account is provided, membership to the
 (auto add) system group is automatically created immediately by the Contacts Provider at the time of
 creation. The name, nickname, and note are automatically created at a later time.
+
+> Note that the query APIs in this library do not return blanks in results. In this case, the `Name`, 
+> `Nickname`, and `Note` will not be included in the RawContact because their underlying data are all
+> null. Blanks are also deleted on update.
 
 If a valid account is not provided, no entries of the above are automatically created.
 
@@ -208,6 +215,7 @@ Log.d(
         Addresses: ${rawContact.addresses}
         Emails: ${rawContact.emails}
         Events: ${rawContact.events}
+        Group memberships: ${rawContact.groupMemberships}
         IMs: ${rawContact.ims}
         Name: ${rawContact.name}
         Nickname: ${rawContact.nickname}
@@ -218,7 +226,7 @@ Log.d(
         SipAddress: ${rawContact.sipAddress}
         Websites: ${rawContact.websites}
     """.trimIndent()
-    // Groups and photo require separate blocking function calls.
+    // Photo require separate blocking function calls.
 )
 ```
 

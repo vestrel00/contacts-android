@@ -16,9 +16,6 @@ import contacts.core.entities.table.Table
 
 // region QUERY
 
-// Not inlining these as they just add too many lines of code and are most likely only used in one
-// time transactions (not in loops).
-
 internal inline fun <reified T : Field, R> ContentResolver.query(
     table: Table<T>, include: Include<T>, where: Where<T>?,
 

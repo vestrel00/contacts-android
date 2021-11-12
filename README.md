@@ -2,6 +2,15 @@
 
 ![Android Contacts, Reborn banner](/banner.png)
 
+[![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+
+[![Android Weekly](https://img.shields.io/badge/AndroidWeekly-Issue%20%23491-2299cc.svg?style=for-the-badge&logo=android)](https://androidweekly.net/issues/issue-491)
+[![Kotlin Weekly](https://img.shields.io/badge/KotlinWeekly-Issue%20%23275-7549b5.svg?style=for-the-badge&logo=kotlin)](https://us12.campaign-archive.com/?u=f39692e245b94f7fb693b6d82&id=c864ecd437)
+[![Java Trends](https://img.shields.io/badge/JavaTrends-Newsletter%20%2358-2299cc.svg?style=for-the-badge&logo=java)](https://dormoshe.io/newsletters/ag/java/58)
+[![Android Trends](https://img.shields.io/badge/AndroidTrends-Newsletter%20%2381-2299cc.svg?style=for-the-badge&logo=android)](https://dormoshe.io/newsletters/ag/android/81)
+[![ProAndroidDev](https://img.shields.io/badge/ProAndroidDev-Contacts,%20Reborn!-7de1c3.svg?style=for-the-badge&logo=medium)](https://proandroiddev.com/android-contacts-reborn-19985c73ad43)
+[![Dev.to](https://img.shields.io/badge/Dev.to%20-3%20years%20to%20open%20source-0a0a0a.svg?style=for-the-badge&logo=devdotto)](https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp)
+
 Looking for the easiest way to get full-access to the breadth of Contacts in Android without having
 to deal with the [Contacts Provider][contacts-provider] and cursors? Well, look no further =)
 
@@ -115,12 +124,12 @@ SNAPSHOTs of branches are also available,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:master-SNAPSHOT'
+     implementation 'com.github.vestrel00.contacts-android:main-SNAPSHOT'
 }
 ```
 
 This library is a multi-module project published with JitPack;
-[![](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+[![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 ## Quick Start
 
