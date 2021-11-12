@@ -1,6 +1,6 @@
 # How do I get a list of contacts in a more advanced way?
 
-This library provides the `Query` API, allows you to get a list of Contacts matching a specific 
+This library provides the `Query` API that allows you to get a list of Contacts matching a specific 
 search criteria. All RawContacts of matching Contacts are included in the resulting Contact 
 instances.
 
@@ -16,6 +16,8 @@ val query = Contacts(context).query()
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
 > For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md).
 
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+
 ## An advanced query
 
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
@@ -29,7 +31,7 @@ the results) ordered by display name in descending order, matching ALL of these 
 - has a nickname of "DarEdEvil" (case sensitive)
 - works for Facebook
 - has a note
-- belongs to the account of "jerry@gmail.com" or "jerry@myspace.com"
+- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"
 
 ```kotlin
 val contacts = Contacts(context)
@@ -45,8 +47,8 @@ val contacts = Contacts(context)
                 (Fields.Note.Note.isNotNullOrEmpty())
     )
     .accounts(
-        Account("jerry@gmail.com", "com.google"),
-        Account("jerry@myspace.com", "com.myspace"),
+        Account("john.doe@gmail.com", "com.google"),
+        Account("john.doe@myspace.com", "com.myspace"),
     )
     .include(Fields.Contact.Id, Fields.Contact.DisplayNamePrimary, Fields.Phone.Number, Fields.Phone.NormalizedNumber)
     .orderBy(ContactsFields.DisplayNamePrimary.desc())
@@ -109,7 +111,7 @@ To limit the search to only those RawContacts associated with one of the given a
 For example, to limit the search to contacts belonging to only one account.
 
 ```kotlin
-.accounts(Account("jerry@gmail.com", "com.google"))
+.accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
 > For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
@@ -137,6 +139,12 @@ To include only the given set of fields (data) in each of the matching contacts,
 
 ```kotlin
 .include(fields)
+```
+
+For example, to only include email fields,
+
+```kotlin
+.include(Fields.Email.all)
 ```
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md).
@@ -272,10 +280,30 @@ You may, of course, use other permission handling libraries or just do it yourse
 Use the `contacts.core.Fields` combined with the extensions from `contacts.core.Where` to form WHERE
 clauses. 
 
-This howto page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
-If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
+> This howto page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
+> If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
-### Limitations
+For example, to get all contacts with a phone number AND email,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    ...
+    .where(Fields.Phone.Number.isNotNullOrEmpty() and Fields.Email.Address.isNotNullOrEmpty())
+    .find()
+```
+
+To get a list of contacts with the given IDs,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    ...
+    .where(Fields.Contact.Id `in` contactIds)
+    .find()
+```
+
+#### Limitations
 
 This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
 the community may add more over time <3

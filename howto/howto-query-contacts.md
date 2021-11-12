@@ -1,6 +1,6 @@
 # How do I get a list of contacts in the simplest way?
 
-This library provides the `BroadQuery` API, which allows you to get the exact same search results
+This library provides the `BroadQuery` API that allows you to get the exact same search results
 as the native Contacts app! This query lets the Contacts Provider perform the search using its own
 custom matching algorithm via the `whereAnyContactDataPartiallyMatches` function. This type of
 query is the basis of an app that does a broad search of the Contacts Provider. The technique is
@@ -14,6 +14,8 @@ val query = Contacts(context).broadQuery()
 
 > For a more granular, advanced queries, use the `Query` API.
 > For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
 
 ## A basic query
 
@@ -57,7 +59,7 @@ To limit the search to only those RawContacts associated with one of the given a
 For example, to limit the search to contacts belonging to only one account.
 
 ```kotlin
-.accounts(Account("jerry@gmail.com", "com.google"))
+.accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
 > For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
@@ -112,6 +114,12 @@ To include only the given set of fields (data) in each of the matching contacts,
 
 ```kotlin
 .include(fields)
+```
+
+For example, to only include email fields,
+
+```kotlin
+.include(Fields.Email.all)
 ```
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
@@ -222,7 +230,7 @@ For more info, read [How do I use the permissions module to simplify permission 
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
-## How does the matching process work?
+##  Using the `whereAnyContactDataPartiallyMatches` function to specify matching criteria
 
 The `BroadQuery` API lets the Contacts Provider perform the search using its own custom matching
 algorithm via the `whereAnyContactDataPartiallyMatches` function.

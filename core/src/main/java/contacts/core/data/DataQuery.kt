@@ -70,7 +70,7 @@ interface DataQuery {
      */
     fun phones(): CommonDataQuery<PhoneField, Phone>
 
-    // Photos are intentionally left out.
+    // Photos are intentionally left out as it is internal to the library.
 
     /**
      * Queries for [Relation]s.
@@ -257,20 +257,20 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
      * to get and set only email addresses and leave everything the same in the database...
      *
      * ```kotlin
-     * val contacts = query.include(Fields.Email.Address).find()
-     * val mutableContacts = setEmailAddresses(contacts)
-     * update.contacts(mutableContacts).include(Fields.Email.Address).commit()
+     * val emails = emailsQuery.include(Fields.Email.Address).find()
+     * val mutableEmails = setEmailAddresses(emails)
+     * dataUpdate.data(mutableEmails).include(Fields.Email.Address).commit()
      * ```
      *
      * On the other hand, you may intentionally include only some data and perform updates without
      * on all data (not just the included ones) to effectively delete all non-included data. This
-     * is, currently, a feature- not a bug! For example, in order to get and set only email
-     * addresses and set all other data to null (such as phone numbers, name, etc) in the database..
+     * is, currently, a feature- not a bug! For example, in order to get and set only given name
+     * and set all other data to null (such as given name, middle name, prefix) in the database..
      *
      * ```kotlin
-     * val contacts = query.include(Fields.Email.Address).find()
-     * val mutableContacts = setEmailAddresses(contacts)
-     * update.contacts(mutableContacts).include(Fields.all).commit()
+     * val names = namesQuery.include(Fields.Name.GivenName).find()
+     * val mutableNames = setGivenNames(names)
+     * dataUpdate.data(mutableNames).include(Fields.Name.all).commit()
      * ```
      *
      * This gives you the most flexibility when it comes to specifying what fields to
@@ -305,7 +305,7 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
      *
      * This allows consumers to make a mistake about trying to match addresses using phone fields.
      * At this point, I'll say we are consenting adults (Python motto if you don't know) and we need
-     * apply some common sense =)
+     * to apply some common sense =)
      */
     fun where(where: Where<AbstractDataField>?): CommonDataQuery<F, E>
 
@@ -564,7 +564,6 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
     } ?: emptySet()
 
 /*
-
 Phones, Emails, and Addresses have a CONTENT_URI that contains all rows consisting of only those
 data kinds. Other data kinds do not have this content uri. These probably exists as an index /
 for optimization since phones, emails, and addresses are the most commonly used data kinds. Using

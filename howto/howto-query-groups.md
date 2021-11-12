@@ -1,6 +1,6 @@
 # How do I retrieve groups?
 
-This library provides the `GroupsQuery` API, which allows you to get groups associated with an 
+This library provides the `GroupsQuery` API that allows you to get groups associated with an 
 `Account` or `RawContact`.
 
 An instance of the `GroupsQuery` API is obtained by,
@@ -31,7 +31,7 @@ To limit the search to only those Groups associated with one of the given accoun
 For example, to limit the search to groups belonging to only one account.
 
 ```kotlin
-.accounts(Account("jerry@gmail.com", "com.google"))
+.accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
 > For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
