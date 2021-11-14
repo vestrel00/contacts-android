@@ -13,8 +13,10 @@ import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.intersect
 
 /**
- * Returns a list of [Contact]s from the given cursor, which assumed to have been retrieved from the
- * Data table.
+ * Contains functions that processes cursors from the Contacts ([processContactsCursor]),
+ * RawContacts ([processRawContactsCursor]), and Data ([processDataCursor]) tables to  accumulate
+ * Contacts, RawContacts, and Data. Once accumulation is complete, the [map] function returns a list
+ * of [Contact]s.
  */
 internal class ContactsMapper(
     /**
