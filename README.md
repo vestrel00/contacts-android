@@ -82,19 +82,6 @@ There are also more features that are on the way!
 3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
 4. [Social media custom data (WhatsApp, Twitter, Facebook, etc)](https://github.com/vestrel00/contacts-android/issues/27).
 
-**Framework-agnostic design**
-
-**The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!**
-All core functions of the API live in the `core` module, which you can import to your project all by
-itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D 
-
-So, feel free to use the core API however you want with whatever frameworks you want, such as
-Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions handling
-APIs you want to use.
-
-All other modules in this library are **optional** and are just there for your convenience or for
-reference.
-
 ## Installation
 
 First, include JitPack in the repositories list,
@@ -247,10 +234,19 @@ Log.d(
 
 > For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
 
-### There's a lot more
+## Setup
 
-This library is capable of doing more than just querying contacts. Let's take a look at a few of 
-them here.
+There is no setup required. It's up to you how you want to create and retain instances of the
+`contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/howto/howto-setup-contacts-api.md)
+
+It is also useful to read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
+
+## More than enough APIs that will allow you to build your own contacts app!
+
+This library is capable of doing more than just querying contacts. Actually, you can build your own
+full-fledged contacts app with it!
+
+Let's take a look at a few other APIs this library provides...
 
 To get the first 20 gmail emails ordered by email address in descending order,
 
@@ -354,7 +350,7 @@ Contacts(context)
 > these functions will do nothing and return a failed result. To make permission handling much
 > easier, Kotlin coroutine extensions are available in the `permissions` module.
 
-### There's even more…
+## Threading and permissions
 
 This library provides Kotlin coroutine extensions in the `permissions` module for all API functions
 to handle permissions and `async` module for executing work in background threads.
@@ -387,18 +383,81 @@ return no results.
 Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for listening
 to Contacts database changes.
 
-### There's too much…
+## Full in-code documentation and Howto guides and samples
 
 **The above examples barely scratches the surface of what this library provides.** For more in-depth
 Howtos, visit the [howto directory](/howto/). For a sample app reference, take a look at and run the
 `sample` module.
 
-### Setup
+## All APIs in the library are optimized!
 
-There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/howto/howto-setup-contacts-api.md)
+Some other APIs or util functions out there typically perform one internal database query per 
+contact returned. They do this to fetch the data per contact. This means that if there are 
+1,000 matching contacts, then an extra 1,000 internal database queries are performed! 
+This is not cool!
 
-It is also useful to read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
+To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at 
+least two and at most six or seven internal database queries no matter how many contacts are 
+matched! Even if there are 100,000 contacts matched, the library will only perform two to seven 
+internal database queries (depending on your query parameters).
+
+Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
+**pagination** with `limit` and `offset` functions :sunglasses:
+
+**Cancellations** are also supported! To cancel a query amid execution,
+
+```kotlin
+.find { returnTrueIfQueryShouldBeCancelled() }
+```
+
+The find function optionally takes in a function that, if it returns true, will cancel query 
+processing as soon as possible. The function is called numerous times during query processing to 
+check if processing should stop or continue. This gives you the option to cancel the query.
+
+This is useful when used in multi-threaded environments. One scenario where this would be commonly 
+used is when performing queries as the user types a search text. You are able to cancel the current
+query when the user enters new text.
+
+For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is 
+cancelled,
+
+```kotlin
+launch {
+    withContext(coroutineContext) {
+        val contacts = query.find { !isActive }
+    }
+    // Or, using the coroutine extensions in the async module...
+    val contacts = query.findWithContext()
+}
+```
+
+## Framework-agnostic design
+
+**The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!**
+All core functions of the API live in the `core` module, which you can import to your project all by
+itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D 
+
+So, feel free to use the core API however you want with whatever frameworks you want, such as
+Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions handling
+APIs you want to use.
+
+All other modules in this library are **optional** and are just there for your convenience or for
+reference.
+
+## All core APIs are framework-agnostic and works well with Java and Kotlin
+
+The core APIs in the `core` module does not and will not force you to use things you don’t want. 
+As a matter of fact, the only dependency the core module has is the standard Kotlin lib! Use 
+whatever Java or Kotlin permissions or threading library you want. The extensions are optional and 
+are there for convenience.
+
+I also made sure that **all core functions and entities are interoperable with Java 7+.** So, if 
+you were wondering why I’m using a semi-builder pattern instead of using named arguments with 
+default values, that is why. I’ve also made some other intentional decisions about API design to 
+ensure the best possible experience for both Kotlin and Java consumers without sacrificing Kotlin 
+language standards. It is Kotlin-first, Java-second (with love and care).
+
+Modules other than the core module are not guaranteed to be compatible with Java.
 
 ## Requirements
 
