@@ -49,7 +49,7 @@ The `BroadQuery` API provides a `whereAnyContactDataPartiallyMatches` function t
 matching custom data. Only native data are included in the matching process.
 
 The `ProfileQuery` API does not provide a where function as there can only be one profile Contact
-per device. H
+per device. 
 
 ## The `orderBy` function and custom data
 
@@ -63,8 +63,8 @@ The `DataQuery` API provides an `orderBy` function that supports custom data. Fo
 The `Query` and `BroadQuery` APIs provides an `orderBy` function that only takes in fields from
 the Contacts table, not data. So there is no custom data, or native data, support for this.
 
-The `ProfileQuery` API does not provide an `orderBy` function as there can only be one profile 
-Contact per device. 
+The `ProfileQuery` API does not provide an `orderBy` function as there can only be at most one 
+profile Contact on the device. 
 
 ## The `DataQuery` API and custom data
 

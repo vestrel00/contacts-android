@@ -28,7 +28,7 @@ To limit the search to only those Groups associated with one of the given accoun
 .accounts(accounts)
 ```
 
-For example, to limit the search to groups belonging to only one account.
+For example, to limit the search to groups belonging to only one account,
 
 ```kotlin
 .accounts(Account("john.doe@gmail.com", "com.google"))

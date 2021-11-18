@@ -64,7 +64,7 @@ To limit the search to only those data associated with one of the given accounts
 .accounts(accounts)
 ```
 
-For example, to limit the search to data belonging to only one account.
+For example, to limit the search to data belonging to only one account,
 
 ```kotlin
 .accounts(Account("john.doe@gmail.com", "com.google"))
@@ -197,6 +197,17 @@ To perform the query with permission, use the extensions provided in the `permis
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Profile data
+
+The `DataQuery` API also supports querying the Profile (device owner) contact data. To get an 
+instance of this API for Profile queries,
+
+```kotlin
+val profileDataQuery = Contacts(context).profile().data().query()
+```
+
+All queries will be limited to the Profile, whether it exists or not.
 
 ## Custom data support
  

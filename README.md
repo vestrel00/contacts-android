@@ -108,11 +108,13 @@ dependencies {
 }
 ```
 
+> Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
+
 SNAPSHOTs of branches are also available,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:main-SNAPSHOT'
+     implementation 'com.github.vestrel00:contacts-android:main-SNAPSHOT'
 }
 ```
 
@@ -431,25 +433,18 @@ launch {
 }
 ```
 
-## Framework-agnostic design
+## All core APIs are framework-agnostic and works well with Java and Kotlin
 
 **The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!**
 All core functions of the API live in the `core` module, which you can import to your project all by
 itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D 
 
-So, feel free to use the core API however you want with whatever frameworks you want, such as
-Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions handling
-APIs you want to use.
+So, feel free to use the core API however you want with whatever libraries or frameworks you want, 
+such as Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions 
+handling APIs you want to use.
 
 All other modules in this library are **optional** and are just there for your convenience or for
 reference.
-
-## All core APIs are framework-agnostic and works well with Java and Kotlin
-
-The core APIs in the `core` module does not and will not force you to use things you don’t want. 
-As a matter of fact, the only dependency the core module has is the standard Kotlin lib! Use 
-whatever Java or Kotlin permissions or threading library you want. The extensions are optional and 
-are there for convenience.
 
 I also made sure that **all core functions and entities are interoperable with Java 7+.** So, if 
 you were wondering why I’m using a semi-builder pattern instead of using named arguments with 
@@ -457,7 +452,7 @@ default values, that is why. I’ve also made some other intentional decisions a
 ensure the best possible experience for both Kotlin and Java consumers without sacrificing Kotlin 
 language standards. It is Kotlin-first, Java-second (with love and care).
 
-Modules other than the core module are not guaranteed to be compatible with Java.
+> Modules other than the core module are not guaranteed to be compatible with Java.
 
 ## Requirements
 

@@ -90,3 +90,14 @@ To perform the query with permission, use the extensions provided in the `permis
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Profile accounts
+
+The `AccountsQuery` API also supports querying the Profile (device owner) contact data. To get an 
+instance of this API for Profile queries,
+
+```kotlin
+val query = Contacts(context).accounts().profile().query()
+```
+
+All queries will be limited to the Profile, whether it exists or not.

@@ -18,6 +18,8 @@ val query = Contacts(context).query()
 
 > If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
 
+> If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/howto/howto-query-profile.md)
+
 ## An advanced query
 
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
@@ -108,7 +110,7 @@ To limit the search to only those RawContacts associated with one of the given a
 .accounts(accounts)
 ```
 
-For example, to limit the search to contacts belonging to only one account.
+For example, to limit the search to contacts belonging to only one account,
 
 ```kotlin
 .accounts(Account("john.doe@gmail.com", "com.google"))
