@@ -14,7 +14,7 @@ val query = Contacts(context).query()
 ```
 
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
-> For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md).
+> For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
 
 > If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
 
@@ -100,7 +100,7 @@ The API allows you to specify if you want to include blank contacts or not,
 .includeBlanks(true|false)
 ```
 
-For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md).
+For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
 
 ## Specifying Accounts
 
@@ -116,7 +116,7 @@ For example, to limit the search to contacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
@@ -129,7 +129,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md).
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -149,7 +149,7 @@ For example, to only include email fields,
 .include(Fields.Email.all)
 ```
 
-For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md).
+For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
 ### Specifying Groups
 
@@ -159,7 +159,7 @@ To limit the search to only those RawContacts associated with at least one of th
 .where(Fields.GroupMembership.GroupId `in` groups.mapNotNull { it.id })
 ```
 
-> For more info, read [How do I retrieve groups?](/howto/howto-query-groups.md).
+> For more info, read [How do I retrieve groups?](/howto/howto-query-groups.md)
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
@@ -197,7 +197,7 @@ Use `ContactsFields` to construct the orderBys.
 
 > If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
-> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md).
+> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
 
 ## Limiting and offsetting
 
@@ -367,4 +367,4 @@ Data table with joins;
 Using these fields in the where clause does not have any effect in matching blank Contacts or 
 blank RawContacts simply because they have no Data rows containing these joined fields.
 
-For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md).
+For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)

@@ -1,6 +1,6 @@
 # How do I get the device owner Contact profile?
 
-This library provides the `ProfileQuery` API that allows you to get the device own Contact profile.
+This library provides the `ProfileQuery` API that allows you to get the device owner Profile Contact.
 There can be only one device owner, which is either set (not null) or not yet set (null).
 
 An instance of the `ProfileQuery` API is obtained by,
@@ -12,7 +12,7 @@ val query = Contacts(context).profile().query()
 To get the profile Contact,
 
 ```kotlin
-val profile = contacts.profile().query().find()
+val profile = Contacts(context).profile().query().find()
 ```
 
 ## Including blank (raw) contacts
@@ -23,7 +23,7 @@ The API allows you to specify if you want to include blank (raw) contacts or not
 .includeBlanks(true|false)
 ```
 
-For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md).
+For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
 
 ## Specifying Accounts
 
@@ -39,7 +39,7 @@ For example, to include only RawContacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 The RawContacts returned will only belong to the specified accounts.
 
@@ -50,7 +50,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included. RawContacts without an associated account are considered local contacts or device-only 
 contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md).
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -89,7 +89,7 @@ For example, to automatically cancel the query inside a Kotlin coroutine when th
 ```kotlin
 launch {
     withContext(coroutineContext) {
-        val contacts = query.find { !isActive }
+        val profile = query.find { !isActive }
     }
 }
 ```

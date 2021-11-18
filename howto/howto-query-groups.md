@@ -34,7 +34,7 @@ For example, to limit the search to groups belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 Groups of all accounts are included in the search.

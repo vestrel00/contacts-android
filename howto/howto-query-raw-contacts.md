@@ -35,7 +35,7 @@ For example, to limit the search to contacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.
@@ -44,7 +44,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md).
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -119,7 +119,7 @@ For example, to automatically cancel the query inside a Kotlin coroutine when th
 ```kotlin
 launch {
     withContext(coroutineContext) {
-        val contacts = query.find { !isActive }
+        val rawContacts = query.find { !isActive }
     }
 }
 ```
@@ -172,7 +172,7 @@ val contacts = Contacts(context)
 > For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
 If you need a more convenient way to convert the `BlankRawContact`s to `RawContacts`, use 
-`BlankRawContactToRawContact` extensions. For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md).
+`BlankRawContactToRawContact` extensions. For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
 
 ## Profile RawContacts
 

@@ -29,7 +29,7 @@ park!
 
 Instances of `Contacts` hold on to an instance of `CustomDataRegistry` for custom data integration.
 For how to create instances of the `Contacts` API with custom data integration, read 
-[How do I integrate custom data?](/howto/howto-integrate-custom-data.md).
+[How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
 
 ## Optional, but recommended setup
 

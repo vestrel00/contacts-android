@@ -70,7 +70,7 @@ For example, to limit the search to data belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md).
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 data are included in the search.
@@ -79,7 +79,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md).
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -99,7 +99,7 @@ For example, to only include the given name and family name in a names query,
 .include(Fields.Name.GivenName, Fields.Name.FamilyName)
 ```
 
-For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md).
+For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
 ## Ordering
 

@@ -305,4 +305,4 @@ But will NOT be matched with the following texts;
 Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and
 phone numbers "987", "1 23", and "456" will be matched with "be bell ze 9 123 1 98 456".
 
-Matching is **case-insensitive** (case is ignored).
+Matching is **case-insensitive** (case is ignored)
