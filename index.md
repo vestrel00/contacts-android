@@ -2,6 +2,16 @@
 
 ![Android Contacts, Reborn banner](/banner.png)
 
+[![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+
+[![Android Weekly](https://img.shields.io/badge/AndroidWeekly-Issue%20%23491-2299cc.svg?style=flat&logo=android)](https://androidweekly.net/issues/issue-491)
+[![Kotlin Weekly](https://img.shields.io/badge/KotlinWeekly-Issue%20%23275-7549b5.svg?style=flat&logo=kotlin)](https://us12.campaign-archive.com/?u=f39692e245b94f7fb693b6d82&id=c864ecd437)
+[![Java Trends](https://img.shields.io/badge/JavaTrends-Newsletter%20%2358-f8981c.svg?style=flat&logo=java)](https://dormoshe.io/newsletters/ag/java/58)
+[![Android Trends](https://img.shields.io/badge/AndroidTrends-Newsletter%20%2381-3ddc84.svg?style=flat&logo=android)](https://dormoshe.io/newsletters/ag/android/81)
+[![Kotlin Trends](https://img.shields.io/badge/KotlinTrends-Newsletter%20%2364-7f51ff.svg?style=flat&logo=kotlin)](https://dormoshe.io/newsletters/ag/kotlin/64)
+[![ProAndroidDev](https://img.shields.io/badge/ProAndroidDev-Contacts,%20Reborn!-f53e28.svg?style=flat&logo=medium)](https://proandroiddev.com/android-contacts-reborn-19985c73ad43)
+[![Dev.to](https://img.shields.io/badge/Dev.to%20-3%20years%20to%20open%20source-0a0a0a.svg?style=flat&logo=devdotto)](https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp)
+
 Looking for the easiest way to get full-access to the breadth of Contacts in Android without having
 to deal with the [Contacts Provider][contacts-provider] and cursors? Well, look no further =)
 
@@ -10,13 +20,13 @@ or Java), or you are looking to create your own full-fledged Contacts app with t
 as the native Android Contacts app, this library has you covered!
 
 Documentation and how-to guides are all available and linked in the repository. You can browse the
-[Howto pages](/contacts-android/howto/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
-the GitHub pages are not guaranteed to be up-to-date. The GitHub wiki hosts the 
-[project roadmap][project-roadmap]. It contains all planned work and release schedules, which are 
+[Howto pages](/howto/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
+the GitHub pages are not guaranteed to be up-to-date. The GitHub wiki hosts the
+[project roadmap][project-roadmap]. It contains all planned work and release schedules, which are
 organized using issues, milestones, and projects.
 
-You can also learn more about this library through the articles I wrote about it =) 
- 
+You can also learn more about this library through the articles I wrote about it =)
+
 1. [Android Contacts, Reborn][medium-blog]
 2. [I spent 3 years writing an Android Contacts API in Kotlin with Java interop. What I’ve learned…][devto-blog]
 
@@ -24,66 +34,53 @@ You can also learn more about this library through the articles I wrote about it
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
-  [address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website](/contacts-android/howto/howto-learn-more-about-api-entities.html).
-- [Custom data integration](/contacts-android/howto/howto-integrate-custom-data.html).
-- [Broad queries](/contacts-android/howto/howto-query-contacts.html) and [advanced queries](/contacts-android/howto/howto-query-contacts-advanced.html)
-  of Contacts and RawContacts from zero or more Accounts. [Include only desired fields](/contacts-android/howto/howto-include-only-desired-data.html)
-  in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria 
-  in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table columns. 
+  [address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website](/howto/howto-learn-more-about-api-entities.md).
+- [Custom data integration](/howto/howto-integrate-custom-data.md).
+- [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
+  of Contacts and RawContacts from zero or more Accounts. [Include only desired fields](/howto/howto-include-only-desired-data.md)
+  in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria
+  in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table columns.
   Limit and offset functions.
-- [Insert](/contacts-android/howto/howto-insert-contacts.html) one or more RawContacts with an associated Account,
+- [Insert](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
   which leads to the insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
-- [Update](/contacts-android/howto/howto-update-contacts.html) one or more Contacts, RawContacts, and Data.
-- [Delete](/contacts-android/howto/howto-delete-contacts.html) one or more Contacts, RawContacts, and Data.
-- [Query](/contacts-android/howto/howto-query-profile.html), [insert](/contacts-android/howto/howto-insert-profile.html),
-  [update](/contacts-android/howto/howto-update-profile.html), and [delete](/contacts-android/howto/howto-delete-profile.html)
+- [Update](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
+- [Delete](/howto/howto-delete-contacts.md) one or more Contacts, RawContacts, and Data.
+- [Query](/howto/howto-query-profile.md), [insert](/howto/howto-insert-profile.md),
+  [update](/howto/howto-update-profile.md), and [delete](/howto/howto-delete-profile.md)
    Profile (device owner) Contact, RawContact, and Data.
-- [Query](/contacts-android/howto/howto-query-groups.html), [insert](/contacts-android/howto/howto-insert-groups.html),
-  [update](/contacts-android/howto/howto-update-groups.html), and [delete](/contacts-android/howto/howto-delete-groups.html) Groups per Account.
-- [Query](/contacts-android/howto/howto-query-specific-data-kinds.html), [insert](/contacts-android/howto/howto-insert-specific-data-kinds.html)
-  [update](/contacts-android/howto/howto-update-data-sets.html), and [delete](/contacts-android/howto/howto-delete-data-sets.html) specific kinds of Data.
-- [Query](/contacts-android/howto/howto-query-custom-data.html), [insert](/contacts-android/howto/howto-insert-custom-data.html), 
-  [update](/contacts-android/howto/howto-update-custom-data.html), and [delete](/contacts-android/howto/howto-delete-custom-data.html) custom Data.
-- [Query](/contacts-android/howto/howto-query-accounts.html) for Accounts in the system or RawContacts table.
-- [Query](/contacts-android/howto/howto-query-raw-contacts.html) for just RawContacts.
-- [Associate local RawContacts (no Account) to an Account](/contacts-android/howto/howto-associate-device-local-raw-contacts-to-an-account.html).
-- [Join/merge/link and separate/unmerge/unlink two or more Contacts](/contacts-android/howto/howto-link-unlink-contacts.html).
-- [Get and set Contact and RawContact Options](/contacts-android/howto/howto-get-set-clear-contact-raw-contact-options.html).
+- [Query](/howto/howto-query-groups.md), [insert](/howto/howto-insert-groups.md),
+  [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) Groups per Account.
+- [Query](/howto/howto-query-specific-data-kinds.md), [insert](/howto/howto-insert-specific-data-kinds.md)
+  [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
+- [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md),
+  [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.
+- [Query](/howto/howto-query-accounts.md) for Accounts in the system or RawContacts table.
+- [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
+- [Associate local RawContacts (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
+- [Join/merge/link and separate/unmerge/unlink two or more Contacts](/howto/howto-link-unlink-contacts.md).
+- [Get and set Contact and RawContact Options](/howto/howto-get-set-clear-contact-raw-contact-options.md).
   starred (favorite), custom ringtone, send to voicemail.
-- [Get, set, and remove Contacts/RawContact photo and thumbnail](/contacts-android/howto/howto-get-set-remove-contact-raw-contact-photo.html).
-- [Get, set, and clear default (primary) Contact Data](/contacts-android/howto/howto-get-set-clear-default-data.html)
+- [Get, set, and remove Contacts/RawContact photo and thumbnail](/howto/howto-get-set-remove-contact-raw-contact-photo.md).
+- [Get, set, and clear default (primary) Contact Data](/howto/howto-get-set-clear-default-data.md)
   (e.g. default/primary phone number, email, etc).
-- [Miscellaneous convenience functions](/contacts-android/howto/howto-use-miscellaneous-extensions.html).
-- [Contact data is synced automatically across devices](/contacts-android/howto/howto-sync-contact-data.html).
+- [Miscellaneous convenience functions](/howto/howto-use-miscellaneous-extensions.md).
+- [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md).
 
 There are also extensions that add functionality to every core function;
-- [Asynchronous work using Kotlin Coroutines](/contacts-android/howto/howto-use-api-with-async-execution.html).
-- [Permissions request/handling using Kotlin Coroutines](/contacts-android/howto/howto-use-api-with-permissions-handling.html).
+- [Asynchronous work using Kotlin Coroutines](/howto/howto-use-api-with-async-execution.md).
+- [Permissions request/handling using Kotlin Coroutines](/howto/howto-use-api-with-permissions-handling.md).
 
 Also included are some pre-baked goodies to be used as is or just for reference;
-- [Gender custom Data](/contacts-android/howto/howto-integrate-gender-custom-data.html).
-- [Handle name custom Data](/contacts-android/howto/howto-integrate-handlename-custom-data.html).
-- [Rudimentary contacts-integrated UI components](/contacts-android/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.html).
-- [Debug functions to aid in development](/contacts-android/howto/howto-debug-contacts-provider-tables.html)
+- [Gender custom Data](/howto/howto-integrate-gender-custom-data.md).
+- [Handle name custom Data](/howto/howto-integrate-handlename-custom-data.md).
+- [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
+- [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
 
 There are also more features that are on the way!
 1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
 2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
 3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
 4. [Social media custom data (WhatsApp, Twitter, Facebook, etc)](https://github.com/vestrel00/contacts-android/issues/27).
-
-**Framework-agnostic design**
-
-**The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!**
-All core functions of the API live in the `core` module, which you can import to your project all by
-itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D 
-
-So, feel free to use the core API however you want with whatever frameworks you want, such as
-Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions handling
-APIs you want to use.
-
-All other modules in this library are **optional** and are just there for your convenience or for
-reference.
 
 ## Installation
 
@@ -111,6 +108,8 @@ dependencies {
 }
 ```
 
+> Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
+
 SNAPSHOTs of branches are also available,
 
 ```groovy
@@ -120,7 +119,7 @@ dependencies {
 ```
 
 This library is a multi-module project published with JitPack;
-[![](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+[![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 ## Quick Start
 
@@ -149,7 +148,7 @@ That's it! BUT, THAT IS BORING! Let's take a look at something more advanced…
 
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
 the results) ordered by display name in descending order, matching ALL of these rules;
-- a first name starting with "leo" 
+- a first name starting with "leo"
 - has emails from gmail or hotmail
 - lives in the US
 - has been born prior to making this query
@@ -157,7 +156,7 @@ the results) ordered by display name in descending order, matching ALL of these 
 - has a nickname of "DarEdEvil" (case sensitive)
 - works for Facebook
 - has a note
-- belongs to the account of "jerry@gmail.com" or "jerry@myspace.com"
+- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"
 
 ```kotlin
 val contacts = Contacts(context)
@@ -173,8 +172,8 @@ val contacts = Contacts(context)
                 (Fields.Note.Note.isNotNullOrEmpty())
     )
     .accounts(
-        Account("jerry@gmail.com", "com.google"),
-        Account("jerry@myspace.com", "com.myspace"),
+        Account("john.doe@gmail.com", "com.google"),
+        Account("john.doe@myspace.com", "com.myspace"),
     )
     .include(Fields.Contact.Id, Fields.Contact.DisplayNamePrimary, Fields.Phone.Number, Fields.Phone.NormalizedNumber)
     .orderBy(ContactsFields.DisplayNamePrimary.desc())
@@ -183,8 +182,8 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> For more info, read [How do I get a list of contacts in the simplest way?](/contacts-android/howto/howto-query-contacts.html)
-> and [How do I get a list of contacts in a more advanced way?](/contacts-android/howto/howto-query-contacts-advanced.html)
+> For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
+> and [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
 Imagine what this would look like if you use ContactsContract directly. Now, you don't have to! The
 above snippet is in Kotlin but, like I mentioned, all of the core APIs are usable in Java too
@@ -235,17 +234,27 @@ Log.d(
 > Each Contact may have more than one of the following data if the Contact is made up of 2 or more
 > RawContacts; name, nickname, note, organization, sip address.
 
-> For more info, read [How do I learn more about the API entities?](/contacts-android/howto/howto-learn-more-about-api-entities.html)
+> For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
 
-### There's a lot more
+## Setup
 
-This library is capable of doing more than just querying contacts. Let's take a look at a few of 
-them here.
+There is no setup required. It's up to you how you want to create and retain instances of the
+`contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/howto/howto-setup-contacts-api.md)
+
+It is also useful to read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
+
+## More than enough APIs that will allow you to build your own contacts app!
+
+This library is capable of doing more than just querying contacts. Actually, you can build your own
+full-fledged contacts app with it!
+
+Let's take a look at a few other APIs this library provides...
 
 To get the first 20 gmail emails ordered by email address in descending order,
 
 ```kotlin
-val emails = Contacts(context).data()
+val emails = Contacts(context)
+    .data()
     .query()
     .emails()
     .where(Fields.Email.Address endsWith  "gmail.com")
@@ -257,7 +266,7 @@ val emails = Contacts(context).data()
 
 It's not just for emails. It's for all common data kinds (including custom data).
 
-> For more info, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-specific-data-kinds.html)
+> For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
 
 To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
@@ -304,7 +313,7 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I create/insert contacts?](/contacts-android/howto/howto-insert-contacts.html)
+> For more info, read [How do I create/insert contacts?](/howto/howto-insert-contacts.md)
 
 If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his data,
 
@@ -323,7 +332,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I update contacts?](/contacts-android/howto/howto-update-contacts.html)
+> For more info, read [How do I update contacts?](/howto/howto-update-contacts.md)
 
 If we no longer like John Doe, we can **DELETE** him from our life,
 
@@ -334,7 +343,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I delete contacts?](/contacts-android/howto/howto-delete-contacts.html)
+> For more info, read [How do I delete contacts?](/howto/howto-delete-contacts.md)
 
 > Note that for insert, update, and delete functions, you will need to add the
 > `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS` permissions
@@ -343,7 +352,7 @@ Contacts(context)
 > these functions will do nothing and return a failed result. To make permission handling much
 > easier, Kotlin coroutine extensions are available in the `permissions` module.
 
-### There's even more…
+## Threading and permissions
 
 This library provides Kotlin coroutine extensions in the `permissions` module for all API functions
 to handle permissions and `async` module for executing work in background threads.
@@ -365,8 +374,8 @@ launch {
 }
 ```
 
-> For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
-> and [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
+> For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
+> and [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 So, if we call the above function and we don't yet have permission. The user will be prompted to
 give the appropriate permissions before the query proceeds. Then, the work is done in the coroutine
@@ -376,18 +385,74 @@ return no results.
 Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for listening
 to Contacts database changes.
 
-### There's too much…
+## Full in-code documentation and Howto guides and samples
 
 **The above examples barely scratches the surface of what this library provides.** For more in-depth
-Howtos, visit the [howto directory](/contacts-android/howto/). For a sample app reference, take a look at and run the
+Howtos, visit the [howto directory](/howto/). For a sample app reference, take a look at and run the
 `sample` module.
 
-### Setup
+## All APIs in the library are optimized!
 
-There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/contacts-android/howto/howto-setup-contacts-api.html)
+Some other APIs or util functions out there typically perform one internal database query per
+contact returned. They do this to fetch the data per contact. This means that if there are
+1,000 matching contacts, then an extra 1,000 internal database queries are performed!
+This is not cool!
 
-It is also useful to read [How do I learn more about the API entities?](/contacts-android/howto/howto-learn-more-about-api-entities.html)
+To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at
+least two and at most six or seven internal database queries no matter how many contacts are
+matched! Even if there are 100,000 contacts matched, the library will only perform two to seven
+internal database queries (depending on your query parameters).
+
+Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support
+**pagination** with `limit` and `offset` functions :sunglasses:
+
+**Cancellations** are also supported! To cancel a query amid execution,
+
+```kotlin
+.find { returnTrueIfQueryShouldBeCancelled() }
+```
+
+The find function optionally takes in a function that, if it returns true, will cancel query
+processing as soon as possible. The function is called numerous times during query processing to
+check if processing should stop or continue. This gives you the option to cancel the query.
+
+This is useful when used in multi-threaded environments. One scenario where this would be commonly
+used is when performing queries as the user types a search text. You are able to cancel the current
+query when the user enters new text.
+
+For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is
+cancelled,
+
+```kotlin
+launch {
+    withContext(coroutineContext) {
+        val contacts = query.find { !isActive }
+    }
+    // Or, using the coroutine extensions in the async module...
+    val contacts = query.findWithContext()
+}
+```
+
+## All core APIs are framework-agnostic and works well with Java and Kotlin
+
+**The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!**
+All core functions of the API live in the `core` module, which you can import to your project all by
+itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D
+
+So, feel free to use the core API however you want with whatever libraries or frameworks you want,
+such as Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions
+handling APIs you want to use.
+
+All other modules in this library are **optional** and are just there for your convenience or for
+reference.
+
+I also made sure that **all core functions and entities are interoperable with Java 7+.** So, if
+you were wondering why I’m using a semi-builder pattern instead of using named arguments with
+default values, that is why. I’ve also made some other intentional decisions about API design to
+ensure the best possible experience for both Kotlin and Java consumers without sacrificing Kotlin
+language standards. It is Kotlin-first, Java-second (with love and care).
+
+> Modules other than the core module are not guaranteed to be compatible with Java.
 
 ## Requirements
 
