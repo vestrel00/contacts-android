@@ -17,9 +17,9 @@ import contacts.core.util.unsafeLazy
 /**
  * Queries for Profile OR non-Profile (depending on instance) RawContacts.
  *
- * These queries return [BlankRawContact]s, which are RawContacts that contains no data (e.g. email,
- * phone) only containing critical information for performing RawContact operations such as
- * [AccountsRawContactsAssociationsUpdate].
+ * Thee queries return [BlankRawContact]s, which are RawContacts that contains no data (e.g. email,
+ * phone). It only contains critical information required for performing RawContact operations such
+ * as associating local RawContacts to an Account ([AccountsRawContactsAssociationsUpdate]).
  *
  * ## Permissions
  *

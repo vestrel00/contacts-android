@@ -104,7 +104,7 @@ For more info, read [How do I learn more about "blank" contacts?](/howto/howto-l
 
 ## Specifying Accounts
 
-To limit the search to only those RawContacts associated with one of the given accounts,
+To limit the search to only those contacts associated with one of the given accounts,
 
 ```kotlin
 .accounts(accounts)
