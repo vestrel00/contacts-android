@@ -70,7 +70,7 @@ For example, to limit the search to data belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.html)
+> For more info, read [How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.html)
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 data are included in the search.
@@ -79,7 +79,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.html)
+For more info, read [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto/howto-learn-more-about-local-contacts.html)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -99,7 +99,7 @@ For example, to only include the given name and family name in a names query,
 .include(Fields.Name.GivenName, Fields.Name.FamilyName)
 ```
 
-For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.html)
+For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
 
 ## Ordering
 
@@ -181,7 +181,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.html)
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -194,7 +194,7 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.html)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
@@ -211,7 +211,7 @@ All queries will be limited to the Profile, whether it exists or not.
 
 ## Custom data support
  
-The `DataQuery` API supports custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.html)
+The `DataQuery` API supports custom data. For more info, read [How do I use query APIs with custom data?](/contacts-android/howto/howto-query-custom-data.html)
 
 ## Using the `where` function to specify matching criteria
 

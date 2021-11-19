@@ -3,18 +3,18 @@
 This library provides several query APIs that support custom data integration.
 
 1. `Query`
-    - [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.html)
+    - [How do I get a list of contacts in a more advanced way?](/contacts-android/howto/howto-query-contacts-advanced.html)
 2. `BroadQuery`
-    - [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.html)
+    - [How do I get a list of contacts in the simplest way?](/contacts-android/howto/howto-query-contacts.html)
 3. `ProfileQuery`
-    - [How do I get the device owner Contact profile?](/howto/howto-query-profile.html)
+    - [How do I get the device owner Contact profile?](/contacts-android/howto/howto-query-profile.html)
 4. `DataQuery`
-    - [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.html)
+    - [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-specific-data-kinds.html)
 
 In particular the query APIs typically provide `include`, `where`, and `orderBy` functions. These
 functions are compatible with custom data.
 
-> For more info about custom data, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.html)
+> For more info about custom data, read [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
 
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
 and `Gender` custom data.
@@ -33,7 +33,7 @@ For example, to specifically include only `HandleName` and `Gender` fields,
 .include(HandleNameFields.all + GenderFields.all)
 ```
 
-For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.html)
+For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
 
 ## The `where` function and custom data
 
@@ -89,4 +89,4 @@ val handleNames = Contacts(context)
     .find()
 ```
 
-For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.html)
+For more info, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-specific-data-kinds.html)
