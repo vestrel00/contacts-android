@@ -29,7 +29,7 @@ park!
 
 Instances of `Contacts` hold on to an instance of `CustomDataRegistry` for custom data integration.
 For how to create instances of the `Contacts` API with custom data integration, read 
-[How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+[How do I integrate custom data?](/howto/howto-integrate-custom-data.html)
 
 ## Optional, but recommended setup
 
@@ -44,7 +44,7 @@ It is recommended to use a single instance of the `Contacts` API throughout your
 3. Easily substitute your `Contacts` API instance with an instance of `MockContacts`
     - This is useful in [white box testing][white-box-testing] (unit & integration tests; `test/`).
     
-For more info, read [How do I use the test module to simplify testing in my app?](/howto/howto-use-api-for-testing.md)
+For more info, read [How do I use the test module to simplify testing in my app?](/howto/howto-use-api-for-testing.html)
     
 > Of course, this library does not (and will not) force you to do things you don't want. If you 
 > don't care about all of the above and just want to get out a quick prototype of a feature in your 

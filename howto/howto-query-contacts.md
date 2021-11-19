@@ -13,11 +13,11 @@ val query = Contacts(context).broadQuery()
 ```
 
 > For a more granular, advanced queries, use the `Query` API.
-> For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+> For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.html)
 
-> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.html)
 
-> If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/howto/howto-query-profile.md)
+> If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/howto/howto-query-profile.html)
 
 ## A basic query
 
@@ -48,7 +48,7 @@ The API allows you to specify if you want to include blank contacts or not,
 .includeBlanks(true|false)
 ```
 
-For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
+For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.html)
 
 ## Specifying Accounts
 
@@ -64,7 +64,7 @@ For example, to limit the search to contacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.html)
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
@@ -77,7 +77,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.html)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -97,7 +97,7 @@ For example, to limit the search to only favorites,
 .groups(favoritesGroup)
 ```
 
-> For more info, read [How do I retrieve groups?](/howto/howto-query-groups.md)
+> For more info, read [How do I retrieve groups?](/howto/howto-query-groups.html)
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
@@ -124,7 +124,7 @@ For example, to only include email fields,
 .include(Fields.Email.all)
 ```
 
-For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
+For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.html)
 
 ## Ordering
 
@@ -152,7 +152,7 @@ Use `ContactsFields` to construct the orderBys.
 
 > If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
-> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
+> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.html)
 
 ## Limiting and offsetting
 
@@ -215,7 +215,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.html)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -228,14 +228,14 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.html)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
  
 The `BroadQuery` API does not include custom data in the matching process. However, you may still
-use the `include` function with custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+use the `include` function with custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.html)
 
 ##  Using the `whereAnyContactDataPartiallyMatches` function to specify matching criteria
 
@@ -248,7 +248,7 @@ because some data may result in unintentional matching.
 > See `AbstractDataFieldSet.forMatching` documentation on all the fields that are included in this match.
 
 **Custom data are not included in the matching process!** To match custom data, 
-read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.html)
 
 Data matching is more sophisticated under the hood than `Query`. The Contacts Provider matches parts
 of several types of data in segments. For example, a Contact having the email "hologram@gram.net"

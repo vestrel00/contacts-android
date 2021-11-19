@@ -14,7 +14,7 @@ module should be created for each social media.
 
 E.G. `customdata-whatsapp`, `customdata-fb`, `customdata-twitter`
 
-For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.html)
 
 ## Note
 

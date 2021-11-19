@@ -7,7 +7,7 @@ More specifically, this query returns `BlankRawContact`s, which are RawContacts 
 data (e.g. email, phone). It only contains critical information required for performing RawContact 
 operations such as associating local RawContacts to an Account.
 
-> For more info, read [How do I associate a local RawContacts to an Account?](/howto/howto-associate-device-local-raw-contacts-to-an-account.md)
+> For more info, read [How do I associate a local RawContacts to an Account?](/howto/howto-associate-device-local-raw-contacts-to-an-account.html)
 
 An instance of the `AccountsRawContactsQuery` API is obtained by,
 
@@ -35,7 +35,7 @@ For example, to limit the search to contacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.html)
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.
@@ -44,7 +44,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.html)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -130,7 +130,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.html)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -143,7 +143,7 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.html)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
@@ -169,10 +169,10 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+> For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.html)
 
 If you need a more convenient way to convert the `BlankRawContact`s to `RawContacts`, use 
-`BlankRawContactToRawContact` extensions. For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
+`BlankRawContactToRawContact` extensions. For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.html)
 
 ## Profile RawContacts
 

@@ -3,18 +3,18 @@
 This library provides several query APIs that support custom data integration.
 
 1. `Query`
-    - [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+    - [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.html)
 2. `BroadQuery`
-    - [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
+    - [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.html)
 3. `ProfileQuery`
-    - [How do I get the device owner Contact profile?](/howto/howto-query-profile.md)
+    - [How do I get the device owner Contact profile?](/howto/howto-query-profile.html)
 4. `DataQuery`
-    - [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+    - [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.html)
 
 In particular the query APIs typically provide `include`, `where`, and `orderBy` functions. These
 functions are compatible with custom data.
 
-> For more info about custom data, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+> For more info about custom data, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.html)
 
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
 and `Gender` custom data.
@@ -33,7 +33,7 @@ For example, to specifically include only `HandleName` and `Gender` fields,
 .include(HandleNameFields.all + GenderFields.all)
 ```
 
-For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
+For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.html)
 
 ## The `where` function and custom data
 
@@ -89,4 +89,4 @@ val handleNames = Contacts(context)
     .find()
 ```
 
-For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.html)
