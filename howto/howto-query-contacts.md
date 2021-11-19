@@ -1,24 +1,42 @@
 # How do I get a list of contacts in the simplest way?
 
-This library provides the `BroadQuery` API, which allows you to get the exact same search results
+This library provides the `BroadQuery` API that allows you to get the exact same search results
 as the native Contacts app! This query lets the Contacts Provider perform the search using its own
 custom matching algorithm via the `whereAnyContactDataPartiallyMatches` function. This type of
 query is the basis of an app that does a broad search of the Contacts Provider. The technique is
 useful for apps that want to implement functionality similar to the People app's contact list screen.
 
+An instance of the `BroadQuery` API is obtained by,
+
+```kotlin
+val query = Contacts(context).broadQuery()
+```
+
 > For a more granular, advanced queries, use the `Query` API.
-> For more info, read [How do I get a list of contacts in a more advanced way?](/contacts-android/howto/howto-query-contacts-advanced.html)
+> For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+
+> If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/howto/howto-query-profile.md)
 
 ## A basic query
 
-To get all contacts that have any data that at least partially matches a given `searchText`, ordered
-by the primary display name,
+To get all contacts ordered by the primary display name,
 
 ```kotlin
 val contacts = Contacts(context)
     .broadQuery()
-    .whereAnyContactDataPartiallyMatches(searchText)
     .orderBy(ContactsFields.DisplayNamePrimary.asc())
+    .find()
+```
+
+To get all contacts that have any data that at least partially matches a given `searchText`,
+
+```kotlin
+val contacts = Contacts(context)
+    .broadQuery()
+    ...
+    .whereAnyContactDataPartiallyMatches(searchText)
     .find()
 ```
 
@@ -30,23 +48,23 @@ The API allows you to specify if you want to include blank contacts or not,
 .includeBlanks(true|false)
 ```
 
-For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto/howto-learn-more-about-blank-contacts.html)
+For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
 
 ## Specifying Accounts
 
-To limit the search to only those RawContacts associated with one of the given accounts,
+To limit the search to only those contacts associated with one of the given accounts,
 
 ```kotlin
 .accounts(accounts)
 ```
 
-For example, to limit the search to contacts belonging to only one account.
+For example, to limit the search to contacts belonging to only one account,
 
 ```kotlin
-.accounts(Account("jerry@gmail.com", "com.google")))
+.accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.html)
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
@@ -59,7 +77,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto/howto-learn-more-about-local-contacts.html)
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -79,7 +97,7 @@ For example, to limit the search to only favorites,
 .groups(favoritesGroup)
 ```
 
-> For more info, read [How do I retrieve groups?](/contacts-android/howto/howto-query-groups.html)
+> For more info, read [How do I retrieve groups?](/howto/howto-query-groups.md)
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
@@ -100,7 +118,13 @@ To include only the given set of fields (data) in each of the matching contacts,
 .include(fields)
 ```
 
-For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
+For example, to only include email fields,
+
+```kotlin
+.include(Fields.Email.all)
+```
+
+For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
 ## Ordering
 
@@ -128,7 +152,7 @@ Use `ContactsFields` to construct the orderBys.
 
 > If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
-> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto/howto-use-miscellaneous-extensions.html)
+> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
 
 ## Limiting and offsetting
 
@@ -190,8 +214,8 @@ launch {
 Queries are executed when the `find` function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the extensions provided in the `async` module.
-For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -204,11 +228,16 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
-## How does the matching process work?
+## Custom data support
+ 
+The `BroadQuery` API does not include custom data in the matching process. However, you may still
+use the `include` function with custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+
+##  Using the `whereAnyContactDataPartiallyMatches` function to specify matching criteria
 
 The `BroadQuery` API lets the Contacts Provider perform the search using its own custom matching
 algorithm via the `whereAnyContactDataPartiallyMatches` function.
@@ -217,6 +246,9 @@ Most, but not all, Contact data are included in the matching process. Some are n
 because some data may result in unintentional matching.
 
 > See `AbstractDataFieldSet.forMatching` documentation on all the fields that are included in this match.
+
+**Custom data are not included in the matching process!** To match custom data, 
+read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
 Data matching is more sophisticated under the hood than `Query`. The Contacts Provider matches parts
 of several types of data in segments. For example, a Contact having the email "hologram@gram.net"
@@ -273,4 +305,4 @@ But will NOT be matched with the following texts;
 Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and
 phone numbers "987", "1 23", and "456" will be matched with "be bell ze 9 123 1 98 456".
 
-Matching is **case-insensitive** (case is ignored).
+Matching is **case-insensitive** (case is ignored)

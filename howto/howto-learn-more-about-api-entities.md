@@ -5,12 +5,11 @@ First, it's important to understand the most basic concept of the
 Afterwards, everything in this library should just make sense.
 
 There is only one thing you need to know outside of this library. The library handles the rest of
-the details so you don't have to =)
+the details so you don't have to!
 
 ## Contacts Provider / ContactsContract Basic Concept
 
-There are 3 main database tables used in dealing with contacts. There are more tables but you don't
-need to know that =) These tables are all connected.
+There are 3 main database tables used in dealing with contacts. These tables are all connected.
 
 1. Contacts
     - Rows representing different people.
@@ -22,6 +21,8 @@ need to know that =) These tables are all connected.
     - Rows containing data (e.g. name, email) for a RawContacts row.
     - E.G. John Doe from Gmail's name and email, John Doe from Hotmail's phone and address
 
+> There are more tables but it won't be covered in this howto for brevity. 
+
 In the example given (E.G.) above,
 
 - there is one row in the Contacts table for the person John Doe
@@ -31,11 +32,11 @@ In the example given (E.G.) above,
 
 In the background, the Contacts Provider automatically performs the RawContacts linking/aggregation
 into a single Contact. To forcefully link or unlink sets of RawContacts, read
-[How do I link/unlink Contacts?](/contacts-android/howto/howto-link-unlink-contacts.html).
+[How do I link/unlink Contacts?](/howto/howto-link-unlink-contacts.md)
 
 In the background, the Contacts Provider syncs all data from the local database to the remote database
 and vice versa (depending on system contact sync settings). Read more in
-[How does contact data get synced across devices?](/contacts-android/howto/howto-sync-contact-data.html).
+[How does contact data get synced across devices?](/howto/howto-sync-contact-data.md)
 
 That's all you need to know! Hopefully it wasn't too much. I know it was difficult for me to grasp
 in the beginning =P.
@@ -81,13 +82,13 @@ function that returns a mutable copy (typically to be used for inserts and updat
 mutating API functions).
 
 Custom data types may also be integrated into the contacts database (though not synced across devices).
-Read more in [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html).
+Read more in [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
 
 ## Common data kinds count restrictions
 
 A `RawContact` may have at most one OR no limits of certain kinds of data.
 
-A RawContact may have 0 or 1 one of each these data kinds;
+A RawContact may have 0 or 1 of each of these data kinds;
 
 - `Name`
 - `Nickname`
@@ -96,7 +97,7 @@ A RawContact may have 0 or 1 one of each these data kinds;
 - `Photo`
 - `SipAddress`
 
-A RawContact may have 0, 1, or more of each these data kinds;
+A RawContact may have 0, 1, or more of each of these data kinds;
 
 - `Address`
 - `Email`
@@ -142,15 +143,21 @@ provided;
 - `Nickname`, underlying value defaults to null
 - `Note`, underlying value defaults to null
 
+
+
 This automatic creation occur automatically in the background (typically after creation) only for
 RawContacts that are associated with an Account. If a valid account is provided, membership to the
 (auto add) system group is automatically created immediately by the Contacts Provider at the time of
 creation. The name, nickname, and note are automatically created at a later time.
 
+> Note that the query APIs in this library do not return blanks in results. In this case, the `Name`, 
+> `Nickname`, and `Note` will not be included in the RawContact because their underlying data are all
+> null. Blanks are also deleted on update.
+
 If a valid account is not provided, no entries of the above are automatically created.
 
 To determine if a RawContact is associated with an Account or not, read
-[How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.html).
+[How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 ## Data integrity
 
@@ -185,7 +192,7 @@ to us in the first place. The question is, should this library provide functions
 (e.g. WhatsApp, Facebook, etc)? The answer to that will be determined when the time comes to support 
 custom data from social media in the future... (Probably, yes!)
 
-For more info, read [How do I integrate custom data from social media?](/contacts-android/howto/howto-integrate-custom-data-from-social-media.html)
+For more info, read [How do I integrate custom data from social media?](/howto/howto-integrate-custom-data-from-social-media.md)
 
 ## Accessing contact data
 
@@ -208,6 +215,7 @@ Log.d(
         Addresses: ${rawContact.addresses}
         Emails: ${rawContact.emails}
         Events: ${rawContact.events}
+        Group memberships: ${rawContact.groupMemberships}
         IMs: ${rawContact.ims}
         Name: ${rawContact.name}
         Nickname: ${rawContact.nickname}
@@ -218,7 +226,7 @@ Log.d(
         SipAddress: ${rawContact.sipAddress}
         Websites: ${rawContact.websites}
     """.trimIndent()
-    // Groups and photo require separate blocking function calls.
+    // Photo require separate blocking function calls.
 )
 ```
 
@@ -269,4 +277,6 @@ Each Contact may have more than one of the following data if the Contact is made
 RawContacts; name, nickname, note, organization, sip address.
 
 For more info on how to easily aggregate data from all RawContacts in a Contact, read
-[How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto/howto-use-miscellaneous-extensions.html)
+[How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
+
+To look into the actual Contacts Provider tables, read [How do I debug the Contacts Provider tables?](/howto/howto-debug-contacts-provider-tables.md)

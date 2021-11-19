@@ -19,11 +19,8 @@ Whether you just need to get all or some Contacts for a small part of your app (
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
 as the native Android Contacts app, this library has you covered!
 
-Documentation and how-to guides are all available and linked in the repository. You can browse the
-[Howto pages](/howto/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
-the GitHub pages are not guaranteed to be up-to-date. The GitHub wiki hosts the
-[project roadmap][project-roadmap]. It contains all planned work and release schedules, which are
-organized using issues, milestones, and projects.
+The GitHub wiki hosts the [project roadmap][project-roadmap]. It contains all planned work and 
+release schedules, which are organized using issues, milestones, and projects.
 
 You can also learn more about this library through the articles I wrote about it =)
 

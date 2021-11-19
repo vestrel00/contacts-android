@@ -3,6 +3,12 @@
 This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the 
 `AccountManager` or from the Contacts Provider RawContacts table.
 
+An instance of the `AccountsQuery` API is obtained by,
+
+```kotlin
+val query = Contacts(context).accounts().query()
+```
+
 To get all available accounts in the system,
 
 ```kotlin
@@ -23,7 +29,7 @@ val account = Contacts(context).accounts().query().accountFor(rawContact)
 
 > The returned account may be null, indicating that the given RawContact is local (device-only) and 
 > is not associated with an account. For more info, read 
-> [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto/howto-learn-more-about-local-contacts.html)
+> [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 To get the accounts for more than one RawContact in a single query,
 
@@ -64,8 +70,8 @@ launch {
 
 Queries are executed in the same thread as the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the extensions provided in the `async` module.
-For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -81,6 +87,17 @@ Queries using `accountFor` or `accountsFor` require the `android.permission.READ
 not granted, the query will do nothing and return null or an empty list respectively.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Profile accounts
+
+The `AccountsQuery` API also supports querying the Profile (device owner) contact data. To get an 
+instance of this API for Profile queries,
+
+```kotlin
+val query = Contacts(context).accounts().profile().query()
+```
+
+All queries will be limited to the Profile, whether it exists or not.

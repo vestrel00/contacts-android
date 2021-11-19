@@ -1,13 +1,24 @@
 # How do I get a list of contacts in a more advanced way?
 
-This library provides the `Query` API, which returns a list of Contacts matching a specific search
-criteria. All RawContacts of matching Contacts are included in the resulting Contact instances.
+This library provides the `Query` API that allows you to get a list of Contacts matching a specific 
+search criteria. All RawContacts of matching Contacts are included in the resulting Contact 
+instances.
 
 This provides a great deal of granularity and customizations when providing matching criteria via
 the `where` function.
 
+An instance of the `Query` API is obtained by,
+
+```kotlin
+val query = Contacts(context).query()
+```
+
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
-> For more info, read [How do I get a list of contacts in the simplest way?](/contacts-android/howto/howto-query-contacts.html).
+> For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
+
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+
+> If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/howto/howto-query-profile.md)
 
 ## An advanced query
 
@@ -22,7 +33,7 @@ the results) ordered by display name in descending order, matching ALL of these 
 - has a nickname of "DarEdEvil" (case sensitive)
 - works for Facebook
 - has a note
-- belongs to the account of "jerry@gmail.com" or "jerry@myspace.com"
+- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"
 
 ```kotlin
 val contacts = Contacts(context)
@@ -38,8 +49,8 @@ val contacts = Contacts(context)
                 (Fields.Note.Note.isNotNullOrEmpty())
     )
     .accounts(
-        Account("jerry@gmail.com", "com.google"),
-        Account("jerry@myspace.com", "com.myspace"),
+        Account("john.doe@gmail.com", "com.google"),
+        Account("john.doe@myspace.com", "com.myspace"),
     )
     .include(Fields.Contact.Id, Fields.Contact.DisplayNamePrimary, Fields.Phone.Number, Fields.Phone.NormalizedNumber)
     .orderBy(ContactsFields.DisplayNamePrimary.desc())
@@ -52,12 +63,32 @@ val contacts = Contacts(context)
 
 This query API may also be used to make simpler queries.
 
+To get all contacts ordered by the primary display name,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    .orderBy(ContactsFields.DisplayNamePrimary.asc())
+    .find()
+```
+
 To get all contacts with a phone number AND email,
 
 ```kotlin
 val contacts = Contacts(context)
     .query()
+    ...
     .where(Fields.Phone.Number.isNotNullOrEmpty() and Fields.Email.Address.isNotNullOrEmpty())
+    .find()
+```
+
+To get a list of contacts with the given IDs,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    ...
+    .where(Fields.Contact.Id `in` contactIds)
     .find()
 ```
 
@@ -69,23 +100,23 @@ The API allows you to specify if you want to include blank contacts or not,
 .includeBlanks(true|false)
 ```
 
-For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto/howto-learn-more-about-blank-contacts.html).
+For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
 
 ## Specifying Accounts
 
-To limit the search to only those RawContacts associated with one of the given accounts,
+To limit the search to only those contacts associated with one of the given accounts,
 
 ```kotlin
 .accounts(accounts)
 ```
 
-For example, to limit the search to contacts belonging to only one account.
+For example, to limit the search to contacts belonging to only one account,
 
 ```kotlin
-.accounts(Account("jerry@gmail.com", "com.google")))
+.accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.html).
+> For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
@@ -98,7 +129,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto/howto-learn-more-about-local-contacts.html).
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -112,7 +143,13 @@ To include only the given set of fields (data) in each of the matching contacts,
 .include(fields)
 ```
 
-For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html).
+For example, to only include email fields,
+
+```kotlin
+.include(Fields.Email.all)
+```
+
+For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
 ### Specifying Groups
 
@@ -122,7 +159,7 @@ To limit the search to only those RawContacts associated with at least one of th
 .where(Fields.GroupMembership.GroupId `in` groups.mapNotNull { it.id })
 ```
 
-> For more info, read [How do I retrieve groups?](/contacts-android/howto/howto-query-groups.html).
+> For more info, read [How do I retrieve groups?](/howto/howto-query-groups.md)
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
@@ -160,7 +197,7 @@ Use `ContactsFields` to construct the orderBys.
 
 > If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
-> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto/howto-use-miscellaneous-extensions.html).
+> For more info, read [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
 
 ## Limiting and offsetting
 
@@ -222,8 +259,8 @@ launch {
 Queries are executed when the `find` function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the extensions provided in the `async` module.
-For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -236,20 +273,43 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Custom data support
+ 
+The `Query` API supports custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
      
 ## Using the `where` function to specify matching criteria
 
 Use the `contacts.core.Fields` combined with the extensions from `contacts.core.Where` to form WHERE
 clauses. 
 
-This howto will not provide a tutorial on database where clauses. It assumes that you know
-the basics. If you don't know the basics, then search for 
-[sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
+> This howto page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
+> If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
-**Limitations**
+For example, to get all contacts with a phone number AND email,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    ...
+    .where(Fields.Phone.Number.isNotNullOrEmpty() and Fields.Email.Address.isNotNullOrEmpty())
+    .find()
+```
+
+To get a list of contacts with the given IDs,
+
+```kotlin
+val contacts = Contacts(context)
+    .query()
+    ...
+    .where(Fields.Contact.Id `in` contactIds)
+    .find()
+```
+
+### Limitations
 
 This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
 the community may add more over time <3
@@ -307,4 +367,4 @@ Data table with joins;
 Using these fields in the where clause does not have any effect in matching blank Contacts or 
 blank RawContacts simply because they have no Data rows containing these joined fields.
 
-For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto/howto-learn-more-about-blank-contacts.html).
+For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
