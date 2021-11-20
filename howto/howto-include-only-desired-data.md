@@ -3,6 +3,12 @@
 When using query APIs such as `Query`, `BroadQuery`, `ProfileQuery`, `DataQuery`, you are able to 
 specify all or only some kinds of data that you want to be included in the returned results.
 
+When using insert APIs such as `Insert` and `ProfileInsert`, you are able to specify all or only 
+some kinds of data that you want to be included in the insert operation.
+
+When using update APIs such as `Update`, `ProfileUpdate`, and `DataUpdate`, you are able to specify 
+all or only some kinds of data that you want to be included in the update operation.
+
 For example, to include only name, email, and phone number data,
 
 ```kotlin

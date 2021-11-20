@@ -427,6 +427,9 @@ internal fun Contacts.updateRawContact(
         )
     )
 
+    // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
+    // to set full-sized and thumbnail photos.
+
     if (account != null) {
         // I'm not sure why the native Contacts app hides relations from the UI for local raw
         // contacts. The Contacts Provider does support having events for local raw contacts.

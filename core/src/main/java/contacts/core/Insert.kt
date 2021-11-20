@@ -12,8 +12,10 @@ import contacts.core.util.nullIfNotInSystem
 import contacts.core.util.unsafeLazy
 
 /**
- * Inserts one or more raw contacts into the RawContacts table and all associated attributes to the
- * Data table.
+ * Inserts one or more RawContacts and Data.
+ *
+ * The insertion of a RawContact triggers automatic insertion of a new Contact subject to automatic
+ * aggregation by the Contacts Provider.
  *
  * ## Permissions
  *
@@ -21,28 +23,6 @@ import contacts.core.util.unsafeLazy
  * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
  * been granted already in these examples for brevity. All inserts will do nothing if these
  * permissions are not granted.
- *
- * ## Accounts
- *
- * **For Lollipop (API 22) and below**
- *
- * When an Account is added, from a state where no accounts have yet been added to the system, the
- * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
- * RawContacts table to that Account's name and type.
- *
- * RawContacts inserted without an associated account will automatically get assigned to an account
- * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
- * to do it.
- *
- * **For Marshmallow (API 23) and above**
- *
- * The Contacts Provider no longer associates local contacts to an account when an account is or
- * becomes available. Local contacts remain local.
- *
- * **Account removal**
- *
- * Removing the Account will delete all of the associated rows in the Contact, RawContact, and
- * Data tables.
  *
  * ## Usage
  *
@@ -105,7 +85,36 @@ interface Insert {
     fun allowBlanks(allowBlanks: Boolean): Insert
 
     /**
-     * Specifies that only the given set of [fields] (data) will be insert.
+     * All of the raw contacts that are inserted on [commit] will belong to the given [account].
+     *
+     * If not provided, or null is provided, or if an incorrect account is provided, the raw
+     * contacts inserted here will not be associated with an account. RawContacts inserted without
+     * an associated account are considered local or device-only contacts, which are not synced.
+     *
+     * **For Lollipop (API 22) and below**
+     *
+     * When an Account is added, from a state where no accounts have yet been added to the system, the
+     * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
+     * RawContacts table to that Account's name and type.
+     *
+     * RawContacts inserted without an associated account will automatically get assigned to an account
+     * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
+     * to do it.
+     *
+     * **For Marshmallow (API 23) and above**
+     *
+     * The Contacts Provider no longer associates local contacts to an account when an account is or
+     * becomes available. Local contacts remain local.
+     *
+     * **Account removal**
+     *
+     * Removing the Account will delete all of the associated rows in the Contact, RawContact, and
+     * Data tables.
+     */
+    fun forAccount(account: Account?): Insert
+
+    /**
+     * Specifies that only the given set of [fields] (data) will be inserted.
      *
      * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
      * fields will be inserted.
@@ -133,30 +142,6 @@ interface Insert {
      * See [Insert.include].
      */
     fun include(fields: Sequence<AbstractDataField>): Insert
-
-    /**
-     * All of the raw contacts that are inserted on [commit] will belong to the given [account].
-     *
-     * If not provided, or null is provided, or if an incorrect account is provided, the raw
-     * contacts inserted here will not be associated with an account. RawContacts inserted without
-     * an associated account are considered local or device-only contacts, which are not synced.
-     *
-     * **For Lollipop (API 22) and below**
-     *
-     * When an Account is added, from a state where no accounts have yet been added to the system, the
-     * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
-     * RawContacts table to that Account's name and type.
-     *
-     * RawContacts inserted without an associated account will automatically get assigned to an account
-     * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
-     * to do it.
-     *
-     * **For Marshmallow (API 23) and above**
-     *
-     * The Contacts Provider no longer associates local contacts to an account when an account is or
-     * becomes available.
-     */
-    fun forAccount(account: Account?): Insert
 
     /**
      * Adds a new [MutableRawContact] to the insert queue, which will be inserted on [commit].
@@ -283,6 +268,10 @@ private class InsertImpl(
         this.allowBlanks = allowBlanks
     }
 
+    override fun forAccount(account: Account?): Insert = apply {
+        this.account = account
+    }
+
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
     override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
@@ -293,10 +282,6 @@ private class InsertImpl(
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
-    }
-
-    override fun forAccount(account: Account?): Insert = apply {
-        this.account = account
     }
 
     override fun rawContact(configureRawContact: MutableRawContact.() -> Unit): Insert =
@@ -434,6 +419,9 @@ internal fun Contacts.insertRawContactForAccount(
             rawContact.phones
         )
     )
+
+    // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
+    // to set full-sized and thumbnail photos.
 
     if (account != null) {
         // I'm not sure why the native Contacts app hides relations from the UI for local raw

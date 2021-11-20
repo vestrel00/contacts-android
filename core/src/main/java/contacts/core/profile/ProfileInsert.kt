@@ -33,15 +33,6 @@ import contacts.core.util.toRawContactsWhere
  *
  * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
  *
- * ## Accounts
- *
- * The Contacts Provider does not associate local contacts to an account when an account is or
- * becomes available (regardless of API level).
- *
- * **Account removal**
- *
- * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
- *
  * ## Usage
  *
  * To insert a (Profile) raw contact with the name "john doe" with email "john@doe.com" for the
@@ -120,7 +111,36 @@ interface ProfileInsert {
     ): ProfileInsert
 
     /**
-     * Specifies that only the given set of [fields] (data) will be insert.
+     * The RawContact that is inserted on [commit] will belong to the given [account].
+     *
+     * If not provided, or null is provided, or if an incorrect account is provided, the raw
+     * contacts inserted here will not be associated with an account. RawContacts inserted without
+     * an associated account are considered local or device-only contacts, which are not synced.
+     *
+     * **For Lollipop (API 22) and below**
+     *
+     * When an Account is added, from a state where no accounts have yet been added to the system, the
+     * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
+     * RawContacts table to that Account's name and type.
+     *
+     * RawContacts inserted without an associated account will automatically get assigned to an account
+     * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
+     * to do it.
+     *
+     * **For Marshmallow (API 23) and above**
+     *
+     * The Contacts Provider no longer associates local contacts to an account when an account is or
+     * becomes available. Local contacts remain local.
+     *
+     * **Account removal**
+     *
+     * Removing the Account will delete all of the associated rows in the Contact, RawContact, and
+     * Data tables.
+     */
+    fun forAccount(account: Account?): ProfileInsert
+
+    /**
+     * Specifies that only the given set of [fields] (data) will be inserted.
      *
      * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
      * fields will be inserted.
@@ -148,21 +168,6 @@ interface ProfileInsert {
      * See [ProfileInsert.include].
      */
     fun include(fields: Sequence<AbstractDataField>): ProfileInsert
-
-    /**
-     * The RawContact that is inserted on [commit] will belong to the given [account].
-     *
-     * If not provided, or null is provided, or if an incorrect account is provided, the raw
-     * contacts inserted here will not be associated with an account. RawContacts inserted without
-     * an associated account are considered local or device-only contacts, which are not synced.
-     *
-     * Creating / setting up the profile in the native Contacts app results in the creation of a
-     * local RawContact (not associated with an Account) even if there are available Accounts.
-     *
-     * If you want to mimic the native Contacts app behavior, do not call this method or do call
-     * it with null.
-     */
-    fun forAccount(account: Account?): ProfileInsert
 
     /**
      * Configures a new [MutableRawContact] for insertion, which will be inserted on [commit]. The
@@ -270,6 +275,10 @@ private class ProfileInsertImpl(
         this.allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount
     }
 
+    override fun forAccount(account: Account?): ProfileInsert = apply {
+        this.account = account
+    }
+
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
     override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
@@ -280,10 +289,6 @@ private class ProfileInsertImpl(
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
-    }
-
-    override fun forAccount(account: Account?): ProfileInsert = apply {
-        this.account = account
     }
 
     override fun rawContact(configureRawContact: MutableRawContact.() -> Unit): ProfileInsert =
