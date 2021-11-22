@@ -74,8 +74,8 @@ val mutableContacts = setEmailAddresses(contacts)
 update.contacts(mutableContacts).include(Fields.Email.Address).commit()
 ```
 
-On the other hand, you may intentionally include only some data and perform updates without on all
-data (not just the included ones) to effectively delete all non-included data. This is, currently, 
+On the other hand, you may intentionally include only some data and perform updates on all data 
+(not just the included ones) to effectively delete all non-included data. This is, currently, 
 a feature- not a bug! For example, in order to get and set only email addresses and set all other 
 data to null (such as phone numbers, name, etc) in the database...
 

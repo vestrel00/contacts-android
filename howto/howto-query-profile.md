@@ -15,6 +15,10 @@ To get the profile Contact,
 val profile = Contacts(context).profile().query().find()
 ```
 
+> If you want to get non-Profile Contacts, read 
+> [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md) and
+> [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+
 ## Including blank (raw) contacts
 
 The API allows you to specify if you want to include blank (raw) contacts or not,

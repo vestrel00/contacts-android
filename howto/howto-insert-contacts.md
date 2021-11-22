@@ -176,7 +176,7 @@ To get the RawContact ID of a particular RawContact,
 val secondRawContactId = insertResult.rawContactId(mutableRawContact2)
 ```
 
-Once you have the RawContact IDs you can retrieve the newly created Contacts via the `Query` API,
+Once you have the RawContact IDs, you can retrieve the newly created Contacts via the `Query` API,
 
 ```kotlin
 val contacts = contactsApi

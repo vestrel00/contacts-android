@@ -22,7 +22,9 @@ import contacts.core.util.unsafeLazy
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
  * examples for brevity.  If not granted, the query will do nothing and return null.
  *
- * For API 22 and below, the permission "android.permission.READ_PROFILE" is also required.
+ * For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but only
+ * at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted prior
+ * to installation instead of at runtime.
  *
  * ## Usage
  *
@@ -164,6 +166,10 @@ interface ProfileQuery {
      *
      * Requires [ContactsPermissions.READ_PERMISSION].
      *
+     * For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but
+     * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+     * prior to installation instead of at runtime.
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -177,6 +183,10 @@ interface ProfileQuery {
      * ## Permissions
      *
      * Requires [ContactsPermissions.READ_PERMISSION].
+     *
+     * For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but
+     * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+     * prior to installation instead of at runtime.
      *
      * ## Cancellation
      *

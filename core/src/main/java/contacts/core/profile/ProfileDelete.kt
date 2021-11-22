@@ -22,7 +22,9 @@ import contacts.core.util.unsafeLazy
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
  * examples for brevity. All deletes will do nothing if the permission is not granted.
  *
- * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
+ * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+ * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+ * prior to installation instead of at runtime.
  *
  * ## Usage
  *
@@ -92,6 +94,10 @@ interface ProfileDelete {
      *
      * Requires the [ContactsPermissions.WRITE_PERMISSION].
      *
+     * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+     * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+     * prior to installation instead of at runtime.
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -110,6 +116,10 @@ interface ProfileDelete {
      * ## Permissions
      *
      * Requires the [ContactsPermissions.WRITE_PERMISSION].
+     *
+     * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+     * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+     * prior to installation instead of at runtime.
      *
      * ## Thread Safety
      *

@@ -31,7 +31,9 @@ import contacts.core.util.toRawContactsWhere
  * granted already in these examples for brevity. All inserts will do nothing if these permissions
  * are not granted.
  *
- * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
+ * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but only
+ * at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted prior
+ * to installation instead of at runtime.
  *
  * ## Usage
  *
@@ -193,6 +195,10 @@ interface ProfileInsert {
      * Requires [ContactsPermissions.WRITE_PERMISSION] and
      * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
      *
+     * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+     * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+     * prior to installation instead of at runtime.
+     *
      * ## Thread Safety
      *
      * This should be called in a background thread to avoid blocking the UI thread.
@@ -208,6 +214,10 @@ interface ProfileInsert {
      *
      * Requires [ContactsPermissions.WRITE_PERMISSION] and
      * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
+     * For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+     * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+     * prior to installation instead of at runtime.
      *
      * ## Cancellation
      *
