@@ -13,6 +13,8 @@ val insert = Contacts(context).insert()
 
 > If you want to create/insert the device owner Contact Profile, read [How do I create/insert the device owner Contact profile?](/howto/howto-insert-profile.md)
 
+> If you want to insert Data into a new or existing contact, read [How do I create/insert data into new or existing contacts?](/howto/howto-insert-specific-data-kinds.md)
+
 ## A simple insert
 
 To create/insert a contact with a name of "John Doe" who works at Amazon with a work email of

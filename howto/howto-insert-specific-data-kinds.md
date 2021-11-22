@@ -1,5 +1,58 @@
-TODO
+# How do I create/insert data into new or existing contacts?
 
-Note for people looking at this file, the code and documentation within the code is already complete. 
-I'm in the process of writing these howto pages to provide examples and more explanations on how 
-to use the APIs provided in this library.
+When using insert and update APIs such as `Insert`, `ProfileInsert`, `Update`, and `ProfileUpdate`,
+you are able to create/insert data into new or existing RawContacts respectively.
+
+For example, to insert an email into a new contact using the `Insert` API,
+
+```kotlin
+Contacts(context)
+    .insert()
+    .rawContact {
+        addEmail(email)
+    }
+    .commit()
+```
+
+> For more info, read [How do I create/insert contacts?](/howto/howto-insert-contacts.md)
+
+To insert an email into a new Profile contact using the `ProfileInsert` API,
+
+```kotlin
+Contacts(context)
+    .profile()
+    .insert()
+    .rawContact {
+        addEmail(email)
+    }
+    .commit()
+```
+
+> For more info, read [How do I create/insert the device owner Contact profile?](/howto/howto-insert-profile.md)
+
+To insert an email into an existing contact using the `Update` API,
+ 
+ ```kotlin
+Contacts(context)
+    .update()
+    .contacts(existingContact.toMutableContact().apply {
+        addEmail(email)
+    })
+    .commit()
+ ```
+ 
+ > For more info, read [How do I update contacts?](/howto/howto-update-contacts.md)
+
+To insert an email into an the existing Profile Contact using the `ProfileUpdate` API,
+ 
+ ```kotlin
+Contacts(context)
+    .profile()
+    .update()
+    .contact(existingProfileContact.toMutableContact().apply {
+        addEmail(email)
+    })
+    .commit()
+ ```
+ 
+ > For more info, read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
