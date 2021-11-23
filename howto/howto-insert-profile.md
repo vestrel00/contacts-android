@@ -251,4 +251,4 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `ProfileInsert` API supports custom data. For more info, read [How do I create/insert custom data?](/howto/howto-insert-custom-data.md)
+The `ProfileInsert` API supports custom data. For more info, read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/howto/howto-insert-custom-data.md)

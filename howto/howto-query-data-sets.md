@@ -211,7 +211,7 @@ All queries will be limited to the Profile, whether it exists or not.
 
 ## Custom data support
  
-The `DataQuery` API supports custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+The `DataQuery` API supports custom data. For more info, read [How do I use query APIs to get custom data?](/howto/howto-query-custom-data.md)
 
 ## Using the `where` function to specify matching criteria
 

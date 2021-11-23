@@ -13,7 +13,7 @@ val insert = Contacts(context).insert()
 
 > If you want to create/insert the device owner Contact Profile, read [How do I create/insert the device owner Contact profile?](/howto/howto-insert-profile.md)
 
-> If you want to insert Data into a new or existing contact, read [How do I create/insert data into new or existing contacts?](/howto/howto-insert-specific-data-kinds.md)
+> If you want to insert Data into a new or existing contact, read [How do I create/insert data into new or existing contacts?](/howto/howto-insert-data-sets.md)
 
 ## A simple insert
 
@@ -260,7 +260,7 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `Insert` API supports custom data. For more info, read [How do I create/insert custom data?](/howto/howto-insert-custom-data.md)
+The `Insert` API supports custom data. For more info, read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/howto/howto-insert-custom-data.md)
 
 ## Insert a new RawContact with data of every kind
 

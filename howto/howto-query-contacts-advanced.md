@@ -16,7 +16,7 @@ val query = Contacts(context).query()
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
 > For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
 
-> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-data-sets.md)
 
 > If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/howto/howto-query-profile.md)
 
@@ -279,7 +279,7 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `Query` API supports custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+The `Query` API supports custom data. For more info, read [How do I use query APIs to get custom data?](/howto/howto-query-custom-data.md)
      
 ## Using the `where` function to specify matching criteria
 

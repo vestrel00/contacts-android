@@ -123,4 +123,4 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `ProfilQuery` API supports custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+The `ProfilQuery` API supports custom data. For more info, read [How do I use query APIs to get custom data?](/howto/howto-query-custom-data.md)

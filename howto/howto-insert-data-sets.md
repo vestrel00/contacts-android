@@ -1,5 +1,8 @@
 # How do I create/insert data into new or existing contacts?
 
+Data can only be created/inserted into the database whenever inserting or updating new or existing 
+contacts.
+
 When using insert and update APIs such as `Insert`, `ProfileInsert`, `Update`, and `ProfileUpdate`,
 you are able to create/insert data into new or existing RawContacts respectively.
 

@@ -15,7 +15,7 @@ val query = Contacts(context).broadQuery()
 > For a more granular, advanced queries, use the `Query` API.
 > For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
-> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/howto/howto-query-data-sets.md)
 
 > If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/howto/howto-query-profile.md)
 
@@ -235,7 +235,7 @@ You may, of course, use other permission handling libraries or just do it yourse
 ## Custom data support
  
 The `BroadQuery` API does not include custom data in the matching process. However, you may still
-use the `include` function with custom data. For more info, read [How do I use query APIs with custom data?](/howto/howto-query-custom-data.md)
+use the `include` function with custom data. For more info, read [How do I use query APIs to get custom data?](/howto/howto-query-custom-data.md)
 
 ##  Using the `whereAnyContactDataPartiallyMatches` function to specify matching criteria
 

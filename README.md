@@ -50,7 +50,7 @@ The core library supports;
    Profile (device owner) Contact, RawContact, and Data.
 - [Query](/howto/howto-query-groups.md), [insert](/howto/howto-insert-groups.md),
   [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) Groups per Account.
-- [Query](/howto/howto-query-specific-data-kinds.md), [insert](/howto/howto-insert-specific-data-kinds.md)
+- [Query](/howto/howto-query-data-sets.md), [insert](/howto/howto-insert-data-sets.md)
   [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
 - [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
   [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.
@@ -266,7 +266,7 @@ val emails = Contacts(context)
 
 It's not just for emails. It's for all common data kinds (including custom data).
 
-> For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+> For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-data-sets.md)
 
 To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
