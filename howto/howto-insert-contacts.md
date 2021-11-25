@@ -15,7 +15,7 @@ val insert = Contacts(context).insert()
 
 > If you want to insert Data into a new or existing contact, read [How do I create/insert data into new or existing contacts?](/howto/howto-insert-data-sets.md)
 
-## A simple insert
+## A basic insert
 
 To create/insert a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),

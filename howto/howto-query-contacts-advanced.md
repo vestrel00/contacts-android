@@ -59,9 +59,9 @@ val contacts = Contacts(context)
     .find()
 ```
 
-## A simple query
+## A basic query
 
-This query API may also be used to make simpler queries.
+This query API may also be used to make basic, simpler queries.
 
 To get all contacts ordered by the primary display name,
 

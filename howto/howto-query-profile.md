@@ -9,6 +9,8 @@ An instance of the `ProfileQuery` API is obtained by,
 val query = Contacts(context).profile().query()
 ```
 
+## A basic query
+
 To get the profile Contact,
 
 ```kotlin

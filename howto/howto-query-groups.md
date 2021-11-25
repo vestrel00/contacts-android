@@ -1,13 +1,15 @@
 # How do I retrieve groups?
 
 This library provides the `GroupsQuery` API that allows you to get groups associated with an 
-`Account` or `RawContact`.
+`Account`.
 
 An instance of the `GroupsQuery` API is obtained by,
 
 ```kotlin
 val query = Contacts(context).groups().query()
 ```
+
+## A basic query
 
 To get all of the groups for all accounts,
 

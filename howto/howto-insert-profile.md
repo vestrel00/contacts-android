@@ -14,7 +14,7 @@ val insert = Contacts(context).profile().insert()
 
 > If you want to create/insert non-Profile Contacts, read [How do I create/insert contacts?](/howto/howto-insert-contacts.md)
 
-## A simple insert
+## A basic insert
 
 To create/insert a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),

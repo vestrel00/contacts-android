@@ -15,6 +15,8 @@ An instance of the `AccountsRawContactsQuery` API is obtained by,
 val query = Contacts(context).accounts().queryRawContacts()
 ```
 
+## A basic query
+
 To get all RawContacts as blanks, 
 
 ```kotlin
