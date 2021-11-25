@@ -18,11 +18,6 @@ import contacts.core.util.unsafeLazy
  * only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
  * prior to installation instead of at runtime.
  *
- * ## Accounts
- *
- * These operations ensure that only [MutableRawContact.groupMemberships] belonging to the same
- * account as the raw contact are inserted.
- *
  * ## Usage
  *
  * To update a (profile) raw contact's name to "john doe" and add an email "john@doe.com";

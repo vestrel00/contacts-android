@@ -24,11 +24,6 @@ import contacts.core.util.unsafeLazy
  * granted already in these examples for brevity. All updates will do nothing if these permissions
  * are not granted.
  *
- * ## Accounts
- *
- * These operations ensure that only [MutableRawContact.groupMemberships] belonging to the same
- * account as the raw contact are inserted.
- *
  * ## Usage
  *
  * To update a raw contact's name to "john doe" and add an email "john@doe.com";
