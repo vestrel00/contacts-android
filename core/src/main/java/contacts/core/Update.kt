@@ -19,10 +19,8 @@ import contacts.core.util.unsafeLazy
  *
  * ## Permissions
  *
- * The [ContactsPermissions.WRITE_PERMISSION] and
- * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
- * granted already in these examples for brevity. All updates will do nothing if these permissions
- * are not granted.
+ * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
+ * examples for brevity. All updates will do nothing if these permissions are not granted.
  *
  * ## Usage
  *
@@ -352,6 +350,7 @@ internal fun Contacts.updateRawContact(
 
     val isProfile = rawContact.isProfile
     val account = accounts(isProfile).query().accountFor(rawContact)
+    val hasAccount = account != null
 
     val operations = arrayListOf<ContentProviderOperation>()
 
@@ -367,7 +366,7 @@ internal fun Contacts.updateRawContact(
         )
     )
 
-    if (account != null) {
+    if (hasAccount) {
         // I'm not sure why the native Contacts app hides events from the UI for local raw contacts.
         // The Contacts Provider does support having events for local raw contacts. Anyways, let's
         // follow in the footsteps of the native Contacts app...
@@ -378,7 +377,7 @@ internal fun Contacts.updateRawContact(
         )
     }
 
-    if (account != null) {
+    if (hasAccount) {
         // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
         // It should not be possible for consumers to get access to group memberships.
         // The Contacts Provider does support having events for local raw contacts.
@@ -425,7 +424,7 @@ internal fun Contacts.updateRawContact(
     // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
     // to set full-sized and thumbnail photos.
 
-    if (account != null) {
+    if (hasAccount) {
         // I'm not sure why the native Contacts app hides relations from the UI for local raw
         // contacts. The Contacts Provider does support having events for local raw contacts.
         // Anyways, let's follow in the footsteps of the native Contacts app...

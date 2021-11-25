@@ -73,9 +73,9 @@ For example, to only include email fields,
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
-## Executing the insert
+## Executing the update
 
-To execute the insert,
+To execute the update,
 
 ```kotlin
 .commit()
@@ -127,7 +127,7 @@ To get the updated Contact and all of its RawContacts and Data,
 val updatedContact1 = contact1.refresh(contactsApi)
 ```
 
-To get the updated RawContact and Data,
+To get an updated RawContact and Data,
 
 ```kotlin
 val updatedRawContact1 = contact1.rawContacts.first().refresh(contactsApi)
@@ -167,10 +167,10 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 
 > Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
-## Performing the insert with permission
+## Performing the update with permission
 
-Updates require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS` 
-permissions. If not granted, the update will do nothing and return a failed result.
+Updates require the `android.permission.WRITE_CONTACTS` permissions. If not granted, the update 
+will do nothing and return a failed result.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
@@ -179,4 +179,4 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `Update` API supports custom data. For more info, read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/howto/howto-insert-custom-data.md)
+The `Update` API supports custom data. For more info, read [How do I use update APIs to update custom data?](/howto/howto-update-custom-data.md)

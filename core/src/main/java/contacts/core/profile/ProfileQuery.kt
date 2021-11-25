@@ -20,7 +20,7 @@ import contacts.core.util.unsafeLazy
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
- * examples for brevity.  If not granted, the query will do nothing and return null.
+ * examples for brevity. If not granted, the query will do nothing and return null.
  *
  * For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but only
  * at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted prior
