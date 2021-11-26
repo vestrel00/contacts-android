@@ -96,7 +96,7 @@ To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.7'
+     implementation 'com.github.vestrel00:contacts-android:0.1.8'
 }
 ```
 
@@ -104,7 +104,7 @@ To import specific modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.7'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.8'
 }
 ```
 
