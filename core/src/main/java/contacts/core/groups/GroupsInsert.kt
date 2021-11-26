@@ -176,7 +176,7 @@ interface GroupsInsert {
             INVALID_ACCOUNT,
 
             /**
-             * The update failed because of no permissions, no groups passed to update, etc...
+             * The update failed because of no permissions, no groups specified for update, etc...
              *
              * ## Dev note
              *
@@ -240,7 +240,7 @@ private class GroupsInsertImpl(
 
         // Gather the existing titles per account to prevent duplicates.
         val existingGroups = groupsQuery
-            // limit the accounts for optimization in case there are a lot of accounts in the system
+            // Limit the accounts for optimization in case there are a lot of accounts in the system
             .accounts(groupsAccounts)
             .find()
         val existingAccountGroupsTitles = mutableMapOf<Account, MutableSet<String>>()
@@ -278,6 +278,7 @@ private class GroupsInsertImpl(
                 null
             }
         }
+
         return GroupsInsertResult(results, failureReasons)
     }
 }
