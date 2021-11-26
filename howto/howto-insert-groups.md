@@ -53,6 +53,17 @@ if any, and does the following;
 
 > For more info on the relationship of Groups and Accounts, read [How do I retrieve groups?](/howto/howto-query-groups.md)
 
+## Groups and duplicate titles
+
+The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
+belonging to the same account to exist. In older versions of Android, the native Contacts app 
+allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
+allowed. Therefore, this library does not allow for duplicate titles.
+
+In newer versions, the group with the duplicate title gets deleted either automatically by the 
+Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
+on insert or update. This could lead to bugs!
+
 ## Executing the insert
 
 To execute the insert,

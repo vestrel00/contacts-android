@@ -212,6 +212,9 @@ data class MutableGroup internal constructor(
     override val autoAdd: Boolean,
 
     /**
+     * Just like RawContacts, you cannot re-assign an existing group to another account. Hence, this
+     * is a `val`.
+     *
      * See [Group.account].
      */
     override val account: Account

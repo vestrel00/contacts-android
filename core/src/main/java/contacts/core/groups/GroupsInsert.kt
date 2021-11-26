@@ -156,7 +156,34 @@ interface GroupsInsert {
         fun failureReason(group: MutableGroup): FailureReason?
 
         enum class FailureReason {
-            TITLE_ALREADY_EXIST, INVALID_ACCOUNT, UNKNOWN
+
+            /**
+             * The Contacts Provider allows multiple groups with the same title (case-sensitive
+             * comparison) belonging to the same account to exist. In older versions of Android,
+             * the native Contacts app allows the creation of new groups with existing titles. In
+             * newer versions, duplicate titles are not allowed. Therefore, this library does not
+             * allow for duplicate titles.
+             *
+             * In newer versions, the group with the duplicate title gets deleted either
+             * automatically by the Contacts Provider or when viewing groups in the native Contacts
+             * app. It's not an immediate failure on insert or update. This could lead to bugs!
+             */
+            TITLE_ALREADY_EXIST,
+
+            /**
+             * The Group's Account is not found in the system.
+             */
+            INVALID_ACCOUNT,
+
+            /**
+             * The update failed because of no permissions, no groups passed to update, etc...
+             *
+             * ## Dev note
+             *
+             * We can probably add more reasons instead of just putting all others in the "unknown"
+             * bucket. We'll see if consumers need to know about other failure reasons.
+             */
+            UNKNOWN
         }
     }
 }
@@ -208,12 +235,18 @@ private class GroupsInsertImpl(
             return GroupsInsertFailed()
         }
 
-        // Gather the existing titles per account to prevent duplicates =)
-        val existingGroups = groupsQuery.find()
-        val existingAccountGroupsTitles = mutableMapOf<Account, MutableList<String>>()
+        // Gather the accounts for groups that will be inserted.
+        val groupsAccounts = groups.map { it.account }
+
+        // Gather the existing titles per account to prevent duplicates.
+        val existingGroups = groupsQuery
+            // limit the accounts for optimization in case there are a lot of accounts in the system
+            .accounts(groupsAccounts)
+            .find()
+        val existingAccountGroupsTitles = mutableMapOf<Account, MutableSet<String>>()
         for (group in existingGroups) {
             val existingTitles = existingAccountGroupsTitles
-                .getOrPut(group.account) { mutableListOf() }
+                .getOrPut(group.account) { mutableSetOf() }
             existingTitles.add(group.title)
         }
 
@@ -227,7 +260,7 @@ private class GroupsInsertImpl(
 
             results[group] = if (accounts.contains(group.account)) { // Group has a valid account.
                 val existingTitles = existingAccountGroupsTitles
-                    .getOrPut(group.account) { mutableListOf() }
+                    .getOrPut(group.account) { mutableSetOf() }
                 if (existingTitles.contains(group.title)) { // Group title already exist.
                     failureReasons[group] = GroupsInsert.Result.FailureReason.TITLE_ALREADY_EXIST
                     null

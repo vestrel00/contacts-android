@@ -747,10 +747,14 @@ Removing the Account will delete all of the associated rows in the Groups table.
 
 **Groups, duplicate titles**
 
-The Contacts Provider allows multiple groups with the same title belonging to the same account to
-exist. In older versions of Android, the native Contacts app does not prevent creation of new groups
-with existing titles. In newer versions, existing titles may not be used for new groups. This
-library will follow the latter.
+The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
+belonging to the same account to exist. In older versions of Android, the native Contacts app 
+allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
+allowed. Therefore, this library does not allow for duplicate titles.
+
+In newer versions, the group with the duplicate title gets deleted either automatically by the 
+Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
+on insert or update. This could lead to bugs!
 
 ### Groups Table & GroupMemberships (Data Table)
 
