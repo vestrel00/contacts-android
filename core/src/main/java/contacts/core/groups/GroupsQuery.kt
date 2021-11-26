@@ -241,7 +241,7 @@ private class GroupsQueryImpl(
     override fun find(): GroupsQuery.GroupsList = find { false }
 
     override fun find(cancel: () -> Boolean): GroupsQuery.GroupsList =
-        if (!permissions.canQuery) {
+        if (!permissions.canQuery()) {
             GroupsListImpl()
         } else {
             contentResolver.resolve(

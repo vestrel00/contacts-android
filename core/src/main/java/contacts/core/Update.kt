@@ -296,7 +296,7 @@ private class UpdateImpl(
     override fun commit(): Update.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Update.Result {
-        if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete || cancel()) {
+        if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
             return UpdateFailed()
         }
 

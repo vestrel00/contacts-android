@@ -315,7 +315,7 @@ private class ProfileInsertImpl(
 
         if (rawContact == null
             || (!allowBlanks && rawContact.isBlank)
-            || !contacts.permissions.canInsert
+            || !contacts.permissions.canInsert()
             || cancel()
         ) {
             return ProfileInsertFailed()

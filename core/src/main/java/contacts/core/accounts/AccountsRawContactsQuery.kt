@@ -249,7 +249,7 @@ private class AccountsRawContactsQueryImpl(
     override fun find(): AccountsRawContactsQuery.BlankRawContactsList = find { false }
 
     override fun find(cancel: () -> Boolean): AccountsRawContactsQuery.BlankRawContactsList =
-        if (!permissions.canQueryRawContacts) {
+        if (!permissions.canQueryRawContacts()) {
             BlankRawContactsListImpl(emptyMap())
         } else {
             contentResolver.resolve(

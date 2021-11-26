@@ -452,7 +452,7 @@ private class QueryImpl(
     override fun find(): List<Contact> = find { false }
 
     override fun find(cancel: () -> Boolean): List<Contact> {
-        if (!permissions.canQuery || cancel()) {
+        if (!permissions.canQuery() || cancel()) {
             return emptyList()
         }
 

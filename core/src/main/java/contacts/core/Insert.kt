@@ -300,7 +300,7 @@ private class InsertImpl(
     override fun commit(): Insert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Insert.Result {
-        if (rawContacts.isEmpty() || !contacts.permissions.canInsert || cancel()) {
+        if (rawContacts.isEmpty() || !contacts.permissions.canInsert() || cancel()) {
             return InsertFailed()
         }
 

@@ -399,7 +399,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     override fun associateAccountWithLocalRawContacts(
         account: Account, rawContacts: Sequence<RawContactEntity>
     ): Boolean {
-        if (!accounts.permissions.canUpdateRawContactsAssociations ||
+        if (!accounts.permissions.canUpdateRawContactsAssociations() ||
             account.isNotInSystem(accounts)
         ) {
             return false
@@ -429,7 +429,7 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     }
 
     override fun associateAccountWithAllLocalRawContacts(account: Account): Boolean {
-        if (!accounts.permissions.canUpdateRawContactsAssociations ||
+        if (!accounts.permissions.canUpdateRawContactsAssociations() ||
             account.isNotInSystem(accounts)
         ) {
             return false

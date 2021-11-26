@@ -139,7 +139,7 @@ private class DataDeleteImpl(
     }
 
     override fun commit(): DataDelete.Result {
-        if (dataIds.isEmpty() || !permissions.canUpdateDelete) {
+        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
             return DataDeleteFailed()
         }
 
@@ -160,7 +160,7 @@ private class DataDeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if (dataIds.isEmpty() || !permissions.canUpdateDelete) {
+        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
             return false
         }
 

@@ -473,7 +473,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
     override fun find(): List<E> = find { false }
 
     override fun find(cancel: () -> Boolean): List<E> {
-        if (!contacts.permissions.canQuery) {
+        if (!contacts.permissions.canQuery()) {
             return emptyList()
         }
 

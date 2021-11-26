@@ -31,7 +31,7 @@ import contacts.core.entities.table.Table
 fun ContactEntity.options(contacts: Contacts): Options {
     val contactId = id
 
-    if (!contacts.permissions.canQuery || contactId == null) {
+    if (!contacts.permissions.canQuery() || contactId == null) {
         return Options()
     }
 
@@ -91,7 +91,7 @@ fun ContactEntity.options(contacts: Contacts): Options {
 fun ContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Boolean {
     val contactId = id
 
-    if (!contacts.permissions.canUpdateDelete || contactId == null) {
+    if (!contacts.permissions.canUpdateDelete() || contactId == null) {
         return false
     }
 

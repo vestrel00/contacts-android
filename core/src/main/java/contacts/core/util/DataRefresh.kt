@@ -30,7 +30,7 @@ import contacts.core.entities.fields
 fun <T : CommonDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? =
     if (id == null) {
         this
-    } else if (!contacts.permissions.canQuery) {
+    } else if (!contacts.permissions.canQuery()) {
         null
     } else {
         contacts.resolveDataEntity<T>(

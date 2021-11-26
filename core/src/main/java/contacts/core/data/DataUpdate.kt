@@ -213,7 +213,7 @@ private class DataUpdateImpl(
     override fun commit(): DataUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): DataUpdate.Result {
-        if (data.isEmpty() || !permissions.canUpdateDelete || cancel()) {
+        if (data.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             return DataUpdateFailed()
         }
 

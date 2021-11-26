@@ -225,7 +225,7 @@ private class GroupsInsertImpl(
     override fun commit(): GroupsInsert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsInsert.Result {
-        if (groups.isEmpty() || !permissions.canInsert || cancel()) {
+        if (groups.isEmpty() || !permissions.canInsert() || cancel()) {
             return GroupsInsertFailed()
         }
 

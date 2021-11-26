@@ -4,7 +4,6 @@ import android.accounts.Account
 import android.content.ContentResolver
 import contacts.core.Contacts
 import contacts.core.ContactsPermissions
-import contacts.core.entities.Group
 import contacts.core.entities.MutableGroup
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.util.applyBatch
@@ -194,7 +193,7 @@ private class GroupsUpdateImpl(
     override fun commit(): GroupsUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsUpdate.Result {
-        if (groups.isEmpty() || !permissions.canUpdateDelete || cancel()) {
+        if (groups.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             return GroupsUpdateFailed()
         }
 

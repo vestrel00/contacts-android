@@ -39,7 +39,7 @@ fun CommonDataEntity.setAsDefault(contacts: Contacts): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!contacts.permissions.canUpdateDelete
+    if (!contacts.permissions.canUpdateDelete()
         || dataId == null
         || rawContactId == null
         || contactId == null
@@ -87,7 +87,7 @@ fun CommonDataEntity.clearDefault(contactsApi: Contacts): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!contactsApi.permissions.canUpdateDelete
+    if (!contactsApi.permissions.canUpdateDelete()
         || rawContactId == null
         || contactId == null
     ) {

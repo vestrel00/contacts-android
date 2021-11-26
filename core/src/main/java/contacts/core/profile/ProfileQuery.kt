@@ -259,7 +259,7 @@ private class ProfileQueryImpl(
     override fun find(): Contact? = find { false }
 
     override fun find(cancel: () -> Boolean): Contact? {
-        if (!permissions.canQuery) {
+        if (!permissions.canQuery()) {
             return null
         }
 

@@ -184,7 +184,7 @@ private class ProfileDeleteImpl(
     }
 
     override fun commit(): ProfileDelete.Result {
-        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete) {
+        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
             return ProfileDeleteFailed()
         }
 
@@ -212,7 +212,7 @@ private class ProfileDeleteImpl(
     }
 
     override fun commitInOneTransaction(): Boolean {
-        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete) {
+        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
             return false
         }
 

@@ -185,21 +185,21 @@ private class AccountsQueryImpl(
             }
         """.trimIndent()
 
-    override fun allAccounts(): List<Account> = if (!permissions.canQueryAccounts) {
+    override fun allAccounts(): List<Account> = if (!permissions.canQueryAccounts()) {
         emptyList()
     } else {
         accountManager.accounts.asList()
     }
 
     override fun accountsWithType(type: String): List<Account> =
-        if (!permissions.canQueryAccounts) {
+        if (!permissions.canQueryAccounts()) {
             emptyList()
         } else {
             accountManager.getAccountsByType(type).asList()
         }
 
     override fun accountFor(rawContact: RawContactEntity): Account? =
-        if (!permissions.canQueryAccounts || rawContact.isProfile != isProfile) {
+        if (!permissions.canQueryAccounts() || rawContact.isProfile != isProfile) {
             // Intentionally fail the operation to ensure that this is only used for intended
             // profile or non-profile operations. Otherwise, operation can succeed. This is only
             // done to enforce API design.
@@ -228,7 +228,7 @@ private class AccountsQueryImpl(
     override fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean):
             AccountsQuery.AccountsList {
 
-        if (!permissions.canQueryAccounts) {
+        if (!permissions.canQueryAccounts()) {
             return AccountsListImpl(emptyMap())
         }
 

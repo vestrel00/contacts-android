@@ -497,7 +497,7 @@ private class BroadQueryImpl(
     override fun find(): List<Contact> = find { false }
 
     override fun find(cancel: () -> Boolean): List<Contact> {
-        if (!permissions.canQuery) {
+        if (!permissions.canQuery()) {
             return emptyList()
         }
 

@@ -120,7 +120,7 @@ fun ContactEntity.link(
 ): ContactLinkResult {
     val mainContactId = id
 
-    if (!contactsApi.permissions.canUpdateDelete ||
+    if (!contactsApi.permissions.canUpdateDelete() ||
         mainContactId == null ||
         mainContactId.isProfileId ||
         contacts.find { it.isProfile } != null
@@ -257,7 +257,7 @@ private class ContactLinkFailed : ContactLinkResult {
 fun ContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
     val contactId = id
 
-    if (!contactsApi.permissions.canUpdateDelete ||
+    if (!contactsApi.permissions.canUpdateDelete() ||
         contactId == null ||
         contactId.isProfileId
     ) {
