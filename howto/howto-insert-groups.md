@@ -125,7 +125,7 @@ To get a particular group,
 val group = insertResult.group(contactsApi, mutableGroup1)
 ```
 
-### Handling the insert failure 
+### Handling insert failure 
 
 The insert may fail for a particular group for various reasons,
 
