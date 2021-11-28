@@ -77,6 +77,9 @@ interface Update {
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
      * allowing blanks, the native Contacts app shows them.
+     *
+     * Note that blank data are always deleted. For example, if all properties of an email are all
+     * null or blank, then the email is deleted. This behavior cannot be modified.
      */
     fun deleteBlanks(deleteBlanks: Boolean): Update
 

@@ -1,12 +1,17 @@
 # How do I get a list of specific data kinds?
 
-This library provides the `DataQuery` API that allows you to get a list of specific data kinds.
+This library provides the `DataQuery` API that allows you to get a list of specific data kinds 
+directly without having to get them from Contacts/RawContacts.
 
 An instance of the `DataQuery` API is obtained by,
 
 ```kotlin
 val query = Contacts(context).data().query()
 ```
+
+> To retrieve all kinds of data via Contacts/RawContacts, read 
+> [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
+> and [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
 ## Common data queries
 
@@ -201,7 +206,7 @@ You may, of course, use other permission handling libraries or just do it yourse
 ## Profile data
 
 The `DataQuery` API also supports querying the Profile (device owner) contact data. To get an 
-instance of this API for Profile queries,
+instance of this API for Profile data queries,
 
 ```kotlin
 val profileDataQuery = Contacts(context).profile().data().query()
