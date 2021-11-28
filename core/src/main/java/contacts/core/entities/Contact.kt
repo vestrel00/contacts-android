@@ -106,8 +106,8 @@ sealed class ContactEntity : Entity {
 
     /**
      * The uri to the full-sized image of this contact. This full sized image is from the associated
-     * [RawContact] of the ContactsProvider's choosing.
-     * This may be the same as the [photoThumbnailUri] if a full sized photo is not available.
+     * [RawContact] of the ContactsProvider's choosing. This may be the same as the
+     * [photoThumbnailUri] if a full sized photo is not available.
      *
      * To get the latest photo as an InputStream/Bytes/Bitmap/BitmapDrawable or set or remove photo,
      * use the ContactPhoto extensions.

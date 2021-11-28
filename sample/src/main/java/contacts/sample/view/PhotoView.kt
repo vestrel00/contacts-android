@@ -66,7 +66,8 @@ abstract class PhotoView @JvmOverloads constructor(
         setOnClickListener {
             activity?.let {
                 isPickingPhoto = true
-                it.showPhotoPickerDialog(withRemovePhotoOption = photoDrawable != null,
+                it.showPhotoPickerDialog(
+                    withRemovePhotoOption = photoDrawable != null,
                     removePhoto = {
                         photoHasChanged = true
                         isPickingPhoto = false

@@ -151,6 +151,9 @@ fun onPhotoPicked(
             bitmap?.let(photoBitmapPicked)
         }
         REQUEST_SELECT_PHOTO -> {
+            // Note that converting the uri to an image should be done outside of the UI thread.
+            // This is the reason why this uri is not converted here because we do not want to
+            // add threading code to this function.
             val uri = intent?.data
             uri?.let(photoUriPicked)
         }
