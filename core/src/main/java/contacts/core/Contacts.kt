@@ -120,7 +120,7 @@ interface Contacts {
     val applicationContext: Context
 
     /**
-     * Provides functions required to support custom common data, which have [MimeType.Custom].
+     * Provides functions required to support custom data, which have [MimeType.Custom].
      */
     val customDataRegistry: CustomDataRegistry
 }

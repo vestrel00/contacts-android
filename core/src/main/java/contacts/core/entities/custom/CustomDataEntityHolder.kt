@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 internal data class CustomDataEntityHolder(
     // This is not exposed to consumers so we do not need a generic type since we have no visibility
     // of consumer types anyways.
-    val entities: MutableList<MutableCustomDataEntity>,
+    val entities: MutableList<MutableCustomData>,
     val countRestriction: CustomDataCountRestriction
 ) : Parcelable
 

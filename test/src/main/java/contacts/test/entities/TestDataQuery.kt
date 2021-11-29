@@ -1,7 +1,7 @@
 package contacts.test.entities
 
-import contacts.core.data.CommonDataQuery
 import contacts.core.data.DataQuery
+import contacts.core.data.DataQueryFactory
 
-internal fun DataQuery.testData(): CommonDataQuery<TestDataField, TestData> =
+internal fun DataQueryFactory.testData(): DataQuery<TestDataField, TestData> =
     customData(TestDataMimeType)

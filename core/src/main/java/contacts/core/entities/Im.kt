@@ -46,7 +46,7 @@ data class Im internal constructor(
      */
     val data: String?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Im
@@ -69,7 +69,7 @@ data class Im internal constructor(
         data = data
     )
 
-    enum class Protocol(override val value: Int) : CommonDataEntity.Type {
+    enum class Protocol(override val value: Int) : DataEntity.Type {
 
         // Type is also defined within CmmonDataKinds.Im... Ignore those. Type (and label) may have
         // been deprecated by protocol and protocol label. Or what probably happened was that there
@@ -143,7 +143,7 @@ data class MutableIm internal constructor(
      */
     var data: String?
 
-) : MutableCommonDataEntityWithType<Protocol> {
+) : MutableDataWithType<Protocol> {
 
     constructor() : this(
         null, null, null, false, false,

@@ -10,13 +10,13 @@ import contacts.ui.entities.RelationFactory
 import contacts.ui.entities.RelationTypeFactory
 
 /**
- * A [CommonDataEntityWithTypeListView] for [MutableRelation]s.
+ * A [DataEntityWithTypeListView] for [MutableRelation]s.
  */
 class RelationsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CommonDataEntityWithTypeListView<Relation.Type, MutableRelation>(
+) : DataEntityWithTypeListView<Relation.Type, MutableRelation>(
     context, attributeSet, defStyleAttr,
     dataFactory = RelationFactory,
     dataViewFactory = RelationViewFactory,
@@ -24,9 +24,9 @@ class RelationsView @JvmOverloads constructor(
 )
 
 private object RelationViewFactory :
-    CommonDataEntityWithTypeView.Factory<Relation.Type, MutableRelation> {
-    override fun create(context: Context): CommonDataEntityWithTypeView<Relation.Type, MutableRelation> =
-        CommonDataEntityWithTypeView(
+    DataEntityWithTypeView.Factory<Relation.Type, MutableRelation> {
+    override fun create(context: Context): DataEntityWithTypeView<Relation.Type, MutableRelation> =
+        DataEntityWithTypeView(
             context,
             dataFieldInputType = InputType.TYPE_CLASS_TEXT,
             dataFieldHintResId = R.string.contacts_ui_relation_hint,

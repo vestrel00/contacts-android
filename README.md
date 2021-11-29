@@ -264,7 +264,7 @@ val emails = Contacts(context)
     .find()
 ```
 
-It's not just for emails. It's for all common data kinds (including custom data).
+It's not just for emails. It's for all data kinds (including custom data).
 
 > For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-data-sets.md)
 
@@ -416,7 +416,7 @@ The find function optionally takes in a function that, if it returns true, will 
 processing as soon as possible. The function is called numerous times during query processing to 
 check if processing should stop or continue. This gives you the option to cancel the query.
 
-This is useful when used in multi-threaded environments. One scenario where this would be commonly 
+This is useful when used in multi-threaded environments. One scenario where this would be frequently 
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.
 

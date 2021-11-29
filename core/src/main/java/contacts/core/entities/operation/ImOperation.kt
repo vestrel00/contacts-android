@@ -6,7 +6,7 @@ import contacts.core.entities.MimeType
 import contacts.core.entities.MutableIm
 
 internal class ImOperation(isProfile: Boolean, includeFields: Set<ImField>) :
-    AbstractCommonDataOperation<ImField, MutableIm>(isProfile, includeFields) {
+    AbstractDataOperation<ImField, MutableIm>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Im
 

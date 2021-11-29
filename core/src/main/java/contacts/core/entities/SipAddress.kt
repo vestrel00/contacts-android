@@ -33,7 +33,7 @@ data class SipAddress internal constructor(
      */
     val sipAddress: String?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.SipAddress
@@ -78,7 +78,7 @@ data class MutableSipAddress internal constructor(
      */
     var sipAddress: String?
 
-) : MutableCommonDataEntity {
+) : MutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.SipAddress

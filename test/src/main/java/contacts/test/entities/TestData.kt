@@ -1,7 +1,7 @@
 package contacts.test.entities
 
 import contacts.core.entities.MimeType
-import contacts.core.entities.custom.MutableCustomDataEntity
+import contacts.core.entities.custom.MutableCustomData
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -27,7 +27,7 @@ internal data class TestData(
      */
     val value: String = VALUE
 
-) : MutableCustomDataEntity {
+) : MutableCustomData {
     // MutableCustomDataEntity are also CustomDataEntity so this serves as both the mutable and
     // immutable implementations. This is okay because this isn't really mutable.
 

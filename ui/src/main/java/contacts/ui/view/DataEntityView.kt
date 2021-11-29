@@ -5,12 +5,12 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
 import android.widget.RelativeLayout
-import contacts.core.entities.MutableCommonDataEntity
+import contacts.core.entities.MutableData
 import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 
 /**
- * A [RelativeLayout] that displays a [MutableCommonDataEntity] and handles the modifications to it.
+ * A [RelativeLayout] that displays a [MutableData] and handles the modifications to it.
  *
  * Setting the [data] will automatically update the views and vice versa.
  *
@@ -31,12 +31,11 @@ import contacts.ui.text.AbstractTextWatcher
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-open class CommonDataEntityView<E : MutableCommonDataEntity>
-@JvmOverloads constructor(
+open class DataEntityView<E : MutableData> @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    layoutRes: Int = R.layout.view_common_data_entity,
+    layoutRes: Int = R.layout.view_data_entity,
     dataFieldInputType: Int? = null,
     dataFieldHintResId: Int? = null,
     dataFieldIsFocusable: Boolean = true,
@@ -143,7 +142,7 @@ open class CommonDataEntityView<E : MutableCommonDataEntity>
         fun onDataBegin()
     }
 
-    interface Factory<E : MutableCommonDataEntity, V : CommonDataEntityView<E>> {
+    interface Factory<E : MutableData, V : DataEntityView<E>> {
         fun create(context: Context): V
     }
 }

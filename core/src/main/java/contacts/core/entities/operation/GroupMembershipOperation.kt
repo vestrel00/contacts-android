@@ -18,7 +18,7 @@ internal class GroupMembershipOperation(
     isProfile: Boolean,
     includeFields: Set<GroupMembershipField>,
     private val groups: Groups
-) : AbstractCommonDataOperation<GroupMembershipField, GroupMembership>(isProfile, includeFields) {
+) : AbstractDataOperation<GroupMembershipField, GroupMembership>(isProfile, includeFields) {
 
     override val mimeType = MimeType.GroupMembership
 

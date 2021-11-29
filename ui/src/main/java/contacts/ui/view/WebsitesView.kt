@@ -8,22 +8,22 @@ import contacts.ui.R
 import contacts.ui.entities.WebsiteFactory
 
 /**
- * A [CommonDataEntityListView] for [MutableWebsite]s.
+ * A [DataEntityListView] for [MutableWebsite]s.
  */
 class WebsitesView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CommonDataEntityListView<MutableWebsite, CommonDataEntityView<MutableWebsite>>(
+) : DataEntityListView<MutableWebsite, DataEntityView<MutableWebsite>>(
     context, attributeSet, defStyleAttr,
     dataFactory = WebsiteFactory,
     dataViewFactory = WebsiteViewFactory
 )
 
 private object WebsiteViewFactory :
-    CommonDataEntityView.Factory<MutableWebsite, CommonDataEntityView<MutableWebsite>> {
-    override fun create(context: Context): CommonDataEntityView<MutableWebsite> =
-        CommonDataEntityView(
+    DataEntityView.Factory<MutableWebsite, DataEntityView<MutableWebsite>> {
+    override fun create(context: Context): DataEntityView<MutableWebsite> =
+        DataEntityView(
             context,
             dataFieldInputType = InputType.TYPE_TEXT_VARIATION_URI,
             dataFieldHintResId = R.string.contacts_ui_website_hint,

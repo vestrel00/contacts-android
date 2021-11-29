@@ -14,20 +14,20 @@ import contacts.ui.entities.EventTypeFactory
 import java.util.*
 
 /**
- * A [CommonDataEntityWithTypeListView] for [MutableEvent]s.
+ * A [DataEntityWithTypeListView] for [MutableEvent]s.
  */
 class EventsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CommonDataEntityWithTypeListView<Event.Type, MutableEvent>(
+) : DataEntityWithTypeListView<Event.Type, MutableEvent>(
     context, attributeSet, defStyleAttr,
     dataFactory = EventFactory,
     dataViewFactory = EventsViewFactory,
     defaultUnderlyingDataTypes = Event.Type.values().filter { !it.isCustomType }
 )
 
-private class EventView(context: Context) : CommonDataEntityWithTypeView<Event.Type, MutableEvent>(
+private class EventView(context: Context) : DataEntityWithTypeView<Event.Type, MutableEvent>(
     context,
     dataFieldInputType = InputType.TYPE_NULL,
     dataFieldHintResId = R.string.contacts_ui_event_hint,
@@ -55,7 +55,7 @@ private class EventView(context: Context) : CommonDataEntityWithTypeView<Event.T
 }
 
 private object EventsViewFactory :
-    CommonDataEntityWithTypeView.Factory<Event.Type, MutableEvent> {
-    override fun create(context: Context): CommonDataEntityWithTypeView<Event.Type, MutableEvent> =
+    DataEntityWithTypeView.Factory<Event.Type, MutableEvent> {
+    override fun create(context: Context): DataEntityWithTypeView<Event.Type, MutableEvent> =
         EventView(context)
 }

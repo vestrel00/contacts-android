@@ -1,7 +1,7 @@
 package contacts.core
 
 import android.database.DatabaseUtils
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.EventDate
 import contacts.core.entities.MimeType
 import contacts.core.entities.toWhereString
@@ -438,7 +438,7 @@ private fun where(field: Field, operator: String, value: Any?, options: String? 
         where += " $options"
     }
 
-    if (field is CommonDataField && field.mimeType.value.isNotBlank()) {
+    if (field is DataField && field.mimeType.value.isNotBlank()) {
         where += " AND ${Fields.MimeType.columnName} = '${field.mimeType.value}'"
     }
     return where
@@ -537,7 +537,7 @@ private fun Any?.toSqlString(): String = when (this) {
     is Collection<*> -> this.asSequence().toSqlString()
     is Sequence<*> -> this.map { it?.toSqlString() }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
-    is CommonDataEntity.Type -> value.toSqlString()
+    is DataEntity.Type -> value.toSqlString()
     is Date -> time.toString() // we will not assume that all dates are for EventDate comparisons.
     is EventDate -> toWhereString()
     is MimeType -> value.toSqlString()

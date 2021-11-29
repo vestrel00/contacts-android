@@ -1,13 +1,13 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.RawContact
 
 /**
- * Returns the [RawContact] with the [CommonDataEntity.rawContactId].
+ * Returns the [RawContact] with the [DataEntity.rawContactId].
  *
- * This may return null if the [RawContact] no longer exists or if [CommonDataEntity.rawContactId] is null
+ * This may return null if the [RawContact] no longer exists or if [DataEntity.rawContactId] is null
  * (which is the case for manually constructed entities).
  *
  * Supports profile/non-profile RawContacts with native/custom data.
@@ -23,7 +23,7 @@ import contacts.core.entities.RawContact
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun CommonDataEntity.rawContact(
+fun DataEntity.rawContact(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): RawContact? = rawContactId?.let { rawContactId ->

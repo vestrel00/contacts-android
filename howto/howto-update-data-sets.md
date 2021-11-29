@@ -13,7 +13,7 @@ val update = Contacts(context).data().update()
 
 ## A basic update
 
-To update a set of `MutableCommonDataEntity`,
+To update a set of `MutableData`,
 
 ```kotlin
 val updateResult = Contacts(context)
@@ -81,7 +81,8 @@ To check if a particular update succeeded,
 val emailUpdateSuccessful = updateResult.isSuccessful(mutableEmail)
 ```
 
-Once you have performed the updates, you can retrieve the updated data references via the `DataQuery` API,
+Once you have performed the updates, you can retrieve the updated data references via the 
+`DataQuery` APIs,
 
 ```kotlin
 val updatedEmail = contactsApi

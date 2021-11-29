@@ -10,13 +10,13 @@ import contacts.ui.entities.EmailFactory
 import contacts.ui.entities.EmailTypeFactory
 
 /**
- * A [CommonDataEntityWithTypeListView] for [MutableEmail]s.
+ * A [DataEntityWithTypeListView] for [MutableEmail]s.
  */
 class EmailsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CommonDataEntityWithTypeListView<Email.Type, MutableEmail>(
+) : DataEntityWithTypeListView<Email.Type, MutableEmail>(
     context, attributeSet, defStyleAttr,
     dataFactory = EmailFactory,
     dataViewFactory = EmailViewFactory,
@@ -24,9 +24,9 @@ class EmailsView @JvmOverloads constructor(
 )
 
 private object EmailViewFactory :
-    CommonDataEntityWithTypeView.Factory<Email.Type, MutableEmail> {
-    override fun create(context: Context): CommonDataEntityWithTypeView<Email.Type, MutableEmail> =
-        CommonDataEntityWithTypeView(
+    DataEntityWithTypeView.Factory<Email.Type, MutableEmail> {
+    override fun create(context: Context): DataEntityWithTypeView<Email.Type, MutableEmail> =
+        DataEntityWithTypeView(
             context,
             dataFieldInputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
             dataFieldHintResId = R.string.contacts_ui_email_hint,

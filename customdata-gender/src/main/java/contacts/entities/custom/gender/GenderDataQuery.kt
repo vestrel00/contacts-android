@@ -1,9 +1,9 @@
 package contacts.entities.custom.gender
 
-import contacts.core.data.CommonDataQuery
 import contacts.core.data.DataQuery
+import contacts.core.data.DataQueryFactory
 
 /**
  * Queries for [Gender]s.
  */
-fun DataQuery.genders(): CommonDataQuery<GenderField, Gender> = customData(GenderMimeType)
+fun DataQueryFactory.genders(): DataQuery<GenderField, Gender> = customData(GenderMimeType)

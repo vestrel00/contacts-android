@@ -2,16 +2,16 @@ package contacts.core.util
 
 import contacts.core.*
 import contacts.core.data.resolveDataEntity
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.ImmutableData
 import contacts.core.entities.fields
 
 /**
- * Returns the [CommonDataEntity] with all of the latest data.
+ * Returns the [ImmutableData] [T] with all of the latest data.
  *
  * This is useful for getting the latest data after performing an update. This may return null if
- * the [CommonDataEntity] no longer exists or if permission is not granted.
+ * the data entity no longer exists or if permission is not granted.
  *
- * Returns itself if the [CommonDataEntity.id] is null, indicating that this DataEntity instance has
+ * Returns itself if the [ImmutableData.id] is null, indicating that this DataEntity instance has
  * not yet been inserted to the DB.
  *
  * Supports profile/non-profile native/custom data.
@@ -27,7 +27,7 @@ import contacts.core.entities.fields
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun <T : CommonDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? =
+fun <T : ImmutableData> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? =
     if (id == null) {
         this
     } else if (!contacts.permissions.canQuery()) {
@@ -39,3 +39,5 @@ fun <T : CommonDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean =
             null, CompoundOrderBy(setOf(Fields.DataId.asc())), 1, 0, cancel
         ).firstOrNull()
     }
+
+// TODO MutableData extension + async

@@ -65,7 +65,7 @@ data class Event internal constructor(
      */
     val date: EventDate?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Event
@@ -88,7 +88,7 @@ data class Event internal constructor(
         date = date
     )
 
-    enum class Type(override val value: Int) : CommonDataEntity.Type {
+    enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         BIRTHDAY(CommonDataKinds.Event.TYPE_BIRTHDAY), // Default
@@ -151,7 +151,7 @@ data class MutableEvent internal constructor(
      */
     var date: EventDate?
 
-) : MutableCommonDataEntityWithType<Type> {
+) : MutableDataWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false,

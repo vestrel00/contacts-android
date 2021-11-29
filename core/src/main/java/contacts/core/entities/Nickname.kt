@@ -33,7 +33,7 @@ data class Nickname internal constructor(
      */
     val name: String?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Nickname
@@ -78,7 +78,7 @@ data class MutableNickname internal constructor(
      */
     var name: String?
 
-) : MutableCommonDataEntity {
+) : MutableData {
 
     constructor() : this(null, null, null, false, false, null)
 

@@ -6,7 +6,7 @@ import contacts.core.entities.MimeType
 import contacts.core.entities.MutablePhone
 
 internal class PhoneOperation(isProfile: Boolean, includeFields: Set<PhoneField>) :
-    AbstractCommonDataOperation<PhoneField, MutablePhone>(isProfile, includeFields) {
+    AbstractDataOperation<PhoneField, MutablePhone>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Phone
 

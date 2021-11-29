@@ -43,7 +43,7 @@ data class Email internal constructor(
      */
     val address: String?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Email
@@ -66,7 +66,7 @@ data class Email internal constructor(
         address = address
     )
 
-    enum class Type(override val value: Int) : CommonDataEntity.Type {
+    enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         HOME(CommonDataKinds.Email.TYPE_HOME), // Default
@@ -123,7 +123,7 @@ data class MutableEmail internal constructor(
      */
     var address: String?
 
-) : MutableCommonDataEntityWithType<Type> {
+) : MutableDataWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false,
