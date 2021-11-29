@@ -113,6 +113,76 @@ rawContact.setPhoto(contactsApi, photoBitmapDrawable)
 
 > Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.
 
+A few things to keep in mind.
+
+1. Changes are immediate.
+    - These functions will make the changes to the Contacts Provider database immediately. You do 
+      not need to use update APIs to commit the changes.
+2. Changes are not applied to the receiver.
+    - This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+      query APIs or refresh extensions or process the result of this function call to get the most
+      up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+      Provider database.
+
+### Inserting contacts with photo
+
+You cannot get/set/remove photos for Contacts/RawContacts that have not yet been inserted in the 
+Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or result
+APIs can use the extension functions in `contacts.core.util.ContactPhoto.kt` and 
+`contacts.core.util.RawContactPhoto.kt`.
+
+To insert a new contact "with photo", you should insert the contact first. Then, if the insert 
+succeeds, proceed to set the photo.
+
+Do,
+
+```kotlin
+val insertResult = Contacts(context)
+    .insert()
+    .rawContact {
+        ...
+    }
+    .commit()
+
+val contact = insertResult.contacts(contactsApi).firstOrNull()
+contact?.setPhoto(...)
+```
+
+Don't,
+
+```kotlin
+val insertResult = Contacts(context)
+    .insert()
+    .rawContact {
+        setPhoto(...)
+    }
+    .commit()
+```
+
+> For more info about insert, read [How do I create/insert contacts?](/howto/howto-insert-contacts.md)
+
+It is true that the API should not allow you to call `setPhoto` on a Contact/RawContact that has not
+yet been inserted. It is currently misleading. This will be fixed in issue #117. As of right now, 
+the following documentation is included in `contacts.core.util.ContactPhoto.kt` and 
+`contacts.core.util.RawContactPhoto.kt` functions.
+
+```kotlin
+/*
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ */
+```
+
+> Note for contributors; It is possible to include photo **thumbnail** data as part of the insertion
+> of a new RawContact using `ContactsContract.CommonDataKinds.Photo.PHOTO`. The Contacts Provider 
+> will use the thumbnail as the full-sized photo as well. However, this is not good practice as the 
+> full-sized photo will have a really low resolution. Showing the full-sized photo in a big view 
+> will not look good. Therefore, this library does not allow this. Consumers must first insert their
+> new RawContact so that they can set the full-sized photo.
+
 ## Removing contact photo
 
 To remove the Contact (and corresponding RawContact) photo (full-sized and thumbnail),
@@ -128,7 +198,17 @@ rawContact.removePhoto(contactsApi)
 ```
 
 > Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.
+A few things to keep in mind.
 
+1. Changes are immediate.
+    - These functions will make the changes to the Contacts Provider database immediately. You do 
+      not need to use update APIs to commit the changes.
+2. Changes are not applied to the receiver.
+    - This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+      query APIs or refresh extensions or process the result of this function call to get the most
+      up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+      Provider database.
+      
 ## Using the ui PhotoPicker extensions
 
 The `contacts.ui.util.PhotoPicker.kt` in the `ui` module` provides extension functions to make 
@@ -193,7 +273,9 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## FAQs
 
-### Issue #110: Can photo be set using a uri instead of bytes and bitmaps? 
+### Can photo be set using a uri instead of bytes and bitmaps? 
+
+> Related issues; #110
 
 No and yes. The core APIs provided in this library only provides functions that the Contacts 
 Provider natively supports. This means setting Contact or RawContact photo only using bytes (and 

@@ -58,6 +58,24 @@ import contacts.core.entities.table.Table
  * **Profile Contact & RawContacts are not supported!** This operation will fail if there are any
  * profile Contact or RawContacts in [contacts].
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
+ * ## Changes are immediate
+ *
+ * This function will make the changes to the Contacts Provider database immediately. You do not
+ * need to use update APIs to commit the changes.
+ *
+ * ## Changes are not applied to the receiver
+ *
+ * This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+ * query APIs or refresh extensions or process the result of this function call to get the most
+ * up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+ * Provider database.
+ *
  * ## Contact Display Name Resolution
  *
  * There is one thing that the native Contacts app manually does that the Contacts Provider does not
@@ -244,6 +262,24 @@ private class ContactLinkFailed : ContactLinkResult {
  *
  * **Profile Contact & RawContacts are not supported!** This operation will fail if [this] is a
  * Profile Contact.
+ *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
+ * ## Changes are immediate
+ *
+ * This function will make the changes to the Contacts Provider database immediately. You do not
+ * need to use update APIs to commit the changes.
+ *
+ * ## Changes are not applied to the receiver
+ *
+ * This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+ * query APIs or refresh extensions or process the result of this function call to get the most
+ * up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+ * Provider database.
  *
  * ## Permissions
  *

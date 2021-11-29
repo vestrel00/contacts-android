@@ -207,7 +207,7 @@ private class GroupsUpdateImpl(
             .find()
             // Convert to mutable group so that titles can be mutated during update processing.
             // Use the data class copy function intentionally to include read-only groups.
-            .map { it.copy(readOnly = false).toMutableGroup()!! } //  Consumers should never do this!!!
+            .map { it.copy(readOnly = false).toMutableGroup()!! } //  Consumers should never do this!
         val existingAccountGroups = mutableMapOf<Account, MutableSet<MutableGroup>>()
         for (group in existingGroups) {
             existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {

@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
  * this by implementing it.
  */
 // TODO This is ugly and may be confusing. Just do the same thing that the native Contacts app is doing!
-// Scrap this!!!
 class AccountsActivity : BaseActivity() {
 
     // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.

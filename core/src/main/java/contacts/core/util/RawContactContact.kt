@@ -12,6 +12,12 @@ import contacts.core.entities.RawContactEntity
  *
  * Supports profile and non-profile Contacts with native/custom data.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be

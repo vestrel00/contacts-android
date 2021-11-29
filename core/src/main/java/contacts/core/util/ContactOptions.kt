@@ -19,6 +19,12 @@ import contacts.core.entities.table.Table
  *
  * Supports profile and non-profile Contacts.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -51,11 +57,25 @@ fun ContactEntity.options(contacts: Contacts): Options {
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  *
- * This will not change the value of this instance's options immutable member variable! You will
- * need to refresh this instance or use [ContactEntity.options] extension function to get the most
- * up-to-date options.
- *
  * Supports profile and non-profile Contacts.
+ *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
+ * ## Changes are immediate
+ *
+ * This function will make the changes to the Contacts Provider database immediately. You do not
+ * need to use update APIs to commit the changes.
+ *
+ * ## Changes are not applied to the receiver
+ *
+ * This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+ * query APIs or refresh extensions or process the result of this function call to get the most
+ * up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+ * Provider database.
  *
  * ## Starred in Android and group membership to the favorites group
  *
@@ -108,9 +128,23 @@ fun ContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Boole
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  *
- * This will not change the value of this instance's options immutable member variable! You will
- * need to refresh this instance or use [ContactEntity.options] extension function to get the most
- * up-to-date options.
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
+ * ## Changes are immediate
+ *
+ * This function will make the changes to the Contacts Provider database immediately. You do not
+ * need to use update APIs to commit the changes.
+ *
+ * ## Changes are not applied to the receiver
+ *
+ * This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+ * query APIs or refresh extensions or process the result of this function call to get the most
+ * up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+ * Provider database.
  *
  * ## Starred in Android and group membership to the favorites group
  *

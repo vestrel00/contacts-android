@@ -34,6 +34,12 @@ import java.io.InputStream
  *
  * Supports profile and non-profile Contacts.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -72,6 +78,12 @@ fun ContactEntity.photoInputStream(contacts: Contacts): InputStream? {
  *
  * Supports profile and non-profile Contacts.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -97,6 +109,12 @@ fun ContactEntity.photoBytes(contacts: Contacts): ByteArray? = photoInputStream(
  *
  * Supports profile and non-profile Contacts.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -121,6 +139,12 @@ fun ContactEntity.photoBitmap(contacts: Contacts): Bitmap? = photoInputStream(co
  * on query filters.
  *
  * Supports profile and non-profile Contacts.
+ *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
  *
  * ## Permissions
  *
@@ -168,6 +192,12 @@ private fun uriInputStream(contacts: Contacts, uri: Uri?): InputStream? {
  *
  * Supports profile and non-profile Contacts.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -208,6 +238,12 @@ fun ContactEntity.photoThumbnailInputStream(contacts: Contacts): InputStream? {
  *
  * Supports profile and non-profile Contacts.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -234,6 +270,12 @@ fun ContactEntity.photoThumbnailBytes(contacts: Contacts): ByteArray? =
  *
  * Supports profile and non-profile Contacts.
  *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
  * ## Permissions
  *
  * This requires the [ContactsPermissions.READ_PERMISSION].
@@ -259,6 +301,12 @@ fun ContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
  * on query filters.
  *
  * Supports profile and non-profile Contacts.
+ *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
  *
  * ## Permissions
  *
@@ -291,6 +339,24 @@ fun ContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDrawab
  * Returns true if the operation succeeds.
  *
  * Supports profile and non-profile Contacts.
+ *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
+ * ## Changes are immediate
+ *
+ * This function will make the changes to the Contacts Provider database immediately. You do not
+ * need to use update APIs to commit the changes.
+ *
+ * ## Changes are not applied to the receiver
+ *
+ * This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+ * query APIs or refresh extensions or process the result of this function call to get the most
+ * up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+ * Provider database.
  *
  * ## Permissions
  *
@@ -383,6 +449,24 @@ private fun ContactEntity.rawContactWithPhotoFileId(
  * with at least 2 associated RawContacts.
  *
  * Supports profile and non-profile Contacts.
+ *
+ * ## For existing (inserted) entities only
+ *
+ * This function will only work for entities that have already been inserted into the Contacts
+ * Provider database. This means that this is only for entities that have been retrieved using
+ * query or result APIs.
+ *
+ * ## Changes are immediate
+ *
+ * This function will make the changes to the Contacts Provider database immediately. You do not
+ * need to use update APIs to commit the changes.
+ *
+ * ## Changes are not applied to the receiver
+ *
+ * This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+ * query APIs or refresh extensions or process the result of this function call to get the most
+ * up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+ * Provider database.
  *
  * ## Permissions
  *
