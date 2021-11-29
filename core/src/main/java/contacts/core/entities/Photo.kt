@@ -23,7 +23,7 @@ import kotlinx.parcelize.Parcelize
  * refactorings in case we need to add state. Also, Parcelize does not work on objects.
  */
 @Parcelize
-internal class Photo : CommonDataEntity {
+internal class Photo : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Photo

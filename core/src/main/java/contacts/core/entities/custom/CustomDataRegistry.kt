@@ -19,7 +19,7 @@ class CustomDataRegistry {
     private val entryMap = mutableMapOf<String, Entry<
             AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
-            MutableCustomDataEntity>>()
+            MutableCustomData>>()
 
     /**
      * Register custom data [entries].
@@ -31,7 +31,7 @@ class CustomDataRegistry {
             entryMap[entry.mimeType.value] = entry as Entry<
                     AbstractCustomDataField,
                     AbstractCustomDataCursor<AbstractCustomDataField>,
-                    MutableCustomDataEntity>
+                    MutableCustomData>
         }
     }
 
@@ -54,7 +54,7 @@ class CustomDataRegistry {
      * [customDataEntity] will be added and existing custom entities will remain.
      */
     fun putCustomDataEntityInto(
-        rawContact: MutableRawContact, customDataEntity: MutableCustomDataEntity
+        rawContact: MutableRawContact, customDataEntity: MutableCustomData
     ) {
         val entry = entryOf(customDataEntity.mimeType)
         val entityHolder = rawContact.customDataEntities.getOrPut(entry.mimeType.value) {
@@ -80,14 +80,14 @@ class CustomDataRegistry {
     fun removeCustomDataEntityFrom(
         rawContact: MutableRawContact,
         byReference: Boolean,
-        entity: MutableCustomDataEntity
+        entity: MutableCustomData
     ) {
         val entityHolder = rawContact.customDataEntities[entity.mimeType.value]
         entityHolder?.entities?.removeAll(entity, byReference)
     }
 
     /**
-     * Removes any [MutableCustomDataEntity]s associated with the [MimeType.Custom] contained in the
+     * Removes any [MutableCustomData]s associated with the [MimeType.Custom] contained in the
      * given [rawContact], if any.
      */
     fun removeAllCustomDataEntityFrom(rawContact: MutableRawContact, mimeType: MimeType.Custom) {
@@ -96,7 +96,7 @@ class CustomDataRegistry {
     }
 
     /**
-     * Returns the list of [MutableCustomDataEntity]s of type [T] associated with the
+     * Returns the list of [MutableCustomData]s of type [T] associated with the
      * [MimeType.Custom] contained in the given [rawContact], if any.
      *
      * If the [Entry.countRestriction] is [CustomDataCountRestriction.AT_MOST_ONE], then expect
@@ -105,18 +105,18 @@ class CustomDataRegistry {
      * If the [Entry.countRestriction] is [CustomDataCountRestriction.NO_LIMIT], then expect
      * 0, 1, or more custom entities in the list.
      */
-    fun <T : MutableCustomDataEntity> customDataEntitiesFor(
+    fun <T : MutableCustomData> customDataEntitiesFor(
         rawContact: RawContact, mimeType: MimeType.Custom
     ): List<T> = customDataEntitiesFor(rawContact.customDataEntities, mimeType)
 
     /**
      * See [customDataEntitiesFor].
      */
-    fun <T : MutableCustomDataEntity> customDataEntitiesFor(
+    fun <T : MutableCustomData> customDataEntitiesFor(
         rawContact: MutableRawContact, mimeType: MimeType.Custom
     ): List<T> = customDataEntitiesFor(rawContact.customDataEntities, mimeType)
 
-    private fun <T : MutableCustomDataEntity> customDataEntitiesFor(
+    private fun <T : MutableCustomData> customDataEntitiesFor(
         customDataEntities: Map<String, CustomDataEntityHolder>, mimeType: MimeType.Custom
     ): List<T> {
         val entityHolder = customDataEntities[mimeType.value]
@@ -129,7 +129,7 @@ class CustomDataRegistry {
 
     internal fun entryOf(mimeTypeValue: String): Entry<AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
-            MutableCustomDataEntity> = entryMap[mimeTypeValue]
+            MutableCustomData> = entryMap[mimeTypeValue]
         ?: throw CustomDataException("Missing custom data entry for $mimeTypeValue")
 
     internal fun mimeTypeOf(
@@ -153,11 +153,11 @@ class CustomDataRegistry {
         .toSet()
 
     /**
-     * A custom common data entry provides all the required implementations to support queries,
+     * A custom data entry provides all the required implementations to support queries,
      * inserts, updates, and deletes.
      */
     interface Entry<F : AbstractCustomDataField, C : AbstractCustomDataCursor<F>,
-            E : MutableCustomDataEntity> {
+            E : MutableCustomData> {
         val mimeType: MimeType.Custom
         val fieldSet: AbstractCustomDataFieldSet<F>
         val fieldMapper: CustomDataFieldMapper<F, E>

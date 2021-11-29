@@ -110,7 +110,7 @@ sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {
     abstract val forMatching: Set<T>
 }
 
-data class DataField internal constructor(
+data class GenericDataField internal constructor(
     override val columnName: String,
     override val required: Boolean = false,
 ) : AbstractDataField()
@@ -122,7 +122,7 @@ data class DataField internal constructor(
  * For a shorter name, use [F] (useful for Kotlin-ers).
  *
  * The real (more technically correct) name of this object is [DataFields]. The name "Fields" is
- * used here so that Java consumers may be able to access these most commonly used fields using a
+ * used here so that Java consumers may be able to access these most frequently used fields using a
  * shorter name than "DataFields".
  *
  * ## Developer Notes
@@ -141,7 +141,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Contact = DataContactsFields()
 
     @JvmField
-    val DataId = DataField(Data._ID, required = true)
+    val DataId = GenericDataField(Data._ID, required = true)
 
     @JvmField
     val Email = EmailFields()
@@ -156,12 +156,12 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Im = ImFields()
 
     @JvmField
-    val IsPrimary = DataField(Data.IS_PRIMARY, required = true)
+    val IsPrimary = GenericDataField(Data.IS_PRIMARY, required = true)
 
     @JvmField
-    val IsSuperPrimary = DataField(Data.IS_SUPER_PRIMARY, required = true)
+    val IsSuperPrimary = GenericDataField(Data.IS_SUPER_PRIMARY, required = true)
 
-    internal val MimeType = DataField(Data.MIMETYPE, required = true)
+    internal val MimeType = GenericDataField(Data.MIMETYPE, required = true)
 
     @JvmField
     val Name = NameFields()
@@ -420,20 +420,20 @@ class DataRawContactsFields internal constructor() : AbstractDataFieldSet<DataRa
 
 // endregion
 
-// region Common Data Fields
+// region Data Fields
 
-sealed class CommonDataField : AbstractDataField() {
+sealed class DataField : AbstractDataField() {
     internal abstract val mimeType: MimeType
 }
 
-internal object EmptyCommonDataFields : AbstractDataFieldSet<CommonDataField>() {
+internal object EmptyDataFields : AbstractDataFieldSet<DataField>() {
 
-    override val all = emptySet<CommonDataField>()
+    override val all = emptySet<DataField>()
 
-    override val forMatching = emptySet<CommonDataField>()
+    override val forMatching = emptySet<DataField>()
 }
 
-data class AddressField internal constructor(override val columnName: String) : CommonDataField() {
+data class AddressField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Address
 }
 
@@ -483,7 +483,7 @@ class AddressFields internal constructor() : AbstractDataFieldSet<AddressField>(
     }
 }
 
-data class EmailField internal constructor(override val columnName: String) : CommonDataField() {
+data class EmailField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Email
 }
 
@@ -508,7 +508,7 @@ class EmailFields internal constructor() : AbstractDataFieldSet<EmailField>() {
     }
 }
 
-data class EventField internal constructor(override val columnName: String) : CommonDataField() {
+data class EventField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Event
 }
 
@@ -532,7 +532,7 @@ class EventFields internal constructor() : AbstractDataFieldSet<EventField>() {
 }
 
 data class GroupMembershipField internal constructor(override val columnName: String) :
-    CommonDataField() {
+    DataField() {
     override val mimeType: MimeType = MimeType.GroupMembership
 }
 
@@ -549,7 +549,7 @@ class GroupMembershipFields internal constructor() : AbstractDataFieldSet<GroupM
     override val forMatching = emptySet<GroupMembershipField>()
 }
 
-data class ImField internal constructor(override val columnName: String) : CommonDataField() {
+data class ImField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Im
 }
 
@@ -582,7 +582,7 @@ class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
     }
 }
 
-data class NameField internal constructor(override val columnName: String) : CommonDataField() {
+data class NameField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Name
 }
 
@@ -630,7 +630,7 @@ class NameFields internal constructor() : AbstractDataFieldSet<NameField>() {
     }
 }
 
-data class NicknameField internal constructor(override val columnName: String) : CommonDataField() {
+data class NicknameField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Nickname
 }
 
@@ -649,7 +649,7 @@ class NicknameFields internal constructor() : AbstractDataFieldSet<NicknameField
     }
 }
 
-data class NoteField internal constructor(override val columnName: String) : CommonDataField() {
+data class NoteField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Note
 }
 
@@ -669,7 +669,7 @@ class NoteFields internal constructor() : AbstractDataFieldSet<NoteField>() {
 }
 
 data class OrganizationField internal constructor(override val columnName: String) :
-    CommonDataField() {
+    DataField() {
     override val mimeType: MimeType = MimeType.Organization
 }
 
@@ -710,7 +710,7 @@ class OrganizationFields internal constructor() : AbstractDataFieldSet<Organizat
     }
 }
 
-data class PhoneField internal constructor(override val columnName: String) : CommonDataField() {
+data class PhoneField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Phone
 }
 
@@ -739,7 +739,7 @@ class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
 }
 
 internal data class PhotoField internal constructor(override val columnName: String) :
-    CommonDataField() {
+    DataField() {
     override val mimeType: MimeType = MimeType.Photo
 }
 
@@ -757,7 +757,7 @@ internal class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoFi
     override val forMatching = emptySet<PhotoField>()
 }
 
-data class RelationField internal constructor(override val columnName: String) : CommonDataField() {
+data class RelationField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Relation
 }
 
@@ -782,8 +782,7 @@ class RelationFields internal constructor() : AbstractDataFieldSet<RelationField
     override val forMatching = emptySet<RelationField>()
 }
 
-data class SipAddressField internal constructor(override val columnName: String) :
-    CommonDataField() {
+data class SipAddressField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.SipAddress
 }
 
@@ -802,7 +801,7 @@ class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressF
     override val forMatching = emptySet<SipAddressField>()
 }
 
-data class WebsiteField internal constructor(override val columnName: String) : CommonDataField() {
+data class WebsiteField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Website
 }
 
@@ -824,19 +823,19 @@ class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>(
 // region Custom Data Fields
 
 /**
- * An abstract class that is used as a base of all custom common data fields.
+ * An abstract class that is used as a base of all custom data fields.
  *
  * ## Developer notes
  *
  * This had to be declared here instead of in the [contacts.core.entities.custom] package because
- * [CommonDataField] is sealed.
+ * [DataField] is sealed.
  */
 abstract class AbstractCustomDataField(
     /**
      * The name of this column. Must be one of [ColumnName].
      */
     columnName: ColumnName
-) : CommonDataField() {
+) : DataField() {
 
     protected abstract val customMimeType: MimeType.Custom
 

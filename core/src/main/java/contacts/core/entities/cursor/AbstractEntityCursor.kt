@@ -3,7 +3,7 @@ package contacts.core.entities.cursor
 import android.database.Cursor
 import android.net.Uri
 import contacts.core.Field
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import java.util.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -156,7 +156,7 @@ abstract class AbstractEntityCursor<F : Field>(
     }
 
     @JvmOverloads
-    protected fun <T : CommonDataEntity.Type> getType(
+    protected fun <T : DataEntity.Type> getType(
         field: F,
         default: T? = null,
         typeFromValue: (value: Int?) -> T?
@@ -260,7 +260,7 @@ abstract class AbstractEntityCursor<F : Field>(
         default: Date? = null
     ): ReadOnlyProperty<AbstractEntityCursor<F>, Date?> = DateDelegate(field, default)
 
-    protected fun <T : CommonDataEntity.Type> type(
+    protected fun <T : DataEntity.Type> type(
         field: F,
         default: T? = null,
         typeFromValue: (value: Int?) -> T?
@@ -376,7 +376,7 @@ abstract class AbstractEntityCursor<F : Field>(
             getDate(field, default)
     }
 
-    private inner class TypeDelegate<out T : CommonDataEntity.Type>(
+    private inner class TypeDelegate<out T : DataEntity.Type>(
         private val field: F,
         private val default: T? = null,
         private val typeFromValue: (value: Int?) -> T?

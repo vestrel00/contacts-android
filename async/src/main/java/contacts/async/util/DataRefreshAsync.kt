@@ -2,7 +2,8 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
+import contacts.core.entities.ImmutableData
 import contacts.core.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -13,9 +14,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [CommonDataEntity.refresh].
+ * See [ImmutableData.refresh].
  */
-suspend fun <T : CommonDataEntity> T.refreshWithContext(
+suspend fun <T : ImmutableData> T.refreshWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): T? = withContext(coroutineContext) {
@@ -28,9 +29,9 @@ suspend fun <T : CommonDataEntity> T.refreshWithContext(
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [CommonDataEntity.refresh].
+ * See [ImmutableData.refresh].
  */
-fun <T : CommonDataEntity> T.refreshAsync(
+fun <T : ImmutableData> T.refreshAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<T?> = CoroutineScope(coroutineContext).async {

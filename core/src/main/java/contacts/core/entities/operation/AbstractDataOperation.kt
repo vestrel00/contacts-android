@@ -5,7 +5,7 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import contacts.core.*
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.dataCursor
@@ -23,7 +23,7 @@ import contacts.core.util.query
  * Insert and update functions will do nothing for data that is not specified in [includeFields],
  * except for data that are required.
  */
-abstract class AbstractCommonDataOperation<F : CommonDataField, E : CommonDataEntity>(
+abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     isProfile: Boolean,
     private val includeFields: Set<F>
 ) {

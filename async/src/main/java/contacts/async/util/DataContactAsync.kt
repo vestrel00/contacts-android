@@ -2,7 +2,7 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.Contact
 import contacts.core.util.contact
 import kotlinx.coroutines.*
@@ -14,9 +14,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [CommonDataEntity.contact].
+ * See [DataEntity.contact].
  */
-suspend fun CommonDataEntity.contactWithContext(
+suspend fun DataEntity.contactWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Contact? = withContext(coroutineContext) { contact(contacts) { !isActive } }
@@ -27,9 +27,9 @@ suspend fun CommonDataEntity.contactWithContext(
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [CommonDataEntity.contact].
+ * See [DataEntity.contact].
  */
-fun CommonDataEntity.contactAsync(
+fun DataEntity.contactAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> = CoroutineScope(coroutineContext).async { contact(contacts) { !isActive } }

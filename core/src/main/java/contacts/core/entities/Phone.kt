@@ -61,7 +61,7 @@ data class Phone internal constructor(
      */
     val normalizedNumber: String?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Phone
@@ -85,7 +85,7 @@ data class Phone internal constructor(
         normalizedNumber = normalizedNumber
     )
 
-    enum class Type(override val value: Int) : CommonDataEntity.Type {
+    enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         MOBILE(CommonDataKinds.Phone.TYPE_MOBILE), // Default
@@ -167,7 +167,7 @@ data class MutablePhone internal constructor(
      */
     var normalizedNumber: String?
 
-) : MutableCommonDataEntityWithType<Type> {
+) : MutableDataWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false,

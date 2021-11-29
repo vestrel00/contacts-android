@@ -5,14 +5,14 @@ import android.provider.ContactsContract
 import contacts.core.util.isProfileId
 
 /**
- * [Entity] in the data table that belong to a [RawContact].
+ * [Entity] in the Data table that belong to a [RawContact].
  *
  * A RawContact may either have;
  * - only 0 or 1
  * - 0, 1, or more
  * of this type of entity
  */
-interface CommonDataEntity : Entity {
+interface DataEntity : Entity {
 
     /**
      * The id of the Data row this represents.
@@ -124,9 +124,19 @@ interface CommonDataEntity : Entity {
 }
 
 /**
- * A [CommonDataEntity] that is mutable, allowing the [primaryValue] to be mutated among others.
+ * A [DataEntity] that is immutable.
+ *
+ * ## Dev note
+ *
+ * We are explicitly prepending "Immutable" to the interface name to prevent naming conflicts with
+ * [contacts.core.data.Data].
  */
-interface MutableCommonDataEntity : CommonDataEntity {
+interface ImmutableData : DataEntity
+
+/**
+ * A [DataEntity] that is mutable, allowing the [primaryValue] to be mutated among others.
+ */
+interface MutableData : DataEntity {
 
     /**
      * The main value encapsulated by this entity as a string for consumer usage.
@@ -135,12 +145,12 @@ interface MutableCommonDataEntity : CommonDataEntity {
 }
 
 /**
- * A [MutableCommonDataEntity], with a mutable [type] and [label].
+ * A [MutableData], with a mutable [type] and [label].
  */
-interface MutableCommonDataEntityWithType<T : CommonDataEntity.Type> : MutableCommonDataEntity {
+interface MutableDataWithType<T : DataEntity.Type> : MutableData {
 
     /**
-     * The [CommonDataEntity.Type] of the [primaryValue].
+     * The [DataEntity.Type] of the [primaryValue].
      */
     var type: T?
 

@@ -10,13 +10,13 @@ import contacts.ui.entities.ImFactory
 import contacts.ui.entities.ImsTypeFactory
 
 /**
- * A [CommonDataEntityWithTypeListView] for [MutableIm]s.
+ * A [DataEntityWithTypeListView] for [MutableIm]s.
  */
 class ImsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CommonDataEntityWithTypeListView<Im.Protocol, MutableIm>(
+) : DataEntityWithTypeListView<Im.Protocol, MutableIm>(
     context, attributeSet, defStyleAttr,
     dataFactory = ImFactory,
     dataViewFactory = ImViewFactory,
@@ -24,9 +24,9 @@ class ImsView @JvmOverloads constructor(
 )
 
 private object ImViewFactory :
-    CommonDataEntityWithTypeView.Factory<Im.Protocol, MutableIm> {
-    override fun create(context: Context): CommonDataEntityWithTypeView<Im.Protocol, MutableIm> =
-        CommonDataEntityWithTypeView(
+    DataEntityWithTypeView.Factory<Im.Protocol, MutableIm> {
+    override fun create(context: Context): DataEntityWithTypeView<Im.Protocol, MutableIm> =
+        DataEntityWithTypeView(
             context,
             dataFieldInputType = InputType.TYPE_CLASS_TEXT,
             dataFieldHintResId = R.string.contacts_ui_im_hint,

@@ -9,13 +9,13 @@ import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 
 /**
- * A [CommonDataEntityView] for a [MutableOrganization].
+ * A [DataEntityView] for a [MutableOrganization].
  */
 class OrganizationView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CommonDataEntityView<MutableOrganization>(
+) : DataEntityView<MutableOrganization>(
     context, attributeSet, defStyleAttr,
     layoutRes = R.layout.view_organization,
     dataFieldInputType = InputType.TYPE_CLASS_TEXT,

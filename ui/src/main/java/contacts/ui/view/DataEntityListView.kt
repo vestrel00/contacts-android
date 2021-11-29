@@ -3,12 +3,12 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import contacts.core.entities.MutableCommonDataEntity
+import contacts.core.entities.MutableData
 import contacts.core.entities.removeAll
-import contacts.ui.entities.CommonDataEntityFactory
+import contacts.ui.entities.DataEntityFactory
 
 /**
- * A (vertical) [LinearLayout] that displays a list of [MutableCommonDataEntity] and handles
+ * A (vertical) [LinearLayout] that displays a list of [MutableData] and handles
  * the modifications to the given mutable list.
  *
  * Setting the [dataList] will automatically update the views. Any modifications in the views will
@@ -33,12 +33,12 @@ import contacts.ui.entities.CommonDataEntityFactory
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-abstract class CommonDataEntityListView<E : MutableCommonDataEntity, V : CommonDataEntityView<E>>(
+abstract class DataEntityListView<E : MutableData, V : DataEntityView<E>>(
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,
-    private val dataFactory: CommonDataEntityFactory<E>,
-    private val dataViewFactory: CommonDataEntityView.Factory<E, V>,
+    private val dataFactory: DataEntityFactory<E>,
+    private val dataViewFactory: DataEntityView.Factory<E, V>,
 ) : LinearLayout(context, attributeSet, defStyleAttr) {
 
     /**
@@ -106,7 +106,7 @@ abstract class CommonDataEntityListView<E : MutableCommonDataEntity, V : CommonD
 
     private inner class DataViewEventListener(
         private val dataView: V
-    ) : CommonDataEntityView.EventListener {
+    ) : DataEntityView.EventListener {
 
         override fun onDataDeleteButtonClicked() {
             removeDataView(dataView)

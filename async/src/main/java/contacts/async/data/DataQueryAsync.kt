@@ -1,9 +1,9 @@
 package contacts.async.data
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.core.CommonDataField
-import contacts.core.data.CommonDataQuery
-import contacts.core.entities.CommonDataEntity
+import contacts.core.DataField
+import contacts.core.data.DataQuery
+import contacts.core.entities.ImmutableData
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -13,9 +13,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [CommonDataQuery.find].
+ * See [DataQuery.find].
  */
-suspend fun <F : CommonDataField, E : CommonDataEntity> CommonDataQuery<F, E>.findWithContext(
+suspend fun <F : DataField, E : ImmutableData> DataQuery<F, E>.findWithContext(
     context: CoroutineContext = ASYNC_DISPATCHER
 ): List<E> = withContext(context) { find { !isActive } }
 
@@ -26,8 +26,8 @@ suspend fun <F : CommonDataField, E : CommonDataEntity> CommonDataQuery<F, E>.fi
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [CommonDataQuery.find].
+ * See [DataQuery.find].
  */
-fun <F : CommonDataField, E : CommonDataEntity> CommonDataQuery<F, E>.findAsync(
+fun <F : DataField, E : ImmutableData> DataQuery<F, E>.findAsync(
     context: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<List<E>> = CoroutineScope(context).async { find { !isActive } }

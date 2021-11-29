@@ -1,8 +1,8 @@
 package contacts.entities.custom.handlename
 
 import contacts.core.entities.MimeType
-import contacts.core.entities.custom.CustomDataEntity
-import contacts.core.entities.custom.MutableCustomDataEntity
+import contacts.core.entities.custom.ImmutableCustomData
+import contacts.core.entities.custom.MutableCustomData
 import contacts.core.entities.propertiesAreAllNullOrBlank
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -35,7 +35,7 @@ data class HandleName internal constructor(
      */
     val handle: String?
 
-) : CustomDataEntity {
+) : ImmutableCustomData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = HandleNameMimeType
@@ -76,7 +76,7 @@ data class MutableHandleName internal constructor(
      */
     var handle: String?
 
-) : MutableCustomDataEntity {
+) : MutableCustomData {
 
     constructor() : this(null, null, null, false, false, null)
 

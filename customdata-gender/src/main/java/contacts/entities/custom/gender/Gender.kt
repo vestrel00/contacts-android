@@ -2,10 +2,10 @@ package contacts.entities.custom.gender
 
 import android.content.res.Resources
 import android.provider.ContactsContract
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.MimeType
-import contacts.core.entities.custom.CustomDataEntity
-import contacts.core.entities.custom.MutableCustomDataEntityWithType
+import contacts.core.entities.custom.ImmutableCustomData
+import contacts.core.entities.custom.MutableCustomDataWithType
 import contacts.core.entities.propertiesAreAllNullOrBlank
 import contacts.entities.custom.gender.Gender.Type
 import contacts.entities.custom.gender.Gender.Type.*
@@ -40,7 +40,7 @@ data class Gender internal constructor(
      */
     val label: String?
 
-) : CustomDataEntity {
+) : ImmutableCustomData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType.Custom = GenderMimeType
@@ -66,7 +66,7 @@ data class Gender internal constructor(
      *
      * For other types of genders, use [CUSTOM] and [Gender.label]
      */
-    enum class Type(override val value: Int) : CommonDataEntity.Type {
+    enum class Type(override val value: Int) : DataEntity.Type {
 
         MALE(1),
         FEMALE(2),
@@ -119,7 +119,7 @@ data class MutableGender internal constructor(
      */
     override var label: String?
 
-) : MutableCustomDataEntityWithType<Type> {
+) : MutableCustomDataWithType<Type> {
 
     constructor() : this(null, null, null, false, false, null, null)
 

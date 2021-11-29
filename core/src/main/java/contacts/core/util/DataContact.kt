@@ -1,13 +1,13 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.Contact
 
 /**
- * Returns the [Contact] with the [CommonDataEntity.contactId].
+ * Returns the [Contact] with the [DataEntity.contactId].
  *
- * This may return null if the [Contact] no longer exists or if [CommonDataEntity.contactId] is null
+ * This may return null if the [Contact] no longer exists or if [DataEntity.contactId] is null
  * (which is the case for manually constructed entities).
  *
  * Supports profile/non-profile Contacts with native/custom data.
@@ -23,7 +23,7 @@ import contacts.core.entities.Contact
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun CommonDataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
+fun DataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
     contactId?.let { contactId ->
         contacts.findFirstContactWithId(contactId, cancel)
     }

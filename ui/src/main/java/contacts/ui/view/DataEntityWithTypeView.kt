@@ -7,16 +7,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
 import android.widget.Spinner
-import contacts.core.entities.CommonDataEntity
-import contacts.core.entities.MutableCommonDataEntityWithType
+import contacts.core.entities.DataEntity
+import contacts.core.entities.MutableDataWithType
 import contacts.ui.R
-import contacts.ui.entities.CommonDataEntityType
-import contacts.ui.entities.CommonDataEntityTypeFactory
+import contacts.ui.entities.DataEntityType
+import contacts.ui.entities.DataEntityTypeFactory
 import contacts.ui.util.CustomLabelInputDialog
 
 /**
- * A [RelativeLayout] that displays a [MutableCommonDataEntityWithType] [E] that has a
- * [CommonDataEntityType] and handles the modifications to it.
+ * A [RelativeLayout] that displays a [MutableDataWithType] [E] that has a
+ * [DataEntityType] and handles the modifications to it.
  *
  * Setting the [data] will automatically update the views and vice versa.
  *
@@ -37,8 +37,7 @@ import contacts.ui.util.CustomLabelInputDialog
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-open class CommonDataEntityWithTypeView
-<T : CommonDataEntity.Type, E : MutableCommonDataEntityWithType<T>>
+open class DataEntityWithTypeView<T : DataEntity.Type, E : MutableDataWithType<T>>
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -46,16 +45,16 @@ open class CommonDataEntityWithTypeView
     dataFieldInputType: Int? = null,
     dataFieldHintResId: Int? = null,
     dataFieldIsFocusable: Boolean = true,
-    private val dataTypeFactory: CommonDataEntityTypeFactory<E, T>? = null,
-) : CommonDataEntityView<E>(
+    private val dataTypeFactory: DataEntityTypeFactory<E, T>? = null,
+) : DataEntityView<E>(
     context, attributeSet, defStyleAttr,
-    layoutRes = R.layout.view_common_data_entity_with_type,
+    layoutRes = R.layout.view_data_entity_with_type,
     dataFieldInputType = dataFieldInputType,
     dataFieldHintResId = dataFieldHintResId,
     dataFieldIsFocusable = dataFieldIsFocusable
 ) {
 
-    private var selectedType: CommonDataEntityType<T>? = null
+    private var selectedType: DataEntityType<T>? = null
         set(value) {
             field = value
 
@@ -66,7 +65,7 @@ open class CommonDataEntityWithTypeView
         }
 
     private val dataTypeField: Spinner = findViewById(R.id.dataTypeField)
-    private val dataTypesAdapter: ArrayAdapter<CommonDataEntityType<T>>
+    private val dataTypesAdapter: ArrayAdapter<DataEntityType<T>>
 
     init {
         dataTypeField.apply {
@@ -171,8 +170,8 @@ open class CommonDataEntityWithTypeView
         }
     }
 
-    interface Factory<T : CommonDataEntity.Type, E : MutableCommonDataEntityWithType<T>> :
-        CommonDataEntityView.Factory<E, CommonDataEntityWithTypeView<T, E>>
+    interface Factory<T : DataEntity.Type, E : MutableDataWithType<T>> :
+        DataEntityView.Factory<E, DataEntityWithTypeView<T, E>>
 }
 
 /**

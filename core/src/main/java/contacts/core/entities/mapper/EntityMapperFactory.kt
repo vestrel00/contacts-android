@@ -59,7 +59,7 @@ internal fun CursorHolder<AbstractDataField>.websiteMapper(): EntityMapper<Websi
     WebsiteMapper(websiteCursor())
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : CommonDataEntity> CursorHolder<AbstractDataField>.entityMapperFor(
+internal fun <T : ImmutableData> CursorHolder<AbstractDataField>.entityMapperFor(
     mimeType: MimeType,
     customDataRegistry: CustomDataRegistry
 ): EntityMapper<T> = when (mimeType) {
@@ -92,7 +92,6 @@ internal fun <T : CommonDataEntity> CursorHolder<AbstractDataField>.entityMapper
 } as EntityMapper<T>
 
 // endregion
-
 
 internal fun RawContactIdCursor.tempRawContactMapper(): EntityMapper<TempRawContact> =
     TempRawContactMapper(this)

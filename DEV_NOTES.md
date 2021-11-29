@@ -313,7 +313,7 @@ The Contacts Provider may consolidate multiple contacts belonging to different a
 them into a single entry in the Contacts table whilst maintaining the separate entries in the 
 RawContacts table.
 
-A more common scenario that causes multiple RawContacts per Contact is when two or more Contacts are
+A more likely scenario that causes multiple RawContacts per Contact is when two or more Contacts are
 "linked" (or "merged" for API 23 and below, or "joined" for API 22 and below).
 
 ### Behavior of linking/merging/joining contacts (AggregationExceptions)
@@ -1149,7 +1149,7 @@ last!
 
 I left comments all over the code on when an androidx dependency may be useful. The most glaring
 example of this is @WorkerThread. Even with that, I'll hold off on adding the androidx annotation
-lib. I think we can all be consenting adults and apply some common sense.
+lib. I think we can all be consenting adults =)
 
 If the community strongly desires the addition of these support libs, then the community will win =)
 

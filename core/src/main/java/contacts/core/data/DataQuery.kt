@@ -5,7 +5,7 @@ import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.*
 import contacts.core.entities.cursor.rawContactsCursor
-import contacts.core.entities.custom.CustomDataEntity
+import contacts.core.entities.custom.ImmutableCustomData
 import contacts.core.entities.mapper.entityMapperFor
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
@@ -18,149 +18,150 @@ import contacts.core.util.unsafeLazy
  * Provides new query instances for specific types of Profile OR non-Profile (depending on instance)
  * data.
  */
-interface DataQuery {
+interface DataQueryFactory {
 
     /**
      * Queries for [Address]es.
      */
-    fun addresses(): CommonDataQuery<AddressField, Address>
+    fun addresses(): DataQuery<AddressField, Address>
 
     /**
      * Queries for [Email]s.
      */
-    fun emails(): CommonDataQuery<EmailField, Email>
+    fun emails(): DataQuery<EmailField, Email>
 
     /**
      * Queries for [Event]s.
      */
-    fun events(): CommonDataQuery<EventField, Event>
+    fun events(): DataQuery<EventField, Event>
 
     /**
      * Queries for [GroupMembership]s.
      */
-    fun groupMemberships(): CommonDataQuery<GroupMembershipField, GroupMembership>
+    fun groupMemberships(): DataQuery<GroupMembershipField, GroupMembership>
 
     /**
      * Queries for [Im]s.
      */
-    fun ims(): CommonDataQuery<ImField, Im>
+    fun ims(): DataQuery<ImField, Im>
 
     /**
      * Queries for [Name]s.
      */
-    fun names(): CommonDataQuery<NameField, Name>
+    fun names(): DataQuery<NameField, Name>
 
     /**
      * Queries for [Nickname]s.
      */
-    fun nicknames(): CommonDataQuery<NicknameField, Nickname>
+    fun nicknames(): DataQuery<NicknameField, Nickname>
 
     /**
      * Queries for [Note]s.
      */
-    fun notes(): CommonDataQuery<NoteField, Note>
+    fun notes(): DataQuery<NoteField, Note>
 
     /**
      * Queries for [Organization]s.
      */
-    fun organizations(): CommonDataQuery<OrganizationField, Organization>
+    fun organizations(): DataQuery<OrganizationField, Organization>
 
     /**
      * Queries for [Phone]s.
      */
-    fun phones(): CommonDataQuery<PhoneField, Phone>
+    fun phones(): DataQuery<PhoneField, Phone>
 
     // Photos are intentionally left out as it is internal to the library.
 
     /**
      * Queries for [Relation]s.
      */
-    fun relations(): CommonDataQuery<RelationField, Relation>
+    fun relations(): DataQuery<RelationField, Relation>
 
     /**
      * Queries for [SipAddress]es.
      */
-    fun sipAddresses(): CommonDataQuery<SipAddressField, SipAddress>
+    fun sipAddresses(): DataQuery<SipAddressField, SipAddress>
 
     /**
      * Queries for [Website]s.
      */
-    fun websites(): CommonDataQuery<WebsiteField, Website>
+    fun websites(): DataQuery<WebsiteField, Website>
 
     /**
      * Queries for custom data of type [E] with the given custom [mimeType].
      */
-    fun <F : AbstractCustomDataField, E : CustomDataEntity>
-            customData(mimeType: MimeType.Custom): CommonDataQuery<F, E>
+    fun <F : AbstractCustomDataField, E : ImmutableCustomData>
+            customData(mimeType: MimeType.Custom): DataQuery<F, E>
 }
 
 @Suppress("FunctionName")
-internal fun DataQuery(contacts: Contacts, isProfile: Boolean): DataQuery = DataQueryImpl(
-    contacts, isProfile
-)
+internal fun DataQuery(contacts: Contacts, isProfile: Boolean): DataQueryFactory =
+    DataQueryFactoryImpl(
+        contacts, isProfile
+    )
 
-private class DataQueryImpl(
+private class DataQueryFactoryImpl(
     private val contacts: Contacts,
     private val isProfile: Boolean
-) : DataQuery {
+) : DataQueryFactory {
 
-    override fun addresses(): CommonDataQuery<AddressField, Address> = CommonDataQueryImpl(
+    override fun addresses(): DataQuery<AddressField, Address> = DataQueryImpl(
         contacts, Fields.Address, MimeType.Address, isProfile
     )
 
-    override fun emails(): CommonDataQuery<EmailField, Email> = CommonDataQueryImpl(
+    override fun emails(): DataQuery<EmailField, Email> = DataQueryImpl(
         contacts, Fields.Email, MimeType.Email, isProfile
     )
 
-    override fun events(): CommonDataQuery<EventField, Event> = CommonDataQueryImpl(
+    override fun events(): DataQuery<EventField, Event> = DataQueryImpl(
         contacts, Fields.Event, MimeType.Event, isProfile
     )
 
-    override fun groupMemberships(): CommonDataQuery<GroupMembershipField, GroupMembership> =
-        CommonDataQueryImpl(
+    override fun groupMemberships(): DataQuery<GroupMembershipField, GroupMembership> =
+        DataQueryImpl(
             contacts, Fields.GroupMembership, MimeType.GroupMembership, isProfile
         )
 
-    override fun ims(): CommonDataQuery<ImField, Im> = CommonDataQueryImpl(
+    override fun ims(): DataQuery<ImField, Im> = DataQueryImpl(
         contacts, Fields.Im, MimeType.Im, isProfile
     )
 
-    override fun names(): CommonDataQuery<NameField, Name> = CommonDataQueryImpl(
+    override fun names(): DataQuery<NameField, Name> = DataQueryImpl(
         contacts, Fields.Name, MimeType.Name, isProfile
     )
 
-    override fun nicknames(): CommonDataQuery<NicknameField, Nickname> = CommonDataQueryImpl(
+    override fun nicknames(): DataQuery<NicknameField, Nickname> = DataQueryImpl(
         contacts, Fields.Nickname, MimeType.Nickname, isProfile
     )
 
-    override fun notes(): CommonDataQuery<NoteField, Note> = CommonDataQueryImpl(
+    override fun notes(): DataQuery<NoteField, Note> = DataQueryImpl(
         contacts, Fields.Note, MimeType.Note, isProfile
     )
 
-    override fun organizations(): CommonDataQuery<OrganizationField, Organization> =
-        CommonDataQueryImpl(
+    override fun organizations(): DataQuery<OrganizationField, Organization> =
+        DataQueryImpl(
             contacts, Fields.Organization, MimeType.Organization, isProfile
         )
 
-    override fun phones(): CommonDataQuery<PhoneField, Phone> = CommonDataQueryImpl(
+    override fun phones(): DataQuery<PhoneField, Phone> = DataQueryImpl(
         contacts, Fields.Phone, MimeType.Phone, isProfile
     )
 
-    override fun relations(): CommonDataQuery<RelationField, Relation> = CommonDataQueryImpl(
+    override fun relations(): DataQuery<RelationField, Relation> = DataQueryImpl(
         contacts, Fields.Relation, MimeType.Relation, isProfile
     )
 
-    override fun sipAddresses(): CommonDataQuery<SipAddressField, SipAddress> = CommonDataQueryImpl(
+    override fun sipAddresses(): DataQuery<SipAddressField, SipAddress> = DataQueryImpl(
         contacts, Fields.SipAddress, MimeType.SipAddress, isProfile
     )
 
-    override fun websites(): CommonDataQuery<WebsiteField, Website> = CommonDataQueryImpl(
+    override fun websites(): DataQuery<WebsiteField, Website> = DataQueryImpl(
         contacts, Fields.Website, MimeType.Website, isProfile
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <F : AbstractCustomDataField, E : CustomDataEntity>
-            customData(mimeType: MimeType.Custom): CommonDataQuery<F, E> = CommonDataQueryImpl(
+    override fun <F : AbstractCustomDataField, E : ImmutableCustomData>
+            customData(mimeType: MimeType.Custom): DataQuery<F, E> = DataQueryImpl(
         contacts,
         contacts.customDataRegistry.entryOf(mimeType).fieldSet as AbstractCustomDataFieldSet<F>,
         mimeType, isProfile
@@ -212,7 +213,7 @@ private class DataQueryImpl(
  *      .find();
  * ```
  */
-interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
+interface DataQuery<F : DataField, E : ImmutableData> {
 
     /**
      * Limits this query to only search for data associated with one of the given [accounts].
@@ -224,17 +225,17 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
      * associated Account to be included in the search. RawContacts without an associated account
      * are considered local or device-only contacts, which are not synced.
      */
-    fun accounts(vararg accounts: Account?): CommonDataQuery<F, E>
+    fun accounts(vararg accounts: Account?): DataQuery<F, E>
 
     /**
-     * See [CommonDataQuery.accounts]
+     * See [DataQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account?>): CommonDataQuery<F, E>
+    fun accounts(accounts: Collection<Account?>): DataQuery<F, E>
 
     /**
-     * See [CommonDataQuery.accounts]
+     * See [DataQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account?>): CommonDataQuery<F, E>
+    fun accounts(accounts: Sequence<Account?>): DataQuery<F, E>
 
     /**
      * Includes the given set of [fields] of type [F] in the resulting data objects of type [E].
@@ -277,17 +278,17 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
      * include/exclude in queries, inserts, and update, which will allow you to do things beyond
      * your wildest imagination!
      */
-    fun include(vararg fields: F): CommonDataQuery<F, E>
+    fun include(vararg fields: F): DataQuery<F, E>
 
     /**
-     * See [CommonDataQuery.include].
+     * See [DataQuery.include].
      */
-    fun include(fields: Collection<F>): CommonDataQuery<F, E>
+    fun include(fields: Collection<F>): DataQuery<F, E>
 
     /**
-     * See [CommonDataQuery.include].
+     * See [DataQuery.include].
      */
-    fun include(fields: Sequence<F>): CommonDataQuery<F, E>
+    fun include(fields: Sequence<F>): DataQuery<F, E>
 
     /**
      * Filters the returned data matching the criteria defined by the [where].
@@ -304,10 +305,9 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
      * [Fields.RawContact], [Fields.IsSuperPrimary], etc...
      *
      * This allows consumers to make a mistake about trying to match addresses using phone fields.
-     * At this point, I'll say we are consenting adults (Python motto if you don't know) and we need
-     * to apply some common sense =)
+     * At this point, I'll say we are consenting adults (Python motto if you don't know).
      */
-    fun where(where: Where<AbstractDataField>?): CommonDataQuery<F, E>
+    fun where(where: Where<AbstractDataField>?): DataQuery<F, E>
 
     /**
      * Orders the returned data using one or more [orderBy]s. If not specified, then data is ordered
@@ -317,31 +317,31 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
      * optional parameter.
      */
     @SafeVarargs
-    fun orderBy(vararg orderBy: OrderBy<F>): CommonDataQuery<F, E>
+    fun orderBy(vararg orderBy: OrderBy<F>): DataQuery<F, E>
 
     /**
-     * See [CommonDataQuery.orderBy].
+     * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy<F>>): CommonDataQuery<F, E>
+    fun orderBy(orderBy: Collection<OrderBy<F>>): DataQuery<F, E>
 
     /**
-     * See [CommonDataQuery.orderBy].
+     * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy<F>>): CommonDataQuery<F, E>
+    fun orderBy(orderBy: Sequence<OrderBy<F>>): DataQuery<F, E>
 
     /**
      * Limits the maximum number of returned data to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
      */
-    fun limit(limit: Int): CommonDataQuery<F, E>
+    fun limit(limit: Int): DataQuery<F, E>
 
     /**
      * Skips results 0 to [offset] (excluding the offset).
      *
      * If not specified, offset value of 0 is used.
      */
-    fun offset(offset: Int): CommonDataQuery<F, E>
+    fun offset(offset: Int): DataQuery<F, E>
 
     /**
      * The list of [E]s.
@@ -382,7 +382,7 @@ interface CommonDataQuery<F : CommonDataField, E : CommonDataEntity> {
     fun find(cancel: () -> Boolean): List<E>
 }
 
-private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
+private class DataQueryImpl<F : DataField, E : ImmutableData>(
     private val contacts: Contacts,
 
     private val defaultIncludeFields: FieldSet<F>,
@@ -399,7 +399,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
     private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
-) : CommonDataQuery<F, E> {
+) : DataQuery<F, E> {
 
     override fun toString(): String =
         """
@@ -419,7 +419,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account?>): CommonDataQuery<F, E> = apply {
+    override fun accounts(accounts: Sequence<Account?>): DataQuery<F, E> = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
@@ -427,7 +427,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
 
     override fun include(fields: Collection<F>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<F>): CommonDataQuery<F, E> = apply {
+    override fun include(fields: Sequence<F>): DataQuery<F, E> = apply {
         val includeFields = if (fields.isEmpty()) {
             defaultIncludeFields.all.asSequence()
         } else {
@@ -437,7 +437,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
         include = Include(includeFields + REQUIRED_INCLUDE_FIELDS)
     }
 
-    override fun where(where: Where<AbstractDataField>?): CommonDataQuery<F, E> = apply {
+    override fun where(where: Where<AbstractDataField>?): DataQuery<F, E> = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
@@ -446,7 +446,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
 
     override fun orderBy(orderBy: Collection<OrderBy<F>>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy<F>>): CommonDataQuery<F, E> = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<F>>): DataQuery<F, E> = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -454,7 +454,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
         }
     }
 
-    override fun limit(limit: Int): CommonDataQuery<F, E> = apply {
+    override fun limit(limit: Int): DataQuery<F, E> = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
@@ -462,7 +462,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
         }
     }
 
-    override fun offset(offset: Int): CommonDataQuery<F, E> = apply {
+    override fun offset(offset: Int): DataQuery<F, E> = apply {
         this.offset = if (offset >= 0) {
             offset
         } else {
@@ -492,7 +492,7 @@ private class CommonDataQueryImpl<F : CommonDataField, E : CommonDataEntity>(
     }
 }
 
-internal fun <T : CommonDataEntity> Contacts.resolveDataEntity(
+internal fun <T : ImmutableData> Contacts.resolveDataEntity(
     isProfile: Boolean,
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
@@ -566,7 +566,7 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
 /*
 Phones, Emails, and Addresses have a CONTENT_URI that contains all rows consisting of only those
 data kinds. Other data kinds do not have this content uri. These probably exists as an index /
-for optimization since phones, emails, and addresses are the most commonly used data kinds. Using
+for optimization since phones, emails, and addresses are the most frequently used data kinds. Using
 these CONTENT_URIs probably results in shorter search times since it only has to look through a
 subset of data instead of the entire data table.
 

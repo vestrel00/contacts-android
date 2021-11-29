@@ -3,7 +3,7 @@ package contacts.core.data
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
 import contacts.core.*
-import contacts.core.entities.CommonDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
@@ -28,7 +28,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To delete a [CommonDataEntity];
+ * To delete a [DataEntity];
  *
  * ```kotlin
  * val result = dataDelete
@@ -53,20 +53,20 @@ interface DataDelete {
      * Those that have been manually created via a constructor will be ignored and result in a
      * failed operation.
      */
-    fun data(vararg data: CommonDataEntity): DataDelete
+    fun data(vararg data: DataEntity): DataDelete
 
     /**
      * See [DataDelete.data].
      */
-    fun data(data: Collection<CommonDataEntity>): DataDelete
+    fun data(data: Collection<DataEntity>): DataDelete
 
     /**
      * See [DataDelete.data].
      */
-    fun data(data: Sequence<CommonDataEntity>): DataDelete
+    fun data(data: Sequence<DataEntity>): DataDelete
 
     /**
-     * Deletes the [CommonDataEntity]s in the queue (added via [data]) and returns the [Result].
+     * Deletes the [DataEntity]s in the queue (added via [data]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -80,7 +80,7 @@ interface DataDelete {
     fun commit(): Result
 
     /**
-     * Deletes the [CommonDataEntity]s in the queue (added via [data]) in one transaction. Either ALL
+     * Deletes the [DataEntity]s in the queue (added via [data]) in one transaction. Either ALL
      * deletes succeed or ALL fail.
      *
      * ## Permissions
@@ -104,7 +104,7 @@ interface DataDelete {
         /**
          * True if the [data] has been successfully deleted. False otherwise.
          */
-        fun isSuccessful(data: CommonDataEntity): Boolean
+        fun isSuccessful(data: DataEntity): Boolean
     }
 }
 
@@ -130,11 +130,11 @@ private class DataDeleteImpl(
             }
         """.trimIndent()
 
-    override fun data(vararg data: CommonDataEntity) = data(data.asSequence())
+    override fun data(vararg data: DataEntity) = data(data.asSequence())
 
-    override fun data(data: Collection<CommonDataEntity>) = data(data.asSequence())
+    override fun data(data: Collection<DataEntity>) = data(data.asSequence())
 
-    override fun data(data: Sequence<CommonDataEntity>): DataDelete = apply {
+    override fun data(data: Sequence<DataEntity>): DataDelete = apply {
         dataIds.addAll(data.map { it.id ?: INVALID_ID })
     }
 
@@ -201,7 +201,7 @@ private class DataDeleteResult(
 
     override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
 
-    override fun isSuccessful(data: CommonDataEntity): Boolean =
+    override fun isSuccessful(data: DataEntity): Boolean =
         data.id?.let { dataId ->
             dataIdsResultMap.getOrElse(dataId) { false }
         } ?: false
@@ -211,5 +211,5 @@ private class DataDeleteFailed : DataDelete.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(data: CommonDataEntity): Boolean = false
+    override fun isSuccessful(data: DataEntity): Boolean = false
 }

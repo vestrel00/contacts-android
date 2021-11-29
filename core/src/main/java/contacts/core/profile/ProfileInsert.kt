@@ -149,7 +149,7 @@ interface ProfileInsert {
      *
      * ## Note
      *
-     * The use case for this function is probably not common. You can simply not set a particular
+     * The use case for this function is probably rare. You can simply not set a particular
      * data instead of using this function. For example, if you want to create a new RawContact
      * with only name and email data, just set only name and email...
      *

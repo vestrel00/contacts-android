@@ -6,17 +6,18 @@ import contacts.core.entities.mapper.EntityMapper
 
 /**
  * An abstract class that is used as a base of all custom [EntityMapper]s. It uses a
- * [AbstractCustomDataCursor] [C] (using fields of type [F]) and outputs a [CustomDataEntity] [E].
+ * [AbstractCustomDataCursor] [C] (using fields of type [F]) and outputs a
+ * [MutableCustomData] [E].
  */
 abstract class AbstractCustomEntityMapper<
         F : AbstractCustomDataField,
         C : AbstractCustomDataCursor<F>,
-        out E : MutableCustomDataEntity>(
+        out E : MutableCustomData>(
     private val cursor: C
 ) : EntityMapper<E> {
 
     /**
-     * Returns the custom common data entity [E] created with values provided by the [cursor].
+     * Returns the custom data entity [E] created with values provided by the [cursor].
      */
     protected abstract fun value(cursor: C): E
 
@@ -34,7 +35,7 @@ abstract class AbstractCustomEntityMapper<
     interface Factory<
             F : AbstractCustomDataField,
             C : AbstractCustomDataCursor<F>,
-            out E : MutableCustomDataEntity> {
+            out E : MutableCustomData> {
 
         /**
          * Creates instances of [AbstractCustomEntityMapper] with the given [cursor].

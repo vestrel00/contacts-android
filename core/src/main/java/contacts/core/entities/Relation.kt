@@ -46,7 +46,7 @@ data class Relation internal constructor(
      */
     val name: String?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Relation
@@ -69,7 +69,7 @@ data class Relation internal constructor(
         name = name
     )
 
-    enum class Type(override val value: Int) : CommonDataEntity.Type {
+    enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         ASSISTANT(CommonDataKinds.Relation.TYPE_ASSISTANT), // Default
@@ -133,7 +133,7 @@ data class MutableRelation internal constructor(
      */
     var name: String?
 
-) : MutableCommonDataEntityWithType<Type> {
+) : MutableDataWithType<Type> {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Relation

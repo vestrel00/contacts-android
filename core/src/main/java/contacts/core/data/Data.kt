@@ -5,7 +5,7 @@ import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 
 /**
- * Provides new [DataQuery], [DataUpdate], and [DataDelete] for Profile OR non-Profile (depending on
+ * Provides new [DataQueryFactory], [DataUpdate], and [DataDelete] for Profile OR non-Profile (depending on
  * instance) operations.
  *
  * Note that there is no DataInsert as data is required to be associated with a RawContact.
@@ -22,10 +22,10 @@ import contacts.core.ContactsPermissions
 interface Data {
 
     /**
-     * Returns a new [DataQuery] instance for Profile OR non-Profile (depending on instance) data
+     * Returns a new [DataQueryFactory] instance for Profile OR non-Profile (depending on instance) data
      * queries.
      */
-    fun query(): DataQuery
+    fun query(): DataQueryFactory
 
     /**
      * Returns a new [DataUpdate] instance for Profile OR non-Profile (depending on instance) data

@@ -101,7 +101,7 @@ data class Address internal constructor(
      */
     val country: String?
 
-) : CommonDataEntity {
+) : ImmutableData {
 
     @IgnoredOnParcel
     override val mimeType: MimeType = MimeType.Address
@@ -134,7 +134,7 @@ data class Address internal constructor(
         country = country
     )
 
-    enum class Type(override val value: Int) : CommonDataEntity.Type {
+    enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
         HOME(CommonDataKinds.StructuredPostal.TYPE_HOME), // Default
@@ -223,7 +223,7 @@ data class MutableAddress internal constructor(
      */
     var country: String?
 
-) : MutableCommonDataEntityWithType<Type> {
+) : MutableDataWithType<Type> {
 
     constructor() : this(
         null, null, null, false, false, null, null, null,

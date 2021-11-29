@@ -10,13 +10,13 @@ import contacts.ui.entities.PhoneFactory
 import contacts.ui.entities.PhoneTypeFactory
 
 /**
- * A [CommonDataEntityWithTypeListView] for [MutablePhone]s.
+ * A [DataEntityWithTypeListView] for [MutablePhone]s.
  */
 class PhonesView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CommonDataEntityWithTypeListView<Phone.Type, MutablePhone>(
+) : DataEntityWithTypeListView<Phone.Type, MutablePhone>(
     context, attributeSet, defStyleAttr,
     dataFactory = PhoneFactory,
     dataViewFactory = PhoneViewFactory,
@@ -27,9 +27,9 @@ class PhonesView @JvmOverloads constructor(
 )
 
 private object PhoneViewFactory :
-    CommonDataEntityWithTypeView.Factory<Phone.Type, MutablePhone> {
-    override fun create(context: Context): CommonDataEntityWithTypeView<Phone.Type, MutablePhone> =
-        CommonDataEntityWithTypeView(
+    DataEntityWithTypeView.Factory<Phone.Type, MutablePhone> {
+    override fun create(context: Context): DataEntityWithTypeView<Phone.Type, MutablePhone> =
+        DataEntityWithTypeView(
             context,
             dataFieldInputType = InputType.TYPE_CLASS_PHONE,
             dataFieldHintResId = R.string.contacts_ui_phone_number_hint,

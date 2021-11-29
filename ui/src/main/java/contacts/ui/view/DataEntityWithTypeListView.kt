@@ -3,14 +3,14 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import contacts.core.entities.CommonDataEntity
-import contacts.core.entities.MutableCommonDataEntityWithType
-import contacts.ui.entities.CommonDataEntityFactory
+import contacts.core.entities.DataEntity
+import contacts.core.entities.MutableDataWithType
+import contacts.ui.entities.DataEntityFactory
 
 /**
- * A (vertical) [LinearLayout] that displays a list of [MutableCommonDataEntityWithType] and handles
+ * A (vertical) [LinearLayout] that displays a list of [MutableDataWithType] and handles
  * the modifications to the given mutable list. Each of the mutable entity in the list is displayed
- * in a [CommonDataEntityWithTypeView].
+ * in a [DataEntityWithTypeView].
  *
  * Setting the [dataList] will automatically update the views. Any modifications in the views will
  * also be made to the [dataList].
@@ -34,15 +34,14 @@ import contacts.ui.entities.CommonDataEntityFactory
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-abstract class CommonDataEntityWithTypeListView
-<T : CommonDataEntity.Type, E : MutableCommonDataEntityWithType<T>>(
+abstract class DataEntityWithTypeListView<T : DataEntity.Type, E : MutableDataWithType<T>>(
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,
-    dataFactory: CommonDataEntityFactory<E>,
-    dataViewFactory: CommonDataEntityWithTypeView.Factory<T, E>,
+    dataFactory: DataEntityFactory<E>,
+    dataViewFactory: DataEntityWithTypeView.Factory<T, E>,
     private val defaultUnderlyingDataTypes: List<T>
-) : CommonDataEntityListView<E, CommonDataEntityWithTypeView<T, E>>(
+) : DataEntityListView<E, DataEntityWithTypeView<T, E>>(
     context,
     attributeSet,
     defStyleAttr,

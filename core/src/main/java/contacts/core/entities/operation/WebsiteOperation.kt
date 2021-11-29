@@ -6,7 +6,7 @@ import contacts.core.entities.MimeType
 import contacts.core.entities.MutableWebsite
 
 internal class WebsiteOperation(isProfile: Boolean, includeFields: Set<WebsiteField>) :
-    AbstractCommonDataOperation<WebsiteField, MutableWebsite>(isProfile, includeFields) {
+    AbstractDataOperation<WebsiteField, MutableWebsite>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Website
 

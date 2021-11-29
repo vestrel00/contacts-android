@@ -1,14 +1,14 @@
 package contacts.core.entities
 
-import contacts.core.CommonDataField
-import contacts.core.EmptyCommonDataFields
+import contacts.core.DataField
+import contacts.core.EmptyDataFields
 import contacts.core.Fields
 import contacts.core.entities.custom.CustomDataRegistry
 
-internal fun CommonDataEntity.fields(customDataRegistry: CustomDataRegistry):
-        Set<CommonDataField> = mimeType.fields(customDataRegistry)
+internal fun DataEntity.fields(customDataRegistry: CustomDataRegistry):
+        Set<DataField> = mimeType.fields(customDataRegistry)
 
-internal fun MimeType.fields(customDataRegistry: CustomDataRegistry): Set<CommonDataField> =
+internal fun MimeType.fields(customDataRegistry: CustomDataRegistry): Set<DataField> =
     when (this) {
         MimeType.Address -> Fields.Address
         MimeType.Email -> Fields.Email
@@ -25,5 +25,5 @@ internal fun MimeType.fields(customDataRegistry: CustomDataRegistry): Set<Common
         MimeType.SipAddress -> Fields.SipAddress
         MimeType.Website -> Fields.Website
         is MimeType.Custom -> customDataRegistry.entryOf(this).fieldSet
-        MimeType.Unknown -> EmptyCommonDataFields
+        MimeType.Unknown -> EmptyDataFields
     }.all

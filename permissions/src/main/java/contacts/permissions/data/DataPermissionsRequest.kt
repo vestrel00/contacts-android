@@ -3,18 +3,18 @@ package contacts.permissions.data
 import contacts.core.ContactsPermissions
 import contacts.core.data.Data
 import contacts.core.data.DataDelete
-import contacts.core.data.DataQuery
+import contacts.core.data.DataQueryFactory
 import contacts.core.data.DataUpdate
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
 
 /**
  * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
- * requests for the permission, and then returns a new [DataQuery] instance.
+ * requests for the permission, and then returns a new [DataQueryFactory] instance.
  *
- * If permission is already granted, then immediately returns a new [DataQuery] instance.
+ * If permission is already granted, then immediately returns a new [DataQueryFactory] instance.
  */
-suspend fun Data.queryWithPermission(): DataQuery {
+suspend fun Data.queryWithPermission(): DataQueryFactory {
     if (!permissions.canQuery()) {
         applicationContext.requestReadPermission()
     }
