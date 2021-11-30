@@ -32,6 +32,10 @@ You can also learn more about this library through the articles I wrote about it
 
 **Note: This repo was open-sourced on October 4, 2021. It was private prior to that.**
 
+## Features
+
+> All features below are links to howto pages. Click on each of them to learn more!
+
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
   [address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website](/howto/howto-learn-more-about-api-entities.md).
