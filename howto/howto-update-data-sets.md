@@ -25,9 +25,10 @@ val updateResult = Contacts(context)
 
 ## Blank data are deleted
 
-Blank data are always deleted. For example, if all properties of an email are all null or blank, 
-then the email is deleted. This is the same behavior as the native Contacts app. This behavior 
-cannot be modified.
+Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
+deleted by update APIs.
+
+For more info, read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)
 
 ## Including only specific data
 

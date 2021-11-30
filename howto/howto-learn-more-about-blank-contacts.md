@@ -1,6 +1,9 @@
 # How do I learn more about "blank" contacts?
 
-Blank RawContacts and blank Contacts do not have any rows in the Data table.
+Blank RawContacts and blank Contacts do not have any rows in the Data table. These do not have any 
+non-blank data.
+
+An entity is blank if the concrete implementation of `Entity.isBlank` returns true.
 
 The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call them
 "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts without at
@@ -47,4 +50,14 @@ to match the blanks, a DB exception will be thrown by the Contacts Provider beca
 in the Contacts table. The same applies to the `Fields.RawContact`.
 
 - `Fields.Contact.Id equalTo 5 OR (Fields.Email.Address.isNotNull())`
-- `Fields.RawContact.Id ... OR (Fields.Phone.Number...)`
+- `Fields.RawContact.Id ... OR (Fields.Phone.Number...)
+
+
+## Blank Contacts/RawContacts vs blank Data
+
+Blank RawContacts and blank Contacts do not have any rows in the Data table. These do not have any 
+non-blank data.
+
+Blank data are data entities that have only null, empty, or blank primary value(s).
+
+> For more info, read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)

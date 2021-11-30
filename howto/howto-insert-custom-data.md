@@ -59,3 +59,10 @@ For example, to specifically include only `HandleName` and `Gender` fields,
 ```
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
+
+## Blank data are not inserted
+
+Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
+ignored and are not inserted by insert APIs.
+
+For more info, read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)

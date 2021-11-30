@@ -72,6 +72,13 @@ The API allows you to specify if you want to be able to insert blank contacts or
 
 For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
 
+## Blank data are not inserted
+
+Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
+ignored and are not inserted by insert APIs.
+
+For more info, read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)
+
 ## Associating an Account
 
 New RawContacts can be associated with an Account in order to enable syncing, 

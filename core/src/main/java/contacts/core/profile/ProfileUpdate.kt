@@ -2,12 +2,23 @@ package contacts.core.profile
 
 import contacts.core.*
 import contacts.core.entities.MutableContact
+import contacts.core.entities.MutableData
 import contacts.core.entities.MutableRawContact
 import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
 
 /**
  * Updates one or more (Profile) raw contacts' rows in the data table.
+ *
+ * ## Blank data are deleted
+ *
+ * Blank data will be deleted. For example, if all properties of an email are all null, empty, or
+ * blank, then the email is deleted. This is the same behavior as the native Contacts app. This
+ * behavior cannot be modified.
+ *
+ * Note that in cases where blank data are deleted, existing RawContact instances (in memory) will
+ * still have references to the deleted data instance. The RawContact instances (in memory) must be
+ * refreshed to get the most up-to-date data sets.
  *
  * ## Permissions
  *
@@ -80,8 +91,8 @@ interface ProfileUpdate {
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
      * allowing blanks, the native Contacts app shows them.
      *
-     * Note that blank data are always deleted. For example, if all properties of an email are all
-     * null or blank, then the email is deleted. This is the same behavior as the native Contacts
+     * Note that blank data are deleted. For example, if all properties of an email are all null,
+     * empty, or blank, then the email is deleted. This is the same behavior as the native Contacts
      * app. This is the same behavior as the native Contacts app. This behavior cannot be modified.
      */
     fun deleteBlanks(deleteBlanks: Boolean): ProfileUpdate

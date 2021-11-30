@@ -24,6 +24,12 @@ import contacts.core.util.toRawContactsWhere
  * The native Contacts app typically only maintains one local (no account) RawContact when
  * configuring the user's profile.
  *
+ * ## Blank data are ignored
+ *
+ * Blank data will be ignored. For example, if all properties of an email are all null, empty, or
+ * blank, then the email is not inserted. This is the same behavior as the native Contacts app. This
+ * behavior cannot be modified.
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] and
@@ -91,6 +97,11 @@ interface ProfileInsert {
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
      * allowing blanks, the native Contacts app shows them.
+     *
+     * Note that blank data are ignored. For example, if all properties of an email are all null,
+     * empty, or blank, then the email is not inserted. This is the same behavior as the native
+     * Contacts app. This is the same behavior as the native Contacts app. This behavior cannot be
+     * modified.
      */
     fun allowBlanks(allowBlanks: Boolean): ProfileInsert
 

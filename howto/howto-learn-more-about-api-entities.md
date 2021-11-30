@@ -143,16 +143,15 @@ provided;
 - `Nickname`, underlying value defaults to null
 - `Note`, underlying value defaults to null
 
-
-
 This automatic creation occur automatically in the background (typically after creation) only for
 RawContacts that are associated with an Account. If a valid account is provided, membership to the
 (auto add) system group is automatically created immediately by the Contacts Provider at the time of
 creation. The name, nickname, and note are automatically created at a later time.
 
 > Note that the query APIs in this library do not return blanks in results. In this case, the `Name`, 
-> `Nickname`, and `Note` will not be included in the RawContact because their underlying data are all
-> null. Blanks are also deleted on update.
+> `Nickname`, and `Note` will not be included in the RawContact because their primary values are all
+> null. Blanks are also ignored on insert and deleted on update. 
+> For more info, read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)
 
 If a valid account is not provided, no entries of the above are automatically created.
 

@@ -12,17 +12,18 @@ import contacts.core.util.unsafeLazy
 /**
  * Updates one or more Profile OR non-Profile (depending on instance) data rows in the data table.
  *
- * Blank data ([MutableData.isBlank]) will be deleted. For example, if all properties
- * of an email are all null or blank, then the email is deleted. This is the same behavior as the
- * native Contacts app. This behavior cannot be modified.
+ * Updating data that has already been deleted may return a successful result. However, no update
+ * actually occurred in the Content Provider Data table because the data row no longer existed.
+ *
+ * ## Blank data are deleted
+ *
+ * Blank data will be deleted. For example, if all properties of an email are all null, empty, or
+ * blank, then the email is deleted. This is the same behavior as the native Contacts app. This
+ * behavior cannot be modified.
  *
  * Note that in cases where blank data are deleted, existing RawContact instances (in memory) will
  * still have references to the deleted data instance. The RawContact instances (in memory) must be
  * refreshed to get the most up-to-date data sets.
- *
- * Updating data that has already been deleted may return a successful result. However, no update
- * actually occurred in the Content Provider Data table because the data row no longer existed.
- * This also applies to data that has not yet been inserted.
  *
  * ## Permissions
  *

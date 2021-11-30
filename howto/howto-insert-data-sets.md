@@ -59,3 +59,11 @@ Contacts(context)
  ```
  
  > For more info, read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
+
+
+## Blank data are not inserted
+
+Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
+ignored and are not inserted by insert APIs.
+
+For more info, read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)

@@ -13,8 +13,7 @@ interface Entity : Parcelable {
     val id: Long?
 
     /**
-     * Returns true if the underlying data contains at least one non-null and non-empty piece of
-     * information.
+     * Returns true all property values are either null, empty, or blank.
      *
      * The [id] has no influence on the value this returns.
      */

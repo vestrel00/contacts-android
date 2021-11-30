@@ -363,13 +363,11 @@ launch {
         .queryWithPermission()
         ...
         .findWithContext()
-}
 
-val deferredResult = Contacts(context)
+    val deferredResult = Contacts(context)
         .insert()
         ...
         .commitAsync()
-launch {
     val result = deferredResult.await()
 }
 ```
