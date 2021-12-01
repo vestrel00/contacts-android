@@ -7,16 +7,20 @@ plugins {
 apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
-    compileSdkVersion versions.build.android.compileSdk
+    compileSdkVersion versions.android.compileSdk
 
     defaultConfig {
-        minSdkVersion versions.build.android.minSdk
-        targetSdkVersion versions.build.android.targetSdk
+        minSdkVersion versions.android.minSdk
+        targetSdkVersion versions.android.targetSdk
     }
 
     compileOptions {
-        sourceCompatibility versions.build.java.sourceCompatibility
-        targetCompatibility versions.build.java.targetCompatibility
+        sourceCompatibility versions.java.version
+        targetCompatibility versions.java.version
+    }
+
+    kotlinOptions {
+        jvmTarget = versions.java.version
     }
 }
 

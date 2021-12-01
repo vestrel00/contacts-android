@@ -448,7 +448,7 @@ handling APIs you want to use.
 All other modules in this library are **optional** and are just there for your convenience or for
 reference.
 
-I also made sure that **all core functions and entities are interoperable with Java 7+.** So, if 
+I also made sure that **all core functions and entities are interoperable with Java.** So, if 
 you were wondering why I’m using a semi-builder pattern instead of using named arguments with 
 default values, that is why. I’ve also made some other intentional decisions about API design to 
 ensure the best possible experience for both Kotlin and Java consumers without sacrificing Kotlin 
@@ -459,7 +459,6 @@ language standards. It is Kotlin-first, Java-second (with love and care).
 ## Requirements
 
 - Min SDK 19+
-- Java 7+
 
 ## Proguard
 

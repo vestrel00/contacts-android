@@ -5,11 +5,23 @@ I will be making sure that contributions follow the spirit of what I have create
 contributions will need my approval. As time passes, the community will become more and more
 familiar and comfortable with this library. Hopefully, in time, expert contributors will rise from
 the ashes with the contacts-spirit I've created instilled in them. When that time comes, not every
-contribution will need my approval and the community will drive the future <3
+contribution will need my approval and the community will (hopefully) drive the future <3
 
-With all that said, I only have a few simple rules for contributing.
+## Setup
 
-## Rules
+To open, build, and run this project, you will need to use 
+[Android Studio to Arctic Fox | 2020.3.1 Patch 3][android-studio] and later versions.
+
+If you run into any build issues, open up Android Studio preferences and make sure the following is 
+set correctly...
+
+- Build, Execution, Deployment -> Use Gradle from: 'gradlew-wrapper.properties' file
+- Build, Execution, Deployment -> Gradle JDK: Embedded JDK version 11.x.x
+- Language & Frameworks -> Kotlin -> Current Kotlin plugin version: 203.1.6.0-release-xxx-xxxxxx.x
+
+Restart Android Studio, clean, build, and invalidate caches & restart.
+
+## Guidelines
 
 1. Simple is better.
     - Over-engineering is not welcome here. Don't over complicate function implementations
@@ -33,3 +45,5 @@ With all that said, I only have a few simple rules for contributing.
 5. Uphold the spirit of Contacts, Reborn!
     - Don't deviate from the existing API design. New code should follow existing API design to
       promote uniformity. It'll be easier to maintain and cross-pollinate.
+      
+[android-studio]: https://developer.android.com/studio

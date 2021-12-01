@@ -8,24 +8,20 @@ plugins {
 apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
-    compileSdkVersion versions.build.android.compileSdk
+    compileSdkVersion versions.android.compileSdk
 
     defaultConfig {
-        minSdkVersion versions.build.android.minSdk
-        targetSdkVersion versions.build.android.targetSdk
+        minSdkVersion versions.android.minSdk
+        targetSdkVersion versions.android.targetSdk
     }
 
     compileOptions {
-        sourceCompatibility versions.build.java.sourceCompatibility
-        targetCompatibility versions.build.java.targetCompatibility
+        sourceCompatibility versions.java.version
+        targetCompatibility versions.java.version
     }
 
-    lintOptions {
-        // This class implements Parcelable but does not provide a CREATOR field [ParcelCreator]
-        // Lint does not detect that Parcelize is generating the Parcelable implementations...
-        // FIXME? Revisit this later after upgrading all dependencies and tools to the latest
-        // version. That might do the trick?
-        abortOnError false
+    kotlinOptions {
+        jvmTarget = versions.java.version
     }
 }
 

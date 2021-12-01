@@ -1,25 +1,25 @@
 buildscript {
     ext {
         versions = [
-                build : [
-                        java   : [
-                                targetCompatibility: JavaVersion.VERSION_1_7,
-                                sourceCompatibility: JavaVersion.VERSION_1_7
-                        ],
-                        android: [
-                                minSdk    : 19,
-                                targetSdk : 30,
-                                compileSdk: 30,
+                android: [
+                        minSdk    : 19,
+                        targetSdk : 30,
+                        compileSdk: 30,
 
-                                gradle    : '4.1.0',
-                        ]
+                        gradle    : '7.0.3',
                 ],
 
-                dexter: '6.2.1', // Used only by permissions module!
+                java   : [
+                        version: JavaVersion.VERSION_11,
+                ],
 
                 kotlin: [
-                        core      : '1.4.21',
-                        coroutines: '1.4.2'
+                        core      : '1.6.0',
+                        coroutines: '1.6.0-RC'
+                ],
+
+                libraries: [
+                    dexter: '6.2.1', // Used only by permissions module!
                 ]
         ]
 
@@ -30,10 +30,10 @@ buildscript {
                 // affect consumers that don't use the permissions module. However, it does affect
                 // devs working on this project (slower build time). The External Libraries of
                 // Android Studio gets polluted =(
-                dexter: "com.karumi:dexter:$versions.dexter", // Used only by permissions module!
+                dexter: "com.karumi:dexter:$versions.libraries.dexter", // Used only by permissions module!
 
                 kotlin: [
-                        standardLib      : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin.core",
+                        standardLib      : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin.core",
                         coroutines       : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlin.coroutines",
                         coroutinesAndroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlin.coroutines"
                 ]
@@ -46,7 +46,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$versions.build.android.gradle"
+        classpath "com.android.tools.build:gradle:$versions.android.gradle"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin.core"
     }
 }
