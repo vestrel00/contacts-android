@@ -1,35 +1,40 @@
 # How do I get a list of specific data kinds?
 
-This library provides the `DataQuery` API that allows you to get a list of specific data kinds.
+This library provides the `DataQueryFactory` API that allows you to get a list of specific data kinds 
+directly without having to get them from Contacts/RawContacts.
 
-An instance of the `DataQuery` API is obtained by,
+An instance of the `DataQueryFactory` API is obtained by,
 
 ```kotlin
 val query = Contacts(context).data().query()
 ```
 
-## Common data queries
+> To retrieve all kinds of data via Contacts/RawContacts, read 
+> [How do I get a list of contacts in the simplest way?](/contacts-android/howto/howto-query-contacts.html)
+> and [How do I get a list of contacts in a more advanced way?](/contacts-android/howto/howto-query-contacts-advanced.html)
 
-The `DataQuery` API provides instances of `CommonDataQuery` for every data kind in the library.
+## Data queries
 
-The full list of queries are defined in the `CommonDataQuery` interface. Here it is for reference,
+The `DataQueryFactory` API provides instances of `DataQuery` for every data kind in the library.
+
+The full list of queries are defined in the `DataQueryFactory` interface. Here it is for reference,
 
 ```kotlin
-val dataQuery = Contacts(context).data().query()
+val dataQueryFactory = Contacts(context).data().query()
 
-val addressesQuery = dataQuery.addresses()
-val emailsQuery = dataQuery.emails()
-val eventsQuery = dataQuery.events()
-val groupMembershipsQuery = dataQuery.groupMemberships()
-val imsQuery = dataQuery.ims()
-val namesQuery = dataQuery.names()
-val nicknamesQuery = dataQuery.nicknames()
-val notesQuery = dataQuery.notes()
-val organizationsQuery = dataQuery.organizations()
-val phonesQuery = dataQuery.phones()
-val relationsQuery = dataQuery.relations()
-val sipAddressesQuery = dataQuery.sipAddresses()
-val websitesQuery = dataQuery.websites()
+val addressesQuery = dataQueryFactory.addresses()
+val emailsQuery = dataQueryFactory.emails()
+val eventsQuery = dataQueryFactory.events()
+val groupMembershipsQuery = dataQueryFactory.groupMemberships()
+val imsQuery = dataQueryFactory.ims()
+val namesQuery = dataQueryFactory.names()
+val nicknamesQuery = dataQueryFactory.nicknames()
+val notesQuery = dataQueryFactory.notes()
+val organizationsQuery = dataQueryFactory.organizations()
+val phonesQuery = dataQueryFactory.phones()
+val relationsQuery = dataQueryFactory.relations()
+val sipAddressesQuery = dataQueryFactory.sipAddresses()
+val websitesQuery = dataQueryFactory.websites()
 
 // Photos are intentionally left out as it is internal to the library.
 ```
@@ -161,7 +166,7 @@ The `find` function optionally takes in a function that, if it returns true, wil
 processing as soon as possible. The function is called numerous times during query processing to
 check if processing should stop or continue. This gives you the option to cancel the query.
 
-This is useful when used in multi-threaded environments. One scenario where this would be commonly
+This is useful when used in multi-threaded environments. One scenario where this would be frequently
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.
 
@@ -200,18 +205,19 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Profile data
 
-The `DataQuery` API also supports querying the Profile (device owner) contact data. To get an 
-instance of this API for Profile queries,
+The `DataQueryFactory` API (and its `DataQuery` instances) also supports querying the Profile 
+(device owner) contact data. To get an instance of this API for Profile data queries,
 
 ```kotlin
-val profileDataQuery = Contacts(context).profile().data().query()
+val profileDataQueryFactory = Contacts(context).profile().data().query()
 ```
 
 All queries will be limited to the Profile, whether it exists or not.
 
 ## Custom data support
  
-The `DataQuery` API supports custom data. For more info, read [How do I use query APIs with custom data?](/contacts-android/howto/howto-query-custom-data.html)
+The `DataQueryFactory` API (and its `DataQuery` instances) supports custom data. For more info, 
+read [How do I use query APIs to get custom data?](/contacts-android/howto/howto-query-custom-data.html)
 
 ## Using the `where` function to specify matching criteria
 

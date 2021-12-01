@@ -1,13 +1,15 @@
 # How do I retrieve groups?
 
 This library provides the `GroupsQuery` API that allows you to get groups associated with an 
-`Account` or `RawContact`.
+`Account`.
 
 An instance of the `GroupsQuery` API is obtained by,
 
 ```kotlin
 val query = Contacts(context).groups().query()
 ```
+
+## A basic query
 
 To get all of the groups for all accounts,
 
@@ -102,7 +104,7 @@ The `find` function optionally takes in a function that, if it returns true, wil
 processing as soon as possible. The function is called numerous times during query processing to
 check if processing should stop or continue. This gives you the option to cancel the query.
 
-This is useful when used in multi-threaded environments. One scenario where this would be commonly
+This is useful when used in multi-threaded environments. One scenario where this would be frequently
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.
 

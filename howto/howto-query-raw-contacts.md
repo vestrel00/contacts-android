@@ -15,6 +15,8 @@ An instance of the `AccountsRawContactsQuery` API is obtained by,
 val query = Contacts(context).accounts().queryRawContacts()
 ```
 
+## A basic query
+
 To get all RawContacts as blanks, 
 
 ```kotlin
@@ -110,7 +112,7 @@ The `find` function optionally takes in a function that, if it returns true, wil
 processing as soon as possible. The function is called numerous times during query processing to
 check if processing should stop or continue. This gives you the option to cancel the query.
 
-This is useful when used in multi-threaded environments. One scenario where this would be commonly
+This is useful when used in multi-threaded environments. One scenario where this would be frequently
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.
 

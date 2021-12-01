@@ -15,7 +15,7 @@ val query = Contacts(context).broadQuery()
 > For a more granular, advanced queries, use the `Query` API.
 > For more info, read [How do I get a list of contacts in a more advanced way?](/contacts-android/howto/howto-query-contacts-advanced.html)
 
-> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-specific-data-kinds.html)
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-data-sets.html)
 
 > If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/contacts-android/howto/howto-query-profile.html)
 
@@ -195,7 +195,7 @@ The `find` function optionally takes in a function that, if it returns true, wil
 processing as soon as possible. The function is called numerous times during query processing to
 check if processing should stop or continue. This gives you the option to cancel the query.
 
-This is useful when used in multi-threaded environments. One scenario where this would be commonly
+This is useful when used in multi-threaded environments. One scenario where this would be frequently
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.
 
@@ -235,7 +235,7 @@ You may, of course, use other permission handling libraries or just do it yourse
 ## Custom data support
  
 The `BroadQuery` API does not include custom data in the matching process. However, you may still
-use the `include` function with custom data. For more info, read [How do I use query APIs with custom data?](/contacts-android/howto/howto-query-custom-data.html)
+use the `include` function with custom data. For more info, read [How do I use query APIs to get custom data?](/contacts-android/howto/howto-query-custom-data.html)
 
 ##  Using the `whereAnyContactDataPartiallyMatches` function to specify matching criteria
 

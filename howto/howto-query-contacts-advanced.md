@@ -16,7 +16,7 @@ val query = Contacts(context).query()
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
 > For more info, read [How do I get a list of contacts in the simplest way?](/contacts-android/howto/howto-query-contacts.html)
 
-> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-specific-data-kinds.html)
+> If you want to query Data directly instead of Contacts, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-data-sets.html)
 
 > If you want to get the device owner Contact Profile, read [How do I get the device owner Contact profile?](/contacts-android/howto/howto-query-profile.html)
 
@@ -59,9 +59,9 @@ val contacts = Contacts(context)
     .find()
 ```
 
-## A simple query
+## A basic query
 
-This query API may also be used to make simpler queries.
+This query API may also be used to make basic, simpler queries.
 
 To get all contacts ordered by the primary display name,
 
@@ -240,7 +240,7 @@ The `find` function optionally takes in a function that, if it returns true, wil
 processing as soon as possible. The function is called numerous times during query processing to
 check if processing should stop or continue. This gives you the option to cancel the query.
 
-This is useful when used in multi-threaded environments. One scenario where this would be commonly
+This is useful when used in multi-threaded environments. One scenario where this would be frequently
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.
 
@@ -279,7 +279,7 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `Query` API supports custom data. For more info, read [How do I use query APIs with custom data?](/contacts-android/howto/howto-query-custom-data.html)
+The `Query` API supports custom data. For more info, read [How do I use query APIs to get custom data?](/contacts-android/howto/howto-query-custom-data.html)
      
 ## Using the `where` function to specify matching criteria
 

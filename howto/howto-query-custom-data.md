@@ -1,4 +1,4 @@
-# How do I use query APIs with custom data?
+# How do I use query APIs to get custom data?
 
 This library provides several query APIs that support custom data integration.
 
@@ -9,15 +9,32 @@ This library provides several query APIs that support custom data integration.
 3. `ProfileQuery`
     - [How do I get the device owner Contact profile?](/contacts-android/howto/howto-query-profile.html)
 4. `DataQuery`
-    - [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-specific-data-kinds.html)
-
-In particular the query APIs typically provide `include`, `where`, and `orderBy` functions. These
-functions are compatible with custom data.
-
-> For more info about custom data, read [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
+    - [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-data-sets.html)
 
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
 and `Gender` custom data.
+
+> For more info, read [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
+
+## Getting custom data from a RawContact
+
+Custom data, just like regular data kinds, are attached to a RawContact. They follow the same rules
+as regular data kinds. 
+
+For example, you are able to get the handle names and gender of a RawContact,
+
+```kotlin
+val handleNames = rawContact.handleNames(contactsApi)
+val gender = rawContact.gender(contactsApi)
+```
+
+> For more info, read [How do I learn more about the API entities?](/contacts-android/howto/howto-learn-more-about-api-entities.html)
+
+There should also be extensions that allow you to get custom data from a Contact, which can be made 
+up of one or more RawContacts.
+
+> For more info, read [How do I integrate the gender custom data?](/contacts-android/howto/howto-integrate-gender-custom-data.html)
+> and [How do I integrate the handle name custom data?](/contacts-android/howto/howto-integrate-handlename-custom-data.html)
 
 ## The `include` function and custom data
 
@@ -89,4 +106,4 @@ val handleNames = Contacts(context)
     .find()
 ```
 
-For more info, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-specific-data-kinds.html)
+For more info, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-data-sets.html)

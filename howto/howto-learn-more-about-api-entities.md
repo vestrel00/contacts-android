@@ -53,7 +53,7 @@ This library provides entities that model everything in the Contacts Provider da
 - `RawContact`
     - Contains contact data that belong to an account.
     - There may be more than one RawContact per Contact.
-- `CommonDataEntity`
+- `DataEntity`
     - A specific kind of data of a RawContact. These entities model the common data kinds that are
       provided by the Contacts Provider.
     - `Address`
@@ -84,7 +84,7 @@ mutating API functions).
 Custom data types may also be integrated into the contacts database (though not synced across devices).
 Read more in [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
 
-## Common data kinds count restrictions
+## Data kinds count restrictions
 
 A `RawContact` may have at most one OR no limits of certain kinds of data.
 
@@ -115,7 +115,7 @@ disables consumers from violating them.
 The core library does not explicitly expose count restrictions to consumers. However, it is exposed
 when integrating custom data via the `CustomDataCountRestriction`.
 
-## Common data kinds Account restrictions
+## Data kinds Account restrictions
 
 Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
 associated with an Account). These data kinds are;
@@ -133,7 +133,7 @@ The Contacts Provider may or may not enforce these Account restrictions. However
 app imposes these restrictions. Therefore, this library also imposes these restrictions and
 disables consumers from violating them.
 
-## Automatic common data kinds creation
+## Automatic data kinds creation
 
 An entry of each of the following data kinds are automatically created for all contacts, if not
 provided;
@@ -143,16 +143,15 @@ provided;
 - `Nickname`, underlying value defaults to null
 - `Note`, underlying value defaults to null
 
-
-
 This automatic creation occur automatically in the background (typically after creation) only for
 RawContacts that are associated with an Account. If a valid account is provided, membership to the
 (auto add) system group is automatically created immediately by the Contacts Provider at the time of
 creation. The name, nickname, and note are automatically created at a later time.
 
 > Note that the query APIs in this library do not return blanks in results. In this case, the `Name`, 
-> `Nickname`, and `Note` will not be included in the RawContact because their underlying data are all
-> null. Blanks are also deleted on update.
+> `Nickname`, and `Note` will not be included in the RawContact because their primary values are all
+> null. Blanks are also ignored on insert and deleted on update. 
+> For more info, read [How do I learn more about "blank" data?](/contacts-android/howto/howto-learn-more-about-blank-data.html)
 
 If a valid account is not provided, no entries of the above are automatically created.
 

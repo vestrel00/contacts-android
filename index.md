@@ -22,12 +22,16 @@ as the native Android Contacts app, this library has you covered!
 The GitHub wiki hosts the [project roadmap][project-roadmap]. It contains all planned work and 
 release schedules, which are organized using issues, milestones, and projects.
 
-You can also learn more about this library through the articles I wrote about it =)
-
+You can also learn more about this library through the articles I wrote about it =) 
+ 
 1. [Android Contacts, Reborn][medium-blog]
 2. [I spent 3 years writing an Android Contacts API in Kotlin with Java interop. What I’ve learned…][devto-blog]
 
 **Note: This repo was open-sourced on October 4, 2021. It was private prior to that.**
+
+## Features
+
+> All features below are links to howto pages. Click on each of them to learn more!
 
 The core library supports;
 - All of the kinds of Data in the Contacts Provider;
@@ -35,11 +39,11 @@ The core library supports;
 - [Custom data integration](/howto/howto-integrate-custom-data.md).
 - [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
   of Contacts and RawContacts from zero or more Accounts. [Include only desired fields](/howto/howto-include-only-desired-data.md)
-  in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria
-  in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table columns.
+  in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria 
+  in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table columns. 
   Limit and offset functions.
 - [Insert](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
-  which leads to the insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
+  causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
 - [Update](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
 - [Delete](/howto/howto-delete-contacts.md) one or more Contacts, RawContacts, and Data.
 - [Query](/howto/howto-query-profile.md), [insert](/howto/howto-insert-profile.md),
@@ -47,9 +51,9 @@ The core library supports;
    Profile (device owner) Contact, RawContact, and Data.
 - [Query](/howto/howto-query-groups.md), [insert](/howto/howto-insert-groups.md),
   [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) Groups per Account.
-- [Query](/howto/howto-query-specific-data-kinds.md), [insert](/howto/howto-insert-specific-data-kinds.md)
+- [Query](/howto/howto-query-data-sets.md), [insert](/howto/howto-insert-data-sets.md)
   [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
-- [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md),
+- [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
   [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.
 - [Query](/howto/howto-query-accounts.md) for Accounts in the system or RawContacts table.
 - [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
@@ -93,7 +97,7 @@ To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.7'
+     implementation 'com.github.vestrel00:contacts-android:0.1.8'
 }
 ```
 
@@ -101,7 +105,7 @@ To import specific modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.7'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.8'
 }
 ```
 
@@ -145,7 +149,7 @@ That's it! BUT, THAT IS BORING! Let's take a look at something more advanced…
 
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
 the results) ordered by display name in descending order, matching ALL of these rules;
-- a first name starting with "leo"
+- a first name starting with "leo" 
 - has emails from gmail or hotmail
 - lives in the US
 - has been born prior to making this query
@@ -261,9 +265,9 @@ val emails = Contacts(context)
     .find()
 ```
 
-It's not just for emails. It's for all common data kinds (including custom data).
+It's not just for emails. It's for all data kinds (including custom data).
 
-> For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-specific-data-kinds.md)
+> For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-data-sets.md)
 
 To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
@@ -360,13 +364,11 @@ launch {
         .queryWithPermission()
         ...
         .findWithContext()
-}
 
-val deferredResult = Contacts(context)
+    val deferredResult = Contacts(context)
         .insert()
         ...
         .commitAsync()
-launch {
     val result = deferredResult.await()
 }
 ```
@@ -390,17 +392,17 @@ Howtos, visit the [howto directory](/howto/). For a sample app reference, take a
 
 ## All APIs in the library are optimized!
 
-Some other APIs or util functions out there typically perform one internal database query per
-contact returned. They do this to fetch the data per contact. This means that if there are
-1,000 matching contacts, then an extra 1,000 internal database queries are performed!
+Some other APIs or util functions out there typically perform one internal database query per 
+contact returned. They do this to fetch the data per contact. This means that if there are 
+1,000 matching contacts, then an extra 1,000 internal database queries are performed! 
 This is not cool!
 
-To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at
-least two and at most six or seven internal database queries no matter how many contacts are
-matched! Even if there are 100,000 contacts matched, the library will only perform two to seven
+To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at 
+least two and at most six or seven internal database queries no matter how many contacts are 
+matched! Even if there are 100,000 contacts matched, the library will only perform two to seven 
 internal database queries (depending on your query parameters).
 
-Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support
+Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
 **pagination** with `limit` and `offset` functions :sunglasses:
 
 **Cancellations** are also supported! To cancel a query amid execution,
@@ -409,15 +411,15 @@ Of course, if you don't want to fetch all hundreds of thousands of contacts, the
 .find { returnTrueIfQueryShouldBeCancelled() }
 ```
 
-The find function optionally takes in a function that, if it returns true, will cancel query
-processing as soon as possible. The function is called numerous times during query processing to
+The find function optionally takes in a function that, if it returns true, will cancel query 
+processing as soon as possible. The function is called numerous times during query processing to 
 check if processing should stop or continue. This gives you the option to cancel the query.
 
-This is useful when used in multi-threaded environments. One scenario where this would be commonly
+This is useful when used in multi-threaded environments. One scenario where this would be frequently 
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.
 
-For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is
+For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is 
 cancelled,
 
 ```kotlin
@@ -434,19 +436,19 @@ launch {
 
 **The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!**
 All core functions of the API live in the `core` module, which you can import to your project all by
-itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D
+itself. Don't believe me? Take a look at the dependencies in the `core/build.gradle` :D 
 
-So, feel free to use the core API however you want with whatever libraries or frameworks you want,
-such as Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions
+So, feel free to use the core API however you want with whatever libraries or frameworks you want, 
+such as Reactive, Coroutines/Flow, AsyncTask (hope not), WorkManager, and whatever permissions 
 handling APIs you want to use.
 
 All other modules in this library are **optional** and are just there for your convenience or for
 reference.
 
-I also made sure that **all core functions and entities are interoperable with Java 7+.** So, if
-you were wondering why I’m using a semi-builder pattern instead of using named arguments with
-default values, that is why. I’ve also made some other intentional decisions about API design to
-ensure the best possible experience for both Kotlin and Java consumers without sacrificing Kotlin
+I also made sure that **all core functions and entities are interoperable with Java.** So, if 
+you were wondering why I’m using a semi-builder pattern instead of using named arguments with 
+default values, that is why. I’ve also made some other intentional decisions about API design to 
+ensure the best possible experience for both Kotlin and Java consumers without sacrificing Kotlin 
 language standards. It is Kotlin-first, Java-second (with love and care).
 
 > Modules other than the core module are not guaranteed to be compatible with Java.
@@ -454,7 +456,6 @@ language standards. It is Kotlin-first, Java-second (with love and care).
 ## Requirements
 
 - Min SDK 19+
-- Java 7+
 
 ## Proguard
 

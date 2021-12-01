@@ -9,6 +9,12 @@ An instance of the `ProfileQuery` API is obtained by,
 val query = Contacts(context).profile().query()
 ```
 
+> If you want to get non-Profile Contacts, read 
+> [How do I get a list of contacts in the simplest way?](/contacts-android/howto/howto-query-contacts.html) and
+> [How do I get a list of contacts in a more advanced way?](/contacts-android/howto/howto-query-contacts-advanced.html)
+
+## A basic query
+
 To get the profile Contact,
 
 ```kotlin
@@ -112,6 +118,10 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 Queries require the `android.permission.READ_CONTACTS` permission. If not granted, the query will 
 do nothing and return null.
 
+> For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but
+> only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
+> prior to installation instead of at runtime.
+
 To perform the query with permission, use the extensions provided in the `permissions` module.
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
 
@@ -119,4 +129,4 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `ProfilQuery` API supports custom data. For more info, read [How do I use query APIs with custom data?](/contacts-android/howto/howto-query-custom-data.html)
+The `ProfilQuery` API supports custom data. For more info, read [How do I use query APIs to get custom data?](/contacts-android/howto/howto-query-custom-data.html)

@@ -1,7 +1,357 @@
 # How do I create/insert contacts?
 
-TODO
+This library provides the `Insert` API that allows you to insert one or more RawContacts and Data.
 
-Note for people looking at this file, the code and documentation within the code is already complete. 
-I'm in the process of writing these howto pages to provide examples and more explanations on how 
-to use the APIs provided in this library.
+The insertion of a RawContact triggers automatic insertion of a new Contact subject to automatic
+aggregation by the Contacts Provider.
+
+An instance of the `Insert` API is obtained by,
+
+```kotlin
+val insert = Contacts(context).insert()
+```
+
+> If you want to create/insert the device owner Contact Profile, read [How do I create/insert the device owner Contact profile?](/contacts-android/howto/howto-insert-profile.html)
+
+> If you want to insert Data into a new or existing contact, read [How do I create/insert data into new or existing contacts?](/contacts-android/howto/howto-insert-data-sets.html)
+
+## A basic insert
+
+To create/insert a contact with a name of "John Doe" who works at Amazon with a work email of
+"john.doe@amazon.com" (in Kotlin),
+
+```kotlin
+val insertResult = Contacts(context)
+    .insert()
+    .rawContacts(MutableRawContact().apply {
+        name = MutableName().apply {
+            givenName = "John"
+            familyName = "Doe"
+        }
+        organization = MutableOrganization().apply {
+            company = "Amazon"
+            title = "Superstar"
+        }
+        emails.add(MutableEmail().apply {
+            address = "john.doe@amazon.com"
+            type = Email.Type.WORK
+        })
+    })
+    .commit()
+```
+
+Or alternatively, in a more Kotlinized style,
+
+```kotlin
+val insertResult = Contacts(context)
+    .insert()
+    .rawContact {
+        setName {
+            givenName = "John"
+            familyName = "Doe"
+        }
+        setOrganization {
+            company = "Amazon"
+            title = "Superstar"
+        }
+        addEmail {
+            address = "john.doe@amazon.com"
+            type = Email.Type.WORK
+        }
+    }
+    .commit()
+```
+
+## Allowing blanks
+
+The API allows you to specify if you want to be able to insert blank contacts or not,
+
+```kotlin
+.allowBlanks(true|false)
+```
+
+For more info, read [How do I learn more about "blank" contacts?](/contacts-android/howto/howto-learn-more-about-blank-contacts.html)
+
+## Blank data are not inserted
+
+Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
+ignored and are not inserted by insert APIs.
+
+For more info, read [How do I learn more about "blank" data?](/contacts-android/howto/howto-learn-more-about-blank-data.html)
+
+## Associating an Account
+
+New RawContacts can be associated with an Account in order to enable syncing, 
+
+```kotlin
+.forAccount(account)
+```
+
+For example, to associated the new RawContact to an account,
+
+```kotlin
+.forAccount(Account("john.doe@gmail.com", "com.google"))
+```
+
+> For more info, read [How do I query for Accounts?](/contacts-android/howto/howto-query-accounts.html)
+
+If no Account is provided, or null is provided, or if an incorrect account is provided, the 
+RawContacts inserted will not be associated with an Account. RawContacts inserted without an 
+associated account are considered local or device-only contacts, which are not synced.
+     
+> For more info, read [How do I sync contact data across devices?](/contacts-android/howto/howto-sync-contact-data.html)
+
+**Lollipop (API 22) and below**
+
+When an Account is added, from a state where no accounts have yet been added to the system, the
+Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
+RawContacts table to that Account's name and type.
+
+RawContacts inserted without an associated account will automatically get assigned to an account if
+there are any available. This may take a few seconds, whenever the Contacts Provider decides to do
+it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
+back to an Account.
+
+**Marshmallow (API 23) and above**
+
+The Contacts Provider no longer associates local contacts to an account when an account is or
+becomes available. Local contacts remain local.
+
+**Account removal**
+
+Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
+Groups tables locally. This includes user Profile data in those tables.
+
+## Including only specific data
+
+To include only the given set of fields (data) in each of the insert operation,
+
+```kotlin
+.include(fields)
+```
+
+For example, to only include email fields,
+
+```kotlin
+.include(Fields.Email.all)
+```
+
+For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
+
+## Executing the insert
+
+To execute the insert,
+
+```kotlin
+.commit()
+```
+
+### Handling the insert result
+
+The `commit` function returns a `Result`,
+
+```kotlin
+val contactsApi =  Contacts(context)
+val mutableRawContact1 = MutableRawContact().apply { ... }
+val mutableRawContact2 = MutableRawContact().apply { ... }
+
+val insertResult = contactsApi
+    .insert()
+    .rawContacts(mutableRawContact1, mutableRawContact2)
+    .commit()
+```
+
+To check if all inserts succeeded,
+
+```kotlin
+val allInsertsSuccessful = insertResult.isSuccessful
+```
+
+To check if a particular insert succeeded,
+
+```kotlin
+val firstInsertSuccessful = insertResult.isSuccessful(mutableRawContact1)
+```
+
+To get the RawContact IDs of all the newly created RawContacts,
+
+```kotlin
+val allRawContactIds = insertResult.rawContactIds
+```
+
+To get the RawContact ID of a particular RawContact,
+
+```kotlin
+val secondRawContactId = insertResult.rawContactId(mutableRawContact2)
+```
+
+Once you have the RawContact IDs, you can retrieve the newly created Contacts via the `Query` API,
+
+```kotlin
+val contacts = contactsApi
+    .query()
+    .where(Fields.RawContact.Id `in` allRawContactIds)
+    .find()
+```
+
+> For more info, read [How do I get a list of contacts in a more advanced way?](/contacts-android/howto/howto-query-contacts-advanced.html)
+
+Alternatively, you may use the extensions provided in `InsertResult`. To get all newly created
+Contacts,
+
+```kotlin
+val contacts = insertResult.contacts(contactsApi)
+```
+
+To get a particular contact,
+
+```kotlin
+val contact = insertResult.contacts(contactsApi, mutableRawContact1)
+```
+
+To instead get the RawContacts directly,
+
+```kotlin
+val rawContacts = insertResult.rawContacts(contactsApi)
+```
+
+To get a particular RawContact,
+
+```kotlin
+val rawContact = insertResult.rawContact(contactsApi, mutableRawContact2)
+```
+
+## Cancelling the insert
+
+To cancel an insert amid execution,
+
+```kotlin
+.commit { returnTrueIfInsertShouldBeCancelled() }
+```
+
+The `commit` function optionally takes in a function that, if it returns true, will cancel insert
+processing as soon as possible. The function is called numerous times during insert processing to
+check if processing should stop or continue. This gives you the option to cancel the insert.
+
+For example, to automatically cancel the insert inside a Kotlin coroutine when the coroutine is cancelled,
+
+```kotlin
+launch {
+    withContext(coroutineContext) {
+        val insertResult = insert.commit { !isActive }
+    }
+}
+```
+
+## Performing the insert and result processing asynchronously
+
+Inserts are executed when the `commit` function is invoked. The work is done in the same thread as
+the call-site. This may result in a choppy UI.
+
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
+For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/contacts-android/howto/howto-use-api-with-async-execution.html)
+
+You may, of course, use other multi-threading libraries or just do it yourself =)
+
+> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+
+## Performing the insert with permission
+
+Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS` 
+permissions. If not granted, the insert will do nothing and return a failed result.
+
+To perform the insert with permission, use the extensions provided in the `permissions` module.
+For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
+
+You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Custom data support
+ 
+The `Insert` API supports custom data. For more info, read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/contacts-android/howto/howto-insert-custom-data.html)
+
+## Insert a new RawContact with data of every kind
+
+Unless you are allowing blanks, you only need to provide at least one data kind when inserting a new
+contact in order for the operation to succeed. 
+
+If you want to provide data of every kind, which is useful when implementing a contact creation 
+screen,
+
+```kotlin
+val accountToAddContactTo = Account("vestrel00@pixar.com", "com.pixar")
+
+val insertResult = Contacts(context)
+    .insert()
+    .forAccount()
+    .rawContact {
+        setName {
+            givenName = "Buzz"
+            familyName = "Lightyear"
+        }
+        setNickname {
+            name = "Buzz"
+        }
+        setOrganization {
+            title = "Space Toy"
+            company = "Pixar"
+        }
+        addPhone {
+            number = "(555) 555-5555"
+            type = Phone.Type.CUSTOM
+            label = "Fake Number"
+        }
+        setSipAddress {
+            sipAddress = "sip:buzz.lightyear@pixar.com"
+        }
+        addEmail {
+            address = "buzz.lightyear@pixar.com"
+            type = Email.Type.WORK
+        }
+        addEmail {
+            address = "buzz@lightyear.net"
+            type = Email.Type.HOME
+        }
+        addAddress {
+            formattedAddress = "1200 Park Ave"
+            type = Address.Type.WORK
+        }
+        addIm {
+            data = "buzzlightyear@skype.com"
+            protocol = Im.Protocol.SKYPE
+        }
+        addWebsite {
+            url = "https://www.pixar.com"
+        }
+        addWebsite {
+            url = "https://www.disney.com"
+        }
+        addEvent {
+            date = EventDate.from(year = 1995, month = 10, dayOfMonth = 22)
+            type = Event.Type.BIRTHDAY
+        }
+        addRelation {
+            name = "Childhood friend"
+            type = Relation.Type.CUSTOM
+            label = "Imaginary Friend"
+        }
+        groupMemberships.addAll(
+            contactsApi
+                .groups()
+                .query()
+                .accounts(accountToAddContactTo)
+                .where(
+                    (GroupsFields.Favorites equalTo true) or
+                            (GroupsFields.Title contains "friend")
+                )
+                .find()
+                .toGroupMemberships()
+        )
+        setNote {
+            note = "The best toy in the world!"
+        }
+    }
+    .commit()
+```
+
+Full-sized photos (and by API design thumbnails) can only be set after creating the contact.
+For more info, read [How do I get/set/remove full-sized and thumbnail photos?](/contacts-android/howto/howto-get-set-remove-contact-raw-contact-photo.html)
