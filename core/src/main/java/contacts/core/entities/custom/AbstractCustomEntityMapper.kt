@@ -2,6 +2,7 @@ package contacts.core.entities.custom
 
 import android.database.Cursor
 import contacts.core.AbstractCustomDataField
+import contacts.core.entities.MutableCustomData
 import contacts.core.entities.mapper.EntityMapper
 
 /**

@@ -1,6 +1,7 @@
 package contacts.core.entities.custom
 
 import android.os.Parcelable
+import contacts.core.entities.MutableCustomData
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

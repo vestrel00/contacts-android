@@ -5,7 +5,6 @@ import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.*
 import contacts.core.entities.cursor.rawContactsCursor
-import contacts.core.entities.custom.ImmutableCustomData
 import contacts.core.entities.mapper.entityMapperFor
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
