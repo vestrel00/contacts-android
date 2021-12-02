@@ -6,7 +6,7 @@ import contacts.core.entities.*
 /**
  * Creates instance of [DataEntityType].
  */
-interface DataEntityTypeFactory<E : DataEntity, T : DataEntity.Type> {
+sealed interface DataEntityTypeFactory<E : DataEntity, T : DataEntity.Type> {
 
     /**
      * Returns all the system types.

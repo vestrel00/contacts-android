@@ -5,7 +5,7 @@ import contacts.core.entities.*
 /**
  * Creates instances of [DataEntity].
  */
-interface DataEntityFactory<E : DataEntity> {
+sealed interface DataEntityFactory<E : DataEntity> {
 
     /**
      * Returns a new instance of [E].

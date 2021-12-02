@@ -32,6 +32,11 @@ import contacts.core.util.unsafeLazy
  * Represents a database field / column.
  *
  * All concrete implementations of this must be data classes or implement equals and hashCode.
+ *
+ * ## Dev notes
+ *
+ * This is a sealed class instead of a sealed interface because we want to keep some things internal
+ * and also initialize some properties.
  */
 sealed class Field {
 
@@ -829,6 +834,8 @@ class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>(
  *
  * This had to be declared here instead of in the [contacts.core.entities.custom] package because
  * [DataField] is sealed.
+ *
+ * This is not sealed so that it can be extended by consumers.
  */
 abstract class AbstractCustomDataField(
     /**
