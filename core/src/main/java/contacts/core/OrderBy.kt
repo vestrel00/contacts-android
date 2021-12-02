@@ -57,6 +57,8 @@ fun <T : Field> Sequence<T>.desc(ignoreCase: Boolean = DEFAULT_IGNORE_CASE): Seq
  *
  * The type [T] is not exactly used in this class itself. Rather, it is used for adding type
  * restrictions when constructing instances at compile time.
+ *
+ * This is a sealed class instead of a sealed interface because we want to keep some stuff internal.
  */
 sealed class OrderBy<out T : Field> {
 

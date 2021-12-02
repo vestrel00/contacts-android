@@ -7,18 +7,15 @@ import java.util.*
 
 /**
  * [Entity] in the Contacts table.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
+// See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
 sealed interface ContactEntity : Entity {
     /**
      * The id of the Contacts row this represents.
      *
      * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
      */
-    abstract override val id: Long?
+    override val id: Long?
 
     /**
      * A list of [RawContactEntity]s that are associated with this contact.
@@ -27,7 +24,7 @@ sealed interface ContactEntity : Entity {
      * native Contacts app when displaying the linked RawContacts and when inserting new data for a
      * Contact with multiple linked RawContacts.
      */
-    abstract val rawContacts: List<RawContactEntity>
+    val rawContacts: List<RawContactEntity>
 
     /**
      * The standard text shown as the contact's display name, based on the best available
@@ -69,7 +66,7 @@ sealed interface ContactEntity : Entity {
      * This is a read-only attribute as the Contacts Provider automatically sets this value.
      * This is ignored for insert, update, and delete functions.
      */
-    abstract val displayNamePrimary: String?
+    val displayNamePrimary: String?
 
     /**
      * An alternative representation of the display name, such as "family name first" instead of
@@ -79,7 +76,7 @@ sealed interface ContactEntity : Entity {
      * This is a read-only attribute as the Contacts Provider automatically sets this value.
      * This is ignored for insert, update, and delete functions.
      */
-    abstract val displayNameAlt: String?
+    val displayNameAlt: String?
 
     /**
      * Timestamp of when this contact was last updated. This includes updates to all data associated
@@ -89,7 +86,7 @@ sealed interface ContactEntity : Entity {
      * This is a read-only attribute as the Contacts Provider automatically sets this value.
      * This is ignored for insert, update, and delete functions.
      */
-    abstract val lastUpdatedTimestamp: Date?
+    val lastUpdatedTimestamp: Date?
 
     /**
      * Contains options for this contact and all of the [RawContact]s associated with it (not
@@ -102,7 +99,7 @@ sealed interface ContactEntity : Entity {
      * This options instance will be ignored for update operations. Use the ContactOptions extension
      * functions to modify options or get the most up-to-date options.
      */
-    abstract val options: Options?
+    val options: Options?
 
     /**
      * The uri to the full-sized image of this contact. This full sized image is from the associated
@@ -112,7 +109,7 @@ sealed interface ContactEntity : Entity {
      * To get the latest photo as an InputStream/Bytes/Bitmap/BitmapDrawable or set or remove photo,
      * use the ContactPhoto extensions.
      */
-    abstract val photoUri: Uri?
+    val photoUri: Uri?
 
     /**
      * The uri to the thumbnail-sized version of the [photoUri]. This thumbnail image is from the
@@ -121,7 +118,7 @@ sealed interface ContactEntity : Entity {
      * To get the latest photo thumbnail as an InputStream/Bytes/Bitmap/BitmapDrawable or set or
      * remove photo thumbnail, use the ContactPhoto extensions.
      */
-    abstract val photoThumbnailUri: Uri?
+    val photoThumbnailUri: Uri?
 
     /**
      * True if this contact has at least one RawContact that has at least one phone number
@@ -138,7 +135,7 @@ sealed interface ContactEntity : Entity {
      * number. However, this does provide an easy way to get contacts that have no phone numbers
      * without having to make two queries.
      */
-    abstract val hasPhoneNumber: Boolean?
+    val hasPhoneNumber: Boolean?
 
     /**
      * True if this contact represents the user's personal profile entry.

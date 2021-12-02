@@ -32,12 +32,9 @@ import contacts.core.util.unsafeLazy
  * Represents a database field / column.
  *
  * All concrete implementations of this must be data classes or implement equals and hashCode.
- *
- * ## Dev notes
- *
- * This is a sealed class instead of a sealed interface because we want to keep some things internal
- * and also initialize some properties.
  */
+// This is a sealed class instead of a sealed interface because we want to keep some things internal
+// and also initialize some properties.
 sealed class Field {
 
     /**

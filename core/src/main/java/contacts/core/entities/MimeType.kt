@@ -4,6 +4,10 @@ import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.custom.CustomDataException
 import contacts.core.entities.custom.CustomDataRegistry
 
+/**
+ * Determines the type of a particular row in the Data table.
+ */
+// Not using sealed interface here because we want to nest internal objects.
 sealed class MimeType {
 
     abstract val value: String

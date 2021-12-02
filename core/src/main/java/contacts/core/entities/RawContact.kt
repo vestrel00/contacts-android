@@ -7,11 +7,8 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * [Entity] in the RawContacts table.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
+// See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
 sealed interface RawContactEntity : Entity {
     /**
      * The id of the RawContacts row this represents.
