@@ -15,8 +15,6 @@ internal class BlankRawContactMapper(
             id = rawContactsCursor.rawContactId,
             contactId = rawContactsCursor.contactId,
 
-            photo = null,
-
             displayNamePrimary = rawContactsCursor.displayNamePrimary,
             displayNameAlt = rawContactsCursor.displayNameAlt
         )

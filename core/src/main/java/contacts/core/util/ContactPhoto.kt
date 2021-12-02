@@ -16,6 +16,7 @@ import contacts.core.entities.mapper.tempRawContactMapper
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
+import java.io.IOException
 import java.io.InputStream
 
 // region GET PHOTO
@@ -169,9 +170,10 @@ private fun uriInputStream(contacts: Contacts, uri: Uri?): InputStream? {
     try {
         val fd = contacts.applicationContext.contentResolver.openAssetFileDescriptor(uri, "r")
         inputStream = fd?.createInputStream()
-    } finally {
-        return inputStream
+    } catch (ioe: IOException) {
+        // do nothing
     }
+    return inputStream
 }
 
 // endregion
@@ -484,7 +486,7 @@ fun ContactEntity.removePhoto(contacts: Contacts): Boolean {
         return false
     }
 
-    val isSuccessful = contacts.applicationContext.contentResolver.applyBatch(
+    return contacts.applicationContext.contentResolver.applyBatch(
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.Contact.Id equalTo contactId)
@@ -492,16 +494,6 @@ fun ContactEntity.removePhoto(contacts: Contacts): Boolean {
             )
             .build()
     ) != null
-
-    if (isSuccessful) {
-        // Assume that all photo Data rows have been deleted and remove the photo instances from all
-        // RawContacts so that it will all be marked as blank if it has no other Data rows.
-        for (rawContact in rawContacts) {
-            rawContact.photo = null
-        }
-    }
-
-    return isSuccessful
 }
 
 // endregion

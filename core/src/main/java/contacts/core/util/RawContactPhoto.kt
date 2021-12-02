@@ -9,7 +9,6 @@ import android.net.Uri
 import android.provider.ContactsContract.RawContacts
 import contacts.core.*
 import contacts.core.entities.MimeType
-import contacts.core.entities.Photo
 import contacts.core.entities.RawContactEntity
 import contacts.core.entities.cursor.photoCursor
 import contacts.core.entities.operation.withSelection
@@ -17,6 +16,7 @@ import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.InputStream
 
 // region GET PHOTO
@@ -60,9 +60,10 @@ fun RawContactEntity.photoInputStream(contacts: Contacts): InputStream? {
     try {
         val fd = contacts.applicationContext.contentResolver.openAssetFileDescriptor(photoUri, "r")
         inputStream = fd?.createInputStream()
-    } finally {
-        return inputStream
+    } catch (ioe: IOException) {
+        // do nothing
     }
+    return inputStream
 }
 
 /**
@@ -370,17 +371,10 @@ internal fun RawContactEntity.doSetPhoto(contacts: Contacts, photoBytes: ByteArr
 
             isSuccessful = true
         }
-    } finally {
-        if (isSuccessful) {
-            // Assume that the photo Data row has been created and inject a photo instance into the
-            // entity so that it will not be marked as blank if it has no other Data rows.
-            // We could make a query here just to make sure but we won't to save time and CPU. Also,
-            // I don't know if the Data row is immediately created at this point.
-            photo = Photo()
-        }
-
-        return isSuccessful
+    } catch (ioe: IOException) {
+        // do nothing
     }
+    return isSuccessful
 }
 
 internal fun Bitmap.bytes(): ByteArray {
@@ -438,7 +432,7 @@ fun RawContactEntity.removePhoto(contacts: Contacts): Boolean {
         return false
     }
 
-    val isSuccessful = contacts.applicationContext.contentResolver.applyBatch(
+    return contacts.applicationContext.contentResolver.applyBatch(
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.RawContact.Id equalTo rawContactId)
@@ -446,16 +440,5 @@ fun RawContactEntity.removePhoto(contacts: Contacts): Boolean {
             )
             .build()
     ) != null
-
-    if (isSuccessful) {
-        // Assume that the photo Data row has been deleted and remove the photo instance from the
-        // entity so that it will be marked as blank if it has no other Data rows.
-        // We could make a query here just to make sure but we won't to save time and CPU. Also,
-        // I don't know if the Data row is immediately deleted at this point.
-        photo = null
-    }
-
-    return isSuccessful
 }
-
 // endregion

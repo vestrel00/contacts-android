@@ -12,29 +12,20 @@ import kotlinx.parcelize.Parcelize
  *
  * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-sealed class RawContactEntity : Entity {
+sealed interface RawContactEntity : Entity {
     /**
      * The id of the RawContacts row this represents.
      *
      * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
      */
-    abstract override val id: Long?
+    override val id: Long?
 
     /**
      * The ID of the [Contact] that this [RawContact] is associated with.
      *
      * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
      */
-    abstract val contactId: Long?
-
-    /**
-     * The [Photo] class does not have any real functional value. This exist only to prevent
-     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
-     *
-     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
-     * photos.
-     */
-    internal abstract var photo: Photo?
+    val contactId: Long?
 
     /**
      * True if this raw contact belongs to the user's personal profile entry.
@@ -122,9 +113,13 @@ data class RawContact internal constructor(
     val phones: List<Phone>,
 
     /**
-     * See [RawContactEntity.photo].
+     * The [Photo] class does not have any real functional value. This exist only to prevent
+     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
+     *
+     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
+     * photos.
      */
-    override var photo: Photo?,
+    internal val photo: Photo?,
 
     /**
      * An immutable list of relations.
@@ -153,11 +148,11 @@ data class RawContact internal constructor(
      */
     internal val customDataEntities: Map<String, CustomDataEntityHolder>
 
-) : RawContactEntity() {
+) : RawContactEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            name, nickname, note, organization, photo, sipAddress
+            name, nickname, note, organization, sipAddress
         ) && entitiesAreAllBlank(
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
             customDataEntities.values.flatMap { it.entities }
@@ -287,9 +282,13 @@ data class MutableRawContact internal constructor(
     var phones: MutableList<MutablePhone>,
 
     /**
-     * See [RawContactEntity.photo].
+     * The [Photo] class does not have any real functional value. This exist only to prevent
+     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
+     *
+     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
+     * photos.
      */
-    override var photo: Photo?,
+    internal var photo: Photo?,
 
     /**
      * Mutable version of [RawContact.relations].
@@ -314,7 +313,7 @@ data class MutableRawContact internal constructor(
      */
     internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
-) : RawContactEntity() {
+) : RawContactEntity {
 
     constructor() : this(
         null, null, mutableListOf(), mutableListOf(), mutableListOf(),
@@ -341,11 +340,6 @@ data class BlankRawContact internal constructor(
     override val contactId: Long?,
 
     /**
-     * See [RawContactEntity.photo].
-     */
-    override var photo: Photo?,
-
-    /**
      * The RawContact's display name (given name first), which may be different from the parent
      * Contact's display name if it is made up of more than one RawContact.
      */
@@ -361,7 +355,7 @@ data class BlankRawContact internal constructor(
     // display name for Contacts, not for RawContacts.
     val displayNameAlt: String?
 
-) : RawContactEntity() {
+) : RawContactEntity {
 
     @IgnoredOnParcel
     override val isBlank: Boolean = true
@@ -388,13 +382,13 @@ internal data class TempRawContact constructor(
     var note: Note?,
     var organization: Organization?,
     var phones: MutableList<Phone>,
-    override var photo: Photo?,
+    var photo: Photo?,
     var relations: MutableList<Relation>,
     var sipAddress: SipAddress?,
     var websites: MutableList<Website>,
     internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
-) : RawContactEntity() {
+) : RawContactEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(

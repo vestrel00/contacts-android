@@ -12,7 +12,7 @@ import java.util.*
  *
  * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-sealed class ContactEntity : Entity {
+sealed interface ContactEntity : Entity {
     /**
      * The id of the Contacts row this represents.
      *
@@ -214,7 +214,7 @@ data class Contact internal constructor(
      */
     override val hasPhoneNumber: Boolean?
 
-) : ContactEntity() {
+) : ContactEntity {
 
     // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
@@ -295,7 +295,7 @@ data class MutableContact internal constructor(
      */
     override val hasPhoneNumber: Boolean?
 
-) : ContactEntity() {
+) : ContactEntity {
 
     // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
