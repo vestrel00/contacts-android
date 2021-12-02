@@ -11,6 +11,6 @@ package contacts.core.entities.cursor
  *
  * This inherits from [ContactIdCursor] because these cursors also have access to the Contact Id.
  */
-internal interface RawContactIdCursor : ContactIdCursor {
+internal sealed interface RawContactIdCursor : ContactIdCursor {
     val rawContactId: Long?
 }
