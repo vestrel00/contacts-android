@@ -227,8 +227,7 @@ class ContactView @JvmOverloads constructor(
             .commitWithContext()
             .contactWithContext(contacts, rawContact)
 
-        // TODO Save RawContact photo!
-        // TODO Save Contact photo!
+        // TODO Make sure that if a contact only has a photo, that it still gets inserted!
 
         return newContact?.id
     }
@@ -253,6 +252,8 @@ class ContactView @JvmOverloads constructor(
         // Saving the contact photo will override the designated RawContact photo changes.
         // This behavior is "buggy" maybe we should not allow this? I'll leave it for now.
         photoView.savePhoto(contacts)
+
+        // TODO Make sure that if a contact only has a photo, that it does not get deleted!
 
         // Perform the update. Ignore if photos update succeeded or not :D
         return contacts.updateWithPermission()

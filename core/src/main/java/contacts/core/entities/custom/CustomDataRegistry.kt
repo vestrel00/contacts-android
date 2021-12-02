@@ -4,6 +4,7 @@ import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractCustomDataFieldSet
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableRawContact
+import contacts.core.entities.MutableCustomData
 import contacts.core.entities.RawContact
 import contacts.core.entities.removeAll
 

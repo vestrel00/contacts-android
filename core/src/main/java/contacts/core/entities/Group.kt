@@ -6,17 +6,14 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * [Entity] in the Groups table.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-sealed class GroupsEntity : Entity {
+// See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+sealed interface GroupsEntity : Entity {
 
     /**
      * The id of this row in the Groups table.
      */
-    abstract override val id: Long?
+    override val id: Long?
 
     /**
      * The id of this group if it is a System Group, i.e. a group that has a special meaning to the
@@ -33,7 +30,7 @@ sealed class GroupsEntity : Entity {
      *   it behaves like one in that it is read only and it comes with most (if not all) copies of
      *   the native Contacts app.
      */
-    abstract val systemId: String?
+    val systemId: String?
 
     /**
      * If true, this group cannot be modified. All system groups are read-only.
@@ -41,7 +38,7 @@ sealed class GroupsEntity : Entity {
      * This is a read-only flag! The Contacts Provider routinely sets this to false for all
      * user-created groups. System groups has this set to true.
      */
-    abstract val readOnly: Boolean
+    val readOnly: Boolean
 
     /**
      * When a contacts is marked as a favorites it will be automatically added to the groups that
@@ -53,7 +50,7 @@ sealed class GroupsEntity : Entity {
      *
      * Contacts that are "starred" belong to this favorites group.
      */
-    abstract val favorites: Boolean
+    val favorites: Boolean
 
     /**
      * Any newly created contacts will automatically be added to groups that have this flag set to
@@ -62,7 +59,7 @@ sealed class GroupsEntity : Entity {
      * This is a read-only flag! The Contacts Provider routinely sets this to false for all
      * user-created groups.  System groups has this set to true.
      */
-    abstract val autoAdd: Boolean
+    val autoAdd: Boolean
 
     /**
      * The Account that this group is associated with.
@@ -75,7 +72,7 @@ sealed class GroupsEntity : Entity {
      * display the groups field when creating or updating raw contacts when there are no available
      * accounts present.
      */
-    abstract val account: Account
+    val account: Account
 
     /**
      * A group that is created and managed by the system and cannot be modified.
@@ -111,7 +108,8 @@ sealed class GroupsEntity : Entity {
 
     // This is never blank because of the non-nullable attributes such as readOnly, favorites, ...
     @IgnoredOnParcel
-    override val isBlank: Boolean = false
+    override val isBlank: Boolean
+        get() = false
 }
 
 /**
@@ -159,7 +157,7 @@ data class Group internal constructor(
      */
     override val account: Account
 
-) : GroupsEntity() {
+) : GroupsEntity {
 
     /**
      * Returns a [MutableGroup]. If [readOnly] is true, this returns null instead.
@@ -219,7 +217,7 @@ data class MutableGroup internal constructor(
      */
     override val account: Account
 
-) : GroupsEntity() {
+) : GroupsEntity {
 
     constructor(title: String, account: Account) : this(
         null, null, title, false, false, false, account

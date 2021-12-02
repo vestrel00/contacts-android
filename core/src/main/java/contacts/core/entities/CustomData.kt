@@ -1,6 +1,7 @@
-package contacts.core.entities.custom
+package contacts.core.entities
 
-import contacts.core.entities.*
+// Note that this is declared here and not in the entities.custom package because DataEntity is sealed here.
+// If Kotlin increases the scope of "sealed" from package to module, then we can move it back =)
 
 /**
  * A custom [DataEntity].
@@ -8,7 +9,7 @@ import contacts.core.entities.*
  * Implementations are required to be parcelable. Kotlin users are recommended to use data class
  * combined with [kotlinx.parcelize.Parcelize].
  */
-interface CustomDataEntity : DataEntity {
+sealed interface CustomDataEntity : DataEntity {
 
     // Override this to cast type from MimeType to MimeType.Custom
     override val mimeType: MimeType.Custom

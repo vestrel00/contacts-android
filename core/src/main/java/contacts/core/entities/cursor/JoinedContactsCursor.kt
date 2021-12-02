@@ -15,7 +15,7 @@ import java.util.*
  *
  * See [ContactIdCursor].
  */
-internal interface JoinedContactsCursor : ContactIdCursor {
+internal sealed interface JoinedContactsCursor : ContactIdCursor {
 
     val displayNamePrimary: String?
 

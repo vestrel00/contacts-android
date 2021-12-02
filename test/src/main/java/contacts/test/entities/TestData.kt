@@ -1,7 +1,7 @@
 package contacts.test.entities
 
 import contacts.core.entities.MimeType
-import contacts.core.entities.custom.MutableCustomData
+import contacts.core.entities.MutableCustomData
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 

@@ -2,9 +2,7 @@ package contacts.core
 
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
-import contacts.core.entities.MutableContact
-import contacts.core.entities.MutableData
-import contacts.core.entities.MutableRawContact
+import contacts.core.entities.*
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*

@@ -2,12 +2,12 @@ package contacts.core.entities.custom
 
 import android.database.Cursor
 import contacts.core.AbstractCustomDataField
+import contacts.core.entities.MutableCustomData
 import contacts.core.entities.mapper.EntityMapper
 
 /**
- * An abstract class that is used as a base of all custom [EntityMapper]s. It uses a
- * [AbstractCustomDataCursor] [C] (using fields of type [F]) and outputs a
- * [MutableCustomData] [E].
+ * Base type of all custom [EntityMapper]s. It uses a [AbstractCustomDataCursor] [C] (using fields
+ * of type [F]) and outputs a [MutableCustomData] [E].
  */
 abstract class AbstractCustomEntityMapper<
         F : AbstractCustomDataField,

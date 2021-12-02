@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import contacts.core.entities.*
-import contacts.core.entities.custom.MutableCustomData
 
 // Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
 // as they will not have to convert Sequences to List. Also, all are functions instead of vals

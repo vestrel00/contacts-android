@@ -2,10 +2,11 @@ package contacts.core.entities.custom
 
 import contacts.core.AbstractCustomDataField
 import contacts.core.entities.MimeType
+import contacts.core.entities.MutableCustomData
 import contacts.core.entities.operation.AbstractDataOperation
 
 /**
- * An abstract class that is used as a base of all custom [AbstractDataOperation]s.
+ * Base type of all custom [AbstractDataOperation]s.
  */
 abstract class AbstractCustomDataOperation
 <F : AbstractCustomDataField, E : MutableCustomData>(

@@ -12,7 +12,7 @@ import contacts.core.util.isProfileId
  * - 0, 1, or more
  * of this type of entity
  */
-interface DataEntity : Entity {
+sealed interface DataEntity : Entity {
 
     /**
      * The id of the Data row this represents.
@@ -101,6 +101,7 @@ interface DataEntity : Entity {
     /**
      * A type of data. Used by data that may have several types.
      */
+    // Not sealed intentionally.
     interface Type {
         /**
          * The actual value that represents the type.

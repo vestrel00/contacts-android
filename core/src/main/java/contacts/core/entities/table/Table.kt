@@ -7,31 +7,42 @@ import contacts.core.*
 /**
  * Defines all of the main [ContactsContract] tables, types with [Field]s =)
  */
-internal sealed class Table<out T : Field>(val uri: Uri) {
+internal sealed interface Table<out T : Field> {
+
+    val uri: Uri
 
     /**
      * See [ContactsContract.Contacts].
      */
-    object Contacts : Table<ContactsField>(ContactsContract.Contacts.CONTENT_URI)
+    object Contacts : Table<ContactsField> {
+        override val uri: Uri = ContactsContract.Contacts.CONTENT_URI
+    }
 
     /**
      * See [ContactsContract.RawContacts].
      */
-    object RawContacts : Table<RawContactsField>(ContactsContract.RawContacts.CONTENT_URI)
+    object RawContacts : Table<RawContactsField> {
+        override val uri: Uri = ContactsContract.RawContacts.CONTENT_URI
+    }
 
     /**
      * See [ContactsContract.Data].
      */
-    object Data : Table<AbstractDataField>(ContactsContract.Data.CONTENT_URI)
+    object Data : Table<AbstractDataField> {
+        override val uri: Uri = ContactsContract.Data.CONTENT_URI
+    }
 
     /**
      * See [ContactsContract.Groups].
      */
-    object Groups : Table<GroupsField>(ContactsContract.Groups.CONTENT_URI)
+    object Groups : Table<GroupsField> {
+        override val uri: Uri = ContactsContract.Groups.CONTENT_URI
+    }
 
     /**
      * See [ContactsContract.AggregationExceptions].
      */
-    object AggregationExceptions :
-        Table<AggregationExceptionsField>(ContactsContract.AggregationExceptions.CONTENT_URI)
+    object AggregationExceptions : Table<AggregationExceptionsField> {
+        override val uri: Uri = ContactsContract.AggregationExceptions.CONTENT_URI
+    }
 }

@@ -33,6 +33,8 @@ import contacts.core.util.unsafeLazy
  *
  * All concrete implementations of this must be data classes or implement equals and hashCode.
  */
+// This is a sealed class instead of a sealed interface because we want to keep some things internal
+// and also initialize some properties.
 sealed class Field {
 
     /**
@@ -823,12 +825,14 @@ class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>(
 // region Custom Data Fields
 
 /**
- * An abstract class that is used as a base of all custom data fields.
+ * Base type of all custom data fields.
  *
  * ## Developer notes
  *
  * This had to be declared here instead of in the [contacts.core.entities.custom] package because
  * [DataField] is sealed.
+ *
+ * This is not sealed so that it can be extended by consumers.
  */
 abstract class AbstractCustomDataField(
     /**
@@ -988,11 +992,11 @@ abstract class AbstractCustomDataField(
 }
 
 /**
- * An abstract class that is used as a base of all custom common data field sets.
+ * Base type of all custom data field sets.
  *
  * ## Developer notes
  *
- * This had to be declared here instead of in the [contacts.entities.custom] package because
+ * This had to be declared here instead of in the [contacts.core.entities.custom] package because
  * [AbstractDataFieldSet] is sealed.
  */
 abstract class AbstractCustomDataFieldSet<out T : AbstractCustomDataField> :

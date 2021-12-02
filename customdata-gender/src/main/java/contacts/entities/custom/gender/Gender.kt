@@ -4,8 +4,8 @@ import android.content.res.Resources
 import android.provider.ContactsContract
 import contacts.core.entities.DataEntity
 import contacts.core.entities.MimeType
-import contacts.core.entities.custom.ImmutableCustomData
-import contacts.core.entities.custom.MutableCustomDataWithType
+import contacts.core.entities.ImmutableCustomData
+import contacts.core.entities.MutableCustomDataWithType
 import contacts.core.entities.propertiesAreAllNullOrBlank
 import contacts.entities.custom.gender.Gender.Type
 import contacts.entities.custom.gender.Gender.Type.*

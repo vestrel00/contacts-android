@@ -1,6 +1,7 @@
 package contacts.core.entities.custom
 
 import contacts.core.AbstractCustomDataField
+import contacts.core.entities.MutableCustomData
 
 /**
  * Provides a piece of data as a nullable String from the custom entity [E] corresponding to the

@@ -1,6 +1,7 @@
 package contacts.core.entities.custom
 
 import android.os.Parcelable
+import contacts.core.entities.MutableCustomData
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,27 +12,27 @@ internal data class CustomDataEntityHolder(
     val countRestriction: CustomDataCountRestriction
 ) : Parcelable
 
-/* We'll go with non-sealed class approach because we don't need to expose these implementations.
+/* We'll go with the above approach because we don't need to expose these implementations.
    Consumers only need to specify if a data entity is either one-per-RawContact or
    one-or-more-per-RawContact. The above approach also leads to simpler code.
 /**
  * Holds a single, one-per-RawContact entity or multiple, one-or-more-per-RawContact entities.
  */
-internal sealed class CustomDataEntityHolder
+internal sealed interface CustomDataEntityHolder
 
 /**
  * Holds zero or one-per-RawContact .
  */
 internal class SingleCustomDataEntityHolder(
     val entity: MutableCustomDataEntity
-) : CustomDataHolder()
+) : CustomDataHolder
 
 /**
  * Holds zero or one-or-more-per-RawContact entities.
  */
 class MultipleCustomDataEntityHolder(
     val entities: List<MutableCustomDataEntity>
-) : CustomDataHolder()
+) : CustomDataHolder
 
 val CustomDataEntityHolder.entities: List<MutableCustomDataEntity>
     get() = when (this) {

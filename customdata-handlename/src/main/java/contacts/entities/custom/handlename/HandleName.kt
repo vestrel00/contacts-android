@@ -1,8 +1,8 @@
 package contacts.entities.custom.handlename
 
 import contacts.core.entities.MimeType
-import contacts.core.entities.custom.ImmutableCustomData
-import contacts.core.entities.custom.MutableCustomData
+import contacts.core.entities.ImmutableCustomData
+import contacts.core.entities.MutableCustomData
 import contacts.core.entities.propertiesAreAllNullOrBlank
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
