@@ -2,7 +2,6 @@ package contacts.core.entities
 
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.core.entities.Address.Type
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -10,33 +9,17 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing a postal addresses.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Address internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
-
+sealed interface AddressEntity : DataEntity {
     /**
      * The [Type] of address.
      */
-    val type: Type?,
+    val type: Type?
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
      */
-    val label: String?,
+    val label: String?
 
     /**
      * The full, unstructured postal address. This must be consistent with any structured data.
@@ -57,54 +40,52 @@ data class Address internal constructor(
      * - If the [formattedAddress] and structured components are not null, the Contacts Provider
      *   does nothing automatically.
      */
-    val formattedAddress: String?,
+    val formattedAddress: String?
 
     /**
      *
      * Can be street, avenue, road, etc. This element also includes the house number and
      * room/apartment/flat/floor number.
      */
-    val street: String?,
+    val street: String?
 
     /**
      * Covers actual P.O. boxes, drawers, locked bags, etc. This is usually but not always mutually
      * exclusive with street.
      */
-    val poBox: String?,
+    val poBox: String?
 
     /**
      * This is used to disambiguate a street address when a city contains more than one street with
      * the same name, or to specify a small place whose mail is routed through a larger postal town.
      * In China it could be a county or a minor city.
      */
-    val neighborhood: String?,
+    val neighborhood: String?
 
     /**
      * Can be city, village, town, borough, etc. This is the postal town and not necessarily the
      * place of residence or place of business.
      */
-    val city: String?,
+    val city: String?
 
     /**
      * A state, province, county (in Ireland), Land (in Germany), department (in France), etc.
      */
-    val region: String?,
+    val region: String?
 
     /**
      * Postal code. Usually country-wide, but sometimes specific to the city (e.g. "2" in "Dublin 2,
      * Ireland" addresses).
      */
-    val postcode: String?,
+    val postcode: String?
 
     /**
      * The name or code of the country.
      */
     val country: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Address
+    override val mimeType: MimeType
+        get() = MimeType.Address
 
     // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
@@ -112,27 +93,6 @@ data class Address internal constructor(
             formattedAddress, street, poBox, neighborhood,
             city, region, postcode, country
         )
-
-    fun toMutableAddress() = MutableAddress(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        formattedAddress = formattedAddress,
-        street = street,
-        poBox = poBox,
-        neighborhood = neighborhood,
-        city = city,
-        region = region,
-        postcode = postcode,
-        country = country
-    )
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
@@ -154,11 +114,56 @@ data class Address internal constructor(
 }
 
 /**
- * A mutable [Address].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An immutable [AddressEntity].
+ */
+@Parcelize
+data class Address internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val type: AddressEntity.Type?,
+    override val label: String?,
+
+    override val formattedAddress: String?,
+    override val street: String?,
+    override val poBox: String?,
+    override val neighborhood: String?,
+    override val city: String?,
+    override val region: String?,
+    override val postcode: String?,
+    override val country: String?
+
+) : AddressEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
+
+    override fun mutableCopy() = MutableAddress(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        type = type,
+        label = label,
+
+        formattedAddress = formattedAddress,
+        street = street,
+        poBox = poBox,
+        neighborhood = neighborhood,
+        city = city,
+        region = region,
+        postcode = postcode,
+        country = country
+    )
+}
+
+/**
+ * A mutable [AddressEntity].
  */
 @Parcelize
 data class MutableAddress internal constructor(
@@ -173,72 +178,32 @@ data class MutableAddress internal constructor(
 
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Address.type].
-     */
-    override var type: Type?,
+    override var type: AddressEntity.Type?,
 
-    /**
-     * See [Address.label].
-     */
     override var label: String?,
 
-    /**
-     * See [Address.formattedAddress].
-     */
-    var formattedAddress: String?,
+    override var formattedAddress: String?,
 
-    /**
-     * See [Address.street].
-     */
-    var street: String?,
+    override var street: String?,
 
-    /**
-     * See [Address.poBox].
-     */
-    var poBox: String?,
+    override var poBox: String?,
 
-    /**
-     * See [Address.neighborhood].
-     */
-    var neighborhood: String?,
+    override var neighborhood: String?,
 
-    /**
-     * See [Address.city].
-     */
-    var city: String?,
+    override var city: String?,
 
-    /**
-     * See [Address.region].
-     */
-    var region: String?,
+    override var region: String?,
 
-    /**
-     * See [Address.postcode].
-     */
-    var postcode: String?,
+    override var postcode: String?,
 
-    /**
-     * See [Address.country].
-     */
-    var country: String?
+    override var country: String?
 
-) : MutableDataWithType<Type> {
+) : AddressEntity, MutableDataEntityWithTypeAndLabel<AddressEntity.Type> {
 
     constructor() : this(
         null, null, null, false, false, null, null, null,
         null, null, null, null, null, null, null
     )
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Address
-
-    // type and label are intentionally excluded as per documentation
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(
-            formattedAddress, street, poBox, neighborhood,
-            city, region, postcode, country
-        )
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::formattedAddress

@@ -2,13 +2,23 @@ package contacts.core.entities
 
 import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.util.isProfileId
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
  * [Entity] in the RawContacts table.
+ *
+ * ## Contact, RawContact, and Data
+ *
+ * A Contact may consist of one or more RawContact. A RawContact is an association between a Contact
+ * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
+ * as name, emails, phone, address, and more.
+ *
+ * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
+ * is achieved when merging / linking multiple contacts.
+ *
+ * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
+ * to the device and are not synced.
  */
-// See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
 sealed interface RawContactEntity : Entity {
     /**
      * The id of the RawContacts row this represents.
@@ -24,52 +34,42 @@ sealed interface RawContactEntity : Entity {
      */
     val contactId: Long?
 
+    // The Data table contains the display name for Contacts, not for RawContacts.
+
     /**
      * True if this raw contact belongs to the user's personal profile entry.
      */
     val isProfile: Boolean
         get() = id.isProfileId
+
+    /**
+     * A list of [AddressEntity].
+     */
+    val addresses: List<AddressEntity>
+
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(
+            name, nickname, note, organization, sipAddress
+        ) && entitiesAreAllBlank(
+            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
+            customDataEntities.values.flatMap { it.entities }
+        )
+
+    // The Data table contains the options columns for Contacts, not for RawContacts.
+    // Use the RawContactOptions extension functions to get/set options.
 }
 
 /**
- * Contains contact data that belong to an [android.accounts.Account].
- *
- * ## Note
- *
- * A [Contact] may consist of one or more [RawContact]. A [RawContact] is an association between a
- * Contact and an [android.accounts.Account]. Each [RawContact] is associated with several pieces of
- * Data such as emails.
- *
- * The Contacts Provider may combine [RawContact] from several different Accounts. The same effect
- * is achieved when merging / linking multiple contacts.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An immutable [RawContactEntity].
  */
 @Parcelize
 data class RawContact internal constructor(
 
-    /**
-     * See [RawContactEntity.id].
-     */
     override val id: Long?,
-
-    /**
-     * See [RawContactEntity.contactId].
-     */
     override val contactId: Long?,
 
-    // The Data table contains the display name for Contacts, not for RawContacts.
+    override val addresses: List<Address>,
 
-    /**
-     * An immutable list of addresses.
-     */
-    val addresses: List<Address>,
-
-    /**
-     * An immutable list of emails.
-     */
     val emails: List<Email>,
 
     /**
@@ -145,21 +145,13 @@ data class RawContact internal constructor(
      */
     internal val customDataEntities: Map<String, CustomDataEntityHolder>
 
-) : RawContactEntity {
+) : RawContactEntity, ImmutableEntityWithMutableType<MutableRawContact> {
 
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(
-            name, nickname, note, organization, sipAddress
-        ) && entitiesAreAllBlank(
-            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customDataEntities.values.flatMap { it.entities }
-        )
-
-    fun toMutableRawContact() = MutableRawContact(
+    override fun mutableCopy() = MutableRawContact(
         id = id,
         contactId = contactId,
 
-        addresses = addresses.asSequence().map { it.toMutableAddress() }.toMutableList(),
+        addresses = addresses.mutableCopies().toMutableList(),
 
         emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList(),
 
@@ -192,144 +184,43 @@ data class RawContact internal constructor(
 }
 
 /**
- * A mutable [RawContact].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An mutable [RawContactEntity].
  */
 @Parcelize
 data class MutableRawContact internal constructor(
 
-    /**
-     * See [RawContact.id].
-     */
     override val id: Long?,
-
-    /**
-     * See [RawContact.contactId].
-     */
     override val contactId: Long?,
 
-    // The Data table contains the display name for Contacts, not for RawContacts.
-
-    /**
-     * Mutable version of [RawContact.addresses].
-     */
-    var addresses: MutableList<MutableAddress>,
-
-    /**
-     * Mutable version of [RawContact.emails].
-     */
+    override var addresses: MutableList<MutableAddress>,
     var emails: MutableList<MutableEmail>,
-
-    /**
-     * Mutable version of [RawContact.events].
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
-     */
     var events: MutableList<MutableEvent>,
-
-    /**
-     * Mutable version of [RawContact.groupMemberships].
-     *
-     * ## Note
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates. Only group memberships to groups that belong to the same account as the
-     * raw contact will be inserted.
-     *
-     * Group membership to the account's default group will not be deleted (in the database) even
-     * if it is removed from this list!
-     */
     var groupMemberships: MutableList<GroupMembership>,
-
-    /**
-     * Mutable version of [RawContact.ims].
-     */
     var ims: MutableList<MutableIm>,
-
-    /**
-     * Mutable version of [RawContact.name].
-     */
     var name: MutableName?,
-
-    /**
-     * Mutable version of [RawContact.nickname].
-     */
     var nickname: MutableNickname?,
-
-    /**
-     * Mutable version of [RawContact.note].
-     */
     var note: MutableNote?,
-
-    // Use the RawContactOptions extension functions to get/set options.
-    // The Data table contains the options columns for Contacts, not for RawContacts.
-
-    /**
-     * Mutable version of [RawContact.organization].
-     */
     var organization: MutableOrganization?,
-
-    /**
-     * Mutable version of [RawContact.phones].
-     */
     var phones: MutableList<MutablePhone>,
-
-    /**
-     * The [Photo] class does not have any real functional value. This exist only to prevent
-     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
-     *
-     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
-     * photos.
-     */
     internal var photo: Photo?,
-
-    /**
-     * Mutable version of [RawContact.relations].
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
-     */
     var relations: MutableList<MutableRelation>,
-
-    /**
-     * Mutable version of [RawContact.sipAddress].
-     */
     var sipAddress: MutableSipAddress?,
-
-    /**
-     * Mutable version of [RawContact.websites].
-     */
     var websites: MutableList<MutableWebsite>,
 
-    /**
-     * See [RawContact.customDataEntities].
-     */
     internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
-) : RawContactEntity {
+) : RawContactEntity, MutableEntity {
 
     constructor() : this(
         null, null, mutableListOf(), mutableListOf(), mutableListOf(),
         mutableListOf(), mutableListOf(), null, null, null, null,
         mutableListOf(), null, mutableListOf(), null, mutableListOf(), mutableMapOf()
     )
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(
-            name, nickname, note, organization, photo, sipAddress
-        ) && entitiesAreAllBlank(
-            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customDataEntities.values.flatMap { it.entities }
-        )
 }
 
 /**
- * A blank [RawContactEntity] that contains no data (e.g. email, phone), although display names are
- * available. This only contains critical information for performing RawContact operations.
+ * A blank [RawContactEntity] that contains no data (e.g. email, phone, etc), although display names
+ * are available. This only contains critical information for performing RawContact operations.
  */
 @Parcelize
 data class BlankRawContact internal constructor(
@@ -352,10 +243,13 @@ data class BlankRawContact internal constructor(
     // display name for Contacts, not for RawContacts.
     val displayNameAlt: String?
 
-) : RawContactEntity {
+) : RawContactEntity, ImmutableEntity {
 
-    @IgnoredOnParcel
-    override val isBlank: Boolean = true
+    override val addresses: List<AddressEntity>
+        get() = emptyList()
+
+    override val isBlank: Boolean
+        get() = true
 }
 
 /**
@@ -369,7 +263,7 @@ internal data class TempRawContact constructor(
     override val id: Long?,
     override val contactId: Long?,
 
-    var addresses: MutableList<Address>,
+    override var addresses: MutableList<Address>,
     var emails: MutableList<Email>,
     var events: MutableList<Event>,
     var groupMemberships: MutableList<GroupMembership>,
@@ -385,15 +279,7 @@ internal data class TempRawContact constructor(
     var websites: MutableList<Website>,
     internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
-) : RawContactEntity {
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(
-            name, nickname, note, organization, photo, sipAddress
-        ) && entitiesAreAllBlank(
-            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
-            customDataEntities.values.flatMap { it.entities }
-        )
+) : RawContactEntity, MutableEntity {
 
     fun toRawContact() = RawContact(
         id = id,

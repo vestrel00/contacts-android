@@ -991,26 +991,26 @@ method as it may lead to unwanted side effects when updating and deleting contac
 
 This library provides **true immutability** for immutable entities.
 
-Take a look at the current hierarchy;
+Take a look at the current (simplified) hierarchy;
 
 ```kotlin
-sealed class ContactEntity {
+sealed interface ContactEntity {
     abstract val rawContacts: List<RawContactEntity>
 }
 data class Contact(
     override val rawContacts: List<RawContact>
-) : ContactEntity()
+) : ContactEntity
 data class MutableContact(
     override val rawContacts: List<MutableRawContact>
-) : ContactEntity()
+) : ContactEntity
 
-sealed class RawContactEntity
+sealed interface RawContactEntity
 data class RawContact(
     val addresses: List<Address>
-) : RawContactEntity()
+) : RawContactEntity
 data class MutableRawContact(
     val addresses: MutableList<MutableAddress>
-) : RawContactEntity()
+) : RawContactEntity
 
 data class Address(
     val formattedAddress: String?

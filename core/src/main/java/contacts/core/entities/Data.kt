@@ -7,9 +7,25 @@ import contacts.core.util.isProfileId
 /**
  * [Entity] in the Data table that belong to a [RawContact].
  *
- * A RawContact may either have;
+ * ## Contact, RawContact, and Data
+ *
+ * A Contact may consist of one or more RawContact. A RawContact is an association between a Contact
+ * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
+ * as name, emails, phone, address, and more.
+ *
+ * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
+ * is achieved when merging / linking multiple contacts.
+ *
+ * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
+ * to the device and are not synced.
+ *
+ * ## Data count restrictions
+ *
+ * A RawContact may either have...
+ *
  * - only 0 or 1
  * - 0, 1, or more
+ *
  * of this type of entity
  */
 sealed interface DataEntity : Entity {
@@ -125,19 +141,20 @@ sealed interface DataEntity : Entity {
 }
 
 /**
- * A [DataEntity] that is immutable.
- *
- * ## Dev note
- *
- * We are explicitly prepending "Immutable" to the interface name to prevent naming conflicts with
- * [contacts.core.data.Data].
+ * An immutable [DataEntity].
  */
-interface ImmutableData : DataEntity
+interface ImmutableDataEntity : DataEntity, ImmutableEntity
 
 /**
- * A [DataEntity] that is mutable, allowing the [primaryValue] to be mutated among others.
+ * An [ImmutableDataEntity] that has a mutable type [T].
  */
-interface MutableData : DataEntity {
+interface ImmutableDataEntityWithMutableType<T : MutableDataEntity> : ImmutableDataEntity,
+    ImmutableEntityWithMutableType<T>
+
+/**
+ * A mutable [DataEntity], with a mutable [primaryValue].
+ */
+interface MutableDataEntity : DataEntity, MutableEntity {
 
     /**
      * The main value encapsulated by this entity as a string for consumer usage.
@@ -146,9 +163,9 @@ interface MutableData : DataEntity {
 }
 
 /**
- * A [MutableData], with a mutable [type] and [label].
+ * A [MutableDataEntity], with a mutable [type] and [label].
  */
-interface MutableDataWithType<T : DataEntity.Type> : MutableData {
+interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableDataEntity {
 
     /**
      * The [DataEntity.Type] of the [primaryValue].

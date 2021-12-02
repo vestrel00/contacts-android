@@ -17,17 +17,22 @@ sealed interface CustomDataEntity : DataEntity {
 
 /**
  * An immutable [CustomDataEntity].
- *
- * Implementors should define a toMutableX() function to allow for changes in their custom entities.
  */
-interface ImmutableCustomData : CustomDataEntity, ImmutableData
+interface ImmutableCustomDataEntity : CustomDataEntity, ImmutableDataEntity
+
+/**
+ * An immutable [CustomDataEntity].
+ */
+interface ImmutableCustomDataEntityWithMutableType<T : MutableCustomDataEntity> :
+    ImmutableCustomDataEntity, ImmutableDataEntityWithMutableType<T>
 
 /**
  * A mutable [CustomDataEntity].
  */
-interface MutableCustomData : CustomDataEntity, MutableData
+interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity
 
 /**
- * A custom [MutableDataWithType].
+ * A [MutableCustomDataEntity], with a mutable [type] and [label].
  */
-interface MutableCustomDataWithType<T : DataEntity.Type> : MutableCustomData, MutableDataWithType<T>
+interface MutableCustomDataWithTypeAndLabel<T : DataEntity.Type> : MutableCustomDataEntity,
+    MutableDataEntityWithTypeAndLabel<T>

@@ -21,6 +21,53 @@ sealed interface Entity : Parcelable {
 }
 
 /**
+ * An immutable [Entity].
+ *
+ * Implementations of this interface must guarantee immutability. No properties can change once
+ * instances are created. This guarantees thread-safety.
+ */
+sealed interface ImmutableEntity : Entity
+
+/**
+ * An [ImmutableEntity] that has a mutable type [T].
+ *
+ * To get a mutable copy of the corresponding mutable type [T], use the [mutableCopy] function.
+ */
+sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEntity {
+
+    /**
+     * Returns a **mutable copy** of this immutable entity. This copy allows for some properties of
+     * instances to be mutated/modified.
+     */
+    fun mutableCopy(): T
+}
+
+/**
+ * A mutable [Entity].
+ *
+ * Implementations of this interface must have at least one property that is mutable. Otherwise, it
+ * should instead be an [ImmutableEntity].
+ *
+ * This is **NOT thread-safe**. You must perform synchronizations yourself if you are trying to use
+ * shared instances of this in multi-threaded environments.
+ */
+sealed interface MutableEntity : Entity
+
+/**
+ * Returns an immutable list containing mutable copies of type [T] for each instance of type [R] in
+ * the list.
+ */
+fun <T : MutableEntity, R : ImmutableEntityWithMutableType<T>> Collection<R>.mutableCopies():
+        List<T> = map { it.mutableCopy() }
+
+/**
+ * Returns a sequence containing mutable copies of type [T] for each instance of type [R] in the
+ * sequence.
+ */
+fun <T : MutableEntity, R : ImmutableEntityWithMutableType<T>> Sequence<R>.mutableCopies():
+        Sequence<T> = map { it.mutableCopy() }
+
+/**
  * Removes all instances of the given [instance] from [this] collection.
  *
  * By default, all **structurally equal (same content but maybe different objects)** instances will

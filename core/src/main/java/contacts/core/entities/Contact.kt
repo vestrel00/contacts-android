@@ -7,8 +7,19 @@ import java.util.*
 
 /**
  * [Entity] in the Contacts table.
+ *
+ * ## Contact, RawContact, and Data
+ *
+ * A Contact may consist of one or more RawContact. A RawContact is an association between a Contact
+ * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
+ * as name, emails, phone, address, and more.
+ *
+ * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
+ * is achieved when merging / linking multiple contacts.
+ *
+ * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
+ * to the device and are not synced.
  */
-// See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
 sealed interface ContactEntity : Entity {
     /**
      * The id of the Contacts row this represents.
@@ -142,87 +153,46 @@ sealed interface ContactEntity : Entity {
      */
     val isProfile: Boolean
         get() = id.isProfileId
-}
-
-/**
- * Primarily contains a list of RawContacts that are associated with this contact.
- *
- * ## [RawContact]
- *
- * A Contact may consist of one or more [RawContact]. A [RawContact] is an association between a
- * Contact and an [android.accounts.Account]. Each [RawContact] is associated with several pieces of
- * Data such as emails.
- *
- * The Contacts Provider may combine [RawContact] from several different Accounts. The same effect
- * is achieved when merging / linking multiple contacts. Instances of this class also provides
- * aggregate data from all [RawContact]s in the set of [rawContacts].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
- */
-@Parcelize
-data class Contact internal constructor(
-
-    /**
-     * See [ContactEntity.id].
-     */
-    override val id: Long?,
-
-    /**
-     * See [ContactEntity.rawContacts].
-     *
-     * Notice that the type is [RawContact] instead of [RawContactEntity].
-     */
-    override val rawContacts: List<RawContact>,
-
-    /**
-     * See [ContactEntity.displayNamePrimary].
-     */
-    override val displayNamePrimary: String?,
-
-    /**
-     * See [ContactEntity.displayNameAlt].
-     */
-    override val displayNameAlt: String?,
-
-    /**
-     * See [ContactEntity.lastUpdatedTimestamp].
-     */
-    override val lastUpdatedTimestamp: Date?,
-
-    /**
-     * See [ContactEntity.options].
-     */
-    override val options: Options?,
-
-    /**
-     * See [ContactEntity.options].
-     */
-    override val photoUri: Uri?,
-
-    /**
-     * See [ContactEntity.photoThumbnailUri].
-     */
-    override val photoThumbnailUri: Uri?,
-
-    /**
-     * See [ContactEntity.hasPhoneNumber].
-     */
-    override val hasPhoneNumber: Boolean?
-
-) : ContactEntity {
 
     // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
     // the Data table, which is why they are not part of the blank check.
     override val isBlank: Boolean
         get() = entitiesAreAllBlank(rawContacts)
+}
 
-    fun toMutableContact() = MutableContact(
+/**
+ * An immutable [ContactEntity].
+ *
+ * This contains an immutable list of immutable [RawContact]s.
+ *
+ * To get a mutable copy of this instance, use [mutableCopy].
+ */
+@Parcelize
+data class Contact internal constructor(
+
+    override val id: Long?,
+
+    override val rawContacts: List<RawContact>,
+
+    override val displayNamePrimary: String?,
+    override val displayNameAlt: String?,
+
+    override val lastUpdatedTimestamp: Date?,
+
+    override val options: Options?,
+
+    override val photoUri: Uri?,
+    override val photoThumbnailUri: Uri?,
+
+    override val hasPhoneNumber: Boolean?
+
+) : ContactEntity, ImmutableEntityWithMutableType<MutableContact> {
+
+    override fun mutableCopy() = MutableContact(
         id = id,
 
-        rawContacts = rawContacts.map { it.toMutableRawContact() },
+        rawContacts = rawContacts.mutableCopies(),
 
         displayNamePrimary = displayNamePrimary,
         displayNameAlt = displayNameAlt,
@@ -235,68 +205,27 @@ data class Contact internal constructor(
 }
 
 /**
- * A mutable [Contact]. Well, nothing is really mutable here except for the [MutableRawContact] in
- * the immutable [rawContacts] list.
+ * A mutable [ContactEntity].
  *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * This contains an immutable list of [MutableRawContact]s.
  */
 @Parcelize
 data class MutableContact internal constructor(
 
-    /**
-     * See [ContactEntity.id].
-     */
     override val id: Long?,
 
-    /**
-     * See [ContactEntity.rawContacts].
-     *
-     * Notice that the type is [MutableRawContact] instead of [RawContactEntity].
-     */
     override val rawContacts: List<MutableRawContact>,
 
-    /**
-     * See [ContactEntity.displayNamePrimary].
-     */
     override val displayNamePrimary: String?,
-
-    /**
-     * See [ContactEntity.displayNameAlt].
-     */
     override val displayNameAlt: String?,
 
-    /**
-     * See [ContactEntity.lastUpdatedTimestamp].
-     */
     override val lastUpdatedTimestamp: Date?,
 
-    /**
-     * See [ContactEntity.options].
-     */
     override val options: Options?,
 
-    /**
-     * See [ContactEntity.options].
-     */
     override val photoUri: Uri?,
-
-    /**
-     * See [ContactEntity.photoThumbnailUri].
-     */
     override val photoThumbnailUri: Uri?,
 
-    /**
-     * See [ContactEntity.hasPhoneNumber].
-     */
     override val hasPhoneNumber: Boolean?
 
-) : ContactEntity {
-
-    // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
-    // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
-    // the Data table, which is why they are not part of the blank check.
-    override val isBlank: Boolean
-        get() = entitiesAreAllBlank(rawContacts)
-}
+) : ContactEntity, MutableEntity
