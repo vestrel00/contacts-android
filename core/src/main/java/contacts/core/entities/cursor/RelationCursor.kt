@@ -3,7 +3,7 @@ package contacts.core.entities.cursor
 import android.database.Cursor
 import contacts.core.Fields
 import contacts.core.RelationField
-import contacts.core.entities.Relation
+import contacts.core.entities.RelationEntity
 
 /**
  * Retrieves [Fields.Relation] data from the given [cursor].
@@ -14,7 +14,10 @@ import contacts.core.entities.Relation
 internal class RelationCursor(cursor: Cursor, includeFields: Set<RelationField>) :
     AbstractDataCursor<RelationField>(cursor, includeFields) {
 
-    val type: Relation.Type? by type(Fields.Relation.Type, typeFromValue = Relation.Type::fromValue)
+    val type: RelationEntity.Type? by type(
+        Fields.Relation.Type,
+        typeFromValue = RelationEntity.Type::fromValue
+    )
 
     val label: String? by string(Fields.Relation.Label)
 
