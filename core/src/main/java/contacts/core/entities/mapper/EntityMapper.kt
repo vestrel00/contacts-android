@@ -2,6 +2,7 @@ package contacts.core.entities.mapper
 
 import contacts.core.entities.Entity
 
+// Does not need to be sealed.
 internal interface EntityMapper<out T : Entity> {
     val value: T
 

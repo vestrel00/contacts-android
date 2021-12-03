@@ -59,7 +59,7 @@ internal fun CursorHolder<AbstractDataField>.websiteMapper(): EntityMapper<Websi
     WebsiteMapper(websiteCursor())
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : ImmutableData> CursorHolder<AbstractDataField>.entityMapperFor(
+internal fun <T : ImmutableDataEntity> CursorHolder<AbstractDataField>.entityMapperFor(
     mimeType: MimeType,
     customDataRegistry: CustomDataRegistry
 ): EntityMapper<T> = when (mimeType) {
