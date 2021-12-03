@@ -18,21 +18,32 @@ sealed interface CustomDataEntity : DataEntity {
 /**
  * An immutable [CustomDataEntity].
  */
+// Intentionally not sealed so that consumers can define their own implementations.
 interface ImmutableCustomDataEntity : CustomDataEntity, ImmutableDataEntity
 
 /**
  * An immutable [CustomDataEntity].
  */
+// Intentionally not sealed so that consumers can define their own implementations.
 interface ImmutableCustomDataEntityWithMutableType<T : MutableCustomDataEntity> :
     ImmutableCustomDataEntity, ImmutableDataEntityWithMutableType<T>
 
 /**
+ * An [ImmutableEntity] that has a mutable type [T] that may or may not be null.
+ */
+// Intentionally not sealed so that consumers can define their own implementations.
+sealed interface ImmutableCustomDataEntityWithNullableMutableType<T : MutableCustomDataEntity> :
+    ImmutableCustomDataEntity, ImmutableDataEntityWithNullableMutableType<T>
+
+/**
  * A mutable [CustomDataEntity].
  */
+// Intentionally not sealed so that consumers can define their own implementations.
 interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity
 
 /**
  * A [MutableCustomDataEntity], with a mutable [type] and [label].
  */
+// Intentionally not sealed so that consumers can define their own implementations.
 interface MutableCustomDataWithTypeAndLabel<T : DataEntity.Type> : MutableCustomDataEntity,
     MutableDataEntityWithTypeAndLabel<T>

@@ -1,14 +1,23 @@
 package contacts.core.entities.custom
 
 import android.os.Parcelable
-import contacts.core.entities.MutableCustomData
+import contacts.core.entities.CustomDataEntity
 import kotlinx.parcelize.Parcelize
 
+/**
+ * Holds custom data entities the the API processes internally.
+ *
+ * Consumers do not and should not use this.
+ *
+ * ## Dev notes
+ *
+ * This should actually be internal as it is of no use to consumers but this is referenced in an
+ * interface (RawContactEntity)...
+ */
 @Parcelize
-internal data class CustomDataEntityHolder(
-    // This is not exposed to consumers so we do not need a generic type since we have no visibility
-    // of consumer types anyways.
-    val entities: MutableList<MutableCustomData>,
+data class CustomDataEntityHolder(
+    // We do not need a generic type since we have no visibility of consumer types anyways.
+    val entities: MutableList<CustomDataEntity>,
     val countRestriction: CustomDataCountRestriction
 ) : Parcelable
 

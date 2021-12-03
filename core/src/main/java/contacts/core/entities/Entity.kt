@@ -4,6 +4,8 @@ import android.os.Parcelable
 
 /**
  * Type of all entities provided in this library.
+ *
+ * Implementations must
  */
 sealed interface Entity : Parcelable {
 
@@ -40,6 +42,23 @@ sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEn
      * instances to be mutated/modified.
      */
     fun mutableCopy(): T
+}
+
+/**
+ * An [ImmutableEntity] that has a mutable type [T] that may or may not be null.
+ *
+ * To get a mutable copy of the corresponding mutable type [T], use the [mutableCopy] function.
+ */
+sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : ImmutableEntity {
+
+    /**
+     * Returns a **mutable copy** of this immutable entity. This copy allows for some properties of
+     * instances to be mutated/modified.
+     *
+     * The return value of this may be null. This is useful in cases where a mutable copy should
+     * only be produced under certain conditions.
+     */
+    fun mutableCopy(): T?
 }
 
 /**

@@ -72,6 +72,9 @@ sealed class MimeType {
         override val value = ""
     }
 
+    /**
+     * The mime type of a custom data entity.
+     */
     abstract class Custom : MimeType()
 
     internal companion object {

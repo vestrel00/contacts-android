@@ -7,23 +7,8 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing the contact's proper name.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Name internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface NameEntity : DataEntity {
 
     /**
      * The name that should be used to display the (raw) contact. This is the unstructured component
@@ -67,52 +52,50 @@ data class Name internal constructor(
      * The [ContactEntity.displayNamePrimary] is automatically resolved by the Contacts Provider. It
      * may not be manually modified.
      */
-    val displayName: String?,
+    val displayName: String?
 
     /**
      * The given name for the contact.
      */
-    val givenName: String?,
+    val givenName: String?
 
     /**
      * The contact's middle name.
      */
-    val middleName: String?,
+    val middleName: String?
 
     /**
      * The family name for the contact.
      */
-    val familyName: String?,
+    val familyName: String?
 
     /**
      * The contact's honorific prefix, e.g. "Sir".
      */
-    val prefix: String?,
+    val prefix: String?
 
     /**
      * The contact's honorific suffix, e.g. "Jr".
      */
-    val suffix: String?,
+    val suffix: String?
 
     /**
      * The phonetic version of the [givenName].
      */
-    val phoneticGivenName: String?,
+    val phoneticGivenName: String?
 
     /**
      * The phonetic version of the [middleName].
      */
-    val phoneticMiddleName: String?,
+    val phoneticMiddleName: String?
 
     /**
      * The phonetic version of the [familyName].
      */
     val phoneticFamilyName: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Name
+    override val mimeType: MimeType
+        get() = MimeType.Name
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
@@ -121,8 +104,37 @@ data class Name internal constructor(
             prefix, suffix,
             phoneticGivenName, phoneticMiddleName, phoneticFamilyName
         )
+}
 
-    fun toMutableName() = MutableName(
+/**
+ * An immutable [NameEntity].
+ */
+@Parcelize
+data class Name internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val displayName: String?,
+
+    override val givenName: String?,
+    override val middleName: String?,
+    override val familyName: String?,
+
+    override val prefix: String?,
+    override val suffix: String?,
+
+    override val phoneticGivenName: String?,
+    override val phoneticMiddleName: String?,
+    override val phoneticFamilyName: String?
+
+) : NameEntity, ImmutableDataEntityWithMutableType<MutableName> {
+
+    override fun mutableCopy() = MutableName(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -146,87 +158,37 @@ data class Name internal constructor(
 }
 
 /**
- * A mutable [Name].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [NameEntity].
  */
 @Parcelize
 data class MutableName internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Name.displayName].
-     */
-    var displayName: String?,
+    override var displayName: String?,
 
-    /**
-     * See [Name.givenName].
-     */
-    var givenName: String?,
+    override var givenName: String?,
+    override var middleName: String?,
+    override var familyName: String?,
 
-    /**
-     * See [Name.middleName].
-     */
-    var middleName: String?,
+    override var prefix: String?,
+    override var suffix: String?,
 
-    /**
-     * See [Name.familyName].
-     */
-    var familyName: String?,
+    override var phoneticGivenName: String?,
+    override var phoneticMiddleName: String?,
+    override var phoneticFamilyName: String?
 
-    /**
-     * See [Name.prefix].
-     */
-    var prefix: String?,
-
-    /**
-     * See [Name.suffix].
-     */
-    var suffix: String?,
-
-    /**
-     * See [Name.phoneticGivenName].
-     */
-    var phoneticGivenName: String?,
-
-    /**
-     * See [Name.phoneticMiddleName].
-     */
-    var phoneticMiddleName: String?,
-
-    /**
-     * See [Name.phoneticFamilyName].
-     */
-    var phoneticFamilyName: String?
-
-) : MutableData {
+) : NameEntity, MutableDataEntity {
 
     constructor() : this(
         null, null, null, false, false, null, null,
         null, null, null, null, null, null, null
     )
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Name
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(
-            displayName,
-            givenName, middleName, familyName,
-            prefix, suffix,
-            phoneticGivenName, phoneticMiddleName, phoneticFamilyName
-        )
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::displayName

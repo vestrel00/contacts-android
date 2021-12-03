@@ -7,41 +7,42 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing the contact's nickname.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Nickname internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface NicknameEntity : DataEntity {
 
     // Type and Label are also available. However, the type keep getting set to default
     // automatically by the Contacts Provider...
 
     /**
-     * The name itself.
+     * The nickname
      */
     val name: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Nickname
+    override val mimeType: MimeType
+        get() = MimeType.Nickname
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(name)
+}
 
-    fun toMutableNickname() = MutableNickname(
+/**
+ * An immutable [NicknameEntity].
+ */
+@Parcelize
+data class Nickname internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val name: String?
+
+) : NicknameEntity, ImmutableDataEntityWithMutableType<MutableNickname> {
+
+    override fun mutableCopy() = MutableNickname(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -54,39 +55,23 @@ data class Nickname internal constructor(
 }
 
 /**
- * A mutable [Nickname].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [NicknameEntity].
  */
 @Parcelize
 data class MutableNickname internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Nickname.name].
-     */
-    var name: String?
+    override var name: String?
 
-) : MutableData {
+) : NicknameEntity, MutableDataEntity {
 
     constructor() : this(null, null, null, false, false, null)
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Nickname
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(name)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::name

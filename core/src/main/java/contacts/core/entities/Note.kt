@@ -7,38 +7,39 @@ import kotlinx.parcelize.Parcelize
  * Notes about the contact.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ */
+sealed interface NoteEntity : DataEntity {
+
+    /**
+     * The note.
+     */
+    val note: String?
+
+    override val mimeType: MimeType
+        get() = MimeType.Note
+
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(note)
+}
+
+/**
+ * An immutable [NoteEntity].
  */
 @Parcelize
 data class Note internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override val isPrimary: Boolean,
-
     override val isSuperPrimary: Boolean,
 
-    /**
-     * The note text.
-     */
-    val note: String?
+    override val note: String?
 
-) : ImmutableData {
+) : NoteEntity, ImmutableDataEntityWithMutableType<MutableNote> {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Note
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(note)
-
-    fun toMutableNote() = MutableNote(
+    override fun mutableCopy() = MutableNote(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -51,39 +52,23 @@ data class Note internal constructor(
 }
 
 /**
- * A mutable [Note].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [NoteEntity].
  */
 @Parcelize
 data class MutableNote internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Note.note].
-     */
-    var note: String?
+    override var note: String?
 
-) : MutableData {
+) : NoteEntity, MutableDataEntity {
 
     constructor() : this(null, null, null, false, false, null)
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Note
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(note)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::note

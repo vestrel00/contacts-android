@@ -47,6 +47,95 @@ sealed interface RawContactEntity : Entity {
      */
     val addresses: List<AddressEntity>
 
+    /**
+     * A list of [EmailEntity].
+     */
+    val emails: List<EmailEntity>
+
+    /**
+     * A list of [EventEntity].
+     *
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
+     */
+    val events: List<EventEntity>
+
+    /**
+     * A list of [GroupMembershipEntity].
+     *
+     * If this raw contact is not associated with an Account, then this will be ignored during
+     * inserts and updates.
+     */
+    val groupMemberships: List<GroupMembershipEntity>
+
+    /**
+     * A list of [ImEntity].
+     */
+    val ims: List<ImEntity>
+
+    /**
+     * The [NameEntity].
+     */
+    val name: NameEntity?
+
+    /**
+     * The [NicknameEntity].
+     */
+    val nickname: NicknameEntity?
+
+    /**
+     * The [NoteEntity].
+     */
+    val note: NoteEntity?
+
+    /**
+     * The [OrganizationEntity].
+     */
+    val organization: OrganizationEntity?
+
+    /**
+     * A list of [PhoneEntity].
+     */
+    val phones: List<PhoneEntity>
+
+    /**
+     * The [PhotoEntity] does not have any real functional value. This exist only to prevent
+     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
+     *
+     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
+     * photos.
+     */
+    // This should actually be internal... if interfaces allowed for internal property declarations.
+    /* internal */ val photo: PhotoEntity?
+
+    /**
+     * A list [RelationEntity].
+     */
+    val relations: List<RelationEntity>
+
+    /**
+     * The [SipAddressEntity].
+     */
+    val sipAddress: SipAddressEntity?
+
+    /**
+     * A list [WebsiteEntity].
+     */
+    val websites: List<WebsiteEntity>
+
+    /**
+     * Map of custom mime type value to a [CustomDataEntityHolder].
+     *
+     * ## Developer notes
+     *
+     * Only mutable custom data entities are kept/handled internally to avoid having to define a
+     * toMutable() and toImmutable() functions in the custom entity interface. This gives more
+     * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
+     * immutable version if they choose to do so.
+     */
+    // This should actually be internal... if interfaces allowed for internal property declarations.
+    /* internal */ val customDataEntities: Map<String, CustomDataEntityHolder>
+
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
             name, nickname, note, organization, sipAddress
@@ -69,81 +158,20 @@ data class RawContact internal constructor(
     override val contactId: Long?,
 
     override val addresses: List<Address>,
-
-    val emails: List<Email>,
-
-    /**
-     * An immutable list of events.
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
-     */
-    val events: List<Event>,
-
-    /**
-     * An immutable list of group memberships.
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
-     */
-    val groupMemberships: List<GroupMembership>,
-
-    /**
-     * An immutable list of ims.
-     */
-    val ims: List<Im>,
-
-    val name: Name?,
-
-    val nickname: Nickname?,
-
-    val note: Note?,
-
-    // Use the RawContactOptions extension functions to get/set options.
-    // The Data table contains the options columns for Contacts, not for RawContacts.
-
-    val organization: Organization?,
-
-    /**
-     * An immutable list of phones.
-     */
-    val phones: List<Phone>,
-
-    /**
-     * The [Photo] class does not have any real functional value. This exist only to prevent
-     * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
-     *
-     * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
-     * photos.
-     */
-    internal val photo: Photo?,
-
-    /**
-     * An immutable list of relations.
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
-     */
-    val relations: List<Relation>,
-
-    val sipAddress: SipAddress?,
-
-    /**
-     * An immutable list of websites.
-     */
-    val websites: List<Website>,
-
-    /**
-     * Map of custom mime type value to a [CustomDataEntityHolder].
-     *
-     * ## Developer notes
-     *
-     * Only mutable custom data entities are kept/handled internally to avoid having to define a
-     * toMutable() and toImmutable() functions in the custom entity interface. This gives more
-     * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
-     * immutable version if they choose to do so.
-     */
-    internal val customDataEntities: Map<String, CustomDataEntityHolder>
+    override val emails: List<Email>,
+    override val events: List<Event>,
+    override val groupMemberships: List<GroupMembership>,
+    override val ims: List<Im>,
+    override val name: Name?,
+    override val nickname: Nickname?,
+    override val note: Note?,
+    override val organization: Organization?,
+    override val phones: List<Phone>,
+    override val photo: Photo?,
+    override val relations: List<Relation>,
+    override val sipAddress: SipAddress?,
+    override val websites: List<Website>,
+    override val customDataEntities: Map<String, CustomDataEntityHolder>
 
 ) : RawContactEntity, ImmutableEntityWithMutableType<MutableRawContact> {
 
@@ -151,33 +179,20 @@ data class RawContact internal constructor(
         id = id,
         contactId = contactId,
 
-        addresses = addresses.mutableCopies().toMutableList(),
-
-        emails = emails.asSequence().map { it.toMutableEmail() }.toMutableList(),
-
-        events = events.asSequence().map { it.toMutableEvent() }.toMutableList(),
-
+        addresses = addresses.asSequence().mutableCopies().toMutableList(),
+        emails = emails.asSequence().mutableCopies().toMutableList(),
+        events = events.asSequence().mutableCopies().toMutableList(),
         groupMemberships = groupMemberships.toMutableList(),
-
-        ims = ims.asSequence().map { it.toMutableIm() }.toMutableList(),
-
-        name = name?.toMutableName(),
-
-        nickname = nickname?.toMutableNickname(),
-
-        note = note?.toMutableNote(),
-
-        organization = organization?.toMutableOrganization(),
-
-        phones = phones.asSequence().map { it.toMutablePhone() }.toMutableList(),
-
+        ims = ims.asSequence().mutableCopies().toMutableList(),
+        name = name?.mutableCopy(),
+        nickname = nickname?.mutableCopy(),
+        note = note?.mutableCopy(),
+        organization = organization?.mutableCopy(),
+        phones = phones.asSequence().mutableCopies().toMutableList(),
         photo = photo,
-
-        relations = relations.asSequence().map { it.toMutableRelation() }.toMutableList(),
-
-        sipAddress = sipAddress?.toMutableSipAddress(),
-
-        websites = websites.asSequence().map { it.toMutableWebsite() }.toMutableList(),
+        relations = relations.asSequence().mutableCopies().toMutableList(),
+        sipAddress = sipAddress?.mutableCopy(),
+        websites = websites.asSequence().mutableCopies().toMutableList(),
 
         customDataEntities = customDataEntities.toMutableMap() // send a shallow copy
     )
@@ -193,21 +208,21 @@ data class MutableRawContact internal constructor(
     override val contactId: Long?,
 
     override var addresses: MutableList<MutableAddress>,
-    var emails: MutableList<MutableEmail>,
-    var events: MutableList<MutableEvent>,
-    var groupMemberships: MutableList<GroupMembership>,
-    var ims: MutableList<MutableIm>,
-    var name: MutableName?,
-    var nickname: MutableNickname?,
-    var note: MutableNote?,
-    var organization: MutableOrganization?,
-    var phones: MutableList<MutablePhone>,
-    internal var photo: Photo?,
-    var relations: MutableList<MutableRelation>,
-    var sipAddress: MutableSipAddress?,
-    var websites: MutableList<MutableWebsite>,
+    override var emails: MutableList<MutableEmail>,
+    override var events: MutableList<MutableEvent>,
+    override var groupMemberships: MutableList<GroupMembership>,
+    override var ims: MutableList<MutableIm>,
+    override var name: MutableName?,
+    override var nickname: MutableNickname?,
+    override var note: MutableNote?,
+    override var organization: MutableOrganization?,
+    override var phones: MutableList<MutablePhone>,
+    override var photo: Photo?,
+    override var relations: MutableList<MutableRelation>,
+    override var sipAddress: MutableSipAddress?,
+    override var websites: MutableList<MutableWebsite>,
 
-    internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
+    override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
 ) : RawContactEntity, MutableEntity {
 
@@ -245,11 +260,53 @@ data class BlankRawContact internal constructor(
 
 ) : RawContactEntity, ImmutableEntity {
 
+    override val isBlank: Boolean
+        get() = true
+
     override val addresses: List<AddressEntity>
         get() = emptyList()
 
-    override val isBlank: Boolean
-        get() = true
+    override val emails: List<EmailEntity>
+        get() = emptyList()
+
+    override val events: List<EventEntity>
+        get() = emptyList()
+
+    override val groupMemberships: List<GroupMembershipEntity>
+        get() = emptyList()
+
+    override val ims: List<ImEntity>
+        get() = emptyList()
+
+    override val name: NameEntity?
+        get() = null
+
+    override val nickname: NicknameEntity?
+        get() = null
+
+    override val note: NoteEntity?
+        get() = null
+
+    override val organization: OrganizationEntity?
+        get() = null
+
+    override val phones: List<PhoneEntity>
+        get() = emptyList()
+
+    override val photo: PhotoEntity?
+        get() = null
+
+    override val relations: List<RelationEntity>
+        get() = emptyList()
+
+    override val sipAddress: SipAddressEntity?
+        get() = null
+
+    override val websites: List<WebsiteEntity>
+        get() = emptyList()
+
+    override val customDataEntities: Map<String, CustomDataEntityHolder>
+        get() = emptyMap()
 }
 
 /**
@@ -264,20 +321,20 @@ internal data class TempRawContact constructor(
     override val contactId: Long?,
 
     override var addresses: MutableList<Address>,
-    var emails: MutableList<Email>,
-    var events: MutableList<Event>,
-    var groupMemberships: MutableList<GroupMembership>,
-    var ims: MutableList<Im>,
-    var name: Name?,
-    var nickname: Nickname?,
-    var note: Note?,
-    var organization: Organization?,
-    var phones: MutableList<Phone>,
-    var photo: Photo?,
-    var relations: MutableList<Relation>,
-    var sipAddress: SipAddress?,
-    var websites: MutableList<Website>,
-    internal val customDataEntities: MutableMap<String, CustomDataEntityHolder>
+    override var emails: MutableList<Email>,
+    override var events: MutableList<Event>,
+    override var groupMemberships: MutableList<GroupMembership>,
+    override var ims: MutableList<Im>,
+    override var name: Name?,
+    override var nickname: Nickname?,
+    override var note: Note?,
+    override var organization: Organization?,
+    override var phones: MutableList<Phone>,
+    override var photo: Photo?,
+    override var relations: MutableList<Relation>,
+    override var sipAddress: SipAddress?,
+    override var websites: MutableList<Website>,
+    override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
 ) : RawContactEntity, MutableEntity {
 
@@ -286,33 +343,19 @@ internal data class TempRawContact constructor(
         contactId = contactId,
 
         addresses = addresses.toList(),
-
         emails = emails.toList(),
-
         events = events.toList(),
-
         groupMemberships = groupMemberships.toList(),
-
         ims = ims.toList(),
-
         name = name,
-
         nickname = nickname,
-
         note = note,
-
         organization = organization,
-
         phones = phones.toList(),
-
         photo = photo,
-
         relations = relations.toList(),
-
         sipAddress = sipAddress,
-
         websites = websites.toList(),
-
         customDataEntities = customDataEntities.toMap() // send a shallow copy
     )
 }

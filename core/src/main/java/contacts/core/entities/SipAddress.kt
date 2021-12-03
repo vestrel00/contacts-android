@@ -7,23 +7,8 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing a SIP address for the contact.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class SipAddress internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface SipAddressEntity : DataEntity {
 
     // Type and Label are also available. However, it is unnecessary as there is only one sip
     // address per contact.
@@ -33,15 +18,31 @@ data class SipAddress internal constructor(
      */
     val sipAddress: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.SipAddress
+    override val mimeType: MimeType
+        get() = MimeType.SipAddress
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(sipAddress)
+}
 
-    fun toMutableSipAddress() = MutableSipAddress(
+/**
+ * An immutable [SipAddressEntity].
+ */
+@Parcelize
+data class SipAddress internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val sipAddress: String?
+
+) : SipAddressEntity, ImmutableDataEntityWithMutableType<MutableSipAddress> {
+
+    override fun mutableCopy() = MutableSipAddress(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -54,39 +55,23 @@ data class SipAddress internal constructor(
 }
 
 /**
- * A mutable [SipAddress].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [SipAddressEntity].
  */
 @Parcelize
 data class MutableSipAddress internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [SipAddress.sipAddress].
-     */
-    var sipAddress: String?
+    override var sipAddress: String?
 
-) : MutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.SipAddress
+) : SipAddressEntity, MutableDataEntity {
 
     constructor() : this(null, null, null, false, false, null)
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(sipAddress)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::sipAddress

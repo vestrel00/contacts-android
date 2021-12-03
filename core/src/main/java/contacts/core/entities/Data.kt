@@ -143,18 +143,25 @@ sealed interface DataEntity : Entity {
 /**
  * An immutable [DataEntity].
  */
-interface ImmutableDataEntity : DataEntity, ImmutableEntity
+sealed interface ImmutableDataEntity : DataEntity, ImmutableEntity
 
 /**
  * An [ImmutableDataEntity] that has a mutable type [T].
  */
-interface ImmutableDataEntityWithMutableType<T : MutableDataEntity> : ImmutableDataEntity,
+sealed interface ImmutableDataEntityWithMutableType<T : MutableDataEntity> : ImmutableDataEntity,
     ImmutableEntityWithMutableType<T>
+
+/**
+ * An [ImmutableDataEntity] that has a mutable type [T] that may or may not be null.
+ */
+sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntity> :
+    ImmutableDataEntity,
+    ImmutableEntityWithNullableMutableType<T>
 
 /**
  * A mutable [DataEntity], with a mutable [primaryValue].
  */
-interface MutableDataEntity : DataEntity, MutableEntity {
+sealed interface MutableDataEntity : DataEntity, MutableEntity {
 
     /**
      * The main value encapsulated by this entity as a string for consumer usage.
@@ -165,7 +172,7 @@ interface MutableDataEntity : DataEntity, MutableEntity {
 /**
  * A [MutableDataEntity], with a mutable [type] and [label].
  */
-interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableDataEntity {
+sealed interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableDataEntity {
 
     /**
      * The [DataEntity.Type] of the [primaryValue].

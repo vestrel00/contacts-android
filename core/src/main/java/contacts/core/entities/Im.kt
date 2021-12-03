@@ -2,7 +2,7 @@ package contacts.core.entities
 
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.core.entities.Im.Protocol
+import contacts.core.entities.ImEntity.Protocol
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -10,23 +10,8 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing an instant messaging address.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Im internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface ImEntity : DataEntity {
 
     // Type and Label are also available. However, they have no use here as the protocol and custom
     // protocol have taken their place...
@@ -34,40 +19,24 @@ data class Im internal constructor(
     /**
      * The [Protocol] of this Im.
      */
-    val protocol: Protocol?,
+    val protocol: Protocol?
 
     /**
      * The name of the custom protocol. Used when the [protocol] is [Protocol.CUSTOM].
      */
-    val customProtocol: String?,
+    val customProtocol: String?
 
     /**
      * The data as the user entered it.
      */
     val data: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Im
+    override val mimeType: MimeType
+        get() = MimeType.Im
 
     // protocol (type) and customProtocol (label) are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(data)
-
-    fun toMutableIm() = MutableIm(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        protocol = protocol,
-        customProtocol = customProtocol,
-
-        data = data
-    )
 
     enum class Protocol(override val value: Int) : DataEntity.Type {
 
@@ -109,41 +78,57 @@ data class Im internal constructor(
 }
 
 /**
- * A mutable [Im].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An immutable [ImEntity].
+ */
+@Parcelize
+data class Im internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val protocol: Protocol?,
+    override val customProtocol: String?,
+    override val data: String?
+
+) : ImEntity, ImmutableDataEntityWithMutableType<MutableIm> {
+
+    override fun mutableCopy() = MutableIm(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        protocol = protocol,
+        customProtocol = customProtocol,
+
+        data = data
+    )
+}
+
+/**
+ * A mutable [ImEntity].
  */
 @Parcelize
 data class MutableIm internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Im.protocol].
-     */
-    var protocol: Protocol?,
+    override var protocol: Protocol?,
+    override var customProtocol: String?,
+    override var data: String?
 
-    /**
-     * See [Im.customProtocol].
-     */
-    var customProtocol: String?,
-
-    /**
-     * See [Im.data].
-     */
-    var data: String?
-
-) : MutableDataWithType<Protocol> {
+) : ImEntity, MutableDataEntityWithTypeAndLabel<Protocol> {
 
     constructor() : this(
         null, null, null, false, false,
@@ -151,24 +136,11 @@ data class MutableIm internal constructor(
     )
 
     @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Im
-
-    // protocol (type) and customProtocol (label) are intentionally excluded as per documentation
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(data)
-
-    @IgnoredOnParcel
     override var primaryValue: String? by this::data
 
-    override var type: Protocol?
-        get() = protocol
-        set(value) {
-            protocol = value
-        }
+    @IgnoredOnParcel
+    override var type: Protocol? by this::type
 
-    override var label: String?
-        get() = customProtocol
-        set(value) {
-            customProtocol = value
-        }
+    @IgnoredOnParcel
+    override var label: String? by this::label
 }

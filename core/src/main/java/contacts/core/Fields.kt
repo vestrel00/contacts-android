@@ -180,7 +180,8 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val Phone = PhoneFields()
 
-    internal val Photo = PhotoFields()
+    @JvmField
+    val Photo = PhotoFields()
 
     @JvmField
     val RawContact = DataRawContactsFields()
@@ -740,15 +741,17 @@ class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
     }
 }
 
-internal data class PhotoField internal constructor(override val columnName: String) :
+data class PhotoField internal constructor(override val columnName: String) :
     DataField() {
     override val mimeType: MimeType = MimeType.Photo
 }
 
-internal class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
+class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
 
+    @JvmField
     val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
 
+    @JvmField
     val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
 
     override val all by unsafeLazy {

@@ -2,7 +2,7 @@ package contacts.core.entities
 
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.core.entities.Phone.Type
+import contacts.core.entities.PhoneEntity.Type
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -15,25 +15,14 @@ import kotlinx.parcelize.Parcelize
  *
  * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Phone internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface PhoneEntity : DataEntity {
 
     /**
      * The [Type] of phone.
      *
      * Use [Type.labelStr] to get the display name of the type.
      */
-    val type: Type?,
+    val type: Type?
 
     /**
      * Used as the string representation of the [type] if this is not null and the [type] is
@@ -42,14 +31,14 @@ data class Phone internal constructor(
      * This is the string value displayed in the UI for user-created custom types. This is only used
      * when the [type] is [Type.CUSTOM].
      */
-    val label: String?,
+    val label: String?
 
     /**
      * The phone number as the user entered it.
      *
      * E.G. (012) 345-6789
      */
-    val number: String?,
+    val number: String?
 
     /**
      * The phone number's E164 representation. This value can be omitted in which case the provider
@@ -61,29 +50,12 @@ data class Phone internal constructor(
      */
     val normalizedNumber: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Phone
+    override val mimeType: MimeType
+        get() = MimeType.Phone
 
     // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
-
-    fun toMutablePhone() = MutablePhone(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        number = number,
-        normalizedNumber = normalizedNumber
-    )
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
@@ -128,58 +100,69 @@ data class Phone internal constructor(
 }
 
 /**
- * A mutable [Phone].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An immutable [PhoneEntity].
+ */
+@Parcelize
+data class Phone internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val type: Type?,
+    override val label: String?,
+
+    override val number: String?,
+    override val normalizedNumber: String?
+
+) : PhoneEntity, ImmutableDataEntityWithMutableType<MutablePhone> {
+
+    override fun mutableCopy() = MutablePhone(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        type = type,
+        label = label,
+
+        number = number,
+        normalizedNumber = normalizedNumber
+    )
+
+
+}
+
+/**
+ * A mutable [PhoneEntity].
  */
 @Parcelize
 data class MutablePhone internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Phone.type].
-     */
     override var type: Type?,
-
-    /**
-     * See [Phone.label].
-     */
     override var label: String?,
 
-    /**
-     * See [Phone.number].
-     */
-    var number: String?,
+    override var number: String?,
+    override var normalizedNumber: String?
 
-    /**
-     * See [Phone.normalizedNumber].
-     */
-    var normalizedNumber: String?
-
-) : MutableDataWithType<Type> {
+) : PhoneEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
     constructor() : this(
         null, null, null, false, false,
         null, null, null, null
     )
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Phone
-
-    // type and label are intentionally excluded as per documentation
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::number

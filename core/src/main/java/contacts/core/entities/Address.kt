@@ -2,6 +2,7 @@ package contacts.core.entities
 
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
+import contacts.core.entities.AddressEntity.Type
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -11,6 +12,7 @@ import kotlinx.parcelize.Parcelize
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
 sealed interface AddressEntity : DataEntity {
+
     /**
      * The [Type] of address.
      */
@@ -126,7 +128,7 @@ data class Address internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val type: AddressEntity.Type?,
+    override val type: Type?,
     override val label: String?,
 
     override val formattedAddress: String?,
@@ -169,36 +171,25 @@ data class Address internal constructor(
 data class MutableAddress internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    override var type: AddressEntity.Type?,
-
+    override var type: Type?,
     override var label: String?,
 
     override var formattedAddress: String?,
-
     override var street: String?,
-
     override var poBox: String?,
-
     override var neighborhood: String?,
-
     override var city: String?,
-
     override var region: String?,
-
     override var postcode: String?,
-
     override var country: String?
 
-) : AddressEntity, MutableDataEntityWithTypeAndLabel<AddressEntity.Type> {
+) : AddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
     constructor() : this(
         null, null, null, false, false, null, null, null,
