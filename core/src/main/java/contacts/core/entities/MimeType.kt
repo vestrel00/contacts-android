@@ -6,7 +6,11 @@ import contacts.core.entities.custom.CustomDataRegistry
 
 /**
  * Determines the type of a particular row in the Data table.
+ *
+ * Consumers should not have to know about this unless they are integrating custom data.
  */
+// This, and all of its usages should actually be internal. However, it is not possible to do so
+// because this signature is declared in a public interface...
 // Not using sealed interface here because we want to nest internal objects.
 sealed class MimeType {
 

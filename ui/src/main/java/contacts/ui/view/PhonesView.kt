@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import contacts.core.entities.MutablePhone
 import contacts.core.entities.Phone
 import contacts.ui.R
-import contacts.ui.entities.PhoneFactory
+import contacts.ui.entities.MutablePhoneFactory
 import contacts.ui.entities.PhoneTypeFactory
 
 /**
@@ -18,7 +18,7 @@ class PhonesView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : DataEntityWithTypeListView<Phone.Type, MutablePhone>(
     context, attributeSet, defStyleAttr,
-    dataFactory = PhoneFactory,
+    dataFactory = MutablePhoneFactory,
     dataViewFactory = PhoneViewFactory,
     defaultUnderlyingDataTypes = listOf(
         // The other non-custom types are excluded in the native Contacts app so we'll do the same.

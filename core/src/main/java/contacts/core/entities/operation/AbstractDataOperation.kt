@@ -35,7 +35,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     /**
      * Sets the [data] values into the operation via the provided [setValue] function.
      */
-    protected abstract fun setData(data: E, setValue: (field: F, value: Any?) -> Unit)
+    protected abstract fun setValuesFromData(data: E, setValue: (field: F, value: Any?) -> Unit)
 
     /**
      * There [Where] clause used as the selection for queries, updates, and deletes.
@@ -59,7 +59,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
 
         var hasValueSet = false
 
-        setData(entity) { field, dataValue ->
+        setValuesFromData(entity) { field, dataValue ->
             if ((includeFields.contains(field) || field.required) && dataValue.isNotNullOrBlank()) {
                 // Only add the operation if the field should be included or is required.
                 // No need to insert null values. Empty values are treated the same as null, same as
@@ -212,7 +212,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
 
         var hasValueSet = false
 
-        setData(entity) { field, dataValue ->
+        setValuesFromData(entity) { field, dataValue ->
             if ((includeFields.contains(field) || field.required) && dataValue.isNotNullOrBlank()) {
                 // Only add the operation if the field should be included or is required.
                 // No need to insert null values. Empty values are treated the same as null, same as
@@ -265,7 +265,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
 
         var hasValueSet = false
 
-        setData(entity) { field, dataValue ->
+        setValuesFromData(entity) { field, dataValue ->
             if (includeFields.contains(field) || field.required) {
                 // Only add the operation if the field should be included or is required.
                 // Intentionally allow to update values to null. Checking for blanks should be done at

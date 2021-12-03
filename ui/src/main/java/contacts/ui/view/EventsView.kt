@@ -9,7 +9,7 @@ import contacts.core.entities.Event
 import contacts.core.entities.EventDate
 import contacts.core.entities.MutableEvent
 import contacts.ui.R
-import contacts.ui.entities.EventFactory
+import contacts.ui.entities.MutableEventFactory
 import contacts.ui.entities.EventTypeFactory
 import java.util.*
 
@@ -22,7 +22,7 @@ class EventsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : DataEntityWithTypeListView<Event.Type, MutableEvent>(
     context, attributeSet, defStyleAttr,
-    dataFactory = EventFactory,
+    dataFactory = MutableEventFactory,
     dataViewFactory = EventsViewFactory,
     defaultUnderlyingDataTypes = Event.Type.values().filter { !it.isCustomType }
 )

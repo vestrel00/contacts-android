@@ -5,7 +5,7 @@ import android.text.InputType
 import android.util.AttributeSet
 import contacts.core.entities.MutableWebsite
 import contacts.ui.R
-import contacts.ui.entities.WebsiteFactory
+import contacts.ui.entities.MutableWebsiteFactory
 
 /**
  * A [DataEntityListView] for [MutableWebsite]s.
@@ -16,7 +16,7 @@ class WebsitesView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : DataEntityListView<MutableWebsite, DataEntityView<MutableWebsite>>(
     context, attributeSet, defStyleAttr,
-    dataFactory = WebsiteFactory,
+    dataFactory = MutableWebsiteFactory,
     dataViewFactory = WebsiteViewFactory
 )
 

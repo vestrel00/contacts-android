@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import contacts.core.entities.Address
 import contacts.core.entities.MutableAddress
 import contacts.ui.R
-import contacts.ui.entities.AddressFactory
+import contacts.ui.entities.MutableAddressFactory
 import contacts.ui.entities.AddressTypeFactory
 
 /**
@@ -18,7 +18,7 @@ class AddressesView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : DataEntityWithTypeListView<Address.Type, MutableAddress>(
     context, attributeSet, defStyleAttr,
-    dataFactory = AddressFactory,
+    dataFactory = MutableAddressFactory,
     dataViewFactory = AddressViewFactory,
     defaultUnderlyingDataTypes = Address.Type.values().filter { !it.isCustomType }
 )

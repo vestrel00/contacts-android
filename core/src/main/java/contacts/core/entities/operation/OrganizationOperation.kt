@@ -3,15 +3,15 @@ package contacts.core.entities.operation
 import contacts.core.Fields
 import contacts.core.OrganizationField
 import contacts.core.entities.MimeType
-import contacts.core.entities.MutableOrganization
+import contacts.core.entities.OrganizationEntity
 
 internal class OrganizationOperation(isProfile: Boolean, includeFields: Set<OrganizationField>) :
-    AbstractDataOperation<OrganizationField, MutableOrganization>(isProfile, includeFields) {
+    AbstractDataOperation<OrganizationField, OrganizationEntity>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Organization
 
-    override fun setData(
-        data: MutableOrganization, setValue: (field: OrganizationField, dataValue: Any?) -> Unit
+    override fun setValuesFromData(
+        data: OrganizationEntity, setValue: (field: OrganizationField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Organization.Company, data.company)
         setValue(Fields.Organization.Title, data.title)

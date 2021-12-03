@@ -3,15 +3,15 @@ package contacts.core.entities.operation
 import contacts.core.Fields
 import contacts.core.PhoneField
 import contacts.core.entities.MimeType
-import contacts.core.entities.MutablePhone
+import contacts.core.entities.PhoneEntity
 
 internal class PhoneOperation(isProfile: Boolean, includeFields: Set<PhoneField>) :
-    AbstractDataOperation<PhoneField, MutablePhone>(isProfile, includeFields) {
+    AbstractDataOperation<PhoneField, PhoneEntity>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Phone
 
-    override fun setData(
-        data: MutablePhone, setValue: (field: PhoneField, dataValue: Any?) -> Unit
+    override fun setValuesFromData(
+        data: PhoneEntity, setValue: (field: PhoneField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Phone.Type, data.type?.value)
         setValue(Fields.Phone.Label, data.label)

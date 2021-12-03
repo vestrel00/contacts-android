@@ -5,7 +5,7 @@ import android.content.ContentProviderOperation.newUpdate
 import contacts.core.ContactsFields
 import contacts.core.Fields
 import contacts.core.RawContactsFields
-import contacts.core.entities.MutableOptions
+import contacts.core.entities.OptionsEntity
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.equalTo
@@ -18,14 +18,14 @@ import contacts.core.util.isProfileId
  */
 internal class OptionsOperation {
 
-    fun updateContactOptions(contactId: Long, options: MutableOptions): ContentProviderOperation =
+    fun updateContactOptions(contactId: Long, options: OptionsEntity): ContentProviderOperation =
         newUpdate(if (contactId.isProfileId) ProfileUris.CONTACTS.uri else Table.Contacts.uri)
             .withSelection(ContactsFields.Id equalTo contactId)
             .withOptions(options)
             .build()
 
     fun updateRawContactOptions(
-        rawContactId: Long, options: MutableOptions
+        rawContactId: Long, options: OptionsEntity
     ): ContentProviderOperation = newUpdate(
         if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri
     )
@@ -34,7 +34,7 @@ internal class OptionsOperation {
         .build()
 }
 
-private fun ContentProviderOperation.Builder.withOptions(options: MutableOptions)
+private fun ContentProviderOperation.Builder.withOptions(options: OptionsEntity)
         : ContentProviderOperation.Builder =
     withValue(Fields.Contact.Options.Starred, options.starred.toSqlValue())
         /* Deprecated in API 29 - contains useless value for all Android versions in Play store.

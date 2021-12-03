@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import contacts.core.entities.Im
 import contacts.core.entities.MutableIm
 import contacts.ui.R
-import contacts.ui.entities.ImFactory
+import contacts.ui.entities.MutableImFactory
 import contacts.ui.entities.ImsTypeFactory
 
 /**
@@ -18,7 +18,7 @@ class ImsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : DataEntityWithTypeListView<Im.Protocol, MutableIm>(
     context, attributeSet, defStyleAttr,
-    dataFactory = ImFactory,
+    dataFactory = MutableImFactory,
     dataViewFactory = ImViewFactory,
     defaultUnderlyingDataTypes = Im.Protocol.values().filter { !it.isCustomType }
 )

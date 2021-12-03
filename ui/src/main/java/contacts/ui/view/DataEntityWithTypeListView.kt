@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.core.entities.DataEntity
 import contacts.core.entities.MutableDataWithType
-import contacts.ui.entities.DataEntityFactory
+import contacts.ui.entities.MutableDataEntityFactory
 
 /**
  * A (vertical) [LinearLayout] that displays a list of [MutableDataWithType] and handles
@@ -38,7 +38,7 @@ abstract class DataEntityWithTypeListView<T : DataEntity.Type, E : MutableDataWi
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,
-    dataFactory: DataEntityFactory<E>,
+    dataFactory: MutableDataEntityFactory<E>,
     dataViewFactory: DataEntityWithTypeView.Factory<T, E>,
     private val defaultUnderlyingDataTypes: List<T>
 ) : DataEntityListView<E, DataEntityWithTypeView<T, E>>(

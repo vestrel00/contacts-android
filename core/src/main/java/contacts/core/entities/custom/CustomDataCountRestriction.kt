@@ -3,7 +3,6 @@ package contacts.core.entities.custom
 /**
  * Defines up to how many entities of a certain kind is allowable **per RawContact**.
  */
-// FIXME? Maybe move this to the core module and use it there to generalize some code?
 enum class CustomDataCountRestriction {
     /**
      * A **RawContact** may have 0 or 1 one of this kind of entity. For example;

@@ -12,13 +12,12 @@ import kotlinx.parcelize.Parcelize
  * ## Dev notes
  *
  * This should actually be internal as it is of no use to consumers but this is referenced in an
- * interface (RawContactEntity)...
+ * interface (RawContactEntity)... At least we can make
  */
 @Parcelize
 data class CustomDataEntityHolder(
-    // We do not need a generic type since we have no visibility of consumer types anyways.
-    val entities: MutableList<CustomDataEntity>,
-    val countRestriction: CustomDataCountRestriction
+    internal val entities: MutableList<CustomDataEntity>,
+    internal val countRestriction: CustomDataCountRestriction
 ) : Parcelable
 
 /* We'll go with the above approach because we don't need to expose these implementations.
@@ -33,17 +32,17 @@ internal sealed interface CustomDataEntityHolder
  * Holds zero or one-per-RawContact .
  */
 internal class SingleCustomDataEntityHolder(
-    val entity: MutableCustomDataEntity
+    val entity: CustomDataEntity
 ) : CustomDataHolder
 
 /**
  * Holds zero or one-or-more-per-RawContact entities.
  */
 class MultipleCustomDataEntityHolder(
-    val entities: List<MutableCustomDataEntity>
+    val entities: List<CustomDataEntity>
 ) : CustomDataHolder
 
-val CustomDataEntityHolder.entities: List<MutableCustomDataEntity>
+val CustomDataEntityHolder.entities: List<CustomDataEntity>
     get() = when (this) {
         is SingleCustomDataEntityHolder -> listOf(entity)
         is MultipleCustomDataEntityHolder -> entities

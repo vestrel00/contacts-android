@@ -2,17 +2,17 @@ package contacts.core.entities.custom
 
 import android.database.Cursor
 import contacts.core.AbstractCustomDataField
-import contacts.core.entities.MutableCustomData
+import contacts.core.entities.CustomDataEntity
 import contacts.core.entities.mapper.EntityMapper
 
 /**
  * Base type of all custom [EntityMapper]s. It uses a [AbstractCustomDataCursor] [C] (using fields
- * of type [F]) and outputs a [MutableCustomData] [E].
+ * of type [F]) and outputs a [CustomDataEntity] [E].
  */
 abstract class AbstractCustomEntityMapper<
         F : AbstractCustomDataField,
         C : AbstractCustomDataCursor<F>,
-        out E : MutableCustomData>(
+        out E : CustomDataEntity>(
     private val cursor: C
 ) : EntityMapper<E> {
 
@@ -35,7 +35,7 @@ abstract class AbstractCustomEntityMapper<
     interface Factory<
             F : AbstractCustomDataField,
             C : AbstractCustomDataCursor<F>,
-            out E : MutableCustomData> {
+            out E : CustomDataEntity> {
 
         /**
          * Creates instances of [AbstractCustomEntityMapper] with the given [cursor].

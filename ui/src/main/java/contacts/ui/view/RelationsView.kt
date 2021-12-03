@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import contacts.core.entities.MutableRelation
 import contacts.core.entities.Relation
 import contacts.ui.R
-import contacts.ui.entities.RelationFactory
+import contacts.ui.entities.MutableRelationFactory
 import contacts.ui.entities.RelationTypeFactory
 
 /**
@@ -18,7 +18,7 @@ class RelationsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : DataEntityWithTypeListView<Relation.Type, MutableRelation>(
     context, attributeSet, defStyleAttr,
-    dataFactory = RelationFactory,
+    dataFactory = MutableRelationFactory,
     dataViewFactory = RelationViewFactory,
     defaultUnderlyingDataTypes = Relation.Type.values().filter { !it.isCustomType }
 )

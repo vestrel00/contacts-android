@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import contacts.core.entities.Email
 import contacts.core.entities.MutableEmail
 import contacts.ui.R
-import contacts.ui.entities.EmailFactory
+import contacts.ui.entities.MutableEmailFactory
 import contacts.ui.entities.EmailTypeFactory
 
 /**
@@ -18,7 +18,7 @@ class EmailsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : DataEntityWithTypeListView<Email.Type, MutableEmail>(
     context, attributeSet, defStyleAttr,
-    dataFactory = EmailFactory,
+    dataFactory = MutableEmailFactory,
     dataViewFactory = EmailViewFactory,
     defaultUnderlyingDataTypes = Email.Type.values().filter { !it.isCustomType }
 )

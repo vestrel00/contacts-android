@@ -125,15 +125,9 @@ sealed interface RawContactEntity : Entity {
 
     /**
      * Map of custom mime type value to a [CustomDataEntityHolder].
-     *
-     * ## Developer notes
-     *
-     * Only mutable custom data entities are kept/handled internally to avoid having to define a
-     * toMutable() and toImmutable() functions in the custom entity interface. This gives more
-     * flexibility to consumers and keeps internal code lean and clean. Consumers may expose an
-     * immutable version if they choose to do so.
      */
     // This should actually be internal... if interfaces allowed for internal property declarations.
+    // We can put this map as an internal property of a public class... but nah. We'll see =)
     /* internal */ val customDataEntities: Map<String, CustomDataEntityHolder>
 
     override val isBlank: Boolean
