@@ -19,7 +19,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To update a groups's name to "Best Friends";
+ * To update a groups' name to "Best Friends";
  *
  * In Kotlin,
  *
@@ -207,7 +207,9 @@ private class GroupsUpdateImpl(
             .find()
             // Convert to mutable group so that titles can be mutated during update processing.
             // Use the data class copy function intentionally to include read-only groups.
-            .map { it.copy(readOnly = false).toMutableGroup()!! } //  Consumers should never do this!
+            .mapNotNull {
+                it.copy(readOnly = false).mutableCopy()
+            } //  Consumers should never do this!
         val existingAccountGroups = mutableMapOf<Account, MutableSet<MutableGroup>>()
         for (group in existingGroups) {
             existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {

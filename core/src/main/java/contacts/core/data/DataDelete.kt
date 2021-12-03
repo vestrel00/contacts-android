@@ -39,7 +39,7 @@ import contacts.core.util.unsafeLazy
  * In Java,
  *
  * ```java
- * DataDelete.Result result = dataDelete    
+ * DataDelete.Result result = dataDelete
  *      .data(data)
  *      .commit()
  * ```
