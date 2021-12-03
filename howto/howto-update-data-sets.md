@@ -13,13 +13,13 @@ val update = Contacts(context).data().update()
 
 ## A basic update
 
-To update a set of `MutableData`,
+To update a set of `MutableDataEntity`,
 
 ```kotlin
 val updateResult = Contacts(context)
     .data()
     .update()
-    .data(dataSet)
+    .data(mutableDataEntities)
     .commit()
 ```
 

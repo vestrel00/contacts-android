@@ -3,9 +3,7 @@ package contacts.core.entities
 import android.os.Parcelable
 
 /**
- * Type of all entities provided in this library.
- *
- * Implementations must
+ * Base of all entities provided in this library.
  */
 sealed interface Entity : Parcelable {
 

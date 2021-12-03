@@ -192,7 +192,7 @@ data class Contact internal constructor(
     override fun mutableCopy() = MutableContact(
         id = id,
 
-        rawContacts = rawContacts.asSequence().mutableCopies().toMutableList(,
+        rawContacts = rawContacts.asSequence().mutableCopies().toMutableList(),
 
         displayNamePrimary = displayNamePrimary,
         displayNameAlt = displayNameAlt,

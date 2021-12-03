@@ -5,11 +5,10 @@ import contacts.core.AbstractCustomDataField
 import contacts.core.entities.CustomDataEntity
 import contacts.core.entities.ImmutableCustomDataEntity
 import contacts.core.entities.mapper.CustomDataEntityMapper
-import contacts.core.entities.mapper.EntityMapper
 
 /**
- * Base type of all custom [EntityMapper]s. It uses a [AbstractCustomDataCursor] [C] (using fields
- * of type [F]) and outputs a [CustomDataEntity] [E].
+ * Base type of all custom [CustomDataEntityMapper]s. It uses a [AbstractCustomDataCursor] [C]
+ * (using fields of type [F]) and outputs a [CustomDataEntity] [E].
  */
 abstract class AbstractCustomDataEntityMapper<
         F : AbstractCustomDataField,
