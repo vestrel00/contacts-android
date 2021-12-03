@@ -1,19 +1,19 @@
 package contacts.test.entities
 
 import android.database.Cursor
-import contacts.core.entities.custom.AbstractCustomEntityMapper
+import contacts.core.entities.custom.AbstractCustomDataEntityMapper
 
 internal class TestDataMapperFactory :
-    AbstractCustomEntityMapper.Factory<TestDataField, TestDataCursor, TestData> {
+    AbstractCustomDataEntityMapper.Factory<TestDataField, TestDataCursor, TestData> {
 
     override fun create(
         cursor: Cursor, includeFields: Set<TestDataField>
-    ): AbstractCustomEntityMapper<TestDataField, TestDataCursor, TestData> =
+    ): AbstractCustomDataEntityMapper<TestDataField, TestDataCursor, TestData> =
         TestDataMapper(TestDataCursor(cursor, includeFields))
 }
 
 private class TestDataMapper(cursor: TestDataCursor) :
-    AbstractCustomEntityMapper<TestDataField, TestDataCursor, TestData>(cursor) {
+    AbstractCustomDataEntityMapper<TestDataField, TestDataCursor, TestData>(cursor) {
 
     override fun value(cursor: TestDataCursor) = TestData(
         id = cursor.dataId,

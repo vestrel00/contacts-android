@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Nickname
 import contacts.core.entities.cursor.NicknameCursor
 
-internal class NicknameMapper(private val nicknameCursor: NicknameCursor) : EntityMapper<Nickname> {
+internal class NicknameMapper(private val nicknameCursor: NicknameCursor) : DataEntityMapper<Nickname> {
 
     override val value: Nickname
         get() = Nickname(

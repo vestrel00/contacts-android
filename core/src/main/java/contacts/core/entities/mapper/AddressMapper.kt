@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Address
 import contacts.core.entities.cursor.AddressCursor
 
-internal class AddressMapper(private val addressCursor: AddressCursor) : EntityMapper<Address> {
+internal class AddressMapper(private val addressCursor: AddressCursor) : DataEntityMapper<Address> {
 
     override val value: Address
         get() = Address(

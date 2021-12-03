@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Im
 import contacts.core.entities.cursor.ImCursor
 
-internal class ImMapper(private val imCursor: ImCursor) : EntityMapper<Im> {
+internal class ImMapper(private val imCursor: ImCursor) : DataEntityMapper<Im> {
 
     override val value: Im
         get() = Im(

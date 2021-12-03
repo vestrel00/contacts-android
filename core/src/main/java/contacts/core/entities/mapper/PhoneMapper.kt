@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Phone
 import contacts.core.entities.cursor.PhoneCursor
 
-internal class PhoneMapper(private val phoneCursor: PhoneCursor) : EntityMapper<Phone> {
+internal class PhoneMapper(private val phoneCursor: PhoneCursor) : DataEntityMapper<Phone> {
 
     override val value: Phone
         get() = Phone(

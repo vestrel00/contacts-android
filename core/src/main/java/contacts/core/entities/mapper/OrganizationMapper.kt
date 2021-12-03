@@ -4,7 +4,7 @@ import contacts.core.entities.Organization
 import contacts.core.entities.cursor.OrganizationCursor
 
 internal class OrganizationMapper(private val organizationCursor: OrganizationCursor) :
-    EntityMapper<Organization> {
+    DataEntityMapper<Organization> {
 
     override val value: Organization
         get() = Organization(

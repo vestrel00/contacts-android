@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Email
 import contacts.core.entities.cursor.EmailCursor
 
-internal class EmailMapper(private val emailCursor: EmailCursor) : EntityMapper<Email> {
+internal class EmailMapper(private val emailCursor: EmailCursor) : DataEntityMapper<Email> {
 
     override val value: Email
         get() = Email(

@@ -161,7 +161,7 @@ class CustomDataRegistry {
         val fieldSet: AbstractCustomDataFieldSet<F>
         val fieldMapper: CustomDataFieldMapper<F, E>
         val countRestriction: CustomDataCountRestriction
-        val mapperFactory: AbstractCustomEntityMapper.Factory<F, C, E>
+        val mapperFactory: AbstractCustomDataEntityMapper.Factory<F, C, E>
         val operationFactory: AbstractCustomDataOperation.Factory<F, E>
     }
 

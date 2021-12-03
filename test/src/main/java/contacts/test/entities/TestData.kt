@@ -27,7 +27,7 @@ internal data class TestData(
      */
     val value: String = VALUE
 
-) : MutableCustomData {
+) : ImmutableCustomData {
     // MutableCustomDataEntity are also CustomDataEntity so this serves as both the mutable and
     // immutable implementations. This is okay because this isn't really mutable.
 

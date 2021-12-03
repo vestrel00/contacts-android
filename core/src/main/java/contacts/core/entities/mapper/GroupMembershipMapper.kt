@@ -4,7 +4,7 @@ import contacts.core.entities.GroupMembership
 import contacts.core.entities.cursor.GroupMembershipCursor
 
 internal class GroupMembershipMapper(private val groupMembershipCursor: GroupMembershipCursor) :
-    EntityMapper<GroupMembership> {
+    DataEntityMapper<GroupMembership> {
 
     override val value: GroupMembership
         get() = GroupMembership(
