@@ -16,19 +16,21 @@ class CustomDataRegistry {
     private val entryMap = mutableMapOf<String, Entry<
             AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
-            CustomDataEntity>>()
+            CustomDataEntity,
+            ImmutableCustomDataEntity>>()
 
     /**
      * Register custom data [entries].
      */
     @SafeVarargs
-    fun register(vararg entries: Entry<*, *, *>) {
+    fun register(vararg entries: Entry<*, *, *, *>) {
         for (entry in entries) {
             @Suppress("UNCHECKED_CAST")
             entryMap[entry.mimeType.value] = entry as Entry<
                     AbstractCustomDataField,
                     AbstractCustomDataCursor<AbstractCustomDataField>,
-                    CustomDataEntity>
+                    CustomDataEntity,
+                    ImmutableCustomDataEntity>
         }
     }
 
@@ -110,6 +112,9 @@ class CustomDataRegistry {
 
     /**
      * See [customDataEntitiesFor].
+     *
+     * Note that [T] is [CustomDataEntity] instead of MutableCustomDataEntity in order to give
+     * consumers the option to not provide a mutable implementation.
      */
     fun <T : CustomDataEntity> customDataEntitiesFor(
         rawContact: MutableRawContact, mimeType: MimeType.Custom
@@ -128,7 +133,8 @@ class CustomDataRegistry {
 
     internal fun entryOf(mimeTypeValue: String): Entry<AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
-            CustomDataEntity> = entryMap[mimeTypeValue]
+            CustomDataEntity,
+            ImmutableCustomDataEntity> = entryMap[mimeTypeValue]
         ?: throw CustomDataException("Missing custom data entry for $mimeTypeValue")
 
     internal fun mimeTypeOf(
@@ -156,12 +162,12 @@ class CustomDataRegistry {
      * inserts, updates, and deletes.
      */
     interface Entry<F : AbstractCustomDataField, C : AbstractCustomDataCursor<F>,
-            E : CustomDataEntity> {
+            E : CustomDataEntity, I : ImmutableCustomDataEntity> {
         val mimeType: MimeType.Custom
         val fieldSet: AbstractCustomDataFieldSet<F>
         val fieldMapper: CustomDataFieldMapper<F, E>
         val countRestriction: CustomDataCountRestriction
-        val mapperFactory: AbstractCustomDataEntityMapper.Factory<F, C, E>
+        val mapperFactory: AbstractCustomDataEntityMapper.Factory<F, C, I>
         val operationFactory: AbstractCustomDataOperation.Factory<F, E>
     }
 
@@ -178,5 +184,4 @@ class CustomDataRegistry {
          */
         fun registerTo(customDataRegistry: CustomDataRegistry)
     }
-
 }

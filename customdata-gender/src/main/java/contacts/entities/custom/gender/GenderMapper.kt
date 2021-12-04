@@ -4,11 +4,11 @@ import android.database.Cursor
 import contacts.core.entities.custom.AbstractCustomDataEntityMapper
 
 internal class GenderMapperFactory :
-    AbstractCustomDataEntityMapper.Factory<GenderField, GenderDataCursor, GenderEntity> {
+    AbstractCustomDataEntityMapper.Factory<GenderField, GenderDataCursor, Gender> {
 
     override fun create(
         cursor: Cursor, includeFields: Set<GenderField>
-    ): AbstractCustomDataEntityMapper<GenderField, GenderDataCursor, GenderEntity> =
+    ): AbstractCustomDataEntityMapper<GenderField, GenderDataCursor, Gender> =
         GenderMapper(GenderDataCursor(cursor, includeFields))
 }
 

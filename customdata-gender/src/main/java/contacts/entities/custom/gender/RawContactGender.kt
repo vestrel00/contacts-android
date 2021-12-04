@@ -10,10 +10,10 @@ import contacts.core.entities.RawContact
  */
 fun RawContact.gender(contacts: Contacts): Gender? {
     val customDataEntities = contacts.customDataRegistry
-        .customDataEntitiesFor<MutableGender>(this, GenderMimeType)
+        .customDataEntitiesFor<Gender>(this, GenderMimeType)
 
     // We know that there can only be one gender so we only look to at the first element.
-    return customDataEntities.firstOrNull()?.toGender()
+    return customDataEntities.firstOrNull()
 }
 
 /**

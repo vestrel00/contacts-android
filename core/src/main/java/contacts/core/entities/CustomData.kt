@@ -9,7 +9,8 @@ package contacts.core.entities
  * Implementations are required to be parcelable. Kotlin users are recommended to use data class
  * combined with [kotlinx.parcelize.Parcelize].
  */
-sealed interface CustomDataEntity : DataEntity {
+// Intentionally not sealed so that consumers can define their own implementations.
+interface CustomDataEntity : DataEntity {
 
     // Override this to cast type from MimeType to MimeType.Custom
     override val mimeType: MimeType.Custom
@@ -32,7 +33,7 @@ interface ImmutableCustomDataEntityWithMutableType<T : MutableCustomDataEntity> 
  * An [ImmutableCustomDataEntity] that has a mutable type [T] that may or may not be null.
  */
 // Intentionally not sealed so that consumers can define their own implementations.
-sealed interface ImmutableCustomDataEntityWithNullableMutableType<T : MutableCustomDataEntity> :
+interface ImmutableCustomDataEntityWithNullableMutableType<T : MutableCustomDataEntity> :
     ImmutableCustomDataEntity, ImmutableDataEntityWithNullableMutableType<T>
 
 /**
@@ -45,5 +46,5 @@ interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity
  * A [MutableCustomDataEntity], with a mutable [type] and [label].
  */
 // Intentionally not sealed so that consumers can define their own implementations.
-interface MutableCustomDataWithTypeAndLabel<T : DataEntity.Type> : MutableCustomDataEntity,
+interface MutableCustomDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableCustomDataEntity,
     MutableDataEntityWithTypeAndLabel<T>
