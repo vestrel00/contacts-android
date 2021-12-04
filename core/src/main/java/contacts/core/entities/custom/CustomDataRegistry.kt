@@ -121,7 +121,7 @@ class CustomDataRegistry {
     ): List<T> = customDataEntitiesFor(rawContact.customDataEntities, mimeType)
 
     private fun <T : CustomDataEntity> customDataEntitiesFor(
-        customDataEntities: Map<String, CustomDataEntityHolder>, mimeType: MimeType.Custom
+        customDataEntities: Map<String, AbstractCustomDataEntityHolder>, mimeType: MimeType.Custom
     ): List<T> {
         val entityHolder = customDataEntities[mimeType.value]
 

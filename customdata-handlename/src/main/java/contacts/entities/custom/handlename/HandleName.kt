@@ -1,9 +1,6 @@
 package contacts.entities.custom.handlename
 
-import contacts.core.entities.MimeType
-import contacts.core.entities.ImmutableCustomData
-import contacts.core.entities.MutableCustomData
-import contacts.core.entities.propertiesAreAllNullOrBlank
+import contacts.core.entities.*
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -17,33 +14,38 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have multiple handle names.
  */
-@Parcelize
-data class HandleName internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface HandleNameEntity : CustomDataEntity {
 
     /**
      * The handle name.
      */
     val handle: String?
 
-) : ImmutableCustomData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType.Custom = HandleNameMimeType
+    override val mimeType: MimeType.Custom
+        get() = HandleNameMimeType
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(handle)
+}
 
-    fun toMutableHandleName() = MutableHandleName(
+/**
+ * An immutable [HandleNameEntity].
+ */
+@Parcelize
+data class HandleName internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val handle: String?
+
+) : HandleNameEntity, ImmutableCustomDataEntityWithMutableType<MutableHandleName> {
+
+    override fun mutableCopy() = MutableHandleName(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -56,46 +58,23 @@ data class HandleName internal constructor(
 }
 
 /**
- * A mutable [HandleName].
+ * A mutable [HandleNameEntity].
  */
 @Parcelize
 data class MutableHandleName internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override val isPrimary: Boolean,
-
     override val isSuperPrimary: Boolean,
 
-    /**
-     * See [HandleName.handle]
-     */
-    var handle: String?
+    override var handle: String?
 
-) : MutableCustomData {
+) : HandleNameEntity, MutableCustomDataEntity {
 
     constructor() : this(null, null, null, false, false, null)
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType.Custom = HandleNameMimeType
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(handle)
-
-    internal fun toHandleName() = HandleName(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        handle = handle
-    )
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::handle

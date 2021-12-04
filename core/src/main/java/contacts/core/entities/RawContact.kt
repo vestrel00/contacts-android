@@ -1,6 +1,8 @@
 package contacts.core.entities
 
+import contacts.core.entities.custom.AbstractCustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataEntityHolder
+import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
 import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 
@@ -124,11 +126,11 @@ sealed interface RawContactEntity : Entity {
     val websites: List<WebsiteEntity>
 
     /**
-     * Map of custom mime type value to a [CustomDataEntityHolder].
+     * Map of custom mime type value to a [ImmutableCustomDataEntityHolder].
      */
     // This should actually be internal... if interfaces allowed for internal property declarations.
     // We can put this map as an internal property of a public class... but nah. We'll see =)
-    /* internal */ val customDataEntities: Map<String, CustomDataEntityHolder>
+    /* internal */ val customDataEntities: Map<String, AbstractCustomDataEntityHolder>
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
@@ -165,7 +167,7 @@ data class RawContact internal constructor(
     override val relations: List<Relation>,
     override val sipAddress: SipAddress?,
     override val websites: List<Website>,
-    override val customDataEntities: Map<String, CustomDataEntityHolder>
+    override val customDataEntities: Map<String, ImmutableCustomDataEntityHolder>
 
 ) : RawContactEntity, ImmutableEntityWithMutableType<MutableRawContact> {
 
@@ -188,7 +190,9 @@ data class RawContact internal constructor(
         sipAddress = sipAddress?.mutableCopy(),
         websites = websites.asSequence().mutableCopies().toMutableList(),
 
-        customDataEntities = customDataEntities.toMutableMap() // send a shallow copy
+        customDataEntities = customDataEntities
+            .mapValues { it.value.toCustomDataEntityHolder() }
+            .toMutableMap()
     )
 }
 
@@ -299,7 +303,7 @@ data class BlankRawContact internal constructor(
     override val websites: List<WebsiteEntity>
         get() = emptyList()
 
-    override val customDataEntities: Map<String, CustomDataEntityHolder>
+    override val customDataEntities: Map<String, AbstractCustomDataEntityHolder>
         get() = emptyMap()
 }
 
@@ -328,7 +332,7 @@ internal data class TempRawContact constructor(
     override var relations: MutableList<Relation>,
     override var sipAddress: SipAddress?,
     override var websites: MutableList<Website>,
-    override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
+    override val customDataEntities: MutableMap<String, ImmutableCustomDataEntityHolder>
 
 ) : RawContactEntity, MutableEntity {
 

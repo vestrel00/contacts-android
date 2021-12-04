@@ -4,11 +4,11 @@ import android.database.Cursor
 import contacts.core.entities.custom.AbstractCustomDataEntityMapper
 
 internal class HandleNameMapperFactory :
-    AbstractCustomDataEntityMapper.Factory<HandleNameField, HandleNameDataCursor, HandleNameEntity> {
+    AbstractCustomDataEntityMapper.Factory<HandleNameField, HandleNameDataCursor, HandleName> {
 
     override fun create(
         cursor: Cursor, includeFields: Set<HandleNameField>
-    ): AbstractCustomDataEntityMapper<HandleNameField, HandleNameDataCursor, HandleNameEntity> =
+    ): AbstractCustomDataEntityMapper<HandleNameField, HandleNameDataCursor, HandleName> =
         HandleNameMapper(HandleNameDataCursor(cursor, includeFields))
 }
 

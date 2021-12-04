@@ -4,15 +4,24 @@ import contacts.core.Contacts
 import contacts.core.entities.MutableRawContact
 import contacts.core.entities.RawContact
 
+// Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
+// as they will not have to convert Sequences to List. Also, all are functions instead of properties
+// with getters because there are some setters that have to be functions. So all are functions
+// to keep uniformity for OCD purposes.
+
+// Another dev note: Receiver signatures are the concrete types instead of the interface type.
+// This is done so that consumers gets references to actual concrete types, which may implement
+// other interfaces required by APIs in this library.
+
 /**
  * Returns the sequence of [HandleName]s of this RawContact. Empty if none available (e.g. does not
  * exist in the database or was not an included field in the query).
  */
 fun RawContact.handleNames(contacts: Contacts): Sequence<HandleName> {
     val customDataEntities = contacts.customDataRegistry
-        .customDataEntitiesFor<MutableHandleName>(this, HandleNameMimeType)
+        .customDataEntitiesFor<HandleName>(this, HandleNameMimeType)
 
-    return customDataEntities.asSequence().map { it.toHandleName() }
+    return customDataEntities.asSequence()
 }
 
 /**
