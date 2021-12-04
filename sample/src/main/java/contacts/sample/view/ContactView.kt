@@ -196,7 +196,7 @@ class ContactView @JvmOverloads constructor(
             .where(Fields.Contact.Id equalTo contactId)
             .findWithContext()
             .firstOrNull()
-            ?.toMutableContact()
+            ?.mutableCopy()
 
         setContact(contact, contacts)
 
@@ -356,7 +356,7 @@ class ContactView @JvmOverloads constructor(
 
     private suspend fun toggleStarred(contacts: Contacts) {
         // The starred value from DB needs to be retrieved.
-        val options = contact?.optionsWithContext(contacts)?.toMutableOptions() ?: MutableOptions()
+        val options = contact?.optionsWithContext(contacts)?.mutableCopy() ?: MutableOptions()
         val starred = options.starred == true
 
         options.starred = !starred
@@ -407,7 +407,7 @@ class ContactView @JvmOverloads constructor(
             .where(Fields.Contact.Id equalTo contactId)
             .findWithContext()
             .firstOrNull()
-            ?.toMutableContact()
+            ?.mutableCopy()
             ?: return
 
         // Copy over the refreshed group memberships to the RawContacts.

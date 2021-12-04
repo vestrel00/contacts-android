@@ -4,13 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.core.entities.DataEntity
-import contacts.core.entities.MutableDataWithType
+import contacts.core.entities.MutableDataEntityWithTypeAndLabel
 import contacts.ui.entities.MutableDataEntityFactory
 
 /**
- * A (vertical) [LinearLayout] that displays a list of [MutableDataWithType] and handles
- * the modifications to the given mutable list. Each of the mutable entity in the list is displayed
- * in a [DataEntityWithTypeView].
+ * A (vertical) [LinearLayout] that displays a list of [MutableDataEntityWithTypeAndLabel] and
+ * handles the modifications to the given mutable list. Each of the mutable entity in the list is
+ * displayed in a [DataEntityWithTypeView].
  *
  * Setting the [dataList] will automatically update the views. Any modifications in the views will
  * also be made to the [dataList].
@@ -34,7 +34,8 @@ import contacts.ui.entities.MutableDataEntityFactory
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-abstract class DataEntityWithTypeListView<T : DataEntity.Type, E : MutableDataWithType<T>>(
+abstract class DataEntityWithTypeListView
+<T : DataEntity.Type, E : MutableDataEntityWithTypeAndLabel<T>>(
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,

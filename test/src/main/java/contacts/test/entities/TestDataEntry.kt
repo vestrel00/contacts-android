@@ -3,7 +3,7 @@ package contacts.test.entities
 import contacts.core.entities.custom.CustomDataRegistry.Entry
 
 // Keep this internal. Consumers don't need to see this stuff. Less visibility the better!
-internal class TestDataEntry : Entry<TestDataField, TestDataCursor, TestData> {
+internal class TestDataEntry : Entry<TestDataField, TestDataCursor, TestDataEntity, TestData> {
 
     override val mimeType = TestDataMimeType
 
