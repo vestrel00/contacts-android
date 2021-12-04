@@ -56,7 +56,7 @@ import contacts.core.util.toRawContactsWhere
  *              familyName = "doe"
  *          }
  *          emails.add(MutableEmail().apply {
- *              type = Email.Type.HOME
+ *              type = EmailEntity.Type.HOME
  *              address = "john@doe.com"
  *          })
  *      }
@@ -71,7 +71,7 @@ import contacts.core.util.toRawContactsWhere
  * name.setFamilyName("doe");
  *
  * MutableEmail email = new MutableEmail();
- * email.setType(Email.Type.HOME);
+ * email.setType(EmailEntity.Type.HOME);
  * email.setAddress("john@doe.com");
  *
  * List<MutableEmail> emails = new ArrayList<>();

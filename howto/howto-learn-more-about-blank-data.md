@@ -18,7 +18,7 @@ val blankEmail4 = MutableEmail().apply {
     address = "   "
 }
 val blankEmail5 = MutableEmail().apply {
-    type = Email.Type.HOME
+    type = EmailEntity.Type.HOME
 }
 
 val emailThatIsNotBlank = MutableEmail().apply {

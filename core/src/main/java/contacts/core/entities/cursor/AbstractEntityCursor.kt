@@ -23,7 +23,9 @@ import kotlin.reflect.KProperty
  *    ```
  *    val formattedAddress: String? by string(Fields.Address.FormattedAddress)
  *
- *    val type: Address.Type? by type(Fields.Address.Type, typeFromValue = Address.Type::fromValue)
+ *    val type: AddressEntity.Type? by type(
+ *          Fields.Address.Type, typeFromValue = AddressEntity.Type::fromValue
+ *    )
  *    ```
  *
  * 2. By regular functions.
@@ -32,8 +34,8 @@ import kotlin.reflect.KProperty
  *    val formattedAddress: String?
  *        get() = getString(Fields.Address.FormattedAddress)
  *
- *    val type: Address.Type?
- *        get() = getType(Fields.Address.Type, typeFromValue = Address.Type::fromValue)
+ *    val type: AddressEntity.Type?
+ *        get() = getType(Fields.Address.Type, typeFromValue = AddressEntity.Type::fromValue)
  *    ```
  *
  *    or
@@ -41,9 +43,9 @@ import kotlin.reflect.KProperty
  *    ```
  *    fun getFormattedAddress(): String? = getString(Fields.Address.FormattedAddress)
  *
- *    fun getType(): Address.Type? = getType(
+ *    fun getType(): AddressEntity.Type? = getType(
  *        Fields.Address.Type,
- *        typeFromValue = Address.Type::fromValue
+ *        typeFromValue = AddressEntity.Type::fromValue
  *    )
  *    ```
  *
@@ -56,8 +58,8 @@ import kotlin.reflect.KProperty
  *    }
  *
  *    @Nullable
- *    Address.Type getType() {
- *        return getType(Fields.Address.Type, Address.Type::fromValue);
+ *    AddressEntity.Type getType() {
+ *        return getType(Fields.Address.Type, AddressEntity.Type::fromValue);
  *    }
  *    ```
  *

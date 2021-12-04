@@ -34,7 +34,7 @@ val insertResult = Contacts(context)
         }
         emails.add(MutableEmail().apply {
             address = "john.doe@amazon.com"
-            type = Email.Type.WORK
+            type = EmailEntity.Type.WORK
         })
     })
     .commit()
@@ -56,7 +56,7 @@ val insertResult = Contacts(context)
         }
         addEmail {
             address = "john.doe@amazon.com"
-            type = Email.Type.WORK
+            type = EmailEntity.Type.WORK
         }
     }
     .commit()
@@ -70,18 +70,20 @@ The API allows you to specify if you want to be able to insert blank contacts or
 .allowBlanks(true|false)
 ```
 
-For more info, read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
+For more info,
+read [How do I learn more about "blank" contacts?](/howto/howto-learn-more-about-blank-contacts.md)
 
 ## Blank data are not inserted
 
-Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
+Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are
 ignored and are not inserted by insert APIs.
 
-For more info, read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)
+For more info,
+read [How do I learn more about "blank" data?](/howto/howto-learn-more-about-blank-data.md)
 
 ## Associating an Account
 
-New RawContacts can be associated with an Account in order to enable syncing, 
+New RawContacts can be associated with an Account in order to enable syncing,
 
 ```kotlin
 .forAccount(account)
@@ -95,10 +97,10 @@ For example, to associated the new RawContact to an account,
 
 > For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
-If no Account is provided, or null is provided, or if an incorrect account is provided, the 
-RawContacts inserted will not be associated with an Account. RawContacts inserted without an 
+If no Account is provided, or null is provided, or if an incorrect account is provided, the
+RawContacts inserted will not be associated with an Account. RawContacts inserted without an
 associated account are considered local or device-only contacts, which are not synced.
-     
+
 > For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
 
 **Lollipop (API 22) and below**
@@ -136,7 +138,8 @@ For example, to only include email fields,
 .include(Fields.Email.all)
 ```
 
-For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
+For more info,
+read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
 ## Executing the insert
 
@@ -151,7 +154,7 @@ To execute the insert,
 The `commit` function returns a `Result`,
 
 ```kotlin
-val contactsApi =  Contacts(context)
+val contactsApi = Contacts(context)
 val mutableRawContact1 = MutableRawContact().apply { ... }
 val mutableRawContact2 = MutableRawContact().apply { ... }
 
@@ -233,7 +236,8 @@ The `commit` function optionally takes in a function that, if it returns true, w
 processing as soon as possible. The function is called numerous times during insert processing to
 check if processing should stop or continue. This gives you the option to cancel the insert.
 
-For example, to automatically cancel the insert inside a Kotlin coroutine when the coroutine is cancelled,
+For example, to automatically cancel the insert inside a Kotlin coroutine when the coroutine is
+cancelled,
 
 ```kotlin
 launch {
@@ -248,8 +252,9 @@ launch {
 Inserts are executed when the `commit` function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in
+the `async` module. For more info,
+read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -257,24 +262,26 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 
 ## Performing the insert with permission
 
-Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS` 
+Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS`
 permissions. If not granted, the insert will do nothing and return a failed result.
 
-To perform the insert with permission, use the extensions provided in the `permissions` module.
-For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
+To perform the insert with permission, use the extensions provided in the `permissions` module. For
+more info,
+read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
- 
-The `Insert` API supports custom data. For more info, read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/howto/howto-insert-custom-data.md)
+
+The `Insert` API supports custom data. For more info,
+read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/howto/howto-insert-custom-data.md)
 
 ## Insert a new RawContact with data of every kind
 
 Unless you are allowing blanks, you only need to provide at least one data kind when inserting a new
-contact in order for the operation to succeed. 
+contact in order for the operation to succeed.
 
-If you want to provide data of every kind, which is useful when implementing a contact creation 
+If you want to provide data of every kind, which is useful when implementing a contact creation
 screen,
 
 ```kotlin
@@ -297,7 +304,7 @@ val insertResult = Contacts(context)
         }
         addPhone {
             number = "(555) 555-5555"
-            type = Phone.Type.CUSTOM
+            type = PhoneEntity.Type.CUSTOM
             label = "Fake Number"
         }
         setSipAddress {
@@ -305,19 +312,19 @@ val insertResult = Contacts(context)
         }
         addEmail {
             address = "buzz.lightyear@pixar.com"
-            type = Email.Type.WORK
+            type = EmailEntity.Type.WORK
         }
         addEmail {
             address = "buzz@lightyear.net"
-            type = Email.Type.HOME
+            type = EmailEntity.Type.HOME
         }
         addAddress {
             formattedAddress = "1200 Park Ave"
-            type = Address.Type.WORK
+            type = AddressEntity.Type.WORK
         }
         addIm {
             data = "buzzlightyear@skype.com"
-            protocol = Im.Protocol.SKYPE
+            protocol = ImEntity.Protocol.SKYPE
         }
         addWebsite {
             url = "https://www.pixar.com"
@@ -327,11 +334,11 @@ val insertResult = Contacts(context)
         }
         addEvent {
             date = EventDate.from(year = 1995, month = 10, dayOfMonth = 22)
-            type = Event.Type.BIRTHDAY
+            type = EventEntity.Type.BIRTHDAY
         }
         addRelation {
             name = "Childhood friend"
-            type = Relation.Type.CUSTOM
+            type = RelationEntity.Type.CUSTOM
             label = "Imaginary Friend"
         }
         groupMemberships.addAll(
@@ -353,5 +360,6 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-Full-sized photos (and by API design thumbnails) can only be set after creating the contact.
-For more info, read [How do I get/set/remove full-sized and thumbnail photos?](/howto/howto-get-set-remove-contact-raw-contact-photo.md)
+Full-sized photos (and by API design thumbnails) can only be set after creating the contact. For
+more info,
+read [How do I get/set/remove full-sized and thumbnail photos?](/howto/howto-get-set-remove-contact-raw-contact-photo.md)

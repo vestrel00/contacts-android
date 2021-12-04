@@ -240,7 +240,7 @@ val birthdayEvents = Contacts(this)
     .data()
     .query()
     .events()
-    .where(Fields.Event.Type equalTo Event.Type.BIRTHDAY)
+    .where(Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)
     .find()
 ```
 
