@@ -40,7 +40,7 @@ sealed interface ImEntity : DataEntity {
 
     enum class Protocol(override val value: Int) : DataEntity.Type {
 
-        // Type is also defined within CmmonDataKinds.Im... Ignore those. Type (and label) may have
+        // Type is also defined within CommonDataKinds.Im... Ignore those. Type (and label) may have
         // been deprecated by protocol and protocol label. Or what probably happened was that there
         // was one dev that did not want to use "type and label" for IM so he/she used "protocol"
         // \_-_-_/. One thing is for sure IMO. The dev who wrote this code is different from the dev

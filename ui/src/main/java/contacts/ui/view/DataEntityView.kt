@@ -96,7 +96,7 @@ open class DataEntityView<E : MutableDataEntity> @JvmOverloads constructor(
         dataField.setText(data?.primaryValue)
     }
 
-    protected fun setDataDeleteButton() {
+    private fun setDataDeleteButton() {
         setDataDeleteButtonVisibility()
     }
 

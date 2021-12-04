@@ -27,7 +27,6 @@
 
     <!-- Accounts activity -->
     <string name="accounts">Accounts</string>
-    <string name="accounts_select">Select Account(s)</string>
 
     <!-- ContactView -->
     <string name="contact_send_to_voicemail">Send to voicemail</string>
