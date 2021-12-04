@@ -139,8 +139,8 @@ data class MutableIm internal constructor(
     override var primaryValue: String? by this::data
 
     @IgnoredOnParcel
-    override var type: Protocol? by this::type
+    override var type: Protocol? by this::protocol
 
     @IgnoredOnParcel
-    override var label: String? by this::label
+    override var label: String? by this::customProtocol
 }
