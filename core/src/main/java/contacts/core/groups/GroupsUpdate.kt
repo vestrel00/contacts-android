@@ -25,7 +25,7 @@ import contacts.core.util.unsafeLazy
  *
  * ```kotlin
  * val result = groupsUpdate
- *      .groups(group.toMutableGroup()?.apply {
+ *      .groups(group.mutableCopy()?.apply {
  *          title = "Best Friends"
  *      })
  *      .commit()
@@ -34,7 +34,7 @@ import contacts.core.util.unsafeLazy
  * In Java,
  *
  * ```java
- * MutableGroup mutableGroup = group.toMutableGroup();
+ * MutableGroup mutableGroup = group.mutableCopy();
  *
  * if (mutableGroup != null) {
  *   mutableGroup.setTitle("Best Friends");
@@ -57,7 +57,7 @@ interface GroupsUpdate {
      * ## Null [MutableGroup]s
      *
      * Null groups are ignored and result in a failed operation. The only reason null is allowed to
-     * be passed here is for consumer convenience because the group's `toMutable` returns null if
+     * be passed here is for consumer convenience because the group's `mutableCopy` returns null if
      * the `readOnly` property is true.
      *
      * ## Read-only [MutableGroup]s

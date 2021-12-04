@@ -60,8 +60,8 @@ The `commit` function returns a `Result`,
 
 ```kotlin
 val contactsApi =  Contacts(context)
-val mutableEmail = email.toMutableEmail().apply { ... }
-val mutablePhone = phone.toMutablePhone().apply { ... }
+val mutableEmail = email.mutableCopy().apply { ... }
+val mutablePhone = phone.mutableCopy().apply { ... }
 
 val updateResult = contactsApi
     .date()

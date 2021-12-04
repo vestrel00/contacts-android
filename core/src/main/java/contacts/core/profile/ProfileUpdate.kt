@@ -35,7 +35,7 @@ import contacts.core.util.unsafeLazy
  * In Kotlin,
  *
  * ```kotlin
- * val mutableRawContact = rawContact.toMutableRawContact().apply {
+ * val mutableRawContact = rawContact.mutableCopy().apply {
  *      name = MutableName().apply {
  *          givenName = "john"
  *          familyName = "doe"
@@ -62,7 +62,7 @@ import contacts.core.util.unsafeLazy
  * email.setType(Email.Type.HOME);
  * email.setAddress("john@doe.com");
  *
- * MutableRawContact mutableRawContact = rawContact.toMutableRawContact();
+ * MutableRawContact mutableRawContact = rawContact.mutableCopy();
  * mutableRawContact.setName(name);
  * mutableRawContact.getEmails().add(email);
  *

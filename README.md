@@ -324,7 +324,7 @@ If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his dat
 ```kotlin
 Contacts(context)
     .update()
-    .contacts(johnDoe.toMutableContact().apply {
+    .contacts(johnDoe.mutableCopy().apply {
         setOrganization {
             company = "Microsoft"
             title = "Newb"

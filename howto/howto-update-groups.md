@@ -16,7 +16,7 @@ To update an existing group,
 val updateResult = Contacts(context)
     .groups()
     .update()
-    .groups(existingGroup?.toMutableGroup().apply {
+    .groups(existingGroup?.mutableCopy().apply {
         title = "Best Friends"
     })
     .commit()
@@ -25,8 +25,8 @@ val updateResult = Contacts(context)
 If you need to update multiple groups,
 
 ```kotlin
-val mutableGroup1 = group1.toMutableGroup()?.apply { ... }
-val mutableGroup2 = group2.toMutableGroup()?.apply { ... }
+val mutableGroup1 = group1.mutableCopy()?.apply { ... }
+val mutableGroup2 = group2.mutableCopy()?.apply { ... }
 
 val updateResult = Contacts(context)
     .groups()
@@ -48,7 +48,7 @@ Contacts Provider typically have the following system groups (for standard Googl
 
 The above list may vary per account. 
 
-To prevent attempting to modify/update read-only groups, the `Group.toMutableGroup()` function will
+To prevent attempting to modify/update read-only groups, the `Group.mutableCopy()` function will
 return null if the group is read-only. 
 
 > You can try and hack your way around this limitation that this library imposes but you will still 
