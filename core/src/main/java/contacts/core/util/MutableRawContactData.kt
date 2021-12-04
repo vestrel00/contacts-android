@@ -2,6 +2,10 @@ package contacts.core.util
 
 import contacts.core.entities.*
 
+// Another dev note: Receiver signatures are the concrete types instead of the interface type.
+// This is done so that consumers gets references to actual concrete types, which may implement
+// other interfaces required by APIs in this library.
+
 /**
  * Adds the given [address] to [MutableRawContact.addresses].
  */

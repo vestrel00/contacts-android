@@ -1,8 +1,8 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.entities.DataEntity
 import contacts.core.entities.Contact
+import contacts.core.entities.DataEntity
 
 /**
  * Returns the [Contact] with the [DataEntity.contactId].

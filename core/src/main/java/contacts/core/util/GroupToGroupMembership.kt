@@ -3,6 +3,9 @@ package contacts.core.util
 import contacts.core.entities.Group
 import contacts.core.entities.GroupMembership
 
+// Dev note: Using concrete type as the function receiver instead of the generic type in order to
+// prevent consumers from constructing immutable types using manually created types.
+
 /**
  * Returns a new [GroupMembership] instance that may be used for Contacts and RawContacts insert
  * and update operations.

@@ -2,7 +2,6 @@ package contacts.core.profile
 
 import contacts.core.*
 import contacts.core.entities.MutableContact
-import contacts.core.entities.MutableData
 import contacts.core.entities.MutableRawContact
 import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
