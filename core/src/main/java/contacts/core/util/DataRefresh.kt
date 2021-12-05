@@ -2,8 +2,7 @@ package contacts.core.util
 
 import contacts.core.*
 import contacts.core.data.resolveDataEntity
-import contacts.core.entities.ImmutableDataEntity
-import contacts.core.entities.fields
+import contacts.core.entities.*
 
 /**
  * Returns the [ImmutableDataEntity] [T] with all of the latest data.
@@ -33,20 +32,51 @@ import contacts.core.entities.fields
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun <T : ImmutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? =
-    if (id == null) {
+fun <T : ImmutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? {
+    val dataId = id
+    return if (dataId == null) {
         this
     } else if (!contacts.permissions.canQuery()) {
         null
     } else {
-        contacts.resolveDataEntity<T>(
-            isProfile, mimeType, null,
-            Include(fields(contacts.customDataRegistry) + Fields.Required.all),
-            null, CompoundOrderBy(setOf(Fields.DataId.asc())), 1, 0, cancel
-        ).firstOrNull()
+        fetchDataEntity<T>(contacts, cancel)
     }
+}
 
-// TODO MutableData extension + async
+@JvmOverloads
+fun <T : MutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? {
+    val dataId = id
+    return if (dataId == null) {
+        this
+    } else if (!contacts.permissions.canQuery()) {
+        null
+    } else {
+        val immutableDataEntity = fetchDataEntity<ImmutableDataEntity>(contacts, cancel)
+
+        @Suppress("UNCHECKED_CAST")
+        when (immutableDataEntity) {
+            null -> null
+            is ImmutableDataEntityWithMutableType<*> -> immutableDataEntity.mutableCopy() as T
+            is ImmutableDataEntityWithNullableMutableType<*> -> immutableDataEntity.mutableCopy() as T?
+            else -> null
+        }
+    }
+}
+
+private fun <T : ImmutableDataEntity> DataEntity.fetchDataEntity(
+    contacts: Contacts,
+    cancel: () -> Boolean = { false }
+): T? = contacts.resolveDataEntity<T>(
+    isProfile,
+    mimeType,
+    null,
+    Include(fields(contacts.customDataRegistry) + Fields.Required.all),
+    null,
+    CompoundOrderBy(setOf(Fields.DataId.asc())),
+    1,
+    0,
+    cancel
+).firstOrNull()
 
 /* DEV NOTE
 We could declare and implement a single function instead of two by using the generic type...
