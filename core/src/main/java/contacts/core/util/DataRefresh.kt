@@ -39,7 +39,7 @@ fun <T : ImmutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolea
     } else if (!contacts.permissions.canQuery()) {
         null
     } else {
-        fetchDataEntity<T>(contacts, cancel)
+        fetchDataEntity<T>(contacts, dataId, cancel)
     }
 }
 
@@ -51,7 +51,7 @@ fun <T : MutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean 
     } else if (!contacts.permissions.canQuery()) {
         null
     } else {
-        val immutableDataEntity = fetchDataEntity<ImmutableDataEntity>(contacts, cancel)
+        val immutableDataEntity = fetchDataEntity<ImmutableDataEntity>(contacts, dataId, cancel)
 
         @Suppress("UNCHECKED_CAST")
         when (immutableDataEntity) {
@@ -65,13 +65,14 @@ fun <T : MutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean 
 
 private fun <T : ImmutableDataEntity> DataEntity.fetchDataEntity(
     contacts: Contacts,
+    dataId: Long,
     cancel: () -> Boolean = { false }
 ): T? = contacts.resolveDataEntity<T>(
     isProfile,
     mimeType,
     null,
     Include(fields(contacts.customDataRegistry) + Fields.Required.all),
-    null,
+    Fields.DataId equalTo dataId,
     CompoundOrderBy(setOf(Fields.DataId.asc())),
     1,
     0,
