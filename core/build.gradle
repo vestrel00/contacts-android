@@ -25,6 +25,3 @@ android {
     }
 }
 
-dependencies {
-    implementation libraries.kotlin.standardLib
-}
