@@ -32,5 +32,4 @@ dependencies {
 
     implementation libraries.kotlin.coroutines
     implementation libraries.kotlin.coroutinesAndroid
-
 }
