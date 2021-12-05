@@ -748,11 +748,13 @@ data class PhotoField internal constructor(override val columnName: String) :
 
 class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
 
-    @JvmField
-    val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
+    // Do not expose this field to consumers to avoid confusion. It is not included in the returned
+    // Photo entities. The can include all to query for RawContacts with or without photos.
+    internal val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
 
-    @JvmField
-    val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
+    // Do not expose this field to consumers to avoid confusion. It is not included in the returned
+    // Photo entities. The can include all to query for RawContacts with or without photos.
+    internal val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
 
     override val all by unsafeLazy {
         setOf(PhotoFileId, PhotoThumbnail)
