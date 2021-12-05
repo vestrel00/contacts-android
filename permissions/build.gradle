@@ -29,5 +29,5 @@ dependencies {
 
     implementation libraries.dexter
     implementation libraries.kotlin.coroutines
-    implementation libraries.kotlin.standardLib
+
 }
