@@ -757,7 +757,11 @@ class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
     internal val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
 
     override val all by unsafeLazy {
-        setOf(PhotoFileId, PhotoThumbnail)
+        // The PhotoThumbnail is intentionally not included in all because it could lead to
+        // unintended inclusion of relatively large BLOB data. PhotoThumbnail must be explicitly
+        // included in queries to ensure intentionality. The PhotoFileId should be enough for
+        // queries to return photo mimetype rows.
+        setOf(PhotoFileId)
     }
 
     // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.

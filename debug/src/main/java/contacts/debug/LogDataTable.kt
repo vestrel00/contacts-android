@@ -39,6 +39,8 @@ internal fun Context.logDataTable(contentUri: Uri) {
             ContactsContract.Data.DATA12,
             ContactsContract.Data.DATA13,
             ContactsContract.Data.DATA14
+            // Intentionally not including DATA15 as it probably contains relatively BLOB data
+            // that is not suitable for logging such as photo thumbnails.
         ),
         null,
         null,
