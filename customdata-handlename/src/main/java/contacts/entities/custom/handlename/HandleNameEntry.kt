@@ -3,7 +3,8 @@ package contacts.entities.custom.handlename
 import contacts.core.entities.custom.CustomDataRegistry.Entry
 
 // Keep this internal. Consumers don't need to see this stuff. Less visibility the better!
-internal class HandleNameEntry : Entry<HandleNameField, HandleNameDataCursor, MutableHandleName> {
+internal class HandleNameEntry :
+    Entry<HandleNameField, HandleNameDataCursor, HandleNameEntity, HandleName> {
 
     override val mimeType = HandleNameMimeType
 

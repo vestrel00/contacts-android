@@ -7,8 +7,7 @@ import kotlinx.parcelize.Parcelize
 /**
  * [Entity] in the Groups table.
  */
-// See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
-sealed interface GroupsEntity : Entity {
+sealed interface GroupEntity : Entity {
 
     /**
      * The id of this row in the Groups table.
@@ -31,6 +30,11 @@ sealed interface GroupsEntity : Entity {
      *   the native Contacts app.
      */
     val systemId: String?
+
+    /**
+     * The display title of this group.
+     */
+    val title: String
 
     /**
      * If true, this group cannot be modified. All system groups are read-only.
@@ -113,56 +117,27 @@ sealed interface GroupsEntity : Entity {
 }
 
 /**
- * See [GroupsEntity].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An immutable [GroupEntity].
  */
 @Parcelize
 data class Group internal constructor(
 
-    /**
-     * See [GroupsEntity.id].
-     */
     override val id: Long?,
-
-    /**
-     * See [GroupsEntity.systemId].
-     */
     override val systemId: String?,
 
-    /**
-     * The display title of this group.
-     */
-    val title: String,
+    override val title: String,
 
-    /**
-     * See [GroupsEntity.readOnly].
-     */
     override val readOnly: Boolean,
-
-    /**
-     * See [GroupsEntity.favorites].
-     */
     override val favorites: Boolean,
-
-    /**
-     * See [GroupsEntity.autoAdd].
-     */
     override val autoAdd: Boolean,
-
-    /**
-     * See [GroupsEntity.account].
-     */
     override val account: Account
 
-) : GroupsEntity {
+) : GroupEntity, ImmutableEntityWithNullableMutableType<MutableGroup> {
 
     /**
      * Returns a [MutableGroup]. If [readOnly] is true, this returns null instead.
      */
-    fun toMutableGroup(): MutableGroup? = if (readOnly) {
+    override fun mutableCopy(): MutableGroup? = if (readOnly) {
         null
     } else {
         MutableGroup(id, systemId, title, readOnly, favorites, autoAdd, account)
@@ -170,54 +145,22 @@ data class Group internal constructor(
 }
 
 /**
- * A mutable [Group].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [GroupEntity].
  */
 @Parcelize
 data class MutableGroup internal constructor(
 
-    /**
-     * See [Group.id].
-     */
     override val id: Long?,
-
-    /**
-     * See [Group.systemId].
-     */
     override val systemId: String?,
 
-    /**
-     * See [Group.title].
-     */
-    var title: String,
+    override var title: String,
 
-    /**
-     * See [Group.readOnly].
-     */
     override val readOnly: Boolean,
-
-    /**
-     * See [Group.favorites].
-     */
     override val favorites: Boolean,
-
-    /**
-     * See [Group.autoAdd].
-     */
     override val autoAdd: Boolean,
-
-    /**
-     * Just like RawContacts, you cannot re-assign an existing group to another account. Hence, this
-     * is a `val`.
-     *
-     * See [Group.account].
-     */
     override val account: Account
 
-) : GroupsEntity {
+) : GroupEntity, MutableEntity {
 
     constructor(title: String, account: Account) : this(
         null, null, title, false, false, false, account
@@ -227,30 +170,30 @@ data class MutableGroup internal constructor(
 /**
  * Returns the list of system groups found in [this] collection of groups.
  */
-fun <T : GroupsEntity> Collection<T>.systemGroups(): List<T> = filter { it.isSystemGroup }
+fun <T : GroupEntity> Collection<T>.systemGroups(): List<T> = filter { it.isSystemGroup }
 
 /**
  * Returns the first default group found in [this] collection of groups.
  */
-fun <T : GroupsEntity> Collection<T>.defaultGroup(): T? = firstOrNull { it.isDefaultGroup }
+fun <T : GroupEntity> Collection<T>.defaultGroup(): T? = firstOrNull { it.isDefaultGroup }
 
 /**
  * Returns the first favorites group found in [this] collection of groups.
  */
-fun <T : GroupsEntity> Collection<T>.favoritesGroup(): T? = firstOrNull { it.isFavoritesGroup }
+fun <T : GroupEntity> Collection<T>.favoritesGroup(): T? = firstOrNull { it.isFavoritesGroup }
 
 /**
  * Returns the sequence of system groups found in [this] sequence of groups.
  */
-fun <T : GroupsEntity> Sequence<T>.systemGroups(): Sequence<T> = filter { it.isSystemGroup }
+fun <T : GroupEntity> Sequence<T>.systemGroups(): Sequence<T> = filter { it.isSystemGroup }
 
 /**
  * Returns the first default group found in [this] sequence of groups.
  */
-fun <T : GroupsEntity> Sequence<T>.defaultGroup(): T? = firstOrNull { it.isDefaultGroup }
+fun <T : GroupEntity> Sequence<T>.defaultGroup(): T? = firstOrNull { it.isDefaultGroup }
 
 /**
  * Returns the first favorites group found in [this] sequence of groups.
  */
-fun <T : GroupsEntity> Sequence<T>.favoritesGroup(): T? = firstOrNull { it.isFavoritesGroup }
+fun <T : GroupEntity> Sequence<T>.favoritesGroup(): T? = firstOrNull { it.isFavoritesGroup }
 

@@ -2,7 +2,7 @@ package contacts.core.entities
 
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.core.entities.Relation.Type
+import contacts.core.entities.RelationEntity.Type
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -13,61 +13,30 @@ import kotlinx.parcelize.Parcelize
  *
  * Local RawContacts (those that are not associated with an Account) **should not** have any entries
  * of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Relation internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface RelationEntity : DataEntity {
 
     /**
      * The [Type] of relation.
      */
-    val type: Type?,
+    val type: Type?
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
      */
-    val label: String?,
+    val label: String?
 
     /**
      * The name of the relative as the user entered it.
      */
     val name: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Relation
+    override val mimeType: MimeType
+        get() = MimeType.Relation
 
     // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(name)
-
-    fun toMutableRelation() = MutableRelation(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        name = name
-    )
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
@@ -99,53 +68,64 @@ data class Relation internal constructor(
 }
 
 /**
- * A mutable [Relation].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An immutable [RelationEntity].
+ */
+@Parcelize
+data class Relation internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val type: Type?,
+    override val label: String?,
+
+    override val name: String?
+
+) : RelationEntity, ImmutableDataEntityWithMutableType<MutableRelation> {
+
+    override fun mutableCopy() = MutableRelation(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        type = type,
+        label = label,
+
+        name = name
+    )
+}
+
+/**
+ * A mutable [RelationEntity].
  */
 @Parcelize
 data class MutableRelation internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Relation.type].
-     */
     override var type: Type?,
-
-    /**
-     * See [Relation.label].
-     */
     override var label: String?,
 
-    /**
-     * See [Relation.name].
-     */
-    var name: String?
+    override var name: String?
 
-) : MutableDataWithType<Type> {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Relation
+) : RelationEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
     constructor() : this(
         null, null, null, false, false,
         null, null, null
     )
-
-    // type and label are intentionally excluded as per documentation
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(name)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::name

@@ -65,7 +65,7 @@ fun MutableRawContact.refresh(
 ): MutableRawContact? = if (id == null) {
     this
 } else {
-    contacts.findFirstRawContactWithId(id, cancel)?.toMutableRawContact()
+    contacts.findFirstRawContactWithId(id, cancel)?.mutableCopy()
 }
 
 internal fun Contacts.findFirstRawContactWithId(
@@ -84,3 +84,44 @@ internal fun Contacts.findFirstRawContactWithId(
         ?.rawContacts
         ?.firstOrNull()
 }
+
+/* DEV NOTE
+We could declare and implement a single function instead of two by using the generic type...
+fun <T: ContactEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? =
+However, unsafe type casting is required, which I'd rather avoid =)
+
+As of Kotlin 1.6.0...
+
+sealed interface Human
+class Male : Human
+class Female : Human
+
+// This is clean but does not return concrete type.
+fun Human.refresh(): Human = when (this) {
+    is Male -> Male()
+    is Female -> Female()
+}
+
+// This returns concrete type but requires unchecked cast. Also the when statement asks for an else
+// branch even though the interface is sealed...
+@Suppress("UNCHECKED_CAST")
+fun <T : Human> T.refresh(): T = when (this) {
+    is Male -> Male()
+    is Female -> Female()
+    else -> throw UnknownHumanException()
+} as T
+
+// Inlining to use reified does not help. Plus, this is not Java-friendly =(
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T : Human> T.refresh(): T = when (T::class) {
+    Male::class -> Male()
+    Female::class -> Female()
+    else -> throw UnknownHumanException()
+} as T
+
+So... we will keep things this way until Kotlin supports the following code (if ever),
+fun <T : Human> T.refresh(): T = when (this) {
+    is Male -> Male()
+    is Female -> Female()
+}
+*/

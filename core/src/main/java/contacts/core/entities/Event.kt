@@ -4,8 +4,7 @@ import android.content.res.Resources
 import android.os.Build
 import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.core.entities.Event.Type
-import kotlinx.parcelize.IgnoredOnParcel
+import contacts.core.entities.EventEntity.Type
 import kotlinx.parcelize.Parcelize
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -18,33 +17,18 @@ import java.util.*
  *
  * Local RawContacts (those that are not associated with an Account) **should not** have any entries
  * of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Event internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface EventEntity : DataEntity {
 
     /**
      * The [Type] of event.
      */
-    val type: Type?,
+    val type: Type?
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
      */
-    val label: String?,
+    val label: String?
 
     /**
      * The event date as the user entered it.
@@ -65,28 +49,12 @@ data class Event internal constructor(
      */
     val date: EventDate?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Event
+    override val mimeType: MimeType
+        get() = MimeType.Event
 
     // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(date)
-
-    fun toMutableEvent() = MutableEvent(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label,
-
-        date = date
-    )
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
@@ -117,53 +85,64 @@ data class Event internal constructor(
 }
 
 /**
- * A mutable [Event].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * An immutable [EventEntity].
+ */
+@Parcelize
+data class Event internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val type: Type?,
+    override val label: String?,
+
+    override val date: EventDate?
+
+) : EventEntity, ImmutableDataEntityWithMutableType<MutableEvent> {
+
+    override fun mutableCopy() = MutableEvent(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        type = type,
+        label = label,
+
+        date = date
+    )
+}
+
+/**
+ * A mutable [EventEntity].
  */
 @Parcelize
 data class MutableEvent internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Event.type].
-     */
     override var type: Type?,
-
-    /**
-     * See [Event.label].
-     */
     override var label: String?,
 
-    /**
-     * See [Event.date].
-     */
-    var date: EventDate?
+    override var date: EventDate?
 
-) : MutableDataWithType<Type> {
+) : EventEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
     constructor() : this(
         null, null, null, false, false,
         null, null, null
     )
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Event
-
-    // type and label are intentionally excluded as per documentation
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(date)
 
     /**
      * The [date] as a string.
@@ -219,7 +198,7 @@ data class EventDate internal constructor(
      */
     val dayOfMonth: Int
 
-) : Parcelable {
+) : Parcelable /* This is not a database Entity */ {
 
     /**
      * The 0-based [month] as 1-based for interfacing with the database.

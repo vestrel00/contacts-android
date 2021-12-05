@@ -32,83 +32,83 @@ sealed interface DataEntityTypeFactory<E : DataEntity, T : DataEntity.Type> {
     fun from(resources: Resources, data: E): DataEntityType<T>
 }
 
-object AddressTypeFactory : DataEntityTypeFactory<MutableAddress, Address.Type> {
+object AddressTypeFactory : DataEntityTypeFactory<MutableAddress, AddressEntity.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<DataEntityType<Address.Type>> =
-        Address.Type.values()
-            .asSequence()
-            .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
-            .toMutableList()
+    override fun systemTypes(resources: Resources):
+            MutableList<DataEntityType<AddressEntity.Type>> = AddressEntity.Type.values()
+        .asSequence()
+        .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
+        .toMutableList()
 
-    override fun userCustomType(labelStr: String): DataEntityType<Address.Type> =
-        DataEntityType(Address.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): DataEntityType<AddressEntity.Type> =
+        DataEntityType(AddressEntity.Type.CUSTOM, labelStr, true)
 
     override fun from(
         resources: Resources, data: MutableAddress
-    ): DataEntityType<Address.Type> =
+    ): DataEntityType<AddressEntity.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             DataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Address.Type.HOME
+    private val DEFAULT_TYPE = AddressEntity.Type.HOME
 }
 
-object EmailTypeFactory : DataEntityTypeFactory<MutableEmail, Email.Type> {
+object EmailTypeFactory : DataEntityTypeFactory<MutableEmail, EmailEntity.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<DataEntityType<Email.Type>> =
-        Email.Type.values()
+    override fun systemTypes(resources: Resources): MutableList<DataEntityType<EmailEntity.Type>> =
+        EmailEntity.Type.values()
             .asSequence()
             .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
 
-    override fun userCustomType(labelStr: String): DataEntityType<Email.Type> =
-        DataEntityType(Email.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): DataEntityType<EmailEntity.Type> =
+        DataEntityType(EmailEntity.Type.CUSTOM, labelStr, true)
 
-    override fun from(resources: Resources, data: MutableEmail): DataEntityType<Email.Type> =
+    override fun from(resources: Resources, data: MutableEmail): DataEntityType<EmailEntity.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             DataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Email.Type.HOME
+    private val DEFAULT_TYPE = EmailEntity.Type.HOME
 }
 
-object EventTypeFactory : DataEntityTypeFactory<MutableEvent, Event.Type> {
+object EventTypeFactory : DataEntityTypeFactory<MutableEvent, EventEntity.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<DataEntityType<Event.Type>> =
-        Event.Type.values()
+    override fun systemTypes(resources: Resources): MutableList<DataEntityType<EventEntity.Type>> =
+        EventEntity.Type.values()
             .asSequence()
             .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
 
-    override fun userCustomType(labelStr: String): DataEntityType<Event.Type> =
-        DataEntityType(Event.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): DataEntityType<EventEntity.Type> =
+        DataEntityType(EventEntity.Type.CUSTOM, labelStr, true)
 
     override fun from(
         resources: Resources, data: MutableEvent
-    ): DataEntityType<Event.Type> =
+    ): DataEntityType<EventEntity.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             DataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Event.Type.BIRTHDAY
+    private val DEFAULT_TYPE = EventEntity.Type.BIRTHDAY
 }
 
-object ImsTypeFactory : DataEntityTypeFactory<MutableIm, Im.Protocol> {
+object ImsTypeFactory : DataEntityTypeFactory<MutableIm, ImEntity.Protocol> {
 
-    override fun systemTypes(resources: Resources): MutableList<DataEntityType<Im.Protocol>> =
-        Im.Protocol.values()
+    override fun systemTypes(resources: Resources): MutableList<DataEntityType<ImEntity.Protocol>> =
+        ImEntity.Protocol.values()
             .asSequence()
             .map { protocol ->
                 DataEntityType(protocol, protocol.labelStr(resources, null), false)
             }
             .toMutableList()
 
-    override fun userCustomType(labelStr: String): DataEntityType<Im.Protocol> =
-        DataEntityType(Im.Protocol.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): DataEntityType<ImEntity.Protocol> =
+        DataEntityType(ImEntity.Protocol.CUSTOM, labelStr, true)
 
     override fun from(
         resources: Resources, data: MutableIm
-    ): DataEntityType<Im.Protocol> =
+    ): DataEntityType<ImEntity.Protocol> =
         (data.type ?: DEFAULT_TYPE).let { protocol ->
             DataEntityType(
                 protocol,
@@ -117,45 +117,45 @@ object ImsTypeFactory : DataEntityTypeFactory<MutableIm, Im.Protocol> {
             )
         }
 
-    private val DEFAULT_TYPE = Im.Protocol.AIM
+    private val DEFAULT_TYPE = ImEntity.Protocol.AIM
 }
 
-object PhoneTypeFactory : DataEntityTypeFactory<MutablePhone, Phone.Type> {
+object PhoneTypeFactory : DataEntityTypeFactory<MutablePhone, PhoneEntity.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<DataEntityType<Phone.Type>> =
-        Phone.Type.values()
+    override fun systemTypes(resources: Resources): MutableList<DataEntityType<PhoneEntity.Type>> =
+        PhoneEntity.Type.values()
             .asSequence()
             .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
 
-    override fun userCustomType(labelStr: String): DataEntityType<Phone.Type> =
-        DataEntityType(Phone.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): DataEntityType<PhoneEntity.Type> =
+        DataEntityType(PhoneEntity.Type.CUSTOM, labelStr, true)
 
-    override fun from(resources: Resources, data: MutablePhone): DataEntityType<Phone.Type> =
+    override fun from(resources: Resources, data: MutablePhone): DataEntityType<PhoneEntity.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             DataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Phone.Type.MOBILE
+    private val DEFAULT_TYPE = PhoneEntity.Type.MOBILE
 }
 
-object RelationTypeFactory : DataEntityTypeFactory<MutableRelation, Relation.Type> {
+object RelationTypeFactory : DataEntityTypeFactory<MutableRelation, RelationEntity.Type> {
 
-    override fun systemTypes(resources: Resources): MutableList<DataEntityType<Relation.Type>> =
-        Relation.Type.values()
-            .asSequence()
-            .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
-            .toMutableList()
+    override fun systemTypes(resources: Resources):
+            MutableList<DataEntityType<RelationEntity.Type>> = RelationEntity.Type.values()
+        .asSequence()
+        .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
+        .toMutableList()
 
-    override fun userCustomType(labelStr: String): DataEntityType<Relation.Type> =
-        DataEntityType(Relation.Type.CUSTOM, labelStr, true)
+    override fun userCustomType(labelStr: String): DataEntityType<RelationEntity.Type> =
+        DataEntityType(RelationEntity.Type.CUSTOM, labelStr, true)
 
     override fun from(
         resources: Resources, data: MutableRelation
-    ): DataEntityType<Relation.Type> =
+    ): DataEntityType<RelationEntity.Type> =
         (data.type ?: DEFAULT_TYPE).let { type ->
             DataEntityType(type, type.labelStr(resources, data.label), type.isCustomType)
         }
 
-    private val DEFAULT_TYPE = Relation.Type.ASSISTANT
+    private val DEFAULT_TYPE = RelationEntity.Type.ASSISTANT
 }

@@ -5,21 +5,18 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * Options for a Contact or RawContact.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Options internal constructor(
+sealed interface OptionsEntity : Entity {
 
     /**
      * The id of this row in the Contacts, RawContacts, or Data table.
      */
-    override val id: Long?,
+    // Override for documentation.
+    override val id: Long?
 
     // Contact and RawContacts have distinct Options. Therefore, there is no reference to a
-    // rawContactId here because this option may belong to a Contact rather than a RawContact.
+    // contact or rawContactId here because this option may belong to a Contact rather than a
+    // RawContact.
 
     /**
      * True if the contact or raw contact is starred (favorite). Use this to mark favorite contacts.
@@ -35,12 +32,12 @@ data class Options internal constructor(
      * Therefore, this should be the preferred way of marking contacts as favorites instead of
      * group membership manipulation.
      */
-    val starred: Boolean?,
+    val starred: Boolean?
 
     /**
      * URI for a custom ringtone associated with the contact or raw contact.
      */
-    val customRingtone: Uri?,
+    val customRingtone: Uri?
 
     /**
      * Whether the contact or raw contact should always be sent to voicemail.
@@ -59,73 +56,48 @@ data class Options internal constructor(
     val lastTimeContacted: Date?,
      */
 
-) : Entity {
+    override val isBlank: Boolean
+        get() = propertiesAreAllNullOrBlank(starred, customRingtone, sendToVoicemail)
+}
+
+/**
+ * An immutable [OptionsEntity].
+ */
+@Parcelize
+data class Options internal constructor(
+
+    override val id: Long?,
+
+    override val starred: Boolean?,
+    override val customRingtone: Uri?,
+    override val sendToVoicemail: Boolean?
+
+) : OptionsEntity, ImmutableEntityWithMutableType<MutableOptions> {
 
     internal constructor() : this(null, null, null, null)
 
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(starred, customRingtone, sendToVoicemail)
-
-    fun toMutableOptions() = MutableOptions(
+    override fun mutableCopy() = MutableOptions(
         id = id,
 
         starred = starred,
-
-        // timesContacted = timesContacted,
-        // lastTimeContacted = lastTimeContacted,
-
         customRingtone = customRingtone,
-
         sendToVoicemail = sendToVoicemail
     )
 }
 
 /**
- * A mutable [Options].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [OptionsEntity].
  */
 @Parcelize
 data class MutableOptions internal constructor(
 
-    /**
-     * See [Options.id].
-     */
     override val id: Long?,
 
-    /**
-     * See [Options.starred].
-     */
-    var starred: Boolean?,
+    override var starred: Boolean?,
+    override var customRingtone: Uri?,
+    override var sendToVoicemail: Boolean?
 
-    /**
-     * See [Options.customRingtone].
-     */
-    var customRingtone: Uri?,
-
-    /**
-     * See [Options.sendToVoicemail].
-     */
-    var sendToVoicemail: Boolean?
-
-    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
-    /**
-     * See [Options.timesContacted].
-     */
-    var timesContacted: Int?,
-
-    /**
-     * See [Options.lastTimeContacted].
-     */
-    var lastTimeContacted: Date?,
-     */
-
-) : Entity {
+) : OptionsEntity, MutableEntity {
 
     constructor() : this(null, null, null, null)
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(starred, customRingtone, sendToVoicemail)
 }

@@ -7,6 +7,9 @@ import contacts.core.entities.Group
 import contacts.core.entities.GroupMembership
 import contacts.core.equalTo
 
+// Dev note: Using concrete type as the function receiver instead of the generic type in order to
+// prevent consumers from constructing immutable types using manually created types.
+
 /**
  * Returns the [Group] referenced by this membership.
  *

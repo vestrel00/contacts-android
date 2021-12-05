@@ -7,23 +7,8 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing a website related to the contact.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Website internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface WebsiteEntity : DataEntity {
 
     // Type and Label are also available. However, both keep getting set to null automatically by
     // the Contacts Provider...
@@ -33,15 +18,31 @@ data class Website internal constructor(
      */
     val url: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Website
+    override val mimeType: MimeType
+        get() = MimeType.Website
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(url)
+}
 
-    fun toMutableWebsite() = MutableWebsite(
+/**
+ * An immutable [WebsiteEntity].
+ */
+@Parcelize
+data class Website internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val url: String?
+
+) : WebsiteEntity, ImmutableDataEntityWithMutableType<MutableWebsite> {
+
+    override fun mutableCopy() = MutableWebsite(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -54,39 +55,23 @@ data class Website internal constructor(
 }
 
 /**
- * A mutable [Website].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [WebsiteEntity].
  */
 @Parcelize
 data class MutableWebsite internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Website.url].
-     */
-    var url: String?
+    override var url: String?
 
-) : MutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Website
+) : WebsiteEntity, MutableDataEntity {
 
     constructor() : this(null, null, null, false, false, null)
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(url)
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::url

@@ -3,7 +3,8 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Relation
 import contacts.core.entities.cursor.RelationCursor
 
-internal class RelationMapper(private val relationCursor: RelationCursor) : EntityMapper<Relation> {
+internal class RelationMapper(private val relationCursor: RelationCursor) :
+    DataEntityMapper<Relation> {
 
     override val value: Relation
         get() = Relation(

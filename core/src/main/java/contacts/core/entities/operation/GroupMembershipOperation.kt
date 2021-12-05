@@ -8,7 +8,7 @@ import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.Include
 import contacts.core.accounts.accountForRawContactWithId
-import contacts.core.entities.GroupMembership
+import contacts.core.entities.GroupMembershipEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.mapper.groupMembershipMapper
 import contacts.core.groups.Groups
@@ -18,12 +18,13 @@ internal class GroupMembershipOperation(
     isProfile: Boolean,
     includeFields: Set<GroupMembershipField>,
     private val groups: Groups
-) : AbstractDataOperation<GroupMembershipField, GroupMembership>(isProfile, includeFields) {
+) : AbstractDataOperation<GroupMembershipField, GroupMembershipEntity>(isProfile, includeFields) {
 
     override val mimeType = MimeType.GroupMembership
 
-    override fun setData(
-        data: GroupMembership, setValue: (field: GroupMembershipField, dataValue: Any?) -> Unit
+    override fun setValuesFromData(
+        data: GroupMembershipEntity,
+        setValue: (field: GroupMembershipField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.GroupMembership.GroupId, data.groupId)
     }
@@ -32,7 +33,7 @@ internal class GroupMembershipOperation(
      * Inserts all of the [groupMemberships] that belong to the given [account].
      */
     fun insert(
-        groupMemberships: Collection<GroupMembership>,
+        groupMemberships: Collection<GroupMembershipEntity>,
         account: Account
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
 
@@ -54,11 +55,11 @@ internal class GroupMembershipOperation(
      * row(s) of the raw contact with the given [rawContactId]. A group membership cannot be updated
      * because it only contains an immutable reference to the group id.
      *
-     * [GroupMembership]s that do not belong to the Account associated with the [rawContactId] will
-     * be ignored. Also, memberships to default groups are never deleted.
+     * [GroupMembershipEntity]s that do not belong to the Account associated with the [rawContactId]
+     * will be ignored. Also, memberships to default groups are never deleted.
      */
     fun updateInsertOrDelete(
-        groupMemberships: Collection<GroupMembership>,
+        groupMemberships: Collection<GroupMembershipEntity>,
         rawContactId: Long,
         context: Context
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
@@ -108,9 +109,9 @@ internal class GroupMembershipOperation(
     }
 
     private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long):
-            List<GroupMembership> = query(contentUri, INCLUDE, selection(rawContactId)) {
+            List<GroupMembershipEntity> = query(contentUri, INCLUDE, selection(rawContactId)) {
 
-        mutableListOf<GroupMembership>().apply {
+        mutableListOf<GroupMembershipEntity>().apply {
             val groupMembershipMapper = it.groupMembershipMapper()
             while (it.moveToNext()) {
                 add(groupMembershipMapper.value)

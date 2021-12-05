@@ -3,7 +3,7 @@ package contacts.core.entities.cursor
 import android.database.Cursor
 import contacts.core.AddressField
 import contacts.core.Fields
-import contacts.core.entities.Address
+import contacts.core.entities.AddressEntity
 
 /**
  * Retrieves [Fields.Address] data from the given [cursor].
@@ -14,7 +14,10 @@ import contacts.core.entities.Address
 internal class AddressCursor(cursor: Cursor, includeFields: Set<AddressField>) :
     AbstractDataCursor<AddressField>(cursor, includeFields) {
 
-    val type: Address.Type? by type(Fields.Address.Type, typeFromValue = Address.Type::fromValue)
+    val type: AddressEntity.Type? by type(
+        Fields.Address.Type,
+        typeFromValue = AddressEntity.Type::fromValue
+    )
 
     val label: String? by string(Fields.Address.Label)
 

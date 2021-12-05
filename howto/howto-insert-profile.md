@@ -29,7 +29,7 @@ val insertResult =  Contacts(context)
             familyName = "doe"
         }
         emails.add(MutableEmail().apply {
-            type = Email.Type.HOME
+            type = EmailEntity.Type.HOME
             address = "john@doe.com"
         })
     }
@@ -48,7 +48,7 @@ val insertResult =  Contacts(context)
             familyName = "doe"
         }
         addEmail {
-            type = Email.Type.HOME
+            type = EmailEntity.Type.HOME
             address = "john@doe.com"
         }
     }

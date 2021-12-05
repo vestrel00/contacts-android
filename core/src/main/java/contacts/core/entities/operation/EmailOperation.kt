@@ -2,16 +2,16 @@ package contacts.core.entities.operation
 
 import contacts.core.EmailField
 import contacts.core.Fields
+import contacts.core.entities.EmailEntity
 import contacts.core.entities.MimeType
-import contacts.core.entities.MutableEmail
 
 internal class EmailOperation(isProfile: Boolean, includeFields: Set<EmailField>) :
-    AbstractDataOperation<EmailField, MutableEmail>(isProfile, includeFields) {
+    AbstractDataOperation<EmailField, EmailEntity>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Email
 
-    override fun setData(
-        data: MutableEmail, setValue: (field: EmailField, dataValue: Any?) -> Unit
+    override fun setValuesFromData(
+        data: EmailEntity, setValue: (field: EmailField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Email.Type, data.type?.value)
         setValue(Fields.Email.Label, data.label)

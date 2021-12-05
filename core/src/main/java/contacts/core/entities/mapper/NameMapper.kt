@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Name
 import contacts.core.entities.cursor.NameCursor
 
-internal class NameMapper(private val nameCursor: NameCursor) : EntityMapper<Name> {
+internal class NameMapper(private val nameCursor: NameCursor) : DataEntityMapper<Name> {
 
     override val value: Name
         get() = Name(

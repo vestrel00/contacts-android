@@ -2,7 +2,6 @@ package contacts.core.profile
 
 import contacts.core.*
 import contacts.core.entities.MutableContact
-import contacts.core.entities.MutableData
 import contacts.core.entities.MutableRawContact
 import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
@@ -36,13 +35,13 @@ import contacts.core.util.unsafeLazy
  * In Kotlin,
  *
  * ```kotlin
- * val mutableRawContact = rawContact.toMutableRawContact().apply {
+ * val mutableRawContact = rawContact.mutableCopy().apply {
  *      name = MutableName().apply {
  *          givenName = "john"
  *          familyName = "doe"
  *      }
  *      emails.add(MutableEmail().apply {
- *          type = Email.Type.HOME
+ *          type = EmailEntity.Type.HOME
  *          address = "john@doe.com"
  *      })
  * }
@@ -60,10 +59,10 @@ import contacts.core.util.unsafeLazy
  * name.setFamilyName("doe");
  *
  * MutableEmail email = new MutableEmail();
- * email.setType(Email.Type.HOME);
+ * email.setType(EmailEntity.Type.HOME);
  * email.setAddress("john@doe.com");
  *
- * MutableRawContact mutableRawContact = rawContact.toMutableRawContact();
+ * MutableRawContact mutableRawContact = rawContact.mutableCopy();
  * mutableRawContact.setName(name);
  * mutableRawContact.getEmails().add(email);
  *

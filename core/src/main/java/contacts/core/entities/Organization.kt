@@ -7,23 +7,8 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing an organization.
  *
  * A RawContact may have 0 or 1 entry of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
-@Parcelize
-data class Organization internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface OrganizationEntity : DataEntity {
 
     // Type and Label are also available. However, both keep getting set to null automatically by
     // the Contacts Provider...
@@ -31,49 +16,71 @@ data class Organization internal constructor(
     /**
      * The company as the user entered it.
      */
-    val company: String?,
+    val company: String?
 
     /**
      * The position title at this company as the user entered it.
      */
-    val title: String?,
+    val title: String?
 
     /**
      * The department at this company as the user entered it.
      */
-    val department: String?,
+    val department: String?
 
     /**
      * The job description at this company as the user entered it.
      */
-    val jobDescription: String?,
+    val jobDescription: String?
 
     /**
      * The office location of this organization.
      */
-    val officeLocation: String?,
+    val officeLocation: String?
 
     /**
      * The symbol of this company as the user entered it.
      */
-    val symbol: String?,
+    val symbol: String?
 
     /**
      * The phonetic name of this company as the user entered it.
      */
     val phoneticName: String?
 
-) : ImmutableData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Organization
+    override val mimeType: MimeType
+        get() = MimeType.Organization
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
             company, title, department, jobDescription, officeLocation, symbol, phoneticName
         )
+}
 
-    fun toMutableOrganization() = MutableOrganization(
+/**
+ * An immutable [OrganizationEntity].
+ */
+@Parcelize
+data class Organization internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override val company: String?,
+    override val title: String?,
+    override val department: String?,
+    override val jobDescription: String?,
+    override val officeLocation: String?,
+    override val symbol: String?,
+    override val phoneticName: String?
+
+) : OrganizationEntity, ImmutableDataEntityWithMutableType<MutableOrganization> {
+
+    override fun mutableCopy() = MutableOrganization(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -87,80 +94,37 @@ data class Organization internal constructor(
         jobDescription = jobDescription,
         officeLocation = officeLocation,
         symbol = symbol,
-
         phoneticName = phoneticName
     )
 }
 
 /**
- * A mutable [Organization].
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
+ * A mutable [OrganizationEntity].
  */
 @Parcelize
 data class MutableOrganization internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override var isPrimary: Boolean,
-
     override var isSuperPrimary: Boolean,
 
-    /**
-     * See [Organization.company].
-     */
-    var company: String?,
+    override var company: String?,
+    override var title: String?,
+    override var department: String?,
+    override var jobDescription: String?,
+    override var officeLocation: String?,
+    override var symbol: String?,
+    override var phoneticName: String?
 
-    /**
-     * See [Organization.title].
-     */
-    var title: String?,
-
-    /**
-     * See [Organization.department].
-     */
-    var department: String?,
-
-    /**
-     * See [Organization.jobDescription].
-     */
-    var jobDescription: String?,
-
-    /**
-     * See [Organization.officeLocation].
-     */
-    var officeLocation: String?,
-
-    /**
-     * See [Organization.symbol].
-     */
-    var symbol: String?,
-
-    /**
-     * See [Organization.phoneticName].
-     */
-    var phoneticName: String?
-
-) : MutableData {
+) : OrganizationEntity, MutableDataEntity {
 
     constructor() : this(
         null, null, null, false, false, null, null,
         null, null, null, null, null
     )
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Organization
-
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(
-            company, title, department, jobDescription, officeLocation, symbol, phoneticName
-        )
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::company

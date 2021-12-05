@@ -4,7 +4,7 @@ import contacts.core.entities.Event
 import contacts.core.entities.EventDate
 import contacts.core.entities.cursor.EventCursor
 
-internal class EventMapper(private val eventCursor: EventCursor) : EntityMapper<Event> {
+internal class EventMapper(private val eventCursor: EventCursor) : DataEntityMapper<Event> {
 
     override val value: Event
         get() = Event(

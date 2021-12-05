@@ -3,15 +3,15 @@ package contacts.core.entities.operation
 import contacts.core.Fields
 import contacts.core.NameField
 import contacts.core.entities.MimeType
-import contacts.core.entities.MutableName
+import contacts.core.entities.NameEntity
 
 internal class NameOperation(isProfile: Boolean, includeFields: Set<NameField>) :
-    AbstractDataOperation<NameField, MutableName>(isProfile, includeFields) {
+    AbstractDataOperation<NameField, NameEntity>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Name
 
-    override fun setData(
-        data: MutableName, setValue: (field: NameField, dataValue: Any?) -> Unit
+    override fun setValuesFromData(
+        data: NameEntity, setValue: (field: NameField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Name.DisplayName, data.displayName)
 

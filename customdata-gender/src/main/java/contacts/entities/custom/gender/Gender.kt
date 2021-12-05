@@ -2,14 +2,9 @@ package contacts.entities.custom.gender
 
 import android.content.res.Resources
 import android.provider.ContactsContract
-import contacts.core.entities.DataEntity
-import contacts.core.entities.MimeType
-import contacts.core.entities.ImmutableCustomData
-import contacts.core.entities.MutableCustomDataWithType
-import contacts.core.entities.propertiesAreAllNullOrBlank
-import contacts.entities.custom.gender.Gender.Type
-import contacts.entities.custom.gender.Gender.Type.*
-import kotlinx.parcelize.IgnoredOnParcel
+import contacts.core.entities.*
+import contacts.entities.custom.gender.GenderEntity.Type
+import contacts.entities.custom.gender.GenderEntity.Type.*
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -17,49 +12,24 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may only have one Gender entry.
  */
-@Parcelize
-data class Gender internal constructor(
-
-    override val id: Long?,
-
-    override val rawContactId: Long?,
-
-    override val contactId: Long?,
-
-    override val isPrimary: Boolean,
-
-    override val isSuperPrimary: Boolean,
+sealed interface GenderEntity : CustomDataEntity {
 
     /**
      * The [Type] of gender.
      */
-    val type: Type?,
+    val type: Type?
 
     /**
      * The name of the custom type. Used when the [type] is [Type.CUSTOM].
      */
     val label: String?
 
-) : ImmutableCustomData {
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType.Custom = GenderMimeType
+    override val mimeType: MimeType.Custom
+        get() = GenderMimeType
 
     // The type is typically not a part of this check but it is the primary data in this case
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(type)
-
-    fun toMutableGender() = MutableGender(
-        id = id,
-        rawContactId = rawContactId,
-        contactId = contactId,
-
-        isPrimary = isPrimary,
-        isSuperPrimary = isSuperPrimary,
-
-        type = type,
-        label = label
-    )
 
     /**
      * The types of gender. There are two main genders; [MALE] and [FEMALE].
@@ -94,43 +64,24 @@ data class Gender internal constructor(
 }
 
 /**
- * A mutable [Gender].
+ * An immutable [GenderEntity].
  */
 @Parcelize
-data class MutableGender internal constructor(
+data class Gender internal constructor(
 
     override val id: Long?,
-
     override val rawContactId: Long?,
-
     override val contactId: Long?,
 
     override val isPrimary: Boolean,
-
     override val isSuperPrimary: Boolean,
 
-    /**
-     * See [Gender.type].
-     */
-    override var type: Type?,
+    override val type: Type?,
+    override val label: String?
 
-    /**
-     * See [Gender.label].
-     */
-    override var label: String?
+) : GenderEntity, ImmutableCustomDataEntityWithMutableType<MutableGender> {
 
-) : MutableCustomDataWithType<Type> {
-
-    constructor() : this(null, null, null, false, false, null, null)
-
-    @IgnoredOnParcel
-    override val mimeType: MimeType.Custom = GenderMimeType
-
-    // The type is typically not a part of this check but it is the primary data in this case
-    override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(type)
-
-    internal fun toGender() = Gender(
+    override fun mutableCopy() = MutableGender(
         id = id,
         rawContactId = rawContactId,
         contactId = contactId,
@@ -141,8 +92,29 @@ data class MutableGender internal constructor(
         type = type,
         label = label
     )
+}
 
-    // The primary value is type AND label (if custom). So, this does nothing to avoid complicating
+/**
+ * A mutable [GenderEntity].
+ */
+@Parcelize
+data class MutableGender internal constructor(
+
+    override val id: Long?,
+    override val rawContactId: Long?,
+    override val contactId: Long?,
+
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
+
+    override var type: Type?,
+    override var label: String?
+
+) : GenderEntity, MutableCustomDataEntityWithTypeAndLabel<Type> {
+
+    constructor() : this(null, null, null, false, false, null, null)
+
+    // The primary value is type (and label if custom). So, this does nothing to avoid complicating
     // the API implementation.
     override var primaryValue: String?
         get() = null

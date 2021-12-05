@@ -3,15 +3,15 @@ package contacts.core.entities.operation
 import contacts.core.Fields
 import contacts.core.WebsiteField
 import contacts.core.entities.MimeType
-import contacts.core.entities.MutableWebsite
+import contacts.core.entities.WebsiteEntity
 
 internal class WebsiteOperation(isProfile: Boolean, includeFields: Set<WebsiteField>) :
-    AbstractDataOperation<WebsiteField, MutableWebsite>(isProfile, includeFields) {
+    AbstractDataOperation<WebsiteField, WebsiteEntity>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Website
 
-    override fun setData(
-        data: MutableWebsite, setValue: (field: WebsiteField, dataValue: Any?) -> Unit
+    override fun setValuesFromData(
+        data: WebsiteEntity, setValue: (field: WebsiteField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Website.Url, data.url)
     }

@@ -169,7 +169,7 @@ val contacts = Contacts(context)
         (Fields.Name.GivenName startsWith "leo") and
                 ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
                 (Fields.Address.Country equalToIgnoreCase "us") and
-                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo Event.Type.BIRTHDAY)) and
+                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)) and
                 (Fields.Contact.Options.Starred equalTo true) and
                 (Fields.Nickname.Name equalTo "DarEdEvil") and
                 (Fields.Organization.Company `in` listOf("facebook", "FB")) and
@@ -289,7 +289,7 @@ val insertResult = Contacts(context)
         }
         emails.add(MutableEmail().apply {
             address = "john.doe@amazon.com"
-            type = Email.Type.WORK
+            type = EmailEntity.Type.WORK
         })
     })
     .commit()
@@ -311,7 +311,7 @@ val insertResult = Contacts(context)
         }
         addEmail {
             address = "john.doe@amazon.com"
-            type = Email.Type.WORK
+            type = EmailEntity.Type.WORK
         }
     }
     .commit()
@@ -324,7 +324,7 @@ If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his dat
 ```kotlin
 Contacts(context)
     .update()
-    .contacts(johnDoe.toMutableContact().apply {
+    .contacts(johnDoe.mutableCopy().apply {
         setOrganization {
             company = "Microsoft"
             title = "Newb"

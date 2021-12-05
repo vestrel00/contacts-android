@@ -179,7 +179,7 @@ fun RawContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Bo
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun RawContactEntity.updateOptions(contacts: Contacts, update: MutableOptions.() -> Unit): Boolean {
-    val mutableOptions = options(contacts).toMutableOptions()
+    val mutableOptions = options(contacts).mutableCopy()
     mutableOptions.update()
     return setOptions(contacts, mutableOptions)
 }

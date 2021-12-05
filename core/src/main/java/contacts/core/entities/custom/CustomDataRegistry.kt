@@ -2,11 +2,7 @@ package contacts.core.entities.custom
 
 import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractCustomDataFieldSet
-import contacts.core.entities.MimeType
-import contacts.core.entities.MutableRawContact
-import contacts.core.entities.MutableCustomData
-import contacts.core.entities.RawContact
-import contacts.core.entities.removeAll
+import contacts.core.entities.*
 
 /**
  * Registry of custom data components, enabling queries, inserts, updates, and deletes for custom
@@ -20,19 +16,21 @@ class CustomDataRegistry {
     private val entryMap = mutableMapOf<String, Entry<
             AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
-            MutableCustomData>>()
+            CustomDataEntity,
+            ImmutableCustomDataEntity>>()
 
     /**
      * Register custom data [entries].
      */
     @SafeVarargs
-    fun register(vararg entries: Entry<*, *, *>) {
+    fun register(vararg entries: Entry<*, *, *, *>) {
         for (entry in entries) {
             @Suppress("UNCHECKED_CAST")
             entryMap[entry.mimeType.value] = entry as Entry<
                     AbstractCustomDataField,
                     AbstractCustomDataCursor<AbstractCustomDataField>,
-                    MutableCustomData>
+                    CustomDataEntity,
+                    ImmutableCustomDataEntity>
         }
     }
 
@@ -53,9 +51,11 @@ class CustomDataRegistry {
      *
      * If the [Entry.countRestriction] is [CustomDataCountRestriction.NO_LIMIT], then the given
      * [customDataEntity] will be added and existing custom entities will remain.
+     *
+     * The [customDataEntity] can be mutable (or immutable if there is no mutable type).
      */
     fun putCustomDataEntityInto(
-        rawContact: MutableRawContact, customDataEntity: MutableCustomData
+        rawContact: MutableRawContact, customDataEntity: CustomDataEntity
     ) {
         val entry = entryOf(customDataEntity.mimeType)
         val entityHolder = rawContact.customDataEntities.getOrPut(entry.mimeType.value) {
@@ -81,14 +81,14 @@ class CustomDataRegistry {
     fun removeCustomDataEntityFrom(
         rawContact: MutableRawContact,
         byReference: Boolean,
-        entity: MutableCustomData
+        entity: CustomDataEntity
     ) {
         val entityHolder = rawContact.customDataEntities[entity.mimeType.value]
         entityHolder?.entities?.removeAll(entity, byReference)
     }
 
     /**
-     * Removes any [MutableCustomData]s associated with the [MimeType.Custom] contained in the
+     * Removes any [CustomDataEntity]s associated with the [MimeType.Custom] contained in the
      * given [rawContact], if any.
      */
     fun removeAllCustomDataEntityFrom(rawContact: MutableRawContact, mimeType: MimeType.Custom) {
@@ -97,8 +97,8 @@ class CustomDataRegistry {
     }
 
     /**
-     * Returns the list of [MutableCustomData]s of type [T] associated with the
-     * [MimeType.Custom] contained in the given [rawContact], if any.
+     * Returns the list of [CustomDataEntity]s of type [T] associated with the [MimeType.Custom]
+     * contained in the given [rawContact], if any.
      *
      * If the [Entry.countRestriction] is [CustomDataCountRestriction.AT_MOST_ONE], then expect
      * 0 or 1 custom entity in the list.
@@ -106,19 +106,22 @@ class CustomDataRegistry {
      * If the [Entry.countRestriction] is [CustomDataCountRestriction.NO_LIMIT], then expect
      * 0, 1, or more custom entities in the list.
      */
-    fun <T : MutableCustomData> customDataEntitiesFor(
+    fun <T : ImmutableCustomDataEntity> customDataEntitiesFor(
         rawContact: RawContact, mimeType: MimeType.Custom
     ): List<T> = customDataEntitiesFor(rawContact.customDataEntities, mimeType)
 
     /**
      * See [customDataEntitiesFor].
+     *
+     * Note that [T] is [CustomDataEntity] instead of MutableCustomDataEntity in order to give
+     * consumers the option to not provide a mutable implementation.
      */
-    fun <T : MutableCustomData> customDataEntitiesFor(
+    fun <T : CustomDataEntity> customDataEntitiesFor(
         rawContact: MutableRawContact, mimeType: MimeType.Custom
     ): List<T> = customDataEntitiesFor(rawContact.customDataEntities, mimeType)
 
-    private fun <T : MutableCustomData> customDataEntitiesFor(
-        customDataEntities: Map<String, CustomDataEntityHolder>, mimeType: MimeType.Custom
+    private fun <T : CustomDataEntity> customDataEntitiesFor(
+        customDataEntities: Map<String, AbstractCustomDataEntityHolder>, mimeType: MimeType.Custom
     ): List<T> {
         val entityHolder = customDataEntities[mimeType.value]
 
@@ -130,7 +133,8 @@ class CustomDataRegistry {
 
     internal fun entryOf(mimeTypeValue: String): Entry<AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
-            MutableCustomData> = entryMap[mimeTypeValue]
+            CustomDataEntity,
+            ImmutableCustomDataEntity> = entryMap[mimeTypeValue]
         ?: throw CustomDataException("Missing custom data entry for $mimeTypeValue")
 
     internal fun mimeTypeOf(
@@ -158,12 +162,12 @@ class CustomDataRegistry {
      * inserts, updates, and deletes.
      */
     interface Entry<F : AbstractCustomDataField, C : AbstractCustomDataCursor<F>,
-            E : MutableCustomData> {
+            E : CustomDataEntity, I : ImmutableCustomDataEntity> {
         val mimeType: MimeType.Custom
         val fieldSet: AbstractCustomDataFieldSet<F>
         val fieldMapper: CustomDataFieldMapper<F, E>
         val countRestriction: CustomDataCountRestriction
-        val mapperFactory: AbstractCustomEntityMapper.Factory<F, C, E>
+        val mapperFactory: AbstractCustomDataEntityMapper.Factory<F, C, I>
         val operationFactory: AbstractCustomDataOperation.Factory<F, E>
     }
 
@@ -180,5 +184,4 @@ class CustomDataRegistry {
          */
         fun registerTo(customDataRegistry: CustomDataRegistry)
     }
-
 }

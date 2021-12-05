@@ -4,8 +4,8 @@ import android.content.ContentProviderOperation
 import contacts.core.AbstractDataField
 import contacts.core.ContactsException
 import contacts.core.Fields
+import contacts.core.entities.DataEntity
 import contacts.core.entities.MimeType
-import contacts.core.entities.MutableData
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.intersect
 
@@ -14,16 +14,16 @@ import contacts.core.intersect
  *
  * Only the fields specified in [includeFields] will be updated.
  */
-internal fun MutableData.updateOperation(
+internal fun DataEntity.updateOperation(
     includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry
 ): ContentProviderOperation? = dataOperation(includeFields, customDataRegistry)
     .updateDataRowOrDeleteIfBlank(this)
 
 @Suppress("UNCHECKED_CAST")
-private fun MutableData.dataOperation(
+private fun DataEntity.dataOperation(
     includeFields: Set<AbstractDataField>, customDataRegistry: CustomDataRegistry
-): AbstractDataOperation<*, MutableData> = when (mimeType) {
+): AbstractDataOperation<*, DataEntity> = when (mimeType) {
     // We could instead do when (this) is MutableAddress -> AddressOperation()
     // However, using mimeType instead of the class allows for exhaustive compilation checks.
     // Not requiring an 'else' branch.
@@ -60,4 +60,4 @@ private fun MutableData.dataOperation(
     // functions. Manage photos via the (Raw)ContactPhoto extension functions.
     MimeType.GroupMembership, MimeType.Photo, MimeType.Unknown ->
         throw ContactsException("No data operation found for ${mimeType.value}")
-} as AbstractDataOperation<*, MutableData>
+} as AbstractDataOperation<*, DataEntity>

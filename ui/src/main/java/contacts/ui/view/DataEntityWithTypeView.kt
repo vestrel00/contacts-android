@@ -8,14 +8,14 @@ import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
 import android.widget.Spinner
 import contacts.core.entities.DataEntity
-import contacts.core.entities.MutableDataWithType
+import contacts.core.entities.MutableDataEntityWithTypeAndLabel
 import contacts.ui.R
 import contacts.ui.entities.DataEntityType
 import contacts.ui.entities.DataEntityTypeFactory
 import contacts.ui.util.CustomLabelInputDialog
 
 /**
- * A [RelativeLayout] that displays a [MutableDataWithType] [E] that has a
+ * A [RelativeLayout] that displays a [MutableDataEntityWithTypeAndLabel] [E] that has a
  * [DataEntityType] and handles the modifications to it.
  *
  * Setting the [data] will automatically update the views and vice versa.
@@ -37,7 +37,7 @@ import contacts.ui.util.CustomLabelInputDialog
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-open class DataEntityWithTypeView<T : DataEntity.Type, E : MutableDataWithType<T>>
+open class DataEntityWithTypeView<T : DataEntity.Type, E : MutableDataEntityWithTypeAndLabel<T>>
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -170,7 +170,7 @@ open class DataEntityWithTypeView<T : DataEntity.Type, E : MutableDataWithType<T
         }
     }
 
-    interface Factory<T : DataEntity.Type, E : MutableDataWithType<T>> :
+    interface Factory<T : DataEntity.Type, E : MutableDataEntityWithTypeAndLabel<T>> :
         DataEntityView.Factory<E, DataEntityWithTypeView<T, E>>
 }
 

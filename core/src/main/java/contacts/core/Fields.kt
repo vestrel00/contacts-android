@@ -180,7 +180,8 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val Phone = PhoneFields()
 
-    internal val Photo = PhotoFields()
+    @JvmField
+    val Photo = PhotoFields()
 
     @JvmField
     val RawContact = DataRawContactsFields()
@@ -740,16 +741,20 @@ class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
     }
 }
 
-internal data class PhotoField internal constructor(override val columnName: String) :
+data class PhotoField internal constructor(override val columnName: String) :
     DataField() {
     override val mimeType: MimeType = MimeType.Photo
 }
 
-internal class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
+class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
 
-    val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
+    // Do not expose this field to consumers to avoid confusion. It is not included in the returned
+    // Photo entities. The can include all to query for RawContacts with or without photos.
+    internal val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
 
-    val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
+    // Do not expose this field to consumers to avoid confusion. It is not included in the returned
+    // Photo entities. The can include all to query for RawContacts with or without photos.
+    internal val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
 
     override val all by unsafeLazy {
         setOf(PhotoFileId, PhotoThumbnail)

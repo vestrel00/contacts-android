@@ -8,8 +8,8 @@ import contacts.core.entities.MimeType.*
 import contacts.core.entities.RawContact
 import contacts.core.entities.TempRawContact
 import contacts.core.entities.cursor.*
-import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
 import contacts.core.intersect
 
 /**
@@ -225,7 +225,7 @@ private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
     val customDataEntry = customDataRegistry.entryOf(mimeType)
 
     val customDataEntityHolder = rawContact.customDataEntities.getOrPut(mimeType.value) {
-        CustomDataEntityHolder(mutableListOf(), customDataEntry.countRestriction)
+        ImmutableCustomDataEntityHolder(mutableListOf(), customDataEntry.countRestriction)
     }
 
     @Suppress("UNCHECKED_CAST")

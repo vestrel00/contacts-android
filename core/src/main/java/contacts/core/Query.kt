@@ -220,7 +220,7 @@ interface Query {
      *
      * Blank RawContacts and blank Contacts do not have any rows in the Data table so a [where]
      * clause that uses any fields from the Data table [Fields] will **exclude** blanks in the
-     * result (even if they are OR'ed). There are some joined fields that can be used to match
+     * result (even if they are OR 'ed). There are some joined fields that can be used to match
      * blanks **as long as no other fields are in the where clause**;
      *
      * - [Fields.Contact] enables matching blank Contacts. The result will include all RawContact(s)

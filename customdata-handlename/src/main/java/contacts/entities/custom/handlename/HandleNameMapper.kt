@@ -1,21 +1,21 @@
 package contacts.entities.custom.handlename
 
 import android.database.Cursor
-import contacts.core.entities.custom.AbstractCustomEntityMapper
+import contacts.core.entities.custom.AbstractCustomDataEntityMapper
 
 internal class HandleNameMapperFactory :
-    AbstractCustomEntityMapper.Factory<HandleNameField, HandleNameDataCursor, MutableHandleName> {
+    AbstractCustomDataEntityMapper.Factory<HandleNameField, HandleNameDataCursor, HandleName> {
 
     override fun create(
         cursor: Cursor, includeFields: Set<HandleNameField>
-    ): AbstractCustomEntityMapper<HandleNameField, HandleNameDataCursor, MutableHandleName> =
+    ): AbstractCustomDataEntityMapper<HandleNameField, HandleNameDataCursor, HandleName> =
         HandleNameMapper(HandleNameDataCursor(cursor, includeFields))
 }
 
 private class HandleNameMapper(cursor: HandleNameDataCursor) :
-    AbstractCustomEntityMapper<HandleNameField, HandleNameDataCursor, MutableHandleName>(cursor) {
+    AbstractCustomDataEntityMapper<HandleNameField, HandleNameDataCursor, HandleName>(cursor) {
 
-    override fun value(cursor: HandleNameDataCursor) = MutableHandleName(
+    override fun value(cursor: HandleNameDataCursor) = HandleName(
         id = cursor.dataId,
         rawContactId = cursor.rawContactId,
         contactId = cursor.contactId,

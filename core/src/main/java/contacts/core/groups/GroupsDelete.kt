@@ -3,7 +3,7 @@ package contacts.core.groups
 import android.content.ContentResolver
 import contacts.core.Contacts
 import contacts.core.ContactsPermissions
-import contacts.core.entities.Group
+import contacts.core.entities.GroupEntity
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.util.applyBatch
 import contacts.core.util.unsafeLazy
@@ -45,17 +45,17 @@ interface GroupsDelete {
      *
      * Read-only groups will be ignored and result in a failed operation.
      */
-    fun groups(vararg groups: Group): GroupsDelete
+    fun groups(vararg groups: GroupEntity): GroupsDelete
 
     /**
      * See [GroupsDelete.groups].
      */
-    fun groups(groups: Collection<Group>): GroupsDelete
+    fun groups(groups: Collection<GroupEntity>): GroupsDelete
 
     /**
      * See [GroupsDelete.groups].
      */
-    fun groups(groups: Sequence<Group>): GroupsDelete
+    fun groups(groups: Sequence<GroupEntity>): GroupsDelete
 
     /**
      * Deletes the [Group]s in the queue (added via [groups]) and returns the [Result].
@@ -96,7 +96,7 @@ interface GroupsDelete {
         /**
          * True if the [group] has been successfully deleted. False otherwise.
          */
-        fun isSuccessful(group: Group): Boolean
+        fun isSuccessful(group: GroupEntity): Boolean
     }
 }
 
@@ -119,11 +119,11 @@ private class GroupsDeleteImpl(
             }
         """.trimIndent()
 
-    override fun groups(vararg groups: Group) = groups(groups.asSequence())
+    override fun groups(vararg groups: GroupEntity) = groups(groups.asSequence())
 
-    override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
+    override fun groups(groups: Collection<GroupEntity>) = groups(groups.asSequence())
 
-    override fun groups(groups: Sequence<Group>): GroupsDelete = apply {
+    override fun groups(groups: Sequence<GroupEntity>): GroupsDelete = apply {
         groupIds.addAll(groups.map {
             if (it.readOnly) { // do not attempt to delete read-only groups
                 INVALID_ID
@@ -165,13 +165,15 @@ private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolea
 
     override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
 
-    override fun isSuccessful(group: Group): Boolean = group.id != null
-            && groupIdsResultMap.getOrElse(group.id) { false }
+    override fun isSuccessful(group: GroupEntity): Boolean {
+        val groupId = group.id ?: return false
+        return groupIdsResultMap.getOrElse(groupId) { false }
+    }
 }
 
 private class GroupsDeleteFailed : GroupsDelete.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(group: Group): Boolean = false
+    override fun isSuccessful(group: GroupEntity): Boolean = false
 }

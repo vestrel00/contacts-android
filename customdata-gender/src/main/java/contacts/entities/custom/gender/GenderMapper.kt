@@ -1,21 +1,21 @@
 package contacts.entities.custom.gender
 
 import android.database.Cursor
-import contacts.core.entities.custom.AbstractCustomEntityMapper
+import contacts.core.entities.custom.AbstractCustomDataEntityMapper
 
 internal class GenderMapperFactory :
-    AbstractCustomEntityMapper.Factory<GenderField, GenderDataCursor, MutableGender> {
+    AbstractCustomDataEntityMapper.Factory<GenderField, GenderDataCursor, Gender> {
 
     override fun create(
         cursor: Cursor, includeFields: Set<GenderField>
-    ): AbstractCustomEntityMapper<GenderField, GenderDataCursor, MutableGender> =
+    ): AbstractCustomDataEntityMapper<GenderField, GenderDataCursor, Gender> =
         GenderMapper(GenderDataCursor(cursor, includeFields))
 }
 
 private class GenderMapper(cursor: GenderDataCursor) :
-    AbstractCustomEntityMapper<GenderField, GenderDataCursor, MutableGender>(cursor) {
+    AbstractCustomDataEntityMapper<GenderField, GenderDataCursor, Gender>(cursor) {
 
-    override fun value(cursor: GenderDataCursor) = MutableGender(
+    override fun value(cursor: GenderDataCursor) = Gender(
         id = cursor.dataId,
         rawContactId = cursor.rawContactId,
         contactId = cursor.contactId,

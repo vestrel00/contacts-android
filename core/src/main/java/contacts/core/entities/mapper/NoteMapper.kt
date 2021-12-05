@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Note
 import contacts.core.entities.cursor.NoteCursor
 
-internal class NoteMapper(private val noteCursor: NoteCursor) : EntityMapper<Note> {
+internal class NoteMapper(private val noteCursor: NoteCursor) : DataEntityMapper<Note> {
 
     override val value: Note
         get() = Note(

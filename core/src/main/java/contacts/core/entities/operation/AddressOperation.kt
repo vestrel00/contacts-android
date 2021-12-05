@@ -2,16 +2,16 @@ package contacts.core.entities.operation
 
 import contacts.core.AddressField
 import contacts.core.Fields
+import contacts.core.entities.AddressEntity
 import contacts.core.entities.MimeType
-import contacts.core.entities.MutableAddress
 
 internal class AddressOperation(isProfile: Boolean, includeFields: Set<AddressField>) :
-    AbstractDataOperation<AddressField, MutableAddress>(isProfile, includeFields) {
+    AbstractDataOperation<AddressField, AddressEntity>(isProfile, includeFields) {
 
     override val mimeType = MimeType.Address
 
-    override fun setData(
-        data: MutableAddress, setValue: (field: AddressField, dataValue: Any?) -> Unit
+    override fun setValuesFromData(
+        data: AddressEntity, setValue: (field: AddressField, dataValue: Any?) -> Unit
     ) {
         setValue(Fields.Address.Type, data.type?.value)
         setValue(Fields.Address.Label, data.label)

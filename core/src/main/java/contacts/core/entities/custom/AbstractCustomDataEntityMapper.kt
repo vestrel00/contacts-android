@@ -2,19 +2,20 @@ package contacts.core.entities.custom
 
 import android.database.Cursor
 import contacts.core.AbstractCustomDataField
-import contacts.core.entities.MutableCustomData
-import contacts.core.entities.mapper.EntityMapper
+import contacts.core.entities.CustomDataEntity
+import contacts.core.entities.ImmutableCustomDataEntity
+import contacts.core.entities.mapper.CustomDataEntityMapper
 
 /**
- * Base type of all custom [EntityMapper]s. It uses a [AbstractCustomDataCursor] [C] (using fields
- * of type [F]) and outputs a [MutableCustomData] [E].
+ * Base type of all custom [CustomDataEntityMapper]s. It uses a [AbstractCustomDataCursor] [C]
+ * (using fields of type [F]) and outputs a [CustomDataEntity] [E].
  */
-abstract class AbstractCustomEntityMapper<
+abstract class AbstractCustomDataEntityMapper<
         F : AbstractCustomDataField,
         C : AbstractCustomDataCursor<F>,
-        out E : MutableCustomData>(
+        out E : ImmutableCustomDataEntity>(
     private val cursor: C
-) : EntityMapper<E> {
+) : CustomDataEntityMapper<E> {
 
     /**
      * Returns the custom data entity [E] created with values provided by the [cursor].
@@ -30,18 +31,18 @@ abstract class AbstractCustomEntityMapper<
         get() = value(cursor)
 
     /**
-     * Creates instances of [AbstractCustomEntityMapper].
+     * Creates instances of [AbstractCustomDataEntityMapper].
      */
     interface Factory<
             F : AbstractCustomDataField,
             C : AbstractCustomDataCursor<F>,
-            out E : MutableCustomData> {
+            out E : ImmutableCustomDataEntity> {
 
         /**
-         * Creates instances of [AbstractCustomEntityMapper] with the given [cursor].
+         * Creates instances of [AbstractCustomDataEntityMapper] with the given [cursor].
          *
          * Only the fields specified in [includeFields] will be included in query results.
          */
-        fun create(cursor: Cursor, includeFields: Set<F>): AbstractCustomEntityMapper<F, C, E>
+        fun create(cursor: Cursor, includeFields: Set<F>): AbstractCustomDataEntityMapper<F, C, E>
     }
 }

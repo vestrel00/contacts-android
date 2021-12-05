@@ -45,7 +45,7 @@ import contacts.core.util.unsafeLazy
  *              familyName = "doe"
  *          }
  *          emails.add(MutableEmail().apply {
- *              type = Email.Type.HOME
+ *              type = EmailEntity.Type.HOME
  *              address = "john@doe.com"
  *          })
  *      }
@@ -60,7 +60,7 @@ import contacts.core.util.unsafeLazy
  * name.setFamilyName("doe");
  *
  * MutableEmail email = new MutableEmail();
- * email.setType(Email.Type.HOME);
+ * email.setType(EmailEntity.Type.HOME);
  * email.setAddress("john@doe.com");
  *
  * List<MutableEmail> emails = new ArrayList<>();

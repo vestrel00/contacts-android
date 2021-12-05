@@ -19,13 +19,13 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To update a groups's name to "Best Friends";
+ * To update a groups' name to "Best Friends";
  *
  * In Kotlin,
  *
  * ```kotlin
  * val result = groupsUpdate
- *      .groups(group.toMutableGroup()?.apply {
+ *      .groups(group.mutableCopy()?.apply {
  *          title = "Best Friends"
  *      })
  *      .commit()
@@ -34,7 +34,7 @@ import contacts.core.util.unsafeLazy
  * In Java,
  *
  * ```java
- * MutableGroup mutableGroup = group.toMutableGroup();
+ * MutableGroup mutableGroup = group.mutableCopy();
  *
  * if (mutableGroup != null) {
  *   mutableGroup.setTitle("Best Friends");
@@ -57,7 +57,7 @@ interface GroupsUpdate {
      * ## Null [MutableGroup]s
      *
      * Null groups are ignored and result in a failed operation. The only reason null is allowed to
-     * be passed here is for consumer convenience because the group's `toMutable` returns null if
+     * be passed here is for consumer convenience because the group's `mutableCopy` returns null if
      * the `readOnly` property is true.
      *
      * ## Read-only [MutableGroup]s
@@ -207,7 +207,9 @@ private class GroupsUpdateImpl(
             .find()
             // Convert to mutable group so that titles can be mutated during update processing.
             // Use the data class copy function intentionally to include read-only groups.
-            .map { it.copy(readOnly = false).toMutableGroup()!! } //  Consumers should never do this!
+            .mapNotNull {
+                it.copy(readOnly = false).mutableCopy()
+            } //  Consumers should never do this!
         val existingAccountGroups = mutableMapOf<Account, MutableSet<MutableGroup>>()
         for (group in existingGroups) {
             existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {

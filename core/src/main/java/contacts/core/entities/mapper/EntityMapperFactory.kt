@@ -7,7 +7,7 @@ import contacts.core.entities.custom.CustomDataRegistry
 
 // region EntityCursor<AbstractDataField>
 
-internal fun CursorHolder<AbstractDataField>.addressMapper(): EntityMapper<Address> =
+internal fun CursorHolder<AbstractDataField>.addressMapper(): DataEntityMapper<Address> =
     AddressMapper(addressCursor())
 
 internal fun CursorHolder<AbstractDataField>.dataContactsMapper():
@@ -15,54 +15,54 @@ internal fun CursorHolder<AbstractDataField>.dataContactsMapper():
     dataContactsCursor(), dataContactsOptionsMapper()
 )
 
-internal fun CursorHolder<AbstractDataField>.emailMapper(): EntityMapper<Email> =
+internal fun CursorHolder<AbstractDataField>.emailMapper(): DataEntityMapper<Email> =
     EmailMapper(emailCursor())
 
-internal fun CursorHolder<AbstractDataField>.eventMapper(): EntityMapper<Event> =
+internal fun CursorHolder<AbstractDataField>.eventMapper(): DataEntityMapper<Event> =
     EventMapper(eventCursor())
 
-internal fun CursorHolder<AbstractDataField>.groupMembershipMapper(): EntityMapper<GroupMembership> =
+internal fun CursorHolder<AbstractDataField>.groupMembershipMapper(): DataEntityMapper<GroupMembership> =
     GroupMembershipMapper(groupMembershipCursor())
 
-internal fun CursorHolder<AbstractDataField>.imMapper(): EntityMapper<Im> = ImMapper(imCursor())
+internal fun CursorHolder<AbstractDataField>.imMapper(): DataEntityMapper<Im> = ImMapper(imCursor())
 
-internal fun CursorHolder<AbstractDataField>.nameMapper(): EntityMapper<Name> =
+internal fun CursorHolder<AbstractDataField>.nameMapper(): DataEntityMapper<Name> =
     NameMapper(nameCursor())
 
-internal fun CursorHolder<AbstractDataField>.nicknameMapper(): EntityMapper<Nickname> =
+internal fun CursorHolder<AbstractDataField>.nicknameMapper(): DataEntityMapper<Nickname> =
     NicknameMapper(nicknameCursor())
 
-internal fun CursorHolder<AbstractDataField>.noteMapper(): EntityMapper<Note> =
+internal fun CursorHolder<AbstractDataField>.noteMapper(): DataEntityMapper<Note> =
     NoteMapper(noteCursor())
 
 internal fun CursorHolder<AbstractDataField>.dataContactsOptionsMapper(): EntityMapper<Options> =
     OptionsMapper(dataContactsOptionsCursor())
 
-internal fun CursorHolder<AbstractDataField>.organizationMapper(): EntityMapper<Organization> =
+internal fun CursorHolder<AbstractDataField>.organizationMapper(): DataEntityMapper<Organization> =
     OrganizationMapper(organizationCursor())
 
-internal fun CursorHolder<AbstractDataField>.phoneMapper(): EntityMapper<Phone> =
+internal fun CursorHolder<AbstractDataField>.phoneMapper(): DataEntityMapper<Phone> =
     PhoneMapper(phoneCursor())
 
 // The receiver EntityCursor<AbstractDataField> is unused here. However, we should still have it
 // so that the mapper is still tied to or coupled with the receiver.
 @Suppress("Unused")
-internal fun CursorHolder<AbstractDataField>.photoMapper(): EntityMapper<Photo> = PhotoMapper()
+internal fun CursorHolder<AbstractDataField>.photoMapper(): DataEntityMapper<Photo> = PhotoMapper
 
-internal fun CursorHolder<AbstractDataField>.relationMapper(): EntityMapper<Relation> =
+internal fun CursorHolder<AbstractDataField>.relationMapper(): DataEntityMapper<Relation> =
     RelationMapper(relationCursor())
 
-internal fun CursorHolder<AbstractDataField>.sipAddressMapper(): EntityMapper<SipAddress> =
+internal fun CursorHolder<AbstractDataField>.sipAddressMapper(): DataEntityMapper<SipAddress> =
     SipAddressMapper(sipAddressCursor())
 
-internal fun CursorHolder<AbstractDataField>.websiteMapper(): EntityMapper<Website> =
+internal fun CursorHolder<AbstractDataField>.websiteMapper(): DataEntityMapper<Website> =
     WebsiteMapper(websiteCursor())
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : ImmutableData> CursorHolder<AbstractDataField>.entityMapperFor(
+internal fun <T : ImmutableDataEntity> CursorHolder<AbstractDataField>.dataEntityMapperFor(
     mimeType: MimeType,
     customDataRegistry: CustomDataRegistry
-): EntityMapper<T> = when (mimeType) {
+): DataEntityMapper<T> = when (mimeType) {
     MimeType.Address -> addressMapper()
     MimeType.Email -> emailMapper()
     MimeType.Event -> eventMapper()
@@ -89,7 +89,7 @@ internal fun <T : ImmutableData> CursorHolder<AbstractDataField>.entityMapperFor
     MimeType.Unknown -> throw ContactsException(
         "No entity mapper for mime type ${mimeType.value}"
     )
-} as EntityMapper<T>
+} as DataEntityMapper<T>
 
 // endregion
 

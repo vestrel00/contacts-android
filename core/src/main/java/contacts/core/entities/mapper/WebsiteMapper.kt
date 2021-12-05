@@ -3,7 +3,7 @@ package contacts.core.entities.mapper
 import contacts.core.entities.Website
 import contacts.core.entities.cursor.WebsiteCursor
 
-internal class WebsiteMapper(private val websiteCursor: WebsiteCursor) : EntityMapper<Website> {
+internal class WebsiteMapper(private val websiteCursor: WebsiteCursor) : DataEntityMapper<Website> {
 
     override val value: Website
         get() = Website(

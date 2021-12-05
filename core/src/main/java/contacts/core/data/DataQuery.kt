@@ -5,7 +5,7 @@ import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.*
 import contacts.core.entities.cursor.rawContactsCursor
-import contacts.core.entities.mapper.entityMapperFor
+import contacts.core.entities.mapper.dataEntityMapperFor
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.util.isEmpty
@@ -89,7 +89,7 @@ interface DataQueryFactory {
     /**
      * Queries for custom data of type [E] with the given custom [mimeType].
      */
-    fun <F : AbstractCustomDataField, E : ImmutableCustomData>
+    fun <F : AbstractCustomDataField, E : ImmutableCustomDataEntity>
             customData(mimeType: MimeType.Custom): DataQuery<F, E>
 }
 
@@ -159,7 +159,7 @@ private class DataQueryFactoryImpl(
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <F : AbstractCustomDataField, E : ImmutableCustomData>
+    override fun <F : AbstractCustomDataField, E : ImmutableCustomDataEntity>
             customData(mimeType: MimeType.Custom): DataQuery<F, E> = DataQueryImpl(
         contacts,
         contacts.customDataRegistry.entryOf(mimeType).fieldSet as AbstractCustomDataFieldSet<F>,
@@ -212,7 +212,7 @@ private class DataQueryFactoryImpl(
  *      .find();
  * ```
  */
-interface DataQuery<F : DataField, E : ImmutableData> {
+interface DataQuery<F : DataField, E : ImmutableDataEntity> {
 
     /**
      * Limits this query to only search for data associated with one of the given [accounts].
@@ -381,7 +381,7 @@ interface DataQuery<F : DataField, E : ImmutableData> {
     fun find(cancel: () -> Boolean): List<E>
 }
 
-private class DataQueryImpl<F : DataField, E : ImmutableData>(
+private class DataQueryImpl<F : DataField, E : ImmutableDataEntity>(
     private val contacts: Contacts,
 
     private val defaultIncludeFields: FieldSet<F>,
@@ -491,7 +491,7 @@ private class DataQueryImpl<F : DataField, E : ImmutableData>(
     }
 }
 
-internal fun <T : ImmutableData> Contacts.resolveDataEntity(
+internal fun <T : ImmutableDataEntity> Contacts.resolveDataEntity(
     isProfile: Boolean,
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
@@ -525,7 +525,7 @@ internal fun <T : ImmutableData> Contacts.resolveDataEntity(
         include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
     ) {
         mutableListOf<T>().apply {
-            val entityMapper = it.entityMapperFor<T>(mimeType, customDataRegistry)
+            val entityMapper = it.dataEntityMapperFor<T>(mimeType, customDataRegistry)
             while (!cancel() && it.moveToNext()) {
                 // Do not add blanks.
                 entityMapper.nonBlankValueOrNull?.let(::add)

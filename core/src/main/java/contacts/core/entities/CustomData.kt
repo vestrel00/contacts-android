@@ -9,7 +9,8 @@ package contacts.core.entities
  * Implementations are required to be parcelable. Kotlin users are recommended to use data class
  * combined with [kotlinx.parcelize.Parcelize].
  */
-sealed interface CustomDataEntity : DataEntity {
+// Intentionally not sealed so that consumers can define their own implementations.
+interface CustomDataEntity : DataEntity {
 
     // Override this to cast type from MimeType to MimeType.Custom
     override val mimeType: MimeType.Custom
@@ -17,17 +18,33 @@ sealed interface CustomDataEntity : DataEntity {
 
 /**
  * An immutable [CustomDataEntity].
- *
- * Implementors should define a toMutableX() function to allow for changes in their custom entities.
  */
-interface ImmutableCustomData : CustomDataEntity, ImmutableData
+// Intentionally not sealed so that consumers can define their own implementations.
+interface ImmutableCustomDataEntity : CustomDataEntity, ImmutableDataEntity
+
+/**
+ * An [ImmutableCustomDataEntity] with a mutable type.
+ */
+// Intentionally not sealed so that consumers can define their own implementations.
+interface ImmutableCustomDataEntityWithMutableType<T : MutableCustomDataEntity> :
+    ImmutableCustomDataEntity, ImmutableDataEntityWithMutableType<T>
+
+/**
+ * An [ImmutableCustomDataEntity] that has a mutable type [T] that may or may not be null.
+ */
+// Intentionally not sealed so that consumers can define their own implementations.
+interface ImmutableCustomDataEntityWithNullableMutableType<T : MutableCustomDataEntity> :
+    ImmutableCustomDataEntity, ImmutableDataEntityWithNullableMutableType<T>
 
 /**
  * A mutable [CustomDataEntity].
  */
-interface MutableCustomData : CustomDataEntity, MutableData
+// Intentionally not sealed so that consumers can define their own implementations.
+interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity
 
 /**
- * A custom [MutableDataWithType].
+ * A [MutableCustomDataEntity], with a mutable [type] and [label].
  */
-interface MutableCustomDataWithType<T : DataEntity.Type> : MutableCustomData, MutableDataWithType<T>
+// Intentionally not sealed so that consumers can define their own implementations.
+interface MutableCustomDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableCustomDataEntity,
+    MutableDataEntityWithTypeAndLabel<T>

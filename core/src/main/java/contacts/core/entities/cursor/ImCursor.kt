@@ -3,7 +3,7 @@ package contacts.core.entities.cursor
 import android.database.Cursor
 import contacts.core.Fields
 import contacts.core.ImField
-import contacts.core.entities.Im
+import contacts.core.entities.ImEntity
 
 /**
  * Retrieves [Fields.Im] data from the given [cursor].
@@ -14,7 +14,10 @@ import contacts.core.entities.Im
 internal class ImCursor(cursor: Cursor, includeFields: Set<ImField>) :
     AbstractDataCursor<ImField>(cursor, includeFields) {
 
-    val protocol: Im.Protocol? by type(Fields.Im.Protocol, typeFromValue = Im.Protocol::fromValue)
+    val protocol: ImEntity.Protocol? by type(
+        Fields.Im.Protocol,
+        typeFromValue = ImEntity.Protocol::fromValue
+    )
 
     val customProtocol: String? by string(Fields.Im.CustomProtocol)
 

@@ -4,7 +4,7 @@ import contacts.core.entities.SipAddress
 import contacts.core.entities.cursor.SipAddressCursor
 
 internal class SipAddressMapper(private val sipAddressCursor: SipAddressCursor) :
-    EntityMapper<SipAddress> {
+    DataEntityMapper<SipAddress> {
 
     override val value: SipAddress
         get() = SipAddress(
