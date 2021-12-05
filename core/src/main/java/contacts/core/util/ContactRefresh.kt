@@ -39,7 +39,7 @@ fun Contact.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): Cont
     if (id == null) {
         this
     } else {
-        contacts.findFirstContactWithId(id, cancel)
+        contacts.findContactWithId(id, cancel)
     }
 
 /**
@@ -64,14 +64,15 @@ fun MutableContact.refresh(
     if (id == null) {
         this
     } else {
-        contacts.findFirstContactWithId(id, cancel)?.mutableCopy()
+        contacts.findContactWithId(id, cancel)?.mutableCopy()
     }
 
-internal fun Contacts.findFirstContactWithId(
+internal fun Contacts.findContactWithId(
     contactId: Long,
     cancel: () -> Boolean
 ): Contact? =
     if (contactId.isProfileId) {
+        // Remember there is only one profile Contact so there is no need to look for ID.
         profile()
             .query()
             .find(cancel)

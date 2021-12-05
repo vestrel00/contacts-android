@@ -33,5 +33,5 @@ fun BlankRawContact.toRawContact(
     cancel: () -> Boolean = { false }
 ): RawContact? =
     id?.let { rawContactId ->
-        contacts.findFirstRawContactWithId(rawContactId, cancel)
+        contacts.findRawContactWithId(rawContactId, cancel)
     }

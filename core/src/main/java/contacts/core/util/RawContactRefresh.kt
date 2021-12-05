@@ -41,7 +41,7 @@ fun RawContact.refresh(
     if (id == null) {
         this
     } else {
-        contacts.findFirstRawContactWithId(id, cancel)
+        contacts.findRawContactWithId(id, cancel)
     }
 
 /**
@@ -65,25 +65,23 @@ fun MutableRawContact.refresh(
 ): MutableRawContact? = if (id == null) {
     this
 } else {
-    contacts.findFirstRawContactWithId(id, cancel)?.mutableCopy()
+    contacts.findRawContactWithId(id, cancel)?.mutableCopy()
 }
 
-internal fun Contacts.findFirstRawContactWithId(
+internal fun Contacts.findRawContactWithId(
     rawContactId: Long,
     cancel: () -> Boolean
 ): RawContact? = if (rawContactId.isProfileId) {
     profile().query()
         .find(cancel)
-        ?.rawContacts
-        ?.find { it.id == rawContactId }
 } else {
     query()
         .where(Fields.RawContact.Id equalTo rawContactId)
         .find(cancel)
         .firstOrNull()
-        ?.rawContacts
-        ?.firstOrNull()
 }
+    ?.rawContacts
+    ?.find { it.id == rawContactId }
 
 /* DEV NOTE
 We could declare and implement a single function instead of two by using the generic type...

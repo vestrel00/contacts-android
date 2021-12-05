@@ -33,5 +33,5 @@ fun DataEntity.rawContact(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): RawContact? = rawContactId?.let { rawContactId ->
-    contacts.findFirstRawContactWithId(rawContactId, cancel)
+    contacts.findRawContactWithId(rawContactId, cancel)
 }

@@ -31,5 +31,5 @@ import contacts.core.entities.DataEntity
 @JvmOverloads
 fun DataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
     contactId?.let { contactId ->
-        contacts.findFirstContactWithId(contactId, cancel)
+        contacts.findContactWithId(contactId, cancel)
     }
