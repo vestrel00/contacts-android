@@ -21,12 +21,6 @@ import java.util.*
  * to the device and are not synced.
  */
 sealed interface ContactEntity : Entity {
-    /**
-     * The id of the Contacts row this represents.
-     *
-     * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
-     */
-    override val id: Long?
 
     /**
      * A list of [RawContactEntity]s that are associated with this contact.
@@ -148,17 +142,35 @@ sealed interface ContactEntity : Entity {
      */
     val hasPhoneNumber: Boolean?
 
-    /**
-     * True if this contact represents the user's personal profile entry.
-     */
-    val isProfile: Boolean
-        get() = id.isProfileId
-
     // Blank Contacts only have RawContact(s) that are blank. Blank RawContacts do not have any rows
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
     // the Data table, which is why they are not part of the blank check.
     override val isBlank: Boolean
         get() = entitiesAreAllBlank(rawContacts)
+}
+
+/**
+ * An [ContactEntity] that has NOT yet been inserted into the database.
+ */
+sealed interface NewContactEntity: ContactEntity
+
+/**
+ * An [ContactEntity] that has already been inserted into the database.
+ */
+sealed interface ExistingContactEntity: ContactEntity, ExistingEntity {
+    /**
+     * The id of the Contacts row this represents.
+     *
+     * This is the value of Contacts._ID / RawContacts.CONTACT_ID / Data.CONTACT_ID
+     */
+    // Override for documentation purposes.
+    override val id: Long
+
+    /**
+     * True if this contact represents the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = id.isProfileId
 }
 
 /**
@@ -171,7 +183,7 @@ sealed interface ContactEntity : Entity {
 @Parcelize
 data class Contact internal constructor(
 
-    override val id: Long?,
+    override val id: Long,
 
     override val rawContacts: List<RawContact>,
 
@@ -187,7 +199,7 @@ data class Contact internal constructor(
 
     override val hasPhoneNumber: Boolean?
 
-) : ContactEntity, ImmutableEntityWithMutableType<MutableContact> {
+) : ExistingContactEntity, ImmutableEntityWithMutableType<MutableContact> {
 
     override fun mutableCopy() = MutableContact(
         id = id,
@@ -212,7 +224,7 @@ data class Contact internal constructor(
 @Parcelize
 data class MutableContact internal constructor(
 
-    override val id: Long?,
+    override val id: Long,
 
     override val rawContacts: List<MutableRawContact>,
 
@@ -228,4 +240,7 @@ data class MutableContact internal constructor(
 
     override val hasPhoneNumber: Boolean?
 
-) : ContactEntity, MutableEntity
+) : ExistingContactEntity, MutableEntity
+
+// Note that there is no "NewContact". A new "Contact" is created automatically by the Contacts
+// Provider when a "NewRawContact" is inserted.

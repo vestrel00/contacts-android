@@ -8,25 +8,41 @@ import android.os.Parcelable
 sealed interface Entity : Parcelable {
 
     /**
-     * The ID of this entity (row) in the table it belongs to.
-     */
-    val id: Long?
-
-    /**
      * Returns true all property values are either null, empty, or blank.
-     *
-     * The [id] has no influence on the value this returns.
      */
     val isBlank: Boolean
 }
 
 /**
- * An immutable [Entity].
+ * An [Entity] that has NOT yet been inserted into the database.
+ *
+ * These entities are only used for insert operations.
+ */
+sealed interface NewEntity : Entity
+
+/**
+ * An [Entity] that has already been inserted into the database.
+ *
+ * These entities are returned in query operations and used in update and delete operations.
+ *
+ * Note that there is no guarantee that a reference to these entities in memory still exist in the
+ * database as they can be deleted.
+ */
+sealed interface ExistingEntity : Entity {
+
+    /**
+     * The ID of this entity (row) in the table it belongs to.
+     */
+    val id: Long
+}
+
+/**
+ * An immutable [ExistingEntity].
  *
  * Implementations of this interface must guarantee immutability. No properties can change once
  * instances are created. This guarantees thread-safety.
  */
-sealed interface ImmutableEntity : Entity
+sealed interface ImmutableEntity : ExistingEntity
 
 /**
  * An [ImmutableEntity] that has a mutable type [T].
@@ -68,7 +84,7 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
  * This is **NOT thread-safe**. You must perform synchronizations yourself if you are trying to use
  * shared instances of this in multi-threaded environments.
  */
-sealed interface MutableEntity : Entity
+sealed interface MutableEntity : ExistingEntity
 
 /**
  * Returns an immutable list containing mutable copies of type [T] for each instance of type [R] in
