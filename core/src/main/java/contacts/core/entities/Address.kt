@@ -116,14 +116,41 @@ sealed interface AddressEntity : DataEntity {
 }
 
 /**
- * An immutable [AddressEntity].
+ * A mutable [AddressEntity].
+ */
+sealed interface MutableAddressEntity : AddressEntity {
+    override var type: Type?
+    override var label: String?
+
+    override var formattedAddress: String?
+    override var street: String?
+    override var poBox: String?
+    override var neighborhood: String?
+    override var city: String?
+    override var region: String?
+    override var postcode: String?
+    override var country: String?
+}
+
+/**
+ * An [AddressEntity] that has NOT yet been inserted into the database.
+ */
+sealed interface NewAddressEntity : AddressEntity, NewDataEntity
+
+/**
+ * An [AddressEntity] that has already been inserted into the database.
+ */
+sealed interface ExistingAddressEntity : AddressEntity, ExistingDataEntity
+
+/**
+ * An immutable [ExistingAddressEntity].
  */
 @Parcelize
 data class Address internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -140,7 +167,7 @@ data class Address internal constructor(
     override val postcode: String?,
     override val country: String?
 
-) : AddressEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
+) : ExistingAddressEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
 
     override fun mutableCopy() = MutableAddress(
         id = id,
@@ -165,17 +192,17 @@ data class Address internal constructor(
 }
 
 /**
- * A mutable [AddressEntity].
+ * A mutable [ExistingAddressEntity].
  */
 @Parcelize
 data class MutableAddress internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var type: Type?,
     override var label: String?,
@@ -189,13 +216,37 @@ data class MutableAddress internal constructor(
     override var postcode: String?,
     override var country: String?
 
-) : AddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
-
-    constructor() : this(
-        null, null, null, false, false, null, null, null,
-        null, null, null, null, null, null, null
-    )
+) : ExistingAddressEntity, MutableAddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::formattedAddress
+}
+
+/**
+ * A mutable [NewAddressEntity].
+ */
+@Parcelize
+data class NewAddress internal constructor(
+
+    override var type: Type?,
+    override var label: String?,
+
+    override var formattedAddress: String?,
+    override var street: String?,
+    override var poBox: String?,
+    override var neighborhood: String?,
+    override var city: String?,
+    override var region: String?,
+    override var postcode: String?,
+    override var country: String?
+
+) : NewAddressEntity, MutableAddressEntity {
+
+    constructor() : this(null, null, null, null, null, null, null, null, null, null)
+
+    @IgnoredOnParcel
+    override val isPrimary: Boolean = false
+
+    @IgnoredOnParcel
+    override val isSuperPrimary: Boolean = false
 }

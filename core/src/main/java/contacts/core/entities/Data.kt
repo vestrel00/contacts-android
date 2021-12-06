@@ -31,21 +31,6 @@ import contacts.core.util.isProfileId
 sealed interface DataEntity : Entity {
 
     /**
-     * The id of the Data row this represents.
-     */
-    override val id: Long?
-
-    /**
-     * The id of the [RawContact] that this data entity is associated with.
-     */
-    val rawContactId: Long?
-
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
-    val contactId: Long?
-
-    /**
      * The type of data.
      */
     val mimeType: MimeType
@@ -83,12 +68,6 @@ sealed interface DataEntity : Entity {
         get() = isSuperPrimary
 
     /**
-     * True if this data belongs to the user's personal profile entry.
-     */
-    val isProfile: Boolean
-        get() = id.isProfileId
-
-    /**
      * Returns true if the underlying data contains at least one non-null and non-empty piece of
      * information.
      *
@@ -97,21 +76,8 @@ sealed interface DataEntity : Entity {
      * - Not returned in any query results
      * - Not inserted
      * - Deleted upon update
-     *
-     * The following has no influence on the value this returns.
-     *
-     * - [id]
-     * - [rawContactId]
-     * - [contactId]
-     * - [isPrimary]
-     * - [isSuperPrimary]
-     * - `type`
-     * - `label`
-     *
-     * ## Dev notes
-     *
-     * This is overridden for documentation purposes.
      */
+    // Overridden for documentation purposes.
     override val isBlank: Boolean
 
     /**
@@ -141,9 +107,42 @@ sealed interface DataEntity : Entity {
 }
 
 /**
- * An immutable [DataEntity].
+ * A [DataEntity] that has NOT yet been inserted into the database.
  */
-sealed interface ImmutableDataEntity : DataEntity, ImmutableEntity
+sealed interface NewDataEntity : DataEntity, NewEntity
+
+/**
+ * A [DataEntity] that has already been inserted into the database.
+ */
+sealed interface ExistingDataEntity : DataEntity, ExistingEntity {
+    /**
+     * The id of the Data row this represents.
+     */
+    // Overridden for documentation purposes.
+    override val id: Long
+
+    /**
+     * The id of the [RawContact] that this data entity is associated with.
+     */
+    val rawContactId: Long
+
+    /**
+     * The id of the [Contact] that this data entity is associated with.
+     */
+    val contactId: Long
+
+    /**
+     * True if this data belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = id.isProfileId
+}
+
+
+/**
+ * An immutable [ExistingDataEntity].
+ */
+sealed interface ImmutableDataEntity : ExistingDataEntity, ImmutableEntity
 
 /**
  * An [ImmutableDataEntity] that has a mutable type [T].
@@ -161,7 +160,7 @@ sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntit
 /**
  * A mutable [DataEntity], with a mutable [primaryValue].
  */
-sealed interface MutableDataEntity : DataEntity, MutableEntity {
+sealed interface MutableDataEntity : ExistingDataEntity, MutableEntity {
 
     /**
      * The main value encapsulated by this entity as a string for consumer usage.

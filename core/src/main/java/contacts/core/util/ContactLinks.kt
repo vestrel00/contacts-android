@@ -58,12 +58,6 @@ import contacts.core.entities.table.Table
  * **Profile Contact & RawContacts are not supported!** This operation will fail if there are any
  * profile Contact or RawContacts in [contacts].
  *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
- *
  * ## Changes are immediate
  *
  * This function will make the changes to the Contacts Provider database immediately. You do not
@@ -261,12 +255,6 @@ private class ContactLinkFailed : ContactLinkResult {
  *
  * **Profile Contact & RawContacts are not supported!** This operation will fail if [this] is a
  * Profile Contact.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Changes are immediate
  *

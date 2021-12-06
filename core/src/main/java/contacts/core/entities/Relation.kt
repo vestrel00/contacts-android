@@ -112,8 +112,8 @@ data class MutableRelation internal constructor(
     override val rawContactId: Long?,
     override val contactId: Long?,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var type: Type?,
     override var label: String?,

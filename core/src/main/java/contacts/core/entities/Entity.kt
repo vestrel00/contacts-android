@@ -54,6 +54,8 @@ sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEn
     /**
      * Returns a **mutable copy** of this immutable entity. This copy allows for some properties of
      * instances to be mutated/modified.
+     *
+     * This is typically used for update operations.
      */
     fun mutableCopy(): T
 }

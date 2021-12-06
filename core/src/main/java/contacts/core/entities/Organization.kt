@@ -108,8 +108,8 @@ data class MutableOrganization internal constructor(
     override val rawContactId: Long?,
     override val contactId: Long?,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var company: String?,
     override var title: String?,

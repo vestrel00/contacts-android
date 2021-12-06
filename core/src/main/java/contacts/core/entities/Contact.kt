@@ -150,12 +150,7 @@ sealed interface ContactEntity : Entity {
 }
 
 /**
- * An [ContactEntity] that has NOT yet been inserted into the database.
- */
-sealed interface NewContactEntity: ContactEntity
-
-/**
- * An [ContactEntity] that has already been inserted into the database.
+ * A [ContactEntity] that has already been inserted into the database.
  */
 sealed interface ExistingContactEntity: ContactEntity, ExistingEntity {
     /**
@@ -174,7 +169,7 @@ sealed interface ExistingContactEntity: ContactEntity, ExistingEntity {
 }
 
 /**
- * An existing, immutable [ContactEntity].
+ * An immutable [ExistingContactEntity].
  *
  * This contains an immutable list of existing immutable [RawContact]s.
  *
@@ -217,7 +212,7 @@ data class Contact internal constructor(
 }
 
 /**
- * An existing, mutable [ContactEntity].
+ * An mutable [ExistingContactEntity].
  *
  * This contains an immutable list of existing [MutableRawContact]s.
  */
