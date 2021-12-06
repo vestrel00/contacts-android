@@ -4,7 +4,7 @@ import android.net.Uri
 import kotlinx.parcelize.Parcelize
 
 /**
- * Options for a Contact or RawContact.
+ * [Entity] that holds options data modeling columns in the Contacts table.
  */
 sealed interface OptionsEntity : Entity {
 

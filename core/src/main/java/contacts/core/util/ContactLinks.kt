@@ -5,7 +5,7 @@ import android.os.Build
 import android.provider.ContactsContract.*
 import contacts.core.*
 import contacts.core.Contacts
-import contacts.core.entities.ContactEntity
+import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.Name
 import contacts.core.entities.RawContactEntity
@@ -118,28 +118,27 @@ import contacts.core.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(contactsApi: Contacts, vararg contacts: ContactEntity) =
+fun ExistingContactEntity.link(contactsApi: Contacts, vararg contacts: ExistingContactEntity) =
     link(contactsApi, contacts.asSequence())
 
 /**
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(contactsApi: Contacts, contacts: Collection<ContactEntity>) =
+fun ExistingContactEntity.link(contactsApi: Contacts, contacts: Collection<ExistingContactEntity>) =
     link(contactsApi, contacts.asSequence())
 
 /**
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(
+fun ExistingContactEntity.link(
     contactsApi: Contacts,
-    contacts: Sequence<ContactEntity>
+    contacts: Sequence<ExistingContactEntity>
 ): ContactLinkResult {
     val mainContactId = id
 
     if (!contactsApi.permissions.canUpdateDelete() ||
-        mainContactId == null ||
         mainContactId.isProfileId ||
         contacts.find { it.isProfile } != null
     ) {
@@ -147,7 +146,7 @@ fun ContactEntity.link(
     }
 
     val sortedContactIds = contacts
-        .mapNotNull { it.id }
+        .map { it.id }
         .filter { it != mainContactId }
         .sortedBy { it }
         .toMutableList()
@@ -203,17 +202,17 @@ fun ContactEntity.link(
 /**
  * Links the first Contact in this collection with the rest in the collection.
  *
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
-fun Collection<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult =
+fun Collection<ExistingContactEntity>.link(contactsApi: Contacts): ContactLinkResult =
     asSequence().link(contactsApi)
 
 /**
  * Links the first Contact in this sequence with the rest in the sequence.
  *
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
-fun Sequence<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
+fun Sequence<ExistingContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
     val mainContact = firstOrNull()
     val contacts = filterIndexed { index, _ -> index > 0 }
 
@@ -227,8 +226,8 @@ fun Sequence<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
 interface ContactLinkResult {
 
     /**
-     * The parent [ContactEntity.id] for all of the linked RawContacts. Null if [isSuccessful] is
-     * false.
+     * The parent [ExistingContactEntity.id] for all of the linked RawContacts. Null if
+     * [isSuccessful] is false.
      */
     val contactId: Long?
 
@@ -255,8 +254,8 @@ private class ContactLinkFailed : ContactLinkResult {
 // region UNLINK
 
 /**
- * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [ContactEntity] for each
- * [ContactEntity.rawContacts].
+ * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [ExistingContactEntity]
+ * for each [ExistingContactEntity.rawContacts].
  *
  * This does nothing / fails if there is only one RawContact associated with [this].
  *
@@ -290,11 +289,10 @@ private class ContactLinkFailed : ContactLinkResult {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
+fun ExistingContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
     val contactId = id
 
     if (!contactsApi.permissions.canUpdateDelete() ||
-        contactId == null ||
         contactId.isProfileId
     ) {
         return ContactUnlinkFailed()

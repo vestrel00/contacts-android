@@ -5,7 +5,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
- * [Entity] in the Groups table.
+ * [Entity] that holds data modeling columns in the Groups table.
  */
 sealed interface GroupEntity : Entity {
 

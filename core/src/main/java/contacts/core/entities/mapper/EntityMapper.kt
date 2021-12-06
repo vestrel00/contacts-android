@@ -1,13 +1,13 @@
 package contacts.core.entities.mapper
 
-import contacts.core.entities.Entity
+import contacts.core.entities.ExistingEntity
 import contacts.core.entities.ImmutableCustomDataEntity
 import contacts.core.entities.ImmutableDataEntity
 
 /**
  * Creates entities from database values.
  */
-internal sealed interface EntityMapper<out T : Entity> {
+internal sealed interface EntityMapper<out T : ExistingEntity> {
     val value: T
 
     /**

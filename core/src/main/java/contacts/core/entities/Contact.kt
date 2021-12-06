@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.*
 
 /**
- * [Entity] in the Contacts table.
+ * [Entity] that holds data modeling columns in the Contacts table.
  *
  * ## Contact, RawContact, and Data
  *
@@ -174,9 +174,9 @@ sealed interface ExistingContactEntity: ContactEntity, ExistingEntity {
 }
 
 /**
- * An immutable [ContactEntity].
+ * An existing, immutable [ContactEntity].
  *
- * This contains an immutable list of immutable [RawContact]s.
+ * This contains an immutable list of existing immutable [RawContact]s.
  *
  * To get a mutable copy of this instance, use [mutableCopy].
  */
@@ -217,9 +217,9 @@ data class Contact internal constructor(
 }
 
 /**
- * A mutable [ContactEntity].
+ * An existing, mutable [ContactEntity].
  *
- * This contains an immutable list of [MutableRawContact]s.
+ * This contains an immutable list of existing [MutableRawContact]s.
  */
 @Parcelize
 data class MutableContact internal constructor(

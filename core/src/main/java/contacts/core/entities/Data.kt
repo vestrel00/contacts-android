@@ -5,7 +5,7 @@ import android.provider.ContactsContract
 import contacts.core.util.isProfileId
 
 /**
- * [Entity] in the Data table that belong to a [RawContact].
+ * [Entity] that holds data modeling columns in the Data table.
  *
  * ## Contact, RawContact, and Data
  *

@@ -7,7 +7,7 @@ import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 
 /**
- * [Entity] in the RawContacts table.
+ * [Entity] that holds data modeling columns in the RawContacts table.
  *
  * ## Contact, RawContact, and Data
  *
