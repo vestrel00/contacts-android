@@ -151,8 +151,7 @@ sealed interface ContactEntity : Entity {
 
 /* DEV NOTES: Necessary Abstractions
  *
- * We only create abstractions when they are necessary! That is when there are two separate concrete
- * types that we want to perform an operation on.
+ * We only create abstractions when they are necessary!
  *
  * Apart from ContactEntity, there is only one interface that extends it; ExistingContactEntity.
  * This interface is used for library functions that require a ContactEntity with an ID, which means
@@ -161,7 +160,7 @@ sealed interface ContactEntity : Entity {
  * either Contact or MutableContact through the ExistingContactEntity abstraction/facade.
  *
  * This is why there are no interfaces for NewContactEntity, ImmutableContactEntity, and
- * MutableContactEntity. There are currently no library functions that exist that need them.
+ * MutableContactEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */

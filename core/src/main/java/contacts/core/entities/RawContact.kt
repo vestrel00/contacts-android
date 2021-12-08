@@ -125,8 +125,7 @@ sealed interface RawContactEntity : Entity {
 
 /* DEV NOTES: Necessary Abstractions
  *
- * We only create abstractions when they are necessary! That is when there are two separate concrete
- * types that we want to perform an operation on.
+ * We only create abstractions when they are necessary!
  *
  * Apart from RawContactEntity, there is only one interface that extends it; ExistingRawContactEntity.
  * This interface is used for library functions that require a RawContactEntity with an ID, which means
@@ -135,7 +134,7 @@ sealed interface RawContactEntity : Entity {
  * either RawContact or MutableRawContact through the ExistingRawContactEntity abstraction/facade.
  *
  * This is why there are no interfaces for NewRawContactEntity, ImmutableRawContactEntity, and
- * MutableRawContactEntity. There are currently no library functions that exist that need them.
+ * MutableRawContactEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
@@ -171,7 +170,7 @@ sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
 /**
  * An immutable [ExistingRawContactEntity].
  *
- * This can hold immutable existing data entities.
+ * This can hold existing immutable data entities.
  */
 @Parcelize
 data class RawContact internal constructor(
@@ -223,9 +222,9 @@ data class RawContact internal constructor(
 }
 
 /**
- * An mutable [ExistingRawContactEntity].
+ * A mutable [ExistingRawContactEntity].
  *
- * This can hold mutable new and existing data entities.
+ * This can hold new and existing mutable data entities.
  */
 @Parcelize
 data class MutableRawContact internal constructor(
@@ -234,31 +233,32 @@ data class MutableRawContact internal constructor(
     override val contactId: Long,
 
     override var addresses: MutableList<MutableAddressEntity>,
-    override var emails: MutableList<MutableEmail>,
-    override var events: MutableList<MutableEvent>,
-    override var groupMemberships: MutableList<GroupMembership>,
-    override var ims: MutableList<MutableIm>,
-    override var name: MutableName?,
-    override var nickname: MutableNickname?,
-    override var note: MutableNote?,
-    override var organization: MutableOrganization?,
-    override var phones: MutableList<MutablePhone>,
-    override var photo: Photo?,
-    override var relations: MutableList<MutableRelation>,
-    override var sipAddress: MutableSipAddress?,
-    override var websites: MutableList<MutableWebsite>,
+    override var emails: MutableList<MutableEmailEntity>,
+    override var events: MutableList<MutableEventEntity>,
+    override var groupMemberships: MutableList<GroupMembershipEntity>,
+    override var ims: MutableList<MutableImEntity>,
+    override var name: MutableNameEntity?,
+    override var nickname: MutableNicknameEntity?,
+    override var note: MutableNoteEntity?,
+    override var organization: MutableOrganizationEntity?,
+    override var phones: MutableList<MutablePhoneEntity>,
+    override var photo: PhotoEntity?,
+    override var relations: MutableList<MutableRelationEntity>,
+    override var sipAddress: MutableSipAddressEntity?,
+    override var websites: MutableList<MutableWebsiteEntity>,
 
     override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
 ) : ExistingRawContactEntity, MutableEntity
 
 /**
- * An mutable [NewRawContactEntity].
+ * A new mutable [RawContactEntity].
  *
- * This can hold mutable new data entities.
+ * This can hold new mutable data entities.
  */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewRawContact internal constructor(
+data class NewRawContact(
 
     override var addresses: MutableList<NewAddress>,
     override var emails: MutableList<NewEmail>,
@@ -279,7 +279,7 @@ data class NewRawContact internal constructor(
 
 ) : RawContactEntity, NewEntity, MutableEntity {
 
-    // For consumer use.
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
     constructor(): this(
         mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(),
         null, null, null, null, mutableListOf(), null,

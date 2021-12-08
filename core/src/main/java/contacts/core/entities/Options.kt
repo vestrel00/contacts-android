@@ -56,12 +56,11 @@ sealed interface OptionsEntity : Entity {
 
 /* DEV NOTES: Necessary Abstractions
  *
- * We only create abstractions when they are necessary! That is when there are two separate concrete
- * types that we want to perform an operation on.
+ * We only create abstractions when they are necessary!
  *
  * This is why there are no interfaces for NewOptionsEntity, ExistingOptionsEntity,
- * ImmutableOptionsEntity, and MutableNewOptionsEntity. There are currently no library functions
- * that exist that need them.
+ * ImmutableOptionsEntity, and MutableNewOptionsEntity. There are currently no library functions or
+ * constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
@@ -112,8 +111,9 @@ data class MutableOptions internal constructor(
 /**
  * A new mutable [OptionsEntity].
  */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users
 @Parcelize
-data class NewOptions internal constructor(
+data class NewOptions(
 
     override var starred: Boolean?,
     override var customRingtone: Uri?,
@@ -121,6 +121,6 @@ data class NewOptions internal constructor(
 
 ) : OptionsEntity, NewEntity, MutableEntity {
 
-    // For consumer use.
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
     constructor() : this(null, null, null)
 }

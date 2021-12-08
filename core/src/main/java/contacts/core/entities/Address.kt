@@ -117,33 +117,21 @@ sealed interface AddressEntity : DataEntity {
 
 /* DEV NOTES: Necessary Abstractions
  *
- * We only create abstractions when they are necessary! That is when there are two separate concrete
- * types that we want to perform an operation on.
+ * We only create abstractions when they are necessary!
  *
- * Apart from AddressEntity, there are only two interfaces that extends it;
- * ExistingAddressEntity and MutableAddressEntity.
+ * Apart from AddressEntity, there is only one interface that extends it; MutableAddressEntity.
  *
- * The ExistingAddressEntity interface is used for library functions that require an AddressEntity
- * with an ID, which means that it exists in the database. There are two variants of this;
- * Address and MutableAddress. With this, we can create functions (or extensions) that can take in
- * (or have as the receiver) either Address or MutableAddress through the ExistingAddressEntity
+ * The MutableAddressEntity interface is used for library constructs that require an AddressEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableAddress and NewAddress. With this, we can create constructs that can
+ * keep a reference to MutableAddress(es) or NewAddress(es) through the MutableAddressEntity
  * abstraction/facade.
  *
- * The MutableAddressEntity interface is used for library functions that require an AddressEntity
- * that can be mutated. There are two variants of this; MutableAddress and NewAddress. With this,
- * we can create functions (or extensions) that can take in (or have as the receiver) either
- * MutableAddress or NewAddress through the MutableAddressEntity abstraction/facade.
- *
- * This is why there are no interfaces for NewRawContactEntity and ImmutableRawContactEntity.
- * There are currently no library functions that exist that need them.
+ * This is why there are no interfaces for NewRawContactEntity, ExistingRawContactEntity, and
+ * ImmutableRawContactEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
-
-/**
- * An [AddressEntity] that has already been inserted into the database.
- */
-sealed interface ExistingAddressEntity : AddressEntity, ExistingDataEntity
 
 /**
  * A mutable [AddressEntity].
@@ -184,7 +172,7 @@ data class Address internal constructor(
     override val postcode: String?,
     override val country: String?
 
-) : ExistingAddressEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
+) : AddressEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
 
     override fun mutableCopy() = MutableAddress(
         id = id,
@@ -233,7 +221,7 @@ data class MutableAddress internal constructor(
     override var postcode: String?,
     override var country: String?
 
-) : ExistingAddressEntity, MutableAddressEntity {
+) : AddressEntity, ExistingDataEntity, MutableAddressEntity {
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::formattedAddress
@@ -242,6 +230,7 @@ data class MutableAddress internal constructor(
 /**
  * A new mutable [AddressEntity].
  */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
 data class NewAddress internal constructor(
 
@@ -259,7 +248,7 @@ data class NewAddress internal constructor(
 
 ) : AddressEntity, NewDataEntity, MutableAddressEntity {
 
-    // For consumer use.
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
     constructor() : this(null, null, null, null, null, null, null, null, null, null)
 
     @IgnoredOnParcel

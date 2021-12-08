@@ -113,11 +113,10 @@ sealed interface GroupEntity : Entity {
 
 /* DEV NOTES: Necessary Abstractions
  *
- * We only create abstractions when they are necessary! That is when there are two separate concrete
- * types that we want to perform an operation on.
+ * We only create abstractions when they are necessary!
  *
- * This is why there are no interfaces for NewGroupEntity, ExistingGroupEntity, mmutableGroupEntity,
- * and MutableNewGroupEntity. There are currently no library functions that exist that need them.
+ * This is why there are no interfaces for NewGroupEntity, ExistingGroupEntity, MutableGroupEntity,
+ * and MutableNewGroupEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
@@ -171,6 +170,7 @@ data class MutableGroup internal constructor(
 /**
  * A new mutable [GroupEntity].
  */
+// Intentionally expose primary constructor to consumers. This is the only way to create a new group.
 @Parcelize
 data class NewGroup(
     override var title: String,
