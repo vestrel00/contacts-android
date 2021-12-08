@@ -140,9 +140,9 @@ sealed interface ExistingDataEntity : DataEntity, ExistingEntity {
 
 
 /**
- * An immutable [ExistingDataEntity].
+ * An immutable [DataEntity].
  */
-sealed interface ImmutableDataEntity : ExistingDataEntity, ImmutableEntity
+sealed interface ImmutableDataEntity : DataEntity, ImmutableEntity
 
 /**
  * An [ImmutableDataEntity] that has a mutable type [T].
@@ -160,7 +160,7 @@ sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntit
 /**
  * A mutable [DataEntity], with a mutable [primaryValue].
  */
-sealed interface MutableDataEntity : ExistingDataEntity, MutableEntity {
+sealed interface MutableDataEntity : DataEntity, MutableEntity {
 
     /**
      * The main value encapsulated by this entity as a string for consumer usage.

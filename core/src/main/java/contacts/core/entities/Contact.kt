@@ -149,6 +149,23 @@ sealed interface ContactEntity : Entity {
         get() = entitiesAreAllBlank(rawContacts)
 }
 
+/* DEV NOTES
+ *
+ * We only create abstractions when they are necessary! That is when there are two separate concrete
+ * types that we want to perform an operation on.
+ *
+ * Apart from ContactEntity, there is only one interface that extends it; ExistingContactEntity.
+ * This interface is used for library functions that require a ContactEntity with an ID, which means
+ * that it exists in the database. There are two variants of this; Contact and MutableContact.
+ * With this, we can create functions (or extensions) that can take in (or have as the receiver)
+ * either Contact or MutableContact through the ExistingContactEntity abstraction/facade.
+ *
+ * This is why there are no interfaces for NewContactEntity, ImmutableContactEntity, and
+ * MutableContactEntity. There are currently no library functions that exist that need them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
  * A [ContactEntity] that has already been inserted into the database.
  */
@@ -169,7 +186,7 @@ sealed interface ExistingContactEntity: ContactEntity, ExistingEntity {
 }
 
 /**
- * An immutable [ExistingContactEntity].
+ * An existing immutable [ContactEntity].
  *
  * This contains an immutable list of existing immutable [RawContact]s.
  *
@@ -212,7 +229,7 @@ data class Contact internal constructor(
 }
 
 /**
- * An mutable [ExistingContactEntity].
+ * An existing mutable [ContactEntity].
  *
  * This contains an immutable list of existing [MutableRawContact]s.
  */

@@ -123,10 +123,22 @@ sealed interface RawContactEntity : Entity {
     // Use the RawContactOptions extension functions to get/set options.
 }
 
-/**
- * A [RawContactEntity] that has NOT yet been inserted into the database.
+/* DEV NOTES
+ *
+ * We only create abstractions when they are necessary! That is when there are two separate concrete
+ * types that we want to perform an operation on.
+ *
+ * Apart from RawContactEntity, there is only one interface that extends it; ExistingRawContactEntity.
+ * This interface is used for library functions that require a RawContactEntity with an ID, which means
+ * that it exists in the database. There are two variants of this; RawContact and MutableRawContact.
+ * With this, we can create functions (or extensions) that can take in (or have as the receiver)
+ * either RawContact or MutableRawContact through the ExistingRawContactEntity abstraction/facade.
+ *
+ * This is why there are no interfaces for NewRawContactEntity, ImmutableRawContactEntity, and
+ * MutableRawContactEntity. There are currently no library functions that exist that need them.
+ *
+ * Please update this documentation if new abstractions are created.
  */
-sealed interface NewRawContactEntity : RawContactEntity, NewEntity
 
 /**
  * A [RawContactEntity] that has already been inserted into the database.
@@ -239,6 +251,33 @@ data class MutableRawContact internal constructor(
     override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
 ) : ExistingRawContactEntity, MutableEntity
+
+/**
+ * An mutable [NewRawContactEntity].
+ *
+ * This can hold mutable new data entities.
+ */
+@Parcelize
+data class NewRawContact internal constructor(
+
+    override var addresses: MutableList<NewAddress>,
+    override var emails: MutableList<NewEmail>,
+    override var events: MutableList<NewEvent>,
+    override var groupMemberships: MutableList<GroupMembership>,
+    override var ims: MutableList<NewIm>,
+    override var name: NewName?,
+    override var nickname: NewNickname?,
+    override var note: NewNote?,
+    override var organization: NewOrganization?,
+    override var phones: MutableList<NewPhone>,
+    override var photo: Photo?,
+    override var relations: MutableList<NewRelation>,
+    override var sipAddress: NewSipAddress?,
+    override var websites: MutableList<NewWebsite>,
+
+    override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
+
+) : RawContactEntity, NewEntity, MutableEntity
 
 /**
  * A blank [ExistingRawContactEntity] that contains no data (e.g. email, phone, etc), although

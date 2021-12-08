@@ -115,13 +115,40 @@ sealed interface AddressEntity : DataEntity {
     }
 }
 
+/* DEV NOTES
+ *
+ * We only create abstractions when they are necessary! That is when there are two separate concrete
+ * types that we want to perform an operation on.
+ *
+ * Apart from AddressEntity, there are only two interfaces that extends it;
+ * ExistingAddressEntity and MutableAddressEntity.
+ *
+ * The ExistingAddressEntity interface is used for library functions that require an AddressEntity
+ * with an ID, which means that it exists in the database. There are two variants of this;
+ * Address and MutableAddress. With this, we can create functions (or extensions) that can take in
+ * (or have as the receiver) either Address or MutableAddress through the ExistingAddressEntity
+ * abstraction/facade.
+ *
+ * The MutableAddressEntity interface is used for library functions that require an AddressEntity
+ * that can be mutated. There are two variants of this; MutableAddress and NewAddress. With this,
+ * we can create functions (or extensions) that can take in (or have as the receiver) either
+ * MutableAddress or NewAddress through the MutableAddressEntity abstraction/facade.
+ *
+ * This is why there are no interfaces for NewRawContactEntity and ImmutableRawContactEntity.
+ * There are currently no library functions that exist that need them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
+/**
+ * An [AddressEntity] that has already been inserted into the database.
+ */
+sealed interface ExistingAddressEntity : AddressEntity, ExistingDataEntity
+
 /**
  * A mutable [AddressEntity].
  */
-sealed interface MutableAddressEntity : AddressEntity {
-    override var type: Type?
-    override var label: String?
-
+sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
     override var formattedAddress: String?
     override var street: String?
     override var poBox: String?
@@ -133,17 +160,7 @@ sealed interface MutableAddressEntity : AddressEntity {
 }
 
 /**
- * An [AddressEntity] that has NOT yet been inserted into the database.
- */
-sealed interface NewAddressEntity : AddressEntity, NewDataEntity
-
-/**
- * An [AddressEntity] that has already been inserted into the database.
- */
-sealed interface ExistingAddressEntity : AddressEntity, ExistingDataEntity
-
-/**
- * An immutable [ExistingAddressEntity].
+ * An existing immutable [AddressEntity].
  */
 @Parcelize
 data class Address internal constructor(
@@ -192,7 +209,7 @@ data class Address internal constructor(
 }
 
 /**
- * A mutable [ExistingAddressEntity].
+ * An existing mutable [AddressEntity].
  */
 @Parcelize
 data class MutableAddress internal constructor(
@@ -216,14 +233,14 @@ data class MutableAddress internal constructor(
     override var postcode: String?,
     override var country: String?
 
-) : ExistingAddressEntity, MutableAddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
+) : ExistingAddressEntity, MutableAddressEntity {
 
     @IgnoredOnParcel
     override var primaryValue: String? by this::formattedAddress
 }
 
 /**
- * A mutable [NewAddressEntity].
+ * A new mutable [AddressEntity].
  */
 @Parcelize
 data class NewAddress internal constructor(
@@ -240,9 +257,12 @@ data class NewAddress internal constructor(
     override var postcode: String?,
     override var country: String?
 
-) : NewAddressEntity, MutableAddressEntity {
+) : AddressEntity, NewDataEntity, MutableAddressEntity {
 
     constructor() : this(null, null, null, null, null, null, null, null, null, null)
+
+    @IgnoredOnParcel
+    override var primaryValue: String? by this::formattedAddress
 
     @IgnoredOnParcel
     override val isPrimary: Boolean = false

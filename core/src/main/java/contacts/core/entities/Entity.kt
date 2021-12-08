@@ -37,12 +37,12 @@ sealed interface ExistingEntity : Entity {
 }
 
 /**
- * An immutable [ExistingEntity].
+ * An immutable [Entity].
  *
  * Implementations of this interface must guarantee immutability. No properties can change once
  * instances are created. This guarantees thread-safety.
  */
-sealed interface ImmutableEntity : ExistingEntity
+sealed interface ImmutableEntity : Entity
 
 /**
  * An [ImmutableEntity] that has a mutable type [T].
@@ -86,7 +86,7 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
  * This is **NOT thread-safe**. You must perform synchronizations yourself if you are trying to use
  * shared instances of this in multi-threaded environments.
  */
-sealed interface MutableEntity : ExistingEntity
+sealed interface MutableEntity : Entity
 
 /**
  * Returns an immutable list containing mutable copies of type [T] for each instance of type [R] in

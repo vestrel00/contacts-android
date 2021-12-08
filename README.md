@@ -369,7 +369,7 @@ launch {
         .findWithContext()
 
     val deferredResult = Contacts(context)
-        .insert()
+        .insertWithPermission()
         ...
         .commitAsync()
     val result = deferredResult.await()
