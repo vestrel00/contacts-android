@@ -27,10 +27,10 @@ interface NewCustomDataEntity : CustomDataEntity, NewDataEntity
 interface ExistingCustomDataEntity : CustomDataEntity, ExistingDataEntity
 
 /**
- * An immutable [ExistingCustomDataEntity].
+ * An immutable [CustomDataEntity].
  */
 // Intentionally not sealed so that consumers can define their own implementations.
-interface ImmutableCustomDataEntity : ExistingCustomDataEntity, ImmutableDataEntity
+interface ImmutableCustomDataEntity : CustomDataEntity, ImmutableDataEntity
 
 /**
  * An [ImmutableCustomDataEntity] with a mutable type.
@@ -50,7 +50,7 @@ interface ImmutableCustomDataEntityWithNullableMutableType<T : MutableCustomData
  * A mutable [CustomDataEntity].
  */
 // Intentionally not sealed so that consumers can define their own implementations.
-interface MutableCustomDataEntity : ExistingCustomDataEntity, MutableDataEntity
+interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity
 
 /**
  * A [MutableCustomDataEntity], with a mutable [type] and [label].
