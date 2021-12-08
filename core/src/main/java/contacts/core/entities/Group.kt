@@ -10,11 +10,6 @@ import kotlinx.parcelize.Parcelize
 sealed interface GroupEntity : Entity {
 
     /**
-     * The id of this row in the Groups table.
-     */
-    override val id: Long?
-
-    /**
      * The id of this group if it is a System Group, i.e. a group that has a special meaning to the
      * sync adapter, null otherwise.
      *
@@ -116,13 +111,24 @@ sealed interface GroupEntity : Entity {
         get() = false
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary! That is when there are two separate concrete
+ * types that we want to perform an operation on.
+ *
+ * This is why there are no interfaces for NewGroupEntity, ExistingGroupEntity, mmutableGroupEntity,
+ * and MutableNewGroupEntity. There are currently no library functions that exist that need them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [GroupEntity].
+ * An existing immutable [GroupEntity].
  */
 @Parcelize
 data class Group internal constructor(
 
-    override val id: Long?,
+    override val id: Long,
     override val systemId: String?,
 
     override val title: String,
@@ -132,7 +138,7 @@ data class Group internal constructor(
     override val autoAdd: Boolean,
     override val account: Account
 
-) : GroupEntity, ImmutableEntityWithNullableMutableType<MutableGroup> {
+) : GroupEntity, ExistingEntity, ImmutableEntityWithNullableMutableType<MutableGroup> {
 
     /**
      * Returns a [MutableGroup]. If [readOnly] is true, this returns null instead.
@@ -145,12 +151,12 @@ data class Group internal constructor(
 }
 
 /**
- * A mutable [GroupEntity].
+ * An existing mutable [GroupEntity].
  */
 @Parcelize
 data class MutableGroup internal constructor(
 
-    override val id: Long?,
+    override val id: Long,
     override val systemId: String?,
 
     override var title: String,
@@ -160,11 +166,28 @@ data class MutableGroup internal constructor(
     override val autoAdd: Boolean,
     override val account: Account
 
-) : GroupEntity, MutableEntity {
+) : GroupEntity, ExistingEntity, MutableEntity
 
-    constructor(title: String, account: Account) : this(
-        null, null, title, false, false, false, account
-    )
+/**
+ * A new mutable [GroupEntity].
+ */
+@Parcelize
+data class NewGroup(
+    override var title: String,
+    override val account: Account
+) : GroupEntity, NewEntity, MutableEntity {
+
+    override val systemId: String?
+        get() = null
+
+    override val readOnly: Boolean
+        get() = false
+
+    override val favorites: Boolean
+        get() = false
+
+    override val autoAdd: Boolean
+        get() = false
 }
 
 /**
