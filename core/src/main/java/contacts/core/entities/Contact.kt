@@ -149,7 +149,7 @@ sealed interface ContactEntity : Entity {
         get() = entitiesAreAllBlank(rawContacts)
 }
 
-/* DEV NOTES
+/* DEV NOTES: Necessary Abstractions
  *
  * We only create abstractions when they are necessary! That is when there are two separate concrete
  * types that we want to perform an operation on.

@@ -8,12 +8,6 @@ import kotlinx.parcelize.Parcelize
  */
 sealed interface OptionsEntity : Entity {
 
-    /**
-     * The id of this row in the Contacts, RawContacts, or Data table.
-     */
-    // Override for documentation.
-    override val id: Long?
-
     // Contact and RawContacts have distinct Options. Therefore, there is no reference to a
     // contact or rawContactId here because this option may belong to a Contact rather than a
     // RawContact.
@@ -60,21 +54,34 @@ sealed interface OptionsEntity : Entity {
         get() = propertiesAreAllNullOrBlank(starred, customRingtone, sendToVoicemail)
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary! That is when there are two separate concrete
+ * types that we want to perform an operation on.
+ *
+ * This is why there are no interfaces for NewOptionsEntity, ExistingOptionsEntity,
+ * ImmutableOptionsEntity, and MutableNewOptionsEntity. There are currently no library functions
+ * that exist that need them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [OptionsEntity].
+ * An existing immutable [OptionsEntity].
  */
 @Parcelize
 data class Options internal constructor(
 
-    override val id: Long?,
+    /**
+     * The id of this row in the Contacts, RawContacts, or Data table.
+     */
+    override val id: Long,
 
     override val starred: Boolean?,
     override val customRingtone: Uri?,
     override val sendToVoicemail: Boolean?
 
-) : OptionsEntity, ImmutableEntityWithMutableType<MutableOptions> {
-
-    internal constructor() : this(null, null, null, null)
+) : OptionsEntity, ExistingEntity, ImmutableEntityWithMutableType<MutableOptions> {
 
     override fun mutableCopy() = MutableOptions(
         id = id,
@@ -86,18 +93,34 @@ data class Options internal constructor(
 }
 
 /**
- * A mutable [OptionsEntity].
+ * An existing mutable [OptionsEntity].
  */
 @Parcelize
 data class MutableOptions internal constructor(
 
-    override val id: Long?,
+    /**
+     * The id of this row in the Contacts, RawContacts, or Data table.
+     */
+    override val id: Long,
 
     override var starred: Boolean?,
     override var customRingtone: Uri?,
     override var sendToVoicemail: Boolean?
 
-) : OptionsEntity, MutableEntity {
+) : OptionsEntity, ExistingEntity, MutableEntity
 
-    constructor() : this(null, null, null, null)
+/**
+ * A new mutable [OptionsEntity].
+ */
+@Parcelize
+data class NewOptions internal constructor(
+
+    override var starred: Boolean?,
+    override var customRingtone: Uri?,
+    override var sendToVoicemail: Boolean?
+
+) : OptionsEntity, NewEntity, MutableEntity {
+
+    // For consumer use.
+    constructor() : this(null, null, null)
 }

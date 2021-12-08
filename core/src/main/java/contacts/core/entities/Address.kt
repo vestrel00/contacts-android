@@ -115,7 +115,7 @@ sealed interface AddressEntity : DataEntity {
     }
 }
 
-/* DEV NOTES
+/* DEV NOTES: Necessary Abstractions
  *
  * We only create abstractions when they are necessary! That is when there are two separate concrete
  * types that we want to perform an operation on.
@@ -259,6 +259,7 @@ data class NewAddress internal constructor(
 
 ) : AddressEntity, NewDataEntity, MutableAddressEntity {
 
+    // For consumer use.
     constructor() : this(null, null, null, null, null, null, null, null, null, null)
 
     @IgnoredOnParcel

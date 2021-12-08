@@ -123,7 +123,7 @@ sealed interface RawContactEntity : Entity {
     // Use the RawContactOptions extension functions to get/set options.
 }
 
-/* DEV NOTES
+/* DEV NOTES: Necessary Abstractions
  *
  * We only create abstractions when they are necessary! That is when there are two separate concrete
  * types that we want to perform an operation on.
@@ -277,7 +277,15 @@ data class NewRawContact internal constructor(
 
     override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
-) : RawContactEntity, NewEntity, MutableEntity
+) : RawContactEntity, NewEntity, MutableEntity {
+
+    // For consumer use.
+    constructor(): this(
+        mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(),
+        null, null, null, null, mutableListOf(), null,
+        mutableListOf(), null, mutableListOf(), mutableMapOf()
+    )
+}
 
 /**
  * A blank [ExistingRawContactEntity] that contains no data (e.g. email, phone, etc), although
