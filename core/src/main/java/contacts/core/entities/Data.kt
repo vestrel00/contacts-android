@@ -109,7 +109,14 @@ sealed interface DataEntity : Entity {
 /**
  * A [DataEntity] that has NOT yet been inserted into the database.
  */
-sealed interface NewDataEntity : DataEntity, NewEntity
+sealed interface NewDataEntity : DataEntity, NewEntity {
+
+    override val isPrimary: Boolean
+        get() = false
+
+    override val isSuperPrimary: Boolean
+        get() = false
+}
 
 /**
  * A [DataEntity] that has already been inserted into the database.

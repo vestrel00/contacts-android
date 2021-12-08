@@ -127,8 +127,8 @@ sealed interface AddressEntity : DataEntity {
  * keep a reference to MutableAddress(es) or NewAddress(es) through the MutableAddressEntity
  * abstraction/facade.
  *
- * This is why there are no interfaces for NewRawContactEntity, ExistingRawContactEntity, and
- * ImmutableRawContactEntity. There are currently no library functions or constructs that require them.
+ * This is why there are no interfaces for NewAddressEntity, ExistingAddressEntity, and
+ * ImmutableAddressEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
@@ -137,6 +137,9 @@ sealed interface AddressEntity : DataEntity {
  * A mutable [AddressEntity].
  */
 sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
+
+    override var type: Type?
+    override var label: String?
     override var formattedAddress: String?
     override var street: String?
     override var poBox: String?
@@ -145,6 +148,14 @@ sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithType
     override var region: String?
     override var postcode: String?
     override var country: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::formattedAddress
+    override var primaryValue: String?
+        get() = formattedAddress
+        set(value) {
+            formattedAddress = value
+        }
 }
 
 /**
@@ -221,18 +232,14 @@ data class MutableAddress internal constructor(
     override var postcode: String?,
     override var country: String?
 
-) : AddressEntity, ExistingDataEntity, MutableAddressEntity {
-
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::formattedAddress
-}
+) : AddressEntity, ExistingDataEntity, MutableAddressEntity
 
 /**
  * A new mutable [AddressEntity].
  */
 // Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewAddress internal constructor(
+data class NewAddress(
 
     override var type: Type?,
     override var label: String?,
@@ -250,13 +257,4 @@ data class NewAddress internal constructor(
 
     // An empty constructor for consumer use. Useful for both Kotlin and Java users.
     constructor() : this(null, null, null, null, null, null, null, null, null, null)
-
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::formattedAddress
-
-    @IgnoredOnParcel
-    override val isPrimary: Boolean = false
-
-    @IgnoredOnParcel
-    override val isSuperPrimary: Boolean = false
 }
