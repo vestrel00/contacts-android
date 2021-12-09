@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -24,31 +23,42 @@ import kotlinx.parcelize.Parcelize
 // not hurt to have it. It follows the setup like everything else, so it's cool.
 sealed interface PhotoEntity : DataEntity
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * This is why there are no interfaces for NewPhotoEntity, ExistingPhotoEntity,
+ * ImmutablePhotoEntity, and MutableNewPhotoEntity. There are currently no library functions or
+ * constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [PhotoEntity].
+ * An existing immutable [PhotoEntity].
  */
 @Parcelize
-class Photo : PhotoEntity, ImmutableDataEntity {
+object Photo : PhotoEntity, ExistingDataEntity, ImmutableDataEntity {
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Photo
+    override val mimeType: MimeType
+        get() = MimeType.Photo
 
-    @IgnoredOnParcel
-    override val id: Long? = null
+    override val id: Long
+        get() = Entity.INVALID_ID
 
-    @IgnoredOnParcel
-    override val rawContactId: Long? = null
+    override val rawContactId: Long
+        get() = Entity.INVALID_ID
 
-    @IgnoredOnParcel
-    override val contactId: Long? = null
+    override val contactId: Long
+        get() = Entity.INVALID_ID
 
-    @IgnoredOnParcel
-    override val isPrimary: Boolean = false
+    override val isPrimary: Boolean
+        get() = false
 
-    @IgnoredOnParcel
-    override val isSuperPrimary: Boolean = false
+    override val isSuperPrimary: Boolean
+        get() = false
 
-    @IgnoredOnParcel
     // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
-    override val isBlank: Boolean = false
+    override val isBlank: Boolean
+        get() = false
 }

@@ -11,6 +11,10 @@ sealed interface Entity : Parcelable {
      * Returns true all property values are either null, empty, or blank.
      */
     val isBlank: Boolean
+
+    companion object {
+        const val INVALID_ID: Long = -1L
+    }
 }
 
 /**
