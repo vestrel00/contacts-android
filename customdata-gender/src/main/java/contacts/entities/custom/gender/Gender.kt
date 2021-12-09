@@ -63,15 +63,48 @@ sealed interface GenderEntity : CustomDataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from GenderEntity, there is only one interface that extends it; MutableGenderEntity.
+ *
+ * The MutableGenderEntity interface is used for library constructs that require an GenderEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableGender and NewGender. With this, we can create constructs that can
+ * keep a reference to MutableGender(s) or NewGender(s) through the MutableGenderEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewGenderEntity, ExistingGenderEntity, and
+ * ImmutableGenderEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [GenderEntity].
+ * A mutable [GenderEntity]. `
+ */
+sealed interface MutableGenderEntity : GenderEntity, MutableCustomDataEntityWithTypeAndLabel<Type> {
+
+    override var type: Type?
+    override var label: String?
+
+    // The primary value is type (and label if custom). So, this does nothing to avoid complicating
+    // the API implementation.
+    override var primaryValue: String?
+        get() = null
+        set(_) {}
+}
+
+/**
+ * An existing immutable [GenderEntity].
  */
 @Parcelize
 data class Gender internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -79,7 +112,8 @@ data class Gender internal constructor(
     override val type: Type?,
     override val label: String?
 
-) : GenderEntity, ImmutableCustomDataEntityWithMutableType<MutableGender> {
+) : GenderEntity, ExistingCustomDataEntity,
+    ImmutableCustomDataEntityWithMutableType<MutableGender> {
 
     override fun mutableCopy() = MutableGender(
         id = id,
@@ -95,14 +129,14 @@ data class Gender internal constructor(
 }
 
 /**
- * A mutable [GenderEntity].
+ * An existing mutable [GenderEntity].
  */
 @Parcelize
 data class MutableGender internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -110,13 +144,20 @@ data class MutableGender internal constructor(
     override var type: Type?,
     override var label: String?
 
-) : GenderEntity, MutableCustomDataEntityWithTypeAndLabel<Type> {
+) : GenderEntity, ExistingCustomDataEntity, MutableGenderEntity
 
-    constructor() : this(null, null, null, false, false, null, null)
+/**
+ * A new mutable [GenderEntity].
+ */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
+@Parcelize
+data class NewGender(
 
-    // The primary value is type (and label if custom). So, this does nothing to avoid complicating
-    // the API implementation.
-    override var primaryValue: String?
-        get() = null
-        set(_) {}
+    override var type: Type?,
+    override var label: String?
+
+) : GenderEntity, NewCustomDataEntity, MutableGenderEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null, null)
 }
