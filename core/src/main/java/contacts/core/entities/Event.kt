@@ -84,15 +84,58 @@ sealed interface EventEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from EventEntity, there is only one interface that extends it; MutableEventEntity.
+ *
+ * The MutableEventEntity interface is used for library constructs that require an EventEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableEvent and NewEvent. With this, we can create constructs that can
+ * keep a reference to MutableEvent(s) or NewEvent(s) through the MutableEventEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewEventEntity, ExistingEventEntity, and
+ * ImmutableEventEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [EventEntity].
+ * A mutable [EventEntity]. `
+ */
+sealed interface MutableEventEntity : EventEntity, MutableDataEntityWithTypeAndLabel<Type> {
+
+    override var type: Type?
+    override var label: String?
+    override var date: EventDate?
+
+    /**
+     * The [date] as a string.
+     *
+     * Note that the setter does nothing. Use the [date] directly to set it.
+     */
+    override var primaryValue: String?
+        get() = date?.toDisplayString()
+        set(_) {
+            // The primary value is EventDate, which has an internal 1-based and consumer-facing
+            // 0-based representation of the month. There is ambiguity here. We can document that
+            // this setter should only be used for the consumer-facing 0-based representation but
+            // the ambiguity may still cause bugs. We could implement this if the community really
+            // wants to but for now... leaving it blank!
+        }
+}
+
+/**
+ * An existing immutable [EventEntity].
  */
 @Parcelize
 data class Event internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -102,7 +145,7 @@ data class Event internal constructor(
 
     override val date: EventDate?
 
-) : EventEntity, ImmutableDataEntityWithMutableType<MutableEvent> {
+) : EventEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableEvent> {
 
     override fun mutableCopy() = MutableEvent(
         id = id,
@@ -120,14 +163,14 @@ data class Event internal constructor(
 }
 
 /**
- * A mutable [EventEntity].
+ * An existing mutable [EventEntity].
  */
 @Parcelize
 data class MutableEvent internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -137,27 +180,24 @@ data class MutableEvent internal constructor(
 
     override var date: EventDate?
 
-) : EventEntity, MutableDataEntityWithTypeAndLabel<Type> {
+) : EventEntity, ExistingDataEntity, MutableEventEntity
 
-    constructor() : this(
-        null, null, null, false, false,
-        null, null, null
-    )
+/**
+ * A new mutable [EventEntity].
+ */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
+@Parcelize
+data class NewEvent(
 
-    /**
-     * The [date] as a string.
-     *
-     * Note that the setter does nothing. Use the [date] directly to set it.
-     */
-    override var primaryValue: String?
-        get() = date?.toDisplayString()
-        set(_) {
-            // The primary value is EventDate, which has an internal 1-based and consumer-facing
-            // 0-based representation of the month. There is ambiguity here. We can document that
-            // this setter should only be used for the consumer-facing 0-based representation but
-            // the ambiguity may still cause bugs. We could implement this if the community really
-            // wants to but for now... leaving it blank!
-        }
+    override var type: Type?,
+    override var label: String?,
+
+    override var date: EventDate?
+
+) : EventEntity, NewDataEntity, MutableEventEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null, null, null)
 }
 
 /**
