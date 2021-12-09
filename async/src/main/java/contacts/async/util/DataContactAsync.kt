@@ -2,8 +2,8 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.DataEntity
 import contacts.core.entities.Contact
+import contacts.core.entities.DataEntity
 import contacts.core.util.contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext

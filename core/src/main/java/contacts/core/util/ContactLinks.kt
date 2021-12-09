@@ -4,7 +4,6 @@ import android.content.ContentProviderOperation
 import android.os.Build
 import android.provider.ContactsContract.*
 import contacts.core.*
-import contacts.core.Contacts
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.Name

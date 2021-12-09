@@ -5,12 +5,12 @@ import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import android.widget.DatePicker
-import contacts.core.entities.EventEntity
 import contacts.core.entities.EventDate
+import contacts.core.entities.EventEntity
 import contacts.core.entities.MutableEvent
 import contacts.ui.R
-import contacts.ui.entities.MutableEventFactory
 import contacts.ui.entities.EventTypeFactory
+import contacts.ui.entities.MutableEventFactory
 import java.util.*
 
 /**

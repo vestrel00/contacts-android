@@ -3,7 +3,6 @@ package contacts.core.entities
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.AddressEntity.Type
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**

@@ -1,8 +1,8 @@
 package contacts.core.entities.cursor
 
 import android.database.Cursor
-import contacts.core.GenericDataField
 import contacts.core.Fields
+import contacts.core.GenericDataField
 import contacts.core.entities.MimeType
 import contacts.core.entities.custom.CustomDataRegistry
 
