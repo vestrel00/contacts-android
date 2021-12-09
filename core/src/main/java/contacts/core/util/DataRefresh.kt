@@ -5,21 +5,12 @@ import contacts.core.data.resolveDataEntity
 import contacts.core.entities.*
 
 /**
- * Returns the [ImmutableDataEntity] [T] with all of the latest data.
+ * Returns the [ExistingDataEntity] [T] with all of the latest data.
  *
  * This is useful for getting the latest data after performing an update. This may return null if
  * the data entity no longer exists or if permission is not granted.
  *
- * Returns itself if the [ImmutableDataEntity.id] is null, indicating that this DataEntity instance
- * has not yet been inserted to the DB.
- *
  * Supports profile/non-profile native/custom data.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -32,38 +23,31 @@ import contacts.core.entities.*
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun <T : ImmutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? {
-    val dataId = id
-    return if (dataId == null) {
-        this
-    } else if (!contacts.permissions.canQuery()) {
+fun <T : ExistingDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? {
+    return if (!contacts.permissions.canQuery()) {
         null
     } else {
-        fetchDataEntity<T>(contacts, dataId, cancel)
-    }
-}
+        val existingDataEntity = fetchDataEntity(contacts, id, cancel)
 
-@JvmOverloads
-fun <T : MutableDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? {
-    val dataId = id
-    return if (dataId == null) {
-        this
-    } else if (!contacts.permissions.canQuery()) {
-        null
-    } else {
-        val immutableDataEntity = fetchDataEntity<ImmutableDataEntity>(contacts, dataId, cancel)
+        val existingDataEntityIsImmutable = existingDataEntity is ImmutableDataEntity
+        val resultShouldBeMutable = this is MutableDataEntity
 
         @Suppress("UNCHECKED_CAST")
-        when (immutableDataEntity) {
-            null -> null
-            is ImmutableDataEntityWithMutableType<*> -> immutableDataEntity.mutableCopy() as T
-            is ImmutableDataEntityWithNullableMutableType<*> -> immutableDataEntity.mutableCopy() as T?
-            else -> null
+        return if (existingDataEntityIsImmutable && resultShouldBeMutable) {
+            // Need to cast to mutable entity
+            when (existingDataEntity) {
+                null -> null
+                is ImmutableDataEntityWithMutableType<*> -> existingDataEntity.mutableCopy() as T
+                is ImmutableDataEntityWithNullableMutableType<*> -> existingDataEntity.mutableCopy() as T?
+                else -> existingDataEntity
+            }
+        } else {
+            existingDataEntity
         }
     }
 }
 
-private fun <T : ImmutableDataEntity> DataEntity.fetchDataEntity(
+private fun <T : ExistingDataEntity> T.fetchDataEntity(
     contacts: Contacts,
     dataId: Long,
     cancel: () -> Boolean = { false }

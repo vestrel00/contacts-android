@@ -89,7 +89,7 @@ interface DataQueryFactory {
     /**
      * Queries for custom data of type [E] with the given custom [mimeType].
      */
-    fun <F : AbstractCustomDataField, E : ImmutableCustomDataEntity>
+    fun <F : AbstractCustomDataField, E : ExistingCustomDataEntity>
             customData(mimeType: MimeType.Custom): DataQuery<F, E>
 }
 
@@ -159,7 +159,7 @@ private class DataQueryFactoryImpl(
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <F : AbstractCustomDataField, E : ImmutableCustomDataEntity>
+    override fun <F : AbstractCustomDataField, E : ExistingCustomDataEntity>
             customData(mimeType: MimeType.Custom): DataQuery<F, E> = DataQueryImpl(
         contacts,
         contacts.customDataRegistry.entryOf(mimeType).fieldSet as AbstractCustomDataFieldSet<F>,
@@ -177,7 +177,7 @@ private class DataQueryFactoryImpl(
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
- * examples for brevity.  If not granted, the query will do nothing and return an empty list.
+ * examples for brevity. If not granted, the query will do nothing and return an empty list.
  *
  * ## Usage
  *
@@ -212,7 +212,7 @@ private class DataQueryFactoryImpl(
  *      .find();
  * ```
  */
-interface DataQuery<F : DataField, E : ImmutableDataEntity> {
+interface DataQuery<F : DataField, E : ExistingDataEntity> {
 
     /**
      * Limits this query to only search for data associated with one of the given [accounts].
@@ -381,7 +381,7 @@ interface DataQuery<F : DataField, E : ImmutableDataEntity> {
     fun find(cancel: () -> Boolean): List<E>
 }
 
-private class DataQueryImpl<F : DataField, E : ImmutableDataEntity>(
+private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
     private val contacts: Contacts,
 
     private val defaultIncludeFields: FieldSet<F>,
@@ -491,7 +491,7 @@ private class DataQueryImpl<F : DataField, E : ImmutableDataEntity>(
     }
 }
 
-internal fun <T : ImmutableDataEntity> Contacts.resolveDataEntity(
+internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
     isProfile: Boolean,
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
