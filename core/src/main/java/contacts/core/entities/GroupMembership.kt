@@ -40,19 +40,30 @@ sealed interface GroupMembershipEntity : DataEntity {
         get() = propertiesAreAllNullOrBlank(groupId)
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * This is why there are no interfaces for NewGroupMembershipEntity, ExistingGroupMembershipEntity,
+ * ImmutableGroupMembershipEntity, and MutableNewGroupMembershipEntity. There are currently no
+ * library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [GroupMembership].
+ * An existing immutable [GroupMembership].
  */
 @Parcelize
 data class GroupMembership internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override val groupId: Long?
 
-) : GroupMembershipEntity, ImmutableDataEntity
+) : GroupMembershipEntity, ExistingDataEntity, ImmutableDataEntity
