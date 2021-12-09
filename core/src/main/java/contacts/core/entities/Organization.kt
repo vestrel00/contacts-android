@@ -166,7 +166,7 @@ data class MutableOrganization internal constructor(
  */
 // Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewOrganization internal constructor(
+data class NewOrganization(
 
     override var company: String?,
     override var title: String?,

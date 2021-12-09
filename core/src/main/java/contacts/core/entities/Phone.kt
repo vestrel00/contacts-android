@@ -3,17 +3,12 @@ package contacts.core.entities
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.PhoneEntity.Type
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
  * A data kind representing a telephone number.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
- *
- * ## Dev notes
- *
- * See DEV_NOTES sections "Creating Entities" and "Immutable vs Mutable Entities".
  */
 sealed interface PhoneEntity : DataEntity {
 
@@ -99,15 +94,52 @@ sealed interface PhoneEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from PhoneEntity, there is only one interface that extends it; MutablePhoneEntity.
+ *
+ * The MutablePhoneEntity interface is used for library constructs that require an PhoneEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutablePhone and NewPhone. With this, we can create constructs that can
+ * keep a reference to MutablePhone(s) or NewPhone(s) through the MutablePhoneEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewPhoneEntity, ExistingPhoneEntity, and
+ * ImmutablePhoneEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [PhoneEntity].
+ * A mutable [PhoneEntity]. `
+ */
+sealed interface MutablePhoneEntity : PhoneEntity, MutableDataEntityWithTypeAndLabel<Type> {
+
+    override var type: Type?
+    override var label: String?
+    override var number: String?
+    override var normalizedNumber: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::number
+    override var primaryValue: String?
+        get() = number
+        set(value) {
+            number = value
+        }
+}
+
+/**
+ * An existing immutable [PhoneEntity].
  */
 @Parcelize
 data class Phone internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -118,7 +150,7 @@ data class Phone internal constructor(
     override val number: String?,
     override val normalizedNumber: String?
 
-) : PhoneEntity, ImmutableDataEntityWithMutableType<MutablePhone> {
+) : PhoneEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutablePhone> {
 
     override fun mutableCopy() = MutablePhone(
         id = id,
@@ -134,19 +166,17 @@ data class Phone internal constructor(
         number = number,
         normalizedNumber = normalizedNumber
     )
-
-
 }
 
 /**
- * A mutable [PhoneEntity].
+ * An existing mutable [PhoneEntity].
  */
 @Parcelize
 data class MutablePhone internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -157,13 +187,22 @@ data class MutablePhone internal constructor(
     override var number: String?,
     override var normalizedNumber: String?
 
-) : PhoneEntity, MutableDataEntityWithTypeAndLabel<Type> {
+) : PhoneEntity, ExistingDataEntity, MutablePhoneEntity
 
-    constructor() : this(
-        null, null, null, false, false,
-        null, null, null, null
-    )
+/**
+ * A new mutable [PhoneEntity].
+ */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
+@Parcelize
+data class NewPhone(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::number
+    override var type: Type?,
+    override var label: String?,
+
+    override var number: String?,
+    override var normalizedNumber: String?
+
+) : PhoneEntity, NewDataEntity, MutablePhoneEntity {
+
+    constructor() : this(null, null, null, null)
 }
