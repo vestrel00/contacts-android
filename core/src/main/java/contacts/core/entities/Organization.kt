@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -57,15 +56,55 @@ sealed interface OrganizationEntity : DataEntity {
         )
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from OrganizationEntity, there is only one interface that extends it; MutableOrganizationEntity.
+ *
+ * The MutableOrganizationEntity interface is used for library constructs that require an OrganizationEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableOrganization and NewOrganization. With this, we can create constructs that can
+ * keep a reference to MutableOrganization(s) or NewOrganization(s) through the MutableOrganizationEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewOrganizationEntity, ExistingOrganizationEntity, and
+ * ImmutableOrganizationEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [OrganizationEntity].
+ * A mutable [OrganizationEntity]. `
+ */
+sealed interface MutableOrganizationEntity : OrganizationEntity, MutableDataEntity {
+
+    override var company: String?
+    override var title: String?
+    override var department: String?
+    override var jobDescription: String?
+    override var officeLocation: String?
+    override var symbol: String?
+    override var phoneticName: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::company
+    override var primaryValue: String?
+        get() = company
+        set(value) {
+            company = value
+        }
+}
+
+/**
+ * An existing immutable [OrganizationEntity].
  */
 @Parcelize
 data class Organization internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -78,7 +117,8 @@ data class Organization internal constructor(
     override val symbol: String?,
     override val phoneticName: String?
 
-) : OrganizationEntity, ImmutableDataEntityWithMutableType<MutableOrganization> {
+) : OrganizationEntity, ExistingDataEntity,
+    ImmutableDataEntityWithMutableType<MutableOrganization> {
 
     override fun mutableCopy() = MutableOrganization(
         id = id,
@@ -99,14 +139,14 @@ data class Organization internal constructor(
 }
 
 /**
- * A mutable [OrganizationEntity].
+ * An existing mutable [OrganizationEntity].
  */
 @Parcelize
 data class MutableOrganization internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -119,13 +159,25 @@ data class MutableOrganization internal constructor(
     override var symbol: String?,
     override var phoneticName: String?
 
-) : OrganizationEntity, MutableDataEntity {
+) : OrganizationEntity, ExistingDataEntity, MutableOrganizationEntity
 
-    constructor() : this(
-        null, null, null, false, false, null, null,
-        null, null, null, null, null
-    )
+/**
+ * A new mutable [OrganizationEntity].
+ */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
+@Parcelize
+data class NewOrganization internal constructor(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::company
+    override var company: String?,
+    override var title: String?,
+    override var department: String?,
+    override var jobDescription: String?,
+    override var officeLocation: String?,
+    override var symbol: String?,
+    override var phoneticName: String?
+
+) : OrganizationEntity, NewDataEntity, MutableOrganizationEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null, null, null, null, null, null, null)
 }
