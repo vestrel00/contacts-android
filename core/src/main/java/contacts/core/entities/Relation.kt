@@ -67,15 +67,51 @@ sealed interface RelationEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from RelationEntity, there is only one interface that extends it; MutableRelationEntity.
+ *
+ * The MutableRelationEntity interface is used for library constructs that require an RelationEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableRelation and NewRelation. With this, we can create constructs that can
+ * keep a reference to MutableRelation(s) or NewRelation(s) through the MutableRelationEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewRelationEntity, ExistingRelationEntity, and
+ * ImmutableRelationEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [RelationEntity].
+ * A mutable [RelationEntity]. `
+ */
+sealed interface MutableRelationEntity : RelationEntity, MutableDataEntityWithTypeAndLabel<Type> {
+
+    override var type: Type?
+    override var label: String?
+    override var name: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::name
+    override var primaryValue: String?
+        get() = name
+        set(value) {
+            name = value
+        }
+}
+
+/**
+ * An existing immutable [RelationEntity].
  */
 @Parcelize
 data class Relation internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -85,7 +121,7 @@ data class Relation internal constructor(
 
     override val name: String?
 
-) : RelationEntity, ImmutableDataEntityWithMutableType<MutableRelation> {
+) : RelationEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableRelation> {
 
     override fun mutableCopy() = MutableRelation(
         id = id,
@@ -103,14 +139,14 @@ data class Relation internal constructor(
 }
 
 /**
- * A mutable [RelationEntity].
+ * An existing mutable [RelationEntity].
  */
 @Parcelize
 data class MutableRelation internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -120,13 +156,22 @@ data class MutableRelation internal constructor(
 
     override var name: String?
 
-) : RelationEntity, MutableDataEntityWithTypeAndLabel<Type> {
+) : RelationEntity, ExistingDataEntity, MutableRelationEntity
 
-    constructor() : this(
-        null, null, null, false, false,
-        null, null, null
-    )
+/**
+ * A new mutable [RelationEntity].
+ */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
+@Parcelize
+data class NewRelation(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::name
+    override var type: Type?,
+    override var label: String?,
+
+    override var name: String?
+
+) : RelationEntity, NewDataEntity, MutableRelationEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null, null, null)
 }
