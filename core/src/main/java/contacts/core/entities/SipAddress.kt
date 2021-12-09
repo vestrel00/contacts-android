@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -25,22 +24,56 @@ sealed interface SipAddressEntity : DataEntity {
         get() = propertiesAreAllNullOrBlank(sipAddress)
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from SipAddressEntity, there is only one interface that extends it; MutableSipAddressEntity.
+ *
+ * The MutableSipAddressEntity interface is used for library constructs that require an SipAddressEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableSipAddress and NewSipAddress. With this, we can create constructs that can
+ * keep a reference to MutableSipAddress(s) or NewSipAddress(s) through the MutableSipAddressEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewSipAddressEntity, ExistingSipAddressEntity, and
+ * ImmutableSipAddressEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [SipAddressEntity].
+ * A mutable [SipAddressEntity]. `
+ */
+sealed interface MutableSipAddressEntity : SipAddressEntity, MutableDataEntity {
+
+    override var sipAddress: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::sipAddress
+    override var primaryValue: String?
+        get() = sipAddress
+        set(value) {
+            sipAddress = value
+        }
+}
+
+/**
+ * An existing immutable [SipAddressEntity].
  */
 @Parcelize
 data class SipAddress internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override val sipAddress: String?
 
-) : SipAddressEntity, ImmutableDataEntityWithMutableType<MutableSipAddress> {
+) : SipAddressEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableSipAddress> {
 
     override fun mutableCopy() = MutableSipAddress(
         id = id,
@@ -55,24 +88,33 @@ data class SipAddress internal constructor(
 }
 
 /**
- * A mutable [SipAddressEntity].
+ * An existing mutable [SipAddressEntity].
  */
 @Parcelize
 data class MutableSipAddress internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override var sipAddress: String?
 
-) : SipAddressEntity, MutableDataEntity {
+) : SipAddressEntity, ExistingDataEntity, MutableSipAddressEntity
 
-    constructor() : this(null, null, null, false, false, null)
+/**
+ * A new mutable [SipAddressEntity].
+ */
+// Intentionally expose primary constructor to consumers.
+@Parcelize
+data class NewSipAddress(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::sipAddress
+    override var sipAddress: String?
+
+) : SipAddressEntity, NewDataEntity, MutableSipAddressEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null)
 }
