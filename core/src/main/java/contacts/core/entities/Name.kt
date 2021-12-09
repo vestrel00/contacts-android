@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -106,15 +105,60 @@ sealed interface NameEntity : DataEntity {
         )
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from NameEntity, there is only one interface that extends it; MutableNameEntity.
+ *
+ * The MutableNameEntity interface is used for library constructs that require an NameEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableName and NewName. With this, we can create constructs that can
+ * keep a reference to MutableName(s) or NewName(s) through the MutableNameEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewNameEntity, ExistingNameEntity, and
+ * ImmutableNameEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [NameEntity].
+ * A mutable [NameEntity]. `
+ */
+sealed interface MutableNameEntity : NameEntity, MutableDataEntity {
+
+    override var displayName: String?
+
+    override var givenName: String?
+    override var middleName: String?
+    override var familyName: String?
+
+    override var prefix: String?
+    override var suffix: String?
+
+    override var phoneticGivenName: String?
+    override var phoneticMiddleName: String?
+    override var phoneticFamilyName: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::displayName
+    override var primaryValue: String?
+        get() = displayName
+        set(value) {
+            displayName = value
+        }
+}
+
+/**
+ * An existing immutable [NameEntity].
  */
 @Parcelize
 data class Name internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -132,7 +176,7 @@ data class Name internal constructor(
     override val phoneticMiddleName: String?,
     override val phoneticFamilyName: String?
 
-) : NameEntity, ImmutableDataEntityWithMutableType<MutableName> {
+) : NameEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableName> {
 
     override fun mutableCopy() = MutableName(
         id = id,
@@ -158,14 +202,14 @@ data class Name internal constructor(
 }
 
 /**
- * A mutable [NameEntity].
+ * An existing mutable [NameEntity].
  */
 @Parcelize
 data class MutableName internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -183,13 +227,30 @@ data class MutableName internal constructor(
     override var phoneticMiddleName: String?,
     override var phoneticFamilyName: String?
 
-) : NameEntity, MutableDataEntity {
+) : NameEntity, ExistingDataEntity, MutableNameEntity
 
-    constructor() : this(
-        null, null, null, false, false, null, null,
-        null, null, null, null, null, null, null
-    )
+/**
+ * A new mutable [NameEntity].
+ */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
+@Parcelize
+data class NewName(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::displayName
+    override var displayName: String?,
+
+    override var givenName: String?,
+    override var middleName: String?,
+    override var familyName: String?,
+
+    override var prefix: String?,
+    override var suffix: String?,
+
+    override var phoneticGivenName: String?,
+    override var phoneticMiddleName: String?,
+    override var phoneticFamilyName: String?
+
+) : NameEntity, NewDataEntity, MutableNameEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null, null, null, null, null, null, null, null, null)
 }
