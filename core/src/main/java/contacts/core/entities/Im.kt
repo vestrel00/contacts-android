@@ -3,7 +3,6 @@ package contacts.core.entities
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.ImEntity.Protocol
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -77,15 +76,67 @@ sealed interface ImEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from ImEntity, there is only one interface that extends it; MutableImEntity.
+ *
+ * The MutableImEntity interface is used for library constructs that require an ImEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableIm and NewIm. With this, we can create constructs that can
+ * keep a reference to MutableIm(s) or NewIm(s) through the MutableImEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewImEntity, ExistingImEntity, and
+ * ImmutableImEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [ImEntity].
+ * A mutable [ImEntity]. `
+ */
+sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<Protocol> {
+
+    override var protocol: Protocol?
+    override var customProtocol: String?
+    override var data: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::data
+    override var primaryValue: String?
+        get() = data
+        set(value) {
+            data = value
+        }
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var type: Protocol? by this::protocol
+    override var type: Protocol?
+        get() = protocol
+        set(value) {
+            protocol = value
+        }
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var label: String? by this::customProtocol
+    override var label: String?
+        get() = customProtocol
+        set(value) {
+            customProtocol = value
+        }
+}
+
+/**
+ * An existing immutable [ImEntity].
  */
 @Parcelize
 data class Im internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -94,7 +145,7 @@ data class Im internal constructor(
     override val customProtocol: String?,
     override val data: String?
 
-) : ImEntity, ImmutableDataEntityWithMutableType<MutableIm> {
+) : ImEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableIm> {
 
     override fun mutableCopy() = MutableIm(
         id = id,
@@ -112,14 +163,14 @@ data class Im internal constructor(
 }
 
 /**
- * A mutable [ImEntity].
+ * An existing mutable [ImEntity].
  */
 @Parcelize
 data class MutableIm internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -128,19 +179,21 @@ data class MutableIm internal constructor(
     override var customProtocol: String?,
     override var data: String?
 
-) : ImEntity, MutableDataEntityWithTypeAndLabel<Protocol> {
+) : ImEntity, ExistingDataEntity, MutableImEntity
 
-    constructor() : this(
-        null, null, null, false, false,
-        null, null, null
-    )
+/**
+ * A new mutable [ImEntity].
+ */
+// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
+@Parcelize
+data class NewIm(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::data
+    override var protocol: Protocol?,
+    override var customProtocol: String?,
+    override var data: String?
 
-    @IgnoredOnParcel
-    override var type: Protocol? by this::protocol
+) : ImEntity, NewDataEntity, MutableImEntity {
 
-    @IgnoredOnParcel
-    override var label: String? by this::customProtocol
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null, null, null)
 }
