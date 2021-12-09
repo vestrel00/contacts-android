@@ -280,7 +280,7 @@ data class NewRawContact(
 ) : RawContactEntity, NewEntity, MutableEntity {
 
     // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor(): this(
+    constructor() : this(
         mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(),
         null, null, null, null, mutableListOf(), null,
         mutableListOf(), null, mutableListOf(), mutableMapOf()

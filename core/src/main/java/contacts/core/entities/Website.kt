@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -25,22 +24,56 @@ sealed interface WebsiteEntity : DataEntity {
         get() = propertiesAreAllNullOrBlank(url)
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from WebsiteEntity, there is only one interface that extends it; MutableWebsiteEntity.
+ *
+ * The MutableWebsiteEntity interface is used for library constructs that require an WebsiteEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableWebsite and NewWebsite. With this, we can create constructs that can
+ * keep a reference to MutableWebsite(s) or NewWebsite(s) through the MutableWebsiteEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewWebsiteEntity, ExistingWebsiteEntity, and
+ * ImmutableWebsiteEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [WebsiteEntity].
+ * A mutable [WebsiteEntity]. `
+ */
+sealed interface MutableWebsiteEntity : WebsiteEntity, MutableDataEntity {
+
+    override var url: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::url
+    override var primaryValue: String?
+        get() = url
+        set(value) {
+            url = value
+        }
+}
+
+/**
+ * An existing immutable [WebsiteEntity].
  */
 @Parcelize
 data class Website internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override val url: String?
 
-) : WebsiteEntity, ImmutableDataEntityWithMutableType<MutableWebsite> {
+) : WebsiteEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableWebsite> {
 
     override fun mutableCopy() = MutableWebsite(
         id = id,
@@ -55,24 +88,33 @@ data class Website internal constructor(
 }
 
 /**
- * A mutable [WebsiteEntity].
+ * An existing mutable [WebsiteEntity].
  */
 @Parcelize
 data class MutableWebsite internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override var url: String?
 
-) : WebsiteEntity, MutableDataEntity {
+) : WebsiteEntity, ExistingDataEntity, MutableWebsiteEntity
 
-    constructor() : this(null, null, null, false, false, null)
+/**
+ * A new mutable [WebsiteEntity].
+ */
+// Intentionally expose primary constructor to consumers.
+@Parcelize
+data class NewWebsite(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::url
+    override var url: String?
+
+) : WebsiteEntity, NewDataEntity, MutableWebsiteEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null)
 }
