@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -25,22 +24,56 @@ sealed interface NicknameEntity : DataEntity {
         get() = propertiesAreAllNullOrBlank(name)
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from NicknameEntity, there is only one interface that extends it; MutableNicknameEntity.
+ *
+ * The MutableNicknameEntity interface is used for library constructs that require an NicknameEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableNickname and NewNickname. With this, we can create constructs that can
+ * keep a reference to MutableNickname(s) or NewNickname(s) through the MutableNicknameEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewNicknameEntity, ExistingNicknameEntity, and
+ * ImmutableNicknameEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [NicknameEntity].
+ * A mutable [NicknameEntity]. `
+ */
+sealed interface MutableNicknameEntity : NicknameEntity, MutableDataEntity {
+
+    override var name: String?
+
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::name
+    override var primaryValue: String?
+        get() = name
+        set(value) {
+            name = value
+        }
+}
+
+/**
+ * An existing immutable [NicknameEntity].
  */
 @Parcelize
 data class Nickname internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override val name: String?
 
-) : NicknameEntity, ImmutableDataEntityWithMutableType<MutableNickname> {
+) : NicknameEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableNickname> {
 
     override fun mutableCopy() = MutableNickname(
         id = id,
@@ -55,24 +88,34 @@ data class Nickname internal constructor(
 }
 
 /**
- * A mutable [NicknameEntity].
+ * An existing mutable [NicknameEntity].
  */
 @Parcelize
 data class MutableNickname internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override var name: String?
 
-) : NicknameEntity, MutableDataEntity {
+) : NicknameEntity, ExistingDataEntity, MutableNicknameEntity
 
-    constructor() : this(null, null, null, false, false, null)
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::name
+/**
+ * A new mutable [NicknameEntity].
+ */
+// Intentionally expose primary constructor to consumers.
+@Parcelize
+data class NewNickname(
+
+    override var name: String?
+
+) : NicknameEntity, NewDataEntity, MutableNicknameEntity {
+
+    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
+    constructor() : this(null)
 }
