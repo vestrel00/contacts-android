@@ -8,6 +8,7 @@ import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.Include
 import contacts.core.accounts.accountForRawContactWithId
+import contacts.core.entities.GroupMembership
 import contacts.core.entities.GroupMembershipEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.mapper.groupMembershipMapper
@@ -97,12 +98,11 @@ internal class GroupMembershipOperation(
         // Delete the remaining non-default groupMembershipsInDB.
         groupMembershipsInDB.values
             .asSequence()
-            .filter {
+            .mapNotNull { it.groupId }
+            .filter { groupMembershipId ->
                 // Do no delete memberships to the default group!
-                val group = accountGroups.getValue(it.groupId)
-                !group.isDefaultGroup
+                !accountGroups.getValue(groupMembershipId).isDefaultGroup
             }
-            .mapNotNull { it.id }
             .forEach { groupMembershipId ->
                 add(deleteDataRowWithId(groupMembershipId))
             }
@@ -121,3 +121,11 @@ internal class GroupMembershipOperation(
 }
 
 private val INCLUDE = Include(Fields.DataId, Fields.GroupMembership.GroupId)
+
+/**
+ * Only existing group membership entities have an id.
+ */
+private val GroupMembershipEntity.id: Long
+    get() = when (this) {
+        is GroupMembership -> id
+    }

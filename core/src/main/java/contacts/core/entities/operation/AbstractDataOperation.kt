@@ -5,8 +5,8 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import contacts.core.*
-import contacts.core.entities.DataEntity
-import contacts.core.entities.MimeType
+import contacts.core.Fields.MimeType
+import contacts.core.entities.*
 import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.entitiesAreAllBlank
@@ -315,3 +315,12 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         processCursor = processCursor
     )
 }
+
+/**
+ * Only existing data entities have an id.
+ */
+private val DataEntity.id: Long?
+    get() = when (this) {
+        is ExistingDataEntity -> id
+        else -> null
+    }

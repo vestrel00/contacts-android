@@ -2,7 +2,7 @@ package contacts.core.data
 
 import android.content.ContentResolver
 import contacts.core.*
-import contacts.core.entities.MutableDataEntity
+import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.updateOperation
 import contacts.core.util.applyBatch
@@ -32,11 +32,11 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To update a set of [MutableDataEntity];
+ * To update a set of [ExistingDataEntity];
  *
  * ```kotlin
  * val result = dataUpdate
- *      .data(mutableDataEntities)
+ *      .data(existingDataEntities)
  *      .commit()
  * ```
  */
@@ -97,26 +97,26 @@ interface DataUpdate {
     /**
      * Adds the given [data] to the update queue, which will be updated on [commit].
      *
-     * Blank data ([MutableDataEntity.isBlank] will be deleted instead.
+     * Blank data ([ExistingDataEntity.isBlank] will be deleted instead.
      *
      * Only existing [data] that have been retrieved via a query will be added to the update queue.
      * Those that have been manually created via a constructor will be ignored and result in a
      * failed operation.
      */
-    fun data(vararg data: MutableDataEntity): DataUpdate
+    fun data(vararg data: ExistingDataEntity): DataUpdate
 
     /**
      * See [DataUpdate.data].
      */
-    fun data(data: Collection<MutableDataEntity>): DataUpdate
+    fun data(data: Collection<ExistingDataEntity>): DataUpdate
 
     /**
      * See [DataUpdate.data].
      */
-    fun data(data: Sequence<MutableDataEntity>): DataUpdate
+    fun data(data: Sequence<ExistingDataEntity>): DataUpdate
 
     /**
-     * Updates the [MutableDataEntity]s in the queue (added via [data]) and returns the [Result].
+     * Updates the [ExistingDataEntity]s in the queue (added via [data]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -130,7 +130,7 @@ interface DataUpdate {
     fun commit(): Result
 
     /**
-     * Updates the [MutableDataEntity]s in the queue (added via [data]) and returns the [Result].
+     * Updates the [ExistingDataEntity]s in the queue (added via [data]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -163,7 +163,7 @@ interface DataUpdate {
         /**
          * True if the [data] has been successfully updated. False otherwise.
          */
-        fun isSuccessful(data: MutableDataEntity): Boolean
+        fun isSuccessful(data: ExistingDataEntity): Boolean
     }
 }
 
@@ -181,7 +181,7 @@ private class DataUpdateImpl(
     private val customDataRegistry: CustomDataRegistry,
     private val isProfile: Boolean,
     private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
-    private val data: MutableSet<MutableDataEntity> = mutableSetOf()
+    private val data: MutableSet<ExistingDataEntity> = mutableSetOf()
 ) : DataUpdate {
 
     override fun toString(): String =
@@ -205,11 +205,11 @@ private class DataUpdateImpl(
         }
     }
 
-    override fun data(vararg data: MutableDataEntity) = data(data.asSequence())
+    override fun data(vararg data: ExistingDataEntity) = data(data.asSequence())
 
-    override fun data(data: Collection<MutableDataEntity>) = data(data.asSequence())
+    override fun data(data: Collection<ExistingDataEntity>) = data(data.asSequence())
 
-    override fun data(data: Sequence<MutableDataEntity>): DataUpdate = apply {
+    override fun data(data: Sequence<ExistingDataEntity>): DataUpdate = apply {
         this.data.addAll(data)
     }
 
@@ -251,7 +251,7 @@ private class DataUpdateImpl(
 
 private fun ContentResolver.updateData(
     includeFields: Set<AbstractDataField>,
-    data: MutableDataEntity,
+    data: ExistingDataEntity,
     customDataRegistry: CustomDataRegistry
 ): Boolean = data.updateOperation(includeFields, customDataRegistry)?.let { applyBatch(it) } != null
 
@@ -260,7 +260,7 @@ private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>)
 
     override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
 
-    override fun isSuccessful(data: MutableDataEntity): Boolean {
+    override fun isSuccessful(data: ExistingDataEntity): Boolean {
         val dataId = data.id
         return dataId != null && dataIdsResultMap.getOrElse(dataId) { false }
     }
@@ -270,5 +270,5 @@ private class DataUpdateFailed : DataUpdate.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(data: MutableDataEntity): Boolean = false
+    override fun isSuccessful(data: ExistingDataEntity): Boolean = false
 }
