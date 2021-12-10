@@ -17,7 +17,7 @@ class CustomDataRegistry {
             AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
             CustomDataEntity,
-            ImmutableCustomDataEntity>>()
+            ExistingCustomDataEntity>>()
 
     /**
      * Register custom data [entries].
@@ -30,7 +30,7 @@ class CustomDataRegistry {
                     AbstractCustomDataField,
                     AbstractCustomDataCursor<AbstractCustomDataField>,
                     CustomDataEntity,
-                    ImmutableCustomDataEntity>
+                    ExistingCustomDataEntity>
         }
     }
 
@@ -134,7 +134,7 @@ class CustomDataRegistry {
     internal fun entryOf(mimeTypeValue: String): Entry<AbstractCustomDataField,
             AbstractCustomDataCursor<AbstractCustomDataField>,
             CustomDataEntity,
-            ImmutableCustomDataEntity> = entryMap[mimeTypeValue]
+            ExistingCustomDataEntity> = entryMap[mimeTypeValue]
         ?: throw CustomDataException("Missing custom data entry for $mimeTypeValue")
 
     internal fun mimeTypeOf(
@@ -162,7 +162,7 @@ class CustomDataRegistry {
      * inserts, updates, and deletes.
      */
     interface Entry<F : AbstractCustomDataField, C : AbstractCustomDataCursor<F>,
-            E : CustomDataEntity, I : ImmutableCustomDataEntity> {
+            E : CustomDataEntity, I : ExistingCustomDataEntity> {
         val mimeType: MimeType.Custom
         val fieldSet: AbstractCustomDataFieldSet<F>
         val fieldMapper: CustomDataFieldMapper<F, E>

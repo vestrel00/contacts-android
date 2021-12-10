@@ -5,7 +5,7 @@ import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.ExistingEntity
 
 /**
- * Creates entities from database values.
+ * Creates models for existing entities from database values.
  */
 internal sealed interface EntityMapper<out T : ExistingEntity> {
     val value: T
