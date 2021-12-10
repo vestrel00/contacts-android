@@ -5,7 +5,7 @@ import android.content.ContentResolver
 import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 import contacts.core.accounts.AccountsQuery
-import contacts.core.entities.MutableGroup
+import contacts.core.entities.NewGroup
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.util.applyBatch
 import contacts.core.util.unsafeLazy
@@ -40,14 +40,14 @@ import contacts.core.util.unsafeLazy
  *
  * ```kotlin
  * val result = groupsInsert
- *      .groups(MutableGroup("Best Friends", account))
+ *      .groups(NewGroup("Best Friends", account))
  *      .commit()
  * ```
  */
 interface GroupsInsert {
 
     /**
-     * Adds a new [MutableGroup] to the insert queue, which will be inserted on [commit].
+     * Adds a new [NewGroup] to the insert queue, which will be inserted on [commit].
      * The new instance is created with the given [title] and [account].
      */
     fun group(title: String, account: Account): GroupsInsert
@@ -56,20 +56,20 @@ interface GroupsInsert {
      * Adds the given [groups] to the insert queue, which will be inserted on [commit].
      * Duplicates (groups with identical attributes to already added groups) are ignored.
      */
-    fun groups(vararg groups: MutableGroup): GroupsInsert
+    fun groups(vararg groups: NewGroup): GroupsInsert
 
     /**
      * See [GroupsInsert.groups].
      */
-    fun groups(groups: Collection<MutableGroup>): GroupsInsert
+    fun groups(groups: Collection<NewGroup>): GroupsInsert
 
     /**
      * See [GroupsInsert.groups].
      */
-    fun groups(groups: Sequence<MutableGroup>): GroupsInsert
+    fun groups(groups: Sequence<NewGroup>): GroupsInsert
 
     /**
-     * Inserts the [MutableGroup]s in the queue (added via [groups]) and returns the [Result].
+     * Inserts the [NewGroup]s in the queue (added via [groups]) and returns the [Result].
      *
      * Groups with titles that already exist will be inserted. The Contacts Provider allows this
      * and is the behavior of the native Contacts app. If desired, it is up to consumers to protect
@@ -91,7 +91,7 @@ interface GroupsInsert {
     fun commit(): Result
 
     /**
-     * Inserts the [MutableGroup]s in the queue (added via [groups]) and returns the [Result].
+     * Inserts the [NewGroup]s in the queue (added via [groups]) and returns the [Result].
      *
      * Groups with titles that already exist will be inserted. The Contacts Provider allows this
      * and is the behavior of the native Contacts app. If desired, it is up to consumers to protect
@@ -131,7 +131,7 @@ interface GroupsInsert {
         val groupIds: List<Long>
 
         /**
-         * True if all MutableGroups have successfully been inserted. False if even one insert
+         * True if all NewGroups have successfully been inserted. False if even one insert
          * failed.
          */
         val isSuccessful: Boolean
@@ -139,21 +139,21 @@ interface GroupsInsert {
         /**
          * True if the [group] has been successfully inserted. False otherwise.
          */
-        fun isSuccessful(group: MutableGroup): Boolean
+        fun isSuccessful(group: NewGroup): Boolean
 
         /**
          * Returns the ID of the newly created Group. Use the ID to get the newly created Group via
-         * a query. The manually constructed [MutableGroup] passed to [GroupsInsert.groups] are not
+         * a query. The manually constructed [NewGroup] passed to [GroupsInsert.groups] are not
          * automatically updated and will remain to have an invalid ID.
          *
          * Returns null if the insert operation failed.
          */
-        fun groupId(group: MutableGroup): Long?
+        fun groupId(group: NewGroup): Long?
 
         /**
          * Returns the reason why the insert failed for this [group]. Null if it did not fail.
          */
-        fun failureReason(group: MutableGroup): FailureReason?
+        fun failureReason(group: NewGroup): FailureReason?
 
         enum class FailureReason {
 
@@ -201,7 +201,7 @@ private class GroupsInsertImpl(
     private val accountsQuery: AccountsQuery,
     private val groupsQuery: GroupsQuery,
     private val permissions: ContactsPermissions,
-    private val groups: MutableSet<MutableGroup> = mutableSetOf()
+    private val groups: MutableSet<NewGroup> = mutableSetOf()
 ) : GroupsInsert {
 
     override fun toString(): String =
@@ -212,13 +212,13 @@ private class GroupsInsertImpl(
         """.trimIndent()
 
     override fun group(title: String, account: Account): GroupsInsert =
-        groups(MutableGroup(title, account))
+        groups(NewGroup(title, account))
 
-    override fun groups(vararg groups: MutableGroup) = groups(groups.asSequence())
+    override fun groups(vararg groups: NewGroup) = groups(groups.asSequence())
 
-    override fun groups(groups: Collection<MutableGroup>) = groups(groups.asSequence())
+    override fun groups(groups: Collection<NewGroup>) = groups(groups.asSequence())
 
-    override fun groups(groups: Sequence<MutableGroup>): GroupsInsert = apply {
+    override fun groups(groups: Sequence<NewGroup>): GroupsInsert = apply {
         this.groups.addAll(groups)
     }
 
@@ -250,8 +250,8 @@ private class GroupsInsertImpl(
             existingTitles.add(group.title)
         }
 
-        val results = mutableMapOf<MutableGroup, Long?>()
-        val failureReasons = mutableMapOf<MutableGroup, GroupsInsert.Result.FailureReason>()
+        val results = mutableMapOf<NewGroup, Long?>()
+        val failureReasons = mutableMapOf<NewGroup, GroupsInsert.Result.FailureReason>()
 
         for (group in groups) {
             if (cancel()) {
@@ -283,7 +283,7 @@ private class GroupsInsertImpl(
     }
 }
 
-private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
+private fun ContentResolver.insertGroup(group: NewGroup): Long? {
     val results = applyBatch(GroupsOperation().insert(group))
 
     /*
@@ -304,8 +304,8 @@ private fun ContentResolver.insertGroup(group: MutableGroup): Long? {
 }
 
 private class GroupsInsertResult(
-    private val groupsMap: Map<MutableGroup, Long?>,
-    private val failureReasons: Map<MutableGroup, GroupsInsert.Result.FailureReason>
+    private val groupsMap: Map<NewGroup, Long?>,
+    private val failureReasons: Map<NewGroup, GroupsInsert.Result.FailureReason>
 ) : GroupsInsert.Result {
 
     override val groupIds: List<Long> by unsafeLazy {
@@ -316,11 +316,11 @@ private class GroupsInsertResult(
 
     override val isSuccessful: Boolean by unsafeLazy { groupsMap.all { it.value != null } }
 
-    override fun isSuccessful(group: MutableGroup): Boolean = groupId(group) != null
+    override fun isSuccessful(group: NewGroup): Boolean = groupId(group) != null
 
-    override fun groupId(group: MutableGroup): Long? = groupsMap.getOrElse(group) { null }
+    override fun groupId(group: NewGroup): Long? = groupsMap.getOrElse(group) { null }
 
-    override fun failureReason(group: MutableGroup) = failureReasons[group]
+    override fun failureReason(group: NewGroup) = failureReasons[group]
 }
 
 private class GroupsInsertFailed : GroupsInsert.Result {
@@ -329,9 +329,9 @@ private class GroupsInsertFailed : GroupsInsert.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(group: MutableGroup): Boolean = false
+    override fun isSuccessful(group: NewGroup): Boolean = false
 
-    override fun groupId(group: MutableGroup): Long? = null
+    override fun groupId(group: NewGroup): Long? = null
 
-    override fun failureReason(group: MutableGroup) = GroupsInsert.Result.FailureReason.UNKNOWN
+    override fun failureReason(group: NewGroup) = GroupsInsert.Result.FailureReason.UNKNOWN
 }

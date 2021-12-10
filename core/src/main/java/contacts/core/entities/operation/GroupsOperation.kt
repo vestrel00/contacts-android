@@ -3,7 +3,7 @@ package contacts.core.entities.operation
 import android.content.ContentProviderOperation
 import contacts.core.GroupsFields
 import contacts.core.`in`
-import contacts.core.entities.MutableGroup
+import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.NewGroup
 import contacts.core.entities.table.Table
 import contacts.core.equalTo
@@ -25,7 +25,7 @@ internal class GroupsOperation {
         // .withValue(Fields.Group.AutoAdd, it.autoAdd.toSqlValue())
         .build()
 
-    fun update(group: MutableGroup): ContentProviderOperation = newUpdate(TABLE)
+    fun update(group: ExistingGroupEntity): ContentProviderOperation = newUpdate(TABLE)
         .withSelection(GroupsFields.Id equalTo group.id)
         .withValue(GroupsFields.Title, group.title)
         .build()
