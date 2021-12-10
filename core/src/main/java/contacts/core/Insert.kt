@@ -2,7 +2,7 @@ package contacts.core
 
 import android.accounts.Account
 import android.content.ContentProviderOperation
-import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
@@ -40,14 +40,14 @@ import contacts.core.util.unsafeLazy
  * val result = insert
  *      .forAccount(account)
  *      .rawContact {
- *          name = MutableName().apply {
+ *          name = NewName(
  *              givenName = "john"
  *              familyName = "doe"
- *          }
- *          emails.add(MutableEmail().apply {
+ *          )
+ *          emails.add(NewEmail(
  *              type = EmailEntity.Type.HOME
  *              address = "john@doe.com"
- *          })
+ *          ))
  *      }
  *      .commit()
  * ```
@@ -55,18 +55,18 @@ import contacts.core.util.unsafeLazy
  * In Java,
  *
  * ```java
- * MutableName name = new MutableName();
+ * NewName name = new NewName();
  * name.setGivenName("john");
  * name.setFamilyName("doe");
  *
- * MutableEmail email = new MutableEmail();
+ * NewEmail email = new NewEmail();
  * email.setType(EmailEntity.Type.HOME);
  * email.setAddress("john@doe.com");
  *
- * List<MutableEmail> emails = new ArrayList<>();
+ * List<NewEmail> emails = new ArrayList<>();
  * emails.add(email);
  *
- * MutableRawContact rawContact = new MutableRawContact();
+ * NewRawContact rawContact = new NewRawContact();
  * rawContact.setName(name);
  * rawContact.setEmails(emails);
  *
@@ -79,7 +79,7 @@ import contacts.core.util.unsafeLazy
 interface Insert {
 
     /**
-     * If [allowBlanks] is set to true, then blank RawContacts ([MutableRawContact.isBlank]) will
+     * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
      * will be inserted. Otherwise, blanks will not be inserted and will result in a failed
      * operation. This flag is set to false by default.
      *
@@ -155,32 +155,28 @@ interface Insert {
     fun include(fields: Sequence<AbstractDataField>): Insert
 
     /**
-     * Adds a new [MutableRawContact] to the insert queue, which will be inserted on [commit].
+     * Adds a new [NewRawContact] to the insert queue, which will be inserted on [commit].
      * The new instance is configured by the [configureRawContact] function.
-     *
-     * Existing RawContacts are allowed to be inserted to facilitate "duplication".
      */
-    fun rawContact(configureRawContact: MutableRawContact.() -> Unit): Insert
+    fun rawContact(configureRawContact: NewRawContact.() -> Unit): Insert
 
     /**
      * Adds the given [rawContacts] to the insert queue, which will be inserted on [commit].
-     *
-     * Existing RawContacts are allowed to be inserted to facilitate "duplication".
      */
-    fun rawContacts(vararg rawContacts: MutableRawContact): Insert
+    fun rawContacts(vararg rawContacts: NewRawContact): Insert
 
     /**
      * See [Insert.rawContacts].
      */
-    fun rawContacts(rawContacts: Collection<MutableRawContact>): Insert
+    fun rawContacts(rawContacts: Collection<NewRawContact>): Insert
 
     /**
      * See [Insert.rawContacts].
      */
-    fun rawContacts(rawContacts: Sequence<MutableRawContact>): Insert
+    fun rawContacts(rawContacts: Sequence<NewRawContact>): Insert
 
     /**
-     * Inserts the [MutableRawContact]s in the queue (added via [rawContacts]) and returns the
+     * Inserts the [NewRawContact]s in the queue (added via [rawContacts]) and returns the
      * [Result].
      *
      * ## Permissions
@@ -196,7 +192,7 @@ interface Insert {
     fun commit(): Result
 
     /**
-     * Inserts the [MutableRawContact]s in the queue (added via [rawContacts]) and returns the
+     * Inserts the [NewRawContact]s in the queue (added via [rawContacts]) and returns the
      * [Result].
      *
      * ## Permissions
@@ -231,7 +227,7 @@ interface Insert {
         val rawContactIds: List<Long>
 
         /**
-         * True if all MutableRawContacts have successfully been inserted. False if even one insert
+         * True if all NewRawContacts have successfully been inserted. False if even one insert
          * failed.
          */
         val isSuccessful: Boolean
@@ -239,17 +235,17 @@ interface Insert {
         /**
          * True if the [rawContact] has been successfully inserted. False otherwise.
          */
-        fun isSuccessful(rawContact: MutableRawContact): Boolean
+        fun isSuccessful(rawContact: NewRawContact): Boolean
 
         /**
          * Returns the ID of the newly created RawContact (from the [rawContact] passed to
          * [Insert.rawContacts]). Use the ID to get the newly created RawContact via a query. The
-         * manually constructed [MutableRawContact] passed to [Insert.rawContacts] are not
+         * manually constructed [NewRawContact] passed to [Insert.rawContacts] are not
          * automatically updated and will remain to have an invalid ID.
          *
          * Returns null if the insert operation failed.
          */
-        fun rawContactId(rawContact: MutableRawContact): Long?
+        fun rawContactId(rawContact: NewRawContact): Long?
     }
 }
 
@@ -262,7 +258,7 @@ private class InsertImpl(
     private var allowBlanks: Boolean = false,
     private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
     private var account: Account? = null,
-    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
+    private val rawContacts: MutableSet<NewRawContact> = mutableSetOf()
 ) : Insert {
 
     override fun toString(): String =
@@ -295,16 +291,16 @@ private class InsertImpl(
         }
     }
 
-    override fun rawContact(configureRawContact: MutableRawContact.() -> Unit): Insert =
-        rawContacts(MutableRawContact().apply(configureRawContact))
+    override fun rawContact(configureRawContact: NewRawContact.() -> Unit): Insert =
+        rawContacts(NewRawContact().apply(configureRawContact))
 
-    override fun rawContacts(vararg rawContacts: MutableRawContact) =
+    override fun rawContacts(vararg rawContacts: NewRawContact) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Collection<MutableRawContact>) =
+    override fun rawContacts(rawContacts: Collection<NewRawContact>) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Sequence<MutableRawContact>): Insert = apply {
+    override fun rawContacts(rawContacts: Sequence<NewRawContact>): Insert = apply {
         this.rawContacts.addAll(rawContacts)
     }
 
@@ -318,7 +314,7 @@ private class InsertImpl(
         // This ensures that a valid account is used. Otherwise, null is used.
         account = account?.nullIfNotInSystem(contacts.accounts())
 
-        val results = mutableMapOf<MutableRawContact, Long?>()
+        val results = mutableMapOf<NewRawContact, Long?>()
         for (rawContact in rawContacts) {
             if (cancel()) {
                 break
@@ -351,7 +347,7 @@ private class InsertImpl(
 internal fun Contacts.insertRawContactForAccount(
     account: Account?,
     includeFields: Set<AbstractDataField>,
-    rawContact: MutableRawContact,
+    rawContact: NewRawContact,
     isProfile: Boolean
 ): Long? {
     val operations = arrayListOf<ContentProviderOperation>()
@@ -457,7 +453,9 @@ internal fun Contacts.insertRawContactForAccount(
     )
 
     // Process custom data
-    operations.addAll(rawContact.customDataInsertOperations(includeFields, customDataRegistry))
+    operations.addAll(
+        rawContact.customDataInsertOperations(includeFields, customDataRegistry, isProfile)
+    )
 
     /*
      * Atomically create the RawContact row and all of the associated Data rows. All of the
@@ -482,8 +480,10 @@ internal fun Contacts.insertRawContactForAccount(
     }
 }
 
-private fun MutableRawContact.customDataInsertOperations(
-    includeFields: Set<AbstractDataField>, customDataRegistry: CustomDataRegistry
+private fun NewRawContact.customDataInsertOperations(
+    includeFields: Set<AbstractDataField>,
+    customDataRegistry: CustomDataRegistry,
+    isProfile: Boolean
 ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
@@ -507,7 +507,7 @@ private fun MutableRawContact.customDataInsertOperations(
     }
 }
 
-private class InsertResult(private val rawContactMap: Map<MutableRawContact, Long?>) :
+private class InsertResult(private val rawContactMap: Map<NewRawContact, Long?>) :
     Insert.Result {
 
     override val rawContactIds: List<Long> by unsafeLazy {
@@ -518,10 +518,10 @@ private class InsertResult(private val rawContactMap: Map<MutableRawContact, Lon
 
     override val isSuccessful: Boolean by unsafeLazy { rawContactMap.all { it.value != null } }
 
-    override fun isSuccessful(rawContact: MutableRawContact): Boolean =
+    override fun isSuccessful(rawContact: NewRawContact): Boolean =
         rawContactId(rawContact) != null
 
-    override fun rawContactId(rawContact: MutableRawContact): Long? =
+    override fun rawContactId(rawContact: NewRawContact): Long? =
         rawContactMap.getOrElse(rawContact) { null }
 }
 
@@ -531,7 +531,7 @@ private class InsertFailed : Insert.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(rawContact: MutableRawContact): Boolean = false
+    override fun isSuccessful(rawContact: NewRawContact): Boolean = false
 
-    override fun rawContactId(rawContact: MutableRawContact): Long? = null
+    override fun rawContactId(rawContact: NewRawContact): Long? = null
 }

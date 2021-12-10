@@ -70,9 +70,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * A group membership to the default group of the given [account] will be created automatically
      * by the Contacts Provider upon successful operation.
      *
-     * Only existing local RawContacts that have been retrieved via a query will be processed. Those
-     * that have been manually created via a constructor will be ignored.
-     *
      * This operation will fail if the given [account] is not in the system. In the case where there
      * are no local RawContacts, this operation succeeds.
      *
@@ -113,9 +110,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * the default group of the given [account] will be created automatically by the Contacts
      * Provider upon successful operation.
      *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
-     *
      * This operation will fail if the given [account] is not in the system. In the case where there
      * are no local RawContacts, this operation succeeds.
      *
@@ -139,9 +133,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * that Account if this call succeeds. Existing group memberships will be deleted. A group
      * membership to the default group of the given [account] will be created automatically by the
      * Contacts Provider upon successful operation.
-     *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
      *
      * This operation will fail if the given [account] is not in the system or if no existing
      * RawContacts are provided.
@@ -278,9 +269,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * RawContacts that were already associated with an Account will no longer be associated with
      * that Account if this call succeeds. Existing group memberships will be retained. RawContacts
      * not associated with an Account are local to the device.
-     *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
      *
      * This operation will fail if no existing RawContacts are provided.
      *

@@ -7,16 +7,9 @@ import contacts.core.entities.DataEntity
 /**
  * Returns the [Contact] with the [DataEntity.contactId].
  *
- * This may return null if the [Contact] no longer exists or if [DataEntity.contactId] is null
- * (which is the case for manually constructed entities).
+ * This may return null if the [Contact] no longer exists or if permissions are not granted.
  *
  * Supports profile/non-profile Contacts with native/custom data.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *

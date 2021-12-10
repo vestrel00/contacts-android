@@ -52,10 +52,6 @@ interface GroupsUpdate {
     /**
      * Adds the given [groups] to the update queue, which will be updated on [commit].
      *
-     * Only existing [groups] that have been retrieved via a query will be added to the update
-     * queue. Those that have been manually created via a constructor will be ignored and result
-     * in a failed operation.
-     *
      * ## Null [ExistingGroupEntity]s
      *
      * Null groups are ignored and result in a failed operation. The only reason null is allowed to

@@ -7,16 +7,9 @@ import contacts.core.entities.RawContact
 /**
  * Returns the [RawContact] with the [DataEntity.rawContactId].
  *
- * This may return null if the [RawContact] no longer exists or if [DataEntity.rawContactId] is null
- * (which is the case for manually constructed entities).
+ * This may return null if the [RawContact] no longer exists or if permissions are not granted.
  *
  * Supports profile/non-profile RawContacts with native/custom data.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *

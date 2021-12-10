@@ -342,7 +342,7 @@ private fun ContentResolver.rawContactIds(
     mutableSetOf<Long>().apply {
         val rawContactsCursor = it.rawContactsCursor()
         while (!cancel() && it.moveToNext()) {
-            rawContactsCursor.rawContactId?.let(::add)
+            add(rawContactsCursor.rawContactId)
         }
 
         // Ensure incomplete data sets are not returned.

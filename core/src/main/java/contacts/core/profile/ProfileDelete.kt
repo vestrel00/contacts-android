@@ -5,8 +5,8 @@ import android.content.ContentResolver
 import contacts.core.Contacts
 import contacts.core.ContactsPermissions
 import contacts.core.deleteRawContactWithId
-import contacts.core.entities.ContactEntity
-import contacts.core.entities.RawContactEntity
+import contacts.core.entities.ExistingContactEntity
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.operation.RawContactsOperation
 import contacts.core.entities.table.ProfileUris
 import contacts.core.util.applyBatch
@@ -28,7 +28,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To delete the profile [ContactEntity] (if it exist) and all associated [RawContactEntity]s;
+ * To delete the profile [ExistingContactEntity] and all associated [ExistingRawContactEntity]s;
  *
  * ```kotlin
  * val result = profileDelete
@@ -47,48 +47,47 @@ import contacts.core.util.unsafeLazy
 interface ProfileDelete {
 
     /**
-     * Adds the given profile [rawContacts] ([RawContactEntity.isProfile]) to the delete queue,
-     * which will be deleted on [commit].
+     * Adds the given profile [rawContacts] ([ExistingRawContactEntity.isProfile]) to the delete
+     * queue, which will be deleted on [commit].
      *
-     * Profile RawContacts that have not yet been inserted ([RawContactEntity.id] is null) will be
-     * ignored and result in a failed operation.
-     *
-     * If [contact] is called, then any [RawContactEntity]s provided here will be ignored.
+     * If [contact] is called, then any [ExistingRawContactEntity]s provided here will be ignored.
      *
      * ## IMPORTANT
      *
-     * Deleting all profile [RawContactEntity]s of a profile [ContactEntity] will result in the
-     * deletion of the associated profile [ContactEntity]! However, the profile [ContactEntity]
-     * will remain as long as it has at least has one associated profile [RawContactEntity].
+     * Deleting all profile [ExistingRawContactEntity]s of a profile [ExistingContactEntity] will
+     * result in the deletion of the associated profile [ExistingContactEntity]! However, the
+     * profile [ExistingContactEntity] will remain as long as it has at least has one associated
+     * profile [ExistingRawContactEntity].
      */
-    fun rawContacts(vararg rawContacts: RawContactEntity): ProfileDelete
+    fun rawContacts(vararg rawContacts: ExistingRawContactEntity): ProfileDelete
 
     /**
      * See [ProfileDelete.rawContacts].
      */
-    fun rawContacts(rawContacts: Collection<RawContactEntity>): ProfileDelete
+    fun rawContacts(rawContacts: Collection<ExistingRawContactEntity>): ProfileDelete
 
     /**
      * See [ProfileDelete.rawContacts].
      */
-    fun rawContacts(rawContacts: Sequence<RawContactEntity>): ProfileDelete
+    fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): ProfileDelete
 
     /**
      * Adds the existing profile contact (if any) to the delete queue, which will be deleted on
      * [commit].
      *
-     * If this is called, then any [RawContactEntity]s provided via [rawContacts] will be ignored.
+     * If this is called, then any [ExistingRawContactEntity]s provided via [rawContacts] will be
+     * ignored.
      *
      * ## IMPORTANT
      *
-     * Deleting the profile [ContactEntity] will result in the deletion of all associated profile
-     * [RawContactEntity]s!
+     * Deleting the profile [ExistingContactEntity] will result in the deletion of all associated
+     * profile [ExistingRawContactEntity]s!
      */
     fun contact(): ProfileDelete
 
     /**
-     * Deletes the profile [ContactEntity] or profile [RawContactEntity]s in the queue (added via
-     * [contact] and [rawContacts]) and returns the [Result].
+     * Deletes the profile [ExistingContactEntity] or profile [ExistingRawContactEntity]s in the
+     * queue (added via [contact] and [rawContacts]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -106,12 +105,13 @@ interface ProfileDelete {
     fun commit(): Result
 
     /**
-     * Deletes the profile [ContactEntity] or [RawContactEntity]s in the queue in one transaction.
+     * Deletes the profile [ExistingContactEntity] or [ExistingRawContactEntity]s in the queue in
+     * one transaction.
      *
-     * True if the profile [ContactEntity] has been successfully deleted (via [contact]).
+     * True if the profile [ExistingContactEntity] has been successfully deleted (via [contact]).
      *
      * If [rawContacts] is used instead of [contact], then this is true only if all
-     * [RawContactEntity]s provided in [rawContacts] have been successfully deleted.
+     * [ExistingRawContactEntity]s provided in [rawContacts] have been successfully deleted.
      *
      * ## Permissions
      *
@@ -131,20 +131,21 @@ interface ProfileDelete {
     interface Result {
 
         /**
-         * True if the profile [ContactEntity] has been successfully deleted (via [contact]).
+         * True if the profile [ExistingContactEntity] has been successfully deleted
+         * (via [contact]).
          *
          * If [rawContacts] is used instead of [contact], then this is true only if all
-         * [RawContactEntity]s provided in [rawContacts] have been successfully deleted.
+         * [ExistingRawContactEntity]s provided in [rawContacts] have been successfully deleted.
          */
         val isSuccessful: Boolean
 
         /**
          * True if the [rawContact] has been successfully deleted provided via [rawContacts].
          *
-         * This will always be true if the profile [ContactEntity] has been successfully deleted
-         * (via [contact]).
+         * This will always be true if the profile [ExistingContactEntity] has been successfully
+         * deleted (via [contact]).
          */
-        fun isSuccessful(rawContact: RawContactEntity): Boolean
+        fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
     }
 }
 
@@ -169,15 +170,16 @@ private class ProfileDeleteImpl(
             }
         """.trimIndent()
 
-    override fun rawContacts(vararg rawContacts: RawContactEntity): ProfileDelete =
+    override fun rawContacts(vararg rawContacts: ExistingRawContactEntity): ProfileDelete =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Collection<RawContactEntity>): ProfileDelete =
+    override fun rawContacts(rawContacts: Collection<ExistingRawContactEntity>): ProfileDelete =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Sequence<RawContactEntity>): ProfileDelete = apply {
-        rawContactIds.addAll(rawContacts.map { it.id ?: INVALID_ID })
-    }
+    override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): ProfileDelete =
+        apply {
+            rawContactIds.addAll(rawContacts.map { it.id })
+        }
 
     override fun contact(): ProfileDelete = apply {
         deleteProfileContact = true
@@ -198,7 +200,7 @@ private class ProfileDeleteImpl(
         val rawContactsResult = mutableMapOf<Long, Boolean>()
         for (rawContactId in rawContactIds) {
             rawContactsResult[rawContactId] =
-                if (rawContactId == INVALID_ID || !rawContactId.isProfileId) {
+                if (!rawContactId.isProfileId) {
                     // Intentionally fail the operation to ensure that this is only used for profile
                     // deletes. Otherwise, operation can succeed. This is only done to enforce API
                     // design.
@@ -220,22 +222,16 @@ private class ProfileDeleteImpl(
             return contentResolver.deleteProfileContact()
         }
 
-        val profileRawContactIds = rawContactIds.filter { it != INVALID_ID && it.isProfileId }
+        val profileRawContactIds = rawContactIds.filter { it.isProfileId }
 
         if (rawContactIds.size != profileRawContactIds.size) {
-            // There are some invalid ids or non-profile RawContact Ids, fail without performing
-            // operation.
+            // There are some non-profile RawContact Ids, fail without performing operation.
             return false
         }
 
         return contentResolver.applyBatch(
             RawContactsOperation(true).deleteRawContacts(profileRawContactIds)
         ) != null
-    }
-
-    private companion object {
-        // A failed entry in the results so that Result.isSuccessful returns false.
-        const val INVALID_ID = -1L
     }
 }
 
@@ -251,15 +247,13 @@ private class ProfileDeleteResult(
         profileContactDeleteSuccess || rawContactIdsResultMap.all { it.value }
     }
 
-    override fun isSuccessful(rawContact: RawContactEntity): Boolean =
-        rawContact.id?.let { rawContactId ->
-            rawContactIdsResultMap.getOrElse(rawContactId) { false }
-        } ?: false
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
+        rawContactIdsResultMap.getOrElse(rawContact.id) { false }
 }
 
 private class ProfileDeleteFailed : ProfileDelete.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(rawContact: RawContactEntity): Boolean = false
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = false
 }

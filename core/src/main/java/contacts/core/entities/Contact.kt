@@ -25,9 +25,9 @@ sealed interface ContactEntity : Entity {
     /**
      * A list of [RawContactEntity]s that are associated with this contact.
      *
-     * This list is sorted by [RawContactEntity.id], which seems to be the sort order used by the
-     * native Contacts app when displaying the linked RawContacts and when inserting new data for a
-     * Contact with multiple linked RawContacts.
+     * This list is sorted by RawContact id, which seems to be the sort order used by the native
+     * Contacts app when displaying the linked RawContacts and when inserting new data for a Contact
+     * with multiple linked RawContacts.
      */
     val rawContacts: List<RawContactEntity>
 
@@ -168,7 +168,17 @@ sealed interface ContactEntity : Entity {
 /**
  * A [ContactEntity] that has already been inserted into the database.
  */
-sealed interface ExistingContactEntity: ContactEntity, ExistingEntity {
+sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
+
+    /**
+     * A list of [ExistingRawContactEntity]s that are associated with this contact.
+     *
+     * This list is sorted by [ExistingRawContactEntity.id], which seems to be the sort order used
+     * by the native Contacts app when displaying the linked RawContacts and when inserting new data
+     * for a Contact with multiple linked RawContacts.
+     */
+    override val rawContacts: List<ExistingRawContactEntity>
+
     /**
      * The id of the Contacts row this represents.
      *

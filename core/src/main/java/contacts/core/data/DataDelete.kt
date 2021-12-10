@@ -48,10 +48,6 @@ interface DataDelete {
 
     /**
      * Adds the given [data] to the delete queue, which will be deleted on [commit].
-     *
-     * Only existing [data] that have been retrieved via a query will be added to the delete queue.
-     * Those that have been manually created via a constructor will be ignored and result in a
-     * failed operation.
      */
     fun data(vararg data: ExistingDataEntity): DataDelete
 
