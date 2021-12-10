@@ -552,7 +552,7 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
         mutableSetOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()
             while (!cancel() && it.moveToNext()) {
-                rawContactsCursor.rawContactId?.let(::add)
+                add(rawContactsCursor.rawContactId)
             }
 
             // Ensure only complete data sets are returned.

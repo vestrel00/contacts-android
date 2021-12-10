@@ -226,26 +226,16 @@ private class DataUpdateImpl(
                 break
             }
 
-            val dataId = data.id
-            if (dataId != null) {
-                results[dataId] = if (data.isProfile != isProfile) {
-                    // Intentionally fail the operation to ensure that this is only used for
-                    // intended profile or non-profile data updates. Otherwise, operation can
-                    // succeed. This is only done to enforce API design.
-                    false
-                } else {
-                    contentResolver.updateData(include.fields, data, customDataRegistry)
-                }
+            results[data.id] = if (data.isProfile != isProfile) {
+                // Intentionally fail the operation to ensure that this is only used for
+                // intended profile or non-profile data updates. Otherwise, operation can
+                // succeed. This is only done to enforce API design.
+                false
             } else {
-                results[INVALID_ID] = false
+                contentResolver.updateData(include.fields, data, customDataRegistry)
             }
         }
         return DataUpdateResult(results)
-    }
-
-    private companion object {
-        // A failed entry in the results so that Result.isSuccessful returns false.
-        const val INVALID_ID = -1L
     }
 }
 
@@ -261,8 +251,7 @@ private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>)
     override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
 
     override fun isSuccessful(data: ExistingDataEntity): Boolean {
-        val dataId = data.id
-        return dataId != null && dataIdsResultMap.getOrElse(dataId) { false }
+        return dataIdsResultMap.getOrElse(data.id) { false }
     }
 }
 
