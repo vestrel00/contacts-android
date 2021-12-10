@@ -3,6 +3,7 @@ package contacts.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import contacts.core.ContactsException
 import contacts.core.entities.MutableDataEntity
 import contacts.core.entities.removeAll
 import contacts.ui.entities.MutableDataEntityFactory
@@ -91,14 +92,14 @@ abstract class DataEntityListView<E : MutableDataEntity, V : DataEntityView<E>>(
     private fun addEmptyDataView() {
         val emptyData = dataFactory.create().apply(::onEmptyDataCreated)
         emptyDataView = addDataView(emptyData)
-        dataList.add(emptyDataView.data ?: throw IllegalStateException("View data is null"))
+        dataList.add(emptyDataView.data ?: throw ContactsException("View data is null"))
     }
 
     private fun removeDataView(dataView: V) {
         // There may be duplicate data. Therefore, we need to remove the exact data instance.
         // Thus, we remove the data by reference equality instead of by content/structure equality.
         dataList.removeAll(
-            dataView.data ?: throw IllegalStateException("View data is null"),
+            dataView.data ?: throw ContactsException("View data is null"),
             byReference = true
         )
         removeView(dataView)

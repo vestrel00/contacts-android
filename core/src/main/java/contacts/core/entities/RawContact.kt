@@ -295,7 +295,7 @@ data class NewRawContact(
 @Parcelize
 data class BlankRawContact internal constructor(
     override val id: Long,
-    override val contactId: Long,
+    val contactId: Long,
 
     /**
      * The RawContact's display name (given name first), which may be different from the parent
@@ -313,7 +313,9 @@ data class BlankRawContact internal constructor(
     // display name for Contacts, not for RawContacts.
     val displayNameAlt: String?
 
-) : ExistingRawContactEntity, ImmutableEntity {
+    // Intentionally not extending ExistingRawContactEntity to limit the amount possibilities to
+    // only RawContact and MutableRawContact, which are the main consumer-facing entities.
+) : RawContactEntity, ExistingEntity, ImmutableEntity {
 
     override val isBlank: Boolean
         get() = true
@@ -373,7 +375,7 @@ data class BlankRawContact internal constructor(
 internal data class TempRawContact constructor(
 
     override val id: Long,
-    override val contactId: Long,
+    val contactId: Long,
 
     override var addresses: MutableList<Address>,
     override var emails: MutableList<Email>,
@@ -391,7 +393,9 @@ internal data class TempRawContact constructor(
     override var websites: MutableList<Website>,
     override val customDataEntities: MutableMap<String, ImmutableCustomDataEntityHolder>
 
-) : ExistingRawContactEntity, MutableEntity {
+    // Intentionally not extending ExistingRawContactEntity to limit the amount possibilities to
+    // only RawContact and MutableRawContact, which are the main consumer-facing entities.
+) : RawContactEntity, ExistingEntity, MutableEntity {
 
     fun toRawContact() = RawContact(
         id = id,

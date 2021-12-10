@@ -27,7 +27,7 @@ internal inline fun <reified T : Field> Cursor.toEntityCursor(includeFields: Set
         ContactsField::class -> CursorHolder(this, includeFields as Set<ContactsField>)
         RawContactsField::class -> CursorHolder(this, includeFields as Set<RawContactsField>)
         AbstractDataField::class -> CursorHolder(this, includeFields as Set<AbstractDataField>)
-        else -> throw UnsupportedOperationException(
+        else -> throw ContactsException(
             "No entity cursor for ${T::class.java.simpleName}"
         )
     } as CursorHolder<T>
