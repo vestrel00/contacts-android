@@ -6,7 +6,7 @@ import android.content.ContentResolver
 import contacts.core.Include
 import contacts.core.RawContactsFields
 import contacts.core.`in`
-import contacts.core.entities.RawContactEntity
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.cursor.account
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.table.ProfileUris
@@ -85,7 +85,7 @@ interface AccountsQuery {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountFor(rawContact: RawContactEntity): Account?
+    fun accountFor(rawContact: ExistingRawContactEntity): Account?
 
     /**
      * Returns the [AccountsList] for the given Profile or non-Profile (depending on instance)
@@ -108,41 +108,50 @@ interface AccountsQuery {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean = { false })
-    fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean): AccountsList
+    // fun accountsFor(vararg rawContacts: ExistingRawContactEntity, cancel: () -> Boolean = { false })
+    fun accountsFor(
+        vararg rawContacts: ExistingRawContactEntity,
+        cancel: () -> Boolean
+    ): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean): AccountsList
+    fun accountsFor(
+        rawContacts: Sequence<ExistingRawContactEntity>,
+        cancel: () -> Boolean
+    ): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Collection<RawContactEntity>, cancel: () -> Boolean): AccountsList
+    fun accountsFor(
+        rawContacts: Collection<ExistingRawContactEntity>,
+        cancel: () -> Boolean
+    ): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(vararg rawContacts: RawContactEntity): AccountsList
+    fun accountsFor(vararg rawContacts: ExistingRawContactEntity): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Sequence<RawContactEntity>): AccountsList
+    fun accountsFor(rawContacts: Sequence<ExistingRawContactEntity>): AccountsList
 
     /**
      * See [accountsFor].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun accountsFor(rawContacts: Collection<RawContactEntity>): AccountsList
+    fun accountsFor(rawContacts: Collection<ExistingRawContactEntity>): AccountsList
 
     /**
-     * The list of [Account]s retrieved in the same order as the given list of [RawContactEntity].
+     * The list of [Account]s retrieved in the same order as the given list of [ExistingRawContactEntity].
      *
      * This list allows for null [Account]s to accommodate for local RawContacts.
      */
@@ -151,10 +160,10 @@ interface AccountsQuery {
         /**
          * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
          */
-        fun accountFor(rawContact: RawContactEntity): Account?
+        fun accountFor(rawContact: ExistingRawContactEntity): Account?
 
         /**
-         * The [Account] retrieved for the [RawContactEntity] with [rawContactId]. Null if no
+         * The [Account] retrieved for the [ExistingRawContactEntity] with [rawContactId]. Null if no
          * Account or retrieval failed.
          */
         fun accountFor(rawContactId: Long): Account?
@@ -198,34 +207,38 @@ private class AccountsQueryImpl(
             accountManager.getAccountsByType(type).asList()
         }
 
-    override fun accountFor(rawContact: RawContactEntity): Account? =
+    override fun accountFor(rawContact: ExistingRawContactEntity): Account? =
         if (!permissions.canQueryAccounts() || rawContact.isProfile != isProfile) {
             // Intentionally fail the operation to ensure that this is only used for intended
             // profile or non-profile operations. Otherwise, operation can succeed. This is only
             // done to enforce API design.
             null
         } else {
-            rawContact.id?.let {
-                contentResolver.accountForRawContactWithId(it)
-            }
+            contentResolver.accountForRawContactWithId(rawContact.id)
         }
 
-    override fun accountsFor(vararg rawContacts: RawContactEntity, cancel: () -> Boolean) =
+    override fun accountsFor(vararg rawContacts: ExistingRawContactEntity, cancel: () -> Boolean) =
         accountsFor(rawContacts.asSequence(), cancel)
 
-    override fun accountsFor(vararg rawContacts: RawContactEntity) =
+    override fun accountsFor(vararg rawContacts: ExistingRawContactEntity) =
         accountsFor(rawContacts.asSequence())
 
-    override fun accountsFor(rawContacts: Collection<RawContactEntity>, cancel: () -> Boolean) =
+    override fun accountsFor(
+        rawContacts: Collection<ExistingRawContactEntity>,
+        cancel: () -> Boolean
+    ) =
         accountsFor(rawContacts.asSequence(), cancel)
 
-    override fun accountsFor(rawContacts: Collection<RawContactEntity>) =
+    override fun accountsFor(rawContacts: Collection<ExistingRawContactEntity>) =
         accountsFor(rawContacts.asSequence())
 
-    override fun accountsFor(rawContacts: Sequence<RawContactEntity>) =
+    override fun accountsFor(rawContacts: Sequence<ExistingRawContactEntity>) =
         accountsFor(rawContacts) { false }
 
-    override fun accountsFor(rawContacts: Sequence<RawContactEntity>, cancel: () -> Boolean):
+    override fun accountsFor(
+        rawContacts: Sequence<ExistingRawContactEntity>,
+        cancel: () -> Boolean
+    ):
             AccountsQuery.AccountsList {
 
         if (!permissions.canQueryAccounts()) {
@@ -256,10 +269,7 @@ private class AccountsQueryImpl(
             ) {
                 val rawContactsCursor = it.rawContactsCursor()
                 while (!cancel() && it.moveToNext()) {
-                    val rawContactId = rawContactsCursor.rawContactId
-                    if (rawContactId != null) {
-                        put(rawContactId, rawContactsCursor.account())
-                    }
+                    put(rawContactsCursor.rawContactId, rawContactsCursor.account())
                 }
             }
 
@@ -298,8 +308,8 @@ internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Acc
 private class AccountsListImpl(private val rawContactIdAccountMap: Map<Long, Account?>) :
     ArrayList<Account?>(), AccountsQuery.AccountsList {
 
-    override fun accountFor(rawContact: RawContactEntity): Account? =
-        rawContact.id?.let(::accountFor)
+    override fun accountFor(rawContact: ExistingRawContactEntity): Account? =
+        accountFor(rawContact.id)
 
     override fun accountFor(rawContactId: Long): Account? = rawContactIdAccountMap[rawContactId]
 }
