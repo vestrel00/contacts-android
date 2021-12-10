@@ -11,5 +11,5 @@ package contacts.core.entities.cursor
  * This should be used when using a cursor that could have been from the any of the above tables.
  */
 internal sealed interface ContactIdCursor {
-    val contactId: Long?
+    val contactId: Long
 }

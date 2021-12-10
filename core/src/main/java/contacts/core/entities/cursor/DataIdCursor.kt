@@ -7,5 +7,5 @@ package contacts.core.entities.cursor
  * and RawContact Id.
  */
 internal sealed interface DataIdCursor : RawContactIdCursor {
-    val dataId: Long?
+    val dataId: Long
 }

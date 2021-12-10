@@ -3,6 +3,7 @@ package contacts.core.entities.cursor
 import android.database.Cursor
 import android.net.Uri
 import contacts.core.*
+import contacts.core.entities.Entity
 
 /**
  * Retrieves Contact or RawContact options data from the given [cursor].
@@ -13,7 +14,7 @@ import contacts.core.*
 internal sealed class OptionsCursor<T : Field>(cursor: Cursor, includeFields: Set<T>) :
     AbstractEntityCursor<T>(cursor, includeFields) {
 
-    abstract val id: Long?
+    abstract val id: Long
 
     abstract val starred: Boolean?
 
@@ -36,7 +37,7 @@ internal sealed class OptionsCursor<T : Field>(cursor: Cursor, includeFields: Se
 internal class DataContactsOptionsCursor(cursor: Cursor, includeFields: Set<AbstractDataField>) :
     OptionsCursor<AbstractDataField>(cursor, includeFields) {
 
-    override val id: Long? by long(Fields.Contact.Options.Id)
+    override val id: Long by nonNullLong(Fields.Contact.Options.Id, Entity.INVALID_ID)
 
     override val starred: Boolean? by boolean(Fields.Contact.Options.Starred)
 
@@ -51,7 +52,7 @@ internal class DataContactsOptionsCursor(cursor: Cursor, includeFields: Set<Abst
 internal class RawContactsOptionsCursor(cursor: Cursor, includeFields: Set<RawContactsField>) :
     OptionsCursor<RawContactsField>(cursor, includeFields) {
 
-    override val id: Long? by long(RawContactsFields.Options.Id)
+    override val id: Long by nonNullLong(RawContactsFields.Options.Id, Entity.INVALID_ID)
 
     override val starred: Boolean? by boolean(RawContactsFields.Options.Starred)
 
@@ -66,7 +67,7 @@ internal class RawContactsOptionsCursor(cursor: Cursor, includeFields: Set<RawCo
 internal class ContactsOptionsCursor(cursor: Cursor, includeFields: Set<ContactsField>) :
     OptionsCursor<ContactsField>(cursor, includeFields) {
 
-    override val id: Long? by long(ContactsFields.Options.Id)
+    override val id: Long by nonNullLong(ContactsFields.Options.Id, Entity.INVALID_ID)
 
     override val starred: Boolean? by boolean(ContactsFields.Options.Starred)
 

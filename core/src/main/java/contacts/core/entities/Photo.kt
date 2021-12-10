@@ -21,7 +21,15 @@ import kotlinx.parcelize.Parcelize
  */
 // I know this interface is not necessary because there is only one implementation. Still, it does
 // not hurt to have it. It follows the setup like everything else, so it's cool.
-sealed interface PhotoEntity : DataEntity
+sealed interface PhotoEntity : DataEntity {
+
+    override val mimeType: MimeType
+        get() = MimeType.Photo
+
+    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
+    override val isBlank: Boolean
+        get() = false
+}
 
 /* DEV NOTES: Necessary Abstractions
  *
@@ -38,27 +46,13 @@ sealed interface PhotoEntity : DataEntity
  * An existing immutable [PhotoEntity].
  */
 @Parcelize
-object Photo : PhotoEntity, ExistingDataEntity, ImmutableDataEntity {
+data class Photo internal constructor(
 
-    override val mimeType: MimeType
-        get() = MimeType.Photo
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    override val id: Long
-        get() = Entity.INVALID_ID
-
-    override val rawContactId: Long
-        get() = Entity.INVALID_ID
-
-    override val contactId: Long
-        get() = Entity.INVALID_ID
-
-    override val isPrimary: Boolean
-        get() = false
-
+    override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean
-        get() = false
 
-    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
-    override val isBlank: Boolean
-        get() = false
-}
+) : PhotoEntity, ExistingDataEntity, ImmutableDataEntity

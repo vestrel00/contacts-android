@@ -44,10 +44,8 @@ internal fun CursorHolder<AbstractDataField>.organizationMapper(): DataEntityMap
 internal fun CursorHolder<AbstractDataField>.phoneMapper(): DataEntityMapper<Phone> =
     PhoneMapper(phoneCursor())
 
-// The receiver EntityCursor<AbstractDataField> is unused here. However, we should still have it
-// so that the mapper is still tied to or coupled with the receiver.
-@Suppress("Unused")
-internal fun CursorHolder<AbstractDataField>.photoMapper(): DataEntityMapper<Photo> = PhotoMapper
+internal fun CursorHolder<AbstractDataField>.photoMapper(): DataEntityMapper<Photo> =
+    PhotoMapper(photoCursor())
 
 internal fun CursorHolder<AbstractDataField>.relationMapper(): DataEntityMapper<Relation> =
     RelationMapper(relationCursor())
