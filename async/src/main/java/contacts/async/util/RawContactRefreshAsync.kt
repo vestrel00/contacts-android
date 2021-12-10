@@ -2,8 +2,7 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.MutableRawContact
-import contacts.core.entities.RawContact
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.util.refresh
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -14,27 +13,12 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [RawContact.refresh].
+ * See [ExistingRawContactEntity.refresh].
  */
-suspend fun RawContact.refreshWithContext(
+suspend fun <T : ExistingRawContactEntity> T.refreshWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): RawContact? = withContext(coroutineContext) {
-    refresh(contacts) { !isActive }
-}
-
-/**
- * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
- * returns the result.
- *
- * Computations automatically stops if the parent coroutine scope / job is cancelled.
- *
- * See [RawContact.refresh].
- */
-suspend fun MutableRawContact.refreshWithContext(
-    contacts: Contacts,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): MutableRawContact? = withContext(coroutineContext) {
+): T? = withContext(coroutineContext) {
     refresh(contacts) { !isActive }
 }
 
@@ -44,26 +28,11 @@ suspend fun MutableRawContact.refreshWithContext(
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [RawContact.refresh].
+ * See [ExistingRawContactEntity.refresh].
  */
-fun RawContact.refreshAsync(
+fun <T : ExistingRawContactEntity> T.refreshAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
-    refresh(contacts) { !isActive }
-}
-
-/**
- * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
- * scope, then returns the [Deferred] result.
- *
- * Computations automatically stops if the parent coroutine scope / job is cancelled.
- *
- * See [RawContact.refresh].
- */
-fun MutableRawContact.refreshAsync(
-    contacts: Contacts,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<MutableRawContact?> = CoroutineScope(coroutineContext).async {
+): Deferred<T?> = CoroutineScope(coroutineContext).async {
     refresh(contacts) { !isActive }
 }
