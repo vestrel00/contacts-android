@@ -1,28 +1,25 @@
 package contacts.core.util
 
 import contacts.core.*
-import contacts.core.entities.MutableOptions
 import contacts.core.entities.Options
-import contacts.core.entities.RawContactEntity
+import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.MutableOptionsEntity
+import contacts.core.entities.NewOptions
 import contacts.core.entities.mapper.rawContactsOptionsMapper
 import contacts.core.entities.operation.OptionsOperation
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 
 /**
- * Returns the [Options] of this [RawContactEntity].
+ * Returns the [Options] of this [ExistingRawContactEntity].
  *
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  *
+ * This will return null if the contact no longer exist or permissions have not been granted.
+ *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -33,36 +30,28 @@ import contacts.core.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.options(contacts: Contacts): Options {
-    val rawContactId = id
-
-    if (!contacts.permissions.canQuery() || rawContactId == null) {
-        return Options()
+fun ExistingRawContactEntity.options(contacts: Contacts): Options? {
+    if (!contacts.permissions.canQuery()) {
+        return null
     }
 
     return contacts.applicationContext.contentResolver.query(
         if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
         Include(RawContactsFields.Options),
-        RawContactsFields.Id equalTo rawContactId
+        RawContactsFields.Id equalTo id
     ) {
         it.getNextOrNull { it.rawContactsOptionsMapper().value }
-    } ?: Options()
+    }
 }
 
 /**
- * Updates this [RawContactEntity.options] with the given [options].
+ * Updates this [ExistingRawContactEntity.options] with the given [options].
  *
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
  * On the other hand, changes to the options of the parent Contact will be propagated to all child
  * RawContact options.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Changes are immediate
  *
@@ -107,20 +96,21 @@ fun RawContactEntity.options(contacts: Contacts): Options {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Boolean {
-    val rawContactId = id
-
-    if (!contacts.permissions.canUpdateDelete() || rawContactId == null) {
+fun ExistingRawContactEntity.setOptions(
+    contacts: Contacts,
+    options: MutableOptionsEntity
+): Boolean {
+    if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
 
     return contacts.applicationContext.contentResolver.applyBatch(
-        OptionsOperation().updateRawContactOptions(rawContactId, options)
+        OptionsOperation().updateRawContactOptions(id, options)
     ) != null
 }
 
 /**
- * Updates this [RawContactEntity.options] in [update]. If this contact has null options, a new
+ * Updates this [ExistingRawContactEntity.options] in [update]. If this contact has null options, a new
  * blank options will be used in [update].
  *
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
@@ -129,12 +119,6 @@ fun RawContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Bo
  *
  * Supports profile and non-profile RawContacts.
  *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
- *
  * ## Changes are immediate
  *
  * This function will make the changes to the Contacts Provider database immediately. You do not
@@ -178,8 +162,11 @@ fun RawContactEntity.setOptions(contacts: Contacts, options: MutableOptions): Bo
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.updateOptions(contacts: Contacts, update: MutableOptions.() -> Unit): Boolean {
-    val mutableOptions = options(contacts).mutableCopy()
-    mutableOptions.update()
-    return setOptions(contacts, mutableOptions)
+fun ExistingRawContactEntity.updateOptions(
+    contacts: Contacts,
+    update: MutableOptionsEntity.() -> Unit
+): Boolean {
+    val optionsToUse = options(contacts)?.mutableCopy() ?: NewOptions()
+    optionsToUse.update()
+    return setOptions(contacts, optionsToUse)
 }
