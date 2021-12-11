@@ -85,8 +85,7 @@ fun OrderBy<AbstractDataField>.contactsComparator(
 private class ContactsComparator(
     private val customDataRegistry: CustomDataRegistry,
     private val orderBys: Set<OrderBy<AbstractDataField>>
-) :
-    Comparator<Contact> {
+) : Comparator<Contact> {
 
     override fun compare(lhs: Contact, rhs: Contact): Int {
         var result = 0
@@ -470,25 +469,6 @@ private fun Uri?.compareTo(other: Uri?): Int {
  * if [this] is not null and [other] is null. Returns 0 if both [this] and [other] are null.
  */
 private fun Boolean?.compareTo(other: Boolean?): Int {
-    return if (this != null && other != null) {
-        compareTo(other)
-    } else if (this == null && other != null) {
-        1
-    } else if (this != null && other == null) {
-        -1
-    } else {
-        0
-    }
-}
-
-/**
- * Compares [this] nullable long to the [other] nullable long.
- *
- * If both [this] and [other] are not null, then a comparison is done on both. Otherwise, this
- * returns a positive integer if [this] is null and [other] is not null. Returns a negative integer
- * if [this] is not null and [other] is null. Returns 0 if both [this] and [other] are null.
- */
-private fun Long?.compareTo(other: Long?): Int {
     return if (this != null && other != null) {
         compareTo(other)
     } else if (this == null && other != null) {

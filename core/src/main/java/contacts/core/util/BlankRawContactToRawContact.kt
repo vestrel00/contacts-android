@@ -7,20 +7,14 @@ import contacts.core.entities.RawContact
 /**
  * Returns the equivalent [RawContact] with all of the latest data.
  *
- * This may return null if the [RawContact] no longer exists or if [BlankRawContact.id] is null.
+ * This may return null if the [RawContact] no longer exists or if permissions are not ranted.
  *
  * Supports profile and non-profile RawContacts with native/custom data.
  *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query APIs.
- *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
- * if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
+ * returned if the permission is not granted.
  *
  * ## Thread Safety
  *
@@ -31,7 +25,4 @@ import contacts.core.entities.RawContact
 fun BlankRawContact.toRawContact(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
-): RawContact? =
-    id?.let { rawContactId ->
-        contacts.findRawContactWithId(rawContactId, cancel)
-    }
+): RawContact? = contacts.findRawContactWithId(id, cancel)

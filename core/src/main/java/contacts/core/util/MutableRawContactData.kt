@@ -2,22 +2,18 @@ package contacts.core.util
 
 import contacts.core.entities.*
 
-// Another dev note: Receiver signatures are the concrete types instead of the interface type.
-// This is done so that consumers gets references to actual concrete types, which may implement
-// other interfaces required by APIs in this library.
-
 /**
  * Adds the given [address] to [MutableRawContact.addresses].
  */
-fun MutableRawContact.addAddress(address: MutableAddress) {
+fun MutableRawContact.addAddress(address: MutableAddressEntity) {
     addresses.add(address)
 }
 
 /**
  * Adds a new address (configured by [configureAddress]) to [MutableRawContact.addresses].
  */
-fun MutableRawContact.addAddress(configureAddress: MutableAddress.() -> Unit) {
-    addresses.add(MutableAddress().apply(configureAddress))
+fun MutableRawContact.addAddress(configureAddress: NewAddress.() -> Unit) {
+    addresses.add(NewAddress().apply(configureAddress))
 }
 
 /**
@@ -28,7 +24,7 @@ fun MutableRawContact.addAddress(configureAddress: MutableAddress.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableRawContact.removeAddress(address: MutableAddress, byReference: Boolean = false) {
+fun MutableRawContact.removeAddress(address: MutableAddressEntity, byReference: Boolean = false) {
     addresses.removeAll(address, byReference)
 }
 
@@ -42,15 +38,15 @@ fun MutableRawContact.removeAllAddresses() {
 /**
  * Adds the given [email] to [MutableRawContact.emails].
  */
-fun MutableRawContact.addEmail(email: MutableEmail) {
+fun MutableRawContact.addEmail(email: MutableEmailEntity) {
     emails.add(email)
 }
 
 /**
  * Adds a new email (configured by [configureEmail]) to [MutableRawContact.emails].
  */
-fun MutableRawContact.addEmail(configureEmail: MutableEmail.() -> Unit) {
-    emails.add(MutableEmail().apply(configureEmail))
+fun MutableRawContact.addEmail(configureEmail: NewEmail.() -> Unit) {
+    emails.add(NewEmail().apply(configureEmail))
 }
 
 /**
@@ -61,7 +57,7 @@ fun MutableRawContact.addEmail(configureEmail: MutableEmail.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableRawContact.removeEmail(email: MutableEmail, byReference: Boolean = false) {
+fun MutableRawContact.removeEmail(email: MutableEmailEntity, byReference: Boolean = false) {
     emails.removeAll(email, byReference)
 }
 
@@ -75,15 +71,15 @@ fun MutableRawContact.removeAllEmails() {
 /**
  * Adds the given [event] to [MutableRawContact.events].
  */
-fun MutableRawContact.addEvent(event: MutableEvent) {
+fun MutableRawContact.addEvent(event: MutableEventEntity) {
     events.add(event)
 }
 
 /**
  * Adds a new event (configured by [configureEvent]) to [MutableRawContact.events].
  */
-fun MutableRawContact.addEvent(configureEvent: MutableEvent.() -> Unit) {
-    events.add(MutableEvent().apply(configureEvent))
+fun MutableRawContact.addEvent(configureEvent: NewEvent.() -> Unit) {
+    events.add(NewEvent().apply(configureEvent))
 }
 
 /**
@@ -94,7 +90,7 @@ fun MutableRawContact.addEvent(configureEvent: MutableEvent.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableRawContact.removeEvent(event: MutableEvent, byReference: Boolean = false) {
+fun MutableRawContact.removeEvent(event: MutableEventEntity, byReference: Boolean = false) {
     events.removeAll(event, byReference)
 }
 
@@ -114,7 +110,7 @@ fun MutableRawContact.removeAllEvents() {
  * and updates. Only group memberships to groups that belong to the same account as the raw contact
  * will be inserted.
  */
-fun MutableRawContact.addGroupMembership(groupMembership: GroupMembership) {
+fun MutableRawContact.addGroupMembership(groupMembership: GroupMembershipEntity) {
     groupMemberships.add(groupMembership)
 }
 
@@ -132,7 +128,7 @@ fun MutableRawContact.addGroupMembership(groupMembership: GroupMembership) {
  */
 @JvmOverloads
 fun MutableRawContact.removeGroupMembership(
-    groupMembership: GroupMembership, byReference: Boolean = false
+    groupMembership: GroupMembershipEntity, byReference: Boolean = false
 ) {
     groupMemberships.removeAll(groupMembership, byReference)
 }
@@ -147,15 +143,15 @@ fun MutableRawContact.removeAllGroupMemberships() {
 /**
  * Adds the given [im] to [MutableRawContact.ims].
  */
-fun MutableRawContact.addIm(im: MutableIm) {
+fun MutableRawContact.addIm(im: MutableImEntity) {
     ims.add(im)
 }
 
 /**
  * Adds a new IM (configured by [configureIm]) to [MutableRawContact.ims].
  */
-fun MutableRawContact.addIm(configureIm: MutableIm.() -> Unit) {
-    ims.add(MutableIm().apply(configureIm))
+fun MutableRawContact.addIm(configureIm: NewIm.() -> Unit) {
+    ims.add(NewIm().apply(configureIm))
 }
 
 /**
@@ -166,7 +162,7 @@ fun MutableRawContact.addIm(configureIm: MutableIm.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableRawContact.removeIm(im: MutableIm, byReference: Boolean = false) {
+fun MutableRawContact.removeIm(im: MutableImEntity, byReference: Boolean = false) {
     ims.removeAll(im, byReference)
 }
 
@@ -178,76 +174,76 @@ fun MutableRawContact.removeAllIms() {
 }
 
 /**
- * Sets the [MutableRawContact.name].
+ * Sets the [MutableRawContact.name] to the given [name].
  */
-fun MutableRawContact.setName(name: MutableName?) {
+fun MutableRawContact.setName(name: MutableNameEntity?) {
     this.name = name
 }
 
 /**
- * Sets the [MutableRawContact.name] (configured by [configureName]).
+ * Sets the [MutableRawContact.name] (configured by [configureName]) to a new name.
  */
-fun MutableRawContact.setName(configureName: MutableName.() -> Unit) {
-    this.name = MutableName().apply(configureName)
+fun MutableRawContact.setName(configureName: NewName.() -> Unit) {
+    this.name = NewName().apply(configureName)
 }
 
 /**
- * Sets the [MutableRawContact.nickname].
+ * Sets the [MutableRawContact.nickname] to the given [nickname].
  */
-fun MutableRawContact.setNickname(nickname: MutableNickname?) {
+fun MutableRawContact.setNickname(nickname: MutableNicknameEntity?) {
     this.nickname = nickname
 }
 
 /**
- * Sets the [MutableRawContact.nickname] (configured by [configureNickname]).
+ * Sets the [MutableRawContact.nickname] (configured by [configureNickname]) to a new nickname.
  */
-fun MutableRawContact.setNickname(configureNickname: MutableNickname.() -> Unit) {
-    this.nickname = MutableNickname().apply(configureNickname)
+fun MutableRawContact.setNickname(configureNickname: NewNickname.() -> Unit) {
+    this.nickname = NewNickname().apply(configureNickname)
 }
 
 /**
- * Sets the [MutableRawContact.note].
+ * Sets the [MutableRawContact.note] to the given [note].
  */
-fun MutableRawContact.setNote(note: MutableNote?) {
+fun MutableRawContact.setNote(note: MutableNoteEntity?) {
     this.note = note
 }
 
 /**
- * Sets the [MutableRawContact.note] (configured by [configureNote]).
+ * Sets the [MutableRawContact.note] (configured by [configureNote]) to a new note.
  */
-fun MutableRawContact.setNote(configureNote: MutableNote.() -> Unit) {
-    this.note = MutableNote().apply(configureNote)
+fun MutableRawContact.setNote(configureNote: NewNote.() -> Unit) {
+    this.note = NewNote().apply(configureNote)
 }
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
 // Options.
 
 /**
- * Sets the [MutableRawContact.organization].
+ * Sets the [MutableRawContact.organization] to the given [organization].
  */
-fun MutableRawContact.setOrganization(organization: MutableOrganization?) {
+fun MutableRawContact.setOrganization(organization: MutableOrganizationEntity?) {
     this.organization = organization
 }
 
 /**
- * Sets the [MutableRawContact.organization] (configured by [configureOrganization]).
+ * Sets the [MutableRawContact.organization] (configured by [configureOrganization]) to a new org.
  */
-fun MutableRawContact.setOrganization(configureOrganization: MutableOrganization.() -> Unit) {
-    this.organization = MutableOrganization().apply(configureOrganization)
+fun MutableRawContact.setOrganization(configureOrganization: NewOrganization.() -> Unit) {
+    this.organization = NewOrganization().apply(configureOrganization)
 }
 
 /**
  * Adds the given [phone] to [MutableRawContact.phones].
  */
-fun MutableRawContact.addPhone(phone: MutablePhone) {
+fun MutableRawContact.addPhone(phone: MutablePhoneEntity) {
     phones.add(phone)
 }
 
 /**
  * Adds a new phone (configured by [configurePhone]) to [MutableRawContact.phones].
  */
-fun MutableRawContact.addPhone(configurePhone: MutablePhone.() -> Unit) {
-    phones.add(MutablePhone().apply(configurePhone))
+fun MutableRawContact.addPhone(configurePhone: NewPhone.() -> Unit) {
+    phones.add(NewPhone().apply(configurePhone))
 }
 
 /**
@@ -258,7 +254,7 @@ fun MutableRawContact.addPhone(configurePhone: MutablePhone.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableRawContact.removePhone(phone: MutablePhone, byReference: Boolean = false) {
+fun MutableRawContact.removePhone(phone: MutablePhoneEntity, byReference: Boolean = false) {
     phones.removeAll(phone, byReference)
 }
 
@@ -275,15 +271,15 @@ fun MutableRawContact.removeAllPhones() {
 /**
  * Adds the given [relation] to [MutableRawContact.relations].
  */
-fun MutableRawContact.addRelation(relation: MutableRelation) {
+fun MutableRawContact.addRelation(relation: MutableRelationEntity) {
     relations.add(relation)
 }
 
 /**
  * Adds a new relation (configured by [configureRelation]) to [MutableRawContact.relations].
  */
-fun MutableRawContact.addRelation(configureRelation: MutableRelation.() -> Unit) {
-    relations.add(MutableRelation().apply(configureRelation))
+fun MutableRawContact.addRelation(configureRelation: NewRelation.() -> Unit) {
+    relations.add(NewRelation().apply(configureRelation))
 }
 
 /**
@@ -294,7 +290,10 @@ fun MutableRawContact.addRelation(configureRelation: MutableRelation.() -> Unit)
  * (same object)**.
  */
 @JvmOverloads
-fun MutableRawContact.removeRelation(relation: MutableRelation, byReference: Boolean = false) {
+fun MutableRawContact.removeRelation(
+    relation: MutableRelationEntity,
+    byReference: Boolean = false
+) {
     relations.removeAll(relation, byReference)
 }
 
@@ -306,31 +305,31 @@ fun MutableRawContact.removeAllRelations() {
 }
 
 /**
- * Sets the [MutableRawContact.sipAddress].
+ * Sets the [MutableRawContact.sipAddress] to the given [sipAddress].
  */
-fun MutableRawContact.setSipAddress(sipAddress: MutableSipAddress?) {
+fun MutableRawContact.setSipAddress(sipAddress: MutableSipAddressEntity?) {
     this.sipAddress = sipAddress
 }
 
 /**
- * Sets the [MutableRawContact.sipAddress] (configured by [configureSipAddress]).
+ * Sets the [MutableRawContact.sipAddress] (configured by [configureSipAddress]) to a new address.
  */
-fun MutableRawContact.setSipAddress(configureSipAddress: MutableSipAddress.() -> Unit) {
-    this.sipAddress = MutableSipAddress().apply(configureSipAddress)
+fun MutableRawContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) {
+    this.sipAddress = NewSipAddress().apply(configureSipAddress)
 }
 
 /**
  * Adds the given [website] to [MutableRawContact.websites].
  */
-fun MutableRawContact.addWebsite(website: MutableWebsite) {
+fun MutableRawContact.addWebsite(website: MutableWebsiteEntity) {
     websites.add(website)
 }
 
 /**
  * Adds a new website (configured by [configureWebsite]) to [MutableRawContact.websites].
  */
-fun MutableRawContact.addWebsite(configureWebsite: MutableWebsite.() -> Unit) {
-    websites.add(MutableWebsite().apply(configureWebsite))
+fun MutableRawContact.addWebsite(configureWebsite: NewWebsite.() -> Unit) {
+    websites.add(NewWebsite().apply(configureWebsite))
 }
 
 /**
@@ -341,7 +340,7 @@ fun MutableRawContact.addWebsite(configureWebsite: MutableWebsite.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableRawContact.removeWebsite(website: MutableWebsite, byReference: Boolean = false) {
+fun MutableRawContact.removeWebsite(website: MutableWebsiteEntity, byReference: Boolean = false) {
     websites.removeAll(website, byReference)
 }
 
