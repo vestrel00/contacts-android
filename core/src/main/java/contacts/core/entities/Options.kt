@@ -58,12 +58,30 @@ sealed interface OptionsEntity : Entity {
  *
  * We only create abstractions when they are necessary!
  *
- * This is why there are no interfaces for NewOptionsEntity, ExistingOptionsEntity,
- * ImmutableOptionsEntity, and MutableNewOptionsEntity. There are currently no library functions or
- * constructs that require them.
+ * Apart from OptionsEntity, there is only one interface that extends it; MutableOptionsEntity.
+ *
+ * The MutableOptionsEntity interface is used for library constructs that require an OptionsEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableOptions and NewOptions. With this, we can create constructs that can
+ * keep a reference to MutableOptions(s) or NewOptions(s) through the MutableOptionsEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewOptionsEntity, ExistingOptionsEntity, and
+ * ImmutableOptionsEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
+
+/**
+ * A mutable [OptionsEntity]. `
+ */
+sealed interface MutableOptionsEntity : OptionsEntity, MutableEntity {
+
+    override var starred: Boolean?
+    override var customRingtone: Uri?
+    override var sendToVoicemail: Boolean?
+}
+
 
 /**
  * An existing immutable [OptionsEntity].
@@ -106,7 +124,7 @@ data class MutableOptions internal constructor(
     override var customRingtone: Uri?,
     override var sendToVoicemail: Boolean?
 
-) : OptionsEntity, ExistingEntity, MutableEntity
+) : OptionsEntity, ExistingEntity, MutableOptionsEntity
 
 /**
  * A new mutable [OptionsEntity].
@@ -119,7 +137,7 @@ data class NewOptions(
     override var customRingtone: Uri?,
     override var sendToVoicemail: Boolean?
 
-) : OptionsEntity, NewEntity, MutableEntity {
+) : OptionsEntity, NewEntity, MutableOptionsEntity {
 
     // An empty constructor for consumer use. Useful for both Kotlin and Java users.
     constructor() : this(null, null, null)

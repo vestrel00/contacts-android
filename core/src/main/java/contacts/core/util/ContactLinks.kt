@@ -2,12 +2,11 @@ package contacts.core.util
 
 import android.content.ContentProviderOperation
 import android.os.Build
-import android.provider.ContactsContract.*
+import android.provider.ContactsContract
 import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.Name
-import contacts.core.entities.RawContactEntity
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.cursor.rawContactsCursor
@@ -168,7 +167,7 @@ fun ExistingContactEntity.link(
     contactsApi.applicationContext.contentResolver.applyBatch(
         aggregateExceptionsOperations(
             sortedRawContactIds,
-            AggregationExceptions.TYPE_KEEP_TOGETHER
+            ContactsContract.AggregationExceptions.TYPE_KEEP_TOGETHER
         )
     ) ?: return ContactLinkFailed()
 
@@ -295,7 +294,7 @@ fun ExistingContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
     contactsApi.applicationContext.contentResolver.applyBatch(
         aggregateExceptionsOperations(
             sortedRawContactIds,
-            AggregationExceptions.TYPE_KEEP_SEPARATE
+            ContactsContract.AggregationExceptions.TYPE_KEEP_SEPARATE
         )
     ) ?: return ContactUnlinkFailed()
 
@@ -305,7 +304,7 @@ fun ExistingContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
 interface ContactUnlinkResult {
 
     /**
-     * The list of [RawContactEntity.id] that have been unlinked. Empty if [isSuccessful] is false.
+     * The list of RawContacts' IDs that have been unlinked. Empty if [isSuccessful] is false.
      */
     val rawContactIds: List<Long>
 
@@ -333,8 +332,8 @@ private class ContactUnlinkFailed : ContactUnlinkResult {
 
 /**
  * Provides the operations to ensure that all or the given raw contacts are kept together
- * [AggregationExceptions.TYPE_KEEP_TOGETHER] or kept separate
- * [AggregationExceptions.TYPE_KEEP_SEPARATE], depending on the given [type].
+ * [ContactsContract.AggregationExceptions.TYPE_KEEP_TOGETHER] or kept separate
+ * [ContactsContract.AggregationExceptions.TYPE_KEEP_SEPARATE], depending on the given [type].
  *
  * See DEV_NOTES "AggregationExceptions table" section.
  */
@@ -388,10 +387,10 @@ private fun Contacts.nameRowIdToUseAsDefault(contactIds: Set<Long>): Long? {
 
 /**
  * Returns the structured name row ID of the RawContact referenced by the
- * [ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
+ * [ContactsContract.ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
  *
- * Returns null if the [ContactNameColumns.DISPLAY_NAME_SOURCE] is not
- * [DisplayNameSources.STRUCTURED_NAME] or if the name row is not found.
+ * Returns null if the [ContactsContract.ContactNameColumns.DISPLAY_NAME_SOURCE] is not
+ * [ContactsContract.DisplayNameSources.STRUCTURED_NAME] or if the name row is not found.
  */
 private fun Contacts.nameRawContactIdStructuredNameId(contactId: Long): Long? {
     val nameRawContactId = nameRawContactId(contactId) ?: return null
@@ -407,10 +406,11 @@ private fun Contacts.nameRawContactIdStructuredNameId(contactId: Long): Long? {
 }
 
 /**
- * Returns the [ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
+ * Returns the [ContactsContract.ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given
+ * [contactId].
  *
- * Returns null if the [ContactNameColumns.DISPLAY_NAME_SOURCE] is not
- * [DisplayNameSources.STRUCTURED_NAME].
+ * Returns null if the [ContactsContract.ContactNameColumns.DISPLAY_NAME_SOURCE] is not
+ * [ContactsContract.DisplayNameSources.STRUCTURED_NAME].
  */
 // [ANDROID X] @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 // (not using annotation to avoid dependency on androidx.annotation)
@@ -420,16 +420,17 @@ private fun Contacts.nameRawContactId(contactId: Long): Long? =
         Include(ContactsFields.DisplayNameSource, ContactsFields.NameRawContactId),
         ContactsFields.Id equalTo contactId
     ) {
-        var displayNameSource: Int = DisplayNameSources.UNDEFINED
+        var displayNameSource: Int = ContactsContract.DisplayNameSources.UNDEFINED
         var nameRawContactId: Long? = null
 
         it.getNextOrNull {
             val contactsCursor = it.contactsCursor()
-            displayNameSource = contactsCursor.displayNameSource ?: DisplayNameSources.UNDEFINED
+            displayNameSource =
+                contactsCursor.displayNameSource ?: ContactsContract.DisplayNameSources.UNDEFINED
             nameRawContactId = contactsCursor.nameRawContactId
         }
 
-        if (displayNameSource != DisplayNameSources.STRUCTURED_NAME) {
+        if (displayNameSource != ContactsContract.DisplayNameSources.STRUCTURED_NAME) {
             null
         } else {
             nameRawContactId
@@ -449,7 +450,7 @@ private fun Contacts.sortedRawContactIds(contactIds: Set<Long>): List<Long> =
         mutableListOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()
             while (it.moveToNext()) {
-                rawContactsCursor.rawContactId?.let(::add)
+                add(rawContactsCursor.rawContactId)
             }
         }
     } ?: emptyList()
