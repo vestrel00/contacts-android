@@ -3,7 +3,7 @@ package contacts.async.data
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.DataField
 import contacts.core.data.DataQuery
-import contacts.core.entities.ImmutableDataEntity
+import contacts.core.entities.ExistingDataEntity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -15,7 +15,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * See [DataQuery.find].
  */
-suspend fun <F : DataField, E : ImmutableDataEntity> DataQuery<F, E>.findWithContext(
+suspend fun <F : DataField, E : ExistingDataEntity> DataQuery<F, E>.findWithContext(
     context: CoroutineContext = ASYNC_DISPATCHER
 ): List<E> = withContext(context) { find { !isActive } }
 
@@ -28,6 +28,6 @@ suspend fun <F : DataField, E : ImmutableDataEntity> DataQuery<F, E>.findWithCon
  *
  * See [DataQuery.find].
  */
-fun <F : DataField, E : ImmutableDataEntity> DataQuery<F, E>.findAsync(
+fun <F : DataField, E : ExistingDataEntity> DataQuery<F, E>.findAsync(
     context: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<List<E>> = CoroutineScope(context).async { find { !isActive } }

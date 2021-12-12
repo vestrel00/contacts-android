@@ -2,7 +2,7 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.DataEntity
+import contacts.core.entities.ExistingDataEntity
 import contacts.core.util.clearDefault
 import contacts.core.util.setAsDefault
 import kotlinx.coroutines.CoroutineScope
@@ -15,9 +15,9 @@ import kotlin.coroutines.CoroutineContext
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
  * returns the result.
  *
- * See [DataEntity.setAsDefault].
+ * See [ExistingDataEntity.setAsDefault].
  */
-suspend fun DataEntity.setAsDefaultWithContext(
+suspend fun ExistingDataEntity.setAsDefaultWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { setAsDefault(contacts) }
@@ -26,9 +26,9 @@ suspend fun DataEntity.setAsDefaultWithContext(
  * Suspends the current coroutine, performs the operation in the given [coroutineContext], then
  * returns the result.
  *
- * See [DataEntity.clearDefault].
+ * See [ExistingDataEntity.clearDefault].
  */
-suspend fun DataEntity.clearDefaultWithContext(
+suspend fun ExistingDataEntity.clearDefaultWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { clearDefault(contacts) }
@@ -37,9 +37,9 @@ suspend fun DataEntity.clearDefaultWithContext(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [DataEntity.setAsDefault].
+ * See [ExistingDataEntity.setAsDefault].
  */
-fun DataEntity.setAsDefaultAsync(
+fun ExistingDataEntity.setAsDefaultAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setAsDefault(contacts) }
@@ -48,9 +48,9 @@ fun DataEntity.setAsDefaultAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [DataEntity.clearDefault].
+ * See [ExistingDataEntity.clearDefault].
  */
-fun DataEntity.clearDefaultAsync(
+fun ExistingDataEntity.clearDefaultAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { clearDefault(contacts) }

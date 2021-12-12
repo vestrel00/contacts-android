@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.ContactEntity
+import contacts.core.entities.ExistingContactEntity
 import contacts.core.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -21,9 +21,9 @@ import kotlin.coroutines.CoroutineContext
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoInputStream].
+ * See [ExistingContactEntity.photoInputStream].
  */
-suspend fun ContactEntity.photoInputStreamWithContext(
+suspend fun ExistingContactEntity.photoInputStreamWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): InputStream? = withContext(coroutineContext) { photoInputStream(contacts) }
@@ -32,9 +32,9 @@ suspend fun ContactEntity.photoInputStreamWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoBytes].
+ * See [ExistingContactEntity.photoBytes].
  */
-suspend fun ContactEntity.photoBytesWithContext(
+suspend fun ExistingContactEntity.photoBytesWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): ByteArray? = withContext(coroutineContext) { photoBytes(contacts) }
@@ -43,9 +43,9 @@ suspend fun ContactEntity.photoBytesWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoBitmap].
+ * See [ExistingContactEntity.photoBitmap].
  */
-suspend fun ContactEntity.photoBitmapWithContext(
+suspend fun ExistingContactEntity.photoBitmapWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Bitmap? = withContext(coroutineContext) { photoBitmap(contacts) }
@@ -54,9 +54,9 @@ suspend fun ContactEntity.photoBitmapWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoBitmap].
+ * See [ExistingContactEntity.photoBitmap].
  */
-suspend fun ContactEntity.photoBitmapDrawableWithContext(
+suspend fun ExistingContactEntity.photoBitmapDrawableWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): BitmapDrawable? = withContext(coroutineContext) { photoBitmapDrawable(contacts) }
@@ -69,9 +69,9 @@ suspend fun ContactEntity.photoBitmapDrawableWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoThumbnailInputStream].
+ * See [ExistingContactEntity.photoThumbnailInputStream].
  */
-suspend fun ContactEntity.photoThumbnailInputStreamWithContext(
+suspend fun ExistingContactEntity.photoThumbnailInputStreamWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): InputStream? = withContext(coroutineContext) { photoThumbnailInputStream(contacts) }
@@ -80,9 +80,9 @@ suspend fun ContactEntity.photoThumbnailInputStreamWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoThumbnailBytes].
+ * See [ExistingContactEntity.photoThumbnailBytes].
  */
-suspend fun ContactEntity.photoThumbnailBytesWithContext(
+suspend fun ExistingContactEntity.photoThumbnailBytesWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): ByteArray? = withContext(coroutineContext) { photoThumbnailBytes(contacts) }
@@ -91,9 +91,9 @@ suspend fun ContactEntity.photoThumbnailBytesWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoThumbnailBitmap].
+ * See [ExistingContactEntity.photoThumbnailBitmap].
  */
-suspend fun ContactEntity.photoThumbnailBitmapWithContext(
+suspend fun ExistingContactEntity.photoThumbnailBitmapWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Bitmap? = withContext(coroutineContext) { photoThumbnailBitmap(contacts) }
@@ -102,9 +102,9 @@ suspend fun ContactEntity.photoThumbnailBitmapWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.photoThumbnailBitmap].
+ * See [ExistingContactEntity.photoThumbnailBitmap].
  */
-suspend fun ContactEntity.photoThumbnailBitmapDrawableWithContext(
+suspend fun ExistingContactEntity.photoThumbnailBitmapDrawableWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): BitmapDrawable? = withContext(coroutineContext) { photoThumbnailBitmapDrawable(contacts) }
@@ -117,9 +117,9 @@ suspend fun ContactEntity.photoThumbnailBitmapDrawableWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-suspend fun ContactEntity.setPhotoWithContext(
+suspend fun ExistingContactEntity.setPhotoWithContext(
     contacts: Contacts, imageBytes: ByteArray,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { setPhoto(contacts, imageBytes) }
@@ -128,9 +128,9 @@ suspend fun ContactEntity.setPhotoWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-suspend fun ContactEntity.setPhotoWithContext(
+suspend fun ExistingContactEntity.setPhotoWithContext(
     contacts: Contacts, photoInputStream: InputStream,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { setPhoto(contacts, photoInputStream) }
@@ -139,9 +139,9 @@ suspend fun ContactEntity.setPhotoWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-suspend fun ContactEntity.setPhotoWithContext(
+suspend fun ExistingContactEntity.setPhotoWithContext(
     contacts: Contacts, photoBitmap: Bitmap,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { setPhoto(contacts, photoBitmap) }
@@ -150,9 +150,9 @@ suspend fun ContactEntity.setPhotoWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-suspend fun ContactEntity.setPhotoWithContext(
+suspend fun ExistingContactEntity.setPhotoWithContext(
     contacts: Contacts, photoDrawable: BitmapDrawable,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { setPhoto(contacts, photoDrawable) }
@@ -165,9 +165,9 @@ suspend fun ContactEntity.setPhotoWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.removePhoto].
+ * See [ExistingContactEntity.removePhoto].
  */
-suspend fun ContactEntity.removePhotoWithContext(
+suspend fun ExistingContactEntity.removePhotoWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { removePhoto(contacts) }
@@ -184,9 +184,9 @@ suspend fun ContactEntity.removePhotoWithContext(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoInputStream].
+ * See [ExistingContactEntity.photoInputStream].
  */
-fun ContactEntity.photoInputStreamAsync(
+fun ExistingContactEntity.photoInputStreamAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<InputStream?> = CoroutineScope(coroutineContext).async { photoInputStream(contacts) }
@@ -195,9 +195,9 @@ fun ContactEntity.photoInputStreamAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoBytes].
+ * See [ExistingContactEntity.photoBytes].
  */
-fun ContactEntity.photoBytesAsync(
+fun ExistingContactEntity.photoBytesAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<ByteArray?> = CoroutineScope(coroutineContext).async { photoBytes(contacts) }
@@ -206,9 +206,9 @@ fun ContactEntity.photoBytesAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoBitmap].
+ * See [ExistingContactEntity.photoBitmap].
  */
-fun ContactEntity.photoBitmapAsync(
+fun ExistingContactEntity.photoBitmapAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Bitmap?> = CoroutineScope(coroutineContext).async { photoBitmap(contacts) }
@@ -217,9 +217,9 @@ fun ContactEntity.photoBitmapAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoBitmap].
+ * See [ExistingContactEntity.photoBitmap].
  */
-fun ContactEntity.photoBitmapDrawableAsync(
+fun ExistingContactEntity.photoBitmapDrawableAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<BitmapDrawable?> =
@@ -233,9 +233,9 @@ fun ContactEntity.photoBitmapDrawableAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoThumbnailInputStream].
+ * See [ExistingContactEntity.photoThumbnailInputStream].
  */
-fun ContactEntity.photoThumbnailInputStreamAsync(
+fun ExistingContactEntity.photoThumbnailInputStreamAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<InputStream?> =
@@ -245,9 +245,9 @@ fun ContactEntity.photoThumbnailInputStreamAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoThumbnailBytes].
+ * See [ExistingContactEntity.photoThumbnailBytes].
  */
-fun ContactEntity.photoThumbnailBytesAsync(
+fun ExistingContactEntity.photoThumbnailBytesAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<ByteArray?> = CoroutineScope(coroutineContext).async { photoThumbnailBytes(contacts) }
@@ -256,9 +256,9 @@ fun ContactEntity.photoThumbnailBytesAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoThumbnailBitmap].
+ * See [ExistingContactEntity.photoThumbnailBitmap].
  */
-fun ContactEntity.photoThumbnailBitmapAsync(
+fun ExistingContactEntity.photoThumbnailBitmapAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Bitmap?> = CoroutineScope(coroutineContext).async { photoThumbnailBitmap(contacts) }
@@ -267,9 +267,9 @@ fun ContactEntity.photoThumbnailBitmapAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.photoThumbnailBitmap].
+ * See [ExistingContactEntity.photoThumbnailBitmap].
  */
-fun ContactEntity.photoThumbnailBitmapDrawableAsync(
+fun ExistingContactEntity.photoThumbnailBitmapDrawableAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<BitmapDrawable?> =
@@ -283,9 +283,9 @@ fun ContactEntity.photoThumbnailBitmapDrawableAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-fun ContactEntity.setPhotoAsync(
+fun ExistingContactEntity.setPhotoAsync(
     contacts: Contacts, imageBytes: ByteArray,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setPhoto(contacts, imageBytes) }
@@ -294,9 +294,9 @@ fun ContactEntity.setPhotoAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-fun ContactEntity.setPhotoAsync(
+fun ExistingContactEntity.setPhotoAsync(
     contacts: Contacts, photoInputStream: InputStream,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> =
@@ -306,9 +306,9 @@ fun ContactEntity.setPhotoAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-fun ContactEntity.setPhotoAsync(
+fun ExistingContactEntity.setPhotoAsync(
     contacts: Contacts, photoBitmap: Bitmap,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setPhoto(contacts, photoBitmap) }
@@ -317,9 +317,9 @@ fun ContactEntity.setPhotoAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhoto].
  */
-fun ContactEntity.setPhotoAsync(
+fun ExistingContactEntity.setPhotoAsync(
     contacts: Contacts, photoDrawable: BitmapDrawable,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setPhoto(contacts, photoDrawable) }
@@ -332,9 +332,9 @@ fun ContactEntity.setPhotoAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.removePhoto].
+ * See [ExistingContactEntity.removePhoto].
  */
-fun ContactEntity.removePhotoAsync(
+fun ExistingContactEntity.removePhotoAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { removePhoto(contacts) }

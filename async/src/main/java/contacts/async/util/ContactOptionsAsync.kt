@@ -2,8 +2,9 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.ContactEntity
+import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MutableOptions
+import contacts.core.entities.MutableOptionsEntity
 import contacts.core.entities.Options
 import contacts.core.util.options
 import contacts.core.util.setOptions
@@ -20,22 +21,22 @@ import kotlin.coroutines.CoroutineContext
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.options].
+ * See [ExistingContactEntity.options].
  */
-suspend fun ContactEntity.optionsWithContext(
+suspend fun ExistingContactEntity.optionsWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Options = withContext(coroutineContext) { options(contacts) }
+): Options? = withContext(coroutineContext) { options(contacts) }
 
 /**
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.setOptions].
+ * See [ExistingContactEntity.setOptions].
  */
-suspend fun ContactEntity.setOptionsWithContext(
+suspend fun ExistingContactEntity.setOptionsWithContext(
     contacts: Contacts,
-    options: MutableOptions,
+    options: MutableOptionsEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { setOptions(contacts, options) }
 
@@ -43,12 +44,12 @@ suspend fun ContactEntity.setOptionsWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ContactEntity.updateOptions].
+ * See [ExistingContactEntity.updateOptions].
  */
-suspend fun ContactEntity.updateOptionsWithContext(
+suspend fun ExistingContactEntity.updateOptionsWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
-    update: MutableOptions.() -> Unit
+    update: MutableOptionsEntity.() -> Unit
 ): Boolean = withContext(coroutineContext) { updateOptions(contacts, update) }
 
 // endregion
@@ -59,22 +60,22 @@ suspend fun ContactEntity.updateOptionsWithContext(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.options].
+ * See [ExistingContactEntity.options].
  */
-fun ContactEntity.optionsAsync(
+fun ExistingContactEntity.optionsAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Options> = CoroutineScope(coroutineContext).async { options(contacts) }
+): Deferred<Options?> = CoroutineScope(coroutineContext).async { options(contacts) }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.setOptions].
+ * See [ExistingContactEntity.setOptions].
  */
-fun ContactEntity.setOptionsAsync(
+fun ExistingContactEntity.setOptionsAsync(
     contacts: Contacts,
-    options: MutableOptions,
+    options: MutableOptionsEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setOptions(contacts, options) }
 
@@ -82,12 +83,12 @@ fun ContactEntity.setOptionsAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ContactEntity.updateOptions].
+ * See [ExistingContactEntity.updateOptions].
  */
-fun ContactEntity.updateOptionsAsync(
+fun ExistingContactEntity.updateOptionsAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
-    update: MutableOptions.() -> Unit
+    update: MutableOptionsEntity.() -> Unit
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { updateOptions(contacts, update) }
 
 // endregion

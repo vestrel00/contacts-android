@@ -3,7 +3,7 @@ package contacts.async.util
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
 import contacts.core.entities.Group
-import contacts.core.entities.MutableGroup
+import contacts.core.entities.NewGroup
 import contacts.core.groups.GroupsInsert
 import contacts.core.util.group
 import contacts.core.util.groups
@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun GroupsInsert.Result.groupWithContext(
     contacts: Contacts,
-    group: MutableGroup,
+    group: NewGroup,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Group? = withContext(coroutineContext) { group(contacts, group) { !isActive } }
 
@@ -47,7 +47,7 @@ suspend fun GroupsInsert.Result.groupsWithContext(
  */
 fun GroupsInsert.Result.groupAsync(
     contacts: Contacts,
-    group: MutableGroup,
+    group: NewGroup,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Group?> =
     CoroutineScope(coroutineContext).async { group(contacts, group) { !isActive } }

@@ -16,8 +16,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * See [GroupsDelete.commit].
  */
-suspend fun GroupsDelete.commitWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
-        GroupsDelete.Result = withContext(context) { commit() }
+suspend fun GroupsDelete.commitWithContext(
+    context: CoroutineContext = ASYNC_DISPATCHER
+): GroupsDelete.Result = withContext(context) { commit() }
 
 /**
  * Suspends the current coroutine, performs the operation in the given [context], then returns the
@@ -37,8 +38,9 @@ suspend fun GroupsDelete.commitInOneTransactionWithContext(
  *
  * See [GroupsDelete.commit].
  */
-fun GroupsDelete.commitAsync(context: CoroutineContext = ASYNC_DISPATCHER):
-        Deferred<GroupsDelete.Result> = CoroutineScope(context).async { commit() }
+fun GroupsDelete.commitAsync(
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<GroupsDelete.Result> = CoroutineScope(context).async { commit() }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -46,5 +48,6 @@ fun GroupsDelete.commitAsync(context: CoroutineContext = ASYNC_DISPATCHER):
  *
  * See [GroupsDelete.commitInOneTransaction].
  */
-fun GroupsDelete.commitInOneTransactionAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<Boolean> =
-    CoroutineScope(context).async { commitInOneTransaction() }
+fun GroupsDelete.commitInOneTransactionAsync(
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<Boolean> = CoroutineScope(context).async { commitInOneTransaction() }
