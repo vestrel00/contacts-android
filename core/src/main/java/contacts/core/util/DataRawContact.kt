@@ -1,11 +1,11 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.entities.DataEntity
+import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.RawContact
 
 /**
- * Returns the [RawContact] with the [DataEntity.rawContactId].
+ * Returns the [RawContact] with the [ExistingDataEntity.rawContactId].
  *
  * This may return null if the [RawContact] no longer exists or if permissions are not granted.
  *
@@ -13,8 +13,7 @@ import contacts.core.entities.RawContact
  *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
- * returned if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *
@@ -22,9 +21,7 @@ import contacts.core.entities.RawContact
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun DataEntity.rawContact(
+fun ExistingDataEntity.rawContact(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
-): RawContact? = rawContactId?.let { rawContactId ->
-    contacts.findRawContactWithId(rawContactId, cancel)
-}
+): RawContact? = contacts.findRawContactWithId(rawContactId, cancel)

@@ -80,7 +80,7 @@ sealed interface RawContactEntity : Entity {
     val phones: List<PhoneEntity>
 
     /**
-     * The [PhotoEntity] does not have any real functional value. This exist only to prevent
+     * The [Photo] does not have any real functional value. This exist only to prevent
      * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
      *
      * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
@@ -235,14 +235,14 @@ data class MutableRawContact internal constructor(
     override var addresses: MutableList<MutableAddressEntity>,
     override var emails: MutableList<MutableEmailEntity>,
     override var events: MutableList<MutableEventEntity>,
-    override var groupMemberships: MutableList<GroupMembershipEntity>,
+    override var groupMemberships: MutableList<GroupMembership>,
     override var ims: MutableList<MutableImEntity>,
     override var name: MutableNameEntity?,
     override var nickname: MutableNicknameEntity?,
     override var note: MutableNoteEntity?,
     override var organization: MutableOrganizationEntity?,
     override var phones: MutableList<MutablePhoneEntity>,
-    override var photo: PhotoEntity?,
+    override var photo: Photo?,
     override var relations: MutableList<MutableRelationEntity>,
     override var sipAddress: MutableSipAddressEntity?,
     override var websites: MutableList<MutableWebsiteEntity>,
@@ -329,7 +329,7 @@ data class BlankRawContact internal constructor(
     override val events: List<EventEntity>
         get() = emptyList()
 
-    override val groupMemberships: List<GroupMembershipEntity>
+    override val groupMemberships: List<GroupMembership>
         get() = emptyList()
 
     override val ims: List<ImEntity>
@@ -350,7 +350,7 @@ data class BlankRawContact internal constructor(
     override val phones: List<PhoneEntity>
         get() = emptyList()
 
-    override val photo: PhotoEntity?
+    override val photo: Photo?
         get() = null
 
     override val relations: List<RelationEntity>

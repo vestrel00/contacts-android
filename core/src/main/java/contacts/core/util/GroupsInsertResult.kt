@@ -4,17 +4,18 @@ import contacts.core.Contacts
 import contacts.core.GroupsFields
 import contacts.core.`in`
 import contacts.core.entities.Group
-import contacts.core.entities.MutableGroup
+import contacts.core.entities.NewGroup
 import contacts.core.equalTo
 import contacts.core.groups.GroupsInsert
 
 /**
  * Returns the newly created [Group] or null if the insert operation failed.
  *
+ * Returns null if the insert operation failed or permissions are not granted.
+ *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
- * returned if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *
@@ -23,7 +24,7 @@ import contacts.core.groups.GroupsInsert
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun GroupsInsert.Result.group(
-    contacts: Contacts, group: MutableGroup, cancel: () -> Boolean = { false }
+    contacts: Contacts, group: NewGroup, cancel: () -> Boolean = { false }
 ): Group? = groupId(group)?.let { groupId ->
     contacts.groups().query()
         .where(GroupsFields.Id equalTo groupId)
@@ -34,10 +35,11 @@ fun GroupsInsert.Result.group(
 /**
  * Returns the newly created [Group]s (for those insert operations that succeeded).
  *
+ * Returns an empty list if the insert operation failed or permissions are not granted.
+ *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
- * returned if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *

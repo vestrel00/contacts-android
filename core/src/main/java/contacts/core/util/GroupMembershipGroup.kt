@@ -13,16 +13,11 @@ import contacts.core.equalTo
 /**
  * Returns the [Group] referenced by this membership.
  *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
+ * This may return null if the group no longer exists or permissions are not granted.
  *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
- * if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *
@@ -38,16 +33,9 @@ fun GroupMembership.group(contacts: Contacts, cancel: () -> Boolean = { false })
 /**
  * Returns the groups referenced by these memberships.
  *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
- *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be returned
- * if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *

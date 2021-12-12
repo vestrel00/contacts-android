@@ -2,10 +2,10 @@ package contacts.core.util
 
 import contacts.core.Contacts
 import contacts.core.entities.Contact
-import contacts.core.entities.DataEntity
+import contacts.core.entities.ExistingDataEntity
 
 /**
- * Returns the [Contact] with the [DataEntity.contactId].
+ * Returns the [Contact] with the [ExistingDataEntity.contactId].
  *
  * This may return null if the [Contact] no longer exists or if permissions are not granted.
  *
@@ -13,8 +13,7 @@ import contacts.core.entities.DataEntity
  *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
- * returned if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *
@@ -22,7 +21,5 @@ import contacts.core.entities.DataEntity
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun DataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
-    contactId?.let { contactId ->
-        contacts.findContactWithId(contactId, cancel)
-    }
+fun ExistingDataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
+    contacts.findContactWithId(contactId, cancel)

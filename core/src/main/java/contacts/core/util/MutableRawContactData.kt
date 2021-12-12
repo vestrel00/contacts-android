@@ -110,7 +110,7 @@ fun MutableRawContact.removeAllEvents() {
  * and updates. Only group memberships to groups that belong to the same account as the raw contact
  * will be inserted.
  */
-fun MutableRawContact.addGroupMembership(groupMembership: GroupMembershipEntity) {
+fun MutableRawContact.addGroupMembership(groupMembership: GroupMembership) {
     groupMemberships.add(groupMembership)
 }
 
@@ -128,7 +128,7 @@ fun MutableRawContact.addGroupMembership(groupMembership: GroupMembershipEntity)
  */
 @JvmOverloads
 fun MutableRawContact.removeGroupMembership(
-    groupMembership: GroupMembershipEntity, byReference: Boolean = false
+    groupMembership: GroupMembership, byReference: Boolean = false
 ) {
     groupMemberships.removeAll(groupMembership, byReference)
 }
