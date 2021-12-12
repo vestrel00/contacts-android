@@ -8,7 +8,6 @@ import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.Include
 import contacts.core.accounts.accountForRawContactWithId
-import contacts.core.entities.GroupMembership
 import contacts.core.entities.GroupMembershipEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.mapper.groupMembershipMapper
@@ -121,11 +120,3 @@ internal class GroupMembershipOperation(
 }
 
 private val INCLUDE = Include(Fields.DataId, Fields.GroupMembership.GroupId)
-
-/**
- * Only existing group membership entities have an id.
- */
-private val GroupMembershipEntity.id: Long
-    get() = when (this) {
-        is GroupMembership -> id
-    }

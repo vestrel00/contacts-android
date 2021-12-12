@@ -419,7 +419,7 @@ fun MutableContact.removeAllEvents() {
 /**
  * The [groupMemberships] as a sequence.
  */
-fun MutableContact.groupMemberships(): Sequence<GroupMembership> = rawContacts
+fun MutableContact.groupMemberships(): Sequence<GroupMembershipEntity> = rawContacts
     .asSequence()
     .flatMap { it.groupMemberships.asSequence() }
     .sortedWith(EntityIdComparator())
@@ -427,7 +427,7 @@ fun MutableContact.groupMemberships(): Sequence<GroupMembership> = rawContacts
 /**
  * The [groupMemberships] as a list.
  */
-fun MutableContact.groupMembershipList(): List<GroupMembership> = groupMemberships().toList()
+fun MutableContact.groupMembershipList(): List<GroupMembershipEntity> = groupMemberships().toList()
 
 // GroupMemberships add and remove functions are intentionally left out because they should never
 // be combined. The native Contacts app hides the group membership UI field when viewing/editing a

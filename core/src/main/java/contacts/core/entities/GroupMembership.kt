@@ -18,11 +18,8 @@ import kotlinx.parcelize.Parcelize
  * There is no mutable version of a group membership. To make modifications to group memberships,
  * set the group memberships in the MutableRawContact. To select a set of group memberships, use
  * the [contacts.core.groups.GroupsQuery] with the same account as the RawContact and convert the
- * desired groups to group memberships via the functions in [contacts.core.util.toGroupMembership].
- * Then, perform an update operation on the MutableRawContact.
+ * desired groups to group memberships via the functions in [contacts.core.util.newMembership].
  */
-// I know this interface is not necessary because there is only one implementation. Still, it does
-// not hurt to have it. It follows the setup like everything else, so it's cool.
 sealed interface GroupMembershipEntity : DataEntity {
 
     /**
@@ -52,7 +49,7 @@ sealed interface GroupMembershipEntity : DataEntity {
  */
 
 /**
- * An existing immutable [GroupMembership].
+ * An existing immutable [GroupMembershipEntity].
  */
 @Parcelize
 data class GroupMembership internal constructor(
@@ -67,3 +64,16 @@ data class GroupMembership internal constructor(
     override val groupId: Long?
 
 ) : GroupMembershipEntity, ExistingDataEntity, ImmutableDataEntity
+
+/**
+ * A new immutable [GroupMembershipEntity].
+ *
+ * Use functions in GroupToGroupMembership to create instances of this from an existing group.
+ */
+// Intentionally not exposing constructor to consumers.
+@Parcelize
+data class NewGroupMembership internal constructor(
+
+    override val groupId: Long?
+
+) : GroupMembershipEntity, NewDataEntity, ImmutableDataEntity

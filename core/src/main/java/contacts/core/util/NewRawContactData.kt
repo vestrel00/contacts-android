@@ -110,7 +110,7 @@ fun NewRawContact.removeAllEvents() {
  * and updates. Only group memberships to groups that belong to the same account as the raw contact
  * will be inserted.
  */
-fun NewRawContact.addGroupMembership(groupMembership: GroupMembership) {
+fun NewRawContact.addGroupMembership(groupMembership: NewGroupMembership) {
     groupMemberships.add(groupMembership)
 }
 
@@ -128,7 +128,7 @@ fun NewRawContact.addGroupMembership(groupMembership: GroupMembership) {
  */
 @JvmOverloads
 fun NewRawContact.removeGroupMembership(
-    groupMembership: GroupMembership, byReference: Boolean = false
+    groupMembership: NewGroupMembership, byReference: Boolean = false
 ) {
     groupMemberships.removeAll(groupMembership, byReference)
 }

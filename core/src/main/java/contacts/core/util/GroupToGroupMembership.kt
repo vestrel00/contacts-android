@@ -1,32 +1,25 @@
 package contacts.core.util
 
 import contacts.core.entities.Group
-import contacts.core.entities.GroupMembership
+import contacts.core.entities.NewGroupMembership
 
 // Dev note: Using concrete type as the function receiver instead of the generic type in order to
 // prevent consumers from constructing immutable types using manually created types.
 
 /**
- * Returns a new [GroupMembership] instance that may be used for Contacts and RawContacts insert
+ * Returns a new [NewGroupMembership] instance that may be used for Contacts and RawContacts insert
  * and update operations.
  */
-fun Group.toGroupMembership(): GroupMembership = GroupMembership(
-    id = null,
-    rawContactId = null,
-    contactId = null,
-    groupId = id,
-    isPrimary = false,
-    isSuperPrimary = false
-)
+fun Group.newMembership() = NewGroupMembership(groupId = id)
 
 /**
- * Returns [this] collection of [Group]s as list of [GroupMembership] that may be used for Contacts
- * and RawContacts insert and update operations.
+ * Returns [this] collection of [Group]s as list of [NewGroupMembership] that may be used for
+ * Contacts and RawContacts insert and update operations.
  */
-fun Collection<Group>.toGroupMemberships(): List<GroupMembership> = map { it.toGroupMembership() }
+fun Collection<Group>.newMemberships(): List<NewGroupMembership> = map { it.newMembership() }
 
 /**
- * Returns [this] sequence of [Group]s as list of [GroupMembership] that may be used for Contacts
+ * Returns [this] sequence of [Group]s as list of [NewGroupMembership] that may be used for Contacts
  * and RawContacts insert and update operations.
  */
-fun Sequence<Group>.toGroupMemberships(): Sequence<GroupMembership> = map { it.toGroupMembership() }
+fun Sequence<Group>.newMemberships(): Sequence<NewGroupMembership> = map { it.newMembership() }
