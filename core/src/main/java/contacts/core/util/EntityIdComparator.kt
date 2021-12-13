@@ -31,3 +31,7 @@ class EntityIdComparator : Comparator<Entity> {
         }
     }
 }
+
+fun <T : Entity> Sequence<T>.sortedById(): Sequence<T> = sortedWith(EntityIdComparator())
+
+fun <T : Entity> Collection<T>.sortedById(): Collection<T> = sortedWith(EntityIdComparator())

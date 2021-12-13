@@ -2,6 +2,7 @@ package contacts.entities.custom.gender
 
 import contacts.core.Contacts
 import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContact
 
 // Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
@@ -9,13 +10,10 @@ import contacts.core.entities.RawContact
 // with getters because there are some setters that have to be functions. So all are functions
 // to keep uniformity for OCD purposes.
 
-// Another dev note: Receiver signatures are the concrete types instead of the interface type.
-// This is done so that consumers gets references to actual concrete types, which may implement
-// other interfaces required by APIs in this library.
+// region RawContact
 
 /**
- * Returns the [Gender] of this RawContact. Null if not available (e.g. does not exist in the
- * database or was not an included field in the query).
+ * Returns the [Gender] of this RawContact.
  */
 fun RawContact.gender(contacts: Contacts): Gender? {
     val customDataEntities = contacts.customDataRegistry
@@ -25,13 +23,17 @@ fun RawContact.gender(contacts: Contacts): Gender? {
     return customDataEntities.firstOrNull()
 }
 
+// endregion
+
+// region MutableRawContact
+
 /**
- * Returns the [MutableGender] of this RawContact. Null if not available (e.g. does not exist in
- * the database or was not an included field in the query).
+ * Returns the [MutableGenderEntity] of this RawContact. Null if not available (e.g. does not exist
+ * in the database or was not an included field in the query).
  */
-fun MutableRawContact.gender(contacts: Contacts): MutableGender? {
+fun MutableRawContact.gender(contacts: Contacts): MutableGenderEntity? {
     val customDataEntities = contacts.customDataRegistry
-        .customDataEntitiesFor<MutableGender>(this, GenderMimeType)
+        .customDataEntitiesFor<MutableGenderEntity>(this, GenderMimeType)
 
     // We know that there can only be one gender so we only look to at the first element.
     return customDataEntities.firstOrNull()
@@ -39,11 +41,8 @@ fun MutableRawContact.gender(contacts: Contacts): MutableGender? {
 
 /**
  * Sets the gender of this RawContact to the given [gender].
- *
- * This does not perform the actual insert/update to the database. You will need to perform an
- * insert/update operation on this [MutableRawContact] object.
  */
-fun MutableRawContact.setGender(contacts: Contacts, gender: MutableGender?) {
+fun MutableRawContact.setGender(contacts: Contacts, gender: MutableGenderEntity?) {
     if (gender != null) {
         contacts.customDataRegistry.putCustomDataEntityInto(this, gender)
     } else {
@@ -52,11 +51,43 @@ fun MutableRawContact.setGender(contacts: Contacts, gender: MutableGender?) {
 }
 
 /**
- * Sets the gender of this RawContact to a new [MutableGender] configured by [configureGender].
- *
- * This does not perform the actual insert/update to the database. You will need to perform an
- * insert/update operation on this [MutableRawContact] object.
+ * Sets the gender of this RawContact to a [NewGender] configured by [configureGender].
  */
-fun MutableRawContact.setGender(contacts: Contacts, configureGender: MutableGender.() -> Unit) {
-    setGender(contacts, MutableGender().apply(configureGender))
+fun MutableRawContact.setGender(contacts: Contacts, configureGender: NewGender.() -> Unit) {
+    setGender(contacts, NewGender().apply(configureGender))
 }
+
+// endregion
+
+// region NewRawContact
+
+/**
+ * Returns the [NewGender] of this RawContact.
+ */
+fun NewRawContact.gender(contacts: Contacts): NewGender? {
+    val customDataEntities = contacts.customDataRegistry
+        .customDataEntitiesFor<NewGender>(this, GenderMimeType)
+
+    // We know that there can only be one gender so we only look to at the first element.
+    return customDataEntities.firstOrNull()
+}
+
+/**
+ * Sets the gender of this RawContact to the given [gender].
+ */
+fun NewRawContact.setGender(contacts: Contacts, gender: NewGender?) {
+    if (gender != null) {
+        contacts.customDataRegistry.putCustomDataEntityInto(this, gender)
+    } else {
+        contacts.customDataRegistry.removeAllCustomDataEntityFrom(this, GenderMimeType)
+    }
+}
+
+/**
+ * Sets the gender of this RawContact to a [NewGender] configured by [configureGender].
+ */
+fun NewRawContact.setGender(contacts: Contacts, configureGender: NewGender.() -> Unit) {
+    setGender(contacts, NewGender().apply(configureGender))
+}
+
+// endregion

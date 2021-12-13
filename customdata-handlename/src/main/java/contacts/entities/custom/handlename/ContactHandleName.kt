@@ -3,18 +3,17 @@ package contacts.entities.custom.handlename
 import contacts.core.Contacts
 import contacts.core.entities.Contact
 import contacts.core.entities.MutableContact
+import contacts.core.util.sortedById
 
 // Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
 // as they will not have to convert Sequences to List. Also, all are functions instead of properties
 // with getters because there are some setters that have to be functions. So all are functions
 // to keep uniformity for OCD purposes.
 
-// Another dev note: Receiver signatures are the concrete types instead of the interface type.
-// This is done so that consumers gets references to actual concrete types, which may implement
-// other interfaces required by APIs in this library.
+// region Contact
+
 /**
- * Returns the sequence of [HandleName]s from all [Contact.rawContacts] ordered by the
- * [HandleName.id].
+ * Returns the sequence of [HandleName]s from all [Contact.rawContacts] ordered by id
  */
 fun Contact.handleNames(contacts: Contacts): Sequence<HandleName> = rawContacts
     .asSequence()
@@ -26,52 +25,45 @@ fun Contact.handleNames(contacts: Contacts): Sequence<HandleName> = rawContacts
  */
 fun Contact.handleNameList(contacts: Contacts): List<HandleName> = handleNames(contacts).toList()
 
-/**
- * Returns the sequence of [MutableHandleName]s from all [Contact.rawContacts] ordered by the
- * [MutableHandleName.id].
- */
-fun MutableContact.handleNames(contacts: Contacts): Sequence<MutableHandleName> = rawContacts
-    .asSequence()
-    .flatMap { it.handleNames(contacts) }
-    .sortedBy { it.id }
+// endregion
+
+// region MutableContact
 
 /**
- * Returns the list of [MutableHandleName]s from all [Contact.rawContacts] ordered by the
- * [MutableHandleName.id].
+ * Returns the sequence of [MutableHandleName]s from all [Contact.rawContacts] ordered by id.
  */
-fun MutableContact.handleNameList(contacts: Contacts): List<MutableHandleName> =
+fun MutableContact.handleNames(contacts: Contacts): Sequence<MutableHandleNameEntity> = rawContacts
+    .asSequence()
+    .flatMap { it.handleNames(contacts) }
+    .sortedById()
+
+/**
+ * Returns the list of [MutableHandleNameEntity]s from all [Contact.rawContacts] ordered by id.
+ */
+fun MutableContact.handleNameList(contacts: Contacts): List<MutableHandleNameEntity> =
     handleNames(contacts).toList()
 
 /**
  * Adds the given [handleName] to the first RawContact in [MutableContact.rawContacts] sorted by
  * the RawContact id.
- *
- * This does not perform the actual update to the database. You will need to perform an update
- * operation on this [MutableContact] object.
  */
-fun MutableContact.addHandleName(contacts: Contacts, handleName: MutableHandleName) {
+fun MutableContact.addHandleName(contacts: Contacts, handleName: MutableHandleNameEntity) {
     rawContacts.firstOrNull()?.addHandleName(contacts, handleName)
 }
 
 /**
- * Adds a handle name s(configured by [configureHandleName]) to the first RawContact in
+ * Adds a new handle name s(configured by [configureHandleName]) to the first RawContact in
  * [MutableContact.rawContacts] sorted by the RawContact id.
- *
- * This does not perform the actual update to the database. You will need to perform an update
- * operation on this [MutableContact] object.
  */
 fun MutableContact.addHandleName(
     contacts: Contacts,
-    configureHandleName: MutableHandleName.() -> Unit
+    configureHandleName: NewHandleName.() -> Unit
 ) {
-    addHandleName(contacts, MutableHandleName().apply(configureHandleName))
+    addHandleName(contacts, NewHandleName().apply(configureHandleName))
 }
 
 /**
  * Removes all instances of the given [handleName] from all [MutableContact.rawContacts].
- *
- * This does not perform the actual delete to the database. You will need to perform a delete
- * operation on this [MutableContact] object.
  *
  * By default, all **structurally equal (same content but maybe different objects)** instances will
  * be removed. Set [byReference] to true to remove all instances that are **equal by reference
@@ -79,7 +71,7 @@ fun MutableContact.addHandleName(
  */
 fun MutableContact.removeHandleName(
     contacts: Contacts,
-    handleName: MutableHandleName,
+    handleName: MutableHandleNameEntity,
     byReference: Boolean = false
 ) {
     for (rawContact in rawContacts) {
@@ -89,12 +81,11 @@ fun MutableContact.removeHandleName(
 
 /**
  * Removes all handle names from all [MutableContact.rawContacts].
- *
- * This does not perform the actual delete to the database. You will need to perform a delete
- * operation on this [MutableContact] object.
  */
 fun MutableContact.removeAllHandleNames(contacts: Contacts) {
     for (rawContact in rawContacts) {
         contacts.customDataRegistry.removeAllCustomDataEntityFrom(rawContact, HandleNameMimeType)
     }
 }
+
+// endregion

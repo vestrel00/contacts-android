@@ -264,7 +264,7 @@ internal fun Contact.customDataSequenceOf(
 fun MutableContact.addresses(): Sequence<MutableAddressEntity> = rawContacts
     .asSequence()
     .flatMap { it.addresses.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of addresses from all [MutableContact.rawContacts] ordered by id.
@@ -317,7 +317,7 @@ fun MutableContact.removeAllAddresses() {
 fun MutableContact.emails(): Sequence<MutableEmailEntity> = rawContacts
     .asSequence()
     .flatMap { it.emails.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of emails from all [MutableContact.rawContacts] ordered by id.
@@ -370,7 +370,7 @@ fun MutableContact.removeAllEmails() {
 fun MutableContact.events(): Sequence<MutableEventEntity> = rawContacts
     .asSequence()
     .flatMap { it.events.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of events from all [MutableContact.rawContacts] ordered by id.
@@ -422,7 +422,7 @@ fun MutableContact.removeAllEvents() {
 fun MutableContact.groupMemberships(): Sequence<GroupMembershipEntity> = rawContacts
     .asSequence()
     .flatMap { it.groupMemberships.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * The [groupMemberships] as a list.
@@ -439,7 +439,7 @@ fun MutableContact.groupMembershipList(): List<GroupMembershipEntity> = groupMem
 fun MutableContact.ims(): Sequence<MutableImEntity> = rawContacts
     .asSequence()
     .flatMap { it.ims.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of IMs from all [MutableContact.rawContacts] ordered by id.
@@ -491,7 +491,7 @@ fun MutableContact.removeAllIms() {
 fun MutableContact.names(): Sequence<MutableNameEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.name }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of names from all [MutableContact.rawContacts] ordered by id.
@@ -521,7 +521,7 @@ fun MutableContact.setName(configureName: NewName.() -> Unit) {
 fun MutableContact.nicknames(): Sequence<MutableNicknameEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.nickname }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of nicknames from all [MutableContact.rawContacts] ordered by id.
@@ -551,7 +551,7 @@ fun MutableContact.setNickname(configureNickname: NewNickname.() -> Unit) {
 fun MutableContact.notes(): Sequence<MutableNoteEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.note }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of notes from all [MutableContact.rawContacts] ordered by id.
@@ -584,7 +584,7 @@ fun MutableContact.setNote(configureNote: NewNote.() -> Unit) {
 fun MutableContact.organizations(): Sequence<MutableOrganizationEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.organization }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of organizations from all [MutableContact.rawContacts] ordered by id.
@@ -614,7 +614,7 @@ fun MutableContact.setOrganization(configureOrganization: NewOrganization.() -> 
 fun MutableContact.phones(): Sequence<MutablePhoneEntity> = rawContacts
     .asSequence()
     .flatMap { it.phones.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of phones from all [MutableContact.rawContacts] ordered by id.
@@ -670,7 +670,7 @@ fun MutableContact.removeAllPhones() {
 fun MutableContact.relations(): Sequence<MutableRelationEntity> = rawContacts
     .asSequence()
     .flatMap { it.relations.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of relations from all [MutableContact.rawContacts] ordered by id.
@@ -723,7 +723,7 @@ fun MutableContact.removeAllRelations() {
 fun MutableContact.sipAddresses(): Sequence<MutableSipAddressEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.sipAddress }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of SIP addresses from all [MutableContact.rawContacts] ordered by id.
@@ -753,7 +753,7 @@ fun MutableContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) 
 fun MutableContact.websites(): Sequence<MutableWebsiteEntity> = rawContacts
     .asSequence()
     .flatMap { it.websites.asSequence() }
-    .sortedWith(EntityIdComparator())
+    .sortedById()
 
 /**
  * List of websites from all [MutableContact.rawContacts] ordered by id.
