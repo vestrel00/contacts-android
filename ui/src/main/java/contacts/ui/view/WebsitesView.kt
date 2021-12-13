@@ -3,26 +3,26 @@ package contacts.ui.view
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import contacts.core.entities.MutableWebsite
+import contacts.core.entities.WebsiteEntity
 import contacts.ui.R
-import contacts.ui.entities.MutableWebsiteFactory
+import contacts.ui.entities.NewWebsiteFactory
 
 /**
- * A [DataEntityListView] for [MutableWebsite]s.
+ * A [DataEntityListView] for [WebsiteEntity]s.
  */
 class WebsitesView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : DataEntityListView<MutableWebsite, DataEntityView<MutableWebsite>>(
+) : DataEntityListView<WebsiteEntity, DataEntityView<WebsiteEntity>>(
     context, attributeSet, defStyleAttr,
-    dataFactory = MutableWebsiteFactory,
+    dataFactory = NewWebsiteFactory,
     dataViewFactory = WebsiteViewFactory
 )
 
 private object WebsiteViewFactory :
-    DataEntityView.Factory<MutableWebsite, DataEntityView<MutableWebsite>> {
-    override fun create(context: Context): DataEntityView<MutableWebsite> =
+    DataEntityView.Factory<WebsiteEntity, DataEntityView<WebsiteEntity>> {
+    override fun create(context: Context): DataEntityView<WebsiteEntity> =
         DataEntityView(
             context,
             dataFieldInputType = InputType.TYPE_TEXT_VARIATION_URI,

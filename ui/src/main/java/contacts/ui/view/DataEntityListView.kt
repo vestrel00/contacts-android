@@ -4,12 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import contacts.core.ContactsException
-import contacts.core.entities.MutableDataEntity
+import contacts.core.entities.DataEntity
 import contacts.core.entities.removeAll
-import contacts.ui.entities.MutableDataEntityFactory
+import contacts.ui.entities.NewDataEntityFactory
 
 /**
- * A (vertical) [LinearLayout] that displays a list of [MutableDataEntity] and handles
+ * A (vertical) [LinearLayout] that displays a list of [DataEntity] and handles
  * the modifications to the given mutable list.
  *
  * Setting the [dataList] will automatically update the views. Any modifications in the views will
@@ -34,11 +34,11 @@ import contacts.ui.entities.MutableDataEntityFactory
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-abstract class DataEntityListView<E : MutableDataEntity, V : DataEntityView<E>>(
+abstract class DataEntityListView<E : DataEntity, V : DataEntityView<E>>(
     context: Context,
     attributeSet: AttributeSet?,
     defStyleAttr: Int,
-    private val dataFactory: MutableDataEntityFactory<E>,
+    private val dataFactory: NewDataEntityFactory<E>,
     private val dataViewFactory: DataEntityView.Factory<E, V>,
 ) : LinearLayout(context, attributeSet, defStyleAttr) {
 

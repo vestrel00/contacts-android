@@ -5,12 +5,14 @@ import android.text.Editable
 import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.LinearLayout
-import contacts.core.entities.MutableName
+import contacts.core.entities.MutableNameEntity
+import contacts.core.entities.NameEntity
+import contacts.core.entities.NewName
 import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 
 /**
- * A (vertical) [LinearLayout] that displays a [MutableName] and handles the modifications to the
+ * A (vertical) [LinearLayout] that displays a [NameEntity] and handles the modifications to the
  * given [data].
  *
  * Setting the [data] will automatically update the views. Any modifications in the views will also
@@ -43,7 +45,7 @@ class NameView @JvmOverloads constructor(
      * The name that is shown in this view. Setting this will automatically update the views. Any
      * modifications in the views will also be made to the this.
      */
-    var data = MutableName()
+    var data: MutableNameEntity = NewName()
         set(value) {
             field = value
 

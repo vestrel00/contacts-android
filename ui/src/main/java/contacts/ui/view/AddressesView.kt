@@ -4,29 +4,30 @@ import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import contacts.core.entities.AddressEntity
-import contacts.core.entities.MutableAddress
 import contacts.ui.R
 import contacts.ui.entities.AddressTypeFactory
-import contacts.ui.entities.MutableAddressFactory
+import contacts.ui.entities.NewAddressFactory
 
 /**
- * A [DataEntityWithTypeListView] for [MutableAddress]es.
+ * A [DataEntityWithTypeAndLabelListView] for [AddressEntity]s.
  */
 class AddressesView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : DataEntityWithTypeListView<AddressEntity.Type, MutableAddress>(
+) : DataEntityWithTypeAndLabelListView<AddressEntity.Type, AddressEntity>(
     context, attributeSet, defStyleAttr,
-    dataFactory = MutableAddressFactory,
+    dataFactory = NewAddressFactory,
     dataViewFactory = AddressViewFactory,
     defaultUnderlyingDataTypes = AddressEntity.Type.values().filter { !it.isCustomType }
 )
 
 private object AddressViewFactory :
-    DataEntityWithTypeView.Factory<AddressEntity.Type, MutableAddress> {
-    override fun create(context: Context): DataEntityWithTypeView<AddressEntity.Type, MutableAddress> =
-        DataEntityWithTypeView(
+    DataEntityWithTypeAndLabelView.Factory<AddressEntity.Type, AddressEntity> {
+    override fun create(
+        context: Context
+    ): DataEntityWithTypeAndLabelView<AddressEntity.Type, AddressEntity> =
+        DataEntityWithTypeAndLabelView(
             context,
             dataFieldInputType = InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS,
             dataFieldHintResId = R.string.contacts_ui_address_hint,

@@ -34,7 +34,7 @@ sealed interface DataEntity : Entity {
      * The main value encapsulated by this entity as a string.
      */
     val primaryValue: String?
-    
+
     /**
      * The type of data.
      */
@@ -111,7 +111,7 @@ sealed interface DataEntity : Entity {
     }
 }
 
-sealed interface DataEntityWithTypeAndLabel<T : DataEntity.Type> : DataEntity {
+sealed interface DataEntityWithTypeAndLabel<out T : DataEntity.Type> : DataEntity {
 
     /**
      * The [DataEntity.Type].
@@ -202,4 +202,16 @@ sealed interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : Mutabl
 
     override var type: T?
     override var label: String?
+
+    /**
+     * Sets the [type] to the given [unsafeType], which MUST be a subclass of [T]. Otherwise, an
+     * exception will be thrown.
+     *
+     * This function is useful at times when the type [T] is erased but you still need to be able to
+     * set the [type]. Use with caution! If you don't know what you are doing, don't use this!
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun setTypeUnsafe(unsafeType: DataEntity.Type?) {
+        type = unsafeType as T?
+    }
 }

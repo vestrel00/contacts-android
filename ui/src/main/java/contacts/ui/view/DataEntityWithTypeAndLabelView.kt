@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
 import android.widget.Spinner
 import contacts.core.entities.DataEntity
+import contacts.core.entities.DataEntityWithTypeAndLabel
 import contacts.core.entities.MutableDataEntityWithTypeAndLabel
 import contacts.ui.R
 import contacts.ui.entities.DataEntityType
@@ -15,8 +16,8 @@ import contacts.ui.entities.DataEntityTypeFactory
 import contacts.ui.util.CustomLabelInputDialog
 
 /**
- * A [RelativeLayout] that displays a [MutableDataEntityWithTypeAndLabel] [E] that has a
- * [DataEntityType] and handles the modifications to it.
+ * A [RelativeLayout] that displays a [DataEntityWithTypeAndLabel] [E] that has a [DataEntityType]
+ * and handles the modifications to it (if it is mutable).
  *
  * Setting the [data] will automatically update the views and vice versa.
  *
@@ -37,7 +38,7 @@ import contacts.ui.util.CustomLabelInputDialog
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-open class DataEntityWithTypeView<T : DataEntity.Type, E : MutableDataEntityWithTypeAndLabel<T>>
+open class DataEntityWithTypeAndLabelView<T : DataEntity.Type, E : DataEntityWithTypeAndLabel<T>>
 @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -58,9 +59,10 @@ open class DataEntityWithTypeView<T : DataEntity.Type, E : MutableDataEntityWith
         set(value) {
             field = value
 
-            value?.let {
-                data?.type = it.type
-                data?.label = if (it.type.isCustomType) it.typeLabel else null
+            val data = data // reassignment required for null-check and casting successfully.
+            if (value != null && data != null && data is MutableDataEntityWithTypeAndLabel<*>) {
+                data.setTypeUnsafe(data.type)
+                data.label = if (value.type.isCustomType) value.typeLabel else null
             }
         }
 
@@ -170,8 +172,8 @@ open class DataEntityWithTypeView<T : DataEntity.Type, E : MutableDataEntityWith
         }
     }
 
-    interface Factory<T : DataEntity.Type, E : MutableDataEntityWithTypeAndLabel<T>> :
-        DataEntityView.Factory<E, DataEntityWithTypeView<T, E>>
+    interface Factory<T : DataEntity.Type, E : DataEntityWithTypeAndLabel<T>> :
+        DataEntityView.Factory<E, DataEntityWithTypeAndLabelView<T, E>>
 }
 
 /**
