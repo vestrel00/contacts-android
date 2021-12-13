@@ -12,17 +12,12 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may only have one Gender entry.
  */
-sealed interface GenderEntity : CustomDataEntity {
+sealed interface GenderEntity : CustomDataEntityWithTypeAndLabel<Type> {
 
-    /**
-     * The [Type] of gender.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+    // The primary value is type (and label if custom). So, this does nothing to avoid complicating
+    // the API implementation. Therefore, it is unused and will always return null.
+    override val primaryValue: String?
+        get() = null
 
     override val mimeType: MimeType.Custom
         get() = GenderMimeType
@@ -86,11 +81,8 @@ sealed interface GenderEntity : CustomDataEntity {
  */
 sealed interface MutableGenderEntity : GenderEntity, MutableCustomDataEntityWithTypeAndLabel<Type> {
 
-    override var type: Type?
-    override var label: String?
-
     // The primary value is type (and label if custom). So, this does nothing to avoid complicating
-    // the API implementation.
+    // the API implementation. Therefore, it is unused and will always return null.
     override var primaryValue: String?
         get() = null
         set(_) {}

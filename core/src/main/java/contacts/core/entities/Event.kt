@@ -18,17 +18,7 @@ import java.util.*
  * Local RawContacts (those that are not associated with an Account) **should not** have any entries
  * of this data kind.
  */
-sealed interface EventEntity : DataEntity {
-
-    /**
-     * The [Type] of event.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface EventEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The event date as the user entered it.
@@ -48,6 +38,14 @@ sealed interface EventEntity : DataEntity {
      * Also note that the month "MM" is 1-based. The first month of the year, January, is 1.
      */
     val date: EventDate?
+
+    /**
+     * The [date] as a string.
+     *
+     * Note that the setter does nothing. Use the [date] directly to set it.
+     */
+    override val primaryValue: String?
+        get() = date?.toDisplayString()
 
     override val mimeType: MimeType
         get() = MimeType.Event
@@ -107,8 +105,6 @@ sealed interface EventEntity : DataEntity {
  */
 sealed interface MutableEventEntity : EventEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
-    override var type: Type?
-    override var label: String?
     override var date: EventDate?
 
     /**

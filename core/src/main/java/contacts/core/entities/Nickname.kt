@@ -17,6 +17,14 @@ sealed interface NicknameEntity : DataEntity {
      */
     val name: String?
 
+    /**
+     * The [name].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::name
+    override val primaryValue: String?
+        get() = name
+    
     override val mimeType: MimeType
         get() = MimeType.Nickname
 
@@ -49,6 +57,9 @@ sealed interface MutableNicknameEntity : NicknameEntity, MutableDataEntity {
 
     override var name: String?
 
+    /**
+     * The [name].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::name
     override var primaryValue: String?

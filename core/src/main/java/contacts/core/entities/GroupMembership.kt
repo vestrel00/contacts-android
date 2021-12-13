@@ -30,6 +30,12 @@ sealed interface GroupMembershipEntity : DataEntity {
      */
     val groupId: Long?
 
+    /**
+     * The [groupId].
+     */
+    override val primaryValue: String?
+        get() = groupId?.toString()
+
     override val mimeType: MimeType
         get() = MimeType.GroupMembership
 

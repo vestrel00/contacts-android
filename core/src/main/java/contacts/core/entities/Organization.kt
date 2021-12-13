@@ -47,6 +47,14 @@ sealed interface OrganizationEntity : DataEntity {
      */
     val phoneticName: String?
 
+    /**
+     * The [company].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::company
+    override val primaryValue: String?
+        get() = company
+
     override val mimeType: MimeType
         get() = MimeType.Organization
 
@@ -87,6 +95,9 @@ sealed interface MutableOrganizationEntity : OrganizationEntity, MutableDataEnti
     override var symbol: String?
     override var phoneticName: String?
 
+    /**
+     * The [company].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::company
     override var primaryValue: String?

@@ -17,6 +17,16 @@ interface CustomDataEntity : DataEntity {
 }
 
 /**
+ * A custom [DataEntityWithTypeAndLabel].
+ *
+ * Implementations are required to be parcelable. Kotlin users are recommended to use data class
+ * combined with [kotlinx.parcelize.Parcelize].
+ */
+// Intentionally not sealed so that consumers can define their own implementations.
+interface CustomDataEntityWithTypeAndLabel<T : DataEntity.Type> : CustomDataEntity,
+    DataEntityWithTypeAndLabel<T>
+
+/**
  * A [DataEntity] that has NOT yet been inserted into the database.
  */
 interface NewCustomDataEntity : CustomDataEntity, NewDataEntity
@@ -57,4 +67,4 @@ interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity
  */
 // Intentionally not sealed so that consumers can define their own implementations.
 interface MutableCustomDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableCustomDataEntity,
-    MutableDataEntityWithTypeAndLabel<T>
+    MutableDataEntityWithTypeAndLabel<T>, CustomDataEntityWithTypeAndLabel<T>

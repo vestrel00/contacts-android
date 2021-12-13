@@ -23,6 +23,12 @@ import kotlinx.parcelize.Parcelize
 // not hurt to have it. It follows the setup like everything else, so it's cool.
 sealed interface PhotoEntity : DataEntity {
 
+    /**
+     * Unused and will always return null.
+     */
+    override val primaryValue: String?
+        get() = null
+
     override val mimeType: MimeType
         get() = MimeType.Photo
 

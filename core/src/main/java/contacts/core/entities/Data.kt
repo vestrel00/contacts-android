@@ -31,6 +31,11 @@ import contacts.core.util.isProfileId
 sealed interface DataEntity : Entity {
 
     /**
+     * The main value encapsulated by this entity as a string.
+     */
+    val primaryValue: String?
+    
+    /**
      * The type of data.
      */
     val mimeType: MimeType
@@ -106,6 +111,23 @@ sealed interface DataEntity : Entity {
     }
 }
 
+sealed interface DataEntityWithTypeAndLabel<T : DataEntity.Type> : DataEntity {
+
+    /**
+     * The [DataEntity.Type].
+     */
+    val type: T?
+
+    /**
+     * Used as the string representation of the [type] if this is not null and the [type] is custom.
+     * Otherwise, the system's string representation of the type is used.
+     *
+     * This is the string value displayed in the UI for user-created custom types. This is only used
+     * when the [type] is custom.
+     */
+    val label: String?
+}
+
 /**
  * A [DataEntity] that has NOT yet been inserted into the database.
  */
@@ -169,28 +191,15 @@ sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntit
  */
 sealed interface MutableDataEntity : DataEntity, MutableEntity {
 
-    /**
-     * The main value encapsulated by this entity as a string for consumer usage.
-     */
-    var primaryValue: String?
+    override var primaryValue: String?
 }
 
 /**
  * A [MutableDataEntity], with a mutable [type] and [label].
  */
-sealed interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableDataEntity {
+sealed interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableDataEntity,
+    DataEntityWithTypeAndLabel<T> {
 
-    /**
-     * The [DataEntity.Type] of the [primaryValue].
-     */
-    var type: T?
-
-    /**
-     * Used as the string representation of the [type] if this is not null and the [type] is custom.
-     * Otherwise, the system's string representation of the type is used.
-     *
-     * This is the string value displayed in the UI for user-created custom types. This is only used
-     * when the [type] is custom.
-     */
-    var label: String?
+    override var type: T?
+    override var label: String?
 }

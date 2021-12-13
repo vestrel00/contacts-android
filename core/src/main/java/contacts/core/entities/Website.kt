@@ -17,6 +17,14 @@ sealed interface WebsiteEntity : DataEntity {
      */
     val url: String?
 
+    /**
+     * The [url].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::url
+    override val primaryValue: String?
+        get() = url
+
     override val mimeType: MimeType
         get() = MimeType.Website
 
@@ -49,6 +57,9 @@ sealed interface MutableWebsiteEntity : WebsiteEntity, MutableDataEntity {
 
     override var url: String?
 
+    /**
+     * The [url].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::url
     override var primaryValue: String?

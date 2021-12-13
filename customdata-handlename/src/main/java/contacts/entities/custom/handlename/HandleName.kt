@@ -20,6 +20,14 @@ sealed interface HandleNameEntity : CustomDataEntity {
      */
     val handle: String?
 
+    /**
+     * The [handle].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::handle
+    override val primaryValue: String?
+        get() = handle
+
     override val mimeType: MimeType.Custom
         get() = HandleNameMimeType
 
@@ -52,6 +60,9 @@ sealed interface MutableHandleNameEntity : HandleNameEntity, MutableCustomDataEn
 
     override var handle: String?
 
+    /**
+     * The [handle].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::handle
     override var primaryValue: String?

@@ -93,6 +93,14 @@ sealed interface NameEntity : DataEntity {
      */
     val phoneticFamilyName: String?
 
+    /**
+     * The [displayName].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::displayName
+    override val primaryValue: String?
+        get() = displayName
+
     override val mimeType: MimeType
         get() = MimeType.Name
 
@@ -141,6 +149,9 @@ sealed interface MutableNameEntity : NameEntity, MutableDataEntity {
     override var phoneticMiddleName: String?
     override var phoneticFamilyName: String?
 
+    /**
+     * The [displayName].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::displayName
     override var primaryValue: String?

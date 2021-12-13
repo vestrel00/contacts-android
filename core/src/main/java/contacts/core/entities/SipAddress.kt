@@ -16,6 +16,14 @@ sealed interface SipAddressEntity : DataEntity {
      * The SIP address.
      */
     val sipAddress: String?
+    
+    /**
+     * The [sipAddress].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::sipAddress
+    override val primaryValue: String?
+        get() = sipAddress
 
     override val mimeType: MimeType
         get() = MimeType.SipAddress
@@ -49,6 +57,9 @@ sealed interface MutableSipAddressEntity : SipAddressEntity, MutableDataEntity {
 
     override var sipAddress: String?
 
+    /**
+     * The [sipAddress].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::sipAddress
     override var primaryValue: String?

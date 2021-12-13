@@ -13,6 +13,14 @@ internal sealed interface TestDataEntity : CustomDataEntity {
      */
     val value: String?
 
+    /**
+     * The [value].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::value
+    override val primaryValue: String?
+        get() = value
+
     override val mimeType: MimeType.Custom
         get() = TestDataMimeType
 
@@ -45,6 +53,9 @@ internal sealed interface MutableTestDataEntity : TestDataEntity, MutableCustomD
 
     override var value: String?
 
+    /**
+     * The [value].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::value
     override var primaryValue: String?

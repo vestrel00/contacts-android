@@ -10,17 +10,7 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
-sealed interface AddressEntity : DataEntity {
-
-    /**
-     * The [Type] of address.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The full, unstructured postal address. This must be consistent with any structured data.
@@ -85,6 +75,14 @@ sealed interface AddressEntity : DataEntity {
      */
     val country: String?
 
+    /**
+     * The [formattedAddress].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::formattedAddress
+    override val primaryValue: String?
+        get() = formattedAddress
+
     override val mimeType: MimeType
         get() = MimeType.Address
 
@@ -137,8 +135,6 @@ sealed interface AddressEntity : DataEntity {
  */
 sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
-    override var type: Type?
-    override var label: String?
     override var formattedAddress: String?
     override var street: String?
     override var poBox: String?
@@ -148,6 +144,9 @@ sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithType
     override var postcode: String?
     override var country: String?
 
+    /**
+     * The [formattedAddress].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::formattedAddress
     override var primaryValue: String?

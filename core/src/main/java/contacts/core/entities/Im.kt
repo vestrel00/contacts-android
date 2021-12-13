@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
-sealed interface ImEntity : DataEntity {
+sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
     // Type and Label are also available. However, they have no use here as the protocol and custom
     // protocol have taken their place...
@@ -29,6 +29,30 @@ sealed interface ImEntity : DataEntity {
      * The data as the user entered it.
      */
     val data: String?
+
+    /**
+     * The [data].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::data
+    override val primaryValue: String?
+        get() = data
+
+    /**
+     * The [protocol].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var type: Protocol? by this::protocol
+    override val type: Protocol?
+        get() = protocol
+
+    /**
+     * The [customProtocol].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var label: String? by this::customProtocol
+    override val label: String?
+        get() = customProtocol
 
     override val mimeType: MimeType
         get() = MimeType.Im
@@ -103,6 +127,9 @@ sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<P
     override var customProtocol: String?
     override var data: String?
 
+    /**
+     * The [data].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::data
     override var primaryValue: String?
@@ -111,6 +138,9 @@ sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<P
             data = value
         }
 
+    /**
+     * The [protocol].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var type: Protocol? by this::protocol
     override var type: Protocol?
@@ -119,6 +149,9 @@ sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<P
             protocol = value
         }
 
+    /**
+     * The [customProtocol].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var label: String? by this::customProtocol
     override var label: String?

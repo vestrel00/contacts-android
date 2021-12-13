@@ -10,22 +10,20 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
-sealed interface EmailEntity : DataEntity {
-
-    /**
-     * The [Type] of email.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface EmailEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The email address.
      */
     val address: String?
+
+    /**
+     * The [address].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::address
+    override val primaryValue: String?
+        get() = address
 
     override val mimeType: MimeType
         get() = MimeType.Email
@@ -79,10 +77,11 @@ sealed interface EmailEntity : DataEntity {
  */
 sealed interface MutableEmailEntity : EmailEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
-    override var type: Type?
-    override var label: String?
     override var address: String?
 
+    /**
+     * The [address].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::address
     override var primaryValue: String?

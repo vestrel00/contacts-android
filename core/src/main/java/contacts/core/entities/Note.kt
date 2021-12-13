@@ -14,6 +14,14 @@ sealed interface NoteEntity : DataEntity {
      */
     val note: String?
 
+    /**
+     * The [note].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::note
+    override val primaryValue: String?
+        get() = note
+
     override val mimeType: MimeType
         get() = MimeType.Note
 
@@ -46,6 +54,9 @@ sealed interface MutableNoteEntity : NoteEntity, MutableDataEntity {
 
     override var note: String?
 
+    /**
+     * The [note].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::note
     override var primaryValue: String?

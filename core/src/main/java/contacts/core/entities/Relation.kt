@@ -13,22 +13,20 @@ import kotlinx.parcelize.Parcelize
  * Local RawContacts (those that are not associated with an Account) **should not** have any entries
  * of this data kind.
  */
-sealed interface RelationEntity : DataEntity {
-
-    /**
-     * The [Type] of relation.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface RelationEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The name of the relative as the user entered it.
      */
     val name: String?
+
+    /**
+     * The [name].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::name
+    override val primaryValue: String?
+        get() = name
 
     override val mimeType: MimeType
         get() = MimeType.Relation
@@ -89,10 +87,11 @@ sealed interface RelationEntity : DataEntity {
  */
 sealed interface MutableRelationEntity : RelationEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
-    override var type: Type?
-    override var label: String?
     override var name: String?
 
+    /**
+     * The [name].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::name
     override var primaryValue: String?

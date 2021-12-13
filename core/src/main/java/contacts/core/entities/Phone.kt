@@ -10,23 +10,7 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
-sealed interface PhoneEntity : DataEntity {
-
-    /**
-     * The [Type] of phone.
-     *
-     * Use [Type.labelStr] to get the display name of the type.
-     */
-    val type: Type?
-
-    /**
-     * Used as the string representation of the [type] if this is not null and the [type] is
-     * [Type.CUSTOM]. Otherwise, the system's string representation of the type is used.
-     *
-     * This is the string value displayed in the UI for user-created custom types. This is only used
-     * when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The phone number as the user entered it.
@@ -44,6 +28,14 @@ sealed interface PhoneEntity : DataEntity {
      * E.G. +10123456789
      */
     val normalizedNumber: String?
+
+    /**
+     * The [number].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::number
+    override val primaryValue: String?
+        get() = number
 
     override val mimeType: MimeType
         get() = MimeType.Phone
@@ -117,11 +109,12 @@ sealed interface PhoneEntity : DataEntity {
  */
 sealed interface MutablePhoneEntity : PhoneEntity, MutableDataEntityWithTypeAndLabel<Type> {
 
-    override var type: Type?
-    override var label: String?
     override var number: String?
     override var normalizedNumber: String?
 
+    /**
+     * The [number].
+     */
     // Delegated properties are not allowed on interfaces =(
     // override var primaryValue: String? by this::number
     override var primaryValue: String?
