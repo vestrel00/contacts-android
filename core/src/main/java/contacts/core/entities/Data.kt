@@ -86,6 +86,12 @@ sealed interface DataEntity : Entity {
     override val isBlank: Boolean
 
     /**
+     * True if this data belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = false
+
+    /**
      * A type of data. Used by data that may have several types.
      */
     // Not sealed intentionally.
@@ -160,10 +166,7 @@ sealed interface ExistingDataEntity : DataEntity, ExistingEntity {
      */
     val contactId: Long
 
-    /**
-     * True if this data belongs to the user's personal profile entry.
-     */
-    val isProfile: Boolean
+    override val isProfile: Boolean
         get() = id.isProfileId
 }
 

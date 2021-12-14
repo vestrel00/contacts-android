@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.accounts.accountForWithContext
 import contacts.core.Contacts
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.RawContactEntity
 import contacts.permissions.accounts.queryWithPermission
 import kotlinx.coroutines.*
@@ -38,7 +39,6 @@ import kotlin.coroutines.CoroutineContext
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
  * move this to a separate module (contacts-ui-async).
  */
-// TODO Support selecting account when creating new RawContact
 class AccountView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -61,9 +61,14 @@ class AccountView @JvmOverloads constructor(
 
     private fun setAccount(contacts: Contacts) = launch {
         val account = rawContact?.let {
-            contacts.accounts(it.isProfile)
-                .queryWithPermission()
-                .accountForWithContext(it)
+            if (it is ExistingRawContactEntity) {
+                contacts.accounts(it.isProfile)
+                    .queryWithPermission()
+                    .accountForWithContext(it)
+            } else {
+                // TODO Support selecting account when creating new RawContact
+                null
+            }
         }
 
         text = if (account == null) {

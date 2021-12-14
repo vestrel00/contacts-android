@@ -4,6 +4,7 @@ import contacts.core.AbstractDataField
 import contacts.core.ContactsField
 import contacts.core.RawContactsField
 import contacts.core.entities.Contact
+import contacts.core.entities.ImmutableCustomDataEntity
 import contacts.core.entities.MimeType.*
 import contacts.core.entities.RawContact
 import contacts.core.entities.TempRawContact
@@ -60,7 +61,7 @@ internal class ContactsMapper(
         while (!cancel() && cursor.moveToNext()) {
             val contactId = contactsCursor.contactId
 
-            if (contactId != null && !contactsMap.containsKey(contactId)) {
+            if (!contactsMap.containsKey(contactId)) {
                 contactsMap[contactId] = contactMapper.value
             }
         }
@@ -80,7 +81,7 @@ internal class ContactsMapper(
         while (!cancel() && cursor.moveToNext()) {
             val rawContactId = rawContactsCursor.rawContactId
 
-            if (rawContactId != null && !rawContactsMap.containsKey(rawContactId)) {
+            if (!rawContactsMap.containsKey(rawContactId)) {
                 rawContactsMap[rawContactId] = tempRawContactMapper.value
             }
         }
@@ -103,16 +104,14 @@ internal class ContactsMapper(
             // Collect contacts.
             // Use the Data cursor to retrieve the contactId.
             val contactId = dataCursor.contactId
-            if (contactId != null && !contactsMap.containsKey(contactId)) {
+            if (!contactsMap.containsKey(contactId)) {
                 contactsMap[contactId] = contactMapper.value
             }
 
             // Collect the RawContacts and update them.
             // Use the Data cursor to retrieve the rawContactId.
-            dataCursor.rawContactId?.let { rawContactId ->
-                rawContactsMap.getOrPut(rawContactId) { tempRawContactMapper.value }
-                    .also { cursor.updateRawContact(customDataRegistry, it) }
-            }
+            rawContactsMap.getOrPut(dataCursor.rawContactId) { tempRawContactMapper.value }
+                .also { cursor.updateRawContact(customDataRegistry, it) }
         }
     }
 
@@ -129,8 +128,6 @@ internal class ContactsMapper(
         // Map contact id to set of raw contacts.
         val contactRawMap = mutableMapOf<Long, MutableList<RawContact>>()
         for (tempRawContact in rawContactsMap.values) {
-            // There shouldn't be any RawContacts that make it here with null contactId.
-            if (tempRawContact.contactId == null) continue
 
             val rawContacts = contactRawMap.getOrPut(tempRawContact.contactId) { mutableListOf() }
             rawContacts.add(tempRawContact.toRawContact())
@@ -146,8 +143,7 @@ internal class ContactsMapper(
         // Add all of the Contacts in the contactsMap.
         for (contact in contactsMap.values) {
             // Make sure to remove the entry in contactRawMap as it is processed.
-            val rawContacts: List<RawContact> =
-                contact.id?.let(contactRawMap::remove) ?: emptyList()
+            val rawContacts: List<RawContact> = contactRawMap.remove(contact.id) ?: emptyList()
 
             // The data class copy function comes in handy here.
             contactList.add(contact.copy(rawContacts = rawContacts.sortedBy { it.id }))
@@ -228,7 +224,6 @@ private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
         ImmutableCustomDataEntityHolder(mutableListOf(), customDataEntry.countRestriction)
     }
 
-    @Suppress("UNCHECKED_CAST")
     val customDataMapper = customDataEntry.mapperFactory.create(
         cursor,
         // Only include custom data fields assigned by this entry.
@@ -236,5 +231,11 @@ private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
     )
 
     // Do not add blanks.
-    customDataMapper.nonBlankValueOrNull?.let(customDataEntityHolder.entities::add)
+    customDataMapper.nonBlankValueOrNull?.let {
+        // We are assuming that the mappers return immutable entities.
+        // This is not a safe cast because there can be existing but mutable entities.
+        // We could create an "ExistingImmutable" type but we already have so many types.
+        // Programming error should be caught very quickly if this implicit contract is violated.
+        customDataEntityHolder.entities.add(it as ImmutableCustomDataEntity)
+    }
 }

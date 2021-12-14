@@ -119,6 +119,12 @@ sealed interface RawContactEntity : Entity {
             customDataEntities.values.flatMap { it.entities }
         )
 
+    /**
+     * True if this raw contact belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = false
+
     // The Data table contains the options columns for Contacts, not for RawContacts.
     // Use the RawContactOptions extension functions to get/set options.
 }
@@ -160,10 +166,7 @@ sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
 
     // The Data table contains the display name for Contacts, not for RawContacts.
 
-    /**
-     * True if this raw contact belongs to the user's personal profile entry.
-     */
-    val isProfile: Boolean
+    override val isProfile: Boolean
         get() = id.isProfileId
 }
 

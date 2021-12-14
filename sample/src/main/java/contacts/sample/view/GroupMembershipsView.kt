@@ -5,12 +5,12 @@ import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.util.groupsWithContext
 import contacts.core.Contacts
-import contacts.core.entities.GroupMembership
+import contacts.core.entities.GroupMembershipEntity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [TextView] that displays the [GroupMembership] of a of a RawContact and handles the
+ * A [TextView] that displays the [GroupMembershipEntity] of a of a RawContact and handles the
  * modifications to it.
  *
  * Setting the [memberships] will automatically update the views and vice versa.
@@ -46,13 +46,13 @@ class GroupMembershipsView @JvmOverloads constructor(
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main
 
-    private var memberships: MutableList<GroupMembership> = mutableListOf()
+    private var memberships: MutableList<GroupMembershipEntity> = mutableListOf()
 
     /**
      * Sets the group memberships shown and managed by this view to the given [memberships] and uses
      * the given [contacts] API to perform operations on it.
      */
-    fun setMemberships(memberships: MutableList<GroupMembership>, contacts: Contacts) {
+    fun setMemberships(memberships: MutableList<GroupMembershipEntity>, contacts: Contacts) {
         this.memberships = memberships
         setMemberships(contacts)
     }

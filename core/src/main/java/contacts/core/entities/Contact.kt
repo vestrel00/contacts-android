@@ -147,6 +147,12 @@ sealed interface ContactEntity : Entity {
     // the Data table, which is why they are not part of the blank check.
     override val isBlank: Boolean
         get() = entitiesAreAllBlank(rawContacts)
+
+    /**
+     * True if this contact represents the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = false
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -190,7 +196,7 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
     /**
      * True if this contact represents the user's personal profile entry.
      */
-    val isProfile: Boolean
+    override val isProfile: Boolean
         get() = id.isProfileId
 }
 

@@ -603,7 +603,7 @@ private fun ContentResolver.findContactIdsInContactsTable(
     val contactIds = mutableSetOf<Long>()
     val contactsCursor = it.contactsCursor()
     while (!cancel() && it.moveToNext()) {
-        contactsCursor.contactId?.let(contactIds::add)
+        contactIds.add(contactsCursor.contactId)
     }
     contactIds
 } ?: emptySet()

@@ -19,9 +19,7 @@ import contacts.async.util.setOptionsWithContext
 import contacts.async.util.updateOptionsWithContext
 import contacts.core.Contacts
 import contacts.core.Fields
-import contacts.core.entities.MutableContact
-import contacts.core.entities.MutableOptions
-import contacts.core.entities.MutableRawContact
+import contacts.core.entities.*
 import contacts.core.equalTo
 import contacts.permissions.deleteWithPermission
 import contacts.permissions.insertWithPermission
@@ -36,11 +34,11 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A (vertical) [LinearLayout] that displays a [MutableContact] and handles the modifications to the
+ * A (vertical) [LinearLayout] that displays a [ContactEntity] and handles the modifications to the
  * given [contact]. Each of the RawContact is displayed in a [RawContactView].
  *
  * Loading the [contact] will automatically update the views. Any modifications in the views will
- * also be made to the [contact].
+ * also be made to the [contact] (only if it is mutable).
  *
  * ## View layout
  *
@@ -103,15 +101,15 @@ class ContactView @JvmOverloads constructor(
 
     /**
      * The Contact that is shown in this view. Setting this will automatically update the views. Any
-     * modifications in the views will also be made to the this.
+     * modifications in the views will also be made to the this (only if it is mutable).
      */
-    private var contact: MutableContact? = null
+    private var contact: ContactEntity? = null
 
     /**
      * Set the Contact shown and managed by this view to the given [contact] and uses the given
      * [contacts] API to perform operations on it.
      */
-    private fun setContact(contact: MutableContact?, contacts: Contacts) {
+    private fun setContact(contact: ContactEntity?, contacts: Contacts) {
         this.contact = contact
 
         setOptionsView(contacts)
@@ -218,7 +216,11 @@ class ContactView @JvmOverloads constructor(
      * Returns the newly created contact's ID. Returns null if the insert failed.
      */
     suspend fun createNewContact(contacts: Contacts): Long? {
-        val rawContact = newRawContactView?.rawContact ?: return null
+        val rawContact = newRawContactView?.rawContact
+        if (rawContact == null || rawContact !is NewRawContact) {
+            // Only new RawContacts can be inserted.
+            return null
+        }
 
         val newContact = contacts.insertWithPermission()
             .allowBlanks(true)
@@ -239,7 +241,12 @@ class ContactView @JvmOverloads constructor(
      * succeeded of not.
      */
     suspend fun updateContact(contacts: Contacts): Boolean {
-        val contact = contact ?: return false
+        val contact = contact
+
+        if (contact == null || contact !is ExistingContactEntity) {
+            // Only existing Contacts can be updated.
+            return false
+        }
 
         // Update RawContact photos that have changed first so that the (Raw)Contacts does not get
         // deleted if it only has a photo. Blank (Raw)Contacts are by default deleted in updates.
@@ -270,7 +277,12 @@ class ContactView @JvmOverloads constructor(
      * Returns true if the delete succeeded.
      */
     suspend fun deleteContact(contacts: Contacts): Boolean {
-        val contact = contact ?: return false
+        val contact = contact
+
+        if (contact == null || contact !is ExistingContactEntity) {
+            // Only existing Contacts can be deleted. Just return to to proceed with finishing.
+            return true
+        }
 
         return contacts.deleteWithPermission()
             .contacts(contact)
@@ -340,12 +352,12 @@ class ContactView @JvmOverloads constructor(
                 addRawContactView(rawContact, contacts)
             }
         } else {
-            newRawContactView = addRawContactView(MutableRawContact(), contacts)
+            newRawContactView = addRawContactView(NewRawContact(), contacts)
         }
     }
 
     private fun addRawContactView(
-        rawContact: MutableRawContact,
+        rawContact: RawContactEntity,
         contacts: Contacts
     ): RawContactView {
         val rawContactView = RawContactView(context)
@@ -355,14 +367,21 @@ class ContactView @JvmOverloads constructor(
     }
 
     private suspend fun toggleStarred(contacts: Contacts) {
+        val contact = contact
+
+        if (contact == null || contact !is ExistingContactEntity) {
+            // Only existing contacts can perform this operation.
+            return
+        }
+
         // The starred value from DB needs to be retrieved.
-        val options = contact?.optionsWithContext(contacts)?.mutableCopy() ?: MutableOptions()
+        val options = contact.optionsWithContext(contacts)?.mutableCopy() ?: NewOptions()
         val starred = options.starred == true
 
         options.starred = !starred
 
         // Update immediately, separate from the general update/save.
-        val success = contact?.setOptionsWithContext(contacts, options) == true
+        val success = contact.setOptionsWithContext(contacts, options)
 
         if (success) {
             setStarredView(!starred)
@@ -377,27 +396,50 @@ class ContactView @JvmOverloads constructor(
     }
 
     private suspend fun sendToVoicemail(sendToVoicemail: Boolean, contacts: Contacts) {
+        val contact = contact
+        if (contact == null || contact !is ExistingContactEntity) {
+            // Only existing contacts can perform this operation.
+            return
+        }
+
         // Update immediately, separate from the general update/save.
-        contact?.updateOptionsWithContext(contacts) {
+        contact.updateOptionsWithContext(contacts) {
             this.sendToVoicemail = sendToVoicemail
         }
     }
 
     private suspend fun selectCustomRingtone(contacts: Contacts) {
+        val contact = contact
+        if (contact == null || contact !is ExistingContactEntity) {
+            // Only existing contacts can perform this operation.
+            return
+        }
+
         // The customRingtone value from DB needs to be retrieved.
-        activity?.selectRingtone(contact?.optionsWithContext(contacts)?.customRingtone)
+        activity?.selectRingtone(contact.optionsWithContext(contacts)?.customRingtone)
     }
 
     private suspend fun setCustomRingtone(customRingtone: Uri?, contacts: Contacts) {
+        val contact = contact
+        if (contact == null || contact !is ExistingContactEntity) {
+            // Only existing contacts can perform this operation.
+            return
+        }
+
         // Update immediately, separate from the general update/save.
-        contact?.updateOptionsWithContext(contacts) {
+        contact.updateOptionsWithContext(contacts) {
             this.customRingtone = customRingtone
         }
     }
 
     private suspend fun refreshRawContactsGroupMemberships(contacts: Contacts) {
-        val contact = contact ?: return
-        val contactId = contact.id ?: return
+        val contact = contact
+        if (contact == null || contact !is MutableContact) {
+            // Only existing mutable contacts can perform this operation.
+            return
+        }
+
+        val contactId = contact.id
 
         // We could fetch the the set of groups for all linked RawContacts and then fetch group
         // memberships to the favorites group. Or, we can just fetch the entire contact again but

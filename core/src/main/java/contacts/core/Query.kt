@@ -607,7 +607,7 @@ private fun ContentResolver.findContactIdsInContactsTable(
     mutableSetOf<Long>().apply {
         val contactsCursor = it.contactsCursor()
         while (!cancel() && it.moveToNext()) {
-            contactsCursor.contactId?.let(::add)
+            add(contactsCursor.contactId)
         }
     }
 } ?: emptySet()
@@ -625,7 +625,7 @@ internal fun ContentResolver.findContactIdsInRawContactsTable(
     mutableSetOf<Long>().apply {
         val rawContactsCursor = it.rawContactsCursor()
         while (!cancel() && it.moveToNext()) {
-            rawContactsCursor.contactId?.let(::add)
+            add(rawContactsCursor.contactId)
         }
     }
 } ?: emptySet()
@@ -636,7 +636,7 @@ internal fun ContentResolver.findContactIdsInDataTable(
     val contactIds = mutableSetOf<Long>()
     val contactsCursor = it.dataContactsCursor()
     while (!cancel() && it.moveToNext()) {
-        contactsCursor.contactId?.let(contactIds::add)
+        contactIds.add(contactsCursor.contactId)
     }
     contactIds
 } ?: emptySet()

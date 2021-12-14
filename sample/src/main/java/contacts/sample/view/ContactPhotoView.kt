@@ -8,16 +8,17 @@ import contacts.async.util.photoBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
 import contacts.core.Contacts
-import contacts.core.entities.MutableContact
+import contacts.core.entities.ContactEntity
+import contacts.sample.util.runIfExist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
- * An [ImageView] that displays a [MutableContact]'s photo and handles photo addition, modification,
+ * An [ImageView] that displays a [ContactEntity]'s photo and handles photo addition, modification,
  * and removal.
  *
  * Setting the [contact] will automatically update the views. Any modifications in the views will
- * also be made to the [contact]'s photo upon [savePhoto].
+ * also be made to the [contact]'s photo upon [savePhoto] (only if it is mutable).
  *
  * ## Note
  *
@@ -54,27 +55,35 @@ class ContactPhotoView @JvmOverloads constructor(
      * views. Any modifications in the views will also be made to the [contact]'s photo upon
      * [savePhoto].
      */
-    private var contact: MutableContact? = null
+    private var contact: ContactEntity? = null
 
     /**
      * Sets the Contact shown and managed by this view to the given [contact] and uses the given
      * [contacts] API to perform operations on it.
+     *
+     * The [contact] will only be mutated if it is mutable.
      */
-    fun setContact(contact: MutableContact?, contacts: Contacts) {
+    fun setContact(contact: ContactEntity?, contacts: Contacts) {
         this.contact = contact
-        setPhotoDrawableFromMutableContact(contacts)
+        setPhotoDrawableFromContact(contacts)
     }
 
     override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
-        contact?.setPhotoWithContext(contacts, photoDrawable) == true
+        contact.runIfExist {
+            it.setPhotoWithContext(contacts, photoDrawable)
+        } == true
 
     override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =
-        contact?.removePhotoWithContext(contacts) == true
+        contact.runIfExist {
+            it.removePhotoWithContext(contacts)
+        } == true
 
-    private fun setPhotoDrawableFromMutableContact(contacts: Contacts) {
+    private fun setPhotoDrawableFromContact(contacts: Contacts) {
         setContactPhotoJob?.cancel()
         setContactPhotoJob = launch {
-            setPhotoDrawable(contact?.photoBitmapDrawableWithContext(contacts))
+            setPhotoDrawable(contact.runIfExist {
+                it.photoBitmapDrawableWithContext(contacts)
+            })
         }
     }
 }
