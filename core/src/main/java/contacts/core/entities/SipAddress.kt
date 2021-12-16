@@ -16,7 +16,7 @@ sealed interface SipAddressEntity : DataEntity {
      * The SIP address.
      */
     val sipAddress: String?
-    
+
     /**
      * The [sipAddress].
      */
@@ -118,14 +118,9 @@ data class MutableSipAddress internal constructor(
 /**
  * A new mutable [SipAddressEntity].
  */
-// Intentionally expose primary constructor to consumers.
 @Parcelize
-data class NewSipAddress(
+data class NewSipAddress @JvmOverloads constructor(
 
-    override var sipAddress: String?
+    override var sipAddress: String? = null
 
-) : SipAddressEntity, NewDataEntity, MutableSipAddressEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null)
-}
+) : SipAddressEntity, NewDataEntity, MutableSipAddressEntity

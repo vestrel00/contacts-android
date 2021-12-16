@@ -148,16 +148,11 @@ data class MutableEmail internal constructor(
 /**
  * An new mutable [EmailEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewEmail(
+data class NewEmail @JvmOverloads constructor(
 
-    override var type: Type?,
-    override var label: String?,
-    override var address: String?
+    override var type: Type? = null,
+    override var label: String? = null,
+    override var address: String? = null
 
-) : EmailEntity, NewDataEntity, MutableEmailEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null)
-}
+) : EmailEntity, NewDataEntity, MutableEmailEntity

@@ -118,14 +118,9 @@ data class MutableWebsite internal constructor(
 /**
  * A new mutable [WebsiteEntity].
  */
-// Intentionally expose primary constructor to consumers.
 @Parcelize
-data class NewWebsite(
+data class NewWebsite @JvmOverloads constructor(
 
-    override var url: String?
+    override var url: String? = null
 
-) : WebsiteEntity, NewDataEntity, MutableWebsiteEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null)
-}
+) : WebsiteEntity, NewDataEntity, MutableWebsiteEntity

@@ -159,17 +159,12 @@ data class MutableRelation internal constructor(
 /**
  * A new mutable [RelationEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewRelation(
+data class NewRelation @JvmOverloads constructor(
 
-    override var type: Type?,
-    override var label: String?,
+    override var type: Type? = null,
+    override var label: String? = null,
 
-    override var name: String?
+    override var name: String? = null
 
-) : RelationEntity, NewDataEntity, MutableRelationEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null)
-}
+) : RelationEntity, NewDataEntity, MutableRelationEntity

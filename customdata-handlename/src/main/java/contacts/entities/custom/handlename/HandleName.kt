@@ -123,14 +123,9 @@ data class MutableHandleName internal constructor(
 /**
  * A new mutable [HandleNameEntity].
  */
-// Intentionally expose primary constructor to consumers.
 @Parcelize
-data class NewHandleName(
+data class NewHandleName @JvmOverloads constructor(
 
-    override var handle: String?
+    override var handle: String? = null
 
-) : HandleNameEntity, NewCustomDataEntity, MutableHandleNameEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null)
-}
+) : HandleNameEntity, NewCustomDataEntity, MutableHandleNameEntity

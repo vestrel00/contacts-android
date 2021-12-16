@@ -259,36 +259,27 @@ data class MutableRawContact internal constructor(
  *
  * This can hold new mutable data entities.
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewRawContact(
+data class NewRawContact @JvmOverloads constructor(
 
-    override var addresses: MutableList<NewAddress>,
-    override var emails: MutableList<NewEmail>,
-    override var events: MutableList<NewEvent>,
-    override var groupMemberships: MutableList<NewGroupMembership>,
-    override var ims: MutableList<NewIm>,
-    override var name: NewName?,
-    override var nickname: NewNickname?,
-    override var note: NewNote?,
-    override var organization: NewOrganization?,
-    override var phones: MutableList<NewPhone>,
-    override var photo: Photo?,
-    override var relations: MutableList<NewRelation>,
-    override var sipAddress: NewSipAddress?,
-    override var websites: MutableList<NewWebsite>,
+    override var addresses: MutableList<NewAddress> = mutableListOf(),
+    override var emails: MutableList<NewEmail> = mutableListOf(),
+    override var events: MutableList<NewEvent> = mutableListOf(),
+    override var groupMemberships: MutableList<NewGroupMembership> = mutableListOf(),
+    override var ims: MutableList<NewIm> = mutableListOf(),
+    override var name: NewName? = null,
+    override var nickname: NewNickname? = null,
+    override var note: NewNote? = null,
+    override var organization: NewOrganization? = null,
+    override var phones: MutableList<NewPhone> = mutableListOf(),
+    override var photo: Photo? = null,
+    override var relations: MutableList<NewRelation> = mutableListOf(),
+    override var sipAddress: NewSipAddress? = null,
+    override var websites: MutableList<NewWebsite> = mutableListOf(),
 
-    override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
+    override val customDataEntities: MutableMap<String, CustomDataEntityHolder> = mutableMapOf()
 
-) : RawContactEntity, NewEntity, MutableEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(
-        mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(),
-        null, null, null, null, mutableListOf(), null,
-        mutableListOf(), null, mutableListOf(), mutableMapOf()
-    )
-}
+) : RawContactEntity, NewEntity, MutableEntity
 
 /**
  * A blank [ExistingRawContactEntity] that contains no data (e.g. email, phone, etc), although

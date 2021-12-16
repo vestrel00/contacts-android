@@ -129,16 +129,11 @@ data class MutableOptions internal constructor(
 /**
  * A new mutable [OptionsEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users
 @Parcelize
-data class NewOptions(
+data class NewOptions @JvmOverloads constructor(
 
-    override var starred: Boolean?,
-    override var customRingtone: Uri?,
-    override var sendToVoicemail: Boolean?
+    override var starred: Boolean? = null,
+    override var customRingtone: Uri? = null,
+    override var sendToVoicemail: Boolean? = null
 
-) : OptionsEntity, NewEntity, MutableOptionsEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null)
-}
+) : OptionsEntity, NewEntity, MutableOptionsEntity

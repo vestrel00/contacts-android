@@ -185,17 +185,13 @@ data class MutablePhone internal constructor(
 /**
  * A new mutable [PhoneEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewPhone(
+data class NewPhone @JvmOverloads constructor(
 
-    override var type: Type?,
-    override var label: String?,
+    override var type: Type? = null,
+    override var label: String? = null,
 
-    override var number: String?,
-    override var normalizedNumber: String?
+    override var number: String? = null,
+    override var normalizedNumber: String? = null
 
-) : PhoneEntity, NewDataEntity, MutablePhoneEntity {
-
-    constructor() : this(null, null, null, null)
-}
+) : PhoneEntity, NewDataEntity, MutablePhoneEntity

@@ -72,6 +72,11 @@ sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEn
      * This is typically used for update operations.
      */
     fun mutableCopy(): T
+
+    /**
+     * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
+     */
+    fun mutableCopy(newCopy: T.() -> Unit): T = mutableCopy().apply(newCopy)
 }
 
 /**
@@ -89,6 +94,11 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
      * only be produced under certain conditions.
      */
     fun mutableCopy(): T?
+
+    /**
+     * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
+     */
+    fun mutableCopy(newCopy: T.() -> Unit): T? = mutableCopy()?.apply(newCopy)
 }
 
 /**

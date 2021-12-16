@@ -115,14 +115,9 @@ data class MutableNote internal constructor(
 /**
  * A new mutable [NoteEntity].
  */
-// Intentionally expose primary constructor to consumers.
 @Parcelize
-data class NewNote(
+data class NewNote @JvmOverloads constructor(
 
-    override var note: String?
+    override var note: String? = null
 
-) : NoteEntity, NewDataEntity, MutableNoteEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null)
-}
+) : NoteEntity, NewDataEntity, MutableNoteEntity

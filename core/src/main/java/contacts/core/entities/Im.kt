@@ -217,16 +217,11 @@ data class MutableIm internal constructor(
 /**
  * A new mutable [ImEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewIm(
+data class NewIm @JvmOverloads constructor(
 
-    override var protocol: Protocol?,
-    override var customProtocol: String?,
-    override var data: String?
+    override var protocol: Protocol? = null,
+    override var customProtocol: String? = null,
+    override var data: String? = null
 
-) : ImEntity, NewDataEntity, MutableImEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null)
-}
+) : ImEntity, NewDataEntity, MutableImEntity

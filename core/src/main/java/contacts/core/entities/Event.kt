@@ -181,20 +181,15 @@ data class MutableEvent internal constructor(
 /**
  * A new mutable [EventEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewEvent(
+data class NewEvent @JvmOverloads constructor(
 
-    override var type: Type?,
-    override var label: String?,
+    override var type: Type? = null,
+    override var label: String? = null,
 
-    override var date: EventDate?
+    override var date: EventDate? = null
 
-) : EventEntity, NewDataEntity, MutableEventEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null)
-}
+) : EventEntity, NewDataEntity, MutableEventEntity
 
 /**
  * An Event date that may or may not have a year.

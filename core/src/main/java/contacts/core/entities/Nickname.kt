@@ -24,7 +24,7 @@ sealed interface NicknameEntity : DataEntity {
     // override var primaryValue: String? by this::name
     override val primaryValue: String?
         get() = name
-    
+
     override val mimeType: MimeType
         get() = MimeType.Nickname
 
@@ -119,14 +119,9 @@ data class MutableNickname internal constructor(
 /**
  * A new mutable [NicknameEntity].
  */
-// Intentionally expose primary constructor to consumers.
 @Parcelize
-data class NewNickname(
+data class NewNickname @JvmOverloads constructor(
 
-    override var name: String?
+    override var name: String? = null
 
-) : NicknameEntity, NewDataEntity, MutableNicknameEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null)
-}
+) : NicknameEntity, NewDataEntity, MutableNicknameEntity

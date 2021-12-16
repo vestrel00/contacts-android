@@ -235,24 +235,19 @@ data class MutableAddress internal constructor(
 /**
  * A new mutable [AddressEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewAddress(
+data class NewAddress @JvmOverloads constructor(
 
-    override var type: Type?,
-    override var label: String?,
+    override var type: Type? = null,
+    override var label: String? = null,
 
-    override var formattedAddress: String?,
-    override var street: String?,
-    override var poBox: String?,
-    override var neighborhood: String?,
-    override var city: String?,
-    override var region: String?,
-    override var postcode: String?,
-    override var country: String?
+    override var formattedAddress: String? = null,
+    override var street: String? = null,
+    override var poBox: String? = null,
+    override var neighborhood: String? = null,
+    override var city: String? = null,
+    override var region: String? = null,
+    override var postcode: String? = null,
+    override var country: String? = null
 
-) : AddressEntity, NewDataEntity, MutableAddressEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null, null, null, null, null, null, null, null)
-}
+) : AddressEntity, NewDataEntity, MutableAddressEntity

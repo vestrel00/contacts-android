@@ -181,11 +181,10 @@ data class MutableGroup internal constructor(
 /**
  * A new mutable [GroupEntity].
  */
-// Intentionally expose primary constructor to consumers. This is the only way to create a new group.
 @Parcelize
 data class NewGroup(
     override var title: String,
-    override val account: Account
+    override var account: Account
 ) : GroupEntity, NewEntity, MutableEntity {
 
     override val systemId: String?

@@ -243,25 +243,20 @@ data class MutableName internal constructor(
 /**
  * A new mutable [NameEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewName(
+data class NewName @JvmOverloads constructor(
 
-    override var displayName: String?,
+    override var displayName: String? = null,
 
-    override var givenName: String?,
-    override var middleName: String?,
-    override var familyName: String?,
+    override var givenName: String? = null,
+    override var middleName: String? = null,
+    override var familyName: String? = null,
 
-    override var prefix: String?,
-    override var suffix: String?,
+    override var prefix: String? = null,
+    override var suffix: String? = null,
 
-    override var phoneticGivenName: String?,
-    override var phoneticMiddleName: String?,
-    override var phoneticFamilyName: String?
+    override var phoneticGivenName: String? = null,
+    override var phoneticMiddleName: String? = null,
+    override var phoneticFamilyName: String? = null
 
-) : NameEntity, NewDataEntity, MutableNameEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null, null, null, null, null, null, null)
-}
+) : NameEntity, NewDataEntity, MutableNameEntity

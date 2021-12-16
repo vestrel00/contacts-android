@@ -141,15 +141,10 @@ data class MutableGender internal constructor(
 /**
  * A new mutable [GenderEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewGender(
+data class NewGender @JvmOverloads constructor(
 
-    override var type: Type?,
-    override var label: String?
+    override var type: Type? = null,
+    override var label: String? = null
 
-) : GenderEntity, NewCustomDataEntity, MutableGenderEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null)
-}
+) : GenderEntity, NewCustomDataEntity, MutableGenderEntity

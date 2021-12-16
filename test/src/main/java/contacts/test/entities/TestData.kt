@@ -103,11 +103,8 @@ internal data class MutableTestData(
  * A new mutable [TestDataEntity].
  */
 @Parcelize
-internal data class NewTestData(
+internal data class NewTestData @JvmOverloads constructor(
 
-    override var value: String?
+    override var value: String? = null
 
-) : TestDataEntity, NewCustomDataEntity, MutableTestDataEntity {
-
-    constructor() : this(null)
-}
+) : TestDataEntity, NewCustomDataEntity, MutableTestDataEntity

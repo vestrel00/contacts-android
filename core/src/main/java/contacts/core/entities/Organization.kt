@@ -175,20 +175,15 @@ data class MutableOrganization internal constructor(
 /**
  * A new mutable [OrganizationEntity].
  */
-// Intentionally expose primary constructor to consumers. Useful for Kotlin users.
 @Parcelize
-data class NewOrganization(
+data class NewOrganization @JvmOverloads constructor(
 
-    override var company: String?,
-    override var title: String?,
-    override var department: String?,
-    override var jobDescription: String?,
-    override var officeLocation: String?,
-    override var symbol: String?,
-    override var phoneticName: String?
+    override var company: String? = null,
+    override var title: String? = null,
+    override var department: String? = null,
+    override var jobDescription: String? = null,
+    override var officeLocation: String? = null,
+    override var symbol: String? = null,
+    override var phoneticName: String? = null
 
-) : OrganizationEntity, NewDataEntity, MutableOrganizationEntity {
-
-    // An empty constructor for consumer use. Useful for both Kotlin and Java users.
-    constructor() : this(null, null, null, null, null, null, null)
-}
+) : OrganizationEntity, NewDataEntity, MutableOrganizationEntity
