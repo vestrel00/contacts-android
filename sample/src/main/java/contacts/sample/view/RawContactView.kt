@@ -138,10 +138,10 @@ class RawContactView @JvmOverloads constructor(
             // The native Contacts app hides these from the UI for local raw contacts. Let's follow
             // in the footsteps of the native Contacts app...
             if (account != null) {
-                eventsView.dataList = rawContact.events.toMutableList()
-                relationsView.dataList = rawContact.relations.toMutableList()
+                eventsView.dataList = rawContact.events.asMutableList()
+                relationsView.dataList = rawContact.relations.asMutableList()
                 groupMembershipsView.setMemberships(
-                    rawContact.groupMemberships.toMutableList(),
+                    rawContact.groupMemberships.asMutableList(),
                     contacts
                 )
             } else {
@@ -185,7 +185,7 @@ class RawContactView @JvmOverloads constructor(
                     }
                 }
             }
-        phonesView.dataList = rawContact.phones.toMutableList()
+        phonesView.dataList = rawContact.phones.asMutableList()
         sipAddressView.data =
             rawContact.sipAddress ?: NewSipAddress().also { newSipAddress ->
                 when (rawContact) {
@@ -196,10 +196,10 @@ class RawContactView @JvmOverloads constructor(
                     }
                 }
             }
-        emailsView.dataList = rawContact.emails.toMutableList()
-        addressesView.dataList = rawContact.addresses.toMutableList()
-        imsView.dataList = rawContact.ims.toMutableList()
-        websiteView.dataList = rawContact.websites.toMutableList()
+        emailsView.dataList = rawContact.emails.asMutableList()
+        addressesView.dataList = rawContact.addresses.asMutableList()
+        imsView.dataList = rawContact.ims.asMutableList()
+        websiteView.dataList = rawContact.websites.asMutableList()
 
         setAccountRequiredViews(contacts)
     }

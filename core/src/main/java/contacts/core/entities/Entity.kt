@@ -103,6 +103,19 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
 sealed interface MutableEntity : Entity
 
 /**
+ * Returns a reference to this list if it is an instance of [MutableList]. Otherwise, it returns a
+ * new [MutableList] instance with the same contents as this list.
+ *
+ * This is useful for saving a reference to the same mutable list (if it is an instance of it) so
+ * that modifications to the same mutable list can be made in multiple places.
+ */
+fun <T : Entity> List<T>.asMutableList(): MutableList<T> = if (this is MutableList) {
+    this
+} else {
+    toMutableList()
+}
+
+/**
  * Returns an immutable list containing mutable copies of type [T] for each instance of type [R] in
  * the list.
  */

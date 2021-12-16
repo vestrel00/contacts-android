@@ -449,14 +449,14 @@ class ContactView @JvmOverloads constructor(
             .where(Fields.Contact.Id equalTo contactId)
             .findWithContext()
             .firstOrNull()
-            ?.mutableCopy()
             ?: return
 
         // Copy over the refreshed group memberships to the RawContacts.
         for (rawContact in contact.rawContacts) {
             refreshedContact.rawContacts.find { it.id == rawContact.id }
                 ?.let { refreshedRawContact ->
-                    rawContact.groupMemberships = refreshedRawContact.groupMemberships
+                    rawContact.groupMemberships =
+                        refreshedRawContact.groupMemberships.asMutableList()
                 }
         }
 
