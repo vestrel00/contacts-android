@@ -19,7 +19,7 @@ To update the profile Contact and all of its RawContacts,
 val updateResult = Contacts(context)
     .profile()
     .update()
-    .contact(profile.mutableCopy().apply {
+    .contact(profile.mutableCopy {
         // make changes
     })
     .commit()
@@ -30,7 +30,7 @@ To update a profile RawContact directly,
 ```kotlin
 val updateResult = Contacts(context)
     .update()
-    .rawContacts(profile.rawContacts.first().mutableCopy().apply {
+    .rawContacts(profile.rawContacts.first().mutableCopy {
         // make changes
     })
     .commit()
@@ -83,7 +83,7 @@ The `commit` function returns a `Result`,
 
 ```kotlin
 val contactsApi =  Contacts(context)
-val mutableProfile = profile.mutableCopy().apply { ... }
+val mutableProfile = profile.mutableCopy { ... }
 
 val updateResult = contactsApi
     .profile()

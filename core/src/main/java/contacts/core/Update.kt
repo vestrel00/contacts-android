@@ -38,7 +38,7 @@ import contacts.core.util.unsafeLazy
  * In Kotlin,
  *
  * ```kotlin
- * val mutableRawContact = rawContact.mutableCopy().apply {
+ * val mutableRawContact = rawContact.mutableCopy {
  *      name = NewName(
  *          givenName = "john"
  *          familyName = "doe"
