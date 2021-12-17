@@ -190,7 +190,7 @@ class ContactsActivity : BaseActivity() {
 
     private inner class OnContactClickListener : AdapterView.OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            val contactId = searchResults[position].id ?: return
+            val contactId = searchResults[position].id
 
             ContactDetailsActivity.viewContactDetails(this@ContactsActivity, contactId)
         }

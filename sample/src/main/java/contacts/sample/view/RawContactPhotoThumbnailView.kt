@@ -8,16 +8,18 @@ import contacts.async.util.photoThumbnailBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
 import contacts.core.Contacts
-import contacts.core.entities.MutableRawContact
+import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.RawContactEntity
+import contacts.sample.util.runIfExist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
- * An [ImageView] that displays a [MutableRawContact]'s photo thumbnail and handles photo addition,
+ * An [ImageView] that displays a [RawContactEntity]'s photo thumbnail and handles photo addition,
  * modification, and removal.
  *
  * Setting the [rawContact] will automatically update the views. Any modifications in the views will
- * also be made to the [rawContact]'s photo upon [savePhoto].
+ * also be made to the [rawContact]'s photo upon [savePhoto] (only if it is mutable).
  *
  * ## Note
  *
@@ -52,29 +54,35 @@ class RawContactPhotoThumbnailView @JvmOverloads constructor(
      * update the views. Any modifications in the views will also be made to the [rawContact]'s
      * photo upon [savePhoto].
      */
-    private var rawContact: MutableRawContact? = null
+    private var rawContact: RawContactEntity? = null
 
     /**
      * Sets the RawContact shown and managed by this view to the given [rawContact] and uses the
      * given [contacts] API to perform operations on it.
      */
-    fun setRawContact(rawContact: MutableRawContact?, contacts: Contacts) {
+    fun setRawContact(rawContact: RawContactEntity?, contacts: Contacts) {
         this.rawContact = rawContact
-        setPhotoThumbnailDrawableFromMutableRawContact(contacts)
+        setPhotoThumbnailDrawableFromRawContact(contacts)
     }
 
     private var setRawContactPhotoJob: Job? = null
 
     override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
-        rawContact?.setPhotoWithContext(contacts, photoDrawable) == true
+        rawContact.runIfExist {
+            it.setPhotoWithContext(contacts, photoDrawable)
+        } == true
 
     override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =
-        rawContact?.removePhotoWithContext(contacts) == true
+        rawContact.runIfExist {
+            it.removePhotoWithContext(contacts)
+        } == true
 
-    private fun setPhotoThumbnailDrawableFromMutableRawContact(contacts: Contacts) {
+    private fun setPhotoThumbnailDrawableFromRawContact(contacts: Contacts) {
         setRawContactPhotoJob?.cancel()
         setRawContactPhotoJob = launch {
-            setPhotoDrawable(rawContact?.photoThumbnailBitmapDrawableWithContext(contacts))
+            setPhotoDrawable(rawContact.runIfExist {
+                it.photoThumbnailBitmapDrawableWithContext(contacts)
+            })
         }
     }
 }

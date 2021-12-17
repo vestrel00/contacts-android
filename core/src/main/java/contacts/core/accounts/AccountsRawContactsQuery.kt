@@ -234,7 +234,7 @@ private class AccountsRawContactsQueryImpl(
         this.limit = if (limit > 0) {
             limit
         } else {
-            throw IllegalArgumentException("Limit must be greater than 0")
+            throw ContactsException("Limit must be greater than 0")
         }
     }
 
@@ -242,7 +242,7 @@ private class AccountsRawContactsQueryImpl(
         this.offset = if (offset >= 0) {
             offset
         } else {
-            throw IllegalArgumentException("Offset must be greater than or equal to 0")
+            throw ContactsException("Offset must be greater than or equal to 0")
         }
     }
 

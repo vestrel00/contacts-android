@@ -7,6 +7,7 @@ import android.content.ContentResolver
 import android.database.SQLException
 import android.net.Uri
 import android.provider.ContactsContract
+import contacts.core.ContactsException
 import contacts.core.Field
 import contacts.core.Include
 import contacts.core.Where
@@ -68,7 +69,7 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
         if (suppressDbExceptions) {
             null
         } else {
-            throw exception
+            throw ContactsException("Error resolving query", exception)
         }
     }
 

@@ -3,7 +3,6 @@ package contacts.core.entities
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.EmailEntity.Type
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -11,22 +10,20 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
-sealed interface EmailEntity : DataEntity {
-
-    /**
-     * The [Type] of email.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface EmailEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The email address.
      */
     val address: String?
+
+    /**
+     * The [address].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::address
+    override val primaryValue: String?
+        get() = address
 
     override val mimeType: MimeType
         get() = MimeType.Email
@@ -57,15 +54,52 @@ sealed interface EmailEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from EmailEntity, there is only one interface that extends it; MutableEmailEntity.
+ *
+ * The MutableEmailEntity interface is used for library constructs that require an EmailEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableEmail and NewEmail. With this, we can create constructs that can
+ * keep a reference to MutableEmail(s) or NewEmail(s) through the MutableEmailEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewEmailEntity, ExistingEmailEntity, and
+ * ImmutableEmailEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [EmailEntity].
+ * A mutable [EmailEntity]. `
+ */
+sealed interface MutableEmailEntity : EmailEntity, MutableDataEntityWithTypeAndLabel<Type> {
+
+    override var address: String?
+
+    /**
+     * The [address].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::address
+    override var primaryValue: String?
+        get() = address
+        set(value) {
+            address = value
+        }
+}
+
+/**
+ * An existing immutable [EmailEntity].
  */
 @Parcelize
 data class Email internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -75,7 +109,7 @@ data class Email internal constructor(
 
     override val address: String?
 
-) : EmailEntity, ImmutableDataEntityWithMutableType<MutableEmail> {
+) : EmailEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableEmail> {
 
     override fun mutableCopy() = MutableEmail(
         id = id,
@@ -93,29 +127,32 @@ data class Email internal constructor(
 }
 
 /**
- * A mutable [EmailEntity].
+ * An existing mutable [EmailEntity].
  */
 @Parcelize
 data class MutableEmail internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var type: Type?,
     override var label: String?,
     override var address: String?
 
-) : EmailEntity, MutableDataEntityWithTypeAndLabel<Type> {
+) : EmailEntity, ExistingDataEntity, MutableEmailEntity
 
-    constructor() : this(
-        null, null, null, false, false,
-        null, null, null
-    )
+/**
+ * An new mutable [EmailEntity].
+ */
+@Parcelize
+data class NewEmail @JvmOverloads constructor(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::address
-}
+    override var type: Type? = null,
+    override var label: String? = null,
+    override var address: String? = null
+
+) : EmailEntity, NewDataEntity, MutableEmailEntity

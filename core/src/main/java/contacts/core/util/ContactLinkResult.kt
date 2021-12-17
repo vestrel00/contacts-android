@@ -9,13 +9,12 @@ import contacts.core.equalTo
 // Note that there is no need to handle isProfile here as ContactLinks operations do not support it.
 
 /**
- * Returns the [Contact] that contains all of the successfully linked RawContacts or null if the
- * link operation failed.
+ * Returns the [Contact] that contains all of the successfully linked RawContacts. Returns null if
+ * the link operation failed or permissions are not granted.
  *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
- * returned if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *
@@ -33,12 +32,12 @@ fun ContactLinkResult.contact(contacts: Contacts, cancel: () -> Boolean = { fals
 
 /**
  * Returns all of the [Contact]s that are associated with each of the unlinked RawContacts.
- * Returns an empty list if the unlink operation failed.
+ *
+ * Returns an empty list if the link operation failed or permissions are not granted.
  *
  * ## Permissions
  *
- * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, empty list will
- * be returned if the permission is not granted.
+ * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
  *
  * ## Thread Safety
  *

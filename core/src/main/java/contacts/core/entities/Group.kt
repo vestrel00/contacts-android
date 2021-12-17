@@ -5,14 +5,9 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
- * [Entity] in the Groups table.
+ * [Entity] that holds data modeling columns in the Groups table.
  */
 sealed interface GroupEntity : Entity {
-
-    /**
-     * The id of this row in the Groups table.
-     */
-    override val id: Long?
 
     /**
      * The id of this group if it is a System Group, i.e. a group that has a special meaning to the
@@ -116,13 +111,34 @@ sealed interface GroupEntity : Entity {
         get() = false
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from GroupEntity, there is only one interface that extends it; ExistingGroupEntity.
+ * This interface is used for library functions that require a GroupEntity with an ID, which means
+ * that it exists in the database. There are two variants of this; Group and MutableGroup.
+ * With this, we can create functions (or extensions) that can take in (or have as the receiver)
+ * either Group or MutableGroup through the ExistingGroupEntity abstraction/facade.
+ *
+ * This is why there are no interfaces for NewGroupEntity, ImmutableGroupEntity, and
+ * MutableGroupEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [GroupEntity].
+ * A [GroupEntity] that has already been inserted into the database.
+ */
+sealed interface ExistingGroupEntity : GroupEntity, ExistingEntity
+
+/**
+ * An existing immutable [GroupEntity].
  */
 @Parcelize
 data class Group internal constructor(
 
-    override val id: Long?,
+    override val id: Long,
     override val systemId: String?,
 
     override val title: String,
@@ -132,7 +148,7 @@ data class Group internal constructor(
     override val autoAdd: Boolean,
     override val account: Account
 
-) : GroupEntity, ImmutableEntityWithNullableMutableType<MutableGroup> {
+) : ExistingGroupEntity, ImmutableEntityWithNullableMutableType<MutableGroup> {
 
     /**
      * Returns a [MutableGroup]. If [readOnly] is true, this returns null instead.
@@ -145,12 +161,12 @@ data class Group internal constructor(
 }
 
 /**
- * A mutable [GroupEntity].
+ * An existing mutable [GroupEntity].
  */
 @Parcelize
 data class MutableGroup internal constructor(
 
-    override val id: Long?,
+    override val id: Long,
     override val systemId: String?,
 
     override var title: String,
@@ -160,11 +176,28 @@ data class MutableGroup internal constructor(
     override val autoAdd: Boolean,
     override val account: Account
 
-) : GroupEntity, MutableEntity {
+) : ExistingGroupEntity, MutableEntity
 
-    constructor(title: String, account: Account) : this(
-        null, null, title, false, false, false, account
-    )
+/**
+ * A new mutable [GroupEntity].
+ */
+@Parcelize
+data class NewGroup(
+    override var title: String,
+    override var account: Account
+) : GroupEntity, NewEntity, MutableEntity {
+
+    override val systemId: String?
+        get() = null
+
+    override val readOnly: Boolean
+        get() = false
+
+    override val favorites: Boolean
+        get() = false
+
+    override val autoAdd: Boolean
+        get() = false
 }
 
 /**

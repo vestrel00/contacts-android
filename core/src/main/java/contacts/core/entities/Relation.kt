@@ -3,7 +3,6 @@ package contacts.core.entities
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.RelationEntity.Type
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -14,22 +13,20 @@ import kotlinx.parcelize.Parcelize
  * Local RawContacts (those that are not associated with an Account) **should not** have any entries
  * of this data kind.
  */
-sealed interface RelationEntity : DataEntity {
-
-    /**
-     * The [Type] of relation.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface RelationEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The name of the relative as the user entered it.
      */
     val name: String?
+
+    /**
+     * The [name].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::name
+    override val primaryValue: String?
+        get() = name
 
     override val mimeType: MimeType
         get() = MimeType.Relation
@@ -67,15 +64,52 @@ sealed interface RelationEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from RelationEntity, there is only one interface that extends it; MutableRelationEntity.
+ *
+ * The MutableRelationEntity interface is used for library constructs that require an RelationEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableRelation and NewRelation. With this, we can create constructs that can
+ * keep a reference to MutableRelation(s) or NewRelation(s) through the MutableRelationEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewRelationEntity, ExistingRelationEntity, and
+ * ImmutableRelationEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [RelationEntity].
+ * A mutable [RelationEntity]. `
+ */
+sealed interface MutableRelationEntity : RelationEntity, MutableDataEntityWithTypeAndLabel<Type> {
+
+    override var name: String?
+
+    /**
+     * The [name].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::name
+    override var primaryValue: String?
+        get() = name
+        set(value) {
+            name = value
+        }
+}
+
+/**
+ * An existing immutable [RelationEntity].
  */
 @Parcelize
 data class Relation internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -85,7 +119,7 @@ data class Relation internal constructor(
 
     override val name: String?
 
-) : RelationEntity, ImmutableDataEntityWithMutableType<MutableRelation> {
+) : RelationEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableRelation> {
 
     override fun mutableCopy() = MutableRelation(
         id = id,
@@ -103,30 +137,34 @@ data class Relation internal constructor(
 }
 
 /**
- * A mutable [RelationEntity].
+ * An existing mutable [RelationEntity].
  */
 @Parcelize
 data class MutableRelation internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var type: Type?,
     override var label: String?,
 
     override var name: String?
 
-) : RelationEntity, MutableDataEntityWithTypeAndLabel<Type> {
+) : RelationEntity, ExistingDataEntity, MutableRelationEntity
 
-    constructor() : this(
-        null, null, null, false, false,
-        null, null, null
-    )
+/**
+ * A new mutable [RelationEntity].
+ */
+@Parcelize
+data class NewRelation @JvmOverloads constructor(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::name
-}
+    override var type: Type? = null,
+    override var label: String? = null,
+
+    override var name: String? = null
+
+) : RelationEntity, NewDataEntity, MutableRelationEntity

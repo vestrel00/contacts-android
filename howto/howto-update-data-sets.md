@@ -13,13 +13,13 @@ val update = Contacts(context).data().update()
 
 ## A basic update
 
-To update a set of `MutableDataEntity`,
+To update a set of `ExistingDataEntity`,
 
 ```kotlin
 val updateResult = Contacts(context)
     .data()
     .update()
-    .data(mutableDataEntities)
+    .data(existingDataEntities)
     .commit()
 ```
 
@@ -60,8 +60,8 @@ The `commit` function returns a `Result`,
 
 ```kotlin
 val contactsApi =  Contacts(context)
-val mutableEmail = email.mutableCopy().apply { ... }
-val mutablePhone = phone.mutableCopy().apply { ... }
+val mutableEmail = email.mutableCopy { ... }
+val mutablePhone = phone.mutableCopy { ... }
 
 val updateResult = contactsApi
     .date()

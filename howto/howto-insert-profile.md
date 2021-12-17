@@ -20,36 +20,67 @@ To create/insert a contact with a name of "John Doe" who works at Amazon with a 
 "john.doe@amazon.com" (in Kotlin),
 
 ```kotlin
-val insertResult =  Contacts(context)
+val insertResult = Contacts(context)
     .profile()
     .insert()
-    .rawContact {
-        name = MutableName().apply {
-            givenName = "john"
-            familyName = "doe"
+    .rawContacts(NewRawContact().apply {
+        name = NewName().apply {
+            givenName = "John"
+            familyName = "Doe"
         }
-        emails.add(MutableEmail().apply {
-            type = EmailEntity.Type.HOME
-            address = "john@doe.com"
+        organization = NewOrganization().apply {
+            company = "Amazon"
+            title = "Superstar"
+        }
+        emails.add(NewEmail().apply {
+            address = "john.doe@amazon.com"
+            type = EmailEntity.Type.WORK
         })
-    }
+    })
     .commit()
 ```
 
-Or alternatively, in a more Kotlinized style,
+Or alternatively, in a more Kotlinized style using named arguments,
 
 ```kotlin
-val insertResult =  Contacts(context)
+val insertResult = Contacts(context)
+    .profile()
+    .insert()
+    .rawContacts(NewRawContact(
+        name = NewName(
+            givenName = "John",
+            familyName = "Doe"
+        ),
+        organization = NewOrganization(
+            company = "Amazon",
+            title = "Superstar"
+        ),
+        emails = mutableListOf(NewEmail(
+            address = "john.doe@amazon.com",
+            type = EmailEntity.Type.WORK
+        ))
+    ))
+    .commit()
+```
+
+Or alternatively, using extension functions,
+
+```kotlin
+val insertResult = Contacts(context)
     .profile()
     .insert()
     .rawContact {
         setName {
-            givenName = "john"
-            familyName = "doe"
+            givenName = "John"
+            familyName = "Doe"
+        }
+        setOrganization {
+            company = "Amazon"
+            title = "Superstar"
         }
         addEmail {
-            type = EmailEntity.Type.HOME
-            address = "john@doe.com"
+            address = "john.doe@amazon.com"
+            type = EmailEntity.Type.WORK
         }
     }
     .commit()
@@ -163,12 +194,12 @@ The `commit` function returns a `Result`,
 
 ```kotlin
 val contactsApi =  Contacts(context)
-val mutableRawContact = MutableRawContact().apply { ... }
+val newRawContact = NewRawContact(...)
 
 val insertResult = contactsApi
     .profile()
     .insert()
-    .rawContact(mutableRawContact)
+    .rawContact(newRawContact)
     .commit()
 ```
 

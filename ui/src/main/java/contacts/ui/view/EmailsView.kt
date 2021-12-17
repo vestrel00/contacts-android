@@ -4,29 +4,30 @@ import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import contacts.core.entities.EmailEntity
-import contacts.core.entities.MutableEmail
 import contacts.ui.R
 import contacts.ui.entities.EmailTypeFactory
-import contacts.ui.entities.MutableEmailFactory
+import contacts.ui.entities.NewEmailFactory
 
 /**
- * A [DataEntityWithTypeListView] for [MutableEmail]s.
+ * A [DataEntityWithTypeAndLabelListView] for [EmailEntity]s.
  */
 class EmailsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : DataEntityWithTypeListView<EmailEntity.Type, MutableEmail>(
+) : DataEntityWithTypeAndLabelListView<EmailEntity.Type, EmailEntity>(
     context, attributeSet, defStyleAttr,
-    dataFactory = MutableEmailFactory,
+    dataFactory = NewEmailFactory,
     dataViewFactory = EmailViewFactory,
     defaultUnderlyingDataTypes = EmailEntity.Type.values().filter { !it.isCustomType }
 )
 
 private object EmailViewFactory :
-    DataEntityWithTypeView.Factory<EmailEntity.Type, MutableEmail> {
-    override fun create(context: Context): DataEntityWithTypeView<EmailEntity.Type, MutableEmail> =
-        DataEntityWithTypeView(
+    DataEntityWithTypeAndLabelView.Factory<EmailEntity.Type, EmailEntity> {
+    override fun create(
+        context: Context
+    ): DataEntityWithTypeAndLabelView<EmailEntity.Type, EmailEntity> =
+        DataEntityWithTypeAndLabelView(
             context,
             dataFieldInputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
             dataFieldHintResId = R.string.contacts_ui_email_hint,

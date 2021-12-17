@@ -1,7 +1,6 @@
 package contacts.entities.custom.handlename
 
 import contacts.core.entities.*
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -21,6 +20,14 @@ sealed interface HandleNameEntity : CustomDataEntity {
      */
     val handle: String?
 
+    /**
+     * The [handle].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::handle
+    override val primaryValue: String?
+        get() = handle
+
     override val mimeType: MimeType.Custom
         get() = HandleNameMimeType
 
@@ -28,22 +35,60 @@ sealed interface HandleNameEntity : CustomDataEntity {
         get() = propertiesAreAllNullOrBlank(handle)
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from HandleNameEntity, there is only one interface that extends it; MutableHandleNameEntity.
+ *
+ * The MutableHandleNameEntity interface is used for library constructs that require an HandleNameEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableHandleName and NewHandleName. With this, we can create constructs that can
+ * keep a reference to MutableHandleName(s) or NewHandleName(s) through the MutableHandleNameEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewHandleNameEntity, ExistingHandleNameEntity, and
+ * ImmutableHandleNameEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [HandleNameEntity].
+ * A mutable [HandleNameEntity]. `
+ */
+sealed interface MutableHandleNameEntity : HandleNameEntity, MutableCustomDataEntity {
+
+    override var handle: String?
+
+    /**
+     * The [handle].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::handle
+    override var primaryValue: String?
+        get() = handle
+        set(value) {
+            handle = value
+        }
+}
+
+/**
+ * An existing immutable [HandleNameEntity].
  */
 @Parcelize
 data class HandleName internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override val handle: String?
 
-) : HandleNameEntity, ImmutableCustomDataEntityWithMutableType<MutableHandleName> {
+) : HandleNameEntity, ExistingCustomDataEntity,
+    ImmutableCustomDataEntityWithMutableType<MutableHandleName> {
 
     override fun mutableCopy() = MutableHandleName(
         id = id,
@@ -58,24 +103,29 @@ data class HandleName internal constructor(
 }
 
 /**
- * A mutable [HandleNameEntity].
+ * An existing mutable [HandleNameEntity].
  */
 @Parcelize
 data class MutableHandleName internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override var handle: String?
 
-) : HandleNameEntity, MutableCustomDataEntity {
+) : HandleNameEntity, ExistingCustomDataEntity, MutableHandleNameEntity
 
-    constructor() : this(null, null, null, false, false, null)
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::handle
-}
+/**
+ * A new mutable [HandleNameEntity].
+ */
+@Parcelize
+data class NewHandleName @JvmOverloads constructor(
+
+    override var handle: String? = null
+
+) : HandleNameEntity, NewCustomDataEntity, MutableHandleNameEntity

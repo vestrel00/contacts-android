@@ -14,11 +14,11 @@ abstract class AbstractDataCursor<T : AbstractDataField>(cursor: Cursor, include
     // at the property level.
     private val dataCursor: DataCursor = DataCursor(cursor, includeFields)
 
-    override val dataId: Long? by dataCursor::dataId
+    override val dataId: Long by dataCursor::dataId
 
-    override val rawContactId: Long? by dataCursor::rawContactId
+    override val rawContactId: Long by dataCursor::rawContactId
 
-    override val contactId: Long? by dataCursor::contactId
+    override val contactId: Long by dataCursor::contactId
 
     val isPrimary: Boolean by dataCursor::isPrimary
 

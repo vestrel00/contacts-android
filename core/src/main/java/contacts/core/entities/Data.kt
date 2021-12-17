@@ -5,7 +5,7 @@ import android.provider.ContactsContract
 import contacts.core.util.isProfileId
 
 /**
- * [Entity] in the Data table that belong to a [RawContact].
+ * [Entity] that holds data modeling columns in the Data table.
  *
  * ## Contact, RawContact, and Data
  *
@@ -31,19 +31,9 @@ import contacts.core.util.isProfileId
 sealed interface DataEntity : Entity {
 
     /**
-     * The id of the Data row this represents.
+     * The main value encapsulated by this entity as a string.
      */
-    override val id: Long?
-
-    /**
-     * The id of the [RawContact] that this data entity is associated with.
-     */
-    val rawContactId: Long?
-
-    /**
-     * The id of the [Contact] that this data entity is associated with.
-     */
-    val contactId: Long?
+    val primaryValue: String?
 
     /**
      * The type of data.
@@ -83,12 +73,6 @@ sealed interface DataEntity : Entity {
         get() = isSuperPrimary
 
     /**
-     * True if this data belongs to the user's personal profile entry.
-     */
-    val isProfile: Boolean
-        get() = id.isProfileId
-
-    /**
      * Returns true if the underlying data contains at least one non-null and non-empty piece of
      * information.
      *
@@ -97,22 +81,15 @@ sealed interface DataEntity : Entity {
      * - Not returned in any query results
      * - Not inserted
      * - Deleted upon update
-     *
-     * The following has no influence on the value this returns.
-     *
-     * - [id]
-     * - [rawContactId]
-     * - [contactId]
-     * - [isPrimary]
-     * - [isSuperPrimary]
-     * - `type`
-     * - `label`
-     *
-     * ## Dev notes
-     *
-     * This is overridden for documentation purposes.
      */
+    // Overridden for documentation purposes.
     override val isBlank: Boolean
+
+    /**
+     * True if this data belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = false
 
     /**
      * A type of data. Used by data that may have several types.
@@ -140,6 +117,60 @@ sealed interface DataEntity : Entity {
     }
 }
 
+sealed interface DataEntityWithTypeAndLabel<out T : DataEntity.Type> : DataEntity {
+
+    /**
+     * The [DataEntity.Type].
+     */
+    val type: T?
+
+    /**
+     * Used as the string representation of the [type] if this is not null and the [type] is custom.
+     * Otherwise, the system's string representation of the type is used.
+     *
+     * This is the string value displayed in the UI for user-created custom types. This is only used
+     * when the [type] is custom.
+     */
+    val label: String?
+}
+
+/**
+ * A [DataEntity] that has NOT yet been inserted into the database.
+ */
+sealed interface NewDataEntity : DataEntity, NewEntity {
+
+    override val isPrimary: Boolean
+        get() = false
+
+    override val isSuperPrimary: Boolean
+        get() = false
+}
+
+/**
+ * A [DataEntity] that has already been inserted into the database.
+ */
+sealed interface ExistingDataEntity : DataEntity, ExistingEntity {
+    /**
+     * The id of the Data row this represents.
+     */
+    // Overridden for documentation purposes.
+    override val id: Long
+
+    /**
+     * The id of the [RawContact] that this data entity is associated with.
+     */
+    val rawContactId: Long
+
+    /**
+     * The id of the [Contact] that this data entity is associated with.
+     */
+    val contactId: Long
+
+    override val isProfile: Boolean
+        get() = id.isProfileId
+}
+
+
 /**
  * An immutable [DataEntity].
  */
@@ -163,28 +194,27 @@ sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntit
  */
 sealed interface MutableDataEntity : DataEntity, MutableEntity {
 
-    /**
-     * The main value encapsulated by this entity as a string for consumer usage.
-     */
-    var primaryValue: String?
+    override var primaryValue: String?
 }
 
 /**
  * A [MutableDataEntity], with a mutable [type] and [label].
  */
-sealed interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableDataEntity {
+sealed interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableDataEntity,
+    DataEntityWithTypeAndLabel<T> {
+
+    override var type: T?
+    override var label: String?
 
     /**
-     * The [DataEntity.Type] of the [primaryValue].
-     */
-    var type: T?
-
-    /**
-     * Used as the string representation of the [type] if this is not null and the [type] is custom.
-     * Otherwise, the system's string representation of the type is used.
+     * Sets the [type] to the given [unsafeType], which MUST be a subclass of [T]. Otherwise, an
+     * exception will be thrown.
      *
-     * This is the string value displayed in the UI for user-created custom types. This is only used
-     * when the [type] is custom.
+     * This function is useful at times when the type [T] is erased but you still need to be able to
+     * set the [type]. Use with caution! If you don't know what you are doing, don't use this!
      */
-    var label: String?
+    @Suppress("UNCHECKED_CAST")
+    fun setTypeUnsafe(unsafeType: DataEntity.Type?) {
+        type = unsafeType as T?
+    }
 }

@@ -4,7 +4,7 @@ import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
 import contacts.core.Insert
 import contacts.core.entities.Contact
-import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContact
 import contacts.core.util.contact
 import contacts.core.util.contacts
@@ -25,7 +25,7 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun Insert.Result.rawContactWithContext(
     contacts: Contacts,
-    rawContact: MutableRawContact,
+    rawContact: NewRawContact,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): RawContact? = withContext(coroutineContext) {
     rawContact(contacts, rawContact) { !isActive }
@@ -56,7 +56,7 @@ suspend fun Insert.Result.rawContactsWithContext(
  */
 suspend fun Insert.Result.contactWithContext(
     contacts: Contacts,
-    rawContact: MutableRawContact,
+    rawContact: NewRawContact,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Contact? = withContext(coroutineContext) {
     contact(contacts, rawContact) { !isActive }
@@ -91,7 +91,7 @@ suspend fun Insert.Result.contactsWithContext(
  */
 fun Insert.Result.rawContactAsync(
     contacts: Contacts,
-    rawContact: MutableRawContact,
+    rawContact: NewRawContact,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<RawContact?> = CoroutineScope(coroutineContext).async {
     rawContact(contacts, rawContact) { !isActive }
@@ -122,7 +122,7 @@ fun Insert.Result.rawContactsAsync(
  */
 fun Insert.Result.contactAsync(
     contacts: Contacts,
-    rawContact: MutableRawContact,
+    rawContact: NewRawContact,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> = CoroutineScope(coroutineContext).async {
     contact(contacts, rawContact) { !isActive }

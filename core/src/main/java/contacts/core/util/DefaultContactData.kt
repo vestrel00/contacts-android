@@ -3,7 +3,7 @@ package contacts.core.util
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newUpdate
 import contacts.core.*
-import contacts.core.entities.DataEntity
+import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.operation.withValue
 import contacts.core.entities.table.ProfileUris
@@ -12,24 +12,18 @@ import contacts.core.entities.table.Table
 /**
  * Returns the default data entity in the collection or null if not found.
  */
-fun <T : DataEntity> Collection<T>.default(): T? = firstOrNull { it.isDefault }
+fun <T : ExistingDataEntity> Collection<T>.default(): T? = firstOrNull { it.isDefault }
 
 /**
  * Returns the default data entity in the sequence or null if not found.
  */
-fun <T : DataEntity> Sequence<T>.default(): T? = firstOrNull { it.isDefault }
+fun <T : ExistingDataEntity> Sequence<T>.default(): T? = firstOrNull { it.isDefault }
 
 /**
  * Sets this data as the default for the set of data of the same type (e.g. email) for the aggregate
  * Contact. If a default data already exist before this call, then it will no longer be the default.
  *
  * Supports profile/non-profile native/custom data.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Changes are immediate
  *
@@ -52,16 +46,12 @@ fun <T : DataEntity> Sequence<T>.default(): T? = firstOrNull { it.isDefault }
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun DataEntity.setAsDefault(contacts: Contacts): Boolean {
+fun ExistingDataEntity.setAsDefault(contacts: Contacts): Boolean {
     val dataId = id
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!contacts.permissions.canUpdateDelete()
-        || dataId == null
-        || rawContactId == null
-        || contactId == null
-    ) {
+    if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
 
@@ -92,12 +82,6 @@ fun DataEntity.setAsDefault(contacts: Contacts): Boolean {
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
- *
  * ## Changes are immediate
  *
  * This function will make the changes to the Contacts Provider database immediately. You do not
@@ -119,14 +103,11 @@ fun DataEntity.setAsDefault(contacts: Contacts): Boolean {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun DataEntity.clearDefault(contactsApi: Contacts): Boolean {
+fun ExistingDataEntity.clearDefault(contactsApi: Contacts): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!contactsApi.permissions.canUpdateDelete()
-        || rawContactId == null
-        || contactId == null
-    ) {
+    if (!contactsApi.permissions.canUpdateDelete()) {
         return false
     }
 
@@ -137,14 +118,14 @@ fun DataEntity.clearDefault(contactsApi: Contacts): Boolean {
 }
 
 /**
- * Provides the operation to set all primary data rows with the same [DataEntity.mimeType]
+ * Provides the operation to set all primary data rows with the same [ExistingDataEntity.mimeType]
  * belonging to the same RawContact to false (0).
  *
  * Supports profile/non-profile native/custom data.
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
+private fun ExistingDataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
     newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(
             (Fields.RawContact.Id equalTo rawContactId)
@@ -154,14 +135,14 @@ private fun DataEntity.clearPrimary(rawContactId: Long): ContentProviderOperatio
         .build()
 
 /**
- * Provides the operation to set all super primary data rows with the same [DataEntity.mimeType]
- * belonging to the same Contact to false (0).
+ * Provides the operation to set all super primary data rows with the same
+ * [ExistingDataEntity.mimeType] belonging to the same Contact to false (0).
  *
  * Supports profile/non-profile native/custom data.
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
+private fun ExistingDataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
     newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(
             (Fields.Contact.Id equalTo contactId)
@@ -177,7 +158,7 @@ private fun DataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperat
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun DataEntity.setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation =
+private fun ExistingDataEntity.setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation =
     newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(Fields.DataId equalTo dataId)
         .withValue(Fields.IsPrimary, 1)

@@ -16,7 +16,7 @@ To update an existing group,
 val updateResult = Contacts(context)
     .groups()
     .update()
-    .groups(existingGroup?.mutableCopy().apply {
+    .groups(existingGroup?.mutableCopy {
         title = "Best Friends"
     })
     .commit()
@@ -25,8 +25,8 @@ val updateResult = Contacts(context)
 If you need to update multiple groups,
 
 ```kotlin
-val mutableGroup1 = group1.mutableCopy()?.apply { ... }
-val mutableGroup2 = group2.mutableCopy()?.apply { ... }
+val mutableGroup1 = group1.mutableCopy { ... }
+val mutableGroup2 = group2.mutableCopy { ... }
 
 val updateResult = Contacts(context)
     .groups()

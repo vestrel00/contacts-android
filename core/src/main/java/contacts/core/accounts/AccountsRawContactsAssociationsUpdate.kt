@@ -6,7 +6,7 @@ import android.content.ContentProviderOperation.newDelete
 import android.content.ContentProviderOperation.newUpdate
 import contacts.core.*
 import contacts.core.entities.MimeType
-import contacts.core.entities.RawContactEntity
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.operation.withValue
@@ -70,9 +70,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * A group membership to the default group of the given [account] will be created automatically
      * by the Contacts Provider upon successful operation.
      *
-     * Only existing local RawContacts that have been retrieved via a query will be processed. Those
-     * that have been manually created via a constructor will be ignored.
-     *
      * This operation will fail if the given [account] is not in the system. In the case where there
      * are no local RawContacts, this operation succeeds.
      *
@@ -87,7 +84,7 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithLocalRawContacts(
-        account: Account, vararg rawContacts: RawContactEntity
+        account: Account, vararg rawContacts: ExistingRawContactEntity
     ): Boolean
 
     /**
@@ -95,7 +92,7 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithLocalRawContacts(
-        account: Account, rawContacts: Collection<RawContactEntity>
+        account: Account, rawContacts: Collection<ExistingRawContactEntity>
     ): Boolean
 
     /**
@@ -103,7 +100,7 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithLocalRawContacts(
-        account: Account, rawContacts: Sequence<RawContactEntity>
+        account: Account, rawContacts: Sequence<ExistingRawContactEntity>
     ): Boolean
 
     /**
@@ -112,9 +109,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * Local RawContacts are those that are not associated with any Account. A group membership to
      * the default group of the given [account] will be created automatically by the Contacts
      * Provider upon successful operation.
-     *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
      *
      * This operation will fail if the given [account] is not in the system. In the case where there
      * are no local RawContacts, this operation succeeds.
@@ -140,9 +134,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * membership to the default group of the given [account] will be created automatically by the
      * Contacts Provider upon successful operation.
      *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
-     *
      * This operation will fail if the given [account] is not in the system or if no existing
      * RawContacts are provided.
      *
@@ -157,7 +148,7 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContacts(
-        account: Account, vararg rawContacts: RawContactEntity
+        account: Account, vararg rawContacts: ExistingRawContactEntity
     ): Boolean
 
     /**
@@ -165,7 +156,7 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContacts(
-        account: Account, rawContacts: Collection<RawContactEntity>
+        account: Account, rawContacts: Collection<ExistingRawContactEntity>
     ): Boolean
 
     /**
@@ -173,7 +164,7 @@ interface AccountsRawContactsAssociationsUpdate {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun associateAccountWithRawContacts(
-        account: Account, rawContacts: Sequence<RawContactEntity>
+        account: Account, rawContacts: Sequence<ExistingRawContactEntity>
     ): Boolean
 
     /**
@@ -279,9 +270,6 @@ interface AccountsRawContactsAssociationsUpdate {
      * that Account if this call succeeds. Existing group memberships will be retained. RawContacts
      * not associated with an Account are local to the device.
      *
-     * Only existing RawContacts that have been retrieved via a query will be processed. Those that
-     * have been manually created via a constructor will be ignored.
-     *
      * This operation will fail if no existing RawContacts are provided.
      *
      * ## Permissions
@@ -294,19 +282,19 @@ interface AccountsRawContactsAssociationsUpdate {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun dissociateRawContacts(vararg rawContacts: RawContactEntity): Boolean
+    fun dissociateRawContacts(vararg rawContacts: ExistingRawContactEntity): Boolean
 
     /**
      * See [dissociateRawContacts].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun dissociateRawContacts(rawContacts: Collection<RawContactEntity>): Boolean
+    fun dissociateRawContacts(rawContacts: Collection<ExistingRawContactEntity>): Boolean
 
     /**
      * See [dissociateRawContacts].
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun dissociateRawContacts(rawContacts: Sequence<RawContactEntity>): Boolean
+    fun dissociateRawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Boolean
 
     /**
      * Dissociates the RawContacts associated with any of the given [accounts].
@@ -389,15 +377,15 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     // region ASSOCIATE
 
     override fun associateAccountWithLocalRawContacts(
-        account: Account, vararg rawContacts: RawContactEntity
+        account: Account, vararg rawContacts: ExistingRawContactEntity
     ) = associateAccountWithLocalRawContacts(account, rawContacts.asSequence())
 
     override fun associateAccountWithLocalRawContacts(
-        account: Account, rawContacts: Collection<RawContactEntity>
+        account: Account, rawContacts: Collection<ExistingRawContactEntity>
     ) = associateAccountWithLocalRawContacts(account, rawContacts.asSequence())
 
     override fun associateAccountWithLocalRawContacts(
-        account: Account, rawContacts: Sequence<RawContactEntity>
+        account: Account, rawContacts: Sequence<ExistingRawContactEntity>
     ): Boolean {
         if (!accounts.permissions.canUpdateRawContactsAssociations() ||
             account.isNotInSystem(accounts)
@@ -451,15 +439,15 @@ private class AccountsRawContactsAssociationsUpdateImpl(
 
     /*
     override fun associateAccountWithRawContacts(
-        account: Account, vararg rawContacts: RawContactEntity
+        account: Account, vararg rawContacts: ExistingRawContactEntity
     ) = associateAccountWithRawContacts(account, rawContacts.asSequence())
 
     override fun associateAccountWithRawContacts(
-        account: Account, rawContacts: Collection<RawContactEntity>
+        account: Account, rawContacts: Collection<ExistingRawContactEntity>
     ) = associateAccountWithRawContacts(account, rawContacts.asSequence())
 
     override fun associateAccountWithRawContacts(
-        account: Account, rawContacts: Sequence<RawContactEntity>
+        account: Account, rawContacts: Sequence<ExistingRawContactEntity>
     ): Boolean {
 
         // Only existing RawContacts can be associated with an Account.
@@ -535,13 +523,13 @@ private class AccountsRawContactsAssociationsUpdateImpl(
     // region DISSOCIATE
 
     /*
-    override fun dissociateRawContacts(vararg rawContacts: RawContactEntity) =
+    override fun dissociateRawContacts(vararg rawContacts: ExistingRawContactEntity) =
         dissociateRawContacts(rawContacts.asSequence())
 
-    override fun dissociateRawContacts(rawContacts: Collection<RawContactEntity>) =
+    override fun dissociateRawContacts(rawContacts: Collection<ExistingRawContactEntity>) =
         dissociateRawContacts(rawContacts.asSequence())
 
-    override fun dissociateRawContacts(rawContacts: Sequence<RawContactEntity>): Boolean {
+    override fun dissociateRawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Boolean {
         // Only existing RawContacts can be processed.
         val nonNullRawContactIds = rawContacts.mapNotNull { it.id }
 
@@ -644,7 +632,7 @@ private fun Accounts.rawContactIdsWhere(
     val rawContactsCursor = it.rawContactsCursor()
 
     while (it.moveToNext()) {
-        rawContactsCursor.rawContactId?.let(rawContactIds::add)
+        rawContactIds.add(rawContactsCursor.rawContactId)
     }
 
     rawContactIds

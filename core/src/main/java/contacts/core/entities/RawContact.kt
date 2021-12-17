@@ -7,7 +7,7 @@ import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 
 /**
- * [Entity] in the RawContacts table.
+ * [Entity] that holds data modeling columns in the RawContacts table.
  *
  * ## Contact, RawContact, and Data
  *
@@ -22,27 +22,6 @@ import kotlinx.parcelize.Parcelize
  * to the device and are not synced.
  */
 sealed interface RawContactEntity : Entity {
-    /**
-     * The id of the RawContacts row this represents.
-     *
-     * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
-     */
-    override val id: Long?
-
-    /**
-     * The ID of the [Contact] that this [RawContact] is associated with.
-     *
-     * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
-     */
-    val contactId: Long?
-
-    // The Data table contains the display name for Contacts, not for RawContacts.
-
-    /**
-     * True if this raw contact belongs to the user's personal profile entry.
-     */
-    val isProfile: Boolean
-        get() = id.isProfileId
 
     /**
      * A list of [AddressEntity].
@@ -101,7 +80,7 @@ sealed interface RawContactEntity : Entity {
     val phones: List<PhoneEntity>
 
     /**
-     * The [PhotoEntity] does not have any real functional value. This exist only to prevent
+     * The [Photo] does not have any real functional value. This exist only to prevent
      * RawContacts from being considered blanks, which may result in unwanted deletion in updates.
      *
      * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
@@ -140,18 +119,67 @@ sealed interface RawContactEntity : Entity {
             customDataEntities.values.flatMap { it.entities }
         )
 
+    /**
+     * True if this raw contact belongs to the user's personal profile entry.
+     */
+    val isProfile: Boolean
+        get() = false
+
     // The Data table contains the options columns for Contacts, not for RawContacts.
     // Use the RawContactOptions extension functions to get/set options.
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from RawContactEntity, there is only one interface that extends it; ExistingRawContactEntity.
+ * This interface is used for library functions that require a RawContactEntity with an ID, which means
+ * that it exists in the database. There are two variants of this; RawContact and MutableRawContact.
+ * With this, we can create functions (or extensions) that can take in (or have as the receiver)
+ * either RawContact or MutableRawContact through the ExistingRawContactEntity abstraction/facade.
+ *
+ * This is why there are no interfaces for NewRawContactEntity, ImmutableRawContactEntity, and
+ * MutableRawContactEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [RawContactEntity].
+ * A [RawContactEntity] that has already been inserted into the database.
+ */
+sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
+    /**
+     * The id of the RawContacts row this represents.
+     *
+     * The value of RawContacts._ID / Data.RAW_CONTACT_ID.
+     */
+    // Override for documentation purposes.
+    override val id: Long
+
+    /**
+     * The ID of the [Contact] that this [RawContact] is associated with.
+     *
+     * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
+     */
+    val contactId: Long
+
+    // The Data table contains the display name for Contacts, not for RawContacts.
+
+    override val isProfile: Boolean
+        get() = id.isProfileId
+}
+
+/**
+ * An immutable [ExistingRawContactEntity].
+ *
+ * This can hold existing immutable data entities.
  */
 @Parcelize
 data class RawContact internal constructor(
 
-    override val id: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val contactId: Long,
 
     override val addresses: List<Address>,
     override val emails: List<Email>,
@@ -169,7 +197,7 @@ data class RawContact internal constructor(
     override val websites: List<Website>,
     override val customDataEntities: Map<String, ImmutableCustomDataEntityHolder>
 
-) : RawContactEntity, ImmutableEntityWithMutableType<MutableRawContact> {
+) : ExistingRawContactEntity, ImmutableEntityWithMutableType<MutableRawContact> {
 
     override fun mutableCopy() = MutableRawContact(
         id = id,
@@ -197,48 +225,71 @@ data class RawContact internal constructor(
 }
 
 /**
- * An mutable [RawContactEntity].
+ * A mutable [ExistingRawContactEntity].
+ *
+ * This can hold new and existing mutable data entities.
  */
 @Parcelize
 data class MutableRawContact internal constructor(
 
-    override val id: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val contactId: Long,
 
-    override var addresses: MutableList<MutableAddress>,
-    override var emails: MutableList<MutableEmail>,
-    override var events: MutableList<MutableEvent>,
-    override var groupMemberships: MutableList<GroupMembership>,
-    override var ims: MutableList<MutableIm>,
-    override var name: MutableName?,
-    override var nickname: MutableNickname?,
-    override var note: MutableNote?,
-    override var organization: MutableOrganization?,
-    override var phones: MutableList<MutablePhone>,
-    override var photo: Photo?,
-    override var relations: MutableList<MutableRelation>,
-    override var sipAddress: MutableSipAddress?,
-    override var websites: MutableList<MutableWebsite>,
+    override var addresses: MutableList<MutableAddressEntity>,
+    override var emails: MutableList<MutableEmailEntity>,
+    override var events: MutableList<MutableEventEntity>,
+    override var groupMemberships: MutableList<GroupMembershipEntity>,
+    override var ims: MutableList<MutableImEntity>,
+    override var name: MutableNameEntity?,
+    override var nickname: MutableNicknameEntity?,
+    override var note: MutableNoteEntity?,
+    override var organization: MutableOrganizationEntity?,
+    override var phones: MutableList<MutablePhoneEntity>,
+    override var photo: PhotoEntity?,
+    override var relations: MutableList<MutableRelationEntity>,
+    override var sipAddress: MutableSipAddressEntity?,
+    override var websites: MutableList<MutableWebsiteEntity>,
 
     override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
 
-) : RawContactEntity, MutableEntity {
-
-    constructor() : this(
-        null, null, mutableListOf(), mutableListOf(), mutableListOf(),
-        mutableListOf(), mutableListOf(), null, null, null, null,
-        mutableListOf(), null, mutableListOf(), null, mutableListOf(), mutableMapOf()
-    )
-}
+) : ExistingRawContactEntity, MutableEntity
 
 /**
- * A blank [RawContactEntity] that contains no data (e.g. email, phone, etc), although display names
- * are available. This only contains critical information for performing RawContact operations.
+ * A new mutable [RawContactEntity].
+ *
+ * This can hold new mutable data entities.
+ */
+@Parcelize
+data class NewRawContact @JvmOverloads constructor(
+
+    override var addresses: MutableList<NewAddress> = mutableListOf(),
+    override var emails: MutableList<NewEmail> = mutableListOf(),
+    override var events: MutableList<NewEvent> = mutableListOf(),
+    override var groupMemberships: MutableList<NewGroupMembership> = mutableListOf(),
+    override var ims: MutableList<NewIm> = mutableListOf(),
+    override var name: NewName? = null,
+    override var nickname: NewNickname? = null,
+    override var note: NewNote? = null,
+    override var organization: NewOrganization? = null,
+    override var phones: MutableList<NewPhone> = mutableListOf(),
+    override var photo: Photo? = null,
+    override var relations: MutableList<NewRelation> = mutableListOf(),
+    override var sipAddress: NewSipAddress? = null,
+    override var websites: MutableList<NewWebsite> = mutableListOf(),
+
+    override val customDataEntities: MutableMap<String, CustomDataEntityHolder> = mutableMapOf()
+
+) : RawContactEntity, NewEntity, MutableEntity
+
+/**
+ * A blank [ExistingRawContactEntity] that contains no data (e.g. email, phone, etc), although
+ * display names are available. This only contains critical information for performing RawContact
+ * operations.
  */
 @Parcelize
 data class BlankRawContact internal constructor(
-    override val id: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    val contactId: Long,
 
     /**
      * The RawContact's display name (given name first), which may be different from the parent
@@ -256,7 +307,9 @@ data class BlankRawContact internal constructor(
     // display name for Contacts, not for RawContacts.
     val displayNameAlt: String?
 
-) : RawContactEntity, ImmutableEntity {
+    // Intentionally not extending ExistingRawContactEntity to limit the amount possibilities to
+    // only RawContact and MutableRawContact, which are the main consumer-facing entities.
+) : RawContactEntity, ExistingEntity, ImmutableEntity {
 
     override val isBlank: Boolean
         get() = true
@@ -270,7 +323,7 @@ data class BlankRawContact internal constructor(
     override val events: List<EventEntity>
         get() = emptyList()
 
-    override val groupMemberships: List<GroupMembershipEntity>
+    override val groupMemberships: List<GroupMembership>
         get() = emptyList()
 
     override val ims: List<ImEntity>
@@ -291,7 +344,7 @@ data class BlankRawContact internal constructor(
     override val phones: List<PhoneEntity>
         get() = emptyList()
 
-    override val photo: PhotoEntity?
+    override val photo: Photo?
         get() = null
 
     override val relations: List<RelationEntity>
@@ -308,15 +361,15 @@ data class BlankRawContact internal constructor(
 }
 
 /**
- * A temporary holder of immutable entities in mutable lists / attribute.
+ * A temporary holder of existing immutable entities in mutable lists / attribute.
  *
  * Used internally to optimize cursor to contact mappings.
  */
 @Parcelize
 internal data class TempRawContact constructor(
 
-    override val id: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    val contactId: Long,
 
     override var addresses: MutableList<Address>,
     override var emails: MutableList<Email>,
@@ -334,7 +387,9 @@ internal data class TempRawContact constructor(
     override var websites: MutableList<Website>,
     override val customDataEntities: MutableMap<String, ImmutableCustomDataEntityHolder>
 
-) : RawContactEntity, MutableEntity {
+    // Intentionally not extending ExistingRawContactEntity to limit the amount possibilities to
+    // only RawContact and MutableRawContact, which are the main consumer-facing entities.
+) : RawContactEntity, ExistingEntity, MutableEntity {
 
     fun toRawContact() = RawContact(
         id = id,

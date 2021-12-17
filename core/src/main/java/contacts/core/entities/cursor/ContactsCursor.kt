@@ -4,6 +4,7 @@ import android.database.Cursor
 import android.net.Uri
 import contacts.core.ContactsField
 import contacts.core.ContactsFields
+import contacts.core.entities.Entity
 import java.util.*
 
 /**
@@ -16,7 +17,7 @@ internal class ContactsCursor(
     cursor: Cursor, includeFields: Set<ContactsField>
 ) : AbstractEntityCursor<ContactsField>(cursor, includeFields), JoinedContactsCursor {
 
-    override val contactId: Long? by long(ContactsFields.Id)
+    override val contactId: Long by nonNullLong(ContactsFields.Id, Entity.INVALID_ID)
 
     override val displayNamePrimary: String? by string(ContactsFields.DisplayNamePrimary)
 

@@ -3,7 +3,6 @@ package contacts.core.entities
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.AddressEntity.Type
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -11,17 +10,7 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
-sealed interface AddressEntity : DataEntity {
-
-    /**
-     * The [Type] of address.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
      * The full, unstructured postal address. This must be consistent with any structured data.
@@ -86,6 +75,14 @@ sealed interface AddressEntity : DataEntity {
      */
     val country: String?
 
+    /**
+     * The [formattedAddress].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::formattedAddress
+    override val primaryValue: String?
+        get() = formattedAddress
+
     override val mimeType: MimeType
         get() = MimeType.Address
 
@@ -115,15 +112,59 @@ sealed interface AddressEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from AddressEntity, there is only one interface that extends it; MutableAddressEntity.
+ *
+ * The MutableAddressEntity interface is used for library constructs that require an AddressEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableAddress and NewAddress. With this, we can create constructs that can
+ * keep a reference to MutableAddress(es) or NewAddress(es) through the MutableAddressEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewAddressEntity, ExistingAddressEntity, and
+ * ImmutableAddressEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [AddressEntity].
+ * A mutable [AddressEntity].
+ */
+sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
+
+    override var formattedAddress: String?
+    override var street: String?
+    override var poBox: String?
+    override var neighborhood: String?
+    override var city: String?
+    override var region: String?
+    override var postcode: String?
+    override var country: String?
+
+    /**
+     * The [formattedAddress].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::formattedAddress
+    override var primaryValue: String?
+        get() = formattedAddress
+        set(value) {
+            formattedAddress = value
+        }
+}
+
+/**
+ * An existing immutable [AddressEntity].
  */
 @Parcelize
 data class Address internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -140,7 +181,7 @@ data class Address internal constructor(
     override val postcode: String?,
     override val country: String?
 
-) : AddressEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
+) : AddressEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
 
     override fun mutableCopy() = MutableAddress(
         id = id,
@@ -165,17 +206,17 @@ data class Address internal constructor(
 }
 
 /**
- * A mutable [AddressEntity].
+ * An existing mutable [AddressEntity].
  */
 @Parcelize
 data class MutableAddress internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var type: Type?,
     override var label: String?,
@@ -189,13 +230,24 @@ data class MutableAddress internal constructor(
     override var postcode: String?,
     override var country: String?
 
-) : AddressEntity, MutableDataEntityWithTypeAndLabel<Type> {
+) : AddressEntity, ExistingDataEntity, MutableAddressEntity
 
-    constructor() : this(
-        null, null, null, false, false, null, null, null,
-        null, null, null, null, null, null, null
-    )
+/**
+ * A new mutable [AddressEntity].
+ */
+@Parcelize
+data class NewAddress @JvmOverloads constructor(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::formattedAddress
-}
+    override var type: Type? = null,
+    override var label: String? = null,
+
+    override var formattedAddress: String? = null,
+    override var street: String? = null,
+    override var poBox: String? = null,
+    override var neighborhood: String? = null,
+    override var city: String? = null,
+    override var region: String? = null,
+    override var postcode: String? = null,
+    override var country: String? = null
+
+) : AddressEntity, NewDataEntity, MutableAddressEntity

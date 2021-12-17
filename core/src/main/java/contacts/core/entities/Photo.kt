@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -22,33 +21,44 @@ import kotlinx.parcelize.Parcelize
  */
 // I know this interface is not necessary because there is only one implementation. Still, it does
 // not hurt to have it. It follows the setup like everything else, so it's cool.
-sealed interface PhotoEntity : DataEntity
+sealed interface PhotoEntity : DataEntity {
+
+    /**
+     * Unused and will always return null.
+     */
+    override val primaryValue: String?
+        get() = null
+
+    override val mimeType: MimeType
+        get() = MimeType.Photo
+
+    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
+    override val isBlank: Boolean
+        get() = false
+}
+
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * This is why there are no interfaces for NewPhotoEntity, ExistingPhotoEntity,
+ * ImmutablePhotoEntity, and MutableNewPhotoEntity. There are currently no library functions or
+ * constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
 
 /**
- * An immutable [PhotoEntity].
+ * An existing immutable [PhotoEntity].
  */
 @Parcelize
-class Photo : PhotoEntity, ImmutableDataEntity {
+data class Photo internal constructor(
 
-    @IgnoredOnParcel
-    override val mimeType: MimeType = MimeType.Photo
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    @IgnoredOnParcel
-    override val id: Long? = null
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean
 
-    @IgnoredOnParcel
-    override val rawContactId: Long? = null
-
-    @IgnoredOnParcel
-    override val contactId: Long? = null
-
-    @IgnoredOnParcel
-    override val isPrimary: Boolean = false
-
-    @IgnoredOnParcel
-    override val isSuperPrimary: Boolean = false
-
-    @IgnoredOnParcel
-    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
-    override val isBlank: Boolean = false
-}
+) : PhotoEntity, ExistingDataEntity, ImmutableDataEntity

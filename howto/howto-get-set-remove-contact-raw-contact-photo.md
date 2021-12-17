@@ -161,21 +161,6 @@ val insertResult = Contacts(context)
 
 > For more info about insert, read [How do I create/insert contacts?](/howto/howto-insert-contacts.md)
 
-It is true that the API should not allow you to call `setPhoto` on a Contact/RawContact that has not
-yet been inserted. It is currently misleading. This will be fixed in issue #117. As of right now, 
-the following documentation is included in `contacts.core.util.ContactPhoto.kt` and 
-`contacts.core.util.RawContactPhoto.kt` functions.
-
-```kotlin
-/*
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
- */
-```
-
 > Note for contributors; It is possible to include photo **thumbnail** data as part of the insertion
 > of a new RawContact using `ContactsContract.CommonDataKinds.Photo.PHOTO`. The Contacts Provider 
 > will use the thumbnail as the full-sized photo as well. However, this is not good practice as the 

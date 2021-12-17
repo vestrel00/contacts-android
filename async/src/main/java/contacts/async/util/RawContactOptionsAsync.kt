@@ -2,9 +2,9 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.MutableOptions
+import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.MutableOptionsEntity
 import contacts.core.entities.Options
-import contacts.core.entities.RawContactEntity
 import contacts.core.util.options
 import contacts.core.util.setOptions
 import contacts.core.util.updateOptions
@@ -20,22 +20,22 @@ import kotlin.coroutines.CoroutineContext
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [RawContactEntity.options].
+ * See [ExistingRawContactEntity.options].
  */
-suspend fun RawContactEntity.optionsWithContext(
+suspend fun ExistingRawContactEntity.optionsWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Options = withContext(coroutineContext) { options(contacts) }
+): Options? = withContext(coroutineContext) { options(contacts) }
 
 /**
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [RawContactEntity.setOptions].
+ * See [ExistingRawContactEntity.setOptions].
  */
-suspend fun RawContactEntity.setOptionsWithContext(
+suspend fun ExistingRawContactEntity.setOptionsWithContext(
     contacts: Contacts,
-    options: MutableOptions,
+    options: MutableOptionsEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Boolean = withContext(coroutineContext) { setOptions(contacts, options) }
 
@@ -43,12 +43,12 @@ suspend fun RawContactEntity.setOptionsWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [RawContactEntity.updateOptions].
+ * See [ExistingRawContactEntity.updateOptions].
  */
-suspend fun RawContactEntity.updateOptionsWithContext(
+suspend fun ExistingRawContactEntity.updateOptionsWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
-    update: MutableOptions.() -> Unit
+    update: MutableOptionsEntity.() -> Unit
 ): Boolean = withContext(coroutineContext) { updateOptions(contacts, update) }
 
 // endregion
@@ -59,22 +59,22 @@ suspend fun RawContactEntity.updateOptionsWithContext(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [RawContactEntity.options].
+ * See [ExistingRawContactEntity.options].
  */
-fun RawContactEntity.optionsAsync(
+fun ExistingRawContactEntity.optionsAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Options> = CoroutineScope(coroutineContext).async { options(contacts) }
+): Deferred<Options?> = CoroutineScope(coroutineContext).async { options(contacts) }
 
 /**
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [RawContactEntity.setOptions].
+ * See [ExistingRawContactEntity.setOptions].
  */
-fun RawContactEntity.setOptionsAsync(
+fun ExistingRawContactEntity.setOptionsAsync(
     contacts: Contacts,
-    options: MutableOptions,
+    options: MutableOptionsEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setOptions(contacts, options) }
 
@@ -82,12 +82,12 @@ fun RawContactEntity.setOptionsAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [RawContactEntity.updateOptions].
+ * See [ExistingRawContactEntity.updateOptions].
  */
-fun RawContactEntity.updateOptionsAsync(
+fun ExistingRawContactEntity.updateOptionsAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
-    update: MutableOptions.() -> Unit
+    update: MutableOptionsEntity.() -> Unit
 ): Deferred<Boolean> = CoroutineScope(coroutineContext).async { updateOptions(contacts, update) }
 
 // endregion

@@ -8,16 +8,46 @@ import android.os.Parcelable
 sealed interface Entity : Parcelable {
 
     /**
-     * The ID of this entity (row) in the table it belongs to.
-     */
-    val id: Long?
-
-    /**
      * Returns true all property values are either null, empty, or blank.
-     *
-     * The [id] has no influence on the value this returns.
      */
     val isBlank: Boolean
+
+    /**
+     * Only existing data entities have an id. For all others, this will return null.
+     */
+    // This is declared here instead of an extension function for easier use for Java users.
+    val idOrNull: Long?
+        get() = null
+
+    companion object {
+        internal const val INVALID_ID: Long = -1L
+    }
+}
+
+/**
+ * An [Entity] that has NOT yet been inserted into the database.
+ *
+ * These entities are only used for insert operations.
+ */
+sealed interface NewEntity : Entity
+
+/**
+ * An [Entity] that has already been inserted into the database.
+ *
+ * These entities are returned in query operations and used in update and delete operations.
+ *
+ * Note that there is no guarantee that a reference to these entities in memory still exist in the
+ * database as they can be deleted.
+ */
+sealed interface ExistingEntity : Entity {
+
+    /**
+     * The ID of this entity (row) in the table it belongs to.
+     */
+    val id: Long
+
+    override val idOrNull: Long?
+        get() = id
 }
 
 /**
@@ -38,8 +68,15 @@ sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEn
     /**
      * Returns a **mutable copy** of this immutable entity. This copy allows for some properties of
      * instances to be mutated/modified.
+     *
+     * This is typically used for update operations.
      */
     fun mutableCopy(): T
+
+    /**
+     * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
+     */
+    fun mutableCopy(newCopy: T.() -> Unit): T = mutableCopy().apply(newCopy)
 }
 
 /**
@@ -57,6 +94,11 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
      * only be produced under certain conditions.
      */
     fun mutableCopy(): T?
+
+    /**
+     * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
+     */
+    fun mutableCopy(newCopy: T.() -> Unit): T? = mutableCopy()?.apply(newCopy)
 }
 
 /**
@@ -69,6 +111,19 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
  * shared instances of this in multi-threaded environments.
  */
 sealed interface MutableEntity : Entity
+
+/**
+ * Returns a reference to this list if it is an instance of [MutableList]. Otherwise, it returns a
+ * new [MutableList] instance with the same contents as this list.
+ *
+ * This is useful for saving a reference to the same mutable list (if it is an instance of it) so
+ * that modifications to the same mutable list can be made in multiple places.
+ */
+fun <T : Entity> List<T>.asMutableList(): MutableList<T> = if (this is MutableList) {
+    this
+} else {
+    toMutableList()
+}
 
 /**
  * Returns an immutable list containing mutable copies of type [T] for each instance of type [R] in

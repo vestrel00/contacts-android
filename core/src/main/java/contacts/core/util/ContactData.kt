@@ -7,10 +7,6 @@ import contacts.core.entities.*
 // with getters because there are some setters that have to be functions. So all are functions
 // to keep uniformity for OCD purposes.
 
-// Another dev note: Receiver signatures are the concrete types instead of the interface type.
-// This is done so that consumers gets references to actual concrete types, which may implement
-// other interfaces required by APIs in this library.
-
 // region Contact
 
 /**
@@ -251,7 +247,7 @@ fun Contact.websiteList(): List<Website> = websites().toList()
  */
 internal fun Contact.customDataSequenceOf(
     mimeType: MimeType.Custom
-): Sequence<CustomDataEntity> = rawContacts
+): Sequence<ImmutableCustomDataEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.customDataEntities[mimeType.value] }
     .flatMap {
@@ -263,23 +259,23 @@ internal fun Contact.customDataSequenceOf(
 // region MutableContact
 
 /**
- * Sequence of addresses from all [MutableContact.rawContacts] ordered by the [MutableAddress.id].
+ * Sequence of addresses from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.addresses(): Sequence<MutableAddress> = rawContacts
+fun MutableContact.addresses(): Sequence<MutableAddressEntity> = rawContacts
     .asSequence()
     .flatMap { it.addresses.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of addresses from all [MutableContact.rawContacts] ordered by the [MutableAddress.id].
+ * List of addresses from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.addressList(): List<MutableAddress> = addresses().toList()
+fun MutableContact.addressList(): List<MutableAddressEntity> = addresses().toList()
 
 /**
  * Adds the given [address] to the list of [MutableRawContact.addresses] of the first
  * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addAddress(address: MutableAddress) {
+fun MutableContact.addAddress(address: MutableAddressEntity) {
     rawContacts.firstOrNull()?.addAddress(address)
 }
 
@@ -288,7 +284,7 @@ fun MutableContact.addAddress(address: MutableAddress) {
  * [MutableRawContact.addresses] of the first [MutableRawContact] in [MutableContact.rawContacts]
  * sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addAddress(configureAddress: MutableAddress.() -> Unit) {
+fun MutableContact.addAddress(configureAddress: NewAddress.() -> Unit) {
     rawContacts.firstOrNull()?.addAddress(configureAddress)
 }
 
@@ -300,7 +296,7 @@ fun MutableContact.addAddress(configureAddress: MutableAddress.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableContact.removeAddress(address: MutableAddress, byReference: Boolean = false) {
+fun MutableContact.removeAddress(address: MutableAddressEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.removeAddress(address, byReference)
     }
@@ -316,23 +312,23 @@ fun MutableContact.removeAllAddresses() {
 }
 
 /**
- * Sequence of emails from all [MutableContact.rawContacts] ordered by the [MutableEmail.id].
+ * Sequence of emails from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.emails(): Sequence<MutableEmail> = rawContacts
+fun MutableContact.emails(): Sequence<MutableEmailEntity> = rawContacts
     .asSequence()
     .flatMap { it.emails.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of emails from all [MutableContact.rawContacts] ordered by the [MutableEmail.id].
+ * List of emails from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.emailList(): List<MutableEmail> = emails().toList()
+fun MutableContact.emailList(): List<MutableEmailEntity> = emails().toList()
 
 /**
  * Adds the given [email] to the list of [MutableRawContact.emails] of the first [MutableRawContact]
  * in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addEmail(email: MutableEmail) {
+fun MutableContact.addEmail(email: MutableEmailEntity) {
     rawContacts.firstOrNull()?.addEmail(email)
 }
 
@@ -341,7 +337,7 @@ fun MutableContact.addEmail(email: MutableEmail) {
  * the first [MutableRawContact] in [MutableContact.rawContacts] sorted by the
  * [MutableRawContact.id].
  */
-fun MutableContact.addEmail(configureEmail: MutableEmail.() -> Unit) {
+fun MutableContact.addEmail(configureEmail: NewEmail.() -> Unit) {
     rawContacts.firstOrNull()?.addEmail(configureEmail)
 }
 
@@ -353,7 +349,7 @@ fun MutableContact.addEmail(configureEmail: MutableEmail.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableContact.removeEmail(email: MutableEmail, byReference: Boolean = false) {
+fun MutableContact.removeEmail(email: MutableEmailEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.removeEmail(email, byReference)
     }
@@ -369,23 +365,23 @@ fun MutableContact.removeAllEmails() {
 }
 
 /**
- * Sequence of events from all [MutableContact.rawContacts] ordered by the [MutableEvent.id].
+ * Sequence of events from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.events(): Sequence<MutableEvent> = rawContacts
+fun MutableContact.events(): Sequence<MutableEventEntity> = rawContacts
     .asSequence()
     .flatMap { it.events.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of events from all [MutableContact.rawContacts] ordered by the [MutableEvent.id].
+ * List of events from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.eventList(): List<MutableEvent> = events().toList()
+fun MutableContact.eventList(): List<MutableEventEntity> = events().toList()
 
 /**
  * Adds the given [event] to the list of [MutableRawContact.events] of the first
  * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addEvent(event: MutableEvent) {
+fun MutableContact.addEvent(event: MutableEventEntity) {
     rawContacts.firstOrNull()?.addEvent(event)
 }
 
@@ -393,7 +389,7 @@ fun MutableContact.addEvent(event: MutableEvent) {
  * Adds a new event (configured by [configureEvent]) to the list of [MutableRawContact.events] of
  * the first [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addEvent(configureEvent: MutableEvent.() -> Unit) {
+fun MutableContact.addEvent(configureEvent: NewEvent.() -> Unit) {
     rawContacts.firstOrNull()?.addEvent(configureEvent)
 }
 
@@ -405,7 +401,7 @@ fun MutableContact.addEvent(configureEvent: MutableEvent.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableContact.removeEvent(event: MutableEvent, byReference: Boolean = false) {
+fun MutableContact.removeEvent(event: MutableEventEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.removeEvent(event, byReference)
     }
@@ -423,38 +419,38 @@ fun MutableContact.removeAllEvents() {
 /**
  * The [groupMemberships] as a sequence.
  */
-fun MutableContact.groupMemberships(): Sequence<GroupMembership> = rawContacts
+fun MutableContact.groupMemberships(): Sequence<GroupMembershipEntity> = rawContacts
     .asSequence()
     .flatMap { it.groupMemberships.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
  * The [groupMemberships] as a list.
  */
-fun MutableContact.groupMembershipList(): List<GroupMembership> = groupMemberships().toList()
+fun MutableContact.groupMembershipList(): List<GroupMembershipEntity> = groupMemberships().toList()
 
 // GroupMemberships add and remove functions are intentionally left out because they should never
 // be combined. The native Contacts app hides the group membership UI field when viewing/editing a
 // contact with more than one RawContact.
 
 /**
- * Sequence of Ims from all [MutableContact.rawContacts] ordered by the [MutableIm.id].
+ * Sequence of Ims from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.ims(): Sequence<MutableIm> = rawContacts
+fun MutableContact.ims(): Sequence<MutableImEntity> = rawContacts
     .asSequence()
     .flatMap { it.ims.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of IMs from all [MutableContact.rawContacts] ordered by the [MutableIm.id].
+ * List of IMs from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.imList(): List<MutableIm> = ims().toList()
+fun MutableContact.imList(): List<MutableImEntity> = ims().toList()
 
 /**
  * Adds the given [im] to the list of [MutableRawContact.ims] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addIm(im: MutableIm) {
+fun MutableContact.addIm(im: MutableImEntity) {
     rawContacts.firstOrNull()?.addIm(im)
 }
 
@@ -462,7 +458,7 @@ fun MutableContact.addIm(im: MutableIm) {
  * Adds a new IM (configured by [configureIm]) to the list of [MutableRawContact.ims] of the first
  * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addIm(configureIm: MutableIm.() -> Unit) {
+fun MutableContact.addIm(configureIm: NewIm.() -> Unit) {
     rawContacts.firstOrNull()?.addIm(configureIm)
 }
 
@@ -474,7 +470,7 @@ fun MutableContact.addIm(configureIm: MutableIm.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableContact.removeIm(im: MutableIm, byReference: Boolean = false) {
+fun MutableContact.removeIm(im: MutableImEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.removeIm(im, byReference)
     }
@@ -490,89 +486,92 @@ fun MutableContact.removeAllIms() {
 }
 
 /**
- * Sequence of names from all [MutableContact.rawContacts] ordered by the [MutableName.id].
+ * Sequence of names from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.names(): Sequence<MutableName> = rawContacts
+fun MutableContact.names(): Sequence<MutableNameEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.name }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of names from all [MutableContact.rawContacts] ordered by the [MutableName.id].
+ * List of names from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.nameList(): List<MutableName> = names().toList()
+fun MutableContact.nameList(): List<MutableNameEntity> = names().toList()
 
 /**
  * Sets the [MutableRawContact.name] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.setName(name: MutableName?) {
+fun MutableContact.setName(name: MutableNameEntity?) {
     rawContacts.firstOrNull()?.setName(name)
 }
 
 /**
  * Sets the [MutableRawContact.name] (configured by [configureName]) of the first
- * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
+ * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id]
+ * to a new name.
  */
-fun MutableContact.setName(configureName: MutableName.() -> Unit) {
+fun MutableContact.setName(configureName: NewName.() -> Unit) {
     rawContacts.firstOrNull()?.setName(configureName)
 }
 
 /**
- * Sequence of nicknames from all [MutableContact.rawContacts] ordered by the [MutableNickname.id].
+ * Sequence of nicknames from all [MutableContact.rawContacts] ordered by the id.
  */
-fun MutableContact.nicknames(): Sequence<MutableNickname> = rawContacts
+fun MutableContact.nicknames(): Sequence<MutableNicknameEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.nickname }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of nicknames from all [MutableContact.rawContacts] ordered by the [MutableNickname.id].
+ * List of nicknames from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.nicknameList(): List<MutableNickname> = nicknames().toList()
+fun MutableContact.nicknameList(): List<MutableNicknameEntity> = nicknames().toList()
 
 /**
  * Sets the [MutableRawContact.nickname] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.setNickname(nickname: MutableNickname?) {
+fun MutableContact.setNickname(nickname: MutableNicknameEntity?) {
     rawContacts.firstOrNull()?.setNickname(nickname)
 }
 
 /**
  * Sets the [MutableRawContact.nickname] (configured by [configureNickname]) of the first
- * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
+ * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id] to a
+ * new nickname.
  */
-fun MutableContact.setNickname(configureNickname: MutableNickname.() -> Unit) {
+fun MutableContact.setNickname(configureNickname: NewNickname.() -> Unit) {
     rawContacts.firstOrNull()?.setNickname(configureNickname)
 }
 
 /**
- * Sequence of notes from all [MutableContact.rawContacts] ordered by the [MutableNote.id].
+ * Sequence of notes from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.notes(): Sequence<MutableNote> = rawContacts
+fun MutableContact.notes(): Sequence<MutableNoteEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.note }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of notes from all [MutableContact.rawContacts] ordered by the [MutableNote.id].
+ * List of notes from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.noteList(): List<MutableNote> = notes().toList()
+fun MutableContact.noteList(): List<MutableNoteEntity> = notes().toList()
 
 /**
  * Sets the [MutableRawContact.note] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.setNote(note: MutableNote?) {
+fun MutableContact.setNote(note: MutableNoteEntity?) {
     rawContacts.firstOrNull()?.setNote(note)
 }
 
 /**
  * Sets the [MutableRawContact.note] (configured by [configureNote]) of the first
- * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
+ * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id] to a
+ * new note.
  */
-fun MutableContact.setNote(configureNote: MutableNote.() -> Unit) {
+fun MutableContact.setNote(configureNote: NewNote.() -> Unit) {
     rawContacts.firstOrNull()?.setNote(configureNote)
 }
 
@@ -580,63 +579,62 @@ fun MutableContact.setNote(configureNote: MutableNote.() -> Unit) {
 // Options.
 
 /**
- * Sequence of organizations from all [MutableContact.rawContacts] ordered by the
- * [MutableOrganization.id].
+ * Sequence of organizations from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.organizations(): Sequence<MutableOrganization> = rawContacts
+fun MutableContact.organizations(): Sequence<MutableOrganizationEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.organization }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of organizations from all [MutableContact.rawContacts] ordered by the
- * [MutableOrganization.id].
+ * List of organizations from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.organizationList(): List<MutableOrganization> = organizations().toList()
+fun MutableContact.organizationList(): List<MutableOrganizationEntity> = organizations().toList()
 
 /**
  * Sets the [MutableRawContact.organization] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.setOrganization(organization: MutableOrganization?) {
+fun MutableContact.setOrganization(organization: MutableOrganizationEntity?) {
     rawContacts.firstOrNull()?.setOrganization(organization)
 }
 
 /**
  * Sets the [MutableRawContact.organization] (configured by [configureOrganization]) of the first
- * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
+ * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id] to a new
+ * organization.
  */
-fun MutableContact.setOrganization(configureOrganization: MutableOrganization.() -> Unit) {
+fun MutableContact.setOrganization(configureOrganization: NewOrganization.() -> Unit) {
     rawContacts.firstOrNull()?.setOrganization(configureOrganization)
 }
 
 /**
- * Sequence of phones from all [MutableContact.rawContacts] ordered by the [MutablePhone.id].
+ * Sequence of phones from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.phones(): Sequence<MutablePhone> = rawContacts
+fun MutableContact.phones(): Sequence<MutablePhoneEntity> = rawContacts
     .asSequence()
     .flatMap { it.phones.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of phones from all [MutableContact.rawContacts] ordered by the [MutablePhone.id].
+ * List of phones from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.phoneList(): List<MutablePhone> = phones().toList()
+fun MutableContact.phoneList(): List<MutablePhoneEntity> = phones().toList()
 
 /**
  * Adds the given [phone] to the list of [MutableRawContact.phones] of the first [MutableRawContact]
  * in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addPhone(phone: MutablePhone) {
+fun MutableContact.addPhone(phone: MutablePhoneEntity) {
     rawContacts.firstOrNull()?.addPhone(phone)
 }
 
 /**
  * Adds a new phone (configured by [configurePhone]) to the list of [MutableRawContact.phones] of
  * the first [MutableRawContact] in [MutableContact.rawContacts] sorted by the
- * [MutableRawContact.id].
+ * [MutableRawContact.id] to a new phone.
  */
-fun MutableContact.addPhone(configurePhone: MutablePhone.() -> Unit) {
+fun MutableContact.addPhone(configurePhone: NewPhone.() -> Unit) {
     rawContacts.firstOrNull()?.addPhone(configurePhone)
 }
 
@@ -648,7 +646,7 @@ fun MutableContact.addPhone(configurePhone: MutablePhone.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableContact.removePhone(phone: MutablePhone, byReference: Boolean = false) {
+fun MutableContact.removePhone(phone: MutablePhoneEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.removePhone(phone, byReference)
     }
@@ -667,32 +665,32 @@ fun MutableContact.removeAllPhones() {
 // Photos.
 
 /**
- * Sequence of relations from all [MutableContact.rawContacts] ordered by the [MutableRelation.id].
+ * Sequence of relations from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.relations(): Sequence<MutableRelation> = rawContacts
+fun MutableContact.relations(): Sequence<MutableRelationEntity> = rawContacts
     .asSequence()
     .flatMap { it.relations.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of relations from all [MutableContact.rawContacts] ordered by the [MutableRelation.id].
+ * List of relations from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.relationList(): List<MutableRelation> = relations().toList()
+fun MutableContact.relationList(): List<MutableRelationEntity> = relations().toList()
 
 /**
  * Adds the given [relation] to the list of [MutableRawContact.relations] of the first
  * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addRelation(relation: MutableRelation) {
+fun MutableContact.addRelation(relation: MutableRelationEntity) {
     rawContacts.firstOrNull()?.addRelation(relation)
 }
 
 /**
  * Adds a new relation (configured by [configureRelation]) to the list of
  * [MutableRawContact.relations] of the first [MutableRawContact] in [MutableContact.rawContacts]
- * sorted by the [MutableRawContact.id].
+ * sorted by the [MutableRawContact.id] to a new relation.
  */
-fun MutableContact.addRelation(configureRelation: MutableRelation.() -> Unit) {
+fun MutableContact.addRelation(configureRelation: NewRelation.() -> Unit) {
     rawContacts.firstOrNull()?.addRelation(configureRelation)
 }
 
@@ -704,7 +702,7 @@ fun MutableContact.addRelation(configureRelation: MutableRelation.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableContact.removeRelation(relation: MutableRelation, byReference: Boolean = false) {
+fun MutableContact.removeRelation(relation: MutableRelationEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.removeRelation(relation, byReference)
     }
@@ -720,54 +718,53 @@ fun MutableContact.removeAllRelations() {
 }
 
 /**
- * Sequence of SIP addresses from all [MutableContact.rawContacts] ordered by the
- * [MutableSipAddress.id].
+ * Sequence of SIP addresses from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.sipAddresses(): Sequence<MutableSipAddress> = rawContacts
+fun MutableContact.sipAddresses(): Sequence<MutableSipAddressEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.sipAddress }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of SIP addresses from all [MutableContact.rawContacts] ordered by the
- * [MutableSipAddress.id].
+ * List of SIP addresses from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.sipAddressList(): List<MutableSipAddress> = sipAddresses().toList()
+fun MutableContact.sipAddressList(): List<MutableSipAddressEntity> = sipAddresses().toList()
 
 /**
  * Sets the [MutableRawContact.sipAddress] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.setSipAddress(sipAddress: MutableSipAddress?) {
+fun MutableContact.setSipAddress(sipAddress: MutableSipAddressEntity?) {
     rawContacts.firstOrNull()?.setSipAddress(sipAddress)
 }
 
 /**
  * Sets the [MutableRawContact.sipAddress] (configured by [configureSipAddress]) of the first
- * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
+ * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id] to a
+ * new SIP address.
  */
-fun MutableContact.setSipAddress(configureSipAddress: MutableSipAddress.() -> Unit) {
+fun MutableContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) {
     rawContacts.firstOrNull()?.setSipAddress(configureSipAddress)
 }
 
 /**
- * Sequence of websites from all [MutableContact.rawContacts] ordered by the [MutableWebsite.id].
+ * Sequence of websites from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.websites(): Sequence<MutableWebsite> = rawContacts
+fun MutableContact.websites(): Sequence<MutableWebsiteEntity> = rawContacts
     .asSequence()
     .flatMap { it.websites.asSequence() }
-    .sortedBy { it.id }
+    .sortedById()
 
 /**
- * List of websites from all [MutableContact.rawContacts] ordered by the [MutableWebsite.id].
+ * List of websites from all [MutableContact.rawContacts] ordered by id.
  */
-fun MutableContact.websiteList(): List<MutableWebsite> = websites().toList()
+fun MutableContact.websiteList(): List<MutableWebsiteEntity> = websites().toList()
 
 /**
  * Adds the given [website] to the list of [MutableRawContact.websites] of the first
  * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
-fun MutableContact.addWebsite(website: MutableWebsite) {
+fun MutableContact.addWebsite(website: MutableWebsiteEntity) {
     rawContacts.firstOrNull()?.addWebsite(website)
 }
 
@@ -776,7 +773,7 @@ fun MutableContact.addWebsite(website: MutableWebsite) {
  * of the first [MutableRawContact] in [MutableContact.rawContacts] sorted by the
  * [MutableRawContact.id].
  */
-fun MutableContact.addWebsite(configureWebsite: MutableWebsite.() -> Unit) {
+fun MutableContact.addWebsite(configureWebsite: NewWebsite.() -> Unit) {
     rawContacts.firstOrNull()?.addWebsite(configureWebsite)
 }
 
@@ -788,7 +785,7 @@ fun MutableContact.addWebsite(configureWebsite: MutableWebsite.() -> Unit) {
  * (same object)**.
  */
 @JvmOverloads
-fun MutableContact.removeWebsite(website: MutableWebsite, byReference: Boolean = false) {
+fun MutableContact.removeWebsite(website: MutableWebsiteEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
         rawContact.removeWebsite(website, byReference)
     }

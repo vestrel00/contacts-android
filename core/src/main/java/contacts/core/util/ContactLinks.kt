@@ -2,13 +2,11 @@ package contacts.core.util
 
 import android.content.ContentProviderOperation
 import android.os.Build
-import android.provider.ContactsContract.*
+import android.provider.ContactsContract
 import contacts.core.*
-import contacts.core.Contacts
-import contacts.core.entities.ContactEntity
+import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.Name
-import contacts.core.entities.RawContactEntity
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.cursor.rawContactsCursor
@@ -57,12 +55,6 @@ import contacts.core.entities.table.Table
  *
  * **Profile Contact & RawContacts are not supported!** This operation will fail if there are any
  * profile Contact or RawContacts in [contacts].
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Changes are immediate
  *
@@ -118,28 +110,27 @@ import contacts.core.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(contactsApi: Contacts, vararg contacts: ContactEntity) =
+fun ExistingContactEntity.link(contactsApi: Contacts, vararg contacts: ExistingContactEntity) =
     link(contactsApi, contacts.asSequence())
 
 /**
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(contactsApi: Contacts, contacts: Collection<ContactEntity>) =
+fun ExistingContactEntity.link(contactsApi: Contacts, contacts: Collection<ExistingContactEntity>) =
     link(contactsApi, contacts.asSequence())
 
 /**
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.link(
+fun ExistingContactEntity.link(
     contactsApi: Contacts,
-    contacts: Sequence<ContactEntity>
+    contacts: Sequence<ExistingContactEntity>
 ): ContactLinkResult {
     val mainContactId = id
 
     if (!contactsApi.permissions.canUpdateDelete() ||
-        mainContactId == null ||
         mainContactId.isProfileId ||
         contacts.find { it.isProfile } != null
     ) {
@@ -147,7 +138,7 @@ fun ContactEntity.link(
     }
 
     val sortedContactIds = contacts
-        .mapNotNull { it.id }
+        .map { it.id }
         .filter { it != mainContactId }
         .sortedBy { it }
         .toMutableList()
@@ -176,7 +167,7 @@ fun ContactEntity.link(
     contactsApi.applicationContext.contentResolver.applyBatch(
         aggregateExceptionsOperations(
             sortedRawContactIds,
-            AggregationExceptions.TYPE_KEEP_TOGETHER
+            ContactsContract.AggregationExceptions.TYPE_KEEP_TOGETHER
         )
     ) ?: return ContactLinkFailed()
 
@@ -203,17 +194,17 @@ fun ContactEntity.link(
 /**
  * Links the first Contact in this collection with the rest in the collection.
  *
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
-fun Collection<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult =
+fun Collection<ExistingContactEntity>.link(contactsApi: Contacts): ContactLinkResult =
     asSequence().link(contactsApi)
 
 /**
  * Links the first Contact in this sequence with the rest in the sequence.
  *
- * See [ContactEntity.link].
+ * See [ExistingContactEntity.link].
  */
-fun Sequence<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
+fun Sequence<ExistingContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
     val mainContact = firstOrNull()
     val contacts = filterIndexed { index, _ -> index > 0 }
 
@@ -227,8 +218,8 @@ fun Sequence<ContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
 interface ContactLinkResult {
 
     /**
-     * The parent [ContactEntity.id] for all of the linked RawContacts. Null if [isSuccessful] is
-     * false.
+     * The parent [ExistingContactEntity.id] for all of the linked RawContacts. Null if
+     * [isSuccessful] is false.
      */
     val contactId: Long?
 
@@ -255,19 +246,13 @@ private class ContactLinkFailed : ContactLinkResult {
 // region UNLINK
 
 /**
- * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [ContactEntity] for each
- * [ContactEntity.rawContacts].
+ * Unlinks (keep separate) [this] Contacts' RawContacts, resulting in one [ExistingContactEntity]
+ * for each [ExistingContactEntity.rawContacts].
  *
  * This does nothing / fails if there is only one RawContact associated with [this].
  *
  * **Profile Contact & RawContacts are not supported!** This operation will fail if [this] is a
  * Profile Contact.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Changes are immediate
  *
@@ -290,11 +275,10 @@ private class ContactLinkFailed : ContactLinkResult {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
+fun ExistingContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
     val contactId = id
 
     if (!contactsApi.permissions.canUpdateDelete() ||
-        contactId == null ||
         contactId.isProfileId
     ) {
         return ContactUnlinkFailed()
@@ -310,7 +294,7 @@ fun ContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
     contactsApi.applicationContext.contentResolver.applyBatch(
         aggregateExceptionsOperations(
             sortedRawContactIds,
-            AggregationExceptions.TYPE_KEEP_SEPARATE
+            ContactsContract.AggregationExceptions.TYPE_KEEP_SEPARATE
         )
     ) ?: return ContactUnlinkFailed()
 
@@ -320,7 +304,7 @@ fun ContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
 interface ContactUnlinkResult {
 
     /**
-     * The list of [RawContactEntity.id] that have been unlinked. Empty if [isSuccessful] is false.
+     * The list of RawContacts' IDs that have been unlinked. Empty if [isSuccessful] is false.
      */
     val rawContactIds: List<Long>
 
@@ -348,8 +332,8 @@ private class ContactUnlinkFailed : ContactUnlinkResult {
 
 /**
  * Provides the operations to ensure that all or the given raw contacts are kept together
- * [AggregationExceptions.TYPE_KEEP_TOGETHER] or kept separate
- * [AggregationExceptions.TYPE_KEEP_SEPARATE], depending on the given [type].
+ * [ContactsContract.AggregationExceptions.TYPE_KEEP_TOGETHER] or kept separate
+ * [ContactsContract.AggregationExceptions.TYPE_KEEP_SEPARATE], depending on the given [type].
  *
  * See DEV_NOTES "AggregationExceptions table" section.
  */
@@ -403,10 +387,10 @@ private fun Contacts.nameRowIdToUseAsDefault(contactIds: Set<Long>): Long? {
 
 /**
  * Returns the structured name row ID of the RawContact referenced by the
- * [ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
+ * [ContactsContract.ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
  *
- * Returns null if the [ContactNameColumns.DISPLAY_NAME_SOURCE] is not
- * [DisplayNameSources.STRUCTURED_NAME] or if the name row is not found.
+ * Returns null if the [ContactsContract.ContactNameColumns.DISPLAY_NAME_SOURCE] is not
+ * [ContactsContract.DisplayNameSources.STRUCTURED_NAME] or if the name row is not found.
  */
 private fun Contacts.nameRawContactIdStructuredNameId(contactId: Long): Long? {
     val nameRawContactId = nameRawContactId(contactId) ?: return null
@@ -422,10 +406,11 @@ private fun Contacts.nameRawContactIdStructuredNameId(contactId: Long): Long? {
 }
 
 /**
- * Returns the [ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given [contactId].
+ * Returns the [ContactsContract.ContactsColumns.NAME_RAW_CONTACT_ID] of the Contact with the given
+ * [contactId].
  *
- * Returns null if the [ContactNameColumns.DISPLAY_NAME_SOURCE] is not
- * [DisplayNameSources.STRUCTURED_NAME].
+ * Returns null if the [ContactsContract.ContactNameColumns.DISPLAY_NAME_SOURCE] is not
+ * [ContactsContract.DisplayNameSources.STRUCTURED_NAME].
  */
 // [ANDROID X] @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 // (not using annotation to avoid dependency on androidx.annotation)
@@ -435,16 +420,17 @@ private fun Contacts.nameRawContactId(contactId: Long): Long? =
         Include(ContactsFields.DisplayNameSource, ContactsFields.NameRawContactId),
         ContactsFields.Id equalTo contactId
     ) {
-        var displayNameSource: Int = DisplayNameSources.UNDEFINED
+        var displayNameSource: Int = ContactsContract.DisplayNameSources.UNDEFINED
         var nameRawContactId: Long? = null
 
         it.getNextOrNull {
             val contactsCursor = it.contactsCursor()
-            displayNameSource = contactsCursor.displayNameSource ?: DisplayNameSources.UNDEFINED
+            displayNameSource =
+                contactsCursor.displayNameSource ?: ContactsContract.DisplayNameSources.UNDEFINED
             nameRawContactId = contactsCursor.nameRawContactId
         }
 
-        if (displayNameSource != DisplayNameSources.STRUCTURED_NAME) {
+        if (displayNameSource != ContactsContract.DisplayNameSources.STRUCTURED_NAME) {
             null
         } else {
             nameRawContactId
@@ -464,7 +450,7 @@ private fun Contacts.sortedRawContactIds(contactIds: Set<Long>): List<Long> =
         mutableListOf<Long>().apply {
             val rawContactsCursor = it.rawContactsCursor()
             while (it.moveToNext()) {
-                rawContactsCursor.rawContactId?.let(::add)
+                add(rawContactsCursor.rawContactId)
             }
         }
     } ?: emptyList()

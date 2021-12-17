@@ -1,6 +1,5 @@
 package contacts.core.entities
 
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -48,6 +47,14 @@ sealed interface OrganizationEntity : DataEntity {
      */
     val phoneticName: String?
 
+    /**
+     * The [company].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::company
+    override val primaryValue: String?
+        get() = company
+
     override val mimeType: MimeType
         get() = MimeType.Organization
 
@@ -57,15 +64,58 @@ sealed interface OrganizationEntity : DataEntity {
         )
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from OrganizationEntity, there is only one interface that extends it; MutableOrganizationEntity.
+ *
+ * The MutableOrganizationEntity interface is used for library constructs that require an OrganizationEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableOrganization and NewOrganization. With this, we can create constructs that can
+ * keep a reference to MutableOrganization(s) or NewOrganization(s) through the MutableOrganizationEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewOrganizationEntity, ExistingOrganizationEntity, and
+ * ImmutableOrganizationEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [OrganizationEntity].
+ * A mutable [OrganizationEntity]. `
+ */
+sealed interface MutableOrganizationEntity : OrganizationEntity, MutableDataEntity {
+
+    override var company: String?
+    override var title: String?
+    override var department: String?
+    override var jobDescription: String?
+    override var officeLocation: String?
+    override var symbol: String?
+    override var phoneticName: String?
+
+    /**
+     * The [company].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::company
+    override var primaryValue: String?
+        get() = company
+        set(value) {
+            company = value
+        }
+}
+
+/**
+ * An existing immutable [OrganizationEntity].
  */
 @Parcelize
 data class Organization internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -78,7 +128,8 @@ data class Organization internal constructor(
     override val symbol: String?,
     override val phoneticName: String?
 
-) : OrganizationEntity, ImmutableDataEntityWithMutableType<MutableOrganization> {
+) : OrganizationEntity, ExistingDataEntity,
+    ImmutableDataEntityWithMutableType<MutableOrganization> {
 
     override fun mutableCopy() = MutableOrganization(
         id = id,
@@ -99,17 +150,17 @@ data class Organization internal constructor(
 }
 
 /**
- * A mutable [OrganizationEntity].
+ * An existing mutable [OrganizationEntity].
  */
 @Parcelize
 data class MutableOrganization internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var company: String?,
     override var title: String?,
@@ -119,13 +170,20 @@ data class MutableOrganization internal constructor(
     override var symbol: String?,
     override var phoneticName: String?
 
-) : OrganizationEntity, MutableDataEntity {
+) : OrganizationEntity, ExistingDataEntity, MutableOrganizationEntity
 
-    constructor() : this(
-        null, null, null, false, false, null, null,
-        null, null, null, null, null
-    )
+/**
+ * A new mutable [OrganizationEntity].
+ */
+@Parcelize
+data class NewOrganization @JvmOverloads constructor(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::company
-}
+    override var company: String? = null,
+    override var title: String? = null,
+    override var department: String? = null,
+    override var jobDescription: String? = null,
+    override var officeLocation: String? = null,
+    override var symbol: String? = null,
+    override var phoneticName: String? = null
+
+) : OrganizationEntity, NewDataEntity, MutableOrganizationEntity

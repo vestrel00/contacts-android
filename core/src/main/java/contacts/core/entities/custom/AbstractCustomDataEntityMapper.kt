@@ -3,7 +3,7 @@ package contacts.core.entities.custom
 import android.database.Cursor
 import contacts.core.AbstractCustomDataField
 import contacts.core.entities.CustomDataEntity
-import contacts.core.entities.ImmutableCustomDataEntity
+import contacts.core.entities.ExistingCustomDataEntity
 import contacts.core.entities.mapper.CustomDataEntityMapper
 
 /**
@@ -13,7 +13,7 @@ import contacts.core.entities.mapper.CustomDataEntityMapper
 abstract class AbstractCustomDataEntityMapper<
         F : AbstractCustomDataField,
         C : AbstractCustomDataCursor<F>,
-        out E : ImmutableCustomDataEntity>(
+        out E : ExistingCustomDataEntity>(
     private val cursor: C
 ) : CustomDataEntityMapper<E> {
 
@@ -36,7 +36,7 @@ abstract class AbstractCustomDataEntityMapper<
     interface Factory<
             F : AbstractCustomDataField,
             C : AbstractCustomDataCursor<F>,
-            out E : ImmutableCustomDataEntity> {
+            out E : ExistingCustomDataEntity> {
 
         /**
          * Creates instances of [AbstractCustomDataEntityMapper] with the given [cursor].

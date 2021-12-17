@@ -38,15 +38,15 @@ import contacts.core.util.unsafeLazy
  * In Kotlin,
  *
  * ```kotlin
- * val mutableRawContact = rawContact.mutableCopy().apply {
- *      name = MutableName().apply {
+ * val mutableRawContact = rawContact.mutableCopy {
+ *      name = NewName(
  *          givenName = "john"
  *          familyName = "doe"
- *      }
- *      emails.add(MutableEmail().apply {
+ *      )
+ *      emails.add(NewEmail(
  *          type = EmailEntity.Type.HOME
  *          address = "john@doe.com"
- *      })
+ *      ))
  * }
  *
  * val result = update
@@ -57,11 +57,11 @@ import contacts.core.util.unsafeLazy
  * Java,
  *
  * ```java
- * MutableName name = new MutableName();
+ * NewName name = new NewName();
  * name.setGivenName("john");
  * name.setFamilyName("doe");
  *
- * MutableEmail email = new MutableEmail();
+ * NewEmail email = new NewEmail();
  * email.setType(EmailEntity.Type.HOME);
  * email.setAddress("john@doe.com");
  *
@@ -78,9 +78,9 @@ interface Update {
 
     /**
      * If [deleteBlanks] is set to true, then updating blank RawContacts
-     * ([MutableRawContact.isBlank]) or blank Contacts ([MutableContact.isBlank]) will result in
-     * their deletion. Otherwise, blanks will not be deleted and will result in a failed operation.
-     * This flag is set to true by default.
+     * ([ExistingRawContactEntity.isBlank]) or blank Contacts ([ExistingContactEntity.isBlank]) will
+     * result in their deletion. Otherwise, blanks will not be deleted and will result in a failed
+     * operation. This flag is set to true by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
@@ -147,44 +147,40 @@ interface Update {
 
     /**
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
-     *
-     * Only existing [rawContacts] that have been retrieved via a query will be added to the
-     * update queue. Those that have been manually created via a constructor will be ignored and
-     * result in a failed operation.
      */
-    fun rawContacts(vararg rawContacts: MutableRawContact): Update
+    fun rawContacts(vararg rawContacts: ExistingRawContactEntity): Update
 
     /**
      * See [Update.rawContacts].
      */
-    fun rawContacts(rawContacts: Collection<MutableRawContact>): Update
+    fun rawContacts(rawContacts: Collection<ExistingRawContactEntity>): Update
 
     /**
      * See [Update.rawContacts].
      */
-    fun rawContacts(rawContacts: Sequence<MutableRawContact>): Update
+    fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Update
 
     /**
-     * Adds the [MutableRawContact]s of the given [contacts] to the update queue, which will be
-     * updated on [commit].
+     * Adds the [ExistingRawContactEntity]s of the given [contacts] to the update queue, which will
+     * be updated on [commit].
      *
      * See [rawContacts].
      */
-    fun contacts(vararg contacts: MutableContact): Update
+    fun contacts(vararg contacts: ExistingContactEntity): Update
 
     /**
      * See [Update.contacts].
      */
-    fun contacts(contacts: Collection<MutableContact>): Update
+    fun contacts(contacts: Collection<ExistingContactEntity>): Update
 
     /**
      * See [Update.contacts].
      */
-    fun contacts(contacts: Sequence<MutableContact>): Update
+    fun contacts(contacts: Sequence<ExistingContactEntity>): Update
 
     /**
-     * Updates the [MutableRawContact]s in the queue (added via [rawContacts] and [contacts]) and
-     * returns the [Result].
+     * Updates the [ExistingRawContactEntity]s in the queue (added via [rawContacts] and [contacts])
+     * and returns the [Result].
      *
      * ## Permissions
      *
@@ -198,8 +194,8 @@ interface Update {
     fun commit(): Result
 
     /**
-     * Updates the [MutableRawContact]s in the queue (added via [rawContacts] and [contacts]) and
-     * returns the [Result].
+     * Updates the [ExistingRawContactEntity]s in the queue (added via [rawContacts] and [contacts])
+     * and returns the [Result].
      *
      * ## Permissions
      *
@@ -235,19 +231,20 @@ interface Update {
         /**
          * True if the [rawContact] has been successfully updated. False otherwise.
          */
-        fun isSuccessful(rawContact: MutableRawContact): Boolean
+        fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
 
         /**
-         * True if all of the [MutableContact.rawContacts] has been successfully updated. False
-         * otherwise.
+         * True if all of the [ExistingContactEntity.rawContacts] has been successfully updated.
+         * False otherwise.
          *
          * ## Important
          *
-         * If this [contact] has as [MutableRawContact] that has not been updated, then this will
-         * return false. This may occur if only some (not all) of the [MutableRawContact] in
-         * [MutableContact.rawContacts] has been added to the update queue via [Update.rawContacts].
+         * If this [contact] has as [ExistingRawContactEntity] that has not been updated, then this
+         * will return false. This may occur if only some (not all) of the
+         * [ExistingRawContactEntity] in [ExistingContactEntity.rawContacts] have been added to the
+         * update queue via [Update.rawContacts].
          */
-        fun isSuccessful(contact: MutableContact): Boolean
+        fun isSuccessful(contact: ExistingContactEntity): Boolean
     }
 }
 
@@ -259,7 +256,7 @@ private class UpdateImpl(
 
     private var deleteBlanks: Boolean = true,
     private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
-    private val rawContacts: MutableSet<MutableRawContact> = mutableSetOf()
+    private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf()
 ) : Update {
 
     override fun toString(): String =
@@ -287,23 +284,23 @@ private class UpdateImpl(
         }
     }
 
-    override fun rawContacts(vararg rawContacts: MutableRawContact) =
+    override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Collection<MutableRawContact>) =
+    override fun rawContacts(rawContacts: Collection<ExistingRawContactEntity>) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Sequence<MutableRawContact>): Update = apply {
+    override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Update = apply {
         this.rawContacts.addAll(rawContacts)
     }
 
-    override fun contacts(vararg contacts: MutableContact) =
+    override fun contacts(vararg contacts: ExistingContactEntity) =
         contacts(contacts.asSequence())
 
-    override fun contacts(contacts: Collection<MutableContact>) =
+    override fun contacts(contacts: Collection<ExistingContactEntity>) =
         contacts(contacts.asSequence())
 
-    override fun contacts(contacts: Sequence<MutableContact>): Update =
+    override fun contacts(contacts: Sequence<ExistingContactEntity>): Update =
         rawContacts(contacts.flatMap { it.rawContacts.asSequence() })
 
     override fun commit(): Update.Result = commit { false }
@@ -319,33 +316,24 @@ private class UpdateImpl(
                 break
             }
 
-            if (rawContact.id != null) {
-                results[rawContact.id] = if (rawContact.isProfile) {
-                    // Intentionally fail the operation to ensure that this is only used for
-                    // non-profile updates. Otherwise, operation can succeed. This is only done to
-                    // enforce API design.
-                    false
-                } else if (rawContact.isBlank && deleteBlanks) {
-                    contacts.applicationContext.contentResolver
-                        .deleteRawContactWithId(rawContact.id)
-                } else {
-                    contacts.updateRawContact(include.fields, rawContact)
-                }
+            results[rawContact.id] = if (rawContact.isProfile) {
+                // Intentionally fail the operation to ensure that this is only used for
+                // non-profile updates. Otherwise, operation can succeed. This is only done to
+                // enforce API design.
+                false
+            } else if (rawContact.isBlank && deleteBlanks) {
+                contacts.applicationContext.contentResolver
+                    .deleteRawContactWithId(rawContact.id)
             } else {
-                results[INVALID_ID] = false
+                contacts.updateRawContact(include.fields, rawContact)
             }
         }
         return UpdateResult(results)
     }
-
-    private companion object {
-        // A failed entry in the results so that Result.isSuccessful returns false.
-        const val INVALID_ID = -1L
-    }
 }
 
 /**
- * Updates a raw contact's data rows.
+ * Updates an existing raw contact's data rows.
  *
  * If a raw contact attribute is null or the attribute's values are all null, then the
  * corresponding data row (if any) will be deleted.
@@ -355,12 +343,8 @@ private class UpdateImpl(
  */
 internal fun Contacts.updateRawContact(
     includeFields: Set<AbstractDataField>,
-    rawContact: MutableRawContact
+    rawContact: ExistingRawContactEntity
 ): Boolean {
-    if (rawContact.id == null) {
-        return false
-    }
-
     val isProfile = rawContact.isProfile
     val account = accounts(isProfile).query().accountFor(rawContact)
     val hasAccount = account != null
@@ -474,15 +458,11 @@ internal fun Contacts.updateRawContact(
     return applicationContext.contentResolver.applyBatch(operations) != null
 }
 
-private fun MutableRawContact.customDataUpdateInsertOrDeleteOperations(
+private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
     contentResolver: ContentResolver,
     includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
-    if (id == null) {
-        return@apply
-    }
-
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
 
@@ -512,9 +492,10 @@ private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean
 
     override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
 
-    override fun isSuccessful(rawContact: MutableRawContact): Boolean = isSuccessful(rawContact.id)
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
+        isSuccessful(rawContact.id)
 
-    override fun isSuccessful(contact: MutableContact): Boolean {
+    override fun isSuccessful(contact: ExistingContactEntity): Boolean {
         for (rawContactId in contact.rawContacts.asSequence().map { it.id }) {
             if (!isSuccessful(rawContactId)) {
                 return false
@@ -531,7 +512,7 @@ private class UpdateFailed : Update.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(rawContact: MutableRawContact): Boolean = false
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = false
 
-    override fun isSuccessful(contact: MutableContact): Boolean = false
+    override fun isSuccessful(contact: ExistingContactEntity): Boolean = false
 }

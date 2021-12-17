@@ -254,7 +254,7 @@ interface Query {
      * Orders the returned [Contact]s using one or more [orderBy]s. If not specified, then contacts
      * are ordered by ID in ascending order.
      *
-     * This will throw an [IllegalArgumentException] if ordering by a field that is not included in
+     * This will throw an [ContactsException] if ordering by a field that is not included in
      * the query.
      *
      * String comparisons ignores case by default. Each [orderBy]s provides `ignoreCase` as an
@@ -437,7 +437,7 @@ private class QueryImpl(
         this.limit = if (limit > 0) {
             limit
         } else {
-            throw IllegalArgumentException("Limit must be greater than 0")
+            throw ContactsException("Limit must be greater than 0")
         }
     }
 
@@ -445,7 +445,7 @@ private class QueryImpl(
         this.offset = if (offset >= 0) {
             offset
         } else {
-            throw IllegalArgumentException("Offset must be greater than or equal to 0")
+            throw ContactsException("Offset must be greater than or equal to 0")
         }
     }
 
@@ -607,7 +607,7 @@ private fun ContentResolver.findContactIdsInContactsTable(
     mutableSetOf<Long>().apply {
         val contactsCursor = it.contactsCursor()
         while (!cancel() && it.moveToNext()) {
-            contactsCursor.contactId?.let(::add)
+            add(contactsCursor.contactId)
         }
     }
 } ?: emptySet()
@@ -625,7 +625,7 @@ internal fun ContentResolver.findContactIdsInRawContactsTable(
     mutableSetOf<Long>().apply {
         val rawContactsCursor = it.rawContactsCursor()
         while (!cancel() && it.moveToNext()) {
-            rawContactsCursor.contactId?.let(::add)
+            add(rawContactsCursor.contactId)
         }
     }
 } ?: emptySet()
@@ -636,7 +636,7 @@ internal fun ContentResolver.findContactIdsInDataTable(
     val contactIds = mutableSetOf<Long>()
     val contactsCursor = it.dataContactsCursor()
     while (!cancel() && it.moveToNext()) {
-        contactsCursor.contactId?.let(contactIds::add)
+        contactIds.add(contactsCursor.contactId)
     }
     contactIds
 } ?: emptySet()

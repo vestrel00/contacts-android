@@ -4,29 +4,30 @@ import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import contacts.core.entities.ImEntity
-import contacts.core.entities.MutableIm
 import contacts.ui.R
 import contacts.ui.entities.ImsTypeFactory
-import contacts.ui.entities.MutableImFactory
+import contacts.ui.entities.NewImFactory
 
 /**
- * A [DataEntityWithTypeListView] for [MutableIm]s.
+ * A [DataEntityWithTypeAndLabelListView] for [ImEntity]s.
  */
 class ImsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : DataEntityWithTypeListView<ImEntity.Protocol, MutableIm>(
+) : DataEntityWithTypeAndLabelListView<ImEntity.Protocol, ImEntity>(
     context, attributeSet, defStyleAttr,
-    dataFactory = MutableImFactory,
+    dataFactory = NewImFactory,
     dataViewFactory = ImViewFactory,
     defaultUnderlyingDataTypes = ImEntity.Protocol.values().filter { !it.isCustomType }
 )
 
 private object ImViewFactory :
-    DataEntityWithTypeView.Factory<ImEntity.Protocol, MutableIm> {
-    override fun create(context: Context): DataEntityWithTypeView<ImEntity.Protocol, MutableIm> =
-        DataEntityWithTypeView(
+    DataEntityWithTypeAndLabelView.Factory<ImEntity.Protocol, ImEntity> {
+    override fun create(
+        context: Context
+    ): DataEntityWithTypeAndLabelView<ImEntity.Protocol, ImEntity> =
+        DataEntityWithTypeAndLabelView(
             context,
             dataFieldInputType = InputType.TYPE_CLASS_TEXT,
             dataFieldHintResId = R.string.contacts_ui_im_hint,

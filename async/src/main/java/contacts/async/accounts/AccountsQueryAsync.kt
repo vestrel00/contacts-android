@@ -3,7 +3,7 @@ package contacts.async.accounts
 import android.accounts.Account
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.accounts.AccountsQuery
-import contacts.core.entities.RawContactEntity
+import contacts.core.entities.ExistingRawContactEntity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -15,7 +15,7 @@ import kotlin.coroutines.CoroutineContext
  * See [AccountsQuery.accountFor].
  */
 suspend fun AccountsQuery.accountForWithContext(
-    rawContact: RawContactEntity,
+    rawContact: ExistingRawContactEntity,
     context: CoroutineContext = ASYNC_DISPATCHER
 ): Account? = withContext(context) { accountFor(rawContact) }
 
@@ -28,7 +28,7 @@ suspend fun AccountsQuery.accountForWithContext(
  * See [AccountsQuery.accountsFor].
  */
 suspend fun AccountsQuery.accountsForWithContext(
-    vararg rawContacts: RawContactEntity,
+    vararg rawContacts: ExistingRawContactEntity,
     context: CoroutineContext = ASYNC_DISPATCHER
 ) = accountsForWithContext(rawContacts.asSequence(), context)
 
@@ -41,7 +41,7 @@ suspend fun AccountsQuery.accountsForWithContext(
  * See [AccountsQuery.accountsFor].
  */
 suspend fun AccountsQuery.accountsForWithContext(
-    rawContacts: Collection<RawContactEntity>,
+    rawContacts: Collection<ExistingRawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
 ) = accountsForWithContext(rawContacts.asSequence(), context)
 
@@ -54,7 +54,7 @@ suspend fun AccountsQuery.accountsForWithContext(
  * See [AccountsQuery.accountsFor].
  */
 suspend fun AccountsQuery.accountsForWithContext(
-    rawContacts: Sequence<RawContactEntity>,
+    rawContacts: Sequence<ExistingRawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
 ): AccountsQuery.AccountsList = withContext(context) { accountsFor(rawContacts) { !isActive } }
 
@@ -69,7 +69,7 @@ suspend fun AccountsQuery.accountsForWithContext(
  * See [AccountsQuery.accountFor].
  */
 fun AccountsQuery.accountForAsync(
-    rawContact: RawContactEntity,
+    rawContact: ExistingRawContactEntity,
     context: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Account?> = CoroutineScope(context).async { accountFor(rawContact) }
 
@@ -82,7 +82,7 @@ fun AccountsQuery.accountForAsync(
  * See [AccountsQuery.accountsFor].
  */
 fun AccountsQuery.accountsForAsync(
-    vararg rawContacts: RawContactEntity,
+    vararg rawContacts: ExistingRawContactEntity,
     context: CoroutineContext = ASYNC_DISPATCHER
 ) = accountsForAsync(rawContacts.asSequence(), context)
 
@@ -95,7 +95,7 @@ fun AccountsQuery.accountsForAsync(
  * See [AccountsQuery.accountsFor].
  */
 fun AccountsQuery.accountsForAsync(
-    rawContacts: Collection<RawContactEntity>,
+    rawContacts: Collection<ExistingRawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
 ) = accountsForAsync(rawContacts.asSequence(), context)
 
@@ -108,7 +108,7 @@ fun AccountsQuery.accountsForAsync(
  * See [AccountsQuery.accountsFor].
  */
 fun AccountsQuery.accountsForAsync(
-    rawContacts: Sequence<RawContactEntity>,
+    rawContacts: Sequence<ExistingRawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<AccountsQuery.AccountsList> = CoroutineScope(context).async { accountsFor(rawContacts) }
 

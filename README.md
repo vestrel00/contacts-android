@@ -278,16 +278,16 @@ To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon wit
 ```kotlin
 val insertResult = Contacts(context)
     .insert()
-    .rawContacts(MutableRawContact().apply {
-        name = MutableName().apply {
+    .rawContacts(NewRawContact().apply {
+        name = NewName().apply {
             givenName = "John"
             familyName = "Doe"
         }
-        organization = MutableOrganization().apply {
+        organization = NewOrganization().apply {
             company = "Amazon"
             title = "Superstar"
         }
-        emails.add(MutableEmail().apply {
+        emails.add(NewEmail().apply {
             address = "john.doe@amazon.com"
             type = EmailEntity.Type.WORK
         })
@@ -295,7 +295,29 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-Or alternatively, in a more Kotlinized style,
+Or alternatively, in a more Kotlinized style using named arguments,
+
+```kotlin
+val insertResult = Contacts(context)
+    .insert()
+    .rawContacts(NewRawContact(
+        name = NewName(
+            givenName = "John",
+            familyName = "Doe"
+        ),
+        organization = NewOrganization(
+            company = "Amazon",
+            title = "Superstar"
+        ),
+        emails = mutableListOf(NewEmail(
+            address = "john.doe@amazon.com",
+            type = EmailEntity.Type.WORK
+        ))
+    ))
+    .commit()
+```
+
+Or alternatively, using extension functions,
 
 ```kotlin
 val insertResult = Contacts(context)
@@ -324,7 +346,7 @@ If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his dat
 ```kotlin
 Contacts(context)
     .update()
-    .contacts(johnDoe.mutableCopy().apply {
+    .contacts(johnDoe.mutableCopy {
         setOrganization {
             company = "Microsoft"
             title = "Newb"
@@ -369,7 +391,7 @@ launch {
         .findWithContext()
 
     val deferredResult = Contacts(context)
-        .insert()
+        .insertWithPermission()
         ...
         .commitAsync()
     val result = deferredResult.await()

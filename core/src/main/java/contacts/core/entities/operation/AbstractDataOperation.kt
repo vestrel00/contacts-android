@@ -5,12 +5,9 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import contacts.core.*
-import contacts.core.entities.DataEntity
-import contacts.core.entities.MimeType
+import contacts.core.entities.*
 import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.dataCursor
-import contacts.core.entities.entitiesAreAllBlank
-import contacts.core.entities.isNotNullOrBlank
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.util.query
@@ -114,7 +111,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
             // Get all entities with a valid Id, which means they are (or have been) in the DB.
             val validEntitiesMap = mutableMapOf<Long, E>().apply {
                 for (entity in entities) {
-                    val dataRowId = entity.id
+                    val dataRowId = entity.idOrNull
                     if (dataRowId != null) {
                         put(dataRowId, entity)
                     }
@@ -125,11 +122,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
             contentResolver.dataRowIdsFor(rawContactId) {
                 val dataCursor = it.dataCursor()
                 while (it.moveToNext()) {
-                    // There should never be a null Data row Id unless there is a programming error
-                    // such as not including the id column in the query. We should technically
-                    // force unwrap here. However, the Android ecosystem is huge and I wouldn't
-                    // rule out null ids. #NO-TRUST.
-                    val dataRowId = dataCursor.dataId ?: continue
+                    val dataRowId = dataCursor.dataId
 
                     val entity = validEntitiesMap.remove(dataRowId)
                     val operation = if (entity != null && !entity.isBlank) {
@@ -160,7 +153,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
             // Invalid entities have an invalid id, which means they are newly created entities
             // that are not yet in the DB. Blank entities are not inserted.
             val nonBlankInvalidEntities =
-                entities.asSequence().filter { it.id == null && !it.isBlank }
+                entities.asSequence().filter { it.idOrNull == null && !it.isBlank }
 
             for (entity in nonBlankInvalidEntities) {
                 insertDataRow(entity, rawContactId)?.let(::add)
@@ -242,7 +235,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      * DB, the operation will fail.
      */
     internal fun updateDataRowOrDeleteIfBlank(entity: E): ContentProviderOperation? =
-        entity.id?.let { dataRowId ->
+        entity.idOrNull?.let { dataRowId ->
             if (entity.isBlank) {
                 deleteDataRowWithId(dataRowId)
             } else {

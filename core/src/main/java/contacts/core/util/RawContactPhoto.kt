@@ -9,7 +9,7 @@ import android.net.Uri
 import android.provider.ContactsContract.RawContacts
 import contacts.core.*
 import contacts.core.entities.MimeType
-import contacts.core.entities.RawContactEntity
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.cursor.photoCursor
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
@@ -22,17 +22,14 @@ import java.io.InputStream
 // region GET PHOTO
 
 /**
- * Returns the full-sized photo as an [InputStream]. Returns null if a photo has not yet been set.
+ * Returns the full-sized photo as an [InputStream].
+ *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
  *
  * It is up to the caller to close the [InputStream].
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -43,16 +40,14 @@ import java.io.InputStream
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoInputStream(contacts: Contacts): InputStream? {
-    val rawContactId = id
-
-    if (!contacts.permissions.canQuery() || rawContactId == null) {
+fun ExistingRawContactEntity.photoInputStream(contacts: Contacts): InputStream? {
+    if (!contacts.permissions.canQuery()) {
         return null
     }
 
     val photoUri = Uri.withAppendedPath(
         // This is also used to set Profile photos along with non-Profile photos.
-        ContentUris.withAppendedId(RawContacts.CONTENT_URI, rawContactId),
+        ContentUris.withAppendedId(RawContacts.CONTENT_URI, id),
         RawContacts.DisplayPhoto.CONTENT_DIRECTORY
     )
 
@@ -67,15 +62,12 @@ fun RawContactEntity.photoInputStream(contacts: Contacts): InputStream? {
 }
 
 /**
- * Returns the full-sized photo as a [ByteArray]. Returns null if a photo has not yet been set.
+ * Returns the full-sized photo as a [ByteArray].
+ *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -86,21 +78,18 @@ fun RawContactEntity.photoInputStream(contacts: Contacts): InputStream? {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoBytes(contacts: Contacts): ByteArray? =
+fun ExistingRawContactEntity.photoBytes(contacts: Contacts): ByteArray? =
     photoInputStream(contacts)?.apply {
         it.readBytes()
     }
 
 /**
- * Returns the full-sized photo as a [Bitmap]. Returns null if a photo has not yet been set.
+ * Returns the full-sized photo as a [Bitmap].
+ *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -111,20 +100,18 @@ fun RawContactEntity.photoBytes(contacts: Contacts): ByteArray? =
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoBitmap(contacts: Contacts): Bitmap? = photoInputStream(contacts)?.apply {
-    BitmapFactory.decodeStream(it)
-}
+fun ExistingRawContactEntity.photoBitmap(contacts: Contacts): Bitmap? =
+    photoInputStream(contacts)?.apply {
+        BitmapFactory.decodeStream(it)
+    }
 
 /**
- * Returns the full-sized photo as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ * Returns the full-sized photo as a [BitmapDrawable].
+ *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -135,7 +122,7 @@ fun RawContactEntity.photoBitmap(contacts: Contacts): Bitmap? = photoInputStream
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoBitmapDrawable(contacts: Contacts): BitmapDrawable? =
+fun ExistingRawContactEntity.photoBitmapDrawable(contacts: Contacts): BitmapDrawable? =
     photoInputStream(contacts)?.apply {
         BitmapDrawable(contacts.applicationContext.resources, it)
     }
@@ -151,17 +138,14 @@ internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
 // region GET PHOTO THUMBNAIL
 
 /**
- * Returns the photo thumbnail as an [InputStream]. Returns null if a photo has not yet been set.
+ * Returns the photo thumbnail as an [InputStream].
  *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
+ *w
  * It is up to the caller to close the [InputStream].
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -172,17 +156,15 @@ internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoThumbnailInputStream(contacts: Contacts): InputStream? {
-    val rawContactId = id
-
-    if (!contacts.permissions.canQuery() || rawContactId == null) {
+fun ExistingRawContactEntity.photoThumbnailInputStream(contacts: Contacts): InputStream? {
+    if (!contacts.permissions.canQuery()) {
         return null
     }
 
     return contacts.applicationContext.contentResolver.query(
         if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         Include(Fields.Photo.PhotoThumbnail),
-        (Fields.RawContact.Id equalTo rawContactId)
+        (Fields.RawContact.Id equalTo id)
                 and (Fields.MimeType equalTo MimeType.Photo)
     ) {
         val photoThumbnail = it.getNextOrNull { it.photoCursor().photoThumbnail }
@@ -191,15 +173,12 @@ fun RawContactEntity.photoThumbnailInputStream(contacts: Contacts): InputStream?
 }
 
 /**
- * Returns the photo thumbnail as a [ByteArray]. Returns null if a photo has not yet been set.
+ * Returns the photo thumbnail as a [ByteArray].
+ *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -210,21 +189,18 @@ fun RawContactEntity.photoThumbnailInputStream(contacts: Contacts): InputStream?
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoThumbnailBytes(contacts: Contacts): ByteArray? =
+fun ExistingRawContactEntity.photoThumbnailBytes(contacts: Contacts): ByteArray? =
     photoThumbnailInputStream(contacts)?.apply {
         it.readBytes()
     }
 
 /**
- * Returns the photo thumbnail as a [Bitmap]. Returns null if a photo has not yet been set.
+ * Returns the photo thumbnail as a [Bitmap].
+ *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -235,21 +211,18 @@ fun RawContactEntity.photoThumbnailBytes(contacts: Contacts): ByteArray? =
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
+fun ExistingRawContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
     photoThumbnailInputStream(contacts)?.apply {
         BitmapFactory.decodeStream(it)
     }
 
 /**
- * Returns the photo thumbnail as a [BitmapDrawable]. Returns null if a photo has not yet been set.
+ * Returns the photo thumbnail as a [BitmapDrawable].
+ *
+ * Returns null if a photo has not yet been set or if permissions have not been granted or if the
+ * RawContact no longer exists.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Permissions
  *
@@ -260,7 +233,7 @@ fun RawContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDrawable? =
+fun ExistingRawContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDrawable? =
     photoThumbnailInputStream(contacts)?.apply {
         BitmapDrawable(contacts.applicationContext.resources, it)
     }
@@ -270,22 +243,18 @@ fun RawContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDra
 // region SET PHOTO
 
 /**
- * Sets the photo of this [RawContactEntity]. If a photo already exists, it will be overwritten.
- * The Contacts Provider automatically creates a downsized version of this as the thumbnail.
+ * Sets the photo of this [ExistingRawContactEntity]. If a photo already exists, it will be
+ * overwritten. The Contacts Provider automatically creates a downsized version of this as the
+ * thumbnail.
  *
- * If this [RawContactEntity] is the only one that make up a [contacts.core.entities.ContactEntity],
- * then the photo set here will also be used by the Contacts Provider as the contact photo.
- * Otherwise, it may or may not be the photo picked by the Contacts Provider as the contact photo.
+ * If this [ExistingRawContactEntity] is the only one that make up a
+ * [contacts.core.entities.ContactEntity], then the photo set here will also be used by the
+ * Contacts Provider as the contact photo. Otherwise, it may or may not be the photo picked by the
+ * Contacts Provider as the contact photo.
  *
  * Returns true if the operation succeeds.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Changes are immediate
  *
@@ -313,38 +282,38 @@ fun RawContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDra
  * documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(contacts: Contacts, photoBytes: ByteArray): Boolean =
-    doSetPhoto(contacts, photoBytes)
+fun ExistingRawContactEntity.setPhoto(contacts: Contacts, photoBytes: ByteArray): Boolean =
+    contacts.setRawContactPhoto(id, photoBytes)
 
 /**
- * See [RawContactEntity.setPhoto].
+ * See [ExistingRawContactEntity.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(contacts: Contacts, photoInputStream: InputStream): Boolean =
+fun ExistingRawContactEntity.setPhoto(contacts: Contacts, photoInputStream: InputStream): Boolean =
     setPhoto(contacts, photoInputStream.readBytes())
 
 /**
- * See [RawContactEntity.setPhoto].
+ * See [ExistingRawContactEntity.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(contacts: Contacts, photoBitmap: Bitmap): Boolean =
+fun ExistingRawContactEntity.setPhoto(contacts: Contacts, photoBitmap: Bitmap): Boolean =
     setPhoto(contacts, photoBitmap.bytes())
 
 /**
- * See [RawContactEntity.setPhoto].
+ * See [ExistingRawContactEntity.setPhoto].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.setPhoto(contacts: Contacts, photoDrawable: BitmapDrawable): Boolean =
+fun ExistingRawContactEntity.setPhoto(contacts: Contacts, photoDrawable: BitmapDrawable): Boolean =
     setPhoto(contacts, photoDrawable.bitmap.bytes())
 
 /**
- * Performs the actual setting of the photo. Only the [RawContactEntity.id] is required to be
- * non-null for the operation.
+ * Performs the actual setting of the photo.
  */
-internal fun RawContactEntity.doSetPhoto(contacts: Contacts, photoBytes: ByteArray): Boolean {
-    val rawContactId = id
-
-    if (!contacts.permissions.canUpdateDelete() || rawContactId == null) {
+internal fun Contacts.setRawContactPhoto(
+    rawContactId: Long,
+    photoBytes: ByteArray
+): Boolean {
+    if (!permissions.canUpdateDelete()) {
         return false
     }
 
@@ -359,7 +328,7 @@ internal fun RawContactEntity.doSetPhoto(contacts: Contacts, photoBytes: ByteArr
         // Didn't want to force unwrap because I'm trying to keep the codebase free of it.
         // I wanted to fold the if-return using ?: but it results in a lint error about unreachable
         // code (it's not unreachable).
-        val fd = contacts.applicationContext.contentResolver
+        val fd = applicationContext.contentResolver
             .openAssetFileDescriptor(photoUri, "rw")
         if (fd != null) {
             val os = fd.createOutputStream()
@@ -388,21 +357,15 @@ internal fun Bitmap.bytes(): ByteArray {
 // region REMOVE PHOTO
 
 /**
- * Removes the photo of this [RawContactEntity], if one exists.
+ * Removes the photo of this [ExistingRawContactEntity], if one exists.
  *
- * If this [RawContactEntity] is the only one that make up a [contacts.core.entities.ContactEntity],
- * then the contact photo will also be removed. Otherwise, it may or may not affect the contact
- * photo.
+ * If this [ExistingRawContactEntity] is the only one that make up a
+ * [contacts.core.entities.ContactEntity], then the contact photo will also be removed. Otherwise,
+ * it may or may not affect the contact photo.
  *
  * Returns true if the operation succeeds.
  *
  * Supports profile and non-profile RawContacts.
- *
- * ## For existing (inserted) entities only
- *
- * This function will only work for entities that have already been inserted into the Contacts
- * Provider database. This means that this is only for entities that have been retrieved using
- * query or result APIs.
  *
  * ## Changes are immediate
  *
@@ -425,17 +388,15 @@ internal fun Bitmap.bytes(): ByteArray {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun RawContactEntity.removePhoto(contacts: Contacts): Boolean {
-    val rawContactId = id
-
-    if (!contacts.permissions.canUpdateDelete() || rawContactId == null) {
+fun ExistingRawContactEntity.removePhoto(contacts: Contacts): Boolean {
+    if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
 
     return contacts.applicationContext.contentResolver.applyBatch(
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
-                (Fields.RawContact.Id equalTo rawContactId)
+                (Fields.RawContact.Id equalTo id)
                         and (Fields.MimeType equalTo MimeType.Photo)
             )
             .build()

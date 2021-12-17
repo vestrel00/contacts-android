@@ -2,7 +2,7 @@ package contacts.core.util
 
 import contacts.core.*
 import contacts.core.entities.Contact
-import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContact
 
 /**
@@ -23,7 +23,7 @@ import contacts.core.entities.RawContact
 @JvmOverloads
 fun Insert.Result.rawContact(
     contacts: Contacts,
-    rawContact: MutableRawContact,
+    rawContact: NewRawContact,
     cancel: () -> Boolean = { false }
 ): RawContact? {
 
@@ -83,7 +83,7 @@ fun Insert.Result.rawContacts(
 @JvmOverloads
 fun Insert.Result.contact(
     contacts: Contacts,
-    rawContact: MutableRawContact,
+    rawContact: NewRawContact,
     cancel: () -> Boolean = { false }
 ): Contact? {
 

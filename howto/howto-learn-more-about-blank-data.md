@@ -7,23 +7,23 @@ An entity is blank if the concrete implementation of `Entity.isBlank` returns tr
 For example, `Email` only has one primary value, which is the `address`...
 
 ```kotlin
-val blankEmail1 = MutableEmail()
-val blankEmail2 = MutableEmail().apply {
+val blankEmail1 = NewEmail()
+val blankEmail2 = NewEmail(
     address = null
-}
-val blankEmail3 = MutableEmail().apply {
+)
+val blankEmail3 = NewEmail(
     address = ""
-}
-val blankEmail4 = MutableEmail().apply {
+)
+val blankEmail4 = NewEmail(
     address = "   "
-}
-val blankEmail5 = MutableEmail().apply {
+)
+val blankEmail5 = NewEmail(
     type = EmailEntity.Type.HOME
-}
+)
 
-val emailThatIsNotBlank = MutableEmail().apply {
+val emailThatIsNotBlank = NewEmail(
     address = "john.doe@gmail.com"
-}
+)
 ```
 
 Query APIs in this library do not return null, empty, or blank data in results if they somehow 

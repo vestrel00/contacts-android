@@ -4,7 +4,7 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.provider.ContactsContract
 import contacts.core.*
-import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.table.ProfileUris
 import contacts.core.util.isEmpty
@@ -51,14 +51,14 @@ import contacts.core.util.toRawContactsWhere
  * ```kotlin
  * val result = profileInsert
  *      .rawContact {
- *          name = MutableName().apply {
+ *          name = NewName(
  *              givenName = "john"
  *              familyName = "doe"
- *          }
- *          emails.add(MutableEmail().apply {
+ *          )
+ *          emails.add(NewEmail(
  *              type = EmailEntity.Type.HOME
  *              address = "john@doe.com"
- *          })
+ *          ))
  *      }
  *      .commit()
  * ```
@@ -66,18 +66,18 @@ import contacts.core.util.toRawContactsWhere
  * In Java,
  *
  * ```java
- * MutableName name = new MutableName();
+ * NewName name = new NewName();
  * name.setGivenName("john");
  * name.setFamilyName("doe");
  *
- * MutableEmail email = new MutableEmail();
+ * NewEmail email = new NewEmail();
  * email.setType(EmailEntity.Type.HOME);
  * email.setAddress("john@doe.com");
  *
- * List<MutableEmail> emails = new ArrayList<>();
+ * List<NewEmail> emails = new ArrayList<>();
  * emails.add(email);
  *
- * MutableRawContact rawContact = new MutableRawContact();
+ * NewRawContact rawContact = new NewRawContact();
  * rawContact.setName(name);
  * rawContact.setEmails(emails);
  *
@@ -89,7 +89,7 @@ import contacts.core.util.toRawContactsWhere
 interface ProfileInsert {
 
     /**
-     * If [allowBlanks] is set to true, then blank RawContacts ([MutableRawContact.isBlank]) will
+     * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
      * will be inserted. Otherwise, blanks will not be inserted and will result in a failed
      * operation. This flag is set to false by default.
      *
@@ -183,22 +183,22 @@ interface ProfileInsert {
     fun include(fields: Sequence<AbstractDataField>): ProfileInsert
 
     /**
-     * Configures a new [MutableRawContact] for insertion, which will be inserted on [commit]. The
+     * Configures a new [NewRawContact] for insertion, which will be inserted on [commit]. The
      * new instance is configured by the [configureRawContact] function.
      *
      * Replaces any previously set RawContact in the insert queue.
      */
-    fun rawContact(configureRawContact: MutableRawContact.() -> Unit): ProfileInsert
+    fun rawContact(configureRawContact: NewRawContact.() -> Unit): ProfileInsert
 
     /**
      * Sets the given [rawContact] for insertion, which will be inserted on [commit].
      *
      * Replaces any previously set RawContact in the insert queue.
      */
-    fun rawContact(rawContact: MutableRawContact): ProfileInsert
+    fun rawContact(rawContact: NewRawContact): ProfileInsert
 
     /**
-     * Inserts the [MutableRawContact]s in the queue (added via [rawContact]) and returns the
+     * Inserts the [NewRawContact]s in the queue (added via [rawContact]) and returns the
      * [Result].
      *
      * ## Permissions
@@ -218,7 +218,7 @@ interface ProfileInsert {
     fun commit(): Result
 
     /**
-     * Inserts the [MutableRawContact]s in the queue (added via [rawContact]) and returns the
+     * Inserts the [NewRawContact]s in the queue (added via [rawContact]) and returns the
      * [Result].
      *
      * ## Permissions
@@ -256,7 +256,7 @@ interface ProfileInsert {
         val rawContactId: Long?
 
         /**
-         * True if the MutableRawContact has successfully been inserted. False if insertion failed.
+         * True if the NewRawContact has successfully been inserted. False if insertion failed.
          */
         val isSuccessful: Boolean
     }
@@ -272,7 +272,7 @@ private class ProfileInsertImpl(
     private var allowMultipleRawContactsPerAccount: Boolean = false,
     private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
     private var account: Account? = null,
-    private var rawContact: MutableRawContact? = null
+    private var rawContact: NewRawContact? = null
 ) : ProfileInsert {
 
     override fun toString(): String =
@@ -312,10 +312,10 @@ private class ProfileInsertImpl(
         }
     }
 
-    override fun rawContact(configureRawContact: MutableRawContact.() -> Unit): ProfileInsert =
-        rawContact(MutableRawContact().apply(configureRawContact))
+    override fun rawContact(configureRawContact: NewRawContact.() -> Unit): ProfileInsert =
+        rawContact(NewRawContact().apply(configureRawContact))
 
-    override fun rawContact(rawContact: MutableRawContact): ProfileInsert = apply {
+    override fun rawContact(rawContact: NewRawContact): ProfileInsert = apply {
         this.rawContact = rawContact
     }
 

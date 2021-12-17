@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.database.Cursor
 import contacts.core.RawContactsField
 import contacts.core.RawContactsFields
+import contacts.core.entities.Entity
 
 /**
  * Retrieves [RawContactsFields] data from the given [cursor].
@@ -14,9 +15,9 @@ import contacts.core.RawContactsFields
 internal class RawContactsCursor(cursor: Cursor, includeFields: Set<RawContactsField>) :
     AbstractEntityCursor<RawContactsField>(cursor, includeFields), RawContactIdCursor {
 
-    override val contactId: Long? by long(RawContactsFields.ContactId)
+    override val contactId: Long by nonNullLong(RawContactsFields.ContactId, Entity.INVALID_ID)
 
-    override val rawContactId: Long? by long(RawContactsFields.Id)
+    override val rawContactId: Long by nonNullLong(RawContactsFields.Id, Entity.INVALID_ID)
 
     val displayNamePrimary: String? by string(RawContactsFields.DisplayNamePrimary)
 

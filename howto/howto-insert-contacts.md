@@ -23,16 +23,16 @@ To create/insert a contact with a name of "John Doe" who works at Amazon with a 
 ```kotlin
 val insertResult = Contacts(context)
     .insert()
-    .rawContacts(MutableRawContact().apply {
-        name = MutableName().apply {
+    .rawContacts(NewRawContact().apply {
+        name = NewName().apply {
             givenName = "John"
             familyName = "Doe"
         }
-        organization = MutableOrganization().apply {
+        organization = NewOrganization().apply {
             company = "Amazon"
             title = "Superstar"
         }
-        emails.add(MutableEmail().apply {
+        emails.add(NewEmail().apply {
             address = "john.doe@amazon.com"
             type = EmailEntity.Type.WORK
         })
@@ -40,7 +40,29 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-Or alternatively, in a more Kotlinized style,
+Or alternatively, in a more Kotlinized style using named arguments,
+
+```kotlin
+val insertResult = Contacts(context)
+    .insert()
+    .rawContacts(NewRawContact(
+        name = NewName(
+            givenName = "John",
+            familyName = "Doe"
+        ),
+        organization = NewOrganization(
+            company = "Amazon",
+            title = "Superstar"
+        ),
+        emails = mutableListOf(NewEmail(
+            address = "john.doe@amazon.com",
+            type = EmailEntity.Type.WORK
+        ))
+    ))
+    .commit()
+```
+
+Or alternatively, using extension functions,
 
 ```kotlin
 val insertResult = Contacts(context)
@@ -155,12 +177,12 @@ The `commit` function returns a `Result`,
 
 ```kotlin
 val contactsApi = Contacts(context)
-val mutableRawContact1 = MutableRawContact().apply { ... }
-val mutableRawContact2 = MutableRawContact().apply { ... }
+val newRawContact1 = NewRawContact(...)
+val newRawContact2 = NewRawContact(...)
 
 val insertResult = contactsApi
     .insert()
-    .rawContacts(mutableRawContact1, mutableRawContact2)
+    .rawContacts(newRawContact1, newRawContact2)
     .commit()
 ```
 
@@ -173,7 +195,7 @@ val allInsertsSuccessful = insertResult.isSuccessful
 To check if a particular insert succeeded,
 
 ```kotlin
-val firstInsertSuccessful = insertResult.isSuccessful(mutableRawContact1)
+val firstInsertSuccessful = insertResult.isSuccessful(newRawContact1)
 ```
 
 To get the RawContact IDs of all the newly created RawContacts,
@@ -185,7 +207,7 @@ val allRawContactIds = insertResult.rawContactIds
 To get the RawContact ID of a particular RawContact,
 
 ```kotlin
-val secondRawContactId = insertResult.rawContactId(mutableRawContact2)
+val secondRawContactId = insertResult.rawContactId(newRawContact2)
 ```
 
 Once you have the RawContact IDs, you can retrieve the newly created Contacts via the `Query` API,
@@ -209,7 +231,7 @@ val contacts = insertResult.contacts(contactsApi)
 To get a particular contact,
 
 ```kotlin
-val contact = insertResult.contacts(contactsApi, mutableRawContact1)
+val contact = insertResult.contacts(contactsApi, newRawContact1)
 ```
 
 To instead get the RawContacts directly,
@@ -221,7 +243,7 @@ val rawContacts = insertResult.rawContacts(contactsApi)
 To get a particular RawContact,
 
 ```kotlin
-val rawContact = insertResult.rawContact(contactsApi, mutableRawContact2)
+val rawContact = insertResult.rawContact(contactsApi, newRawContact2)
 ```
 
 ## Cancelling the insert
@@ -351,7 +373,7 @@ val insertResult = Contacts(context)
                             (GroupsFields.Title contains "friend")
                 )
                 .find()
-                .toGroupMemberships()
+                .newMemberships()
         )
         setNote {
             note = "The best toy in the world!"

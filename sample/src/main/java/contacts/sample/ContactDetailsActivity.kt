@@ -9,6 +9,7 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 
 /**
  * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_ID]. Also
@@ -100,8 +101,9 @@ class ContactDetailsActivity : BaseActivity() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.save -> when (mode) {
-                Mode.VIEW, Mode.EDIT -> updateContact()
+                Mode.EDIT -> updateContact()
                 Mode.CREATE -> createNewContact()
+                else -> throw IllegalStateException("Save option should not be shown in view mode")
             }
             R.id.edit -> mode = Mode.EDIT
             R.id.delete -> when (mode) {

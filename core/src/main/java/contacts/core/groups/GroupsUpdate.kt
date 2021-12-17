@@ -4,6 +4,8 @@ import android.accounts.Account
 import android.content.ContentResolver
 import contacts.core.Contacts
 import contacts.core.ContactsPermissions
+import contacts.core.entities.ExistingGroupEntity
+import contacts.core.entities.Group
 import contacts.core.entities.MutableGroup
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.util.applyBatch
@@ -50,34 +52,30 @@ interface GroupsUpdate {
     /**
      * Adds the given [groups] to the update queue, which will be updated on [commit].
      *
-     * Only existing [groups] that have been retrieved via a query will be added to the update
-     * queue. Those that have been manually created via a constructor will be ignored and result
-     * in a failed operation.
-     *
-     * ## Null [MutableGroup]s
+     * ## Null [ExistingGroupEntity]s
      *
      * Null groups are ignored and result in a failed operation. The only reason null is allowed to
      * be passed here is for consumer convenience because the group's `mutableCopy` returns null if
      * the `readOnly` property is true.
      *
-     * ## Read-only [MutableGroup]s
+     * ## Read-only [ExistingGroupEntity]s
      *
      * Read-only groups will be ignored and result in a failed operation.
      */
-    fun groups(vararg groups: MutableGroup?): GroupsUpdate
+    fun groups(vararg groups: ExistingGroupEntity?): GroupsUpdate
 
     /**
      * See [GroupsUpdate.groups].
      */
-    fun groups(groups: Collection<MutableGroup?>): GroupsUpdate
+    fun groups(groups: Collection<ExistingGroupEntity?>): GroupsUpdate
 
     /**
      * See [GroupsUpdate.groups].
      */
-    fun groups(groups: Sequence<MutableGroup?>): GroupsUpdate
+    fun groups(groups: Sequence<ExistingGroupEntity?>): GroupsUpdate
 
     /**
-     * Updates the [MutableGroup]s in the queue (added via [groups]) and returns the [Result].
+     * Updates the [ExistingGroupEntity]s in the queue (added via [groups]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -91,7 +89,7 @@ interface GroupsUpdate {
     fun commit(): Result
 
     /**
-     * Updates the [MutableGroup]s in the queue (added via [groups]) and returns the [Result].
+     * Updates the [ExistingGroupEntity]s in the queue (added via [groups]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -125,12 +123,12 @@ interface GroupsUpdate {
         /**
          * True if the [group] has been successfully updated. False otherwise.
          */
-        fun isSuccessful(group: MutableGroup?): Boolean
+        fun isSuccessful(group: ExistingGroupEntity?): Boolean
 
         /**
          * Returns the reason why the insert failed for this [group]. Null if it did not fail.
          */
-        fun failureReason(group: MutableGroup?): FailureReason?
+        fun failureReason(group: ExistingGroupEntity?): FailureReason?
 
         enum class FailureReason {
 
@@ -172,7 +170,7 @@ private class GroupsUpdateImpl(
     private val contentResolver: ContentResolver,
     private val groupsQuery: GroupsQuery,
     private val permissions: ContactsPermissions,
-    private val groups: MutableSet<MutableGroup?> = mutableSetOf()
+    private val groups: MutableSet<ExistingGroupEntity?> = mutableSetOf()
 ) : GroupsUpdate {
 
     override fun toString(): String =
@@ -182,11 +180,11 @@ private class GroupsUpdateImpl(
             }
         """.trimIndent()
 
-    override fun groups(vararg groups: MutableGroup?) = groups(groups.asSequence())
+    override fun groups(vararg groups: ExistingGroupEntity?) = groups(groups.asSequence())
 
-    override fun groups(groups: Collection<MutableGroup?>) = groups(groups.asSequence())
+    override fun groups(groups: Collection<ExistingGroupEntity?>) = groups(groups.asSequence())
 
-    override fun groups(groups: Sequence<MutableGroup?>): GroupsUpdate = apply {
+    override fun groups(groups: Sequence<ExistingGroupEntity?>): GroupsUpdate = apply {
         this.groups.addAll(groups)
     }
 
@@ -210,14 +208,14 @@ private class GroupsUpdateImpl(
             .mapNotNull {
                 it.copy(readOnly = false).mutableCopy()
             } //  Consumers should never do this!
-        val existingAccountGroups = mutableMapOf<Account, MutableSet<MutableGroup>>()
+        val existingAccountGroups = mutableMapOf<Account, MutableSet<ExistingGroupEntity>>()
         for (group in existingGroups) {
             existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {
                 it.add(group)
             }
         }
 
-        val failureReasons = mutableMapOf<MutableGroup?, GroupsUpdate.Result.FailureReason>()
+        val failureReasons = mutableMapOf<ExistingGroupEntity?, GroupsUpdate.Result.FailureReason>()
 
         for (group in groups) {
             if (cancel()) {
@@ -238,7 +236,7 @@ private class GroupsUpdateImpl(
                     /*
                      * Update success.
                      *
-                     * We also need to update the title in our temporarily list to ensure that the
+                     * We also need to update the title in our temporary list to ensure that the
                      * next iteration of this for-loop has the updated set of titles. For example,
                      *
                      * 1. there are groups [A, B, C]
@@ -248,8 +246,16 @@ private class GroupsUpdateImpl(
                      * If we did not update our list from [A, B, C] to [A, B, D],
                      * the update for B -> C will fail with TITLE_ALREADY_EXIST
                      */
-                    val groupInMemory = accountGroups.find { it.id == group.id }
-                    groupInMemory?.title = group.title
+                    accountGroups.find { it.id == group.id }?.let { groupInMemory ->
+                        when (groupInMemory) {
+                            is MutableGroup -> groupInMemory.title = group.title
+                            is Group -> {
+                                // We have to replace because this is immutable.
+                                accountGroups.remove(groupInMemory)
+                                accountGroups.add(groupInMemory.copy(title = group.title))
+                            }
+                        }
+                    }
                 } else {
                     // Update failed.
                     failureReasons[group] = GroupsUpdate.Result.FailureReason.UNKNOWN
@@ -263,18 +269,18 @@ private class GroupsUpdateImpl(
     }
 }
 
-private fun ContentResolver.updateGroup(group: MutableGroup): Boolean =
-    GroupsOperation().update(group)?.let { applyBatch(it) } != null
+private fun ContentResolver.updateGroup(group: ExistingGroupEntity): Boolean =
+    applyBatch(GroupsOperation().update(group)) != null
 
 private class GroupsUpdateResult(
-    private val failureReasons: Map<MutableGroup?, GroupsUpdate.Result.FailureReason>
+    private val failureReasons: Map<ExistingGroupEntity?, GroupsUpdate.Result.FailureReason>
 ) : GroupsUpdate.Result {
 
     override val isSuccessful: Boolean by unsafeLazy { failureReasons.isEmpty() }
 
-    override fun isSuccessful(group: MutableGroup?): Boolean = failureReason(group) == null
+    override fun isSuccessful(group: ExistingGroupEntity?): Boolean = failureReason(group) == null
 
-    override fun failureReason(group: MutableGroup?): GroupsUpdate.Result.FailureReason? =
+    override fun failureReason(group: ExistingGroupEntity?): GroupsUpdate.Result.FailureReason? =
         failureReasons[group]
 }
 
@@ -282,7 +288,8 @@ private class GroupsUpdateFailed : GroupsUpdate.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(group: MutableGroup?): Boolean = false
+    override fun isSuccessful(group: ExistingGroupEntity?): Boolean = false
 
-    override fun failureReason(group: MutableGroup?) = GroupsUpdate.Result.FailureReason.UNKNOWN
+    override fun failureReason(group: ExistingGroupEntity?) =
+        GroupsUpdate.Result.FailureReason.UNKNOWN
 }

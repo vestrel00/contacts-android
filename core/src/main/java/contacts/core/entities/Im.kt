@@ -3,7 +3,6 @@ package contacts.core.entities
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
 import contacts.core.entities.ImEntity.Protocol
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -11,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
-sealed interface ImEntity : DataEntity {
+sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
     // Type and Label are also available. However, they have no use here as the protocol and custom
     // protocol have taken their place...
@@ -30,6 +29,30 @@ sealed interface ImEntity : DataEntity {
      * The data as the user entered it.
      */
     val data: String?
+
+    /**
+     * The [data].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::data
+    override val primaryValue: String?
+        get() = data
+
+    /**
+     * The [protocol].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var type: Protocol? by this::protocol
+    override val type: Protocol?
+        get() = protocol
+
+    /**
+     * The [customProtocol].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var label: String? by this::customProtocol
+    override val label: String?
+        get() = customProtocol
 
     override val mimeType: MimeType
         get() = MimeType.Im
@@ -77,15 +100,76 @@ sealed interface ImEntity : DataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from ImEntity, there is only one interface that extends it; MutableImEntity.
+ *
+ * The MutableImEntity interface is used for library constructs that require an ImEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableIm and NewIm. With this, we can create constructs that can
+ * keep a reference to MutableIm(s) or NewIm(s) through the MutableImEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewImEntity, ExistingImEntity, and
+ * ImmutableImEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [ImEntity].
+ * A mutable [ImEntity]. `
+ */
+sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<Protocol> {
+
+    override var protocol: Protocol?
+    override var customProtocol: String?
+    override var data: String?
+
+    /**
+     * The [data].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var primaryValue: String? by this::data
+    override var primaryValue: String?
+        get() = data
+        set(value) {
+            data = value
+        }
+
+    /**
+     * The [protocol].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var type: Protocol? by this::protocol
+    override var type: Protocol?
+        get() = protocol
+        set(value) {
+            protocol = value
+        }
+
+    /**
+     * The [customProtocol].
+     */
+    // Delegated properties are not allowed on interfaces =(
+    // override var label: String? by this::customProtocol
+    override var label: String?
+        get() = customProtocol
+        set(value) {
+            customProtocol = value
+        }
+}
+
+/**
+ * An existing immutable [ImEntity].
  */
 @Parcelize
 data class Im internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -94,7 +178,7 @@ data class Im internal constructor(
     override val customProtocol: String?,
     override val data: String?
 
-) : ImEntity, ImmutableDataEntityWithMutableType<MutableIm> {
+) : ImEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableIm> {
 
     override fun mutableCopy() = MutableIm(
         id = id,
@@ -112,35 +196,32 @@ data class Im internal constructor(
 }
 
 /**
- * A mutable [ImEntity].
+ * An existing mutable [ImEntity].
  */
 @Parcelize
 data class MutableIm internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
-    override var isPrimary: Boolean,
-    override var isSuperPrimary: Boolean,
+    override val isPrimary: Boolean,
+    override val isSuperPrimary: Boolean,
 
     override var protocol: Protocol?,
     override var customProtocol: String?,
     override var data: String?
 
-) : ImEntity, MutableDataEntityWithTypeAndLabel<Protocol> {
+) : ImEntity, ExistingDataEntity, MutableImEntity
 
-    constructor() : this(
-        null, null, null, false, false,
-        null, null, null
-    )
+/**
+ * A new mutable [ImEntity].
+ */
+@Parcelize
+data class NewIm @JvmOverloads constructor(
 
-    @IgnoredOnParcel
-    override var primaryValue: String? by this::data
+    override var protocol: Protocol? = null,
+    override var customProtocol: String? = null,
+    override var data: String? = null
 
-    @IgnoredOnParcel
-    override var type: Protocol? by this::protocol
-
-    @IgnoredOnParcel
-    override var label: String? by this::customProtocol
-}
+) : ImEntity, NewDataEntity, MutableImEntity

@@ -5,12 +5,12 @@ import android.text.Editable
 import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.LinearLayout
-import contacts.core.entities.MutableName
+import contacts.core.entities.*
 import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 
 /**
- * A (vertical) [LinearLayout] that displays a [MutableName] and handles the modifications to the
+ * A (vertical) [LinearLayout] that displays a [NameEntity] and handles the modifications to the
  * given [data].
  *
  * Setting the [data] will automatically update the views. Any modifications in the views will also
@@ -41,9 +41,9 @@ class NameView @JvmOverloads constructor(
 
     /**
      * The name that is shown in this view. Setting this will automatically update the views. Any
-     * modifications in the views will also be made to the this.
+     * modifications in the views will also be made to the this (only if it is mutable).
      */
-    var data = MutableName()
+    var data: NameEntity = NewName()
         set(value) {
             field = value
 
@@ -73,31 +73,41 @@ class NameView @JvmOverloads constructor(
     private fun setNameFieldsListeners() {
         namePrefixField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                data.prefix = s?.toString()
+                data.applyIfMutable {
+                    prefix = s?.toString()
+                }
             }
         })
 
         firstNameField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                data.givenName = s?.toString()
+                data.applyIfMutable {
+                    givenName = s?.toString()
+                }
             }
         })
 
         middleNameField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                data.middleName = s?.toString()
+                data.applyIfMutable {
+                    middleName = s?.toString()
+                }
             }
         })
 
         lastNameField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                data.familyName = s?.toString()
+                data.applyIfMutable {
+                    familyName = s?.toString()
+                }
             }
         })
 
         nameSuffixField.addTextChangedListener(object : AbstractTextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                data.suffix = s?.toString()
+                data.applyIfMutable {
+                    suffix = s?.toString()
+                }
             }
         })
     }
@@ -108,5 +118,11 @@ class NameView @JvmOverloads constructor(
         middleNameField.setText(data.middleName)
         lastNameField.setText(data.familyName)
         nameSuffixField.setText(data.suffix)
+    }
+}
+
+private fun NameEntity.applyIfMutable(block: MutableNameEntity.() -> Unit) {
+    if (this is MutableNameEntity) {
+        block(this)
     }
 }

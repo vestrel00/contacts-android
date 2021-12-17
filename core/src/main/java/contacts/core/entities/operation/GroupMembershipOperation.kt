@@ -97,12 +97,11 @@ internal class GroupMembershipOperation(
         // Delete the remaining non-default groupMembershipsInDB.
         groupMembershipsInDB.values
             .asSequence()
-            .filter {
+            .mapNotNull { it.groupId }
+            .filter { groupMembershipId ->
                 // Do no delete memberships to the default group!
-                val group = accountGroups.getValue(it.groupId)
-                !group.isDefaultGroup
+                !accountGroups.getValue(groupMembershipId).isDefaultGroup
             }
-            .mapNotNull { it.id }
             .forEach { groupMembershipId ->
                 add(deleteDataRowWithId(groupMembershipId))
             }

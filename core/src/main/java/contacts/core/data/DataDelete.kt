@@ -3,7 +3,7 @@ package contacts.core.data
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
 import contacts.core.*
-import contacts.core.entities.DataEntity
+import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
@@ -28,11 +28,11 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To delete a [DataEntity];
+ * To delete a set of [ExistingDataEntity];
  *
  * ```kotlin
  * val result = dataDelete
- *      .data(data)
+ *      .data(existingDataEntities)
  *      .commit()
  * ```
  *
@@ -40,7 +40,7 @@ import contacts.core.util.unsafeLazy
  *
  * ```java
  * DataDelete.Result result = dataDelete
- *      .data(data)
+ *      .data(existingDataEntities)
  *      .commit()
  * ```
  */
@@ -48,25 +48,21 @@ interface DataDelete {
 
     /**
      * Adds the given [data] to the delete queue, which will be deleted on [commit].
-     *
-     * Only existing [data] that have been retrieved via a query will be added to the delete queue.
-     * Those that have been manually created via a constructor will be ignored and result in a
-     * failed operation.
      */
-    fun data(vararg data: DataEntity): DataDelete
+    fun data(vararg data: ExistingDataEntity): DataDelete
 
     /**
      * See [DataDelete.data].
      */
-    fun data(data: Collection<DataEntity>): DataDelete
+    fun data(data: Collection<ExistingDataEntity>): DataDelete
 
     /**
      * See [DataDelete.data].
      */
-    fun data(data: Sequence<DataEntity>): DataDelete
+    fun data(data: Sequence<ExistingDataEntity>): DataDelete
 
     /**
-     * Deletes the [DataEntity]s in the queue (added via [data]) and returns the [Result].
+     * Deletes the [ExistingDataEntity]s in the queue (added via [data]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -80,7 +76,7 @@ interface DataDelete {
     fun commit(): Result
 
     /**
-     * Deletes the [DataEntity]s in the queue (added via [data]) in one transaction. Either ALL
+     * Deletes the [ExistingDataEntity]s in the queue (added via [data]) in one transaction. Either ALL
      * deletes succeed or ALL fail.
      *
      * ## Permissions
@@ -104,7 +100,7 @@ interface DataDelete {
         /**
          * True if the [data] has been successfully deleted. False otherwise.
          */
-        fun isSuccessful(data: DataEntity): Boolean
+        fun isSuccessful(data: ExistingDataEntity): Boolean
     }
 }
 
@@ -130,12 +126,12 @@ private class DataDeleteImpl(
             }
         """.trimIndent()
 
-    override fun data(vararg data: DataEntity) = data(data.asSequence())
+    override fun data(vararg data: ExistingDataEntity) = data(data.asSequence())
 
-    override fun data(data: Collection<DataEntity>) = data(data.asSequence())
+    override fun data(data: Collection<ExistingDataEntity>) = data(data.asSequence())
 
-    override fun data(data: Sequence<DataEntity>): DataDelete = apply {
-        dataIds.addAll(data.map { it.id ?: INVALID_ID })
+    override fun data(data: Sequence<ExistingDataEntity>): DataDelete = apply {
+        dataIds.addAll(data.map { it.id })
     }
 
     override fun commit(): DataDelete.Result {
@@ -146,7 +142,7 @@ private class DataDeleteImpl(
         val dataIdsResultMap = mutableMapOf<Long, Boolean>()
         for (dataId in dataIds) {
             dataIdsResultMap[dataId] =
-                if (dataId == INVALID_ID || dataId.isProfileId != isProfile) {
+                if (dataId.isProfileId != isProfile) {
                     // Intentionally fail the operation to ensure that this is only used for profile
                     // or non-profile deletes. Otherwise, operation can succeed. This is only done
                     // to enforce API design.
@@ -164,7 +160,7 @@ private class DataDeleteImpl(
             return false
         }
 
-        val validDataIds = dataIds.filter { it != INVALID_ID && it.isProfileId == isProfile }
+        val validDataIds = dataIds.filter { it.isProfileId == isProfile }
 
         if (dataIds.size != validDataIds.size) {
             // There are some invalid ids or profile or non-profile data ids, fail without
@@ -173,11 +169,6 @@ private class DataDeleteImpl(
         }
 
         return contentResolver.deleteDataRowsWithIds(dataIds, isProfile)
-    }
-
-    private companion object {
-        // A failed entry in the results so that Result.isSuccessful returns false.
-        const val INVALID_ID = -1L
     }
 }
 
@@ -201,15 +192,13 @@ private class DataDeleteResult(
 
     override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
 
-    override fun isSuccessful(data: DataEntity): Boolean =
-        data.id?.let { dataId ->
-            dataIdsResultMap.getOrElse(dataId) { false }
-        } ?: false
+    override fun isSuccessful(data: ExistingDataEntity): Boolean =
+        dataIdsResultMap.getOrElse(data.id) { false }
 }
 
 private class DataDeleteFailed : DataDelete.Result {
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(data: DataEntity): Boolean = false
+    override fun isSuccessful(data: ExistingDataEntity): Boolean = false
 }

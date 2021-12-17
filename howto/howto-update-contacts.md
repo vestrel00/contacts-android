@@ -20,7 +20,7 @@ To update a Contact and all of its RawContacts,
 ```kotlin
 val updateResult = Contacts(context)
     .update()
-    .contacts(johnDoe.mutableCopy().apply {
+    .contacts(johnDoe.mutableCopy {
        setOrganization {
            company = "Microsoft"
            title = "Newb"
@@ -36,7 +36,7 @@ To update a RawContact directly,
 
 val updateResult = Contacts(context)
     .update()
-    .rawContacts(johnDoeFromGmail.mutableCopy().apply {
+    .rawContacts(johnDoeFromGmail.mutableCopy {
        setOrganization {
            company = "Microsoft"
            title = "Newb"
@@ -94,8 +94,8 @@ The `commit` function returns a `Result`,
 
 ```kotlin
 val contactsApi =  Contacts(context)
-val mutableContact1 = contact1.mutableCopy().apply { ... }
-val mutableContact2 = contact2.mutableCopy().apply { ... }
+val mutableContact1 = contact1.mutableCopy { ... }
+val mutableContact2 = contact2.mutableCopy { ... }
 
 val updateResult = contactsApi
     .update()

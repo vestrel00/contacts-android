@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.database.Cursor
 import contacts.core.GroupsField
 import contacts.core.GroupsFields
+import contacts.core.entities.Entity
 
 /**
  * Retrieves [GroupsFields] data from the given [cursor].
@@ -14,7 +15,7 @@ import contacts.core.GroupsFields
 internal class GroupsCursor(cursor: Cursor, includeFields: Set<GroupsField>) :
     AbstractEntityCursor<GroupsField>(cursor, includeFields) {
 
-    val id: Long? by long(GroupsFields.Id)
+    val id: Long by nonNullLong(GroupsFields.Id, Entity.INVALID_ID)
 
     val systemId: String? by string(GroupsFields.SystemId)
 

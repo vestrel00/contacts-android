@@ -12,17 +12,12 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may only have one Gender entry.
  */
-sealed interface GenderEntity : CustomDataEntity {
+sealed interface GenderEntity : CustomDataEntityWithTypeAndLabel<Type> {
 
-    /**
-     * The [Type] of gender.
-     */
-    val type: Type?
-
-    /**
-     * The name of the custom type. Used when the [type] is [Type.CUSTOM].
-     */
-    val label: String?
+    // The primary value is type (and label if custom). So, this does nothing to avoid complicating
+    // the API implementation. Therefore, it is unused and will always return null.
+    override val primaryValue: String?
+        get() = null
 
     override val mimeType: MimeType.Custom
         get() = GenderMimeType
@@ -63,15 +58,45 @@ sealed interface GenderEntity : CustomDataEntity {
     }
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * Apart from GenderEntity, there is only one interface that extends it; MutableGenderEntity.
+ *
+ * The MutableGenderEntity interface is used for library constructs that require an GenderEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableGender and NewGender. With this, we can create constructs that can
+ * keep a reference to MutableGender(s) or NewGender(s) through the MutableGenderEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewGenderEntity, ExistingGenderEntity, and
+ * ImmutableGenderEntity. There are currently no library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [GenderEntity].
+ * A mutable [GenderEntity]. `
+ */
+sealed interface MutableGenderEntity : GenderEntity, MutableCustomDataEntityWithTypeAndLabel<Type> {
+
+    // The primary value is type (and label if custom). So, this does nothing to avoid complicating
+    // the API implementation. Therefore, it is unused and will always return null.
+    override var primaryValue: String?
+        get() = null
+        set(_) {}
+}
+
+/**
+ * An existing immutable [GenderEntity].
  */
 @Parcelize
 data class Gender internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -79,7 +104,8 @@ data class Gender internal constructor(
     override val type: Type?,
     override val label: String?
 
-) : GenderEntity, ImmutableCustomDataEntityWithMutableType<MutableGender> {
+) : GenderEntity, ExistingCustomDataEntity,
+    ImmutableCustomDataEntityWithMutableType<MutableGender> {
 
     override fun mutableCopy() = MutableGender(
         id = id,
@@ -95,14 +121,14 @@ data class Gender internal constructor(
 }
 
 /**
- * A mutable [GenderEntity].
+ * An existing mutable [GenderEntity].
  */
 @Parcelize
 data class MutableGender internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
@@ -110,13 +136,15 @@ data class MutableGender internal constructor(
     override var type: Type?,
     override var label: String?
 
-) : GenderEntity, MutableCustomDataEntityWithTypeAndLabel<Type> {
+) : GenderEntity, ExistingCustomDataEntity, MutableGenderEntity
 
-    constructor() : this(null, null, null, false, false, null, null)
+/**
+ * A new mutable [GenderEntity].
+ */
+@Parcelize
+data class NewGender @JvmOverloads constructor(
 
-    // The primary value is type (and label if custom). So, this does nothing to avoid complicating
-    // the API implementation.
-    override var primaryValue: String?
-        get() = null
-        set(_) {}
-}
+    override var type: Type? = null,
+    override var label: String? = null
+
+) : GenderEntity, NewCustomDataEntity, MutableGenderEntity

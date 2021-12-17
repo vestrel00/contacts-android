@@ -18,11 +18,8 @@ import kotlinx.parcelize.Parcelize
  * There is no mutable version of a group membership. To make modifications to group memberships,
  * set the group memberships in the MutableRawContact. To select a set of group memberships, use
  * the [contacts.core.groups.GroupsQuery] with the same account as the RawContact and convert the
- * desired groups to group memberships via the functions in [contacts.core.util.toGroupMembership].
- * Then, perform an update operation on the MutableRawContact.
+ * desired groups to group memberships via the functions in [contacts.core.util.newMembership].
  */
-// I know this interface is not necessary because there is only one implementation. Still, it does
-// not hurt to have it. It follows the setup like everything else, so it's cool.
 sealed interface GroupMembershipEntity : DataEntity {
 
     /**
@@ -33,6 +30,12 @@ sealed interface GroupMembershipEntity : DataEntity {
      */
     val groupId: Long?
 
+    /**
+     * The [groupId].
+     */
+    override val primaryValue: String?
+        get() = groupId?.toString()
+
     override val mimeType: MimeType
         get() = MimeType.GroupMembership
 
@@ -40,19 +43,43 @@ sealed interface GroupMembershipEntity : DataEntity {
         get() = propertiesAreAllNullOrBlank(groupId)
 }
 
+/* DEV NOTES: Necessary Abstractions
+ *
+ * We only create abstractions when they are necessary!
+ *
+ * This is why there are no interfaces for NewGroupMembershipEntity, ExistingGroupMembershipEntity,
+ * ImmutableGroupMembershipEntity, and MutableNewGroupMembershipEntity. There are currently no
+ * library functions or constructs that require them.
+ *
+ * Please update this documentation if new abstractions are created.
+ */
+
 /**
- * An immutable [GroupMembership].
+ * An existing immutable [GroupMembershipEntity].
  */
 @Parcelize
 data class GroupMembership internal constructor(
 
-    override val id: Long?,
-    override val rawContactId: Long?,
-    override val contactId: Long?,
+    override val id: Long,
+    override val rawContactId: Long,
+    override val contactId: Long,
 
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
     override val groupId: Long?
 
-) : GroupMembershipEntity, ImmutableDataEntity
+) : GroupMembershipEntity, ExistingDataEntity, ImmutableDataEntity
+
+/**
+ * A new immutable [GroupMembershipEntity].
+ *
+ * Use functions in GroupToGroupMembership to create instances of this from an existing group.
+ */
+// Intentionally not exposing constructor to consumers.
+@Parcelize
+data class NewGroupMembership internal constructor(
+
+    override val groupId: Long?
+
+) : GroupMembershipEntity, NewDataEntity, ImmutableDataEntity

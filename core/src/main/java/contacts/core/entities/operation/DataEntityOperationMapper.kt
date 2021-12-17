@@ -5,6 +5,7 @@ import contacts.core.AbstractDataField
 import contacts.core.ContactsException
 import contacts.core.Fields
 import contacts.core.entities.DataEntity
+import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.intersect
@@ -14,14 +15,14 @@ import contacts.core.intersect
  *
  * Only the fields specified in [includeFields] will be updated.
  */
-internal fun DataEntity.updateOperation(
+internal fun ExistingDataEntity.updateOperation(
     includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry
 ): ContentProviderOperation? = dataOperation(includeFields, customDataRegistry)
     .updateDataRowOrDeleteIfBlank(this)
 
 @Suppress("UNCHECKED_CAST")
-private fun DataEntity.dataOperation(
+private fun ExistingDataEntity.dataOperation(
     includeFields: Set<AbstractDataField>, customDataRegistry: CustomDataRegistry
 ): AbstractDataOperation<*, DataEntity> = when (mimeType) {
     // We could instead do when (this) is MutableAddress -> AddressOperation()

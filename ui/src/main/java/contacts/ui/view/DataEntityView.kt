@@ -5,12 +5,14 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
 import android.widget.RelativeLayout
+import contacts.core.entities.DataEntity
 import contacts.core.entities.MutableDataEntity
 import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 
 /**
- * A [RelativeLayout] that displays a [MutableDataEntity] and handles the modifications to it.
+ * A [RelativeLayout] that displays a [DataEntity] and handles the modifications to it (if it is
+ * mutable).
  *
  * Setting the [data] will automatically update the views and vice versa.
  *
@@ -31,7 +33,7 @@ import contacts.ui.text.AbstractTextWatcher
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
  */
-open class DataEntityView<E : MutableDataEntity> @JvmOverloads constructor(
+open class DataEntityView<E : DataEntity> @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
@@ -111,7 +113,11 @@ open class DataEntityView<E : MutableDataEntity> @JvmOverloads constructor(
 
     private inner class DataFieldTextChangeListener : AbstractTextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            data?.primaryValue = s?.toString()
+
+            val data = data // reassignment required for null-check and casting successfully.
+            if (data != null && data is MutableDataEntity) {
+                data.primaryValue = s?.toString()
+            }
 
             if (s.isNullOrEmpty()) {
                 eventListener?.onDataCleared()
@@ -142,7 +148,7 @@ open class DataEntityView<E : MutableDataEntity> @JvmOverloads constructor(
         fun onDataBegin()
     }
 
-    interface Factory<E : MutableDataEntity, V : DataEntityView<E>> {
+    interface Factory<E : DataEntity, V : DataEntityView<E>> {
         fun create(context: Context): V
     }
 }
