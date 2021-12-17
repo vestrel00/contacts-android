@@ -331,12 +331,22 @@ fun EventDate.toDate(): Date {
  *
  * The month used here is the [EventDate.monthInDb], which is 1-based.
  *
+ * If the [EventDate.monthInDb] or [EventDate.dayOfMonth] is a single digit, it is prefixed with 0
+ * in order to adhere to the Contacts Provider date string format. Otherwise, a duplicate event will
+ * be created with the correct date string format.
+ *
  * ## Inequality comparison
  *
  * Comparing dates with a year to dates without a year will always result in dates without
  * a year being less than dates with a year. E.G. `"--11-11" < "2020-10-10"` is true.
  */
-internal fun EventDate.toDbString(): String = "${year ?: "-"}-$monthInDb-$dayOfMonth"
+internal fun EventDate.toDbString(): String =
+    "${year ?: "-"}-${monthInDb.toDoubleDigitStr()}-${dayOfMonth.toDoubleDigitStr()}"
+
+/**
+ * Returns this int as a string prefixed by 0 if it is a single digit.
+ */
+private fun Int.toDoubleDigitStr(): String = toString().padStart(2, '0')
 
 /**
  * Returns the string representation of this [EventDate].
