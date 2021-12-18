@@ -77,9 +77,9 @@ entities that are not mentioned in this howto for brevity.
 All entities are `Parcelable` to support state retention during app/activity/fragment/view recreation.
 
 Each entity has an immutable version (typically returned by queries) and a mutable version
-(typically used by insert, update, and delete functions). Most immutable entities have a `toMutable`
-function that returns a mutable copy (typically to be used for inserts and updates and other
-mutating API functions).
+(typically used by insert, update, and delete functions). Most immutable entities have a 
+`mutableCopy` function that returns a mutable copy (typically to be used for inserts and updates 
+and other mutating API functions).
 
 Custom data types may also be integrated into the contacts database (though not synced across devices).
 Read more in [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)

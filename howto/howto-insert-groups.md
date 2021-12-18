@@ -27,13 +27,13 @@ val insertResult = Contacts(context)
 If you need to insert multiple groups,
 
 ```kotlin
-val mutableGroup1 = MutableGroup("Goodies", Account("john.doe@gmail.com", "com.google"))
-val mutableGroup2 = MutableGroup("Baddies", Account("john.doe@gmail.com", "com.google"))
+val newGroup1 = NewGroup("Goodies", Account("john.doe@gmail.com", "com.google"))
+val newGroup2 = NewGroup("Baddies", Account("john.doe@gmail.com", "com.google"))
 
 val insertResult = Contacts(context)
     .groups()
     .insert()
-    .groups(mutableGroup1, mutableGroup2)
+    .groups(newGroup1, newGroup2)
     .commit()
 ```
 
@@ -85,7 +85,7 @@ val allInsertsSuccessful = insertResult.isSuccessful
 To check if a particular insert succeeded,
 
 ```kotlin
-val firstInsertSuccessful = insertResult.isSuccessful(mutableGroup1)
+val firstInsertSuccessful = insertResult.isSuccessful(newGroup1)
 ```
 
 To get the Group IDs of all the newly created Groups,
@@ -97,7 +97,7 @@ val allGroupIds = insertResult.groupIds
 To get the Group ID of a particular Group,
 
 ```kotlin
-val secondGroupId = insertResult.groupId(mutableGroup2)
+val secondGroupId = insertResult.groupId(newGroup2)
 ```
 
 Once you have the Group IDs, you can retrieve the newly created Groups via the `GroupsQuery` API,
@@ -122,7 +122,7 @@ val groups = insertResult.groups(contactsApi)
 To get a particular group,
 
 ```kotlin
-val group = insertResult.group(contactsApi, mutableGroup1)
+val group = insertResult.group(contactsApi, newGroup1)
 ```
 
 ### Handling insert failure 
@@ -130,8 +130,8 @@ val group = insertResult.group(contactsApi, mutableGroup1)
 The insert may fail for a particular group for various reasons,
 
 ```kotlin
-if (!insertResult.isSuccessful(mutableGroup1)) {
-    insertResult.failureReason(mutableGroup1)?.let {
+if (!insertResult.isSuccessful(newGroup1)) {
+    insertResult.failureReason(newGroup1)?.let {
         when (it) {
             TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
             INVALID_ACCOUNT -> promptUserToPickDifferentAccount()

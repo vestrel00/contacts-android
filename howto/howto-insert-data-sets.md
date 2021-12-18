@@ -38,7 +38,7 @@ To insert an email into an existing contact using the `Update` API,
  ```kotlin
 Contacts(context)
     .update()
-    .contacts(existingContact.toMutableContact().apply {
+    .contacts(existingContact.mutableCopy {
         addEmail(email)
     })
     .commit()
@@ -52,7 +52,7 @@ To insert an email into an the existing Profile Contact using the `ProfileUpdate
 Contacts(context)
     .profile()
     .update()
-    .contact(existingProfileContact.toMutableContact().apply {
+    .contact(existingProfileContact.mutableCopy {
         addEmail(email)
     })
     .commit()

@@ -1,6 +1,6 @@
 # Contacts, Reborn!
 
-![Android Contacts, Reborn banner](/banner.png)
+![Android Contacts, Reborn banner](/media/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
@@ -19,8 +19,8 @@ Whether you just need to get all or some Contacts for a small part of your app (
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
 as the native Android Contacts app, this library has you covered!
 
-The GitHub wiki hosts the [project roadmap][project-roadmap]. It contains all planned work and 
-release schedules, which are organized using issues, milestones, and projects.
+Documentation and how-to guides are all available and linked in the repository. The GitHub wiki hosts the 
+[project roadmap][project-roadmap]. It contains all planned work and release schedules, which are  organized using issues, milestones, and projects.
 
 You can also learn more about this library through the articles I wrote about it =) 
  
@@ -97,7 +97,7 @@ To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.8'
+     implementation 'com.github.vestrel00:contacts-android:0.1.9'
 }
 ```
 
@@ -105,7 +105,7 @@ To import specific modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.8'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.9'
 }
 ```
 
@@ -166,7 +166,7 @@ val contacts = Contacts(context)
         (Fields.Name.GivenName startsWith "leo") and
                 ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
                 (Fields.Address.Country equalToIgnoreCase "us") and
-                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo Event.Type.BIRTHDAY)) and
+                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)) and
                 (Fields.Contact.Options.Starred equalTo true) and
                 (Fields.Nickname.Name equalTo "DarEdEvil") and
                 (Fields.Organization.Company `in` listOf("facebook", "FB")) and
@@ -275,24 +275,46 @@ To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon wit
 ```kotlin
 val insertResult = Contacts(context)
     .insert()
-    .rawContacts(MutableRawContact().apply {
-        name = MutableName().apply {
+    .rawContacts(NewRawContact().apply {
+        name = NewName().apply {
             givenName = "John"
             familyName = "Doe"
         }
-        organization = MutableOrganization().apply {
+        organization = NewOrganization().apply {
             company = "Amazon"
             title = "Superstar"
         }
-        emails.add(MutableEmail().apply {
+        emails.add(NewEmail().apply {
             address = "john.doe@amazon.com"
-            type = Email.Type.WORK
+            type = EmailEntity.Type.WORK
         })
     })
     .commit()
 ```
 
-Or alternatively, in a more Kotlinized style,
+Or alternatively, in a more Kotlinized style using named arguments,
+
+```kotlin
+val insertResult = Contacts(context)
+    .insert()
+    .rawContacts(NewRawContact(
+        name = NewName(
+            givenName = "John",
+            familyName = "Doe"
+        ),
+        organization = NewOrganization(
+            company = "Amazon",
+            title = "Superstar"
+        ),
+        emails = mutableListOf(NewEmail(
+            address = "john.doe@amazon.com",
+            type = EmailEntity.Type.WORK
+        ))
+    ))
+    .commit()
+```
+
+Or alternatively, using extension functions,
 
 ```kotlin
 val insertResult = Contacts(context)
@@ -308,7 +330,7 @@ val insertResult = Contacts(context)
         }
         addEmail {
             address = "john.doe@amazon.com"
-            type = Email.Type.WORK
+            type = EmailEntity.Type.WORK
         }
     }
     .commit()
@@ -321,7 +343,7 @@ If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his dat
 ```kotlin
 Contacts(context)
     .update()
-    .contacts(johnDoe.toMutableContact().apply {
+    .contacts(johnDoe.mutableCopy {
         setOrganization {
             company = "Microsoft"
             title = "Newb"
@@ -366,7 +388,7 @@ launch {
         .findWithContext()
 
     val deferredResult = Contacts(context)
-        .insert()
+        .insertWithPermission()
         ...
         .commitAsync()
     val result = deferredResult.await()
