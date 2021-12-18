@@ -1,6 +1,6 @@
 # Contacts, Reborn!
 
-![Android Contacts, Reborn banner](https://github.com/vestrel00/contacts-android/blob/main/media/banner.gif)
+![Android Contacts, Reborn banner](https://github.com/vestrel00/contacts-android/blob/main/media/banner.png)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
