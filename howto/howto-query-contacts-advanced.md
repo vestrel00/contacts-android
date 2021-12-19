@@ -25,7 +25,7 @@ val query = Contacts(context).query()
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
 the results) ordered by display name in descending order, matching ALL of these rules;
 
-- a first name starting with "leo" 
+- a first name starting with "leo"
 - has emails from gmail or hotmail
 - lives in the US
 - has been born prior to making this query
@@ -40,19 +40,23 @@ val contacts = Contacts(context)
     .query()
     .where(
         (Fields.Name.GivenName startsWith "leo") and
-                ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
-                (Fields.Address.Country equalToIgnoreCase "us") and
-                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)) and
-                (Fields.Contact.Options.Starred equalTo true) and
-                (Fields.Nickname.Name equalTo "DarEdEvil") and
-                (Fields.Organization.Company `in` listOf("facebook", "FB")) and
-                (Fields.Note.Note.isNotNullOrEmpty())
+        ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
+        (Fields.Address.Country equalToIgnoreCase "us") and
+        ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)) and
+        (Fields.Contact.Options.Starred equalTo true) and
+        (Fields.Nickname.Name equalTo "DarEdEvil") and
+        (Fields.Organization.Company `in` listOf("facebook", "FB")) and
+        (Fields.Note.Note.isNotNullOrEmpty())
     )
     .accounts(
         Account("john.doe@gmail.com", "com.google"),
         Account("john.doe@myspace.com", "com.myspace"),
     )
-    .include(Fields.Contact.Id, Fields.Contact.DisplayNamePrimary, Fields.Phone.Number, Fields.Phone.NormalizedNumber)
+    .include(
+        Fields.Contact.Id,
+        Fields.Contact.DisplayNamePrimary,
+        Fields.Phone.Number
+    )
     .orderBy(ContactsFields.DisplayNamePrimary.desc())
     .offset(0)
     .limit(5)

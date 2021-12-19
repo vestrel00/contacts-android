@@ -9,15 +9,35 @@ some kinds of data that you want to be included in the insert operation.
 When using update APIs such as `Update`, `ProfileUpdate`, and `DataUpdate`, you are able to specify 
 all or only some kinds of data that you want to be included in the update operation.
 
-For example, to include only name, email, and phone number data,
+Each field corresponds with an Entity property. For example, to include only the contact 
+display name, organization company, and all phone number fields,
 
 ```kotlin
 query.include(mutableListOf<AbstractDataField>().apply {
     add(Fields.Contact.DisplayNamePrimary)
-    addAll(Fields.Name.all)
-    addAll(Fields.Email.all)
+    add(Fields.Organization.Company)
     addAll(Fields.Phone.all)
 })
+```
+
+The following properties are populated with non-blank data (or null if no data is found),
+
+```kotlin
+Contact {
+    displayNamePrimary
+    
+    RawContact {
+        organization {
+            company
+        }
+        phones {
+            number
+            normalizedNumber
+            type
+            label
+        }
+    }
+}
 ```
 
 To explicitly include everything,

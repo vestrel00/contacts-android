@@ -440,7 +440,7 @@ private class BroadQueryImpl(
     override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<Group>): BroadQuery = apply {
-        val groupIds = groups.mapNotNull { it.id }
+        val groupIds = groups.map { it.id }
         groupMembershipWhere = if (groupIds.isEmpty()) {
             DEFAULT_GROUP_MEMBERSHIP_WHERE
         } else {
