@@ -302,9 +302,6 @@ interface DataQuery<F : DataField, E : ExistingDataEntity> {
      * The Field type of the Where is not constrained to [F] because consumers need to be able to
      * use other fields such as [Fields.Contact] (perhaps to get all data of type [E] of a Contact),
      * [Fields.RawContact], [Fields.IsSuperPrimary], etc...
-     *
-     * This allows consumers to make a mistake about trying to match addresses using phone fields.
-     * At this point, I'll say we are consenting adults (Python motto if you don't know).
      */
     fun where(where: Where<AbstractDataField>?): DataQuery<F, E>
 

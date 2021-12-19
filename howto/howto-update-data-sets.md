@@ -23,6 +23,16 @@ val updateResult = Contacts(context)
     .commit()
 ```
 
+If you want to update a list of mutable emails and phones,
+
+```kotlin
+val updateResult = Contacts(context)
+    .data()
+    .update()
+    .data(mutableEmails + mutablePhones)
+    .commit()
+```
+
 ## Blank data are deleted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 

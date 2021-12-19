@@ -58,8 +58,7 @@ Contacts(context)
     .commit()
  ```
  
- > For more info, read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
-
+> For more info, read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
 
 ## Blank data are not inserted
 
