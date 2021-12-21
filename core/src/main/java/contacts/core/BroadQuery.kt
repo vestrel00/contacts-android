@@ -594,6 +594,9 @@ private fun ContentResolver.findContactIdsInContactsTable(
     searchString: String, cancel: () -> Boolean
 ): Set<Long> = query(
     Uri.withAppendedPath(
+        // The documentation states that this matches "various parts of the contact name".
+        // However, it actually matches more than just the name. Even data such as note
+        // that is not in ContactsContract.DisplanameSources!
         ContactsContract.Contacts.CONTENT_FILTER_URI,
         Uri.encode(searchString)
     ),

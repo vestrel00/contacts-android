@@ -21,8 +21,14 @@ import contacts.core.util.toRawContactsWhere
  * be automatically associated with / belong to the (Profile) Contact upon creation. Note that there
  * is zero or one (Profile) Contact, which may have one or more RawContacts.
  *
- * The native Contacts app typically only maintains one local (no account) RawContact when
- * configuring the user's profile.
+ * As per documentation in [android.provider.ContactsContract.Profile],
+ *
+ * > The user's profile entry cannot be created explicitly (attempting to do so will throw an
+ * > exception). When a raw contact is inserted into the profile, the provider will check for the
+ * > existence of a profile on the device. If one is found, the raw contact's RawContacts.CONTACT_ID
+ * > column gets the _ID of the profile Contact. If no match is found, the profile Contact is
+ * > created and its _ID is put into the RawContacts.CONTACT_ID column of the newly inserted raw
+ * > contact.
  *
  * ## Blank data are ignored
  *

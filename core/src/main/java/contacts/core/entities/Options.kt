@@ -5,6 +5,14 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * [Entity] that holds options data modeling columns in the Contacts table.
+ *
+ * As per documentation in [android.provider.ContactsContract.Contacts],
+ *
+ * > Only certain columns of Contact are modifiable:
+ * > - ContactsContract.ContactOptionsColumns.STARRED
+ * > - ContactsContract.ContactOptionsColumns.CUSTOM_RINGTONE
+ * > - ContactsContract.ContactOptionsColumns.SEND_TO_VOICEMAIL
+ * > Changing any of these columns on the Contact also changes them on all constituent raw contacts.
  */
 sealed interface OptionsEntity : Entity {
 

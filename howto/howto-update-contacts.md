@@ -187,3 +187,10 @@ You may, of course, use other permission handling libraries or just do it yourse
 ## Custom data support
  
 The `Update` API supports custom data. For more info, read [How do I use update APIs to update custom data?](/howto/howto-update-custom-data.md)
+
+## Modifiable Contact fields
+
+As per documentation in `android.provider.ContactsContract.Contacts`,
+
+> Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
+> Changing any of these columns on the Contact also changes them on all constituent raw contacts.

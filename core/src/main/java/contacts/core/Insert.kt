@@ -17,6 +17,14 @@ import contacts.core.util.unsafeLazy
  * The insertion of a RawContact triggers automatic insertion of a new Contact subject to automatic
  * aggregation by the Contacts Provider.
  *
+ * As per documentation in [android.provider.ContactsContract.Contacts],
+ *
+ * > A Contact cannot be created explicitly. When a raw contact is inserted, the provider will first
+ * > try to find a Contact representing the same person. If one is found, the raw contact's
+ * > RawContacts#CONTACT_ID column gets the _ID of the aggregate Contact. If no match is found,
+ * > the provider automatically inserts a new Contact and puts its _ID into the
+ * > RawContacts#CONTACT_ID column of the newly inserted raw contact.
+ *
  * ## Blank data are ignored
  *
  * Blank data will be ignored. For example, if all properties of an email are all null, empty, or

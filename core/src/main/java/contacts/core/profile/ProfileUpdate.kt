@@ -9,6 +9,12 @@ import contacts.core.util.unsafeLazy
 /**
  * Updates one or more (Profile) raw contacts' rows in the data table.
  *
+ * As per documentation in []android.provider.ContactsContract.Profile],
+ *
+ * > The profile Contact has the same update restrictions as Contacts in general...
+ * > Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
+ * > Changing any of these columns on the Contact also changes them on all constituent raw contacts.
+ *
  * ## Blank data are deleted
  *
  * Blank data will be deleted. For example, if all properties of an email are all null, empty, or

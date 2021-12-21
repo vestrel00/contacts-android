@@ -16,6 +16,11 @@ import contacts.core.util.unsafeLazy
  * This does not support updating user Profile Contact. For Profile updates, use
  * [contacts.core.profile.ProfileUpdate].
  *
+ * As per documentation in [android.provider.ContactsContract.Contacts],
+ *
+ * > Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
+ * > Changing any of these columns on the Contact also changes them on all constituent raw contacts.
+ *
  * ## Blank data are deleted
  *
  * Blank data will be deleted. For example, if all properties of an email are all null, empty, or

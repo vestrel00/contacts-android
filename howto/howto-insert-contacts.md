@@ -2,9 +2,6 @@
 
 This library provides the `Insert` API that allows you to insert one or more RawContacts and Data.
 
-The insertion of a RawContact triggers automatic insertion of a new Contact subject to automatic
-aggregation by the Contacts Provider.
-
 An instance of the `Insert` API is obtained by,
 
 ```kotlin
@@ -298,6 +295,16 @@ You may, of course, use other permission handling libraries or just do it yourse
 The `Insert` API supports custom data. For more info,
 read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/howto/howto-insert-custom-data.md)
 
+## RawContact and Contacts aggregation
+
+As per documentation in `android.provider.ContactsContract.Contacts`,
+
+> A Contact cannot be created explicitly. When a raw contact is inserted, the provider will first
+> try to find a Contact representing the same person. If one is found, the raw contact's
+> RawContacts#CONTACT_ID column gets the _ID of the aggregate Contact. If no match is found,
+> the provider automatically inserts a new Contact and puts its _ID into the
+> RawContacts#CONTACT_ID column of the newly inserted raw contact.
+
 ## Insert a new RawContact with data of every kind
 
 Unless you are allowing blanks, you only need to provide at least one data kind when inserting a new
@@ -383,5 +390,4 @@ val insertResult = Contacts(context)
 ```
 
 Full-sized photos (and by API design thumbnails) can only be set after creating the contact. For
-more info,
-read [How do I get/set/remove full-sized and thumbnail photos?](/howto/howto-get-set-remove-contact-raw-contact-photo.md)
+more info, read [How do I get/set/remove full-sized and thumbnail photos?](/howto/howto-get-set-remove-contact-raw-contact-photo.md)
