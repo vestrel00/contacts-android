@@ -22,7 +22,7 @@ import contacts.test.entities.TestDataRegistration
 fun TestContacts(
     context: Context,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-): Contacts = TestContacts(Contacts(context, customDataRegistry)).also {
+): Contacts = TestContacts(Contacts(context, EmptyLogger(), customDataRegistry)).also {
     customDataRegistry.register(TestDataRegistration())
 }
 
