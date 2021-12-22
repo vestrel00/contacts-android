@@ -8,6 +8,8 @@ import contacts.core.accounts.AccountsPermissions
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
+import contacts.core.log.EmptyLogger
+import contacts.core.log.Logger
 import contacts.core.profile.Profile
 
 /**
@@ -41,6 +43,8 @@ import contacts.core.profile.Profile
  * For accounts operations, use [accounts].
  */
 interface Contacts {
+
+    var logger: Logger
 
     /**
      * Returns a new [Query] instance.
@@ -146,6 +150,7 @@ interface Contacts {
 @Suppress("FunctionName")
 fun Contacts(
     context: Context,
+    logger: Logger = EmptyLogger(),
     customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
     apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
 ): Contacts = ContactsImpl(
@@ -153,7 +158,8 @@ fun Contacts(
     ContactsPermissions(context.applicationContext),
     AccountsPermissions(context.applicationContext),
     customDataRegistry,
-    apiListenerRegistry
+    apiListenerRegistry,
+    logger,
 )
 
 /**
@@ -168,9 +174,10 @@ object ContactsFactory {
     @JvmOverloads
     fun create(
         context: Context,
+        logger: Logger = EmptyLogger(),
         customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
         apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
-    ): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry)
+    ): Contacts = Contacts(context, logger, customDataRegistry, apiListenerRegistry)
 }
 
 private class ContactsImpl(
@@ -178,7 +185,8 @@ private class ContactsImpl(
     override val permissions: ContactsPermissions,
     override val accountsPermissions: AccountsPermissions,
     override val customDataRegistry: CustomDataRegistry,
-    override val apiListenerRegistry: CrudApiListenerRegistry
+    override val apiListenerRegistry: CrudApiListenerRegistry,
+    override var logger: Logger,
 ) : Contacts {
 
     override fun query() = Query(this)

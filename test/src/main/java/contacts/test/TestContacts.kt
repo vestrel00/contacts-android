@@ -1,11 +1,19 @@
 package contacts.test
 
 import android.content.Context
-import contacts.core.*
+import contacts.core.BroadQuery
+import contacts.core.Contacts
+import contacts.core.ContactsPermissions
+import contacts.core.Delete
+import contacts.core.Insert
+import contacts.core.Query
+import contacts.core.Update
 import contacts.core.accounts.Accounts
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
+import contacts.core.log.EmptyLogger
+import contacts.core.log.Logger
 import contacts.core.profile.Profile
 import contacts.test.entities.TestDataRegistration
 
@@ -36,6 +44,8 @@ object ContactsFactory {
  * TODO document this
  */
 private class TestContacts(private val contactsApi: Contacts) : Contacts {
+
+    override var logger: Logger = EmptyLogger()
 
     override fun query(): Query = TestQuery(contactsApi.query(), contactsApi)
 
