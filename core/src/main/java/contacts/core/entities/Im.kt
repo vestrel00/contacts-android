@@ -61,6 +61,9 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(data)
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImEntity
+
     enum class Protocol(override val value: Int) : DataEntity.Type {
 
         // Type is also defined within CommonDataKinds.Im... Ignore those. Type (and label) may have
@@ -159,6 +162,9 @@ sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<P
         set(value) {
             customProtocol = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableImEntity
 }
 
 /**
@@ -176,7 +182,9 @@ data class Im internal constructor(
 
     override val protocol: Protocol?,
     override val customProtocol: String?,
-    override val data: String?
+    override val data: String?,
+
+    override val isRedacted: Boolean
 
 ) : ImEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableIm> {
 
@@ -191,7 +199,15 @@ data class Im internal constructor(
         protocol = protocol,
         customProtocol = customProtocol,
 
-        data = data
+        data = data,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        data = data?.redact()
     )
 }
 
@@ -210,9 +226,18 @@ data class MutableIm internal constructor(
 
     override var protocol: Protocol?,
     override var customProtocol: String?,
-    override var data: String?
+    override var data: String?,
 
-) : ImEntity, ExistingDataEntity, MutableImEntity
+    override val isRedacted: Boolean
+
+) : ImEntity, ExistingDataEntity, MutableImEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        data = data?.redact()
+    )
+}
 
 /**
  * A new mutable [ImEntity].
@@ -222,6 +247,15 @@ data class NewIm @JvmOverloads constructor(
 
     override var protocol: Protocol? = null,
     override var customProtocol: String? = null,
-    override var data: String? = null
+    override var data: String? = null,
 
-) : ImEntity, NewDataEntity, MutableImEntity
+    override val isRedacted: Boolean = false
+
+) : ImEntity, NewDataEntity, MutableImEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        data = data?.redact()
+    )
+}

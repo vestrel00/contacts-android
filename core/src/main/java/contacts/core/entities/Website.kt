@@ -30,6 +30,9 @@ sealed interface WebsiteEntity : DataEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(url)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): WebsiteEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -67,6 +70,9 @@ sealed interface MutableWebsiteEntity : WebsiteEntity, MutableDataEntity {
         set(value) {
             url = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableWebsiteEntity
 }
 
 /**
@@ -82,7 +88,9 @@ data class Website internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val url: String?
+    override val url: String?,
+
+    override val isRedacted: Boolean
 
 ) : WebsiteEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableWebsite> {
 
@@ -94,7 +102,15 @@ data class Website internal constructor(
         isPrimary = isPrimary,
         isSuperPrimary = isSuperPrimary,
 
-        url = url
+        url = url,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        url = url?.redact()
     )
 }
 
@@ -111,9 +127,18 @@ data class MutableWebsite internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override var url: String?
+    override var url: String?,
 
-) : WebsiteEntity, ExistingDataEntity, MutableWebsiteEntity
+    override val isRedacted: Boolean
+
+) : WebsiteEntity, ExistingDataEntity, MutableWebsiteEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        url = url?.redact()
+    )
+}
 
 /**
  * A new mutable [WebsiteEntity].
@@ -121,6 +146,15 @@ data class MutableWebsite internal constructor(
 @Parcelize
 data class NewWebsite @JvmOverloads constructor(
 
-    override var url: String? = null
+    override var url: String? = null,
 
-) : WebsiteEntity, NewDataEntity, MutableWebsiteEntity
+    override val isRedacted: Boolean = false
+
+) : WebsiteEntity, NewDataEntity, MutableWebsiteEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        url = url?.redact()
+    )
+}

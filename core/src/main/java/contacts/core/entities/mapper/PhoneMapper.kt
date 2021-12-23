@@ -18,6 +18,8 @@ internal class PhoneMapper(private val phoneCursor: PhoneCursor) : DataEntityMap
             label = phoneCursor.label,
 
             number = phoneCursor.number,
-            normalizedNumber = phoneCursor.normalizedNumber
+            normalizedNumber = phoneCursor.normalizedNumber,
+
+            isRedacted = false
         )
 }

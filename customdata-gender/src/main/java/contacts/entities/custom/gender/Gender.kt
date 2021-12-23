@@ -26,6 +26,9 @@ sealed interface GenderEntity : CustomDataEntityWithTypeAndLabel<Type> {
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(type)
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): GenderEntity
+
     /**
      * The types of gender. There are two main genders; [MALE] and [FEMALE].
      *
@@ -86,6 +89,9 @@ sealed interface MutableGenderEntity : GenderEntity, MutableCustomDataEntityWith
     override var primaryValue: String?
         get() = null
         set(_) {}
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableGenderEntity
 }
 
 /**
@@ -102,7 +108,9 @@ data class Gender internal constructor(
     override val isSuperPrimary: Boolean,
 
     override val type: Type?,
-    override val label: String?
+    override val label: String?,
+
+    override val isRedacted: Boolean
 
 ) : GenderEntity, ExistingCustomDataEntity,
     ImmutableCustomDataEntityWithMutableType<MutableGender> {
@@ -116,8 +124,13 @@ data class Gender internal constructor(
         isSuperPrimary = isSuperPrimary,
 
         type = type,
-        label = label
+        label = label,
+
+        isRedacted = isRedacted
     )
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
 }
 
 /**
@@ -134,9 +147,15 @@ data class MutableGender internal constructor(
     override val isSuperPrimary: Boolean,
 
     override var type: Type?,
-    override var label: String?
+    override var label: String?,
 
-) : GenderEntity, ExistingCustomDataEntity, MutableGenderEntity
+    override val isRedacted: Boolean
+
+) : GenderEntity, ExistingCustomDataEntity, MutableGenderEntity {
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
+}
 
 /**
  * A new mutable [GenderEntity].
@@ -145,6 +164,12 @@ data class MutableGender internal constructor(
 data class NewGender @JvmOverloads constructor(
 
     override var type: Type? = null,
-    override var label: String? = null
+    override var label: String? = null,
 
-) : GenderEntity, NewCustomDataEntity, MutableGenderEntity
+    override val isRedacted: Boolean = false
+
+) : GenderEntity, NewCustomDataEntity, MutableGenderEntity {
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
+}

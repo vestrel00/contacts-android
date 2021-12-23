@@ -17,6 +17,8 @@ internal class ImMapper(private val imCursor: ImCursor) : DataEntityMapper<Im> {
             protocol = imCursor.protocol,
             customProtocol = imCursor.customProtocol,
 
-            data = imCursor.data
+            data = imCursor.data,
+
+            isRedacted = false
         )
 }

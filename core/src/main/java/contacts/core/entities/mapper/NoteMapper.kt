@@ -14,6 +14,8 @@ internal class NoteMapper(private val noteCursor: NoteCursor) : DataEntityMapper
             isPrimary = noteCursor.isPrimary,
             isSuperPrimary = noteCursor.isSuperPrimary,
 
-            note = noteCursor.note
+            note = noteCursor.note,
+
+            isRedacted = false
         )
 }

@@ -30,6 +30,9 @@ sealed interface SipAddressEntity : DataEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(sipAddress)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): SipAddressEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -67,6 +70,9 @@ sealed interface MutableSipAddressEntity : SipAddressEntity, MutableDataEntity {
         set(value) {
             sipAddress = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableSipAddressEntity
 }
 
 /**
@@ -82,7 +88,9 @@ data class SipAddress internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val sipAddress: String?
+    override val sipAddress: String?,
+
+    override val isRedacted: Boolean
 
 ) : SipAddressEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableSipAddress> {
 
@@ -94,7 +102,15 @@ data class SipAddress internal constructor(
         isPrimary = isPrimary,
         isSuperPrimary = isSuperPrimary,
 
-        sipAddress = sipAddress
+        sipAddress = sipAddress,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        sipAddress = sipAddress?.redact()
     )
 }
 
@@ -111,9 +127,18 @@ data class MutableSipAddress internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override var sipAddress: String?
+    override var sipAddress: String?,
 
-) : SipAddressEntity, ExistingDataEntity, MutableSipAddressEntity
+    override val isRedacted: Boolean
+
+) : SipAddressEntity, ExistingDataEntity, MutableSipAddressEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        sipAddress = sipAddress?.redact()
+    )
+}
 
 /**
  * A new mutable [SipAddressEntity].
@@ -121,6 +146,15 @@ data class MutableSipAddress internal constructor(
 @Parcelize
 data class NewSipAddress @JvmOverloads constructor(
 
-    override var sipAddress: String? = null
+    override var sipAddress: String? = null,
 
-) : SipAddressEntity, NewDataEntity, MutableSipAddressEntity
+    override val isRedacted: Boolean = false
+
+) : SipAddressEntity, NewDataEntity, MutableSipAddressEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        sipAddress = sipAddress?.redact()
+    )
+}

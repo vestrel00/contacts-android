@@ -23,6 +23,8 @@ private class TestDataMapper(cursor: TestDataCursor) :
         isPrimary = cursor.isPrimary,
         isSuperPrimary = cursor.isSuperPrimary,
 
-        value = cursor.value
+        value = cursor.value,
+
+        isRedacted = false
     )
 }

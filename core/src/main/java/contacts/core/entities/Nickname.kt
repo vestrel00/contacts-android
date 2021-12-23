@@ -30,6 +30,9 @@ sealed interface NicknameEntity : DataEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(name)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): NicknameEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -67,6 +70,9 @@ sealed interface MutableNicknameEntity : NicknameEntity, MutableDataEntity {
         set(value) {
             name = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableNicknameEntity
 }
 
 /**
@@ -82,7 +88,9 @@ data class Nickname internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val name: String?
+    override val name: String?,
+
+    override val isRedacted: Boolean
 
 ) : NicknameEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableNickname> {
 
@@ -94,7 +102,15 @@ data class Nickname internal constructor(
         isPrimary = isPrimary,
         isSuperPrimary = isSuperPrimary,
 
-        name = name
+        name = name,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact()
     )
 }
 
@@ -111,9 +127,18 @@ data class MutableNickname internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override var name: String?
+    override var name: String?,
 
-) : NicknameEntity, ExistingDataEntity, MutableNicknameEntity
+    override val isRedacted: Boolean
+
+) : NicknameEntity, ExistingDataEntity, MutableNicknameEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact()
+    )
+}
 
 
 /**
@@ -122,6 +147,15 @@ data class MutableNickname internal constructor(
 @Parcelize
 data class NewNickname @JvmOverloads constructor(
 
-    override var name: String? = null
+    override var name: String? = null,
 
-) : NicknameEntity, NewDataEntity, MutableNicknameEntity
+    override val isRedacted: Boolean = false
+
+) : NicknameEntity, NewDataEntity, MutableNicknameEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact()
+    )
+}

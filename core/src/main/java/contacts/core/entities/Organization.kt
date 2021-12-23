@@ -62,6 +62,9 @@ sealed interface OrganizationEntity : DataEntity {
         get() = propertiesAreAllNullOrBlank(
             company, title, department, jobDescription, officeLocation, symbol, phoneticName
         )
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): OrganizationEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -105,6 +108,9 @@ sealed interface MutableOrganizationEntity : OrganizationEntity, MutableDataEnti
         set(value) {
             company = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableOrganizationEntity
 }
 
 /**
@@ -126,7 +132,9 @@ data class Organization internal constructor(
     override val jobDescription: String?,
     override val officeLocation: String?,
     override val symbol: String?,
-    override val phoneticName: String?
+    override val phoneticName: String?,
+
+    override val isRedacted: Boolean
 
 ) : OrganizationEntity, ExistingDataEntity,
     ImmutableDataEntityWithMutableType<MutableOrganization> {
@@ -145,7 +153,21 @@ data class Organization internal constructor(
         jobDescription = jobDescription,
         officeLocation = officeLocation,
         symbol = symbol,
-        phoneticName = phoneticName
+        phoneticName = phoneticName,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        company = company?.redact(),
+        title = title?.redact(),
+        department = department?.redact(),
+        jobDescription = jobDescription?.redact(),
+        officeLocation = officeLocation?.redact(),
+        symbol = symbol?.redact(),
+        phoneticName = phoneticName?.redact(),
     )
 }
 
@@ -168,9 +190,24 @@ data class MutableOrganization internal constructor(
     override var jobDescription: String?,
     override var officeLocation: String?,
     override var symbol: String?,
-    override var phoneticName: String?
+    override var phoneticName: String?,
 
-) : OrganizationEntity, ExistingDataEntity, MutableOrganizationEntity
+    override val isRedacted: Boolean
+
+) : OrganizationEntity, ExistingDataEntity, MutableOrganizationEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        company = company?.redact(),
+        title = title?.redact(),
+        department = department?.redact(),
+        jobDescription = jobDescription?.redact(),
+        officeLocation = officeLocation?.redact(),
+        symbol = symbol?.redact(),
+        phoneticName = phoneticName?.redact(),
+    )
+}
 
 /**
  * A new mutable [OrganizationEntity].
@@ -184,6 +221,21 @@ data class NewOrganization @JvmOverloads constructor(
     override var jobDescription: String? = null,
     override var officeLocation: String? = null,
     override var symbol: String? = null,
-    override var phoneticName: String? = null
+    override var phoneticName: String? = null,
 
-) : OrganizationEntity, NewDataEntity, MutableOrganizationEntity
+    override val isRedacted: Boolean = false
+
+) : OrganizationEntity, NewDataEntity, MutableOrganizationEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        company = company?.redact(),
+        title = title?.redact(),
+        department = department?.redact(),
+        jobDescription = jobDescription?.redact(),
+        officeLocation = officeLocation?.redact(),
+        symbol = symbol?.redact(),
+        phoneticName = phoneticName?.redact(),
+    )
+}

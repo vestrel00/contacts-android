@@ -60,6 +60,9 @@ sealed interface OptionsEntity : Entity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(starred, customRingtone, sendToVoicemail)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): OptionsEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -88,8 +91,10 @@ sealed interface MutableOptionsEntity : OptionsEntity, MutableEntity {
     override var starred: Boolean?
     override var customRingtone: Uri?
     override var sendToVoicemail: Boolean?
-}
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableOptionsEntity
+}
 
 /**
  * An existing immutable [OptionsEntity].
@@ -104,17 +109,24 @@ data class Options internal constructor(
 
     override val starred: Boolean?,
     override val customRingtone: Uri?,
-    override val sendToVoicemail: Boolean?
+    override val sendToVoicemail: Boolean?,
+
+    override val isRedacted: Boolean
 
 ) : OptionsEntity, ExistingEntity, ImmutableEntityWithMutableType<MutableOptions> {
 
     override fun mutableCopy() = MutableOptions(
         id = id,
 
+        isRedacted = isRedacted,
+
         starred = starred,
         customRingtone = customRingtone,
         sendToVoicemail = sendToVoicemail
     )
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
 }
 
 /**
@@ -130,9 +142,15 @@ data class MutableOptions internal constructor(
 
     override var starred: Boolean?,
     override var customRingtone: Uri?,
-    override var sendToVoicemail: Boolean?
+    override var sendToVoicemail: Boolean?,
 
-) : OptionsEntity, ExistingEntity, MutableOptionsEntity
+    override val isRedacted: Boolean
+
+) : OptionsEntity, ExistingEntity, MutableOptionsEntity {
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
+}
 
 /**
  * A new mutable [OptionsEntity].
@@ -142,6 +160,12 @@ data class NewOptions @JvmOverloads constructor(
 
     override var starred: Boolean? = null,
     override var customRingtone: Uri? = null,
-    override var sendToVoicemail: Boolean? = null
+    override var sendToVoicemail: Boolean? = null,
 
-) : OptionsEntity, NewEntity, MutableOptionsEntity
+    override val isRedacted: Boolean = false
+
+) : OptionsEntity, NewEntity, MutableOptionsEntity {
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
+}

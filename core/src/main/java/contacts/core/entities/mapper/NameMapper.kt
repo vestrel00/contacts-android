@@ -25,6 +25,8 @@ internal class NameMapper(private val nameCursor: NameCursor) : DataEntityMapper
 
             phoneticGivenName = nameCursor.phoneticGivenName,
             phoneticMiddleName = nameCursor.phoneticMiddleName,
-            phoneticFamilyName = nameCursor.phoneticFamilyName
+            phoneticFamilyName = nameCursor.phoneticFamilyName,
+
+            isRedacted = false
         )
 }

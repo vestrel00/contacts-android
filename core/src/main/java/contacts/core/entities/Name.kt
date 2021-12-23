@@ -111,6 +111,9 @@ sealed interface NameEntity : DataEntity {
             prefix, suffix,
             phoneticGivenName, phoneticMiddleName, phoneticFamilyName
         )
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): NameEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -159,6 +162,9 @@ sealed interface MutableNameEntity : NameEntity, MutableDataEntity {
         set(value) {
             displayName = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableNameEntity
 }
 
 /**
@@ -185,7 +191,9 @@ data class Name internal constructor(
 
     override val phoneticGivenName: String?,
     override val phoneticMiddleName: String?,
-    override val phoneticFamilyName: String?
+    override val phoneticFamilyName: String?,
+
+    override val isRedacted: Boolean
 
 ) : NameEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableName> {
 
@@ -208,7 +216,26 @@ data class Name internal constructor(
 
         phoneticGivenName = phoneticGivenName,
         phoneticMiddleName = phoneticMiddleName,
-        phoneticFamilyName = phoneticFamilyName
+        phoneticFamilyName = phoneticFamilyName,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        displayName = displayName?.redact(),
+
+        givenName = givenName?.redact(),
+        middleName = middleName?.redact(),
+        familyName = familyName?.redact(),
+
+        prefix = prefix?.redact(),
+        suffix = suffix?.redact(),
+
+        phoneticGivenName = phoneticGivenName?.redact(),
+        phoneticMiddleName = phoneticMiddleName?.redact(),
+        phoneticFamilyName = phoneticFamilyName?.redact(),
     )
 }
 
@@ -236,9 +263,29 @@ data class MutableName internal constructor(
 
     override var phoneticGivenName: String?,
     override var phoneticMiddleName: String?,
-    override var phoneticFamilyName: String?
+    override var phoneticFamilyName: String?,
 
-) : NameEntity, ExistingDataEntity, MutableNameEntity
+    override val isRedacted: Boolean
+
+) : NameEntity, ExistingDataEntity, MutableNameEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        displayName = displayName?.redact(),
+
+        givenName = givenName?.redact(),
+        middleName = middleName?.redact(),
+        familyName = familyName?.redact(),
+
+        prefix = prefix?.redact(),
+        suffix = suffix?.redact(),
+
+        phoneticGivenName = phoneticGivenName?.redact(),
+        phoneticMiddleName = phoneticMiddleName?.redact(),
+        phoneticFamilyName = phoneticFamilyName?.redact(),
+    )
+}
 
 /**
  * A new mutable [NameEntity].
@@ -257,6 +304,26 @@ data class NewName @JvmOverloads constructor(
 
     override var phoneticGivenName: String? = null,
     override var phoneticMiddleName: String? = null,
-    override var phoneticFamilyName: String? = null
+    override var phoneticFamilyName: String? = null,
 
-) : NameEntity, NewDataEntity, MutableNameEntity
+    override val isRedacted: Boolean = false
+
+) : NameEntity, NewDataEntity, MutableNameEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        displayName = displayName?.redact(),
+
+        givenName = givenName?.redact(),
+        middleName = middleName?.redact(),
+        familyName = familyName?.redact(),
+
+        prefix = prefix?.redact(),
+        suffix = suffix?.redact(),
+
+        phoneticGivenName = phoneticGivenName?.redact(),
+        phoneticMiddleName = phoneticMiddleName?.redact(),
+        phoneticFamilyName = phoneticFamilyName?.redact(),
+    )
+}

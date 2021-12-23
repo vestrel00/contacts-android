@@ -10,7 +10,7 @@ import contacts.core.entities.NewGroupMembership
  * Returns a new [NewGroupMembership] instance that may be used for Contacts and RawContacts insert
  * and update operations.
  */
-fun Group.newMembership() = NewGroupMembership(groupId = id)
+fun Group.newMembership() = NewGroupMembership(groupId = id, isRedacted = isRedacted)
 
 /**
  * Returns [this] collection of [Group]s as list of [NewGroupMembership] that may be used for

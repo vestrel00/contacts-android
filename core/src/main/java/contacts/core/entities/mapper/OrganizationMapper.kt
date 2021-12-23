@@ -22,6 +22,8 @@ internal class OrganizationMapper(private val organizationCursor: OrganizationCu
             officeLocation = organizationCursor.officeLocation,
 
             symbol = organizationCursor.symbol,
-            phoneticName = organizationCursor.phoneticName
+            phoneticName = organizationCursor.phoneticName,
+
+            isRedacted = false
         )
 }

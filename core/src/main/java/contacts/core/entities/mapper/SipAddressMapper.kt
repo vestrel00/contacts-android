@@ -15,6 +15,8 @@ internal class SipAddressMapper(private val sipAddressCursor: SipAddressCursor) 
             isPrimary = sipAddressCursor.isPrimary,
             isSuperPrimary = sipAddressCursor.isSuperPrimary,
 
-            sipAddress = sipAddressCursor.sipAddress
+            sipAddress = sipAddressCursor.sipAddress,
+
+            isRedacted = false
         )
 }

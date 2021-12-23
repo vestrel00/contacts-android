@@ -35,6 +35,9 @@ sealed interface PhotoEntity : DataEntity {
     // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
     override val isBlank: Boolean
         get() = false
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): PhotoEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -59,6 +62,12 @@ data class Photo internal constructor(
     override val contactId: Long,
 
     override val isPrimary: Boolean,
-    override val isSuperPrimary: Boolean
+    override val isSuperPrimary: Boolean,
 
-) : PhotoEntity, ExistingDataEntity, ImmutableDataEntity
+    override val isRedacted: Boolean
+
+) : PhotoEntity, ExistingDataEntity, ImmutableDataEntity {
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
+}

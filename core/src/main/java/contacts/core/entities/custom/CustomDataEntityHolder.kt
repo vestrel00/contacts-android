@@ -1,10 +1,12 @@
 package contacts.core.entities.custom
 
 import android.os.Parcelable
+import contacts.core.Redactable
 import contacts.core.entities.CustomDataEntity
 import contacts.core.entities.ImmutableCustomDataEntity
 import contacts.core.entities.ImmutableCustomDataEntityWithMutableType
 import contacts.core.entities.ImmutableCustomDataEntityWithNullableMutableType
+import contacts.core.redactableCopies
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -16,12 +18,17 @@ import kotlinx.parcelize.Parcelize
  *
  * This should actually be internal as it is of no use to consumers but this is referenced in an
  * interface (RawContactEntity)... At least we can make the the properties internal.
+ *
+ * This is not an interface because we will not be able to make things internal.
  */
-sealed class AbstractCustomDataEntityHolder {
+sealed class AbstractCustomDataEntityHolder : Redactable {
 
     internal abstract val entities: List<CustomDataEntity>
 
     internal abstract val countRestriction: CustomDataCountRestriction
+
+    // We have to cast the return type because we are not using recursive generic types.
+    abstract override fun redactedCopy(): AbstractCustomDataEntityHolder
 }
 
 /**
@@ -35,14 +42,24 @@ sealed class AbstractCustomDataEntityHolder {
  * interface (RawContactEntity)... At least we can make the the properties internal.
  */
 @Parcelize
-data class ImmutableCustomDataEntityHolder(
+data class ImmutableCustomDataEntityHolder internal constructor(
     override val entities: MutableList<ImmutableCustomDataEntity>,
-    override val countRestriction: CustomDataCountRestriction
+    override val countRestriction: CustomDataCountRestriction,
+
+    override val isRedacted: Boolean
 ) : AbstractCustomDataEntityHolder(), Parcelable {
 
     fun toCustomDataEntityHolder() = CustomDataEntityHolder(
         entities.toMutableListOfCustomDataEntity(),
-        countRestriction
+        countRestriction,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        entities = entities.asSequence().redactableCopies().toMutableList()
     )
 }
 
@@ -71,10 +88,19 @@ private fun MutableList<ImmutableCustomDataEntity>.toMutableListOfCustomDataEnti
  * interface (RawContactEntity)... At least we can make the the properties internal.
  */
 @Parcelize
-data class CustomDataEntityHolder(
+data class CustomDataEntityHolder internal constructor(
     override val entities: MutableList<CustomDataEntity>,
-    override val countRestriction: CustomDataCountRestriction
-) : AbstractCustomDataEntityHolder(), Parcelable
+    override val countRestriction: CustomDataCountRestriction,
+
+    override val isRedacted: Boolean
+) : AbstractCustomDataEntityHolder(), Parcelable {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        entities = entities.asSequence().redactableCopies().toMutableList()
+    )
+}
 
 /* We'll go with the above approach because we don't need to expose these implementations.
    Consumers only need to specify if a data entity is either one-per-RawContact or

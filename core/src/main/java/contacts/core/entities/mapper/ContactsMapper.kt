@@ -166,7 +166,9 @@ internal class ContactsMapper(
                     options = null,
                     photoUri = null,
                     photoThumbnailUri = null,
-                    hasPhoneNumber = null
+                    hasPhoneNumber = null,
+
+                    isRedacted = false
                 )
             )
 
@@ -221,7 +223,11 @@ private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
     val customDataEntry = customDataRegistry.entryOf(mimeType)
 
     val customDataEntityHolder = rawContact.customDataEntities.getOrPut(mimeType.value) {
-        ImmutableCustomDataEntityHolder(mutableListOf(), customDataEntry.countRestriction)
+        ImmutableCustomDataEntityHolder(
+            mutableListOf(),
+            customDataEntry.countRestriction,
+            rawContact.isRedacted
+        )
     }
 
     val customDataMapper = customDataEntry.mapperFactory.create(

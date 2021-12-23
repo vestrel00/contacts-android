@@ -16,6 +16,8 @@ internal class GroupMapper(private val groupsCursor: GroupsCursor) : EntityMappe
             favorites = groupsCursor.favorites,
             autoAdd = groupsCursor.autoAdd,
 
-            account = groupsCursor.account
+            account = groupsCursor.account,
+
+            isRedacted = false
         )
 }
