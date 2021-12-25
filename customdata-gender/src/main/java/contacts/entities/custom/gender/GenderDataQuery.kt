@@ -6,4 +6,5 @@ import contacts.core.data.DataQueryFactory
 /**
  * Queries for [Gender]s.
  */
-fun DataQueryFactory.genders(): DataQuery<GenderField, Gender> = customData(GenderMimeType)
+fun DataQueryFactory.genders(): DataQuery<GenderField, GenderFields, Gender> =
+    customData(GenderMimeType)

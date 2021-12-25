@@ -29,22 +29,22 @@ import contacts.core.util.unsafeLazy
  * ## Usage
  *
  * Here is an example query that returns the first 10 [Contact]s, skipping the first 5, where the
- * contact's name starts with "john" and has an email ending with "gmail", ordered by the name in
- * ascending order (not ignoring case) and email (ignoring case) in descending order respectively.
- * Only Contacts with at least one RawContact belonging to the given account are included. Only the
- * full name and email address attributes of the [Contact] objects are included.
+ * contact's name starts with "john" and has an email ending with "gmail", order by favorite/starred
+ * status such that favorite/starred contacts appear first in the list AND order by display name
+ * primary in ascending order (from a to z ignoring case). Include only Contacts with at least one
+ * RawContact belonging to the given account. Include only name and email properties of [Contact]s.
  *
  * In Kotlin,
  *
  * ```kotlin
- * import contacts.core.Fields.Name
- * import contacts.core.Fields.Address
- *
  * val contacts : List<Contact> = query
  *      .accounts(account)
- *      .include(Name, Address)
- *      .where((Name.DisplayName startsWith "john") and (Email.Address endsWith "gmail"))
- *      .orderBy(Name.DisplayName.asc(), Email.Address.desc(true))
+ *      .include { Name.all + Address.all }
+ *      .where { (Name.DisplayName startsWith "john") and (Email.Address endsWith "gmail") }
+ *      .orderBy(
+ *          ContactsFields.Options.Starred.desc(),
+ *          ContactsFields.DisplayNamePrimary.asc()
+ *      )
  *      .offset(5)
  *      .limit(10)
  *      .find()
@@ -59,9 +59,15 @@ import contacts.core.util.unsafeLazy
  *
  * List<Contact> contacts = query
  *      .accounts(account)
- *      .include(Name, Address)
+ *      .include(new ArrayList<>() {{
+ *           addAll(Name.getAll());
+ *           addAll(Address.getAll());
+ *       }})
  *      .where(startsWith(Name.DisplayName, "john").and(endsWith(Email.Address, "gmail")))
- *      .orderBy(asc(Name.DisplayName), desc(Email.Address, true))
+ *      .orderBy(
+ *          desc(ContactsFields.Options.Starred),
+ *          asc(ContactsFields.DisplayNamePrimary.asc)
+ *      )
  *      .offset(5)
  *      .limit(10)
  *      .find();
@@ -191,6 +197,11 @@ interface Query {
     fun include(fields: Sequence<AbstractDataField>): Query
 
     /**
+     * See [Query.include].
+     */
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): Query
+
+    /**
      * Filters the [Contact]s matching the criteria defined by the [where]. If not specified or
      * null, then all [Contact]s are returned.
      *
@@ -251,6 +262,12 @@ interface Query {
     fun where(where: Where<AbstractDataField>?): Query
 
     /**
+     * Same as [Query.where] except you have direct access to all properties of [Fields] in the
+     * function parameter. Use this to shorten your code.
+     */
+    fun where(where: Fields.() -> Where<AbstractDataField>?): Query
+
+    /**
      * Orders the returned [Contact]s using one or more [orderBy]s. If not specified, then contacts
      * are ordered by ID in ascending order.
      *
@@ -300,6 +317,11 @@ interface Query {
      * See [Query.orderBy].
      */
     fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): Query
+
+    /**
+     * See [Query.orderBy].
+     */
+    fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>): Query
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
@@ -415,10 +437,15 @@ private class QueryImpl(
         }
     }
 
+    override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
+        include(fields(Fields))
+
     override fun where(where: Where<AbstractDataField>?): Query = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
+
+    override fun where(where: Fields.() -> Where<AbstractDataField>?) = where(where(Fields))
 
     override fun orderBy(vararg orderBy: OrderBy<ContactsField>) = orderBy(orderBy.asSequence())
 
@@ -432,6 +459,9 @@ private class QueryImpl(
             CompoundOrderBy(orderBy.toSet())
         }
     }
+
+    override fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>) =
+        orderBy(orderBy(ContactsFields))
 
     override fun limit(limit: Int): Query = apply {
         this.limit = if (limit > 0) {

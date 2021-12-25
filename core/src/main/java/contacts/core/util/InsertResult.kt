@@ -1,9 +1,12 @@
 package contacts.core.util
 
-import contacts.core.*
+import contacts.core.Contacts
+import contacts.core.Insert
+import contacts.core.`in`
 import contacts.core.entities.Contact
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContact
+import contacts.core.equalTo
 
 /**
  * Returns the newly created [RawContact] or null if the insert operation failed.
@@ -30,7 +33,7 @@ fun Insert.Result.rawContact(
     val rawContactId = rawContactId(rawContact) ?: return null
 
     return contacts.query()
-        .where(Fields.RawContact.Id equalTo rawContactId)
+        .where { RawContact.Id equalTo rawContactId }
         .find(cancel)
         .asSequence()
         .flatMap { it.rawContacts.asSequence() }
@@ -57,7 +60,7 @@ fun Insert.Result.rawContacts(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): List<RawContact> =
-    contacts.query().where(Fields.RawContact.Id `in` rawContactIds)
+    contacts.query().where { RawContact.Id `in` rawContactIds }
         .find(cancel)
         .asSequence()
         .flatMap { it.rawContacts.asSequence() }
@@ -90,7 +93,7 @@ fun Insert.Result.contact(
     val rawContactId = rawContactId(rawContact) ?: return null
 
     return contacts.query()
-        .where(Fields.RawContact.Id equalTo rawContactId)
+        .where { RawContact.Id equalTo rawContactId }
         .find(cancel)
         .firstOrNull()
 }
@@ -119,5 +122,5 @@ fun Insert.Result.contacts(
     cancel: () -> Boolean = { false }
 ): List<Contact> =
     contacts.query()
-        .where(Fields.RawContact.Id `in` rawContactIds)
+        .where { RawContact.Id `in` rawContactIds }
         .find(cancel)

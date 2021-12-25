@@ -28,19 +28,15 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * Here is an example query that returns the profile [Contact]. Only RawContacts belonging to the
- * given account are included. Only the full name and email address attributes of the profile
- * [Contact] are included.
+ * Here is an example query that returns the profile [Contact]. Include only RawContacts belonging
+ * to the given account. Include only the name and email properties of the profile [Contact].
  *
  * In Kotlin,
  *
  * ```kotlin
- * import contacts.core.Fields.Name
- * import contacts.core.Fields.Address
- *
  * val profileContact : Contact? = profileQuery.
  *      .accounts(account)
- *      .include(Name, Address)
+ *      .include { Name.all + Address.all }
  *      .find()
  * ```
  *
@@ -51,7 +47,10 @@ import contacts.core.util.unsafeLazy
  *
  * List<Contact> contacts = profileQuery
  *      .accounts(account)
- *      .include(Name, Address)
+ *      .include(new ArrayList<>() {{
+ *           addAll(Name.getAll());
+ *           addAll(Address.getAll());
+ *       }})
  *      .find();
  * ```
  */
@@ -160,6 +159,11 @@ interface ProfileQuery {
     fun include(fields: Sequence<AbstractDataField>): ProfileQuery
 
     /**
+     * See [ProfileQuery.include].
+     */
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): ProfileQuery
+
+    /**
      * Returns the profile [Contact], if available.
      *
      * ## Permissions
@@ -255,6 +259,9 @@ private class ProfileQueryImpl(
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
     }
+
+    override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
+        include(fields(Fields))
 
     override fun find(): Contact? = find { false }
 

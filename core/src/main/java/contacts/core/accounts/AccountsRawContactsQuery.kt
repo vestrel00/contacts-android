@@ -32,11 +32,29 @@ import contacts.core.util.unsafeLazy
  * first 2, where the RawContact's display name starts with "a", ordered by the display name in
  * ascending order (ignoring case).
  *
+ * In Kotlin,
+ *
  * ```kotlin
  * val blankRawContacts = accountsRawContactsQuery
  *      .accounts(account)
- *      .where(RawContactsFields.DisplayName startsWith "a")
+ *      .where { DisplayNamePrimary startsWith "a" }
  *      .orderBy(RawContactsFields.DisplayName.asc())
+ *      .limit(5)
+ *      .offset(2)
+ *      .find()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * import static contacts.core.RawContactsFields.*;
+ * import static contacts.core.WhereKt.*;
+ * import static contacts.core.OrderByKt.*;
+ *
+ * val blankRawContacts = accountsRawContactsQuery
+ *      .accounts(account)
+ *      .where(startsWith(DisplayNamePrimary, "a"))
+ *      .orderBy(asc(RawContactsFields.DisplayName))
  *      .limit(5)
  *      .offset(2)
  *      .find()
@@ -79,6 +97,11 @@ interface AccountsRawContactsQuery {
     fun where(where: Where<RawContactsField>?): AccountsRawContactsQuery
 
     /**
+     * See [AccountsRawContactsQuery.where].
+     */
+    fun where(where: RawContactsFields.() -> Where<RawContactsField>?): AccountsRawContactsQuery
+
+    /**
      * Orders the returned [BlankRawContact]s using one or more [orderBy]s. If not specified, then
      * data is ordered by ID in ascending order.
      *
@@ -99,6 +122,13 @@ interface AccountsRawContactsQuery {
      * See [AccountsRawContactsQuery.orderBy].
      */
     fun orderBy(orderBy: Sequence<OrderBy<RawContactsField>>): AccountsRawContactsQuery
+
+    /**
+     * See [AccountsRawContactsQuery.orderBy].
+     */
+    fun orderBy(
+        orderBy: RawContactsFields.() -> Collection<OrderBy<RawContactsField>>
+    ): AccountsRawContactsQuery
 
     /**
      * Limits the maximum number of returned [BlankRawContact]s to the given [limit].
@@ -216,6 +246,9 @@ private class AccountsRawContactsQueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
+    override fun where(where: RawContactsFields.() -> Where<RawContactsField>?) =
+        where(where(RawContactsFields))
+
     override fun orderBy(vararg orderBy: OrderBy<RawContactsField>) = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Collection<OrderBy<RawContactsField>>) =
@@ -229,6 +262,9 @@ private class AccountsRawContactsQueryImpl(
                 CompoundOrderBy(orderBy.toSet())
             }
         }
+
+    override fun orderBy(orderBy: RawContactsFields.() -> Collection<OrderBy<RawContactsField>>) =
+        orderBy(orderBy(RawContactsFields))
 
     override fun limit(limit: Int): AccountsRawContactsQuery = apply {
         this.limit = if (limit > 0) {

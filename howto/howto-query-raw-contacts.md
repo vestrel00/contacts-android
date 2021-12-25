@@ -167,7 +167,7 @@ If you want to get the Contacts and all associated RawContacts and Data from a s
 ```kotlin
 val contacts = Contacts(context)
     .query()
-    .where(Fields.RawContact.Id `in` blankRawContactIds)
+    .where { RawContact.Id `in` blankRawContactIds }
     .find()
 ```
 
@@ -201,7 +201,7 @@ For example, to get all favorite RawContacts,
 val favoriteRawContacts = Contacts(context)
     .accounts()
     .queryRawContacts()
-    .where(RawContactsFields.Options.Starred equalTo true)
+    .where { Options.Starred equalTo true }
     .find()
 ```
 
@@ -211,7 +211,7 @@ To get a list of RawContacts with the given IDs,
 val favoriteRawContacts = Contacts(context)
     .accounts()
     .queryRawContacts()
-    .where(RawContactsFields.Id `in` rawContactIds)
+    .where { Id `in` rawContactIds }
     .find()
 ```
 

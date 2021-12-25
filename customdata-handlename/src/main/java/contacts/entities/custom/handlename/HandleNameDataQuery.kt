@@ -6,5 +6,5 @@ import contacts.core.data.DataQueryFactory
 /**
  * Queries for [HandleName]s.
  */
-fun DataQueryFactory.handleNames(): DataQuery<HandleNameField, HandleName> =
+fun DataQueryFactory.handleNames(): DataQuery<HandleNameField, HandleNameFields, HandleName> =
     customData(HandleNameMimeType)

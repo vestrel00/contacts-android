@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.GroupsFields
 import contacts.core.`in`
 import contacts.core.entities.Group
 import contacts.core.entities.NewGroup
@@ -27,7 +26,7 @@ fun GroupsInsert.Result.group(
     contacts: Contacts, group: NewGroup, cancel: () -> Boolean = { false }
 ): Group? = groupId(group)?.let { groupId ->
     contacts.groups().query()
-        .where(GroupsFields.Id equalTo groupId)
+        .where { Id equalTo groupId }
         .find(cancel)
         .firstOrNull()
 }
@@ -52,6 +51,6 @@ fun GroupsInsert.Result.groups(contacts: Contacts, cancel: () -> Boolean = { fal
         emptyList()
     } else {
         contacts.groups().query()
-            .where(GroupsFields.Id `in` groupIds)
+            .where { Id `in` groupIds }
             .find(cancel)
     }

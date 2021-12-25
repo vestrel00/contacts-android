@@ -558,6 +558,9 @@ class Where<out T : Field> private constructor(
     /**
      * Construct a copy of this where with the new field type determined by [substituteField].
      */
+    // Note that this function cannot be inlined because it is recursive (it calls itself). The
+    // compiler is smart enough to detect this. If the compiler allowed inlining a recursive
+    // function, then the code generation would look forever! Think about it!
     internal fun <R : Field> copyWithNewFieldType(substituteField: (Field) -> Field): Where<R> {
         /*
          * Okay. Time for some "recursion" hehehe =). You know, I can't believe this interview
