@@ -5,7 +5,7 @@ import contacts.core.entities.DataEntity
 import contacts.core.entities.EventDate
 import contacts.core.entities.MimeType
 import contacts.core.entities.toWhereString
-import contacts.core.util.isEmpty
+import contacts.core.util.unsafeLazy
 import java.util.*
 
 // Java consumers would have to access these static functions via Wherekt instead of Where.
@@ -25,12 +25,20 @@ import java.util.*
 /**
  * String comparison is case-sensitive.
  */
-infix fun <T : Field> T.equalTo(value: Any): Where<T> = EqualTo(this, value)
+infix fun <T : Field> T.equalTo(value: Any): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.Equal,
+    rhs = ValueHolder(value)
+)
 
 /**
  * String comparison is case-sensitive.
  */
-infix fun <T : Field> T.notEqualTo(value: Any): Where<T> = NotEqualTo(this, value)
+infix fun <T : Field> T.notEqualTo(value: Any): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.NotEqual,
+    rhs = ValueHolder(value)
+)
 
 /**
  * Same as `like(value.likeWildcardsEscaped(), "\\")`. See [like] for more info.
@@ -48,16 +56,44 @@ infix fun <T : Field> T.equalToIgnoreCase(value: Any): Where<T> =
 infix fun <T : Field> T.notEqualToIgnoreCase(value: Any): Where<T> =
     notLike(value.likeWildcardsEscaped(), LIKE_ESCAPE_EXPR)
 
-infix fun <T : Field> T.greaterThan(value: Any): Where<T> = GreaterThan(this, value)
-infix fun <T : Field> T.greaterThanOrEqual(value: Any): Where<T> = GreaterThanOrEqual(this, value)
+infix fun <T : Field> T.greaterThan(value: Any): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.GreaterThan,
+    rhs = ValueHolder(value)
+)
 
-infix fun <T : Field> T.lessThan(value: Any): Where<T> = LessThan(this, value)
-infix fun <T : Field> T.lessThanOrEqual(value: Any): Where<T> = LessThanOrEqual(this, value)
+infix fun <T : Field> T.greaterThanOrEqual(value: Any): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.GreaterThanOrEqual,
+    rhs = ValueHolder(value)
+)
 
-infix fun <T : Field> T.`in`(values: Collection<Any>): Where<T> = In(this, values.asSequence())
-infix fun <T : Field> T.`in`(values: Sequence<Any>): Where<T> = In(this, values)
-infix fun <T : Field> T.notIn(values: Collection<Any>): Where<T> = NotIn(this, values.asSequence())
-infix fun <T : Field> T.notIn(values: Sequence<Any>): Where<T> = NotIn(this, values)
+infix fun <T : Field> T.lessThan(value: Any): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.LessThan,
+    rhs = ValueHolder(value)
+)
+
+infix fun <T : Field> T.lessThanOrEqual(value: Any): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.LessThanOrEqual,
+    rhs = ValueHolder(value)
+)
+
+infix fun <T : Field> T.`in`(values: Collection<Any>): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.In,
+    rhs = ValueHolder(values)
+)
+
+infix fun <T : Field> T.`in`(values: Sequence<Any>): Where<T> = `in`(values.toList())
+infix fun <T : Field> T.notIn(values: Collection<Any>): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.NotIn,
+    rhs = ValueHolder(values)
+)
+
+infix fun <T : Field> T.notIn(values: Sequence<Any>): Where<T> = notIn(values.toList())
 
 /**
  * Same as `like("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`. See [like] for more info.
@@ -176,8 +212,12 @@ infix fun <T : Field> T.doesNotContain(value: String): Where<T> =
  * documentation above. AM I BEING PARANOID HERE?!?!
  */
 @JvmOverloads
-fun <T : Field> T.like(pattern: String, escapeExpression: String? = null): Where<T> =
-    Like(this, pattern, escapeExpression?.let { "ESCAPE '$escapeExpression'" })
+fun <T : Field> T.like(pattern: String, escapeExpression: String? = null): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.Like,
+    rhs = ValueHolder(pattern),
+    options = escapeExpression?.let { "ESCAPE '$escapeExpression'" }
+)
 
 /**
  * Same as [like] but preceded with a NOT.
@@ -185,14 +225,22 @@ fun <T : Field> T.like(pattern: String, escapeExpression: String? = null): Where
  * String comparison is case-insensitive when within ASCII range.
  */
 @JvmOverloads
-fun <T : Field> T.notLike(pattern: String, escapeExpression: String? = null): Where<T> =
-    NotLike(this, pattern, escapeExpression?.let { "ESCAPE '$escapeExpression'" })
+fun <T : Field> T.notLike(pattern: String, escapeExpression: String? = null): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.NotLike,
+    rhs = ValueHolder(pattern),
+    options = escapeExpression?.let { "ESCAPE '$escapeExpression'" }
+)
 
 /**
  * ANDs [this] and [where]. If [where] is null, returns [this].
  */
 infix fun <T : Field> Where<T>.and(where: Where<T>?): Where<T> = if (where != null) {
-    And(this, where)
+    Where(
+        lhs = WhereHolder(this),
+        operator = Operator.Combine.And,
+        rhs = WhereHolder(where)
+    )
 } else {
     this
 }
@@ -201,7 +249,11 @@ infix fun <T : Field> Where<T>.and(where: Where<T>?): Where<T> = if (where != nu
  * ORs [this] and [where]. If [where] is null, returns [this].
  */
 infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != null) {
-    Or(this, where)
+    Where(
+        lhs = WhereHolder(this),
+        operator = Operator.Combine.Or,
+        rhs = WhereHolder(where)
+    )
 } else {
     this
 }
@@ -223,7 +275,11 @@ infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != nul
  * queries. One to get contacts that have that particular type of data and another to get contacts
  * that were not part of the first query results.
  */
-fun <T : Field> T.isNotNull(): Where<T> = IsNotNull(this)
+fun <T : Field> T.isNotNull(): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.IsNot,
+    rhs = ValueHolder("NULL"),
+)
 
 /**
  * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
@@ -246,7 +302,11 @@ fun <T : Field> T.isNotNullOrEmpty(): Where<T> = isNotNull() and notEqualTo("")
  * Keep this function internal. Do not expose to consumers. Read the docs on [isNotNull] or
  * [isNotNullOrEmpty].
  */
-internal fun <T : Field> T.isNull(): Where<T> = IsNull(this)
+internal fun <T : Field> T.isNull(): Where<T> = Where(
+    lhs = FieldHolder(this),
+    operator = Operator.Match.Is,
+    rhs = ValueHolder("NULL"),
+)
 
 // endregion
 
@@ -291,15 +351,15 @@ internal fun <T : Field> T.isNull(): Where<T> = IsNull(this)
  * ```
  */
 // Not inlined because of private functions and classes.
-infix fun <F : Field, V : Any?> Collection<V>.whereOr(where: (V) -> Where<F>): Where<F>? =
-    asSequence().joinWhere(where, "OR")
+infix fun <F : Field, V : Any?> Collection<V>.whereOr(generateWhere: (V) -> Where<F>): Where<F>? =
+    asSequence().combineWhere(generateWhere, Operator.Combine.Or)
 
 /**
  * See [whereOr].
  */
 // Not inlined because of private functions and classes.
-infix fun <F : Field, V : Any?> Sequence<V>.whereOr(where: (V) -> Where<F>): Where<F>? =
-    joinWhere(where, "OR")
+infix fun <F : Field, V : Any?> Sequence<V>.whereOr(generateWhere: (V) -> Where<F>): Where<F>? =
+    combineWhere(generateWhere, Operator.Combine.Or)
 
 /**
  * Transforms each item in this collection to a [Where] and combines them with the "AND" operator.
@@ -331,15 +391,15 @@ infix fun <F : Field, V : Any?> Sequence<V>.whereOr(where: (V) -> Where<F>): Whe
  * // (display_name NOT LIKE 'letter%%') AND (data1 NOT LIKE 'letter%%' <omitted for brevity>)
  */
 // Not inlined because of private functions and classes.
-infix fun <F : Field, V : Any?> Collection<V>.whereAnd(where: (V) -> Where<F>): Where<F>? =
-    asSequence().joinWhere(where, "AND")
+infix fun <F : Field, V : Any?> Collection<V>.whereAnd(generateWhere: (V) -> Where<F>): Where<F>? =
+    asSequence().combineWhere(generateWhere, Operator.Combine.And)
 
 /**
  * See [whereAnd].
  */
 // Not inlined because of private functions and classes.
-infix fun <F : Field, V : Any?> Sequence<V>.whereAnd(where: (V) -> Where<F>): Where<F>? =
-    joinWhere(where, "AND")
+infix fun <F : Field, V : Any?> Sequence<V>.whereAnd(generateWhere: (V) -> Where<F>): Where<F>? =
+    combineWhere(generateWhere, Operator.Combine.And)
 
 /**
  * See [whereOr].
@@ -352,23 +412,29 @@ infix fun <T : Field> FieldSet<T>.whereOr(where: (T) -> Where<T>): Where<T>? = a
 infix fun <T : Field> FieldSet<T>.whereAnd(where: (T) -> Where<T>): Where<T>? = all.whereAnd(where)
 
 // Note that the above functions are not inlined because it requires this private fun to be public.
-private fun <F : Field, V : Any?> Sequence<V>.joinWhere(
-    where: (V) -> Where<F>,
-    separator: String
+private fun <F : Field, V : Any?> Sequence<V>.combineWhere(
+    generateWhere: (V) -> Where<F>,
+    operator: Operator.Combine
 ): Where<F>? {
-    if (isEmpty()) {
-        return null
-    }
+    var combinedWhere: Where<F>? = null
 
-    val whereString = joinToString(" $separator ") { "(${where(it)})" }
-    return JoinedWhere(whereString)
+    for (value in this) {
+        combinedWhere = if (combinedWhere == null) {
+            generateWhere(value)
+        } else {
+            Where(
+                lhs = WhereHolder(combinedWhere),
+                operator = operator,
+                rhs = WhereHolder(generateWhere(value))
+            )
+        }
+    }
+    return combinedWhere
 }
 
 // endregion
 
 // region Conversions
-
-private class ContactsTableWhere(whereString: String) : Where<ContactsField>(whereString)
 
 /**
  * Converts [this] Data where clause to a where clause that is usable for the Contacts table.
@@ -382,15 +448,14 @@ private class ContactsTableWhere(whereString: String) : Where<ContactsField>(whe
  * table will remain.
  */
 internal fun <T : AbstractDataField> Where<T>.inContactsTable(): Where<ContactsField> =
-    ContactsTableWhere(
-        toString()
-            .replace(RawContactsFields.ContactId.columnName, ContactsFields.Id.columnName)
+    copyWithNewFieldType { field ->
+        when (field) {
             // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
-            // For the sake of OCD, I'm performing this redundant replacement =) SUE ME!
-            .replace(Fields.Contact.Id.columnName, ContactsFields.Id.columnName)
-    )
-
-private class RawContactsTableWhere(whereString: String) : Where<RawContactsField>(whereString)
+            // For the sake of OCD and just-in-case, I'm performing this redundant replacement. SUE ME!
+            RawContactsFields.ContactId, Fields.Contact.Id -> ContactsFields.Id
+            else -> field // no substitution
+        }
+    }
 
 /**
  * Converts [this] Data where clause to a where clause that is usable for the RawContacts table.
@@ -403,49 +468,16 @@ private class RawContactsTableWhere(whereString: String) : Where<RawContactsFiel
  * table will remain.
  */
 internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawContactsField> =
-    RawContactsTableWhere(
-        toString().replace(Fields.RawContact.Id.columnName, RawContactsFields.Id.columnName)
-    )
+    copyWithNewFieldType { field ->
+        when (field) {
+            Fields.RawContact.Id -> RawContactsFields.Id
+            else -> field // no substitution
+        }
+    }
 
 // endregion
 
 // region Where
-
-/**
- * Each where expression is paired with its mimetype because the contacts Data table uses
- * generic column names (e.g. data1, data2, etc) using the column 'mimetype' to distinguish
- * the type of data in that generic column.
- *
- * For example, querying for contacts with name LIKE 'john' AND address LIKE 'colorado';
- *
- * ```
- * WHERE (data1 = 'john' AND mimetype = 'vnd.android.cursor.item/name')
- *   AND (data1 = 'colorado' AND mimetype = 'vnd.android.cursor.item/postal-address_v2')
- * ```
- *
- * This is important because if the mimetypes are not paired with the query;
- *
- * ```
- * WHERE (data1 = 'johnson' AND data1 = 'colorado')
- * ```
- *
- * The above will never match any row because 'johnson' = 'colorado' is never true.
- */
-private fun where(field: Field, operator: String, value: Any?, options: String? = null): String {
-    var where = "${field.columnName} $operator ${value.toSqlString()}"
-
-    if (options != null) {
-        where += " $options"
-    }
-
-    if (field is DataField && field.mimeType.value.isNotBlank()) {
-        where += " AND ${Fields.MimeType.columnName} = '${field.mimeType.value}'"
-    }
-    return where
-}
-
-private fun <T : Field> where(lhs: Where<T>, operator: String, rhs: Where<T>): String =
-    "($lhs) $operator ($rhs)"
 
 /**
  * The WHERE clause of a database query made up of a specific type of [Field] ([T]).
@@ -456,55 +488,236 @@ private fun <T : Field> where(lhs: Where<T>, operator: String, rhs: Where<T>): S
  * restrictions when constructing instances at compile time. For example, this allows us to create a
  * function that takes in a Where of GroupsField. The caller of that function can then only provide
  * a Where composed of one or more GroupsField.
+ *
+ * The type [T] is not enforced within the class itself in order to support mutating functions
+ * such as [inRawContactsTable] and [inContactsTable]. This will allow us to construct a Where<X>
+ * from a Where<Y>.
+ *
+ * ### Binary tree structure
+ *
+ * The form "lhs operator rhs" naturally forms a binary tree. A where can only be constructed in
+ * two different ways (hence the private constructor and two secondary constructors).
+ *
+ * - Base case: (lhs=FieldHolder, rhs=ValueHolder)
+ *     - THis can have a parent or siblings but cannot have children. AKA a leaf node.
+ *     - This can be the only node (the root not) in a tree.
+ * - Recursive case: (lhs=WhereHolder, rhs=WhereHolder)
+ *     - This can have a parent or siblings and MUST have children.
+ *     - This cannot be the only node in a tree though it can be the root node.
+ *
+ * For example,
+ *
+ *                                 WhereHolder
+ *          WhereHolder                                    WhereHolder
+ *   FieldHolder  ValueHolder               WhereHolder                   WhereHolder
+ *                                   FieldHolder  ValueHolder       FieldHolder  ValueHolder
+ *
+ *  With this in mind, we can do some cool stuff like in [copyWithNewFieldType]!
  */
-sealed class Where<out T : Field>(private val whereString: String) {
-    override fun toString(): String = whereString
+class Where<out T : Field> private constructor(
+    private val lhs: LeftHandSide,
+    private val operator: Operator,
+    private val rhs: RightHandSide,
+
+    /**
+     * More WHERE clause functions to add to the statement. E.G. ESCAPE.
+     */
+    private val options: String?
+) {
+
+    /**
+     * Construct a where in the form of field match value.
+     *
+     * E.G. email.address contains "gmail".
+     */
+    internal constructor(
+        lhs: FieldHolder, operator: Operator.Match, rhs: ValueHolder,
+        options: String? = null
+    ) : this(
+        lhs = lhs as LeftHandSide,
+        operator = operator,
+        rhs = rhs as RightHandSide,
+        options = options
+    )
+
+    /**
+     * Construct a where in the form of where combine where.
+     *
+     * E.G. (email contains "gmail") and (name startsWith "i")
+     */
+    internal constructor(
+        lhs: WhereHolder, operator: Operator.Combine, rhs: WhereHolder,
+        options: String? = null
+    ) : this(
+        lhs = lhs as LeftHandSide,
+        operator = operator,
+        rhs = rhs as RightHandSide,
+        options = options
+    )
+
+    /**
+     * Construct a copy of this where with the new field type determined by [substituteField].
+     */
+    internal fun <R : Field> copyWithNewFieldType(substituteField: (Field) -> Field): Where<R> {
+        /*
+         * Okay. Time for some "recursion" hehehe =). You know, I can't believe this interview
+         * skill is actually coming in handy... for once LOL! Ohh I'm so excited to have encountered
+         * this problem in the REAL LIFE! Ohh, I'm so hyped! Anyways, this is probably an easy level
+         * question in leet code. Standard tree traversal. So, I'll translate this to a leet code
+         * question. It's essentially "find leaf nodes of a binary tree".
+         *
+         * Given the root node (this) of a binary tree, use the substituteField function to replace
+         * the leaf nodes. See the class documentation for the binary tree structure.
+         *
+         * Without further ado, here is the code!
+         */
+        return if (lhs is FieldHolder && rhs is ValueHolder) {
+            // Base case. Perform the substitution.
+            Where(
+                lhs = FieldHolder(substituteField(lhs.field)),
+                operator = operator,
+                rhs = rhs,
+                options = options
+            )
+        } else if (lhs is WhereHolder && rhs is WhereHolder) {
+            // Recursive case. Traverse tree.
+            Where(
+                lhs = WhereHolder(lhs.where.copyWithNewFieldType(substituteField)),
+                operator = operator,
+                rhs = WhereHolder(rhs.where.copyWithNewFieldType(substituteField)),
+                options = options
+            )
+        } else {
+            // This should not happen with the current structure. If this does happen, it means
+            // that we made some changes that broke the structure.
+            throw ContactsException(
+                "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs:${rhs.javaClass.simpleName}"
+            )
+        }
+    }
+
+    // Only evaluate this once to save some CPU. This assumes that property values are immutable.
+    // If there are mutable property values, then this will be evaluated at the time of invocation
+    // and will not mutate along with the mutable property values (e.g. a mutable list). I don't
+    // think consumers expect this to mutate anyways if they happen to save a reference to it.
+    private val evaluatedWhereString: String by unsafeLazy {
+
+        var whereString = when (operator) {
+            is Operator.Combine -> "($lhs) $operator ($rhs)"
+            is Operator.Match -> "$lhs $operator $rhs"
+        }
+
+        if (options != null) {
+            whereString += " $options"
+        }
+
+        if (
+            lhs is FieldHolder &&
+            lhs.field is DataField &&
+            lhs.field.mimeType.value.isNotBlank()
+        ) {
+            /*
+             * Each where expression is paired with its mimetype because the contacts Data table
+             * uses generic column names (e.g. data1, data2, etc) using the column 'mimetype' to
+             * distinguish the type of data in that generic column.
+             *
+             * For example, querying for contacts with name LIKE 'john' AND address LIKE 'colorado';
+             *
+             * ```
+             * WHERE (data1 = 'john' AND mimetype = 'vnd.android.cursor.item/name')
+             *   AND (data1 = 'colorado' AND mimetype = 'vnd.android.cursor.item/postal-address_v2')
+             * ```
+             *
+             * This is important because if the mimetypes are not paired with the query;
+             *
+             * ```
+             * WHERE (data1 = 'johnson' AND data1 = 'colorado')
+             * ```
+             *
+             * The above will never match any row because 'johnson' = 'colorado' is never true.
+             */
+            whereString += " AND ${Fields.MimeType.columnName} = '${lhs.field.mimeType.value}'"
+        }
+
+        whereString
+    }
+
+    override fun toString(): String = evaluatedWhereString
+}
+
+/**
+ * Each element in a where statement has the structure; LHS OPERATOR RHS.
+ *
+ * The left hand side (LHS) can either be another where element OR it can be a field.
+ */
+internal sealed interface LeftHandSide
+
+/**
+ * Each element in a where statement has the structure; LHS OPERATOR RHS.
+ *
+ * The right hand side (RHS) can either be another where element OR it can be a value.
+ */
+internal sealed interface RightHandSide
+
+internal class WhereHolder(val where: Where<Field>) : LeftHandSide, RightHandSide {
+    override fun toString(): String = where.toString()
+}
+
+internal class FieldHolder(val field: Field) : LeftHandSide {
+    override fun toString(): String = field.columnName
+}
+
+internal class ValueHolder(val value: Any) : RightHandSide {
+    override fun toString(): String = value.toSqlString()
+}
+
+/**
+ * Each element in a where statement has the structure; LHS OPERATOR RHS.
+ *
+ * The operator is an SQL operator.
+ */
+internal sealed class Operator(private val operator: String) {
+
+    sealed class Combine(operator: String) : Operator(operator) {
+        object And : Combine("AND")
+        object Or : Combine("OR")
+    }
+
+    // Alternative name is "NoneCombine". Anything that is not AND, OR.
+    sealed class Match(operator: String) : Operator(operator) {
+        object Equal : Match("=")
+        object NotEqual : Match("!=")
+
+        object GreaterThan : Match(">")
+        object GreaterThanOrEqual : Match(">=")
+
+        object LessThan : Match("<")
+        object LessThanOrEqual : Match("<=")
+
+        object Is : Match("IS")
+        object IsNot : Match("IS NOT")
+
+        object In : Match("IN")
+        object NotIn : Match("NOT IN")
+
+        object Like : Match("LIKE")
+        object NotLike : Match("NOT LIKE")
+    }
+
+    override fun toString(): String = operator
 }
 
 // endregion
 
-// region Where classes
-
-private class And<T : Field>(lhs: Where<T>, rhs: Where<T>) : Where<T>(where(lhs, "AND", rhs))
-private class Or<T : Field>(lhs: Where<T>, rhs: Where<T>) : Where<T>(where(lhs, "OR", rhs))
-
-private class EqualTo<T : Field>(field: Field, value: Any) : Where<T>(where(field, "=", value))
-private class NotEqualTo<T : Field>(field: Field, value: Any) : Where<T>(where(field, "!=", value))
-
-private class GreaterThan<T : Field>(field: Field, value: Any) : Where<T>(where(field, ">", value))
-private class GreaterThanOrEqual<T : Field>(field: Field, value: Any) :
-    Where<T>(where(field, ">=", value))
-
-private class LessThan<T : Field>(field: Field, value: Any) : Where<T>(where(field, "<", value))
-private class LessThanOrEqual<T : Field>(field: Field, value: Any) :
-    Where<T>(where(field, "<=", value))
-
-private class IsNull<T : Field>(field: Field) : Where<T>(where(field, "IS", null))
-private class IsNotNull<T : Field>(field: Field) : Where<T>(where(field, "IS NOT", null))
-
-private class In<T : Field>(field: Field, values: Sequence<Any>) :
-    Where<T>(where(field, "IN", values))
-
-private class NotIn<T : Field>(field: Field, values: Sequence<Any>) :
-    Where<T>(where(field, "NOT IN", values))
-
-private class Like<T : Field>(field: Field, value: Any, options: String? = null) :
-    Where<T>(where(field, "LIKE", value, options))
-
-private class NotLike<T : Field>(field: Field, value: Any, options: String? = null) :
-    Where<T>(where(field, "NOT LIKE", value, options))
-
-private class JoinedWhere<T : Field>(whereString: String) : Where<T>(whereString)
-
-// endregion
+// region Helpers
 
 /**
  * The default [like] escape expression.
  */
-const val LIKE_ESCAPE_EXPR = "\\"
+private const val LIKE_ESCAPE_EXPR = "\\"
 
 /**
- * Returns a new String the escapes the LIKE wildcards (% and _) by prepending the
+ * Returns a new String that escapes the LIKE wildcards (% and _) by prepending the
  * [escapeExpression] to each instance of the wildcards in this object's string representation.
  */
 @JvmOverloads
@@ -543,3 +756,5 @@ private fun Any?.toSqlString(): String = when (this) {
     is MimeType -> value.toSqlString()
     else -> this.toString().toSqlString()
 }
+
+// endregion
