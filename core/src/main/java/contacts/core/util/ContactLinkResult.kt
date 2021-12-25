@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.Fields
 import contacts.core.`in`
 import contacts.core.entities.Contact
 import contacts.core.equalTo
@@ -25,7 +24,7 @@ import contacts.core.equalTo
 fun ContactLinkResult.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
     contactId?.let {
         contacts.query()
-            .where(Fields.Contact.Id equalTo it)
+            .where { Contact.Id equalTo it }
             .find(cancel)
             .firstOrNull()
     }
@@ -51,6 +50,6 @@ fun ContactUnlinkResult.contacts(
 ): List<Contact> = if (rawContactIds.isEmpty()) {
     emptyList()
 } else {
-    contacts.query().where(Fields.RawContact.Id `in` rawContactIds).find(cancel)
+    contacts.query().where { RawContact.Id `in` rawContactIds }.find(cancel)
 }
 

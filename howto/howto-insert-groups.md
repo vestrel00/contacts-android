@@ -106,7 +106,7 @@ Once you have the Group IDs, you can retrieve the newly created Groups via the `
 val groups = contactsApi
     .groups()
     .query()
-    .where(GroupsFields.Id `in` allGroupIds)
+    .where { Id `in` allGroupIds }
     .find()
 ```
 

@@ -13,7 +13,7 @@ Each field corresponds with an Entity property. For example, to include only the
 display name, organization company, and all phone number fields,
 
 ```kotlin
-query.include(mutableListOf<AbstractDataField>().apply {
+query.include(mutableSetOf<AbstractDataField>().apply {
     add(Fields.Contact.DisplayNamePrimary)
     add(Fields.Organization.Company)
     addAll(Fields.Phone.all)

@@ -27,7 +27,7 @@ import contacts.core.equalTo
 @JvmOverloads
 fun GroupMembershipEntity.group(contacts: Contacts, cancel: () -> Boolean = { false }): Group? =
     groupId?.let {
-        contacts.groups().query().where(GroupsFields.Id equalTo it).find(cancel).first()
+        contacts.groups().query().where { Id equalTo it }.find(cancel).first()
     }
 
 /**
@@ -53,7 +53,7 @@ fun Collection<GroupMembershipEntity>.groups(
         emptyList()
     } else {
         contacts.groups().query()
-            .where(GroupsFields.Id `in` membershipIds)
+            .where { Id `in` membershipIds }
             .find(cancel)
     }
 }

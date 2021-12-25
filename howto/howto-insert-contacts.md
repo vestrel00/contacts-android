@@ -151,10 +151,10 @@ To include only the given set of fields (data) in each of the insert operation,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info,
@@ -212,7 +212,7 @@ Once you have the RawContact IDs, you can retrieve the newly created Contacts vi
 ```kotlin
 val contacts = contactsApi
     .query()
-    .where(Fields.RawContact.Id `in` allRawContactIds)
+    .where { RawContact.Id `in` allRawContactIds }
     .find()
 ```
 
@@ -375,10 +375,10 @@ val insertResult = Contacts(context)
                 .groups()
                 .query()
                 .accounts(accountToAddContactTo)
-                .where(
-                    (GroupsFields.Favorites equalTo true) or
-                            (GroupsFields.Title contains "friend")
-                )
+                .where {
+                    (Favorites equalTo true) or
+                            (Title contains "friend")
+                }
                 .find()
                 .newMemberships()
         )

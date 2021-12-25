@@ -155,6 +155,11 @@ interface ProfileUpdate {
     fun include(fields: Sequence<AbstractDataField>): ProfileUpdate
 
     /**
+     * See [ProfileUpdate.include].
+     */
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): ProfileUpdate
+
+    /**
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
      */
     fun rawContacts(vararg rawContacts: ExistingRawContactEntity): ProfileUpdate
@@ -274,6 +279,9 @@ private class ProfileUpdateImpl(
             Include(fields + Fields.Required.all.asSequence())
         }
     }
+
+    override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
+        include(fields(Fields))
 
     override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())

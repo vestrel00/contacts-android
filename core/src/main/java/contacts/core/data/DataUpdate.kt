@@ -34,7 +34,17 @@ import contacts.core.util.unsafeLazy
  *
  * To update a set of [ExistingDataEntity];
  *
+ * In Kotlin,
+ *
  * ```kotlin
+ * val result = dataUpdate
+ *      .data(existingDataEntities)
+ *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
  * val result = dataUpdate
  *      .data(existingDataEntities)
  *      .commit()
@@ -93,6 +103,11 @@ interface DataUpdate {
      * See [DataUpdate.include].
      */
     fun include(fields: Sequence<AbstractDataField>): DataUpdate
+
+    /**
+     * See [DataUpdate.include].
+     */
+    fun include(fields: Fields.() -> Sequence<AbstractDataField>): DataUpdate
 
     /**
      * Adds the given [data] to the update queue, which will be updated on [commit].
@@ -200,6 +215,8 @@ private class DataUpdateImpl(
             Include(fields + Fields.Required.all.asSequence())
         }
     }
+
+    override fun include(fields: Fields.() -> Sequence<AbstractDataField>) = include(fields(Fields))
 
     override fun data(vararg data: ExistingDataEntity) = data(data.asSequence())
 

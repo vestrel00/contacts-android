@@ -58,7 +58,7 @@ val handleNames = Contacts(context)
     .data()
     .query()
     .handleNames()
-    .where(HandleNameFields.Handle startsWith "h")
+    .where { Handle startsWith "h" }
     .find()
 ```
 
@@ -72,10 +72,10 @@ that can be used in this function.
 
 By default, not calling the `include` function will include all fields, including custom data fields. 
 
-For example, to specifically include only `HandleName` and `Gender` fields, 
+For example, to explicitly include all `HandleName` fields, 
 
 ```kotlin
-.include(HandleNameFields.all + GenderFields.all)
+.include(HandleNameFields.all)
 ```
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
@@ -87,7 +87,7 @@ criteria based on specific field values. Custom data entries provides fields tha
 this function. For example, to match `HandleName`s starting with the letter "h",
 
 ```kotlin
-.where(HandleNameFields.Handle startsWith "h")
+.where { Handle startsWith "h" }
 ```
 
 The `BroadQuery` API provides a `whereAnyContactDataPartiallyMatches` function that NOT support

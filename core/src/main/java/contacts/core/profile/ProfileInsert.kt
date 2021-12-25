@@ -189,6 +189,11 @@ interface ProfileInsert {
     fun include(fields: Sequence<AbstractDataField>): ProfileInsert
 
     /**
+     * See [ProfileInsert.include].
+     */
+    fun include(fields: Fields.() -> Sequence<AbstractDataField>): ProfileInsert
+
+    /**
      * Configures a new [NewRawContact] for insertion, which will be inserted on [commit]. The
      * new instance is configured by the [configureRawContact] function.
      *
@@ -317,6 +322,9 @@ private class ProfileInsertImpl(
             Include(fields + Fields.Required.all.asSequence())
         }
     }
+
+    override fun include(fields: Fields.() -> Sequence<AbstractDataField>) =
+        include((fields(Fields)))
 
     override fun rawContact(configureRawContact: NewRawContact.() -> Unit): ProfileInsert =
         rawContact(NewRawContact().apply(configureRawContact))

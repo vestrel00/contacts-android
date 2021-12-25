@@ -3,6 +3,7 @@ package contacts.entities.custom.handlename
 import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractCustomDataField.ColumnName
 import contacts.core.AbstractCustomDataFieldSet
+import contacts.core.Where
 import contacts.core.entities.MimeType
 
 data class HandleNameField internal constructor(private val columnName: ColumnName) :
@@ -39,3 +40,8 @@ object HandleNameFields : AbstractCustomDataFieldSet<HandleNameField>() {
     @JvmStatic
     fun forMatching() = forMatching
 }
+
+@Suppress("FunctionName")
+inline fun HandleNameFields.Handle(
+    where: HandleNameField.() -> Where<HandleNameField>
+): Where<HandleNameField> = where(Handle)

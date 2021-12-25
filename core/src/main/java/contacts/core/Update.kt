@@ -151,6 +151,11 @@ interface Update {
     fun include(fields: Sequence<AbstractDataField>): Update
 
     /**
+     * See [Update.include].
+     */
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): Update
+
+    /**
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
      */
     fun rawContacts(vararg rawContacts: ExistingRawContactEntity): Update
@@ -288,6 +293,9 @@ private class UpdateImpl(
             Include(fields + Fields.Required.all.asSequence())
         }
     }
+
+    override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
+        include(fields(Fields))
 
     override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())
