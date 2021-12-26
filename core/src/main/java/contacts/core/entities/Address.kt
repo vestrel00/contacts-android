@@ -19,17 +19,40 @@ sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
      * up of structured components; [street], [poBox], [neighborhood], [city], [region], [postcode],
      * and [country].
      *
-     * When updating or inserting;
+     * ## Insert/update operations
      *
-     * - If the [formattedAddress] is null and there are non-null structured components provided,
-     *   the Contacts Provider will automatically set the formatted address by combining the
-     *   structured components.
+     * You have three different options when inserting/updating an [AddressEntity],
      *
-     * - If the [formattedAddress] is not null and all structured components are null, the Contacts
-     *   Provider automatically sets the street value to the formatted address.
+     * 1. If the [formattedAddress] is null and there are non-null structured components provided
+     *    (e.g. [street] and [city]), the Contacts Provider will automatically set the
+     *   [formattedAddress] by combining the structured components.
      *
-     * - If the [formattedAddress] and structured components are not null, the Contacts Provider
-     *   does nothing automatically.
+     * 2. If the [formattedAddress] is not null and all structured components are null, the Contacts
+     *   Provider automatically (to the best of its ability) sets the values for all the structured
+     *   components.
+     *
+     * 3. If the [formattedAddress] and structured components are not null, the Contacts Provider
+     *    does nothing automatically.
+     *
+     * #### Important things to know about
+     *
+     * If your app only allows users to update the structured components and not the combined
+     * [formattedAddress], you should set the [formattedAddress] to null when performing an update.
+     * This means **option 1 is for you**. Otherwise, if you are trying to set all structured
+     * components to null but you leave the [formattedAddress] not null, the Contacts Provider will
+     * automatically set the value(s) of the structured components to a derived value from the
+     * [formattedAddress]. In effect, your app would seemingly not allow users to clear the address.
+     *
+     * If your app only allows users to update the [formattedAddress] and not the structured
+     * components, you should set the structured components to null when performing an update. This
+     * means **option 2 is for you**. Otherwise, if you are trying to set the [formattedAddress] to
+     * null but you leave the structured components not null, the Contacts Provider will
+     * automatically set the value of the [formattedAddress] to a combined value from the structured
+     * components. In effect, your app would seemingly not allow users to clear the
+     * [formattedAddress].
+     *
+     * If you want to manually update both the [formattedAddress] and structured components with
+     * your own custom algorithm, you may do so at your own discretion =)
      */
     val formattedAddress: String?
 

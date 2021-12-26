@@ -86,6 +86,10 @@ val contacts = Contacts(context)
     .find()
 ```
 
+> Note that phone numbers are a special case because the Contacts Provider keeps track of the 
+> existence of a phone number for any given contact. Use `Contact.HasPhoneNumber equalTo true`
+> instead for a more optimized query.
+
 To get a list of contacts with the given IDs,
 
 ```kotlin

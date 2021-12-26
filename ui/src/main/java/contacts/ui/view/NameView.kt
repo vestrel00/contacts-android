@@ -47,6 +47,11 @@ class NameView @JvmOverloads constructor(
         set(value) {
             field = value
 
+            // This view does not expose the combined (display) name. Therefore, this should be set
+            // to null to allow the Contacts Provider to determine its value from the other name
+            // components upon insert/update. Not setting this to null will lead to a bug where
+            // users are not able to clear the name.
+            data.applyIfMutable { displayName = null }
             setNameFields()
         }
 
