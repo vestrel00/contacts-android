@@ -54,10 +54,7 @@ val websites = Contacts(this)
     .data()
     .query()
     .websites()
-    .where(
-        (Fields.Website.Url endsWith ".net")  
-            and (Fields.Contact.Id `in` contactIds)
-    )
+    .where { (Website.Url endsWith ".net") and (Contact.Id `in` contactIds) }
     .find()
 ```
 
@@ -240,7 +237,7 @@ val birthdayEvents = Contacts(this)
     .data()
     .query()
     .events()
-    .where(Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)
+    .where { Event.Type equalTo EventEntity.Type.BIRTHDAY }
     .find()
 ```
 

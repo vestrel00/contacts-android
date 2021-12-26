@@ -61,10 +61,10 @@ To include only the given set of fields (data) in each of the update operation,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)

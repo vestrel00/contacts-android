@@ -22,75 +22,75 @@ interface DataQueryFactory {
     /**
      * Queries for [Address]es.
      */
-    fun addresses(): DataQuery<AddressField, Address>
+    fun addresses(): DataQuery<AddressField, AddressFields, Address>
 
     /**
      * Queries for [Email]s.
      */
-    fun emails(): DataQuery<EmailField, Email>
+    fun emails(): DataQuery<EmailField, EmailFields, Email>
 
     /**
      * Queries for [Event]s.
      */
-    fun events(): DataQuery<EventField, Event>
+    fun events(): DataQuery<EventField, EventFields, Event>
 
     /**
      * Queries for [GroupMembership]s.
      */
-    fun groupMemberships(): DataQuery<GroupMembershipField, GroupMembership>
+    fun groupMemberships(): DataQuery<GroupMembershipField, GroupMembershipFields, GroupMembership>
 
     /**
      * Queries for [Im]s.
      */
-    fun ims(): DataQuery<ImField, Im>
+    fun ims(): DataQuery<ImField, ImFields, Im>
 
     /**
      * Queries for [Name]s.
      */
-    fun names(): DataQuery<NameField, Name>
+    fun names(): DataQuery<NameField, NameFields, Name>
 
     /**
      * Queries for [Nickname]s.
      */
-    fun nicknames(): DataQuery<NicknameField, Nickname>
+    fun nicknames(): DataQuery<NicknameField, NicknameFields, Nickname>
 
     /**
      * Queries for [Note]s.
      */
-    fun notes(): DataQuery<NoteField, Note>
+    fun notes(): DataQuery<NoteField, NoteFields, Note>
 
     /**
      * Queries for [Organization]s.
      */
-    fun organizations(): DataQuery<OrganizationField, Organization>
+    fun organizations(): DataQuery<OrganizationField, OrganizationFields, Organization>
 
     /**
      * Queries for [Phone]s.
      */
-    fun phones(): DataQuery<PhoneField, Phone>
+    fun phones(): DataQuery<PhoneField, PhoneFields, Phone>
 
     // Photos are intentionally left out as it is internal to the library.
 
     /**
      * Queries for [Relation]s.
      */
-    fun relations(): DataQuery<RelationField, Relation>
+    fun relations(): DataQuery<RelationField, RelationFields, Relation>
 
     /**
      * Queries for [SipAddress]es.
      */
-    fun sipAddresses(): DataQuery<SipAddressField, SipAddress>
+    fun sipAddresses(): DataQuery<SipAddressField, SipAddressFields, SipAddress>
 
     /**
      * Queries for [Website]s.
      */
-    fun websites(): DataQuery<WebsiteField, Website>
+    fun websites(): DataQuery<WebsiteField, WebsiteFields, Website>
 
     /**
      * Queries for custom data of type [E] with the given custom [mimeType].
      */
-    fun <F : AbstractCustomDataField, E : ExistingCustomDataEntity>
-            customData(mimeType: MimeType.Custom): DataQuery<F, E>
+    fun <F : AbstractCustomDataField, S : AbstractCustomDataFieldSet<F>, E : ExistingCustomDataEntity>
+            customData(mimeType: MimeType.Custom): DataQuery<F, S, E>
 }
 
 @Suppress("FunctionName")
@@ -104,65 +104,66 @@ private class DataQueryFactoryImpl(
     private val isProfile: Boolean
 ) : DataQueryFactory {
 
-    override fun addresses(): DataQuery<AddressField, Address> = DataQueryImpl(
+    override fun addresses(): DataQuery<AddressField, AddressFields, Address> = DataQueryImpl(
         contacts, Fields.Address, MimeType.Address, isProfile
     )
 
-    override fun emails(): DataQuery<EmailField, Email> = DataQueryImpl(
+    override fun emails(): DataQuery<EmailField, EmailFields, Email> = DataQueryImpl(
         contacts, Fields.Email, MimeType.Email, isProfile
     )
 
-    override fun events(): DataQuery<EventField, Event> = DataQueryImpl(
+    override fun events(): DataQuery<EventField, EventFields, Event> = DataQueryImpl(
         contacts, Fields.Event, MimeType.Event, isProfile
     )
 
-    override fun groupMemberships(): DataQuery<GroupMembershipField, GroupMembership> =
+    override fun groupMemberships(): DataQuery<GroupMembershipField, GroupMembershipFields, GroupMembership> =
         DataQueryImpl(
             contacts, Fields.GroupMembership, MimeType.GroupMembership, isProfile
         )
 
-    override fun ims(): DataQuery<ImField, Im> = DataQueryImpl(
+    override fun ims(): DataQuery<ImField, ImFields, Im> = DataQueryImpl(
         contacts, Fields.Im, MimeType.Im, isProfile
     )
 
-    override fun names(): DataQuery<NameField, Name> = DataQueryImpl(
+    override fun names(): DataQuery<NameField, NameFields, Name> = DataQueryImpl(
         contacts, Fields.Name, MimeType.Name, isProfile
     )
 
-    override fun nicknames(): DataQuery<NicknameField, Nickname> = DataQueryImpl(
+    override fun nicknames(): DataQuery<NicknameField, NicknameFields, Nickname> = DataQueryImpl(
         contacts, Fields.Nickname, MimeType.Nickname, isProfile
     )
 
-    override fun notes(): DataQuery<NoteField, Note> = DataQueryImpl(
+    override fun notes(): DataQuery<NoteField, NoteFields, Note> = DataQueryImpl(
         contacts, Fields.Note, MimeType.Note, isProfile
     )
 
-    override fun organizations(): DataQuery<OrganizationField, Organization> =
+    override fun organizations(): DataQuery<OrganizationField, OrganizationFields, Organization> =
         DataQueryImpl(
             contacts, Fields.Organization, MimeType.Organization, isProfile
         )
 
-    override fun phones(): DataQuery<PhoneField, Phone> = DataQueryImpl(
+    override fun phones(): DataQuery<PhoneField, PhoneFields, Phone> = DataQueryImpl(
         contacts, Fields.Phone, MimeType.Phone, isProfile
     )
 
-    override fun relations(): DataQuery<RelationField, Relation> = DataQueryImpl(
+    override fun relations(): DataQuery<RelationField, RelationFields, Relation> = DataQueryImpl(
         contacts, Fields.Relation, MimeType.Relation, isProfile
     )
 
-    override fun sipAddresses(): DataQuery<SipAddressField, SipAddress> = DataQueryImpl(
-        contacts, Fields.SipAddress, MimeType.SipAddress, isProfile
-    )
+    override fun sipAddresses(): DataQuery<SipAddressField, SipAddressFields, SipAddress> =
+        DataQueryImpl(
+            contacts, Fields.SipAddress, MimeType.SipAddress, isProfile
+        )
 
-    override fun websites(): DataQuery<WebsiteField, Website> = DataQueryImpl(
+    override fun websites(): DataQuery<WebsiteField, WebsiteFields, Website> = DataQueryImpl(
         contacts, Fields.Website, MimeType.Website, isProfile
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <F : AbstractCustomDataField, E : ExistingCustomDataEntity>
-            customData(mimeType: MimeType.Custom): DataQuery<F, E> = DataQueryImpl(
+    override fun <F : AbstractCustomDataField, S : AbstractCustomDataFieldSet<F>, E : ExistingCustomDataEntity>
+            customData(mimeType: MimeType.Custom): DataQuery<F, S, E> = DataQueryImpl(
         contacts,
-        contacts.customDataRegistry.entryOf(mimeType).fieldSet as AbstractCustomDataFieldSet<F>,
+        contacts.customDataRegistry.entryOf(mimeType).fieldSet as S,
         mimeType, isProfile
     )
 }
@@ -192,7 +193,7 @@ private class DataQueryFactoryImpl(
  * val addresses : List<Address> = addressesQuery
  *      .accounts(account)
  *      .include(Fields.Address.FormattedAddress)
- *      .where((Fields.Address.Country equalTo "US") and (Fields.Address.PostCode startsWith "78"))
+ *      .where { Address { (Country equalTo "US") and (PostCode startsWith "78") } }
  *      .orderBy(Fields.Address.PostCode.asc())
  *      .offset(5)
  *      .limit(10)
@@ -202,17 +203,21 @@ private class DataQueryFactoryImpl(
  * In Java,
  *
  * ```java
+ * import static contacts.core.Fields.*;
+ * import static contacts.core.WhereKt.*;
+ * import static contacts.core.OrderByKt.*;
+ *
  * List<Address> addresses = addressesQuery
  *      .accounts(account)
  *      .include(Address.FormattedAddress)
  *      .where(equalTo(Address.Country, "US").and(startsWith(Address.PostCode, "78")))
- *      .orderBy(Address.PostCode.asc())
+ *      .orderBy(asc(Address.PostCode))
  *      .offset(5)
  *      .limit(10)
  *      .find();
  * ```
  */
-interface DataQuery<F : DataField, E : ExistingDataEntity> {
+interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity> {
 
     /**
      * Limits this query to only search for data associated with one of the given [accounts].
@@ -224,17 +229,17 @@ interface DataQuery<F : DataField, E : ExistingDataEntity> {
      * associated Account to be included in the search. RawContacts without an associated account
      * are considered local or device-only contacts, which are not synced.
      */
-    fun accounts(vararg accounts: Account?): DataQuery<F, E>
+    fun accounts(vararg accounts: Account?): DataQuery<F, S, E>
 
     /**
      * See [DataQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account?>): DataQuery<F, E>
+    fun accounts(accounts: Collection<Account?>): DataQuery<F, S, E>
 
     /**
      * See [DataQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account?>): DataQuery<F, E>
+    fun accounts(accounts: Sequence<Account?>): DataQuery<F, S, E>
 
     /**
      * Includes the given set of [fields] of type [F] in the resulting data objects of type [E].
@@ -277,17 +282,22 @@ interface DataQuery<F : DataField, E : ExistingDataEntity> {
      * include/exclude in queries, inserts, and update, which will allow you to do things beyond
      * your wildest imagination!
      */
-    fun include(vararg fields: F): DataQuery<F, E>
+    fun include(vararg fields: F): DataQuery<F, S, E>
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Collection<F>): DataQuery<F, E>
+    fun include(fields: Collection<F>): DataQuery<F, S, E>
 
     /**
      * See [DataQuery.include].
      */
-    fun include(fields: Sequence<F>): DataQuery<F, E>
+    fun include(fields: Sequence<F>): DataQuery<F, S, E>
+
+    /**
+     * See [DataQuery.include].
+     */
+    fun include(fields: S.() -> Collection<F>): DataQuery<F, S, E>
 
     /**
      * Filters the returned data matching the criteria defined by the [where].
@@ -303,7 +313,12 @@ interface DataQuery<F : DataField, E : ExistingDataEntity> {
      * use other fields such as [Fields.Contact] (perhaps to get all data of type [E] of a Contact),
      * [Fields.RawContact], [Fields.IsSuperPrimary], etc...
      */
-    fun where(where: Where<AbstractDataField>?): DataQuery<F, E>
+    fun where(where: Where<AbstractDataField>?): DataQuery<F, S, E>
+
+    /**
+     * See [DataQuery.where].
+     */
+    fun where(where: Fields.() -> Where<AbstractDataField>?): DataQuery<F, S, E>
 
     /**
      * Orders the returned data using one or more [orderBy]s. If not specified, then data is ordered
@@ -313,31 +328,36 @@ interface DataQuery<F : DataField, E : ExistingDataEntity> {
      * optional parameter.
      */
     @SafeVarargs
-    fun orderBy(vararg orderBy: OrderBy<F>): DataQuery<F, E>
+    fun orderBy(vararg orderBy: OrderBy<F>): DataQuery<F, S, E>
 
     /**
      * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy<F>>): DataQuery<F, E>
+    fun orderBy(orderBy: Collection<OrderBy<F>>): DataQuery<F, S, E>
 
     /**
      * See [DataQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy<F>>): DataQuery<F, E>
+    fun orderBy(orderBy: Sequence<OrderBy<F>>): DataQuery<F, S, E>
+
+    /**
+     * See [DataQuery.orderBy].
+     */
+    fun orderBy(orderBy: S.() -> Collection<OrderBy<F>>): DataQuery<F, S, E>
 
     /**
      * Limits the maximum number of returned data to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
      */
-    fun limit(limit: Int): DataQuery<F, E>
+    fun limit(limit: Int): DataQuery<F, S, E>
 
     /**
      * Skips results 0 to [offset] (excluding the offset).
      *
      * If not specified, offset value of 0 is used.
      */
-    fun offset(offset: Int): DataQuery<F, E>
+    fun offset(offset: Int): DataQuery<F, S, E>
 
     /**
      * The list of [E]s.
@@ -378,10 +398,10 @@ interface DataQuery<F : DataField, E : ExistingDataEntity> {
     fun find(cancel: () -> Boolean): List<E>
 }
 
-private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
+private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity>(
     private val contacts: Contacts,
 
-    private val defaultIncludeFields: FieldSet<F>,
+    private val allFields: S,
     private val mimeType: MimeType,
     private val isProfile: Boolean,
 
@@ -390,12 +410,12 @@ private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
     // This allows us to append the RequiredDataFields, which casts T to AbstractDataField.
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> =
-        Include(defaultIncludeFields.all + REQUIRED_INCLUDE_FIELDS),
+        Include(allFields.all + REQUIRED_INCLUDE_FIELDS),
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET
-) : DataQuery<F, E> {
+) : DataQuery<F, S, E> {
 
     override fun toString(): String =
         """
@@ -415,7 +435,7 @@ private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account?>): DataQuery<F, E> = apply {
+    override fun accounts(accounts: Sequence<Account?>): DataQuery<F, S, E> = apply {
         rawContactsWhere = accounts.toRawContactsWhere()
     }
 
@@ -423,9 +443,9 @@ private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
 
     override fun include(fields: Collection<F>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<F>): DataQuery<F, E> = apply {
+    override fun include(fields: Sequence<F>): DataQuery<F, S, E> = apply {
         val includeFields = if (fields.isEmpty()) {
-            defaultIncludeFields.all.asSequence()
+            allFields.all.asSequence()
         } else {
             fields
         }
@@ -433,16 +453,20 @@ private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
         include = Include(includeFields + REQUIRED_INCLUDE_FIELDS)
     }
 
-    override fun where(where: Where<AbstractDataField>?): DataQuery<F, E> = apply {
+    override fun include(fields: S.() -> Collection<F>) = include(fields(allFields))
+
+    override fun where(where: Where<AbstractDataField>?): DataQuery<F, S, E> = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
         this.where = where ?: DEFAULT_WHERE
     }
+
+    override fun where(where: Fields.() -> Where<AbstractDataField>?) = where(where(Fields))
 
     override fun orderBy(vararg orderBy: OrderBy<F>) = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Collection<OrderBy<F>>) = orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy<F>>): DataQuery<F, E> = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<F>>): DataQuery<F, S, E> = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -450,7 +474,9 @@ private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
         }
     }
 
-    override fun limit(limit: Int): DataQuery<F, E> = apply {
+    override fun orderBy(orderBy: S.() -> Collection<OrderBy<F>>) = orderBy(orderBy(allFields))
+
+    override fun limit(limit: Int): DataQuery<F, S, E> = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
@@ -458,7 +484,7 @@ private class DataQueryImpl<F : DataField, E : ExistingDataEntity>(
         }
     }
 
-    override fun offset(offset: Int): DataQuery<F, E> = apply {
+    override fun offset(offset: Int): DataQuery<F, S, E> = apply {
         this.offset = if (offset >= 0) {
             offset
         } else {

@@ -163,6 +163,11 @@ interface Insert {
     fun include(fields: Sequence<AbstractDataField>): Insert
 
     /**
+     * See [Insert.include].
+     */
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): Insert
+
+    /**
      * Adds a new [NewRawContact] to the insert queue, which will be inserted on [commit].
      * The new instance is configured by the [configureRawContact] function.
      */
@@ -298,6 +303,9 @@ private class InsertImpl(
             Include(fields + Fields.Required.all.asSequence())
         }
     }
+
+    override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
+        include(fields(Fields))
 
     override fun rawContact(configureRawContact: NewRawContact.() -> Unit): Insert =
         rawContacts(NewRawContact().apply(configureRawContact))

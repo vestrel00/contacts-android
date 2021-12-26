@@ -2,7 +2,6 @@ package contacts.core.util
 
 import contacts.core.Contacts
 import contacts.core.ContactsException
-import contacts.core.Fields
 import contacts.core.entities.Contact
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MutableContact
@@ -57,7 +56,7 @@ internal fun Contacts.findContactWithId(
             .find(cancel)
     } else {
         query()
-            .where(Fields.Contact.Id equalTo contactId)
+            .where { Contact.Id equalTo contactId }
             .find(cancel)
             .firstOrNull()
     }

@@ -25,11 +25,29 @@ import contacts.core.util.unsafeLazy
  * where the group's title starts with "a", ordered by the group title in ascending order
  * (ignoring case).
  *
+ * In Kotlin,
+ *
  * ```kotlin
  * val groups = groupsQuery
  *      .accounts(account)
- *      .where(GroupsFields.Title startsWith "a")
+ *      .where { Title startsWith "a" }
  *      .orderBy(GroupsFields.Title.asc())
+ *      .limit(5)
+ *      .offset(2)
+ *      .find()
+ * ```
+ *
+ * In Java,
+ *
+ * ```kotlin
+ * import static contacts.core.GroupsFields.*;
+ * import static contacts.core.WhereKt.*;
+ * import static contacts.core.OrderByKt.*;
+ *
+ * val groups = groupsQuery
+ *      .accounts(account)
+ *      .where(startsWith(Title, "a"))
+ *      .orderBy(asc(GroupsFields.Title))
  *      .limit(5)
  *      .offset(2)
  *      .find()
@@ -76,6 +94,11 @@ interface GroupsQuery {
     fun where(where: Where<GroupsField>?): GroupsQuery
 
     /**
+     * See [GroupsQuery.where]
+     */
+    fun where(where: GroupsFields.() -> Where<GroupsField>?): GroupsQuery
+
+    /**
      * Orders the returned [Group]s using one or more [orderBy]s. If not specified, then groups
      * are ordered by ID in ascending order.
      *
@@ -96,6 +119,11 @@ interface GroupsQuery {
      * See [GroupsQuery.orderBy].
      */
     fun orderBy(orderBy: Sequence<OrderBy<GroupsField>>): GroupsQuery
+
+    /**
+     * See [GroupsQuery.orderBy].
+     */
+    fun orderBy(orderBy: GroupsFields.() -> Sequence<OrderBy<GroupsField>>): GroupsQuery
 
     /**
      * Limits the maximum number of returned [Group]s to the given [limit].
@@ -210,6 +238,8 @@ private class GroupsQueryImpl(
         this.where = where ?: DEFAULT_WHERE
     }
 
+    override fun where(where: GroupsFields.() -> Where<GroupsField>?) = where(where(GroupsFields))
+
     override fun orderBy(vararg orderBy: OrderBy<GroupsField>) = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Collection<OrderBy<GroupsField>>) = orderBy(orderBy.asSequence())
@@ -221,6 +251,9 @@ private class GroupsQueryImpl(
             CompoundOrderBy(orderBy.toSet())
         }
     }
+
+    override fun orderBy(orderBy: GroupsFields.() -> Sequence<OrderBy<GroupsField>>) =
+        orderBy(orderBy(GroupsFields))
 
     override fun limit(limit: Int): GroupsQuery = apply {
         this.limit = if (limit > 0) {

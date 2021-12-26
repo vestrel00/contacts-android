@@ -37,22 +37,40 @@ import contacts.core.util.unsafeLazy
  * ## Usage
  *
  * Here is an example query that returns the first 10 [Contact]s, skipping the first 5, where the
- * any Contact data (e.g. name, email, address, phone, etc) matches the search term "john", ordered
- * by the Contact display name primary (given name first) in ascending order (ignoring case).  Only
- * Contacts with at least one RawContact belonging to the given account and groups are included.
- * Only the full name and email address attributes of the [Contact] objects are included.
+ * any Contact data (e.g. name, email, address, phone, note, etc) partially matches the search term
+ * "john", ordered by the Contact display name primary (given name first) in ascending order
+ * (ignoring case). Include only Contacts with at least one RawContact belonging to the given
+ * account and groups. Include only the name and email properties of [Contact]s.
+ *
+ * In Kotlin,
  *
  * ```kotlin
- * import contacts.core.Fields.Name
- * import contacts.core.Fields.Address
- * import contacts.core.ContactsFields.DisplayNamePrimary
+ * val contacts : List<Contact> = broadQuery.
+ *      .accounts(account)
+ *      .groups(groups)
+ *      .include { Name.all + Address.all }
+ *      .whereAnyContactDataPartiallyMatches("john")
+ *      .orderBy(ContactsFields.DisplayNamePrimary.asc())
+ *      .offset(5)
+ *      .limit(10)
+ *      .find()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * import static contacts.core.Fields.*;
+ * import static contacts.core.OrderByKt.*;
  *
  * val contacts : List<Contact> = broadQuery.
  *      .accounts(account)
  *      .groups(groups)
- *      .include(Name, Address)
+ *      .include(new ArrayList<>() {{
+ *           addAll(Name.getAll());
+ *           addAll(Address.getAll());
+ *       }})
  *      .whereAnyContactDataPartiallyMatches("john")
- *      .orderBy(DisplayNamePrimary.asc())
+ *      .orderBy(asc(ContactsFields.DisplayNamePrimary))
  *      .offset(5)
  *      .limit(10)
  *      .find()
@@ -271,6 +289,11 @@ interface BroadQuery {
     fun include(fields: Sequence<AbstractDataField>): BroadQuery
 
     /**
+     * See [BroadQuery.include].
+     */
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): BroadQuery
+
+    /**
      * Filters the [Contact]s partially matching the [searchString]. If not specified or null or
      * empty, then all [Contact]s are returned.
      *
@@ -333,6 +356,11 @@ interface BroadQuery {
      * See [BroadQuery.orderBy].
      */
     fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): BroadQuery
+
+    /**
+     * See [BroadQuery.orderBy].
+     */
+    fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>): BroadQuery
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
@@ -460,6 +488,9 @@ private class BroadQueryImpl(
         }
     }
 
+    override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
+        include(fields(Fields))
+
     override fun whereAnyContactDataPartiallyMatches(searchString: String?): BroadQuery = apply {
         // Yes, I know DEFAULT_SEARCH_STRING is null. This reads better though.
         this.searchString = searchString ?: DEFAULT_SEARCH_STRING
@@ -477,6 +508,9 @@ private class BroadQueryImpl(
             CompoundOrderBy(orderBy.toSet())
         }
     }
+
+    override fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>) =
+        orderBy(orderBy(ContactsFields))
 
     override fun limit(limit: Int): BroadQuery = apply {
         this.limit = if (limit > 0) {

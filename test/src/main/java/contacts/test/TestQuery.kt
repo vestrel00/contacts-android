@@ -38,6 +38,9 @@ internal class TestQuery(private val query: Query) : Query {
         query.include(fields + TestDataFields.all)
     }
 
+    override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
+        include(fields(Fields))
+
     override fun where(where: Where<AbstractDataField>?): TestQuery = apply {
         // Make sure only RawContacts with the test marker data are queried.
         query.where(
@@ -49,6 +52,8 @@ internal class TestQuery(private val query: Query) : Query {
         )
     }
 
+    override fun where(where: Fields.() -> Where<AbstractDataField>?) = where(where(Fields))
+
     override fun orderBy(vararg orderBy: OrderBy<ContactsField>): TestQuery =
         orderBy(orderBy.asSequence())
 
@@ -58,6 +63,9 @@ internal class TestQuery(private val query: Query) : Query {
     override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): TestQuery = apply {
         query.orderBy(orderBy)
     }
+
+    override fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>) =
+        orderBy(orderBy(ContactsFields))
 
     override fun limit(limit: Int): TestQuery = apply {
         query.limit(limit)

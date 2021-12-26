@@ -151,13 +151,13 @@ WHERE clauses.
 For example, to find groups with a specific title,
 
 ```kotlin
-.where(GroupsFields.Title equalToIgnoreCase "friends")
+.where { Title equalToIgnoreCase "friends" }
 ```
 
 To get a list of groups by IDs,
 
 ```kotlin
-.where(GroupsFields.Id `in` groupIds)
+.where { Id `in` groupIds }
 ```
 
 ## Different groups with the same titles

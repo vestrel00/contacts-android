@@ -191,7 +191,7 @@ class ContactView @JvmOverloads constructor(
      */
     suspend fun loadContactWithId(contactId: Long, contacts: Contacts): Boolean {
         val contact = contacts.queryWithPermission()
-            .where(Fields.Contact.Id equalTo contactId)
+            .where { Contact.Id equalTo contactId }
             .findWithContext()
             .firstOrNull()
             ?.mutableCopy()
@@ -446,7 +446,7 @@ class ContactView @JvmOverloads constructor(
         // only to copy over the group memberships to the RawContacts =)
         val refreshedContact = contacts.queryWithPermission()
             .include(Fields.GroupMembership.all)
-            .where(Fields.Contact.Id equalTo contactId)
+            .where { Contact.Id equalTo contactId }
             .findWithContext()
             .firstOrNull()
             ?: return

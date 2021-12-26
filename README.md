@@ -173,25 +173,25 @@ the results) ordered by display name in descending order, matching ALL of these 
 ```kotlin
 val contacts = Contacts(context)
     .query()
-    .where(
-        (Fields.Name.GivenName startsWith "leo") and
-        ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
-        (Fields.Address.Country equalToIgnoreCase "us") and
-        ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)) and
-        (Fields.Contact.Options.Starred equalTo true) and
-        (Fields.Nickname.Name equalTo "DarEdEvil") and
-        (Fields.Organization.Company `in` listOf("facebook", "FB")) and
-        (Fields.Note.Note.isNotNullOrEmpty())
-    )
+    .where {
+        (Name.GivenName startsWith "leo") and
+        (Email.Address { endsWith("gmail.com") or endsWith("hotmail.com") }) and
+        (Address.Country equalToIgnoreCase "us") and
+        (Event { (Date lessThan Date().toWhereString()) and (Type equalTo EventEntity.Type.BIRTHDAY) }) and
+        (Contact.Options.Starred equalTo true) and
+        (Nickname.Name equalTo "DarEdEvil") and
+        (Organization.Company `in` listOf("facebook", "FB")) and
+        (Note.Note.isNotNullOrEmpty())
+    }
     .accounts(
         Account("john.doe@gmail.com", "com.google"),
         Account("john.doe@myspace.com", "com.myspace"),
     )
-    .include(
-        Fields.Contact.Id,
-        Fields.Contact.DisplayNamePrimary,
-        Fields.Phone.Number
-    )
+    .include { setOf(
+        Contact.Id,
+        Contact.DisplayNamePrimary,
+        Phone.Number
+    ) }
     .orderBy(ContactsFields.DisplayNamePrimary.desc())
     .offset(0)
     .limit(5)
@@ -273,7 +273,7 @@ val emails = Contacts(context)
     .data()
     .query()
     .emails()
-    .where(Fields.Email.Address endsWith  "gmail.com")
+    .where { Email.Address endsWith "gmail.com" }
     .orderBy(Fields.Email.Address.desc(ignoreCase = true))
     .offset(0)
     .limit(20)
