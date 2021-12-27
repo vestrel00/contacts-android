@@ -58,7 +58,7 @@ interface ProfileQuery {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
-     * blanks are not be included. If the Profile Contact only contains blank RawContacts, then
+     * blanks will not be included. If the Profile Contact only contains blank RawContacts, then
      * the query will still return the blank Contact regardless of this flag. This flag is set to
      * true by default.
      *

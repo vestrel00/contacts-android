@@ -78,13 +78,13 @@ import contacts.core.util.unsafeLazy
  * Unlike [BroadQuery.groups], this does not have a groups function. You may still match groups
  * (in a much flexible way) by using [Fields.GroupMembership] with [where].
  */
-interface Query {
+interface Query : Redactable {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts or blank
-     * Contacts ([Contact.isBlank]). Otherwise, blanks are not be included. This flag is set to true
-     * by default, which results in more database queries so setting this to false will increase
-     * performance, especially for large Contacts databases.
+     * Contacts ([Contact.isBlank]). Otherwise, blanks will not be included. This flag is set to
+     * true by default, which results in more database queries so setting this to false will
+     * increase performance, especially for large Contacts databases.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
@@ -349,7 +349,7 @@ interface Query {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): List<Contact>
+    fun find(): ContactsList
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -375,7 +375,39 @@ interface Query {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): List<Contact>
-    fun find(cancel: () -> Boolean): List<Contact>
+    fun find(cancel: () -> Boolean): ContactsList
+
+    /**
+     * Returns a redacted query where all sensitive data are redacted.
+     *
+     * ## Redacted queries will return no results!
+     *
+     * Redacted queries may have had critical query information redacted, which is required to make
+     * the query work properly. For example, the value passed into [accounts] and [where] will be
+     * redacted, which could lead to an invalid query.
+     *
+     * **Redacted queries should only be used for logging!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Query
+
+    /**
+     * A list of [Contact]s.
+     *
+     * ## The [toString] function
+     *
+     * The [toString] function of instances of this will not return the string representation of
+     * every contact in the list. It will instead return a summary of the contacts in the list and
+     * perhaps the first contact only.
+     *
+     * It will look something like "Found 123 Contacts. First Contact is ...".
+     *
+     * This is done due to the potentially large quantities of contacts and entities within each
+     * contact, which could block the UI if not logging in background threads.
+     *
+     * You may print individual contacts in this list by iterating through it.
+     */
+    interface ContactsList : List<Contact>, Redactable
 }
 
 @Suppress("FunctionName")
@@ -397,7 +429,9 @@ private class QueryImpl(
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
-    private var offset: Int = DEFAULT_OFFSET
+    private var offset: Int = DEFAULT_OFFSET,
+
+    override val isRedacted: Boolean = false
 ) : Query {
 
     override fun toString(): String =
@@ -410,8 +444,26 @@ private class QueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    // The WHERE clauses need to be redacted because they could contain private user data.
+    override fun redactedCopy(): Query = QueryImpl(
+        contentResolver,
+        permissions,
+        customDataRegistry,
+
+        includeBlanks,
+        rawContactsWhere?.redactedCopy(),
+        include,
+        where?.redactedCopy(),
+        orderBy,
+        limit,
+        offset,
+
+        isRedacted = true
+    )
 
     override fun includeBlanks(includeBlanks: Boolean): Query = apply {
         this.includeBlanks = includeBlanks
@@ -479,11 +531,11 @@ private class QueryImpl(
         }
     }
 
-    override fun find(): List<Contact> = find { false }
+    override fun find(): Query.ContactsList = find { false }
 
-    override fun find(cancel: () -> Boolean): List<Contact> {
+    override fun find(cancel: () -> Boolean): Query.ContactsList {
         if (!permissions.canQuery() || cancel()) {
-            return emptyList()
+            return ContactsListImpl(emptyList(), isRedacted)
         }
 
         // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
@@ -493,10 +545,12 @@ private class QueryImpl(
         include(include.fields)
         where(where)
 
-        return contentResolver.resolve(
+        val contacts = contentResolver.resolve(
             customDataRegistry, includeBlanks,
             rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
+
+        return ContactsListImpl(contacts.redactedCopiesOrThis(isRedacted), isRedacted)
     }
 
     private companion object {
@@ -670,3 +724,16 @@ internal fun ContentResolver.findContactIdsInDataTable(
     }
     contactIds
 } ?: emptySet()
+
+private class ContactsListImpl(
+    contacts: List<Contact>,
+    override val isRedacted: Boolean
+) : ArrayList<Contact>(contacts), Query.ContactsList {
+
+    override fun toString(): String = "Found $size Contacts. First Contact is ${firstOrNull()}"
+
+    override fun redactedCopy(): Query.ContactsList = ContactsListImpl(
+        redactedCopies(),
+        isRedacted = true
+    )
+}

@@ -6,7 +6,7 @@ import contacts.core.entities.CustomDataEntity
 import contacts.core.entities.ImmutableCustomDataEntity
 import contacts.core.entities.ImmutableCustomDataEntityWithMutableType
 import contacts.core.entities.ImmutableCustomDataEntityWithNullableMutableType
-import contacts.core.redactableCopies
+import contacts.core.redactedCopies
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -59,7 +59,7 @@ data class ImmutableCustomDataEntityHolder internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        entities = entities.asSequence().redactableCopies().toMutableList()
+        entities = entities.asSequence().redactedCopies().toMutableList()
     )
 }
 
@@ -98,7 +98,7 @@ data class CustomDataEntityHolder internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        entities = entities.asSequence().redactableCopies().toMutableList()
+        entities = entities.asSequence().redactedCopies().toMutableList()
     )
 }
 

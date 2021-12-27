@@ -3,7 +3,7 @@ package contacts.core.entities
 import contacts.core.entities.custom.AbstractCustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
-import contacts.core.redactableCopies
+import contacts.core.redactedCopies
 import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 
@@ -237,19 +237,19 @@ data class RawContact internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        addresses = addresses.redactableCopies(),
-        emails = emails.redactableCopies(),
-        events = events.redactableCopies(),
-        groupMemberships = groupMemberships.redactableCopies(),
-        ims = ims.redactableCopies(),
+        addresses = addresses.redactedCopies(),
+        emails = emails.redactedCopies(),
+        events = events.redactedCopies(),
+        groupMemberships = groupMemberships.redactedCopies(),
+        ims = ims.redactedCopies(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         organization = organization?.redactedCopy(),
-        phones = phones.redactableCopies(),
+        phones = phones.redactedCopies(),
         photo = photo?.redactedCopy(),
-        relations = relations.redactableCopies(),
+        relations = relations.redactedCopies(),
         sipAddress = sipAddress?.redactedCopy(),
-        websites = websites.redactableCopies(),
+        websites = websites.redactedCopies(),
 
         customDataEntities = customDataEntities.mapValues {
             it.value.redactedCopy()
@@ -292,19 +292,19 @@ data class MutableRawContact internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        addresses = addresses.asSequence().redactableCopies().toMutableList(),
-        emails = emails.asSequence().redactableCopies().toMutableList(),
-        events = events.asSequence().redactableCopies().toMutableList(),
-        groupMemberships = groupMemberships.asSequence().redactableCopies().toMutableList(),
-        ims = ims.asSequence().redactableCopies().toMutableList(),
+        addresses = addresses.asSequence().redactedCopies().toMutableList(),
+        emails = emails.asSequence().redactedCopies().toMutableList(),
+        events = events.asSequence().redactedCopies().toMutableList(),
+        groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
+        ims = ims.asSequence().redactedCopies().toMutableList(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         organization = organization?.redactedCopy(),
-        phones = phones.asSequence().redactableCopies().toMutableList(),
+        phones = phones.asSequence().redactedCopies().toMutableList(),
         photo = photo?.redactedCopy(),
-        relations = relations.asSequence().redactableCopies().toMutableList(),
+        relations = relations.asSequence().redactedCopies().toMutableList(),
         sipAddress = sipAddress?.redactedCopy(),
-        websites = websites.asSequence().redactableCopies().toMutableList(),
+        websites = websites.asSequence().redactedCopies().toMutableList(),
 
         customDataEntities = customDataEntities.mapValues {
             it.value.redactedCopy()
@@ -344,19 +344,19 @@ data class NewRawContact @JvmOverloads constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        addresses = addresses.asSequence().redactableCopies().toMutableList(),
-        emails = emails.asSequence().redactableCopies().toMutableList(),
-        events = events.asSequence().redactableCopies().toMutableList(),
-        groupMemberships = groupMemberships.asSequence().redactableCopies().toMutableList(),
-        ims = ims.asSequence().redactableCopies().toMutableList(),
+        addresses = addresses.asSequence().redactedCopies().toMutableList(),
+        emails = emails.asSequence().redactedCopies().toMutableList(),
+        events = events.asSequence().redactedCopies().toMutableList(),
+        groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
+        ims = ims.asSequence().redactedCopies().toMutableList(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         organization = organization?.redactedCopy(),
-        phones = phones.asSequence().redactableCopies().toMutableList(),
+        phones = phones.asSequence().redactedCopies().toMutableList(),
         photo = photo?.redactedCopy(),
-        relations = relations.asSequence().redactableCopies().toMutableList(),
+        relations = relations.asSequence().redactedCopies().toMutableList(),
         sipAddress = sipAddress?.redactedCopy(),
-        websites = websites.asSequence().redactableCopies().toMutableList(),
+        websites = websites.asSequence().redactedCopies().toMutableList(),
 
         customDataEntities = customDataEntities.mapValues {
             it.value.redactedCopy()
@@ -512,19 +512,19 @@ internal data class TempRawContact constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        addresses = addresses.asSequence().redactableCopies().toMutableList(),
-        emails = emails.asSequence().redactableCopies().toMutableList(),
-        events = events.asSequence().redactableCopies().toMutableList(),
-        groupMemberships = groupMemberships.asSequence().redactableCopies().toMutableList(),
-        ims = ims.asSequence().redactableCopies().toMutableList(),
+        addresses = addresses.asSequence().redactedCopies().toMutableList(),
+        emails = emails.asSequence().redactedCopies().toMutableList(),
+        events = events.asSequence().redactedCopies().toMutableList(),
+        groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
+        ims = ims.asSequence().redactedCopies().toMutableList(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         organization = organization?.redactedCopy(),
-        phones = phones.asSequence().redactableCopies().toMutableList(),
+        phones = phones.asSequence().redactedCopies().toMutableList(),
         photo = photo?.redactedCopy(),
-        relations = relations.asSequence().redactableCopies().toMutableList(),
+        relations = relations.asSequence().redactedCopies().toMutableList(),
         sipAddress = sipAddress?.redactedCopy(),
-        websites = websites.asSequence().redactableCopies().toMutableList(),
+        websites = websites.asSequence().redactedCopies().toMutableList(),
 
         customDataEntities = customDataEntities.mapValues {
             it.value.redactedCopy()

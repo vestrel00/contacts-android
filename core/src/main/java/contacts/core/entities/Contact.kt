@@ -1,7 +1,7 @@
 package contacts.core.entities
 
 import android.net.Uri
-import contacts.core.redactableCopies
+import contacts.core.redactedCopies
 import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -256,7 +256,7 @@ data class Contact internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        rawContacts = rawContacts.redactableCopies(),
+        rawContacts = rawContacts.redactedCopies(),
 
         displayNamePrimary = displayNamePrimary?.redact(),
         displayNameAlt = displayNameAlt?.redact(),
@@ -295,7 +295,7 @@ data class MutableContact internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        rawContacts = rawContacts.redactableCopies(),
+        rawContacts = rawContacts.redactedCopies(),
 
         displayNamePrimary = displayNamePrimary?.redact(),
         displayNameAlt = displayNameAlt?.redact(),

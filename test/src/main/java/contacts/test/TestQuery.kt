@@ -13,7 +13,14 @@ import contacts.test.entities.TestDataFields
  * A version of [Query] that is used only for tests. It only includes and matches RawContacts with
  * a [contacts.test.entities.TestData].
  */
-internal class TestQuery(private val query: Query) : Query {
+internal class TestQuery(
+    private val query: Query,
+    override val isRedacted: Boolean = false
+) : Query {
+
+    override fun toString(): String = query.toString()
+
+    override fun redactedCopy() = TestQuery(query.redactedCopy(), isRedacted = true)
 
     override fun includeBlanks(includeBlanks: Boolean): TestQuery = apply {
         query.includeBlanks(includeBlanks)
@@ -75,7 +82,7 @@ internal class TestQuery(private val query: Query) : Query {
         query.offset(offset)
     }
 
-    override fun find(): List<Contact> = query.find()
+    override fun find(): Query.ContactsList = query.find()
 
-    override fun find(cancel: () -> Boolean): List<Contact> = query.find(cancel)
+    override fun find(cancel: () -> Boolean): Query.ContactsList = query.find(cancel)
 }
