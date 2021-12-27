@@ -1,19 +1,20 @@
 package contacts.core.util
 
 import contacts.core.entities.*
+import contacts.core.redactedCopyOrThis
 
 /**
  * Adds the given [address] to [MutableRawContact.addresses].
  */
 fun MutableRawContact.addAddress(address: MutableAddressEntity) {
-    addresses.add(address)
+    addresses.add(address.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new address (configured by [configureAddress]) to [MutableRawContact.addresses].
  */
 fun MutableRawContact.addAddress(configureAddress: NewAddress.() -> Unit) {
-    addresses.add(NewAddress().apply(configureAddress))
+    addAddress(NewAddress().apply(configureAddress))
 }
 
 /**
@@ -39,14 +40,14 @@ fun MutableRawContact.removeAllAddresses() {
  * Adds the given [email] to [MutableRawContact.emails].
  */
 fun MutableRawContact.addEmail(email: MutableEmailEntity) {
-    emails.add(email)
+    emails.add(email.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new email (configured by [configureEmail]) to [MutableRawContact.emails].
  */
 fun MutableRawContact.addEmail(configureEmail: NewEmail.() -> Unit) {
-    emails.add(NewEmail().apply(configureEmail))
+    addEmail(NewEmail().apply(configureEmail))
 }
 
 /**
@@ -72,14 +73,14 @@ fun MutableRawContact.removeAllEmails() {
  * Adds the given [event] to [MutableRawContact.events].
  */
 fun MutableRawContact.addEvent(event: MutableEventEntity) {
-    events.add(event)
+    events.add(event.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new event (configured by [configureEvent]) to [MutableRawContact.events].
  */
 fun MutableRawContact.addEvent(configureEvent: NewEvent.() -> Unit) {
-    events.add(NewEvent().apply(configureEvent))
+    addEvent(NewEvent().apply(configureEvent))
 }
 
 /**
@@ -111,7 +112,7 @@ fun MutableRawContact.removeAllEvents() {
  * will be inserted.
  */
 fun MutableRawContact.addGroupMembership(groupMembership: GroupMembershipEntity) {
-    groupMemberships.add(groupMembership)
+    groupMemberships.add(groupMembership.redactedCopyOrThis(isRedacted))
 }
 
 /**
@@ -144,14 +145,14 @@ fun MutableRawContact.removeAllGroupMemberships() {
  * Adds the given [im] to [MutableRawContact.ims].
  */
 fun MutableRawContact.addIm(im: MutableImEntity) {
-    ims.add(im)
+    ims.add(im.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new IM (configured by [configureIm]) to [MutableRawContact.ims].
  */
 fun MutableRawContact.addIm(configureIm: NewIm.() -> Unit) {
-    ims.add(NewIm().apply(configureIm))
+    addIm(NewIm().apply(configureIm))
 }
 
 /**
@@ -177,42 +178,42 @@ fun MutableRawContact.removeAllIms() {
  * Sets the [MutableRawContact.name] to the given [name].
  */
 fun MutableRawContact.setName(name: MutableNameEntity?) {
-    this.name = name
+    this.name = name?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [MutableRawContact.name] (configured by [configureName]) to a new name.
  */
 fun MutableRawContact.setName(configureName: NewName.() -> Unit) {
-    this.name = NewName().apply(configureName)
+    setName(NewName().apply(configureName))
 }
 
 /**
  * Sets the [MutableRawContact.nickname] to the given [nickname].
  */
 fun MutableRawContact.setNickname(nickname: MutableNicknameEntity?) {
-    this.nickname = nickname
+    this.nickname = nickname?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [MutableRawContact.nickname] (configured by [configureNickname]) to a new nickname.
  */
 fun MutableRawContact.setNickname(configureNickname: NewNickname.() -> Unit) {
-    this.nickname = NewNickname().apply(configureNickname)
+    setNickname(NewNickname().apply(configureNickname))
 }
 
 /**
  * Sets the [MutableRawContact.note] to the given [note].
  */
 fun MutableRawContact.setNote(note: MutableNoteEntity?) {
-    this.note = note
+    this.note = note?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [MutableRawContact.note] (configured by [configureNote]) to a new note.
  */
 fun MutableRawContact.setNote(configureNote: NewNote.() -> Unit) {
-    this.note = NewNote().apply(configureNote)
+    setNote(NewNote().apply(configureNote))
 }
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
@@ -222,28 +223,28 @@ fun MutableRawContact.setNote(configureNote: NewNote.() -> Unit) {
  * Sets the [MutableRawContact.organization] to the given [organization].
  */
 fun MutableRawContact.setOrganization(organization: MutableOrganizationEntity?) {
-    this.organization = organization
+    this.organization = organization?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [MutableRawContact.organization] (configured by [configureOrganization]) to a new org.
  */
 fun MutableRawContact.setOrganization(configureOrganization: NewOrganization.() -> Unit) {
-    this.organization = NewOrganization().apply(configureOrganization)
+    setOrganization(NewOrganization().apply(configureOrganization))
 }
 
 /**
  * Adds the given [phone] to [MutableRawContact.phones].
  */
 fun MutableRawContact.addPhone(phone: MutablePhoneEntity) {
-    phones.add(phone)
+    phones.add(phone.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new phone (configured by [configurePhone]) to [MutableRawContact.phones].
  */
 fun MutableRawContact.addPhone(configurePhone: NewPhone.() -> Unit) {
-    phones.add(NewPhone().apply(configurePhone))
+    addPhone(NewPhone().apply(configurePhone))
 }
 
 /**
@@ -272,14 +273,14 @@ fun MutableRawContact.removeAllPhones() {
  * Adds the given [relation] to [MutableRawContact.relations].
  */
 fun MutableRawContact.addRelation(relation: MutableRelationEntity) {
-    relations.add(relation)
+    relations.add(relation.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new relation (configured by [configureRelation]) to [MutableRawContact.relations].
  */
 fun MutableRawContact.addRelation(configureRelation: NewRelation.() -> Unit) {
-    relations.add(NewRelation().apply(configureRelation))
+    addRelation(NewRelation().apply(configureRelation))
 }
 
 /**
@@ -308,28 +309,28 @@ fun MutableRawContact.removeAllRelations() {
  * Sets the [MutableRawContact.sipAddress] to the given [sipAddress].
  */
 fun MutableRawContact.setSipAddress(sipAddress: MutableSipAddressEntity?) {
-    this.sipAddress = sipAddress
+    this.sipAddress = sipAddress?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [MutableRawContact.sipAddress] (configured by [configureSipAddress]) to a new address.
  */
 fun MutableRawContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) {
-    this.sipAddress = NewSipAddress().apply(configureSipAddress)
+    setSipAddress(NewSipAddress().apply(configureSipAddress))
 }
 
 /**
  * Adds the given [website] to [MutableRawContact.websites].
  */
 fun MutableRawContact.addWebsite(website: MutableWebsiteEntity) {
-    websites.add(website)
+    websites.add(website.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new website (configured by [configureWebsite]) to [MutableRawContact.websites].
  */
 fun MutableRawContact.addWebsite(configureWebsite: NewWebsite.() -> Unit) {
-    websites.add(NewWebsite().apply(configureWebsite))
+    addWebsite(NewWebsite().apply(configureWebsite))
 }
 
 /**

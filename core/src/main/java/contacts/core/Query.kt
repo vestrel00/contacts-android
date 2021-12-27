@@ -400,8 +400,6 @@ interface Query : Redactable {
      * every contact in the list. It will instead return a summary of the contacts in the list and
      * perhaps the first contact only.
      *
-     * It will look something like "Found 123 Contacts. First Contact is ...".
-     *
      * This is done due to the potentially large quantities of contacts and entities within each
      * contact, which could block the UI if not logging in background threads.
      *
@@ -448,15 +446,16 @@ private class QueryImpl(
             }
         """.trimIndent()
 
-    // The WHERE clauses need to be redacted because they could contain private user data.
     override fun redactedCopy(): Query = QueryImpl(
         contentResolver,
         permissions,
         customDataRegistry,
 
         includeBlanks,
+        // Redact Account information.
         rawContactsWhere?.redactedCopy(),
         include,
+        // Redact search input.
         where?.redactedCopy(),
         orderBy,
         limit,
@@ -474,7 +473,7 @@ private class QueryImpl(
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): Query = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -494,7 +493,7 @@ private class QueryImpl(
 
     override fun where(where: Where<AbstractDataField>?): Query = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
-        this.where = where ?: DEFAULT_WHERE
+        this.where = where?.redactedCopyOrThis(isRedacted) ?: DEFAULT_WHERE
     }
 
     override fun where(where: Fields.() -> Where<AbstractDataField>?) = where(where(Fields))
@@ -730,7 +729,14 @@ private class ContactsListImpl(
     override val isRedacted: Boolean
 ) : ArrayList<Contact>(contacts), Query.ContactsList {
 
-    override fun toString(): String = "Found $size Contacts. First Contact is ${firstOrNull()}"
+    override fun toString(): String =
+        """
+            Query.Result {
+                Number of contacts found: $size
+                First contact: ${firstOrNull()}
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
 
     override fun redactedCopy(): Query.ContactsList = ContactsListImpl(
         redactedCopies(),

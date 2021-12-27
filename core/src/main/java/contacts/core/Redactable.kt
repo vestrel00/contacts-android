@@ -73,14 +73,6 @@ interface Redactable {
     fun redactedCopy(): Redactable
 
     /**
-     * If [redact] is true, returns a redacted copy of this entity. Otherwise, just returns this.
-     *
-     * This is short-hand for `if (redact) redactedCopy() else this`.
-     */
-    fun redactedCopyOrThis(redact: Boolean): Redactable =
-        if (redact) redactedCopy() else this
-
-    /**
      * Returns a redacted copy of this string. All characters are replaced with [REDACTED_CHAR].
      */
     fun String.redact(): String = redactString()
@@ -90,6 +82,15 @@ private const val REDACTED_CHAR = "*"
 
 // FIXME? Preserve spaces, tabs, and newlines?
 internal fun String.redactString(): String = REDACTED_CHAR.repeat(length)
+
+/**
+ * If [redact] is true, returns a redacted copy of this entity. Otherwise, just returns this.
+ *
+ * This is short-hand for `if (redact) redactedCopy() else this`.
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T : Redactable> T.redactedCopyOrThis(redact: Boolean): T =
+    if (redact) redactedCopy() as T else this
 
 /**
  * Returns a redacted copy of every element in this collection.
@@ -106,7 +107,6 @@ fun <T : Redactable> Collection<T>.redactedCopies(): List<T> = map { it.redacted
 // We should be okay as long as we apply some common sense =)
 @Suppress("UNCHECKED_CAST")
 fun <T : Redactable> Sequence<T>.redactedCopies(): Sequence<T> = map { it.redactedCopy() as T }
-
 
 /**
  * If [redact] is true, returns a redacted copy of every element in this collection. Otherwise, just
