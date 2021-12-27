@@ -349,7 +349,7 @@ interface Query : Redactable {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): ContactsList
+    fun find(): Result
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -374,19 +374,18 @@ interface Query : Redactable {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): List<Contact>
-    fun find(cancel: () -> Boolean): ContactsList
+    // fun find(cancel: () -> Boolean = { false }): ContactsList
+    fun find(cancel: () -> Boolean): Result
 
     /**
-     * Returns a redacted query where all sensitive data are redacted.
+     * Returns a redacted instance where all private user data are redacted.
      *
-     * ## Redacted queries will return no results!
+     * ## Redacted instances may produce invalid results!
      *
-     * Redacted queries may have had critical query information redacted, which is required to make
-     * the query work properly. For example, the value passed into [accounts] and [where] will be
-     * redacted, which could lead to an invalid query.
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
      *
-     * **Redacted queries should only be used for logging!**
+     * **Redacted operations should typically only be used for logging in production!**
      */
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): Query
@@ -405,7 +404,14 @@ interface Query : Redactable {
      *
      * You may print individual contacts in this list by iterating through it.
      */
-    interface ContactsList : List<Contact>, Redactable
+    // I know that this interface also exist in BroadQuery but I want each API to have its own
+    // interface for the results in case we need to deviate implementation. Besides, this is the
+    // only pair of APIs in the library that have the same name for its results interface.
+    interface Result : List<Contact>, Redactable {
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
+    }
 }
 
 @Suppress("FunctionName")
@@ -447,9 +453,7 @@ private class QueryImpl(
         """.trimIndent()
 
     override fun redactedCopy(): Query = QueryImpl(
-        contentResolver,
-        permissions,
-        customDataRegistry,
+        contentResolver, permissions, customDataRegistry,
 
         includeBlanks,
         // Redact Account information.
@@ -493,7 +497,7 @@ private class QueryImpl(
 
     override fun where(where: Where<AbstractDataField>?): Query = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
-        this.where = where?.redactedCopyOrThis(isRedacted) ?: DEFAULT_WHERE
+        this.where = (where ?: DEFAULT_WHERE)?.redactedCopyOrThis(isRedacted)
     }
 
     override fun where(where: Fields.() -> Where<AbstractDataField>?) = where(where(Fields))
@@ -530,11 +534,11 @@ private class QueryImpl(
         }
     }
 
-    override fun find(): Query.ContactsList = find { false }
+    override fun find(): Query.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): Query.ContactsList {
+    override fun find(cancel: () -> Boolean): Query.Result {
         if (!permissions.canQuery() || cancel()) {
-            return ContactsListImpl(emptyList(), isRedacted)
+            return QueryResult(emptyList(), isRedacted)
         }
 
         // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
@@ -549,7 +553,7 @@ private class QueryImpl(
             rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
 
-        return ContactsListImpl(contacts.redactedCopiesOrThis(isRedacted), isRedacted)
+        return QueryResult(contacts.redactedCopiesOrThis(isRedacted), isRedacted)
     }
 
     private companion object {
@@ -724,10 +728,10 @@ internal fun ContentResolver.findContactIdsInDataTable(
     contactIds
 } ?: emptySet()
 
-private class ContactsListImpl(
+private class QueryResult(
     contacts: List<Contact>,
     override val isRedacted: Boolean
-) : ArrayList<Contact>(contacts), Query.ContactsList {
+) : ArrayList<Contact>(contacts), Query.Result {
 
     override fun toString(): String =
         """
@@ -738,7 +742,7 @@ private class ContactsListImpl(
             }
         """.trimIndent()
 
-    override fun redactedCopy(): Query.ContactsList = ContactsListImpl(
+    override fun redactedCopy(): Query.Result = QueryResult(
         redactedCopies(),
         isRedacted = true
     )
