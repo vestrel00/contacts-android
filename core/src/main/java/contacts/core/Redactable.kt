@@ -1,9 +1,18 @@
 package contacts.core
 
 /**
- * Indicates that there could be sensitive private user data that could be redacted for legal
- * purposes. If you are logging contact data to remote data centers for analytics or crash
- * reporting, then it is important to redact certain parts of the contact's data.
+ * Indicates that there could be sensitive private user data that could be redacted, for legal
+ * purposes. If you are logging contact data in production to remote data centers for analytics or
+ * crash reporting, then it is important to redact certain parts of every contact's data.
+ *
+ * ## DISCLAIMER: This is NOT legal advice!
+ *
+ * This library is written and maintained by pure software developers with no official education or
+ * certifications in any facet of law. Please review the redacted outputs of the APIs and entities
+ * within this library with your legal team! This library will not be held liable for any privacy
+ * violations!
+ *
+ * With that out of the way, let's move on to the good stuff =)
  *
  * For example,
  *
@@ -66,12 +75,13 @@ interface Redactable {
     /**
      * Returns a redacted copy of this string. All characters are replaced with [REDACTED_CHAR].
      */
-    fun String.redact(): String = REDACTED_CHAR.repeat(length)
-
-    private companion object {
-        const val REDACTED_CHAR = "*"
-    }
+    fun String.redact(): String = redactString()
 }
+
+private const val REDACTED_CHAR = "*"
+
+// FIXME? Preserve spaces, tabs, and newlines?
+internal fun String.redactString(): String = REDACTED_CHAR.repeat(length)
 
 /**
  * Returns a redacted copy of ever redactable element in this collection.

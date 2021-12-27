@@ -40,22 +40,6 @@ infix fun <T : Field> T.notEqualTo(value: Any): Where<T> = Where(
     rhs = ValueHolder(value)
 )
 
-/**
- * Same as `like(value.likeWildcardsEscaped(), "\\")`. See [like] for more info.
- *
- * String comparison is case-insensitive when within ASCII range.
- */
-infix fun <T : Field> T.equalToIgnoreCase(value: Any): Where<T> =
-    like(value.likeWildcardsEscaped(), LIKE_ESCAPE_EXPR)
-
-/**
- * Same as `notLike(value.likeWildcardsEscaped(), "\\")`. See [like] for more info.
- *
- * String comparison is case-insensitive when within ASCII range.
- */
-infix fun <T : Field> T.notEqualToIgnoreCase(value: Any): Where<T> =
-    notLike(value.likeWildcardsEscaped(), LIKE_ESCAPE_EXPR)
-
 infix fun <T : Field> T.greaterThan(value: Any): Where<T> = Where(
     lhs = FieldHolder(this),
     operator = Operator.Match.GreaterThan,
@@ -96,62 +80,103 @@ infix fun <T : Field> T.notIn(values: Collection<Any>): Where<T> = Where(
 infix fun <T : Field> T.notIn(values: Sequence<Any>): Where<T> = notIn(values.toList())
 
 /**
- * Same as `like("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`. See [like] for more info.
+ * Same as `LIKE '[value]'`.
+ *
+ * See [like] for more info.
+ *
+ * String comparison is case-insensitive when within ASCII range.
+ */
+infix fun <T : Field> T.equalToIgnoreCase(value: String): Where<T> =
+    like(value, VALUE_PLACEHOLDER)
+
+/**
+ * Same as `LIKE '[value]%'`.
+ *
+ * See [like] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
 infix fun <T : Field> T.startsWith(value: String): Where<T> =
-    like("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
+    like(value, "${VALUE_PLACEHOLDER}%")
 
 /**
- * Same as `like("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)`.
+ * Same as `LIKE '%[value]'`.
+ *
+ * See [like] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
 infix fun <T : Field> T.endsWith(value: String): Where<T> =
-    like("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)
+    like(value, "%${VALUE_PLACEHOLDER}")
 
 /**
- * Same as `like("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`.
+ * Same as `LIKE '%[value]%'`.
+ *
+ * See [like] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
 infix fun <T : Field> T.contains(value: String): Where<T> =
-    like("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
+    like(value, "%${VALUE_PLACEHOLDER}%")
 
 /**
- * Same as `notLike("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`.
+ * Same as `NOT LIKE '[value]'`.
+ *
+ * See [notLike] for more info.
+ *
+ * String comparison is case-insensitive when within ASCII range.
+ */
+infix fun <T : Field> T.notEqualToIgnoreCase(value: String): Where<T> =
+    notLike(value, VALUE_PLACEHOLDER)
+
+/**
+ * Same as `NOT LIKE '[value]%'`.
+ *
+ * See [notLike] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
 infix fun <T : Field> T.doesNotStartWith(value: String): Where<T> =
-    notLike("${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
+    notLike(value, "${VALUE_PLACEHOLDER}%")
 
 /**
- * Same as `notLike("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)`.
+ * Same as `NOT LIKE '%[value]'`.
+ *
+ * See [notLike] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
 infix fun <T : Field> T.doesNotEndWith(value: String): Where<T> =
-    notLike("%${value.likeWildcardsEscaped()}", LIKE_ESCAPE_EXPR)
+    notLike(value, "%${VALUE_PLACEHOLDER}")
 
 /**
- * Same as `notLike("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)`.
+ * Same as `NOT LIKE '%[value]%'`.
+ *
+ * See [notLike] for more info.
  *
  * String comparison is case-insensitive when within ASCII range.
  */
 infix fun <T : Field> T.doesNotContain(value: String): Where<T> =
-    notLike("%${value.likeWildcardsEscaped()}%", LIKE_ESCAPE_EXPR)
+    notLike(value, "%${VALUE_PLACEHOLDER}%")
 
 /**
- * A [Where] of the form of `Field LIKE [pattern]`.
+ * A [Where] of the form of `Field LIKE pattern`.
  *
- * If the [pattern] contains % or _ that should be escaped, provide the [escapeExpression] used to
- * escape the [pattern]. For example, [contains] uses the pattern "%$value%". That alone has a flaw
- * that it does not escape the % and _ inside the value. This means that the string "LOVE_IS_%BLIND"
- * will be matched with the value "lov__i%s%lind". This flaw allows user input (the value) to use
- * wildcards. That is why [contains] adds the [escapeExpression] (typically "\") to the value first.
- * Then it calls this function with the [pattern] "%$escapedValue%" and [escapeExpression] "\".
+ * The pattern is resolved from the [value], [decorator], and [placeholder]. For example, in order
+ * to produce the pattern "%gmail%",
+ *
+ * - [value]: "gmail"
+ * - [decorator]: "%placeholder%"
+ * - [placeholder]: "placeholder"
+ *
+ * If the [value] contains % or _ that should be escaped, provide the [escapeExpression] to use
+ * escape the [value]. For example, [contains] uses the pattern "%[value]%". That alone has a flaw
+ * that it does not escape the % and _ inside the value. This means that the pattern
+ * "%LOVE_IS_%BLIND%" can be matched with raw values such as "loverisnotblind". This flaw allows
+ * user input [value] to use wildcards. That is why [contains] adds the [escapeExpression]
+ * (typically "\") to the value first. Then it calls this function with the pattern
+ * "%$escapedValue%" and [escapeExpression] "\". Correcting the previous user input [value] to
+ * "%LOVE\_IS\_\%BLIND%".
  *
  * **Warning!** This is one of the more (relatively) advanced, free-form operators provided by this
  * library. Use at your own expertise and knowledge of how it works. If you are not familiar with
@@ -212,11 +237,14 @@ infix fun <T : Field> T.doesNotContain(value: String): Where<T> =
  * documentation above. AM I BEING PARANOID HERE?!?!
  */
 @JvmOverloads
-fun <T : Field> T.like(pattern: String, escapeExpression: String? = null): Where<T> = Where(
-    lhs = FieldHolder(this),
-    operator = Operator.Match.Like,
-    rhs = ValueHolder(pattern),
-    options = escapeExpression?.let { "ESCAPE '$escapeExpression'" }
+fun <T : Field> T.like(
+    value: String,
+    decorator: String,
+    placeholder: String = VALUE_PLACEHOLDER,
+    escapeExpression: String? = LIKE_ESCAPE_EXPR
+): Where<T> = wherePattern(
+    Operator.Match.Pattern.Like,
+    value, decorator, placeholder, escapeExpression
 )
 
 /**
@@ -225,10 +253,30 @@ fun <T : Field> T.like(pattern: String, escapeExpression: String? = null): Where
  * String comparison is case-insensitive when within ASCII range.
  */
 @JvmOverloads
-fun <T : Field> T.notLike(pattern: String, escapeExpression: String? = null): Where<T> = Where(
+fun <T : Field> T.notLike(
+    value: String,
+    decorator: String,
+    placeholder: String = VALUE_PLACEHOLDER,
+    escapeExpression: String? = LIKE_ESCAPE_EXPR
+): Where<T> = wherePattern(
+    Operator.Match.Pattern.NotLike,
+    value, decorator, placeholder, escapeExpression
+)
+
+private fun <T : Field> T.wherePattern(
+    operator: Operator.Match.Pattern,
+    value: String,
+    decorator: String,
+    placeholder: String,
+    escapeExpression: String?
+): Where<T> = Where(
     lhs = FieldHolder(this),
-    operator = Operator.Match.NotLike,
-    rhs = ValueHolder(pattern),
+    operator = operator,
+    rhs = ValueHolder(
+        escapeExpression?.let(value::likeWildcardsEscaped) ?: value,
+        decorator,
+        placeholder
+    ),
     options = escapeExpression?.let { "ESCAPE '$escapeExpression'" }
 )
 
@@ -278,7 +326,7 @@ infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != nul
 fun <T : Field> T.isNotNull(): Where<T> = Where(
     lhs = FieldHolder(this),
     operator = Operator.Match.IsNot,
-    rhs = ValueHolder("NULL"),
+    rhs = ValueHolder(null),
 )
 
 /**
@@ -305,7 +353,7 @@ fun <T : Field> T.isNotNullOrEmpty(): Where<T> = isNotNull() and notEqualTo("")
 internal fun <T : Field> T.isNull(): Where<T> = Where(
     lhs = FieldHolder(this),
     operator = Operator.Match.Is,
-    rhs = ValueHolder("NULL"),
+    rhs = ValueHolder(null),
 )
 
 // endregion
@@ -448,12 +496,12 @@ private fun <F : Field, V : Any?> Sequence<V>.combineWhere(
  * table will remain.
  */
 internal fun <T : AbstractDataField> Where<T>.inContactsTable(): Where<ContactsField> =
-    copyWithNewFieldType { field ->
-        when (field) {
+    copyWithNewFieldType { fieldHolder ->
+        when (fieldHolder.field) {
             // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
             // For the sake of OCD and just-in-case, I'm performing this redundant replacement. SUE ME!
-            RawContactsFields.ContactId, Fields.Contact.Id -> ContactsFields.Id
-            else -> field // no substitution
+            RawContactsFields.ContactId, Fields.Contact.Id -> FieldHolder(ContactsFields.Id)
+            else -> fieldHolder // no substitution
         }
     }
 
@@ -468,10 +516,10 @@ internal fun <T : AbstractDataField> Where<T>.inContactsTable(): Where<ContactsF
  * table will remain.
  */
 internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawContactsField> =
-    copyWithNewFieldType { field ->
-        when (field) {
-            Fields.RawContact.Id -> RawContactsFields.Id
-            else -> field // no substitution
+    copyWithNewFieldType { fieldHolder ->
+        when (fieldHolder.field) {
+            Fields.RawContact.Id -> FieldHolder(RawContactsFields.Id)
+            else -> fieldHolder // no substitution
         }
     }
 
@@ -508,9 +556,9 @@ internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawCon
  * For example,
  *
  *                                 WhereHolder
- *          WhereHolder                                    WhereHolder
- *   FieldHolder  ValueHolder               WhereHolder                   WhereHolder
- *                                   FieldHolder  ValueHolder       FieldHolder  ValueHolder
+ *     FieldHolder-ValueHolder                            WhereHolder
+ *                                           WhereHolder               FieldHolder-ValueHolder
+ *                        FieldHolder-ValueHolder    FieldHolder-ValueHolder
  *
  *  With this in mind, we can do some cool stuff like in [copyWithNewFieldType]!
  */
@@ -522,8 +570,10 @@ class Where<out T : Field> private constructor(
     /**
      * More WHERE clause functions to add to the statement. E.G. ESCAPE.
      */
-    private val options: String?
-) {
+    private val options: String?,
+
+    override val isRedacted: Boolean = false
+) : Redactable {
 
     /**
      * Construct a where in the form of field match value.
@@ -561,7 +611,26 @@ class Where<out T : Field> private constructor(
     // Note that this function cannot be inlined because it is recursive (it calls itself). The
     // compiler is smart enough to detect this. If the compiler allowed inlining a recursive
     // function, then the code generation would look forever! Think about it!
-    internal fun <R : Field> copyWithNewFieldType(substituteField: (Field) -> Field): Where<R> {
+    internal fun <R : Field> copyWithNewFieldType(
+        substituteField: (FieldHolder) -> FieldHolder
+    ): Where<R> = copyWithFieldValueSubstitutions(
+        substituteField = substituteField
+    )
+
+    override fun redactedCopy(): Where<T> = copyWithFieldValueSubstitutions(
+        substituteValue = {
+            it.redactedCopy()
+        }
+    )
+
+    /**
+     * Returns a copy of this [Where] such that LHS fields are substituted with the output of
+     * [substituteField] and RHS values are substituted with the output of [substituteValue].
+     */
+    private fun <R : Field> copyWithFieldValueSubstitutions(
+        substituteField: (FieldHolder) -> FieldHolder = { it },
+        substituteValue: (ValueHolder) -> ValueHolder = { it },
+    ): Where<R> {
         /*
          * Okay. Time for some "recursion" hehehe =). You know, I can't believe this interview
          * skill is actually coming in handy... for once LOL! Ohh I'm so excited to have encountered
@@ -569,25 +638,36 @@ class Where<out T : Field> private constructor(
          * question in leet code. Standard tree traversal. So, I'll translate this to a leet code
          * question. It's essentially "find leaf nodes of a binary tree".
          *
-         * Given the root node (this) of a binary tree, use the substituteField function to replace
-         * the leaf nodes. See the class documentation for the binary tree structure.
+         * Given the root node (this) of a binary tree, use the substituteField and substituteValue
+         * functions to replace the leaf nodes. See the class documentation for the binary tree
+         * structure.
          *
          * Without further ado, here is the code!
          */
         return if (lhs is FieldHolder && rhs is ValueHolder) {
             // Base case. Perform the substitution.
             Where(
-                lhs = FieldHolder(substituteField(lhs.field)),
+                lhs = substituteField(lhs),
                 operator = operator,
-                rhs = rhs,
+                rhs = substituteValue(rhs),
                 options = options
             )
         } else if (lhs is WhereHolder && rhs is WhereHolder) {
             // Recursive case. Traverse tree.
             Where(
-                lhs = WhereHolder(lhs.where.copyWithNewFieldType(substituteField)),
+                lhs = WhereHolder(
+                    lhs.where.copyWithFieldValueSubstitutions(
+                        substituteField,
+                        substituteValue
+                    )
+                ),
                 operator = operator,
-                rhs = WhereHolder(rhs.where.copyWithNewFieldType(substituteField)),
+                rhs = WhereHolder(
+                    rhs.where.copyWithFieldValueSubstitutions(
+                        substituteField,
+                        substituteValue
+                    )
+                ),
                 options = options
             )
         } else {
@@ -670,8 +750,79 @@ internal class FieldHolder(val field: Field) : LeftHandSide {
     override fun toString(): String = field.columnName
 }
 
-internal class ValueHolder(val value: Any) : RightHandSide {
-    override fun toString(): String = value.toSqlString()
+internal class ValueHolder private constructor(
+
+    /**
+     * The underlying value that will be used for matching.
+     */
+    private val value: Any?,
+
+    /**
+     * The string representation of the [value] is injected into the [ValueDecorator.decorator]
+     * string when evaluating the overall [toString] value of this holder. This is used to ensure
+     * that only the actual value is redacted when it is surrounded by characters such as those used
+     * for "LIKE" operators.
+     *
+     * If this is null, the value is used directly.
+     */
+    private val valueDecorator: ValueDecorator?,
+
+    /**
+     * True if the [value] should be redacted in the [toString] function. The [valueDecorator] will
+     * not be redacted.
+     */
+    override val isRedacted: Boolean
+
+) : RightHandSide, Redactable {
+
+    constructor(value: Any?) : this(value, null, false)
+
+    constructor(value: String, decorator: String, placeholder: String) : this(
+        value,
+        ValueDecorator(decorator, placeholder),
+        false
+    )
+
+    override fun redactedCopy() = ValueHolder(value, valueDecorator, true)
+
+    override fun toString(): String =
+        valueDecorator?.resolveDecoratedValueToSqlString(value.toString(), isRedacted)
+            ?: value.toSqlString(
+                isRedacted
+            )
+
+    private class ValueDecorator(
+        /**
+         * The string representation of the [value] is injected into this string when evaluating the
+         * overall [toString] value of this holder. This is used to ensure that only the actual
+         * value is redacted when it is surrounded by other strings such as those used for "LIKE"
+         * operators.
+         */
+        private val decorator: String,
+
+        /**
+         * A substring in the [decorator] that will be replaced by the [value].
+         */
+        private val placeholder: String
+    ) {
+
+        /**
+         * Returns the SQL string where the [value] replaces the [placeholder] in the
+         * [decorator]. The [value] is redacted if [redactValue] is true.
+         */
+        fun resolveDecoratedValueToSqlString(value: String, redactValue: Boolean): String =
+            decorator.replace(
+                placeholder,
+                if (redactValue) {
+                    value.toString().redactString()
+                } else {
+                    value.toString()
+                }
+            )
+                // intentionally not redacting the combined string as the redaction for the
+                // underlying value has already been executed.
+                .toSqlString(false)
+    }
 }
 
 /**
@@ -703,8 +854,10 @@ internal sealed class Operator(private val operator: String) {
         object In : Match("IN")
         object NotIn : Match("NOT IN")
 
-        object Like : Match("LIKE")
-        object NotLike : Match("NOT LIKE")
+        sealed class Pattern(operator: String) : Match(operator) {
+            object Like : Pattern("LIKE")
+            object NotLike : Pattern("NOT LIKE")
+        }
     }
 
     override fun toString(): String = operator
@@ -714,10 +867,8 @@ internal sealed class Operator(private val operator: String) {
 
 // region Helpers
 
-/**
- * The default [like] escape expression.
- */
 private const val LIKE_ESCAPE_EXPR = "\\"
+private const val VALUE_PLACEHOLDER = "placeholder"
 
 /**
  * Returns a new String that escapes the LIKE wildcards (% and _) by prepending the
@@ -745,19 +896,25 @@ fun Any.likeWildcardsEscaped(escapeExpression: String = LIKE_ESCAPE_EXPR): Strin
     return builder.toString()
 }
 
-private fun Any?.toSqlString(): String = when (this) {
+private fun Any?.toSqlString(redactStringValue: Boolean): String = when (this) {
     null -> "NULL"
     is Boolean -> if (this) "1" else "0"
-    is String -> DatabaseUtils.sqlEscapeString(this)
-    is Array<*> -> this.asSequence().toSqlString()
-    is Collection<*> -> this.asSequence().toSqlString()
-    is Sequence<*> -> this.map { it?.toSqlString() }
+    is String -> DatabaseUtils.sqlEscapeString(
+        if (redactStringValue) {
+            this.redactString()
+        } else {
+            this
+        }
+    )
+    is Array<*> -> this.asSequence().toSqlString(redactStringValue)
+    is Collection<*> -> this.asSequence().toSqlString(redactStringValue)
+    is Sequence<*> -> this.map { it?.toSqlString(redactStringValue) }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
-    is DataEntity.Type -> value.toSqlString()
+    is DataEntity.Type -> value.toSqlString(redactStringValue)
     is Date -> time.toString() // we will not assume that all dates are for EventDate comparisons.
     is EventDate -> toWhereString()
-    is MimeType -> value.toSqlString()
-    else -> this.toString().toSqlString()
+    is MimeType -> value.toSqlString(redactStringValue)
+    else -> this.toString().toSqlString(redactStringValue)
 }
 
 // endregion
