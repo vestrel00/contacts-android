@@ -36,7 +36,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface Delete {
+interface Delete : Redactable {
 
     /**
      * Adds the given [rawContacts] to the delete queue, which will be deleted on [commit].
@@ -110,7 +110,20 @@ interface Delete {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commitInOneTransaction(): Boolean
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Delete
+
+    interface Result : Redactable {
 
         /**
          * True if all Contacts and RawContacts have successfully been deleted. False if even one
@@ -136,6 +149,9 @@ interface Delete {
          * deleted. This is used in conjunction with [Delete.contacts].
          */
         fun isSuccessful(contact: ExistingContactEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -149,7 +165,9 @@ private class DeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
     private val rawContactIds: MutableSet<Long> = mutableSetOf(),
-    private val contactIds: MutableSet<Long> = mutableSetOf()
+    private val contactIds: MutableSet<Long> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : Delete {
 
     override fun toString(): String =
@@ -157,8 +175,18 @@ private class DeleteImpl(
             Delete {
                 rawContactIds: $rawContactIds
                 contactIds: $contactIds
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    // There isn't really anything to redact =)
+    override fun redactedCopy(): Delete = DeleteImpl(
+        contentResolver, permissions,
+
+        rawContactIds, contactIds,
+
+        isRedacted = true
+    )
 
     override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())
@@ -181,7 +209,7 @@ private class DeleteImpl(
 
     override fun commit(): Delete.Result {
         if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
-            return DeleteFailed()
+            return DeleteFailed(isRedacted)
         }
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
@@ -209,7 +237,7 @@ private class DeleteImpl(
             }
         }
 
-        return DeleteResult(rawContactsResult, contactsResults)
+        return DeleteResult(rawContactsResult, contactsResults, isRedacted)
     }
 
     override fun commitInOneTransaction(): Boolean {
@@ -257,8 +285,24 @@ private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
 
 private class DeleteResult(
     private val rawContactIdsResultMap: Map<Long, Boolean>,
-    private val contactIdsResultMap: Map<Long, Boolean>
+    private val contactIdsResultMap: Map<Long, Boolean>,
+    override val isRedacted: Boolean
 ) : Delete.Result {
+
+    override fun toString(): String =
+        """
+            Delete.Result {
+                isSuccessful: $isSuccessful
+                rawContactIdsResultMap: $rawContactIdsResultMap
+                contactIdsResultMap: $contactIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Delete.Result = DeleteResult(
+        rawContactIdsResultMap, contactIdsResultMap,
+        isRedacted = true
+    )
 
     override val isSuccessful: Boolean by unsafeLazy {
         rawContactIdsResultMap.all { it.value } || contactIdsResultMap.all { it.value }
@@ -271,7 +315,19 @@ private class DeleteResult(
         contactIdsResultMap.getOrElse(contact.id) { false }
 }
 
-private class DeleteFailed : Delete.Result {
+private class DeleteFailed(
+    override val isRedacted: Boolean
+) : Delete.Result {
+
+    override fun toString(): String =
+        """
+            Delete.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Delete.Result = DeleteFailed(true)
 
     override val isSuccessful: Boolean = false
 
