@@ -2,7 +2,6 @@ package contacts.test
 
 import android.accounts.Account
 import contacts.core.*
-import contacts.core.entities.Contact
 import contacts.test.entities.TestDataFields
 
 // Note that we cannot use "by" to delegate calls to the internal query because function calls will
@@ -82,7 +81,7 @@ internal class TestQuery(
         query.offset(offset)
     }
 
-    override fun find(): Query.ContactsList = query.find()
+    override fun find(): Query.Result = query.find()
 
-    override fun find(cancel: () -> Boolean): Query.ContactsList = query.find(cancel)
+    override fun find(cancel: () -> Boolean): Query.Result = query.find(cancel)
 }

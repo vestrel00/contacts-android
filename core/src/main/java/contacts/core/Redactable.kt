@@ -73,6 +73,11 @@ interface Redactable {
     fun redactedCopy(): Redactable
 
     /**
+     * Returns a redacted copy of this entity as a String.
+     */
+    fun redactedString(): String = redactedCopy().toString()
+
+    /**
      * Returns a redacted copy of this string. All characters are replaced with [REDACTED_CHAR].
      */
     fun String.redact(): String = redactString()
@@ -83,10 +88,11 @@ private const val REDACTED_CHAR = "*"
 // FIXME? Preserve spaces, tabs, and newlines?
 internal fun String.redactString(): String = REDACTED_CHAR.repeat(length)
 
+internal fun String.redactStringOrThis(redact: Boolean): String =
+    if (redact) redactString() else this
+
 /**
  * If [redact] is true, returns a redacted copy of this entity. Otherwise, just returns this.
- *
- * This is short-hand for `if (redact) redactedCopy() else this`.
  */
 @Suppress("UNCHECKED_CAST")
 fun <T : Redactable> T.redactedCopyOrThis(redact: Boolean): T =
@@ -101,6 +107,13 @@ fun <T : Redactable> T.redactedCopyOrThis(redact: Boolean): T =
 fun <T : Redactable> Collection<T>.redactedCopies(): List<T> = map { it.redactedCopy() as T }
 
 /**
+ * If [redact] is true, returns a redacted copy of every element in this collection. Otherwise, just
+ * returns a copy of this collection as a list.
+ */
+fun <T : Redactable> Collection<T>.redactedCopiesOrThis(redact: Boolean): List<T> =
+    map { it.redactedCopyOrThis(redact) }
+
+/**
  * Returns a redacted copy of every element in this sequence.
  */
 // Unfortunately, this is an unchecked cast because we are not using recursive generic types.
@@ -109,21 +122,72 @@ fun <T : Redactable> Collection<T>.redactedCopies(): List<T> = map { it.redacted
 fun <T : Redactable> Sequence<T>.redactedCopies(): Sequence<T> = map { it.redactedCopy() as T }
 
 /**
- * If [redact] is true, returns a redacted copy of every element in this collection. Otherwise, just
- * returns a copy of this collection as a list.
+ * If [redact] is true, returns a redacted copy of every element in this sequence. Otherwise, just
+ * returns this.
  */
-// Unfortunately, this is an unchecked cast because we are not using recursive generic types.
-// We should be okay as long as we apply some common sense =)
-@Suppress("UNCHECKED_CAST")
-fun <T : Redactable> Collection<T>.redactedCopiesOrThis(redact: Boolean): List<T> =
-    map { it.redactedCopyOrThis(redact) as T }
+fun <T : Redactable> Sequence<T>.redactedCopiesOrThis(redact: Boolean): Sequence<T> =
+    map { it.redactedCopyOrThis(redact) }
 
 /**
- * Returns a redacted copy of every element in this sequence. Otherwise, just returns a copy of this
- * sequence.
+ * Returns a redacted copy of every key in this map.
  */
 // Unfortunately, this is an unchecked cast because we are not using recursive generic types.
 // We should be okay as long as we apply some common sense =)
 @Suppress("UNCHECKED_CAST")
-fun <T : Redactable> Sequence<T>.redactedCopiesOrThis(redact: Boolean): Sequence<T> =
-    map { it.redactedCopyOrThis(redact) as T }
+fun <K : Redactable, V> Map<K, V>.redactedKeys(): Map<K, V> = entries.associate {
+    (it.key.redactedCopy() as K) to it.value
+}
+
+/**
+ * If [redact] is true, returns a redacted copy of every key in this map. Otherwise, just returns
+ * this.
+ */
+fun <K : Redactable, V> Map<K, V>.redactedKeysOrThis(redact: Boolean): Map<K, V> =
+    if (redact) redactedKeys() else this
+
+/**
+ * Returns a redacted copy of every value in this map.
+ */
+// Unfortunately, this is an unchecked cast because we are not using recursive generic types.
+// We should be okay as long as we apply some common sense =)
+@Suppress("UNCHECKED_CAST")
+fun <K, V : Redactable> Map<K, V>.redactedValues(): Map<K, V> = entries.associate {
+    it.key to (it.value.redactedCopy() as V)
+}
+
+/**
+ * If [redact] is true, returns a redacted copy of every value in this map. Otherwise, just returns
+ * this.
+ */
+fun <K, V : Redactable> Map<K, V>.redactedValuesOrThis(redact: Boolean): Map<K, V> =
+    if (redact) redactedValues() else this
+
+/**
+ * Returns a redacted copy of every key and value in this map.
+ */
+// Unfortunately, this is an unchecked cast because we are not using recursive generic types.
+// We should be okay as long as we apply some common sense =)
+@Suppress("UNCHECKED_CAST")
+fun <K : Redactable, V : Redactable> Map<K, V>.redactedKeysAndValues(): Map<K, V> =
+    entries.associate {
+        (it.key.redactedCopy() as K) to (it.value.redactedCopy() as V)
+    }
+
+/**
+ * If [redact] is true, returns a redacted copy of every key and value in this map. Otherwise, just
+ * returns this.
+ */
+fun <K : Redactable, V : Redactable> Map<K, V>.redactedKeysAndValuesOrThis(redact: Boolean): Map<K, V> =
+    if (redact) redactedKeysAndValues() else this
+
+/* We should not expose extensions to consumers that apply to non-library interface/class signatures
+   unless we absolutely have no choice.
+
+@Suppress("UNCHECKED_CAST")
+fun <K, V> Map<K, V>.redactedCopies(): Map<K, V> = entries.associate {
+    it.key.redactIfRedactable() to it.value.redactIfRedactable()
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun <T> T.redactIfRedactable(): T = if (this is Redactable) redactedCopy() as T else this
+ */

@@ -79,7 +79,7 @@ import contacts.core.util.unsafeLazy
  *      .commit();
  * ```
  */
-interface Update {
+interface Update : Redactable {
 
     /**
      * If [deleteBlanks] is set to true, then updating blank RawContacts
@@ -230,7 +230,20 @@ interface Update {
     // fun commit(cancel: () -> Boolean = { false }): Result
     fun commit(cancel: () -> Boolean): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Update
+
+    interface Result : Redactable {
 
         /**
          * True if all Contacts and RawContacts have successfully been updated. False if even one
@@ -255,6 +268,9 @@ interface Update {
          * update queue via [Update.rawContacts].
          */
         fun isSuccessful(contact: ExistingContactEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -266,7 +282,9 @@ private class UpdateImpl(
 
     private var deleteBlanks: Boolean = true,
     private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
-    private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf()
+    private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : Update {
 
     override fun toString(): String =
@@ -275,8 +293,20 @@ private class UpdateImpl(
                 deleteBlanks: $deleteBlanks
                 include: $include
                 rawContacts: $rawContacts
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): Update = UpdateImpl(
+        contacts,
+
+        deleteBlanks,
+        include,
+        // Redact contact data.
+        rawContacts.asSequence().redactedCopies().toMutableSet(),
+
+        isRedacted = true
+    )
 
     override fun deleteBlanks(deleteBlanks: Boolean): Update = apply {
         this.deleteBlanks = deleteBlanks
@@ -304,7 +334,7 @@ private class UpdateImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Update = apply {
-        this.rawContacts.addAll(rawContacts)
+        this.rawContacts.addAll(rawContacts.redactedCopiesOrThis(isRedacted))
     }
 
     override fun contacts(vararg contacts: ExistingContactEntity) =
@@ -320,7 +350,7 @@ private class UpdateImpl(
 
     override fun commit(cancel: () -> Boolean): Update.Result {
         if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
-            return UpdateFailed()
+            return UpdateFailed(isRedacted)
         }
 
         val results = mutableMapOf<Long, Boolean>()
@@ -341,7 +371,8 @@ private class UpdateImpl(
                 contacts.updateRawContact(include.fields, rawContact)
             }
         }
-        return UpdateResult(results)
+
+        return UpdateResult(results, isRedacted)
     }
 }
 
@@ -501,7 +532,24 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
     }
 }
 
-private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {
+private class UpdateResult(
+    private val rawContactIdsResultMap: Map<Long, Boolean>,
+    override val isRedacted: Boolean
+) : Update.Result {
+
+    override fun toString(): String =
+        """
+            Update.Result {
+                isSuccessful: $isSuccessful
+                rawContactIdsResultMap: $rawContactIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Update.Result = UpdateResult(
+        rawContactIdsResultMap,
+        isRedacted = true
+    )
 
     override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
 
@@ -521,7 +569,17 @@ private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean
             && rawContactIdsResultMap.getOrElse(rawContactId) { false }
 }
 
-private class UpdateFailed : Update.Result {
+private class UpdateFailed(override val isRedacted: Boolean) : Update.Result {
+
+    override fun toString(): String =
+        """
+            Update.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Update.Result = UpdateFailed(true)
 
     override val isSuccessful: Boolean = false
 

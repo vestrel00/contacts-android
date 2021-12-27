@@ -93,3 +93,11 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
                     GroupsFields.AccountType.isNull()
         }
     }
+
+internal fun Account.redactedCopy(): Account = Account(
+    name.redactString(),
+    type.redactString()
+)
+
+
+internal fun Account.redactedCopyOrThis(redact: Boolean) = if (redact) redactedCopy() else this

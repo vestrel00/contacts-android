@@ -1,6 +1,7 @@
 package contacts.core.entities
 
 import android.accounts.Account
+import contacts.core.util.redactedCopy
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -234,8 +235,7 @@ data class NewGroup @JvmOverloads constructor(
 
         title = title.redact(),
 
-        // The account name needs to be redacted but we probably don't need to redact the type.
-        account = Account(account.name.redact(), account.type)
+        account = account.redactedCopy()
     )
 }
 

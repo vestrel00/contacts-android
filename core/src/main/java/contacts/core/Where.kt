@@ -783,13 +783,17 @@ internal class ValueHolder private constructor(
         false
     )
 
-    override fun redactedCopy() = ValueHolder(value, valueDecorator, true)
+    override fun redactedCopy() = ValueHolder(
+        // The value cannot be redacted at this point because the conversion to an SQL string occurs
+        // at a later point. It must be redacted at the same time that it is converted for SQL.
+        value,
+        valueDecorator,
+        true
+    )
 
     override fun toString(): String =
-        valueDecorator?.resolveDecoratedValueToSqlString(value.toString(), isRedacted)
-            ?: value.toSqlString(
-                isRedacted
-            )
+        valueDecorator?.decoratedValueToSqlString(value.toString(), isRedacted)
+            ?: value.toSqlString(isRedacted)
 
     private class ValueDecorator(
         /**
@@ -810,13 +814,13 @@ internal class ValueHolder private constructor(
          * Returns the SQL string where the [value] replaces the [placeholder] in the
          * [decorator]. The [value] is redacted if [redactValue] is true.
          */
-        fun resolveDecoratedValueToSqlString(value: String, redactValue: Boolean): String =
+        fun decoratedValueToSqlString(value: String, redactValue: Boolean): String =
             decorator.replace(
                 placeholder,
                 if (redactValue) {
-                    value.toString().redactString()
+                    value.redactString()
                 } else {
-                    value.toString()
+                    value
                 }
             )
                 // intentionally not redacting the combined string as the redaction for the
