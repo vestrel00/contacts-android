@@ -331,30 +331,32 @@ private class ProfileUpdateImpl(
     override fun commit(): ProfileUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): ProfileUpdate.Result {
-        if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
-            return ProfileUpdateFailed().redactedCopyOrThis(isRedacted)
-        }
+        // TODO issue #144 log this
+        return if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
+            ProfileUpdateFailed()
+        } else {
+            val results = mutableMapOf<Long, Boolean>()
+            for (rawContact in rawContacts) {
+                if (cancel()) {
+                    break
+                }
 
-        val results = mutableMapOf<Long, Boolean>()
-        for (rawContact in rawContacts) {
-            if (cancel()) {
-                break
+                results[rawContact.id] = if (!rawContact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for profile
+                    // updates. Otherwise, operation can succeed. This is only done to enforce API
+                    // design.
+                    false
+                } else if (rawContact.isBlank && deleteBlanks) {
+                    contacts.applicationContext.contentResolver
+                        .deleteRawContactWithId(rawContact.id)
+                } else {
+                    contacts.updateRawContact(include.fields, rawContact)
+                }
             }
 
-            results[rawContact.id] = if (!rawContact.isProfile) {
-                // Intentionally fail the operation to ensure that this is only used for profile
-                // updates. Otherwise, operation can succeed. This is only done to enforce API
-                // design.
-                false
-            } else if (rawContact.isBlank && deleteBlanks) {
-                contacts.applicationContext.contentResolver
-                    .deleteRawContactWithId(rawContact.id)
-            } else {
-                contacts.updateRawContact(include.fields, rawContact)
-            }
-        }
-
-        return ProfileUpdateResult(results).redactedCopyOrThis(isRedacted)
+            ProfileUpdateResult(results)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 }
 

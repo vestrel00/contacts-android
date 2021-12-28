@@ -588,17 +588,19 @@ private class BroadQueryImpl(
     override fun find(): BroadQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): BroadQuery.Result {
-        if (!permissions.canQuery()) {
-            return BroadQueryResult(emptyList()).redactedCopyOrThis(isRedacted)
-        }
+        // TODO issue #144 log this
+        return if (!permissions.canQuery()) {
+            BroadQueryResult(emptyList())
+        } else {
 
-        val contacts = contentResolver.resolve(
-            customDataRegistry,
-            includeBlanks, rawContactsWhere, groupMembershipWhere, include, searchString,
-            orderBy, limit, offset, cancel
-        )
-
-        return BroadQueryResult(contacts).redactedCopyOrThis(isRedacted)
+            val contacts = contentResolver.resolve(
+                customDataRegistry,
+                includeBlanks, rawContactsWhere, groupMembershipWhere, include, searchString,
+                orderBy, limit, offset, cancel
+            )
+            BroadQueryResult(contacts)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {

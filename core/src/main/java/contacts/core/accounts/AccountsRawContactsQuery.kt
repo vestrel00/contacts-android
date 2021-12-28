@@ -9,17 +9,14 @@ import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.blankRawContactMapper
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
-import contacts.core.util.isEmpty
-import contacts.core.util.query
-import contacts.core.util.toRawContactsWhere
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * Queries for Profile OR non-Profile (depending on instance) RawContacts.
  *
  * Thee queries return [BlankRawContact]s, which are RawContacts that contains no data (e.g. email,
  * phone). It only contains critical information required for performing RawContact operations such
- * as associating local RawContacts to an Account ([AccountsRawContactsAssociationsUpdate]).
+ * as associating local RawContacts to an Account ([AccountsLocalRawContactsUpdate]).
  *
  * ## Permissions
  *
@@ -60,7 +57,7 @@ import contacts.core.util.unsafeLazy
  *      .find()
  * ```
  */
-interface AccountsRawContactsQuery {
+interface AccountsRawContactsQuery : Redactable {
 
     /**
      * Limits the [BlankRawContact]s returned by this query to those belonging to one of the given
@@ -145,7 +142,7 @@ interface AccountsRawContactsQuery {
     fun offset(offset: Int): AccountsRawContactsQuery
 
     /**
-     * Returns the [BlankRawContactsList] matching the preceding query options.
+     * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
      *
@@ -156,10 +153,10 @@ interface AccountsRawContactsQuery {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): BlankRawContactsList
+    fun find(): Result
 
     /**
-     * Returns the [BlankRawContactsList] matching the preceding query options.
+     * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
      *
@@ -180,7 +177,20 @@ interface AccountsRawContactsQuery {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): BlankRawContactsList
-    fun find(cancel: () -> Boolean): BlankRawContactsList
+    fun find(cancel: () -> Boolean): Result
+
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): AccountsRawContactsQuery
 
     /**
      * The combined list of [BlankRawContact]s from the specified Accounts ordered by [orderBy].
@@ -189,7 +199,7 @@ interface AccountsRawContactsQuery {
      *
      * Use [rawContactsFor], to get the list of RawContacts for a specific Account.
      */
-    interface BlankRawContactsList : List<BlankRawContact> {
+    interface Result : List<BlankRawContact>, Redactable {
 
         /**
          * The list of [BlankRawContact]s from the specified [account] ordered by [orderBy].
@@ -197,6 +207,9 @@ interface AccountsRawContactsQuery {
          * The [offset] and [limit] functions DOES NOT apply to this list.
          */
         fun rawContactsFor(account: Account?): List<BlankRawContact>
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -218,7 +231,9 @@ private class AccountsRawContactsQueryImpl(
     private var where: Where<RawContactsField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<RawContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
-    private var offset: Int = DEFAULT_OFFSET
+    private var offset: Int = DEFAULT_OFFSET,
+
+    override val isRedacted: Boolean = false
 ) : AccountsRawContactsQuery {
 
     override fun toString(): String =
@@ -230,20 +245,36 @@ private class AccountsRawContactsQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                hasPermission: ${permissions.canQueryRawContacts()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): AccountsRawContactsQuery = AccountsRawContactsQueryImpl(
+        contentResolver, permissions, isProfile,
+
+        // Redact account info.
+        rawContactsWhere?.redactedCopy(),
+        // Redact search input
+        where?.redactedCopy(),
+        orderBy,
+        limit,
+        offset,
+
+        isRedacted = true
+    )
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): AccountsRawContactsQuery = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun where(where: Where<RawContactsField>?): AccountsRawContactsQuery = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
-        this.where = where ?: DEFAULT_WHERE
+        this.where = (where ?: DEFAULT_WHERE)?.redactedCopyOrThis(isRedacted)
     }
 
     override fun where(where: RawContactsFields.() -> Where<RawContactsField>?) =
@@ -282,16 +313,19 @@ private class AccountsRawContactsQueryImpl(
         }
     }
 
-    override fun find(): AccountsRawContactsQuery.BlankRawContactsList = find { false }
+    override fun find(): AccountsRawContactsQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): AccountsRawContactsQuery.BlankRawContactsList =
-        if (!permissions.canQueryRawContacts()) {
-            BlankRawContactsListImpl(emptyMap())
+    override fun find(cancel: () -> Boolean): AccountsRawContactsQuery.Result {
+        // TODO issue #144 log this
+        return if (!permissions.canQueryRawContacts()) {
+            AccountsRawContactsQueryResult(emptyList(), emptyMap())
         } else {
             contentResolver.resolve(
                 isProfile, rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
             )
-        }
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
+    }
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
@@ -312,14 +346,14 @@ private fun ContentResolver.resolve(
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
-): AccountsRawContactsQuery.BlankRawContactsList = query(
+): AccountsRawContactsQuery.Result = query(
     if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
     include,
     RawContactsFields.ContactId.isNotNull() and rawContactsWhere and where,
     sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
 ) {
     val accountRawContactsMap = mutableMapOf<Account?, MutableList<BlankRawContact>>()
-    val rawContactsList = BlankRawContactsListImpl(accountRawContactsMap)
+    val rawContactsList = mutableListOf<BlankRawContact>()
 
     val blankRawContactMapper = it.blankRawContactMapper()
     val rawContactsCursor = it.rawContactsCursor()
@@ -341,13 +375,38 @@ private fun ContentResolver.resolve(
         accountRawContactsMap.clear()
     }
 
-    rawContactsList
+    AccountsRawContactsQueryResult(rawContactsList, accountRawContactsMap)
 
-} ?: BlankRawContactsListImpl(emptyMap())
+} ?: AccountsRawContactsQueryResult(emptyList(), emptyMap())
 
-private class BlankRawContactsListImpl(
-    private val accountRawContactsMap: Map<Account?, List<BlankRawContact>>
-) : ArrayList<BlankRawContact>(), AccountsRawContactsQuery.BlankRawContactsList {
+private class AccountsRawContactsQueryResult private constructor(
+    rawContacts: List<BlankRawContact>,
+    private val accountRawContactsMap: Map<Account?, List<BlankRawContact>>,
+    override val isRedacted: Boolean
+) : ArrayList<BlankRawContact>(rawContacts), AccountsRawContactsQuery.Result {
+
+    constructor(
+        rawContacts: List<BlankRawContact>,
+        accountRawContactsMap: Map<Account?, List<BlankRawContact>>
+    ) : this(rawContacts, accountRawContactsMap, false)
+
+    override fun toString(): String =
+        """
+            AccountsRawContactsQuery.Result {
+                Number of raw contacts found: $size
+                First raw contact: ${firstOrNull()}
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): AccountsRawContactsQuery.Result =
+        AccountsRawContactsQueryResult(
+            redactedCopies(),
+            accountRawContactsMap.entries.associate {
+                it.key?.redactedCopy() to it.value.redactedCopies()
+            },
+            isRedacted = true
+        )
 
     override fun rawContactsFor(account: Account?): List<BlankRawContact> =
         accountRawContactsMap.getOrElse(account) { emptyList() }

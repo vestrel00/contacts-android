@@ -7,6 +7,7 @@ import contacts.core.ContactsPermissions
 import contacts.core.accounts.AccountsQuery
 import contacts.core.entities.NewGroup
 import contacts.core.entities.operation.GroupsOperation
+import contacts.core.groups.GroupsInsert.Result.FailureReason
 import contacts.core.util.applyBatch
 import contacts.core.util.unsafeLazy
 
@@ -176,7 +177,7 @@ interface GroupsInsert {
             INVALID_ACCOUNT,
 
             /**
-             * The update failed because of no permissions, no groups specified for update, etc...
+             * The update failed because of no permissions or no groups specified for update, etc...
              *
              * ## Dev note
              *
@@ -251,7 +252,7 @@ private class GroupsInsertImpl(
         }
 
         val results = mutableMapOf<NewGroup, Long?>()
-        val failureReasons = mutableMapOf<NewGroup, GroupsInsert.Result.FailureReason>()
+        val failureReasons = mutableMapOf<NewGroup, FailureReason>()
 
         for (group in groups) {
             if (cancel()) {
@@ -262,19 +263,19 @@ private class GroupsInsertImpl(
                 val existingTitles = existingAccountGroupsTitles
                     .getOrPut(group.account) { mutableSetOf() }
                 if (existingTitles.contains(group.title)) { // Group title already exist.
-                    failureReasons[group] = GroupsInsert.Result.FailureReason.TITLE_ALREADY_EXIST
+                    failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
                     null
                 } else { // Group title does not yet exist. Proceed to insert.
                     contentResolver.insertGroup(group).also { id ->
                         if (id == null) { // Insert failed.
-                            failureReasons[group] = GroupsInsert.Result.FailureReason.UNKNOWN
+                            failureReasons[group] = FailureReason.UNKNOWN
                         } else { // Insert succeeded. Add title to existing titles list.
                             existingTitles.add(group.title)
                         }
                     }
                 }
             } else { // Group has an invalid account.
-                failureReasons[group] = GroupsInsert.Result.FailureReason.INVALID_ACCOUNT
+                failureReasons[group] = FailureReason.INVALID_ACCOUNT
                 null
             }
         }
@@ -305,7 +306,7 @@ private fun ContentResolver.insertGroup(group: NewGroup): Long? {
 
 private class GroupsInsertResult(
     private val groupsMap: Map<NewGroup, Long?>,
-    private val failureReasons: Map<NewGroup, GroupsInsert.Result.FailureReason>
+    private val failureReasons: Map<NewGroup, FailureReason>
 ) : GroupsInsert.Result {
 
     override val groupIds: List<Long> by unsafeLazy {
@@ -320,7 +321,7 @@ private class GroupsInsertResult(
 
     override fun groupId(group: NewGroup): Long? = groupsMap.getOrElse(group) { null }
 
-    override fun failureReason(group: NewGroup) = failureReasons[group]
+    override fun failureReason(group: NewGroup): FailureReason? = failureReasons[group]
 }
 
 private class GroupsInsertFailed : GroupsInsert.Result {
@@ -333,5 +334,5 @@ private class GroupsInsertFailed : GroupsInsert.Result {
 
     override fun groupId(group: NewGroup): Long? = null
 
-    override fun failureReason(group: NewGroup) = GroupsInsert.Result.FailureReason.UNKNOWN
+    override fun failureReason(group: NewGroup) = FailureReason.UNKNOWN
 }

@@ -353,28 +353,35 @@ private class InsertImpl(
     override fun commit(): Insert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Insert.Result {
-        if (rawContacts.isEmpty() || !contacts.permissions.canInsert() || cancel()) {
-            return InsertFailed().redactedCopyOrThis(isRedacted)
-        }
+        // TODO issue #144 log this
+        return if (rawContacts.isEmpty() || !contacts.permissions.canInsert() || cancel()) {
+            InsertFailed()
+        } else {
+            // This ensures that a valid account is used. Otherwise, null is used.
+            account = account?.nullIfNotInSystem(contacts.accounts())
 
-        // This ensures that a valid account is used. Otherwise, null is used.
-        account = account?.nullIfNotInSystem(contacts.accounts())
+            val results = mutableMapOf<NewRawContact, Long?>()
+            for (rawContact in rawContacts) {
+                if (cancel()) {
+                    break
+                }
 
-        val results = mutableMapOf<NewRawContact, Long?>()
-        for (rawContact in rawContacts) {
-            if (cancel()) {
-                break
+                results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
+                    null
+                } else {
+                    // No need to propagate the cancel function to within insertRawContactForAccount
+                    // as that operation should be fast and CPU time should be trivial.
+                    contacts.insertRawContactForAccount(
+                        account,
+                        include.fields,
+                        rawContact,
+                        IS_PROFILE
+                    )
+                }
             }
-
-            results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
-                null
-            } else {
-                // No need to propagate the cancel function to within insertRawContactForAccount
-                // as that operation should be fast and CPU time should be trivial.
-                contacts.insertRawContactForAccount(account, include.fields, rawContact, IS_PROFILE)
-            }
-        }
-        return InsertResult(results).redactedCopyOrThis(isRedacted)
+            InsertResult(results)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {

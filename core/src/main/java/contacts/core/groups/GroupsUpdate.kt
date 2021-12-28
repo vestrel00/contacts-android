@@ -8,6 +8,7 @@ import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.Group
 import contacts.core.entities.MutableGroup
 import contacts.core.entities.operation.GroupsOperation
+import contacts.core.groups.GroupsUpdate.Result.FailureReason
 import contacts.core.util.applyBatch
 import contacts.core.util.unsafeLazy
 
@@ -215,14 +216,14 @@ private class GroupsUpdateImpl(
             }
         }
 
-        val failureReasons = mutableMapOf<ExistingGroupEntity?, GroupsUpdate.Result.FailureReason>()
+        val failureReasons = mutableMapOf<ExistingGroupEntity?, FailureReason>()
 
         for (group in groups) {
-            if (cancel()) {
-                break
-            }
+            // Intentionally not breaking if cancelled so that all groups are assigned a failure
+            // reason. Unlike other APIs in this library, this API will indicate success if there
+            // is no failure reason.
 
-            if (group?.id != null) { // Make sure the ID is not null to ensure the group exists.
+            if (!cancel() && group != null) {
                 val accountGroups = existingAccountGroups
                     .getOrPut(group.account) { mutableSetOf(group) }
 
@@ -231,8 +232,8 @@ private class GroupsUpdateImpl(
 
                 if (differentGroupWithSameTitle != null) {
                     // The title of this group belongs to a different existing group.
-                    failureReasons[group] = GroupsUpdate.Result.FailureReason.TITLE_ALREADY_EXIST
-                } else if (contentResolver.updateGroup(group)) {
+                    failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
+                } else if (!cancel() && contentResolver.updateGroup(group)) {
                     /*
                      * Update success.
                      *
@@ -257,11 +258,10 @@ private class GroupsUpdateImpl(
                         }
                     }
                 } else {
-                    // Update failed.
-                    failureReasons[group] = GroupsUpdate.Result.FailureReason.UNKNOWN
+                    failureReasons[group] = FailureReason.UNKNOWN
                 }
             } else {
-                failureReasons[group] = GroupsUpdate.Result.FailureReason.UNKNOWN
+                failureReasons[group] = FailureReason.UNKNOWN
             }
         }
 
@@ -273,14 +273,14 @@ private fun ContentResolver.updateGroup(group: ExistingGroupEntity): Boolean =
     applyBatch(GroupsOperation().update(group)) != null
 
 private class GroupsUpdateResult(
-    private val failureReasons: Map<ExistingGroupEntity?, GroupsUpdate.Result.FailureReason>
+    private val failureReasons: Map<ExistingGroupEntity?, FailureReason>
 ) : GroupsUpdate.Result {
 
     override val isSuccessful: Boolean by unsafeLazy { failureReasons.isEmpty() }
 
     override fun isSuccessful(group: ExistingGroupEntity?): Boolean = failureReason(group) == null
 
-    override fun failureReason(group: ExistingGroupEntity?): GroupsUpdate.Result.FailureReason? =
+    override fun failureReason(group: ExistingGroupEntity?): FailureReason? =
         failureReasons[group]
 }
 
@@ -291,5 +291,5 @@ private class GroupsUpdateFailed : GroupsUpdate.Result {
     override fun isSuccessful(group: ExistingGroupEntity?): Boolean = false
 
     override fun failureReason(group: ExistingGroupEntity?) =
-        GroupsUpdate.Result.FailureReason.UNKNOWN
+        FailureReason.UNKNOWN
 }

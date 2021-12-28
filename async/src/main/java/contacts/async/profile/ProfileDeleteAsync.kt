@@ -26,7 +26,7 @@ suspend fun ProfileDelete.commitWithContext(
  */
 suspend fun ProfileDelete.commitInOneTransactionWithContext(
     context: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(context) { commitInOneTransaction() }
+): ProfileDelete.Result = withContext(context) { commitInOneTransaction() }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -45,4 +45,4 @@ fun ProfileDelete.commitAsync(
  * See [ProfileDelete.commitInOneTransaction].
  */
 fun ProfileDelete.commitInOneTransactionAsync(context: CoroutineContext = ASYNC_DISPATCHER):
-        Deferred<Boolean> = CoroutineScope(context).async { commitInOneTransaction() }
+        Deferred<ProfileDelete.Result> = CoroutineScope(context).async { commitInOneTransaction() }

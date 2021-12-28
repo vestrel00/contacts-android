@@ -105,11 +105,9 @@ interface ProfileDelete : Redactable {
 
     /**
      * Deletes the profile [ExistingContactEntity] or [ExistingRawContactEntity]s in the queue in
-     * one transaction.
+     * one transaction. Either ALL deletes succeed or ALL fail.
      *
-     * True if the profile [ExistingContactEntity] has been successfully deleted (via [contact]).
-     *
-     * If [rawContacts] is used instead of [contact], then this is true only if all
+     * If [rawContacts] is used instead of [contact], then this is successful only if all
      * [ExistingRawContactEntity]s provided in [rawContacts] have been successfully deleted.
      *
      * ## Permissions
@@ -125,7 +123,7 @@ interface ProfileDelete : Redactable {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun commitInOneTransaction(): Boolean
+    fun commitInOneTransaction(): Result
 
     /**
      * Returns a redacted instance where all private user data are redacted.
@@ -216,55 +214,56 @@ private class ProfileDeleteImpl(
     }
 
     override fun commit(): ProfileDelete.Result {
-        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
-            return ProfileDeleteFailed().redactedCopyOrThis(isRedacted)
-        }
-
-        if (deleteProfileContact) {
-            return ProfileDeleteResult(
+        // TODO issue #144 log this
+        return if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
+            ProfileDeleteAllResult(isSuccessful = false)
+        } else if (deleteProfileContact) {
+            ProfileDeleteResult(
                 emptyMap(),
                 profileContactDeleteSuccess = contentResolver.deleteProfileContact(),
-            ).redactedCopyOrThis(isRedacted)
-        }
-
-        val rawContactsResult = mutableMapOf<Long, Boolean>()
-        for (rawContactId in rawContactIds) {
-            rawContactsResult[rawContactId] =
-                if (!rawContactId.isProfileId) {
-                    // Intentionally fail the operation to ensure that this is only used for profile
-                    // deletes. Otherwise, operation can succeed. This is only done to enforce API
-                    // design.
-                    false
-                } else {
-                    contentResolver.deleteRawContactWithId(rawContactId)
-                }
-        }
-
-        return ProfileDeleteResult(
-            rawContactsResult,
-            profileContactDeleteSuccess = false,
-        ).redactedCopyOrThis(isRedacted)
+            )
+        } else {
+            val rawContactsResult = mutableMapOf<Long, Boolean>()
+            for (rawContactId in rawContactIds) {
+                rawContactsResult[rawContactId] =
+                    if (!rawContactId.isProfileId) {
+                        // Intentionally fail the operation to ensure that this is only used for profile
+                        // deletes. Otherwise, operation can succeed. This is only done to enforce API
+                        // design.
+                        false
+                    } else {
+                        contentResolver.deleteRawContactWithId(rawContactId)
+                    }
+            }
+            ProfileDeleteResult(
+                rawContactsResult,
+                profileContactDeleteSuccess = false,
+            )
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
-    override fun commitInOneTransaction(): Boolean {
-        if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
-            return false
-        }
+    override fun commitInOneTransaction(): ProfileDelete.Result {
+        // TODO issue #144 log this
+        return if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
+            ProfileDeleteAllResult(isSuccessful = false)
+        } else if (deleteProfileContact) {
+            ProfileDeleteAllResult(isSuccessful = contentResolver.deleteProfileContact())
+        } else {
+            val profileRawContactIds = rawContactIds.filter { it.isProfileId }
 
-        if (deleteProfileContact) {
-            return contentResolver.deleteProfileContact()
-        }
-
-        val profileRawContactIds = rawContactIds.filter { it.isProfileId }
-
-        if (rawContactIds.size != profileRawContactIds.size) {
-            // There are some non-profile RawContact Ids, fail without performing operation.
-            return false
-        }
-
-        return contentResolver.applyBatch(
-            RawContactsOperation(true).deleteRawContacts(profileRawContactIds)
-        ) != null
+            if (rawContactIds.size != profileRawContactIds.size) {
+                // There are some non-profile RawContact Ids, fail without performing operation.
+                ProfileDeleteAllResult(isSuccessful = false)
+            } else {
+                ProfileDeleteAllResult(
+                    isSuccessful = contentResolver.applyBatch(
+                        RawContactsOperation(true).deleteRawContacts(profileRawContactIds)
+                    ) != null
+                )
+            }
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 }
 
@@ -280,7 +279,11 @@ private class ProfileDeleteResult private constructor(
     constructor(
         rawContactIdsResultMap: Map<Long, Boolean>,
         profileContactDeleteSuccess: Boolean
-    ) : this(rawContactIdsResultMap, profileContactDeleteSuccess, false)
+    ) : this(
+        rawContactIdsResultMap,
+        profileContactDeleteSuccess = profileContactDeleteSuccess,
+        isRedacted = false
+    )
 
     override fun toString(): String =
         """
@@ -305,11 +308,15 @@ private class ProfileDeleteResult private constructor(
         rawContactIdsResultMap.getOrElse(rawContact.id) { false }
 }
 
-private class ProfileDeleteFailed private constructor(
+private class ProfileDeleteAllResult private constructor(
+    override val isSuccessful: Boolean,
     override val isRedacted: Boolean
 ) : ProfileDelete.Result {
 
-    constructor() : this(false)
+    constructor(isSuccessful: Boolean) : this(
+        isSuccessful = isSuccessful,
+        isRedacted = false
+    )
 
     override fun toString(): String =
         """
@@ -319,9 +326,10 @@ private class ProfileDeleteFailed private constructor(
             }
         """.trimIndent()
 
-    override fun redactedCopy(): ProfileDelete.Result = ProfileDeleteFailed(true)
+    override fun redactedCopy(): ProfileDelete.Result = ProfileDeleteAllResult(
+        isSuccessful = isSuccessful,
+        isRedacted = true
+    )
 
-    override val isSuccessful: Boolean = false
-
-    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = false
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = isSuccessful
 }

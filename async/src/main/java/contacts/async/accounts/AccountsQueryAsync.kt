@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 // region WITH CONTEXT
+
 /**
  * Suspends the current coroutine, performs the operation in the given [context], then returns the
  * result.
@@ -22,7 +23,7 @@ suspend fun AccountsQuery.accountForWithContext(
 /**
  * Suspends the current coroutine, performs the operation in the given [context], then returns the
  * result.
- *´
+ *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
  * See [AccountsQuery.accountsFor].

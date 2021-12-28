@@ -294,15 +294,15 @@ private class ProfileQueryImpl(
     override fun find(): Contact? = find { false }
 
     override fun find(cancel: () -> Boolean): Contact? {
-        if (!permissions.canQuery()) {
-            return null
-        }
-
-        val contact = contentResolver.resolve(
-            customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
-        )
-
-        return contact?.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log this
+        return if (!permissions.canQuery()) {
+            null
+        } else {
+            contentResolver.resolve(
+                customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
+            )
+        }?.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {

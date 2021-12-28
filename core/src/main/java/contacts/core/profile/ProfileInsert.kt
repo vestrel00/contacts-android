@@ -367,35 +367,39 @@ private class ProfileInsertImpl(
     override fun commit(): ProfileInsert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): ProfileInsert.Result {
+        // TODO issue #144 log this
         val rawContact = rawContact
 
-        if (rawContact == null
+        return if (rawContact == null
             || (!allowBlanks && rawContact.isBlank)
             || !contacts.permissions.canInsert()
             || cancel()
         ) {
-            return ProfileInsertFailed().redactedCopyOrThis(isRedacted)
-        }
+            ProfileInsertFailed()
+        } else {
+            // This ensures that a valid account is used. Otherwise, null is used.
+            account = account?.nullIfNotInSystem(contacts.accounts())
 
-        // This ensures that a valid account is used. Otherwise, null is used.
-        account = account?.nullIfNotInSystem(contacts.accounts())
+            if (
+                (!allowMultipleRawContactsPerAccount &&
+                        contacts.applicationContext.contentResolver.hasProfileRawContactForAccount(
+                            account
+                        ))
+                || cancel()
+            ) {
+                ProfileInsertFailed()
+            } else {
+                // No need to propagate the cancel function to within insertRawContactForAccount
+                // as that operation should be fast and CPU time should be trivial.
+                val rawContactId =
+                    contacts.insertRawContactForAccount(
+                        account, include.fields, rawContact, IS_PROFILE
+                    )
 
-        if (
-            (!allowMultipleRawContactsPerAccount &&
-                    contacts.applicationContext.contentResolver.hasProfileRawContactForAccount(
-                        account
-                    ))
-            || cancel()
-        ) {
-            return ProfileInsertFailed().redactedCopyOrThis(isRedacted)
-        }
-
-        // No need to propagate the cancel function to within insertRawContactForAccount
-        // as that operation should be fast and CPU time should be trivial.
-        val rawContactId =
-            contacts.insertRawContactForAccount(account, include.fields, rawContact, IS_PROFILE)
-
-        return ProfileInsertResult(rawContactId).redactedCopyOrThis(isRedacted)
+                return ProfileInsertResult(rawContactId)
+            }
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {

@@ -538,23 +538,25 @@ private class QueryImpl(
     override fun find(): Query.Result = find { false }
 
     override fun find(cancel: () -> Boolean): Query.Result {
-        if (!permissions.canQuery() || cancel()) {
-            return QueryResult(emptyList()).redactedCopyOrThis(isRedacted)
-        }
+        // TODO issue #144 log this
+        return if (!permissions.canQuery() || cancel()) {
+            QueryResult(emptyList())
+        } else {
+            // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
+            // attributes even if the consumer does not call these functions. This allows delegators to
+            // make necessary modifications to private attributes without having to make this class
+            // open for inheritance or exposing unnecessary attributes to consumers.
+            include(include.fields)
+            where(where)
 
-        // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
-        // attributes even if the consumer does not call these functions. This allows delegators to
-        // make necessary modifications to private attributes without having to make this class
-        // open for inheritance or exposing unnecessary attributes to consumers.
-        include(include.fields)
-        where(where)
+            val contacts = contentResolver.resolve(
+                customDataRegistry, includeBlanks,
+                rawContactsWhere, include, where, orderBy, limit, offset, cancel
+            )
 
-        val contacts = contentResolver.resolve(
-            customDataRegistry, includeBlanks,
-            rawContactsWhere, include, where, orderBy, limit, offset, cancel
-        )
-
-        return QueryResult(contacts).redactedCopyOrThis(isRedacted)
+            QueryResult(contacts)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {
