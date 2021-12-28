@@ -173,7 +173,8 @@ data class Group internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        title = title.redact()
+        title = title.redact(),
+        account = account.redactedCopy()
     )
 }
 
@@ -201,7 +202,8 @@ data class MutableGroup internal constructor(
     override fun redactedCopy() = copy(
         isRedacted = true,
 
-        title = title.redact()
+        title = title.redact(),
+        account = account.redactedCopy()
     )
 }
 
@@ -234,7 +236,6 @@ data class NewGroup @JvmOverloads constructor(
         isRedacted = true,
 
         title = title.redact(),
-
         account = account.redactedCopy()
     )
 }
