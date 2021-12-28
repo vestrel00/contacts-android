@@ -69,6 +69,10 @@ interface Redactable {
 
     /**
      * Returns a redacted copy of this entity.
+     *
+     * Note that it does not matter if this has already been redacted ([isRedacted] is true). A
+     * redaction will be performed regardless just to be safe. You can never know what kind of
+     * shady stuff people do with data class copy functions. You can never be too careful =)
      */
     fun redactedCopy(): Redactable
 
@@ -93,6 +97,8 @@ internal fun String.redactStringOrThis(redact: Boolean): String =
 
 /**
  * If [redact] is true, returns a redacted copy of this entity. Otherwise, just returns this.
+ *
+ * This will not undo redaction of an already-redacted entity even if [redact] is false.
  */
 @Suppress("UNCHECKED_CAST")
 fun <T : Redactable> T.redactedCopyOrThis(redact: Boolean): T =
@@ -109,6 +115,8 @@ fun <T : Redactable> Collection<T>.redactedCopies(): List<T> = map { it.redacted
 /**
  * If [redact] is true, returns a redacted copy of every element in this collection. Otherwise, just
  * returns a copy of this collection as a list.
+ *
+ * This will not undo redaction of an already-redacted element even if [redact] is false.
  */
 fun <T : Redactable> Collection<T>.redactedCopiesOrThis(redact: Boolean): List<T> =
     map { it.redactedCopyOrThis(redact) }
@@ -124,6 +132,8 @@ fun <T : Redactable> Sequence<T>.redactedCopies(): Sequence<T> = map { it.redact
 /**
  * If [redact] is true, returns a redacted copy of every element in this sequence. Otherwise, just
  * returns this.
+ *
+ * This will not undo redaction of an already-redacted element even if [redact] is false.
  */
 fun <T : Redactable> Sequence<T>.redactedCopiesOrThis(redact: Boolean): Sequence<T> =
     map { it.redactedCopyOrThis(redact) }
@@ -141,6 +151,8 @@ fun <K : Redactable, V> Map<K, V>.redactedKeys(): Map<K, V> = entries.associate 
 /**
  * If [redact] is true, returns a redacted copy of every key in this map. Otherwise, just returns
  * this.
+ *
+ * This will not undo redaction of an already-redacted key even if [redact] is false.
  */
 fun <K : Redactable, V> Map<K, V>.redactedKeysOrThis(redact: Boolean): Map<K, V> =
     if (redact) redactedKeys() else this
@@ -158,6 +170,8 @@ fun <K, V : Redactable> Map<K, V>.redactedValues(): Map<K, V> = entries.associat
 /**
  * If [redact] is true, returns a redacted copy of every value in this map. Otherwise, just returns
  * this.
+ *
+ * This will not undo redaction of an already-redacted value even if [redact] is false.
  */
 fun <K, V : Redactable> Map<K, V>.redactedValuesOrThis(redact: Boolean): Map<K, V> =
     if (redact) redactedValues() else this
@@ -176,6 +190,8 @@ fun <K : Redactable, V : Redactable> Map<K, V>.redactedKeysAndValues(): Map<K, V
 /**
  * If [redact] is true, returns a redacted copy of every key and value in this map. Otherwise, just
  * returns this.
+ *
+ * This will not undo redaction of an already-redacted key or value even if [redact] is false.
  */
 fun <K : Redactable, V : Redactable> Map<K, V>.redactedKeysAndValuesOrThis(redact: Boolean): Map<K, V> =
     if (redact) redactedKeysAndValues() else this

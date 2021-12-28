@@ -589,7 +589,7 @@ private class BroadQueryImpl(
 
     override fun find(cancel: () -> Boolean): BroadQuery.Result {
         if (!permissions.canQuery()) {
-            return BroadQueryResult(emptyList(), isRedacted)
+            return BroadQueryResult(emptyList()).redactedCopyOrThis(isRedacted)
         }
 
         val contacts = contentResolver.resolve(
@@ -598,7 +598,7 @@ private class BroadQueryImpl(
             orderBy, limit, offset, cancel
         )
 
-        return BroadQueryResult(contacts.redactedCopiesOrThis(isRedacted), isRedacted)
+        return BroadQueryResult(contacts).redactedCopyOrThis(isRedacted)
     }
 
     private companion object {
@@ -704,10 +704,12 @@ private fun ContentResolver.findContactIdsInContactsTable(
     contactIds
 } ?: emptySet()
 
-private class BroadQueryResult(
+private class BroadQueryResult private constructor(
     contacts: List<Contact>,
     override val isRedacted: Boolean
 ) : ArrayList<Contact>(contacts), BroadQuery.Result {
+
+    constructor(contacts: List<Contact>) : this(contacts, false)
 
     override fun toString(): String =
         """

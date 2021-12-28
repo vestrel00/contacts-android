@@ -56,7 +56,7 @@ suspend fun AccountsQuery.accountsForWithContext(
 suspend fun AccountsQuery.accountsForWithContext(
     rawContacts: Sequence<ExistingRawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
-): AccountsQuery.AccountsList = withContext(context) { accountsFor(rawContacts) { !isActive } }
+): AccountsQuery.Result = withContext(context) { accountsFor(rawContacts) { !isActive } }
 
 // endregion
 
@@ -110,6 +110,6 @@ fun AccountsQuery.accountsForAsync(
 fun AccountsQuery.accountsForAsync(
     rawContacts: Sequence<ExistingRawContactEntity>,
     context: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<AccountsQuery.AccountsList> = CoroutineScope(context).async { accountsFor(rawContacts) }
+): Deferred<AccountsQuery.Result> = CoroutineScope(context).async { accountsFor(rawContacts) }
 
 // endregion

@@ -175,6 +175,7 @@ private class DeleteImpl(
             Delete {
                 rawContactIds: $rawContactIds
                 contactIds: $contactIds
+                hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -209,7 +210,7 @@ private class DeleteImpl(
 
     override fun commit(): Delete.Result {
         if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
-            return DeleteFailed(isRedacted)
+            return DeleteFailed().redactedCopyOrThis(isRedacted)
         }
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
@@ -237,7 +238,7 @@ private class DeleteImpl(
             }
         }
 
-        return DeleteResult(rawContactsResult, contactsResults, isRedacted)
+        return DeleteResult(rawContactsResult, contactsResults).redactedCopyOrThis(isRedacted)
     }
 
     override fun commitInOneTransaction(): Boolean {
@@ -283,11 +284,16 @@ private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
         RawContactsOperation(contactId.isProfileId).deleteRawContactsWithContactId(contactId)
     ) != null
 
-private class DeleteResult(
+private class DeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,
     private val contactIdsResultMap: Map<Long, Boolean>,
     override val isRedacted: Boolean
 ) : Delete.Result {
+
+    constructor(
+        rawContactIdsResultMap: Map<Long, Boolean>,
+        contactIdsResultMap: Map<Long, Boolean>
+    ) : this(rawContactIdsResultMap, contactIdsResultMap, false)
 
     override fun toString(): String =
         """
@@ -315,9 +321,11 @@ private class DeleteResult(
         contactIdsResultMap.getOrElse(contact.id) { false }
 }
 
-private class DeleteFailed(
+private class DeleteFailed private constructor(
     override val isRedacted: Boolean
 ) : Delete.Result {
+
+    constructor() : this(false)
 
     override fun toString(): String =
         """

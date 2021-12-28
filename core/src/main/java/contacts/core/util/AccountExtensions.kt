@@ -94,10 +94,81 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
         }
     }
 
-internal fun Account.redactedCopy(): Account = Account(
+// region Redactable
+
+// These Redactable Account extensions might prove useful for some consumers. Thus, they are public.
+
+/**
+ * Returns a copy of this account where the [Account.name] and [Account.type] are redacted.
+ */
+fun Account.redactedCopy(): Account = Account(
     name.redactString(),
     type.redactString()
 )
 
+/**
+ * If [redact] is true, returns a copy of this account where the [Account.name] and [Account.type]
+ * are redacted. Otherwise, just returns this.
+ */
+fun Account.redactedCopyOrThis(redact: Boolean) = if (redact) redactedCopy() else this
 
-internal fun Account.redactedCopyOrThis(redact: Boolean) = if (redact) redactedCopy() else this
+/**
+ * Returns a copy of every account in this collection such that the [Account.name] and
+ * [Account.type] are redacted.
+ */
+fun Collection<Account>.redactedCopies(): List<Account> = map { it.redactedCopy() }
+
+/**
+ * If [redact] is true, returns a copy of every account in this collection such that the
+ * [Account.name] and [Account.type] are redacted. Otherwise, just returns this.
+ */
+fun Collection<Account>.redactedCopiesOrThis(redact: Boolean) =
+    if (redact) redactedCopies() else this
+
+/**
+ * Returns a copy of every account in this sequence such that the [Account.name] and
+ * [Account.type] are redacted.
+ */
+fun Sequence<Account>.redactedCopies(): Sequence<Account> = map { it.redactedCopy() }
+
+/**
+ * If [redact] is true, returns a copy of every account in this sequence such that the
+ * [Account.name] and [Account.type] are redacted. Otherwise, just returns this.
+ */
+fun Sequence<Account>.redactedCopiesOrThis(redact: Boolean) =
+    if (redact) redactedCopies() else this
+
+/* This might come in handy in the future. It is unused for now so it is commented out.
+/**
+ * Returns a [RedactableAccount] that can be used for redacting this account and keeping track of
+ * its [RedactableAccount.isRedacted] state.
+ *
+ * This is particularly useful for loggers that can only take in [Redactable] instances.
+ */
+fun Account.asRedactable() = RedactableAccount(this, isRedacted = false)
+
+/**
+ * Holds/wraps an [Account] and keeps track of its [isRedacted] state.
+ *
+ * This is particularly useful for loggers that can only take in [Redactable] instances.
+ *
+ * ## Developer notes
+ *
+ * It might be possible to extend [Account]. However, I am not sure what kind of issues we can run
+ * into by extending this platform type. Therefore, we are using composition instead =)
+ */
+class RedactableAccount(
+    val account: Account,
+    override val isRedacted: Boolean = false
+) : Redactable {
+
+    override fun toString(): String = account.toString()
+
+    override fun redactedCopy() = RedactableAccount(
+        account.redactedCopy(),
+        isRedacted = true
+    )
+}
+ */
+
+// endregion

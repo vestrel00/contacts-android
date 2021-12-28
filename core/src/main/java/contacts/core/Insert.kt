@@ -296,6 +296,7 @@ private class InsertImpl(
                 include: $include
                 account: $account
                 rawContacts: $rawContacts
+                hasPermission: ${contacts.permissions.canInsert()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -353,7 +354,7 @@ private class InsertImpl(
 
     override fun commit(cancel: () -> Boolean): Insert.Result {
         if (rawContacts.isEmpty() || !contacts.permissions.canInsert() || cancel()) {
-            return InsertFailed(isRedacted)
+            return InsertFailed().redactedCopyOrThis(isRedacted)
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
@@ -373,10 +374,7 @@ private class InsertImpl(
                 contacts.insertRawContactForAccount(account, include.fields, rawContact, IS_PROFILE)
             }
         }
-        return InsertResult(
-            results.redactedKeysOrThis(isRedacted),
-            isRedacted
-        )
+        return InsertResult(results).redactedCopyOrThis(isRedacted)
     }
 
     private companion object {
@@ -555,10 +553,12 @@ private fun NewRawContact.customDataInsertOperations(
     }
 }
 
-private class InsertResult(
+private class InsertResult private constructor(
     private val rawContactMap: Map<NewRawContact, Long?>,
     override val isRedacted: Boolean
 ) : Insert.Result {
+
+    constructor(rawContactMap: Map<NewRawContact, Long?>) : this(rawContactMap, false)
 
     override fun toString(): String =
         """
@@ -591,7 +591,11 @@ private class InsertResult(
         rawContactMap.getOrElse(rawContact) { null }
 }
 
-private class InsertFailed(override val isRedacted: Boolean) : Insert.Result {
+private class InsertFailed private constructor(
+    override val isRedacted: Boolean
+) : Insert.Result {
+
+    constructor() : this(false)
 
     override fun toString(): String =
         """

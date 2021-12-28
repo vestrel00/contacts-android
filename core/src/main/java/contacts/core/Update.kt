@@ -293,6 +293,7 @@ private class UpdateImpl(
                 deleteBlanks: $deleteBlanks
                 include: $include
                 rawContacts: $rawContacts
+                hasPermission: ${contacts.permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -350,7 +351,7 @@ private class UpdateImpl(
 
     override fun commit(cancel: () -> Boolean): Update.Result {
         if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
-            return UpdateFailed(isRedacted)
+            return UpdateFailed().redactedCopyOrThis(isRedacted)
         }
 
         val results = mutableMapOf<Long, Boolean>()
@@ -372,7 +373,7 @@ private class UpdateImpl(
             }
         }
 
-        return UpdateResult(results, isRedacted)
+        return UpdateResult(results).redactedCopyOrThis(isRedacted)
     }
 }
 
@@ -532,10 +533,12 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
     }
 }
 
-private class UpdateResult(
+private class UpdateResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,
     override val isRedacted: Boolean
 ) : Update.Result {
+
+    constructor(rawContactIdsResultMap: Map<Long, Boolean>) : this(rawContactIdsResultMap, false)
 
     override fun toString(): String =
         """
@@ -569,7 +572,11 @@ private class UpdateResult(
             && rawContactIdsResultMap.getOrElse(rawContactId) { false }
 }
 
-private class UpdateFailed(override val isRedacted: Boolean) : Update.Result {
+private class UpdateFailed private constructor(
+    override val isRedacted: Boolean
+) : Update.Result {
+
+    constructor() : this(false)
 
     override fun toString(): String =
         """

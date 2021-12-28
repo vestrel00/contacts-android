@@ -448,6 +448,7 @@ private class QueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                hasPermission: ${permissions.canQuery()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -538,7 +539,7 @@ private class QueryImpl(
 
     override fun find(cancel: () -> Boolean): Query.Result {
         if (!permissions.canQuery() || cancel()) {
-            return QueryResult(emptyList(), isRedacted)
+            return QueryResult(emptyList()).redactedCopyOrThis(isRedacted)
         }
 
         // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
@@ -553,7 +554,7 @@ private class QueryImpl(
             rawContactsWhere, include, where, orderBy, limit, offset, cancel
         )
 
-        return QueryResult(contacts.redactedCopiesOrThis(isRedacted), isRedacted)
+        return QueryResult(contacts).redactedCopyOrThis(isRedacted)
     }
 
     private companion object {
@@ -728,10 +729,12 @@ internal fun ContentResolver.findContactIdsInDataTable(
     contactIds
 } ?: emptySet()
 
-private class QueryResult(
+private class QueryResult private constructor(
     contacts: List<Contact>,
     override val isRedacted: Boolean
 ) : ArrayList<Contact>(contacts), Query.Result {
+
+    constructor(contacts: List<Contact>) : this(contacts, false)
 
     override fun toString(): String =
         """
