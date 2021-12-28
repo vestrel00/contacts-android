@@ -41,18 +41,18 @@ suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery 
 /**
  * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
  * not yet granted, suspends the current coroutine, requests for the permission, and then returns a
- * new [AccountsRawContactsAssociationsUpdate] instance.
+ * new [AccountsLocalRawContactsUpdate] instance.
  *
  * If permissions are already granted, then immediately returns a new
- * [AccountsRawContactsAssociationsUpdate] instance.
+ * [AccountsLocalRawContactsUpdate] instance.
  */
-suspend fun Accounts.updateRawContactsAssociationsWithPermission():
-        AccountsRawContactsAssociationsUpdate {
-    if (!permissions.canUpdateRawContactsAssociations()) {
-        applicationContext.requestUpdateRawContactsAssociationsPermission()
+suspend fun Accounts.updateLocalRawContactsAccountWithPermission():
+        AccountsLocalRawContactsUpdate {
+    if (!permissions.canUpdateLocalRawContactsAccount()) {
+        applicationContext.requestUpdateLocalRawContactsAccountPermission()
     }
 
-    return updateRawContactsAssociations()
+    return updateLocalRawContactsAccount()
 }
 
 /**
@@ -80,7 +80,7 @@ suspend fun Context.requestQueryRawContactsPermission(): Boolean = requestReadPe
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun Context.requestUpdateRawContactsAssociationsPermission(): Boolean =
+suspend fun Context.requestUpdateLocalRawContactsAccountPermission(): Boolean =
     requestGetAccountsPermission() && requestWritePermission()
 
 /**
