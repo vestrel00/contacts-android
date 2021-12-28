@@ -54,7 +54,7 @@ import contacts.core.util.unsafeLazy
  *      .find();
  * ```
  */
-interface ProfileQuery {
+interface ProfileQuery : Redactable {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
@@ -208,6 +208,19 @@ interface ProfileQuery {
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): Contact?
     fun find(cancel: () -> Boolean): Contact?
+
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ProfileQuery
 }
 
 @Suppress("FunctionName")
@@ -224,7 +237,9 @@ private class ProfileQueryImpl(
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry)
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+
+    override val isRedacted: Boolean = false
 ) : ProfileQuery {
 
     override fun toString(): String =
@@ -233,8 +248,21 @@ private class ProfileQueryImpl(
                 includeBlanks: $includeBlanks
                 rawContactsWhere: $rawContactsWhere
                 include: $include
+                hasPermission: ${permissions.canQuery()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): ProfileQuery = ProfileQueryImpl(
+        contentResolver, permissions, customDataRegistry,
+
+        includeBlanks,
+        // Redact Account information.
+        rawContactsWhere?.redactedCopy(),
+        include,
+
+        isRedacted = true
+    )
 
     override fun includeBlanks(includeBlanks: Boolean): ProfileQuery = apply {
         this.includeBlanks = includeBlanks
@@ -245,7 +273,7 @@ private class ProfileQueryImpl(
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): ProfileQuery = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -270,9 +298,11 @@ private class ProfileQueryImpl(
             return null
         }
 
-        return contentResolver.resolve(
+        val contact = contentResolver.resolve(
             customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
         )
+
+        return contact?.redactedCopyOrThis(isRedacted)
     }
 
     private companion object {
