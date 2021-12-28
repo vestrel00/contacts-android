@@ -2,8 +2,7 @@ package contacts.core.profile
 
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
-import contacts.core.Contacts
-import contacts.core.ContactsPermissions
+import contacts.core.*
 import contacts.core.deleteRawContactWithId
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
@@ -44,7 +43,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface ProfileDelete {
+interface ProfileDelete : Redactable {
 
     /**
      * Adds the given profile [rawContacts] ([ExistingRawContactEntity.isProfile]) to the delete
@@ -128,7 +127,20 @@ interface ProfileDelete {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     fun commitInOneTransaction(): Boolean
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ProfileDelete
+
+    interface Result : Redactable {
 
         /**
          * True if the profile [ExistingContactEntity] has been successfully deleted
@@ -146,6 +158,9 @@ interface ProfileDelete {
          * deleted (via [contact]).
          */
         fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -158,17 +173,32 @@ internal fun ProfileDelete(contacts: Contacts): ProfileDelete = ProfileDeleteImp
 private class ProfileDeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+
     private val rawContactIds: MutableSet<Long> = mutableSetOf(),
-    private var deleteProfileContact: Boolean = false
+    private var deleteProfileContact: Boolean = false,
+
+    override val isRedacted: Boolean = false
 ) : ProfileDelete {
 
     override fun toString(): String =
         """
-            ProfileDeleteImpl {
+            ProfileDelete {
                 rawContactIds: $rawContactIds
                 deleteProfileContact: $deleteProfileContact
+                hasPermission: ${permissions.canUpdateDelete()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    // There isn't really anything to redact =)
+    override fun redactedCopy(): ProfileDelete = ProfileDeleteImpl(
+        contentResolver, permissions,
+
+        rawContactIds,
+        deleteProfileContact,
+
+        isRedacted = true
+    )
 
     override fun rawContacts(vararg rawContacts: ExistingRawContactEntity): ProfileDelete =
         rawContacts(rawContacts.asSequence())
@@ -187,14 +217,14 @@ private class ProfileDeleteImpl(
 
     override fun commit(): ProfileDelete.Result {
         if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
-            return ProfileDeleteFailed()
+            return ProfileDeleteFailed().redactedCopyOrThis(isRedacted)
         }
 
         if (deleteProfileContact) {
             return ProfileDeleteResult(
                 emptyMap(),
-                contentResolver.deleteProfileContact()
-            )
+                profileContactDeleteSuccess = contentResolver.deleteProfileContact(),
+            ).redactedCopyOrThis(isRedacted)
         }
 
         val rawContactsResult = mutableMapOf<Long, Boolean>()
@@ -210,7 +240,10 @@ private class ProfileDeleteImpl(
                 }
         }
 
-        return ProfileDeleteResult(rawContactsResult, false)
+        return ProfileDeleteResult(
+            rawContactsResult,
+            profileContactDeleteSuccess = false,
+        ).redactedCopyOrThis(isRedacted)
     }
 
     override fun commitInOneTransaction(): Boolean {
@@ -238,10 +271,31 @@ private class ProfileDeleteImpl(
 private fun ContentResolver.deleteProfileContact(): Boolean =
     applyBatch(newDelete(ProfileUris.RAW_CONTACTS.uri).build()) != null
 
-private class ProfileDeleteResult(
+private class ProfileDeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,
-    private val profileContactDeleteSuccess: Boolean
+    private val profileContactDeleteSuccess: Boolean,
+    override val isRedacted: Boolean
 ) : ProfileDelete.Result {
+
+    constructor(
+        rawContactIdsResultMap: Map<Long, Boolean>,
+        profileContactDeleteSuccess: Boolean
+    ) : this(rawContactIdsResultMap, profileContactDeleteSuccess, false)
+
+    override fun toString(): String =
+        """
+            ProfileDelete.Result {
+                isSuccessful: $isSuccessful
+                profileContactDeleteSuccess: $profileContactDeleteSuccess
+                rawContactIdsResultMap: $rawContactIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): ProfileDelete.Result = ProfileDeleteResult(
+        rawContactIdsResultMap, profileContactDeleteSuccess,
+        isRedacted = true
+    )
 
     override val isSuccessful: Boolean by unsafeLazy {
         profileContactDeleteSuccess || rawContactIdsResultMap.all { it.value }
@@ -251,7 +305,21 @@ private class ProfileDeleteResult(
         rawContactIdsResultMap.getOrElse(rawContact.id) { false }
 }
 
-private class ProfileDeleteFailed : ProfileDelete.Result {
+private class ProfileDeleteFailed private constructor(
+    override val isRedacted: Boolean
+) : ProfileDelete.Result {
+
+    constructor() : this(false)
+
+    override fun toString(): String =
+        """
+            ProfileDelete.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): ProfileDelete.Result = ProfileDeleteFailed(true)
 
     override val isSuccessful: Boolean = false
 
