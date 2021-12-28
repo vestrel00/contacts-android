@@ -7,10 +7,7 @@ import contacts.core.*
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.table.ProfileUris
-import contacts.core.util.isEmpty
-import contacts.core.util.nullIfNotInSystem
-import contacts.core.util.query
-import contacts.core.util.toRawContactsWhere
+import contacts.core.util.*
 
 /**
  * Inserts one (Profile) raw contact into the RawContacts table and all associated Data to the Data
@@ -92,7 +89,7 @@ import contacts.core.util.toRawContactsWhere
  *      .commit();
  * ```
  */
-interface ProfileInsert {
+interface ProfileInsert : Redactable {
 
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
@@ -259,7 +256,20 @@ interface ProfileInsert {
     // fun commit(cancel: () -> Boolean = { false }): Result
     fun commit(cancel: () -> Boolean): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ProfileInsert
+
+    interface Result : Redactable {
 
         /**
          * The ID of the successfully created RawContact. Null if the insertion failed.
@@ -270,6 +280,9 @@ interface ProfileInsert {
          * True if the NewRawContact has successfully been inserted. False if insertion failed.
          */
         val isSuccessful: Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -283,7 +296,9 @@ private class ProfileInsertImpl(
     private var allowMultipleRawContactsPerAccount: Boolean = false,
     private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
     private var account: Account? = null,
-    private var rawContact: NewRawContact? = null
+    private var rawContact: NewRawContact? = null,
+
+    override val isRedacted: Boolean = false
 ) : ProfileInsert {
 
     override fun toString(): String =
@@ -294,8 +309,24 @@ private class ProfileInsertImpl(
                 include: $include
                 account: $account
                 rawContact: $rawContact
+                hasPermission: ${contacts.permissions.canInsert()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): ProfileInsert = ProfileInsertImpl(
+        contacts,
+
+        allowBlanks,
+        allowMultipleRawContactsPerAccount,
+        include,
+        // Redact account info.
+        account?.redactedCopy(),
+        // Redact contact data.
+        rawContact?.redactedCopy(),
+
+        isRedacted = true
+    )
 
     override fun allowBlanks(allowBlanks: Boolean): ProfileInsert = apply {
         this.allowBlanks = allowBlanks
@@ -308,7 +339,7 @@ private class ProfileInsertImpl(
     }
 
     override fun forAccount(account: Account?): ProfileInsert = apply {
-        this.account = account
+        this.account = account?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -330,7 +361,7 @@ private class ProfileInsertImpl(
         rawContact(NewRawContact().apply(configureRawContact))
 
     override fun rawContact(rawContact: NewRawContact): ProfileInsert = apply {
-        this.rawContact = rawContact
+        this.rawContact = rawContact.redactedCopyOrThis(isRedacted)
     }
 
     override fun commit(): ProfileInsert.Result = commit { false }
@@ -343,7 +374,7 @@ private class ProfileInsertImpl(
             || !contacts.permissions.canInsert()
             || cancel()
         ) {
-            return ProfileInsertFailed()
+            return ProfileInsertFailed().redactedCopyOrThis(isRedacted)
         }
 
         // This ensures that a valid account is used. Otherwise, null is used.
@@ -356,7 +387,7 @@ private class ProfileInsertImpl(
                     ))
             || cancel()
         ) {
-            return ProfileInsertFailed()
+            return ProfileInsertFailed().redactedCopyOrThis(isRedacted)
         }
 
         // No need to propagate the cancel function to within insertRawContactForAccount
@@ -364,24 +395,12 @@ private class ProfileInsertImpl(
         val rawContactId =
             contacts.insertRawContactForAccount(account, include.fields, rawContact, IS_PROFILE)
 
-        return ProfileInsertResult(rawContactId)
+        return ProfileInsertResult(rawContactId).redactedCopyOrThis(isRedacted)
     }
 
     private companion object {
         const val IS_PROFILE = true
     }
-}
-
-private class ProfileInsertResult(override val rawContactId: Long?) : ProfileInsert.Result {
-
-    override val isSuccessful: Boolean = rawContactId?.let(ContactsContract::isProfileId) == true
-}
-
-private class ProfileInsertFailed : ProfileInsert.Result {
-
-    override val rawContactId: Long? = null
-
-    override val isSuccessful: Boolean = false
 }
 
 private fun ContentResolver.hasProfileRawContactForAccount(account: Account?): Boolean = query(
@@ -393,3 +412,48 @@ private fun ContentResolver.hasProfileRawContactForAccount(account: Account?): B
 ) {
     it.getNextOrNull { it.rawContactsCursor().rawContactId } != null
 } ?: false
+
+private class ProfileInsertResult private constructor(
+    override val rawContactId: Long?,
+    override val isRedacted: Boolean
+) : ProfileInsert.Result {
+
+    constructor(rawContactId: Long?) : this(rawContactId, false)
+
+    override fun toString(): String =
+        """
+            ProfileInsert.Result {
+                isSuccessful: $isSuccessful
+                rawContactId: $rawContactId
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): ProfileInsert.Result = ProfileInsertResult(
+        rawContactId,
+        isRedacted = true
+    )
+
+    override val isSuccessful: Boolean = rawContactId?.let(ContactsContract::isProfileId) == true
+}
+
+private class ProfileInsertFailed private constructor(
+    override val isRedacted: Boolean
+) : ProfileInsert.Result {
+
+    constructor() : this(false)
+
+    override fun toString(): String =
+        """
+            ProfileInsert.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): ProfileInsert.Result = ProfileInsertFailed(true)
+
+    override val rawContactId: Long? = null
+
+    override val isSuccessful: Boolean = false
+}
