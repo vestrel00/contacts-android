@@ -278,24 +278,16 @@ private class AccountsLocalRawContactsUpdateImpl(
             // Either account was not specified (null) or it is not in system.
             AccountsRawContactsAssociationsUpdateResultFailed(FailureReason.INVALID_ACCOUNT)
         } else {
-            val failureReasons = mutableMapOf<Long, FailureReason?>()
+            val failureReasons = mutableMapOf<Long, FailureReason>()
             for (rawContactId in rawContactIds) {
-                // Intentionally not breaking if cancelled so that all groups are assigned a failure
-                // reason. Unlike other APIs in this library, this API will indicate success if there
-                // is no failure reason.
-
-                failureReasons[rawContactId] =
-                    if (cancel() || rawContactId.isProfileId != isProfile) {
-                        FailureReason.UNKNOWN
-                    } else if (accounts.rawContactHasAccount(rawContactId)) {
-                        FailureReason.RAW_CONTACT_IS_NOT_LOCAL
-                    } else {
-                        if (accounts.setRawContactAccount(account, rawContactId)) {
-                            null // success!
-                        } else {
-                            FailureReason.UNKNOWN
-                        }
-                    }
+                if (cancel() || rawContactId.isProfileId != isProfile) {
+                    failureReasons[rawContactId] = FailureReason.UNKNOWN
+                } else if (accounts.rawContactHasAccount(rawContactId)) {
+                    failureReasons[rawContactId] = FailureReason.RAW_CONTACT_IS_NOT_LOCAL
+                } else if (!accounts.setRawContactAccount(account, rawContactId)) {
+                    failureReasons[rawContactId] = FailureReason.UNKNOWN
+                }
+                // else operation succeeded. No Failure reason.
             }
             AccountsRawContactsAssociationsUpdateResult(failureReasons)
         }.redactedCopyOrThis(isRedacted)
@@ -351,19 +343,20 @@ private fun Accounts.rawContactHasAccount(rawContactId: Long): Boolean =
 
 
 private class AccountsRawContactsAssociationsUpdateResult private constructor(
-    private val failureReasons: Map<Long, FailureReason?>,
+    private val failureReasons: Map<Long, FailureReason>,
     override val isRedacted: Boolean
 ) : AccountsLocalRawContactsUpdate.Result {
 
-    constructor(failureReasons: Map<Long, FailureReason?>) : this(
+    constructor(failureReasons: Map<Long, FailureReason>) : this(
         failureReasons = failureReasons,
         isRedacted = false
     )
 
     override fun toString(): String =
         """
-            AccountsRawContactsAssociationsUpdate.Result {
+            AccountsLocalRawContactsUpdate.Result {
                 isSuccessful: $isSuccessful
+                failureReasons: $failureReasons
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -395,7 +388,7 @@ private class AccountsRawContactsAssociationsUpdateResultFailed private construc
 
     override fun toString(): String =
         """
-            AccountsRawContactsAssociationsUpdate.Result {
+            AccountsLocalRawContactsUpdate.Result {
                 isSuccessful: $isSuccessful
                 failureReason: $failureReason
                 isRedacted: $isRedacted
