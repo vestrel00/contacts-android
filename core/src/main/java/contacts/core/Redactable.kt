@@ -1,13 +1,13 @@
 package contacts.core
 
 /**
- * Indicates that there could be sensitive private user data that could be redacted, for legal
- * purposes. If you are logging contact data in production to remote data centers for analytics or
- * crash reporting, then it is important to redact certain parts of every contact's data.
+ * Indicates indicates that there could be sensitive private user data that could be redacted, for
+ * legal purposes. If you are logging contact data in production to remote data centers for analytics
+ * or crash reporting, then it is important to redact certain parts of every contact's data.
  *
  * ## DISCLAIMER: This is NOT legal advice!
  *
- * This library is written and maintained by pure software developers with no official education or
+ * This library is written and maintained purely by software developers with no official education or
  * certifications in any facet of law. Please review the redacted outputs of the APIs and entities
  * within this library with your legal team! This library will not be held liable for any privacy
  * violations!
@@ -26,33 +26,34 @@ package contacts.core
  * Contact: id=1, email { address="*******************" }, phone { number="************" }, etc
  * ```
  *
- * Notice that we are simply replacing all characters in the string with "*". This still gives us
- * valuable information such as;
+ * Notice that all characters in private user data are replaced with "*". Redacted strings are not as
+ * useful as the non-redacted counterpart. However, we still have the following valuable information;
  *
  * - is the string null or not?
  * - how long is the string?
  *
- * IDs and (typically non-string properties) do not have to be redacted unless they contain
- * sensitive information.
+ * Database row IDs (and typically non-string properties) do not have to be redacted unless they
+ * contain sensitive information.
  *
  * The [redactedCopy] function will return an actual copy of the entity, except with sensitive data
  * redacted. In addition to logging, this will allow consumers to do cool things like implementing a
- * redacted contact view!
+ * redacted contact view! Imagine a button that the user can press to redact everything in their
+ * contact form. Cool? Yes! Useful? Maybe? :grin:
  *
  * Redacted copies have [isRedacted] set to true to indicate that data has already been redacted.
  *
- * ## Insert and update operations on redacted copies
+ * ## Insert and update operations on redacted entities
  *
- * This library will not stop you from using redacted copies in insert and update APIs. You could
+ * This library will not stop you from using redacted entities in insert and update APIs. You could
  * build some cool stuff using it. I'll let your imagination take over from here =)
  *
  * ## Developer notes
  *
  * I know that we cannot prevent consumers of this API from violating privacy laws if they really
  * want to. BUT, the library should provide consumers an easy way to be GDPR-compliant! This is not
- * necessary for all libraries to implement but this library deals with sensitive, private data.
- * Therefore, we need to be extra careful and provide consumers a GDPR-compliant way to log
- * everything in this library!
+ * necessary for all libraries to implement but this library deals with sensitive, private user data.
+ * Therefore, we need to be extra careful and provide consumers a GDPR-compliant way to log everything
+ * in this library!
  */
 // We could get fancy and take advantage of recursive generic types
 // interface Redactable<T: Redactable<T>>

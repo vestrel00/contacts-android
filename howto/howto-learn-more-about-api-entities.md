@@ -279,3 +279,12 @@ For more info on how to easily aggregate data from all RawContacts in a Contact,
 [How do I use some miscellaneous extension functions to make my life easier?](/howto/howto-use-miscellaneous-extensions.md)
 
 To look into the actual Contacts Provider tables, read [How do I debug the Contacts Provider tables?](/howto/howto-debug-contacts-provider-tables.md)
+
+## Redacting entities
+
+All `Entity` in this library are `Redactable, which indicates that there could be sensitive private 
+user data that could be redacted, for legal purposes. If you are logging contact data in production 
+to remote data centers for analytics or crash reporting, then it is important to redact certain 
+parts of every contact's data.
+
+For more info, read [How do I redact entities and API input and output in production?](/howto/howto-redact-apis-and-entities.md)

@@ -127,7 +127,6 @@ sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
         OTHER(CommonDataKinds.StructuredPostal.TYPE_OTHER),
         CUSTOM(CommonDataKinds.StructuredPostal.TYPE_CUSTOM);
 
-
         override fun labelStr(resources: Resources, label: String?): String =
             CommonDataKinds.StructuredPostal.getTypeLabel(resources, value, label).toString()
 
