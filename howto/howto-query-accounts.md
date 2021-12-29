@@ -45,6 +45,17 @@ val accounts = Contacts(context).accounts().query()
 > RawContacts that are not associated with an Account are local to the device. For more info, read
 > [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
+## Account for each specified RawContact
+
+When you perform a query that uses `associatedWith` without using `withTypes`, you are able to get
+the `Account` for each of the `RawContact` specified.
+
+```kotlin
+val rawContactAccount = accounts.accountFor(rawContact)
+```
+
+This allows you to get the accounts for multiple RawContacts in one API call =)
+
 ## Cancelling the query
 
 To cancel a query amid execution,

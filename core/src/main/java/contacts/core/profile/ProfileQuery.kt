@@ -164,7 +164,7 @@ interface ProfileQuery : Redactable {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): ProfileQuery
 
     /**
-     * Returns the profile [Contact], if available.
+     * Returns the profile [Contact] (inside the [Result]), if available.
      *
      * ## Permissions
      *
@@ -179,10 +179,10 @@ interface ProfileQuery : Redactable {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): Contact?
+    fun find(): Result
 
     /**
-     * Returns the profile [Contact], if available.
+     * Returns the profile [Contact] (inside the [Result]), if available.
      *
      * ## Permissions
      *
@@ -207,7 +207,7 @@ interface ProfileQuery : Redactable {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): Contact?
-    fun find(cancel: () -> Boolean): Contact?
+    fun find(cancel: () -> Boolean): Result
 
     /**
      * Returns a redacted instance where all private user data are redacted.
@@ -221,6 +221,20 @@ interface ProfileQuery : Redactable {
      */
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): ProfileQuery
+
+    /**
+     * Contains the Profile [contact].
+     */
+    interface Result : Redactable {
+
+        /**
+         * The Profile [Contact], if exist.
+         */
+        val contact: Contact?
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
+    }
 }
 
 @Suppress("FunctionName")
@@ -291,17 +305,18 @@ private class ProfileQueryImpl(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
-    override fun find(): Contact? = find { false }
+    override fun find(): ProfileQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): Contact? {
+    override fun find(cancel: () -> Boolean): ProfileQuery.Result {
         // TODO issue #144 log this
-        return if (!permissions.canQuery()) {
+        val profileContact = if (!permissions.canQuery()) {
             null
         } else {
             contentResolver.resolve(
                 customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
             )
-        }?.redactedCopyOrThis(isRedacted)
+        }
+        return ProfileQueryResult(profileContact).redactedCopyOrThis(isRedacted)
         // TODO issue #144 log result
     }
 
@@ -388,3 +403,24 @@ private fun ContentResolver.rawContactIds(
         }
     }
 } ?: emptySet()
+
+private class ProfileQueryResult private constructor(
+    override val contact: Contact?,
+    override val isRedacted: Boolean
+) : ProfileQuery.Result {
+
+    constructor(contact: Contact?) : this(contact, false)
+
+    override fun toString(): String =
+        """
+            ProfileQuery.Result {
+                Profile contact: $contact
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): ProfileQuery.Result = ProfileQueryResult(
+        contact?.redactedCopy(),
+        isRedacted = true
+    )
+}

@@ -51,6 +51,7 @@ internal fun Contacts.findRawContactWithId(
 ): RawContact? = if (rawContactId.isProfileId) {
     profile().query()
         .find(cancel)
+        .contact
 } else {
     query()
         .where { RawContact.Id equalTo rawContactId }

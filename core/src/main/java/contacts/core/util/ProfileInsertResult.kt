@@ -48,4 +48,4 @@ fun ProfileInsert.Result.rawContact(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun ProfileInsert.Result.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
-    if (isSuccessful) contacts.profile().query().find(cancel) else null
+    if (isSuccessful) contacts.profile().query().find(cancel).contact else null
