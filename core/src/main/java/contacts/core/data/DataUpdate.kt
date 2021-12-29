@@ -50,7 +50,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface DataUpdate {
+interface DataUpdate : Redactable {
 
     /**
      * Specifies that only the given set of [fields] (data) will be updated.
@@ -165,7 +165,20 @@ interface DataUpdate {
     // fun commit(cancel: () -> Boolean = { false }): Result
     fun commit(cancel: () -> Boolean): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): DataUpdate
+
+    interface Result : Redactable {
         /**
          * True if all data have successfully been updated. False if even one update failed.
          */
@@ -175,6 +188,9 @@ interface DataUpdate {
          * True if the [data] has been successfully updated. False otherwise.
          */
         fun isSuccessful(data: ExistingDataEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -191,8 +207,11 @@ private class DataUpdateImpl(
     private val permissions: ContactsPermissions,
     private val customDataRegistry: CustomDataRegistry,
     private val isProfile: Boolean,
+
     private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
-    private val data: MutableSet<ExistingDataEntity> = mutableSetOf()
+    private val data: MutableSet<ExistingDataEntity> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : DataUpdate {
 
     override fun toString(): String =
@@ -201,8 +220,20 @@ private class DataUpdateImpl(
                 isProfile: $isProfile
                 include: $include
                 data: $data
+                hasPermission: ${permissions.canUpdateDelete()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): DataUpdate = DataUpdateImpl(
+        contentResolver, permissions, customDataRegistry, isProfile,
+
+        include,
+        // Redact contact data.
+        data.asSequence().redactedCopies().toMutableSet(),
+
+        isRedacted = true
+    )
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
@@ -223,32 +254,34 @@ private class DataUpdateImpl(
     override fun data(data: Collection<ExistingDataEntity>) = data(data.asSequence())
 
     override fun data(data: Sequence<ExistingDataEntity>): DataUpdate = apply {
-        this.data.addAll(data)
+        this.data.addAll(data.redactedCopiesOrThis(isRedacted))
     }
 
     override fun commit(): DataUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): DataUpdate.Result {
-        if (data.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
-            return DataUpdateFailed()
-        }
+        // TODO issue #144 log this
+        return if (data.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+            DataUpdateFailed()
+        } else {
+            val results = mutableMapOf<Long, Boolean>()
+            for (data in data) {
+                if (cancel()) {
+                    break
+                }
 
-        val results = mutableMapOf<Long, Boolean>()
-        for (data in data) {
-            if (cancel()) {
-                break
+                results[data.id] = if (data.isProfile != isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // intended profile or non-profile data updates. Otherwise, operation can
+                    // succeed. This is only done to enforce API design.
+                    false
+                } else {
+                    contentResolver.updateData(include.fields, data, customDataRegistry)
+                }
             }
-
-            results[data.id] = if (data.isProfile != isProfile) {
-                // Intentionally fail the operation to ensure that this is only used for
-                // intended profile or non-profile data updates. Otherwise, operation can
-                // succeed. This is only done to enforce API design.
-                false
-            } else {
-                contentResolver.updateData(include.fields, data, customDataRegistry)
-            }
-        }
-        return DataUpdateResult(results)
+            DataUpdateResult(results)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 }
 
@@ -258,8 +291,26 @@ private fun ContentResolver.updateData(
     customDataRegistry: CustomDataRegistry
 ): Boolean = data.updateOperation(includeFields, customDataRegistry)?.let { applyBatch(it) } != null
 
-private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>) :
-    DataUpdate.Result {
+private class DataUpdateResult private constructor(
+    private val dataIdsResultMap: Map<Long, Boolean>,
+    override val isRedacted: Boolean
+) : DataUpdate.Result {
+
+    constructor(dataIdsResultMap: Map<Long, Boolean>) : this(dataIdsResultMap, false)
+
+    override fun toString(): String =
+        """
+            DataUpdate.Result {
+                isSuccessful: $isSuccessful
+                dataIdsResultMap: $dataIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): DataUpdate.Result = DataUpdateResult(
+        dataIdsResultMap,
+        isRedacted = true
+    )
 
     override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
 
@@ -268,7 +319,21 @@ private class DataUpdateResult(private val dataIdsResultMap: Map<Long, Boolean>)
     }
 }
 
-private class DataUpdateFailed : DataUpdate.Result {
+private class DataUpdateFailed private constructor(
+    override val isRedacted: Boolean
+) : DataUpdate.Result {
+
+    constructor() : this(false)
+
+    override fun toString(): String =
+        """
+            DataUpdate.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): DataUpdate.Result = DataUpdateFailed(true)
 
     override val isSuccessful: Boolean = false
 
