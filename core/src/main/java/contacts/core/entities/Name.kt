@@ -16,18 +16,39 @@ sealed interface NameEntity : DataEntity {
      * The [displayName] is the unstructured representation of the name. It is made up of structured
      * components; [prefix], [givenName], [middleName], [familyName], and [suffix].
      *
-     * When updating or inserting;
+     * ## Insert/update operations
      *
-     * - If the [displayName] is null and there are non-null structured components provided (e.g.
+     * You have three different options when inserting/updating a [NameEntity],
+     *
+     * 1. If the [displayName] is null and there are non-null structured components provided (e.g.
      *   [givenName] and [familyName]), the Contacts Provider will automatically set the
      *   [displayName] by combining the structured components.
      *
-     * - If the [displayName] is not null and all structured components are null, the Contacts
+     * 2. If the [displayName] is not null and all structured components are null, the Contacts
      *   Provider automatically (to the best of its ability) sets the values for all the structured
      *   components.
      *
-     * - If the [displayName] and structured components are not null, the Contacts Provider does
+     * 3. If the [displayName] and structured components are not null, the Contacts Provider does
      *   nothing automatically.
+     *
+     * #### Important things to know about
+     *
+     * If your app only allows users to update the structured components and not the combined
+     * [displayName], you should set the [displayName] to null when performing an update. This means
+     * **option 1 is for you**. Otherwise, if you are trying to set all structured components to
+     * null but you leave the [displayName] not null, the Contacts Provider will automatically set
+     * the value(s) of the structured components to a derived value from the [displayName]. In
+     * effect, your app would seemingly not allow users to clear the name.
+     *
+     * If your app only allows users to update the [displayName] and not the structured components,
+     * you should set the structured components to null when performing an update. This means
+     * **option 2 is for you**. Otherwise, if you are trying to set the [displayName] to null but
+     * you leave the structured components not null, the Contacts Provider will automatically set
+     * the value of the [displayName] to a combined value from the structured components. In effect,
+     * your app would seemingly not allow users to clear the [displayName].
+     *
+     * If you want to manually update both the [displayName] and structured components with your own
+     * custom algorithm, you may do so at your own discretion =)
      *
      * ## [ContactEntity.displayNamePrimary] vs [Name.displayName]
      *

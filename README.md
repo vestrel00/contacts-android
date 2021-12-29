@@ -160,7 +160,7 @@ That's it! BUT, THAT IS BORING! Let's take a look at something more advanced…
 
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
 the results) ordered by display name in descending order, matching ALL of these rules;
-- a first name starting with "leo" 
+- a first name starting with "leo"
 - has emails from gmail or hotmail
 - lives in the US
 - has been born prior to making this query
