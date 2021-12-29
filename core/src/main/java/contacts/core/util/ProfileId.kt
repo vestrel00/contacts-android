@@ -19,4 +19,4 @@ internal val Long.isProfileId: Boolean
  */
 internal val Collection<Long>.allAreProfileIds: Boolean
     // By default, all returns true when the collection is empty. So, we override that.
-    get() = if (isEmpty()) false else all { it.isProfileId }
+    get() = isNotEmpty() && all { it.isProfileId }

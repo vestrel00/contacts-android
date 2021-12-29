@@ -312,7 +312,10 @@ private class DataUpdateResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        dataIdsResultMap.run { isNotEmpty() && all { it.value } }
+    }
 
     override fun isSuccessful(data: ExistingDataEntity): Boolean {
         return dataIdsResultMap.getOrElse(data.id) { false }

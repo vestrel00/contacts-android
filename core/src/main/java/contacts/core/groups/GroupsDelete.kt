@@ -211,7 +211,10 @@ private class GroupsDeleteResult private constructor(
         groupIdsResultMap, true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        groupIdsResultMap.run { isNotEmpty() && all { it.value } }
+    }
 
     override fun isSuccessful(group: ExistingGroupEntity): Boolean {
         return groupIdsResultMap.getOrElse(group.id) { false }

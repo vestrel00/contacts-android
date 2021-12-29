@@ -556,7 +556,10 @@ private class UpdateResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+    }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
         isSuccessful(rawContact.id)

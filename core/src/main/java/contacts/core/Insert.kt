@@ -589,7 +589,10 @@ private class InsertResult private constructor(
             .toList()
     }
 
-    override val isSuccessful: Boolean by unsafeLazy { rawContactMap.all { it.value != null } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        rawContactMap.run { isNotEmpty() && all { it.value != null } }
+    }
 
     override fun isSuccessful(rawContact: NewRawContact): Boolean =
         rawContactId(rawContact) != null

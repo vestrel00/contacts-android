@@ -140,7 +140,7 @@ interface GroupsQuery : Redactable {
     fun offset(offset: Int): GroupsQuery
 
     /**
-     * Returns the [GroupsList] matching the preceding query options.
+     * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
      *
@@ -151,10 +151,10 @@ interface GroupsQuery : Redactable {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): GroupsList
+    fun find(): Result
 
     /**
-     * Returns the [GroupsList] matching the preceding query options.
+     * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
      *
@@ -175,7 +175,7 @@ interface GroupsQuery : Redactable {
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
     // fun find(cancel: () -> Boolean = { false }): GroupsList
-    fun find(cancel: () -> Boolean): GroupsList
+    fun find(cancel: () -> Boolean): Result
 
     /**
      * Returns a redacted instance where all private user data are redacted.
@@ -197,7 +197,7 @@ interface GroupsQuery : Redactable {
      *
      * Use [from], to get the list of Groups for a specific Account.
      */
-    interface GroupsList : List<Group>, Redactable {
+    interface Result : List<Group>, Redactable {
 
         /**
          * The list of [Group]s from the specified [account] ordered by [orderBy].
@@ -207,7 +207,7 @@ interface GroupsQuery : Redactable {
         fun from(account: Account): List<Group>
 
         // We have to cast the return type because we are not using recursive generic types.
-        override fun redactedCopy(): GroupsList
+        override fun redactedCopy(): Result
     }
 }
 
@@ -305,9 +305,9 @@ private class GroupsQueryImpl(
         }
     }
 
-    override fun find(): GroupsQuery.GroupsList = find { false }
+    override fun find(): GroupsQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): GroupsQuery.GroupsList {
+    override fun find(cancel: () -> Boolean): GroupsQuery.Result {
         // TODO issue #144 log this
         return if (!permissions.canQuery()) {
             GroupsQueryResult(emptyList())
@@ -337,7 +337,7 @@ private fun ContentResolver.resolve(
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
-): GroupsQuery.GroupsList = query(
+): GroupsQuery.Result = query(
     Table.Groups,
     include,
     if (rawContactsWhere != null) {
@@ -370,7 +370,7 @@ private fun ContentResolver.resolve(
 private class GroupsQueryResult private constructor(
     groups: List<Group>,
     override val isRedacted: Boolean
-) : ArrayList<Group>(groups), GroupsQuery.GroupsList {
+) : ArrayList<Group>(groups), GroupsQuery.Result {
 
     constructor(groups: List<Group>) : this(groups, false)
 
@@ -383,7 +383,7 @@ private class GroupsQueryResult private constructor(
             }
         """.trimIndent()
 
-    override fun redactedCopy(): GroupsQuery.GroupsList = GroupsQueryResult(
+    override fun redactedCopy(): GroupsQuery.Result = GroupsQueryResult(
         redactedCopies(),
         isRedacted = true
     )

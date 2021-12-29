@@ -316,7 +316,9 @@ private class DeleteResult private constructor(
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        rawContactIdsResultMap.all { it.value } || contactIdsResultMap.all { it.value }
+        // By default, all returns true when the collection is empty. So, we override that.
+        rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+                || contactIdsResultMap.run { isNotEmpty() && all { it.value } }
     }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =

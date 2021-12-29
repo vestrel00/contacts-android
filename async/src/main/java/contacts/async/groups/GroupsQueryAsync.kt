@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
  * See [GroupsQuery.find].
  */
 suspend fun GroupsQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
-        GroupsQuery.GroupsList = withContext(context) { find { !isActive } }
+        GroupsQuery.Result = withContext(context) { find { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -25,4 +25,4 @@ suspend fun GroupsQuery.findWithContext(context: CoroutineContext = ASYNC_DISPAT
  * See [GroupsQuery.find].
  */
 fun GroupsQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER):
-        Deferred<GroupsQuery.GroupsList> = CoroutineScope(context).async { find { !isActive } }
+        Deferred<GroupsQuery.Result> = CoroutineScope(context).async { find { !isActive } }

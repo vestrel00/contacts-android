@@ -3,7 +3,6 @@ package contacts.core.profile
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
 import contacts.core.*
-import contacts.core.deleteRawContactWithId
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.operation.RawContactsOperation
@@ -301,7 +300,9 @@ private class ProfileDeleteResult private constructor(
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        profileContactDeleteSuccess || rawContactIdsResultMap.all { it.value }
+        profileContactDeleteSuccess
+                // By default, all returns true when the collection is empty. So, we override that.
+                || rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
     }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
