@@ -217,7 +217,8 @@ private class DataQueryFactoryImpl(
  *      .find();
  * ```
  */
-interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity> {
+interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity> :
+    Redactable {
 
     /**
      * Limits this query to only search for data associated with one of the given [accounts].
@@ -371,7 +372,7 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): List<E>
+    fun find(): Result<E>
 
     /**
      * The list of [E]s.
@@ -394,8 +395,41 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): List<R>
-    fun find(cancel: () -> Boolean): List<E>
+    // fun find(cancel: () -> Boolean = { false }): Result<E>
+    fun find(cancel: () -> Boolean): Result<E>
+
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): DataQuery<F, S, E>
+
+    /**
+     * A list of data of type [E].
+     *
+     * ## The [toString] function
+     *
+     * The [toString] function of instances of this will not return the string representation of
+     * every data in the list. It will instead return a summary of the data in the list and
+     * perhaps the first data only.
+     *
+     * This is done due to the potentially large quantities of data, which could block the UI if
+     * not logging in background threads.
+     *
+     * You may print individual data in this list by iterating through it.
+     */
+    interface Result<E : ExistingDataEntity> : List<E>, Redactable {
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result<E>
+    }
 }
 
 private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity>(
@@ -414,7 +448,9 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
-    private var offset: Int = DEFAULT_OFFSET
+    private var offset: Int = DEFAULT_OFFSET,
+
+    override val isRedacted: Boolean = false
 ) : DataQuery<F, S, E> {
 
     override fun toString(): String =
@@ -428,15 +464,32 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                hasPermission: ${contacts.permissions.canQuery()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): DataQuery<F, S, E> = DataQueryImpl(
+        contacts, allFields, mimeType, isProfile,
+
+        // Redact account info.
+        rawContactsWhere?.redactedCopy(),
+        include,
+        // Redact search input.
+        where?.redactedCopy(),
+        orderBy,
+        limit,
+        offset,
+
+        isRedacted = true
+    )
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): DataQuery<F, S, E> = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: F) = include(fields.asSequence())
@@ -457,7 +510,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
 
     override fun where(where: Where<AbstractDataField>?): DataQuery<F, S, E> = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
-        this.where = where ?: DEFAULT_WHERE
+        this.where = (where ?: DEFAULT_WHERE)?.redactedCopyOrThis(isRedacted)
     }
 
     override fun where(where: Fields.() -> Where<AbstractDataField>?) = where(where(Fields))
@@ -492,16 +545,23 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
         }
     }
 
-    override fun find(): List<E> = find { false }
+    override fun find(): DataQuery.Result<E> = find { false }
 
-    override fun find(cancel: () -> Boolean): List<E> {
-        if (!contacts.permissions.canQuery()) {
-            return emptyList()
+    override fun find(cancel: () -> Boolean): DataQuery.Result<E> {
+        // TODO issue #144 log this
+        val data: List<E> = if (!contacts.permissions.canQuery()) {
+            emptyList()
+        } else {
+            contacts.resolveDataEntity(
+                isProfile, mimeType,
+                rawContactsWhere, include, where,
+                orderBy, limit, offset,
+                cancel
+            )
         }
 
-        return contacts.resolveDataEntity(
-            isProfile, mimeType, rawContactsWhere, include, where, orderBy, limit, offset, cancel
-        )
+        return DataQueryResult(data).redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {
@@ -584,6 +644,28 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
             }
         }
     } ?: emptySet()
+
+private class DataQueryResult<E : ExistingDataEntity> private constructor(
+    data: List<E>,
+    override val isRedacted: Boolean
+) : ArrayList<E>(data), DataQuery.Result<E> {
+
+    constructor(data: List<E>) : this(data, false)
+
+    override fun toString(): String =
+        """
+            DataQuery.Result {
+                Number of data found: $size
+                First data: ${firstOrNull()}
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): DataQuery.Result<E> = DataQueryResult(
+        redactedCopies(),
+        isRedacted = true
+    )
+}
 
 /*
 Phones, Emails, and Addresses have a CONTENT_URI that contains all rows consisting of only those

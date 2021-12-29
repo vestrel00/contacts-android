@@ -174,7 +174,7 @@ interface GroupsQuery : Redactable {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): GroupsList
+    // fun find(cancel: () -> Boolean = { false }): Result
     fun find(cancel: () -> Boolean): Result
 
     /**
@@ -196,6 +196,17 @@ interface GroupsQuery : Redactable {
      * The [offset] and [limit] functions applies to this list.
      *
      * Use [from], to get the list of Groups for a specific Account.
+     *
+     * ## The [toString] function
+     *
+     * The [toString] function of instances of this will not return the string representation of
+     * every group in the list. It will instead return a summary of the groups in the list and
+     * perhaps the first group only.
+     *
+     * This is done due to the potentially large quantities of groups, which could block the UI if
+     * not logging in background threads.
+     *
+     * You may print individual groups in this list by iterating through it.
      */
     interface Result : List<Group>, Redactable {
 

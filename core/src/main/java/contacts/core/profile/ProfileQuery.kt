@@ -206,7 +206,7 @@ interface ProfileQuery : Redactable {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): Contact?
+    // fun find(cancel: () -> Boolean = { false }): Result
     fun find(cancel: () -> Boolean): Result
 
     /**

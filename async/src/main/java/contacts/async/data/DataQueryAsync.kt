@@ -18,8 +18,7 @@ import kotlin.coroutines.CoroutineContext
  */
 suspend fun <F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity> DataQuery<F, S, E>.findWithContext(
     context: CoroutineContext = ASYNC_DISPATCHER
-): List<E> = withContext(context) { find { !isActive } }
-
+): DataQuery.Result<E> = withContext(context) { find { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -31,4 +30,4 @@ suspend fun <F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity>
  */
 fun <F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity> DataQuery<F, S, E>.findAsync(
     context: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<List<E>> = CoroutineScope(context).async { find { !isActive } }
+): Deferred<DataQuery.Result<E>> = CoroutineScope(context).async { find { !isActive } }

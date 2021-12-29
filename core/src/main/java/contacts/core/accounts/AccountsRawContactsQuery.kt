@@ -180,6 +180,17 @@ interface AccountsRawContactsQuery : Redactable {
      * The [offset] and [limit] functions applies to this list.
      *
      * Use [rawContactsFor], to get the list of RawContacts for a specific Account.
+     *
+     * ## The [toString] function
+     *
+     * The [toString] function of instances of this will not return the string representation of
+     * every RawContact in the list. It will instead return a summary of the RawContacts in the
+     * list and perhaps the first RawContact only.
+     *
+     * This is done due to the potentially large quantities of RawContact, which could block the UI
+     * if not logging in background threads.
+     *
+     * You may print individual RawContacts in this list by iterating through it.
      */
     interface Result : List<BlankRawContact>, Redactable {
 

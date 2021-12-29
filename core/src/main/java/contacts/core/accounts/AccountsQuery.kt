@@ -146,6 +146,8 @@ interface AccountsQuery : Redactable {
 
     /**
      * A list of [Account]s.
+     *
+     * Use [accountFor] to retrieve the Account for the specified RawContact.
      */
     interface Result : List<Account>, Redactable {
 
