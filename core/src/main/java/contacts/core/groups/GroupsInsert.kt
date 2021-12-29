@@ -249,7 +249,7 @@ private class GroupsInsertImpl(
     override fun groups(groups: Collection<NewGroup>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<NewGroup>): GroupsInsert = apply {
-        this.groups.addAll(groups)
+        this.groups.addAll(groups.redactedCopiesOrThis(isRedacted))
     }
 
     override fun commit(): GroupsInsert.Result = commit { false }

@@ -164,6 +164,7 @@ internal fun Delete(contacts: Contacts): Delete = DeleteImpl(
 private class DeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+
     private val rawContactIds: MutableSet<Long> = mutableSetOf(),
     private val contactIds: MutableSet<Long> = mutableSetOf(),
 
