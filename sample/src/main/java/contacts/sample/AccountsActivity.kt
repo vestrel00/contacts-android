@@ -89,7 +89,7 @@ class AccountsActivity : BaseActivity() {
     }
 
     private suspend fun addAllAccounts() {
-        val allAccounts = contacts.accounts().queryWithPermission().allAccounts()
+        val allAccounts = contacts.accounts().queryWithPermission().find()
         selectableAccounts.addAll(allAccounts)
         accountsAdapter.addAll(allAccounts.map { account ->
             """

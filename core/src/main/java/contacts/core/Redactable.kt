@@ -92,8 +92,18 @@ private const val REDACTED_CHAR = "*"
 // FIXME? Preserve spaces, tabs, and newlines?
 internal fun String.redactString(): String = REDACTED_CHAR.repeat(length)
 
+internal fun Collection<String>.redactStrings(): List<String> = map { it.redactString() }
+
+internal fun Sequence<String>.redactStrings(): Sequence<String> = map { it.redactString() }
+
 internal fun String.redactStringOrThis(redact: Boolean): String =
     if (redact) redactString() else this
+
+internal fun Collection<String>.redactStringsOrThis(redact: Boolean): List<String> =
+    map { it.redactStringOrThis(redact) }
+
+internal fun Sequence<String>.redactStringsOrThis(redact: Boolean): Sequence<String> =
+    map { it.redactStringOrThis(redact) }
 
 /**
  * If [redact] is true, returns a redacted copy of this entity. Otherwise, just returns this.

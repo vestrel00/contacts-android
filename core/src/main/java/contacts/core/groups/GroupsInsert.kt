@@ -230,7 +230,7 @@ private class GroupsInsertImpl(
             return GroupsInsertFailed()
         }
 
-        val accounts = accountsQuery.allAccounts()
+        val accounts = accountsQuery.find()
         if (accounts.isEmpty()) {
             // Fail if there are no accounts. A group requires Accounts in the system to exist!
             return GroupsInsertFailed()

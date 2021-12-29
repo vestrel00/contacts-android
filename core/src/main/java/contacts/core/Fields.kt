@@ -29,7 +29,17 @@ import contacts.core.util.unsafeLazy
 // region Field Interfaces
 
 /**
- * Represents a database field / column.
+ * Represents a database column and the data stored in each row.
+ *
+ * ## Side note about the name "Field"
+ *
+ * Think of a field like a cell in a
+ * spreadsheet, which is the intersection of a row and column. Or just think of this as a "column"
+ * if it makes it easier for you. Not sure if there is a uniform definition of a field but this
+ * works well for this library.
+ * https://www.google.com/search?q=database+field+vs+column
+ *
+ * ## Developer notes
  *
  * All concrete implementations of this must be data classes or implement equals and hashCode.
  */

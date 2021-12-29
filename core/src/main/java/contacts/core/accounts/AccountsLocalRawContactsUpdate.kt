@@ -43,8 +43,6 @@ import contacts.core.util.*
  *
  * Here is an example that associate/add the given localRawContacts to the given account.
  *
- * In Kotlin and Java,
- *
  * ```kotlin
  * val result = accountsLocalRawContactsUpdate
  *      .addToAccount(account)

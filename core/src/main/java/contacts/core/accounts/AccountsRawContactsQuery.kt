@@ -29,29 +29,11 @@ import contacts.core.util.*
  * first 2, where the RawContact's display name starts with "a", ordered by the display name in
  * ascending order (ignoring case).
  *
- * In Kotlin,
- *
  * ```kotlin
  * val blankRawContacts = accountsRawContactsQuery
  *      .accounts(account)
  *      .where { DisplayNamePrimary startsWith "a" }
  *      .orderBy(RawContactsFields.DisplayName.asc())
- *      .limit(5)
- *      .offset(2)
- *      .find()
- * ```
- *
- * In Java,
- *
- * ```java
- * import static contacts.core.RawContactsFields.*;
- * import static contacts.core.WhereKt.*;
- * import static contacts.core.OrderByKt.*;
- *
- * val blankRawContacts = accountsRawContactsQuery
- *      .accounts(account)
- *      .where(startsWith(DisplayNamePrimary, "a"))
- *      .orderBy(asc(RawContactsFields.DisplayName))
  *      .limit(5)
  *      .offset(2)
  *      .find()

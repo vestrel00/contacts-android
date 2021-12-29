@@ -180,6 +180,9 @@ fun <T : Entity> MutableCollection<T>.removeAll(instance: T, byReference: Boolea
     }
 }
 
+/**
+ * TODO documentation
+ */
 internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     null -> false
     is Entity -> !this.isBlank
@@ -187,6 +190,11 @@ internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     is Collection<*> -> this.isNotNullOrBlank()
     else -> true
 }
+
+// TODO migrate all of the below functions to use all, any, none and add documentation
+// https://play.kotlinlang.org/byExample/05_Collections/05_existential
+// Make some temporary tests to ensure the new function versions match the output of the old.
+// Make sure to test the case where the list is empty!!!
 
 private fun Collection<*>.isNotNullOrBlank(): Boolean {
     for (it in this) {

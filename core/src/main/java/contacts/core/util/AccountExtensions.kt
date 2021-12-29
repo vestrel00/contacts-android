@@ -31,7 +31,7 @@ internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(ac
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  */
 internal fun Account.nullIfNotInSystem(accounts: Accounts): Account? =
-    nullIfNotIn(accounts.query().allAccounts())
+    nullIfNotIn(accounts.query().find())
 
 /**
  * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
@@ -58,6 +58,15 @@ internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
 internal fun Account?.toRawContactsWhere(): Where<RawContactsField> =
     // Assume that this will not return a null Where because there is one element in the sequence.
     sequenceOf(this).toRawContactsWhere() as Where<RawContactsField>
+
+/**
+ * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
+ * in RawContacts table queries.
+ *
+ * If the sequence is empty, returns null.
+ */
+internal fun Collection<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
+    asSequence().toRawContactsWhere()
 
 /**
  * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use

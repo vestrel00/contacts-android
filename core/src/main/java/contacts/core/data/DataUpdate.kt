@@ -45,7 +45,7 @@ import contacts.core.util.unsafeLazy
  * In Java,
  *
  * ```java
- * val result = dataUpdate
+ * Result result = dataUpdate
  *      .data(existingDataEntities)
  *      .commit()
  * ```

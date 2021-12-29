@@ -2,6 +2,7 @@ package contacts.core
 
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
+import contacts.core.accounts.accountForRawContactWithId
 import contacts.core.entities.*
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
@@ -392,7 +393,7 @@ internal fun Contacts.updateRawContact(
     rawContact: ExistingRawContactEntity
 ): Boolean {
     val isProfile = rawContact.isProfile
-    val account = accounts(isProfile).query().accountFor(rawContact)
+    val account = applicationContext.contentResolver.accountForRawContactWithId(rawContact.id)
     val hasAccount = account != null
 
     val operations = arrayListOf<ContentProviderOperation>()
