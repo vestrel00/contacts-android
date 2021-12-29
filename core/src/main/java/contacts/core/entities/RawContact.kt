@@ -114,8 +114,7 @@ sealed interface RawContactEntity : Entity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            name, nickname, note, organization, sipAddress
-        ) && entitiesAreAllBlank(
+            name, nickname, note, organization, sipAddress,
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
             customDataEntities.values.flatMap { it.entities }
         )

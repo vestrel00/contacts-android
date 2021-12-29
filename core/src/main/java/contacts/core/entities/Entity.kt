@@ -181,7 +181,15 @@ fun <T : Entity> MutableCollection<T>.removeAll(instance: T, byReference: Boolea
 }
 
 /**
- * TODO documentation
+ * Returns true if all elements are null or blank.
+ *
+ * If the collection is empty, this returns true.
+ */
+fun propertiesAreAllNullOrBlank(vararg properties: Any?): Boolean =
+    properties.none { it.isNotNullOrBlank() }
+
+/**
+ * Returns true if this is not null or blank =)
  */
 internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     null -> false
@@ -196,29 +204,9 @@ internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
 // Make some temporary tests to ensure the new function versions match the output of the old.
 // Make sure to test the case where the list is empty!!!
 
-private fun Collection<*>.isNotNullOrBlank(): Boolean {
-    for (it in this) {
-        if (it.isNotNullOrBlank()) {
-            return true
-        }
-    }
-    return false
-}
-
-fun propertiesAreAllNullOrBlank(vararg properties: Any?): Boolean {
-    for (property in properties) {
-        if (property.isNotNullOrBlank()) {
-            return false
-        }
-    }
-    return true
-}
-
-internal fun entitiesAreAllBlank(vararg collectionOfEntities: Collection<Entity>): Boolean {
-    for (entities in collectionOfEntities) {
-        if (entities.isNotNullOrBlank()) {
-            return false
-        }
-    }
-    return true
-}
+/**
+ * Returns true if there is at least one element in the collection that is not null or blank.
+ *
+ * If the collection is empty, this returns false.
+ */
+private fun Collection<*>.isNotNullOrBlank(): Boolean = any { it.isNotNullOrBlank() }

@@ -147,7 +147,7 @@ sealed interface ContactEntity : Entity {
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
     // the Data table, which is why they are not part of the blank check.
     override val isBlank: Boolean
-        get() = entitiesAreAllBlank(rawContacts)
+        get() = propertiesAreAllNullOrBlank(rawContacts)
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): ContactEntity
