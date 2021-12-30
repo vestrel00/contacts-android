@@ -39,7 +39,7 @@ import contacts.core.util.*
  *      .find()
  * ```
  */
-interface AccountsRawContactsQuery : Redactable {
+interface AccountsRawContactsQuery : CrudApi {
 
     /**
      * Limits the [BlankRawContact]s returned by this query to those belonging to one of the given
@@ -192,7 +192,7 @@ interface AccountsRawContactsQuery : Redactable {
      *
      * You may print individual RawContacts in this list by iterating through it.
      */
-    interface Result : List<BlankRawContact>, Redactable {
+    interface Result : List<BlankRawContact>, CrudApi.Result {
 
         /**
          * The list of [BlankRawContact]s from the specified [account] ordered by [orderBy].
@@ -208,16 +208,11 @@ interface AccountsRawContactsQuery : Redactable {
 
 @Suppress("FunctionName")
 internal fun AccountsRawContactsQuery(
-    accounts: Accounts, isProfile: Boolean
-): AccountsRawContactsQuery = AccountsRawContactsQueryImpl(
-    accounts.applicationContext.contentResolver,
-    accounts.permissions,
-    isProfile
-)
+    contacts: Contacts, isProfile: Boolean
+): AccountsRawContactsQuery = AccountsRawContactsQueryImpl(contacts, isProfile)
 
 private class AccountsRawContactsQueryImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: AccountsPermissions,
+    override val contactsApi: Contacts,
     private val isProfile: Boolean,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -238,13 +233,13 @@ private class AccountsRawContactsQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
-                hasPermission: ${permissions.canQueryRawContacts()}
+                hasPermission: ${accountsPermissions.canQueryRawContacts()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): AccountsRawContactsQuery = AccountsRawContactsQueryImpl(
-        contentResolver, permissions, isProfile,
+        contactsApi, isProfile,
 
         // Redact account info.
         rawContactsWhere?.redactedCopy(),
@@ -309,15 +304,17 @@ private class AccountsRawContactsQueryImpl(
     override fun find(): AccountsRawContactsQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): AccountsRawContactsQuery.Result {
-        // TODO issue #144 log this
-        return if (!permissions.canQueryRawContacts()) {
+        onPreExecute()
+
+        return if (!accountsPermissions.canQueryRawContacts()) {
             AccountsRawContactsQueryResult(emptyList(), emptyMap())
         } else {
             contentResolver.resolve(
                 isProfile, rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
             )
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     private companion object {

@@ -35,9 +35,9 @@ object ContactsFactory {
 /**
  * TODO document this
  */
-private class TestContacts(private val contacts: Contacts) : Contacts {
+private class TestContacts(private val contactsApi: Contacts) : Contacts {
 
-    override fun query(): Query = TestQuery(contacts.query())
+    override fun query(): Query = TestQuery(contactsApi.query(), contactsApi)
 
     override fun broadQuery(): BroadQuery {
         TODO("Not yet implemented")
@@ -73,9 +73,13 @@ private class TestContacts(private val contacts: Contacts) : Contacts {
         TODO("Not yet implemented")
     }
 
-    override val permissions: ContactsPermissions = contacts.permissions
+    override val permissions = contactsApi.permissions
 
-    override val applicationContext: Context = contacts.applicationContext
+    override val accountsPermissions = contactsApi.accountsPermissions
 
-    override val customDataRegistry: CustomDataRegistry = contacts.customDataRegistry
+    override val applicationContext = contactsApi.applicationContext
+
+    override val customDataRegistry = contactsApi.customDataRegistry
+
+    override val apiListenerRegistry = contactsApi.apiListenerRegistry
 }

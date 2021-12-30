@@ -1,8 +1,6 @@
 package contacts.core.data
 
-import android.content.Context
 import contacts.core.Contacts
-import contacts.core.ContactsPermissions
 
 /**
  * Provides new [DataQueryFactory], [DataUpdate], and [DataDelete] for Profile OR non-Profile (depending on
@@ -40,33 +38,26 @@ interface Data {
     fun delete(): DataDelete
 
     /**
-     * Returns a [ContactsPermissions] instance, which provides functions for checking required
-     * permissions.
+     * A reference to the [Contacts] instance that constructed this. This is mostly used internally
+     * to shorten internal code.
+     *
+     * Don't worry, [Contacts] does not keep references to instances of this. There are no circular
+     * references that could cause leaks =). [Contacts] is just a factory.
      */
-    val permissions: ContactsPermissions
-
-    /**
-     * Reference to the Application's Context for use in extension functions and external library
-     * modules. This is safe to hold on to. Not meant for consumer use.
-     */
-    val applicationContext: Context
+    val contactsApi: Contacts
 }
 
 @Suppress("FunctionName")
 internal fun Data(contacts: Contacts, isProfile: Boolean): Data = DataImpl(contacts, isProfile)
 
 private class DataImpl(
-    private val contacts: Contacts,
+    override val contactsApi: Contacts,
     private val isProfile: Boolean
 ) : Data {
 
-    override fun query() = DataQuery(contacts, isProfile)
+    override fun query() = DataQuery(contactsApi, isProfile)
 
-    override fun update() = DataUpdate(contacts, isProfile)
+    override fun update() = DataUpdate(contactsApi, isProfile)
 
-    override fun delete() = DataDelete(contacts, isProfile)
-
-    override val permissions: ContactsPermissions = contacts.permissions
-
-    override val applicationContext: Context = contacts.applicationContext
+    override fun delete() = DataDelete(contactsApi, isProfile)
 }

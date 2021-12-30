@@ -54,7 +54,7 @@ import contacts.core.util.unsafeLazy
  *      .find();
  * ```
  */
-interface ProfileQuery : Redactable {
+interface ProfileQuery : CrudApi {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
@@ -225,7 +225,7 @@ interface ProfileQuery : Redactable {
     /**
      * Contains the Profile [contact].
      */
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * The Profile [Contact], if exist.
@@ -238,20 +238,14 @@ interface ProfileQuery : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileQuery(contacts: Contacts): ProfileQuery = ProfileQueryImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions,
-    contacts.customDataRegistry
-)
+internal fun ProfileQuery(contacts: Contacts): ProfileQuery = ProfileQueryImpl(contacts)
 
 private class ProfileQueryImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    override val contactsApi: Contacts,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
 
     override val isRedacted: Boolean = false
 ) : ProfileQuery {
@@ -268,7 +262,7 @@ private class ProfileQueryImpl(
         """.trimIndent()
 
     override fun redactedCopy(): ProfileQuery = ProfileQueryImpl(
-        contentResolver, permissions, customDataRegistry,
+        contactsApi,
 
         includeBlanks,
         // Redact Account information.
@@ -296,7 +290,7 @@ private class ProfileQueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileQuery = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -308,7 +302,8 @@ private class ProfileQueryImpl(
     override fun find(): ProfileQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): ProfileQuery.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         val profileContact = if (!permissions.canQuery()) {
             null
         } else {
@@ -316,8 +311,9 @@ private class ProfileQueryImpl(
                 customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
             )
         }
-        return ProfileQueryResult(profileContact).redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        return ProfileQueryResult(profileContact)
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     private companion object {

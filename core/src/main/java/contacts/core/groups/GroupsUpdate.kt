@@ -2,15 +2,12 @@ package contacts.core.groups
 
 import android.accounts.Account
 import android.content.ContentResolver
-import contacts.core.Contacts
-import contacts.core.ContactsPermissions
-import contacts.core.Redactable
+import contacts.core.*
 import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.Group
 import contacts.core.entities.MutableGroup
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.groups.GroupsUpdate.Result.FailureReason
-import contacts.core.redactedCopyOrThis
 import contacts.core.util.applyBatch
 import contacts.core.util.unsafeLazy
 
@@ -50,7 +47,7 @@ import contacts.core.util.unsafeLazy
  * }
  * ```
  */
-interface GroupsUpdate : Redactable {
+interface GroupsUpdate : CrudApi {
 
     /**
      * Adds the given [groups] to the update queue, which will be updated on [commit].
@@ -129,7 +126,7 @@ interface GroupsUpdate : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): GroupsUpdate
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if all Groups have successfully been updated. False if even one update failed.
@@ -179,16 +176,10 @@ interface GroupsUpdate : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsUpdate(contacts: Contacts): GroupsUpdate = GroupsUpdateImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.groups().query(),
-    contacts.permissions
-)
+internal fun GroupsUpdate(contacts: Contacts): GroupsUpdate = GroupsUpdateImpl(contacts)
 
 private class GroupsUpdateImpl(
-    private val contentResolver: ContentResolver,
-    private val groupsQuery: GroupsQuery,
-    private val permissions: ContactsPermissions,
+    override val contactsApi: Contacts,
 
     private val groups: MutableSet<ExistingGroupEntity?> = mutableSetOf(),
 
@@ -205,7 +196,7 @@ private class GroupsUpdateImpl(
         """.trimIndent()
 
     override fun redactedCopy(): GroupsUpdate = GroupsUpdateImpl(
-        contentResolver, groupsQuery, permissions,
+        contactsApi,
 
         // Redact group info.
         groups.asSequence().map { it?.redactedCopy() }.toMutableSet(),
@@ -224,7 +215,8 @@ private class GroupsUpdateImpl(
     override fun commit(): GroupsUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsUpdate.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if (groups.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             GroupsUpdateFailed()
         } else {
@@ -232,7 +224,7 @@ private class GroupsUpdateImpl(
             val groupsAccounts = groups.mapNotNull { it?.account }
 
             // Gather the existing groups per account to prevent duplicate titles.
-            val existingGroups = groupsQuery
+            val existingGroups = contactsApi.groups().query()
                 // Limit the accounts for optimization in case there are a lot of accounts in the system
                 .accounts(groupsAccounts)
                 .find()
@@ -298,8 +290,9 @@ private class GroupsUpdateImpl(
             }
 
             GroupsUpdateResult(failureReasons)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log this
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 

@@ -50,7 +50,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface DataUpdate : Redactable {
+interface DataUpdate : CrudApi {
 
     /**
      * Specifies that only the given set of [fields] (data) will be updated.
@@ -178,7 +178,7 @@ interface DataUpdate : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): DataUpdate
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
         /**
          * True if all data have successfully been updated. False if even one update failed.
          */
@@ -196,19 +196,14 @@ interface DataUpdate : Redactable {
 
 @Suppress("FunctionName")
 internal fun DataUpdate(contacts: Contacts, isProfile: Boolean): DataUpdate = DataUpdateImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions,
-    contacts.customDataRegistry,
-    isProfile
+    contacts, isProfile
 )
 
 private class DataUpdateImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    override val contactsApi: Contacts,
     private val isProfile: Boolean,
 
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private val data: MutableSet<ExistingDataEntity> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -226,7 +221,7 @@ private class DataUpdateImpl(
         """.trimIndent()
 
     override fun redactedCopy(): DataUpdate = DataUpdateImpl(
-        contentResolver, permissions, customDataRegistry, isProfile,
+        contactsApi, isProfile,
 
         include,
         // Redact contact data.
@@ -241,7 +236,7 @@ private class DataUpdateImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): DataUpdate = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -260,7 +255,8 @@ private class DataUpdateImpl(
     override fun commit(): DataUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): DataUpdate.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if (data.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             DataUpdateFailed()
         } else {
@@ -280,8 +276,9 @@ private class DataUpdateImpl(
                 }
             }
             DataUpdateResult(results)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 

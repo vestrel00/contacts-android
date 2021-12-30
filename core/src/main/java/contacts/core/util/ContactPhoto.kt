@@ -52,7 +52,7 @@ fun ExistingContactEntity.photoInputStream(contacts: Contacts): InputStream? {
         return null
     }
 
-    return contacts.applicationContext.contentResolver.query(
+    return contacts.contentResolver.query(
         if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoUri),
         ContactsFields.Id equalTo id
@@ -146,7 +146,7 @@ fun ExistingContactEntity.photoBitmap(contacts: Contacts): Bitmap? =
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun ExistingContactEntity.photoBitmapDrawable(contacts: Contacts): BitmapDrawable? =
     photoInputStream(contacts)?.apply {
-        BitmapDrawable(contacts.applicationContext.resources, it)
+        BitmapDrawable(contacts.resources, it)
     }
 
 private fun uriInputStream(contacts: Contacts, uri: Uri?): InputStream? {
@@ -156,7 +156,7 @@ private fun uriInputStream(contacts: Contacts, uri: Uri?): InputStream? {
 
     var inputStream: InputStream? = null
     try {
-        val fd = contacts.applicationContext.contentResolver.openAssetFileDescriptor(uri, "r")
+        val fd = contacts.contentResolver.openAssetFileDescriptor(uri, "r")
         inputStream = fd?.createInputStream()
     } catch (ioe: IOException) {
         // do nothing
@@ -199,7 +199,7 @@ fun ExistingContactEntity.photoThumbnailInputStream(contacts: Contacts): InputSt
         return null
     }
 
-    return contacts.applicationContext.contentResolver.query(
+    return contacts.contentResolver.query(
         if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoThumbnailUri),
         ContactsFields.Id equalTo id
@@ -293,7 +293,7 @@ fun ExistingContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun ExistingContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDrawable? =
     photoThumbnailInputStream(contacts)?.apply {
-        BitmapDrawable(contacts.applicationContext.resources, it)
+        BitmapDrawable(contacts.resources, it)
     }
 
 // endregion
@@ -385,7 +385,7 @@ fun ExistingContactEntity.setPhoto(contacts: Contacts, photoDrawable: BitmapDraw
     setPhoto(contacts, photoDrawable.bitmap.bytes())
 
 private fun ExistingContactEntity.photoFileId(contacts: Contacts): Long? =
-    contacts.applicationContext.contentResolver.query(
+    contacts.contentResolver.query(
         if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.PhotoFileId),
         ContactsFields.Id equalTo id
@@ -395,14 +395,13 @@ private fun ExistingContactEntity.photoFileId(contacts: Contacts): Long? =
 
 private fun ExistingContactEntity.rawContactWithPhotoFileId(
     contacts: Contacts, photoFileId: Long
-): TempRawContact? =
-    contacts.applicationContext.contentResolver.query(
-        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
-        Include(Fields.RawContact.Id),
-        Fields.Photo.PhotoFileId equalTo photoFileId
-    ) {
-        it.getNextOrNull { it.dataCursor().tempRawContactMapper().value }
-    }
+): TempRawContact? = contacts.contentResolver.query(
+    if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
+    Include(Fields.RawContact.Id),
+    Fields.Photo.PhotoFileId equalTo photoFileId
+) {
+    it.getNextOrNull { it.dataCursor().tempRawContactMapper().value }
+}
 
 // endregion
 
@@ -445,7 +444,7 @@ fun ExistingContactEntity.removePhoto(contacts: Contacts): Boolean {
         return false
     }
 
-    return contacts.applicationContext.contentResolver.applyBatch(
+    return contacts.contentResolver.applyBatch(
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.Contact.Id equalTo id)

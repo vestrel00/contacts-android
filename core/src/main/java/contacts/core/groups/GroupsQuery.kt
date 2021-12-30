@@ -60,7 +60,7 @@ import contacts.core.util.unsafeLazy
  * there are no available accounts, the native Contacts app does not show the groups field because
  * there are no rows in the groups table.
  */
-interface GroupsQuery : Redactable {
+interface GroupsQuery : CrudApi {
 
     /**
      * Limits the group(s) returned by this query to groups belonging to one of the [accounts].
@@ -208,7 +208,7 @@ interface GroupsQuery : Redactable {
      *
      * You may print individual groups in this list by iterating through it.
      */
-    interface Result : List<Group>, Redactable {
+    interface Result : List<Group>, CrudApi.Result {
 
         /**
          * The list of [Group]s from the specified [account] ordered by [orderBy].
@@ -223,14 +223,10 @@ interface GroupsQuery : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsQuery(contacts: Contacts): GroupsQuery = GroupsQueryImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions
-)
+internal fun GroupsQuery(contacts: Contacts): GroupsQuery = GroupsQueryImpl(contacts)
 
 private class GroupsQueryImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
+    override val contactsApi: Contacts,
 
     // The Groups table has access to the same sync columns as the RawContacts table, which provides
     // the Account name and type.
@@ -257,7 +253,7 @@ private class GroupsQueryImpl(
         """.trimIndent()
 
     override fun redactedCopy(): GroupsQuery = GroupsQueryImpl(
-        contentResolver, permissions,
+        contactsApi,
 
         // Redact account info.
         rawContactsWhere?.redactedCopy(),
@@ -319,15 +315,17 @@ private class GroupsQueryImpl(
     override fun find(): GroupsQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): GroupsQuery.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if (!permissions.canQuery()) {
             GroupsQueryResult(emptyList())
         } else {
             contentResolver.resolve(
                 rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
             )
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     companion object {

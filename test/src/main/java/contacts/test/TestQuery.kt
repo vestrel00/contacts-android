@@ -14,12 +14,13 @@ import contacts.test.entities.TestDataFields
  */
 internal class TestQuery(
     private val query: Query,
+    override val contactsApi: Contacts,
     override val isRedacted: Boolean = false
 ) : Query {
 
     override fun toString(): String = query.toString()
 
-    override fun redactedCopy() = TestQuery(query.redactedCopy(), isRedacted = true)
+    override fun redactedCopy() = TestQuery(query.redactedCopy(), contactsApi, isRedacted = true)
 
     override fun includeBlanks(includeBlanks: Boolean): TestQuery = apply {
         query.includeBlanks(includeBlanks)

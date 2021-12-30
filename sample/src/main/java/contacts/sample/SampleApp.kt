@@ -13,12 +13,10 @@ class SampleApp : Application() {
     val contacts: Contacts by lazy(LazyThreadSafetyMode.NONE) {
         Contacts(
             this,
-            CustomDataRegistry().apply {
-                register(
-                    GenderRegistration(),
-                    HandleNameRegistration()
-                )
-            }
+            CustomDataRegistry().register(
+                GenderRegistration(),
+                HandleNameRegistration()
+            )
         )
     }
 }

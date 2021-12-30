@@ -42,7 +42,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface ProfileDelete : Redactable {
+interface ProfileDelete : CrudApi {
 
     /**
      * Adds the given profile [rawContacts] ([ExistingRawContactEntity.isProfile]) to the delete
@@ -137,7 +137,7 @@ interface ProfileDelete : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): ProfileDelete
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if the profile [ExistingContactEntity] has been successfully deleted
@@ -162,14 +162,10 @@ interface ProfileDelete : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun ProfileDelete(contacts: Contacts): ProfileDelete = ProfileDeleteImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions
-)
+internal fun ProfileDelete(contacts: Contacts): ProfileDelete = ProfileDeleteImpl(contacts)
 
 private class ProfileDeleteImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
+    override val contactsApi: Contacts,
 
     private val rawContactIds: MutableSet<Long> = mutableSetOf(),
     private var deleteProfileContact: Boolean = false,
@@ -189,7 +185,7 @@ private class ProfileDeleteImpl(
 
     // There isn't really anything to redact =)
     override fun redactedCopy(): ProfileDelete = ProfileDeleteImpl(
-        contentResolver, permissions,
+        contactsApi,
 
         rawContactIds,
         deleteProfileContact,
@@ -213,7 +209,8 @@ private class ProfileDeleteImpl(
     }
 
     override fun commit(): ProfileDelete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
             ProfileDeleteAllResult(isSuccessful = false)
         } else if (deleteProfileContact) {
@@ -238,12 +235,14 @@ private class ProfileDeleteImpl(
                 rawContactsResult,
                 profileContactDeleteSuccess = false,
             )
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     override fun commitInOneTransaction(): ProfileDelete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if ((rawContactIds.isEmpty() && !deleteProfileContact) || !permissions.canUpdateDelete()) {
             ProfileDeleteAllResult(isSuccessful = false)
         } else if (deleteProfileContact) {
@@ -261,8 +260,9 @@ private class ProfileDeleteImpl(
                     ) != null
                 )
             }
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 

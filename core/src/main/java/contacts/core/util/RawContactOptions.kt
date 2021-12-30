@@ -1,10 +1,10 @@
 package contacts.core.util
 
 import contacts.core.*
-import contacts.core.entities.Options
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MutableOptionsEntity
 import contacts.core.entities.NewOptions
+import contacts.core.entities.Options
 import contacts.core.entities.mapper.rawContactsOptionsMapper
 import contacts.core.entities.operation.OptionsOperation
 import contacts.core.entities.table.ProfileUris
@@ -35,7 +35,7 @@ fun ExistingRawContactEntity.options(contacts: Contacts): Options? {
         return null
     }
 
-    return contacts.applicationContext.contentResolver.query(
+    return contacts.contentResolver.query(
         if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
         Include(RawContactsFields.Options),
         RawContactsFields.Id equalTo id
@@ -104,7 +104,7 @@ fun ExistingRawContactEntity.setOptions(
         return false
     }
 
-    return contacts.applicationContext.contentResolver.applyBatch(
+    return contacts.contentResolver.applyBatch(
         OptionsOperation().updateRawContactOptions(id, options)
     ) != null
 }

@@ -83,7 +83,7 @@ import contacts.core.util.unsafeLazy
  * However, keeping it separate like this gives us the most flexibility and cohesiveness of
  * profile APIs.
  */
-interface ProfileUpdate : Redactable {
+interface ProfileUpdate : CrudApi {
 
     /**
      * If [deleteBlanks] is set to true, then updating blank profile RawContacts
@@ -242,7 +242,7 @@ interface ProfileUpdate : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): ProfileUpdate
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if all of the RawContacts have successfully been updated. False if even one
@@ -264,10 +264,10 @@ interface ProfileUpdate : Redactable {
 internal fun ProfileUpdate(contacts: Contacts): ProfileUpdate = ProfileUpdateImpl(contacts)
 
 private class ProfileUpdateImpl(
-    private val contacts: Contacts,
+    override val contactsApi: Contacts,
 
     private var deleteBlanks: Boolean = true,
-    private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -279,13 +279,13 @@ private class ProfileUpdateImpl(
                 deleteBlanks: $deleteBlanks
                 include: $include
                 rawContacts: $rawContacts
-                hasPermission: ${contacts.permissions.canUpdateDelete()}
+                hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): ProfileUpdate = ProfileUpdateImpl(
-        contacts,
+        contactsApi,
 
         deleteBlanks,
         include,
@@ -305,7 +305,7 @@ private class ProfileUpdateImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileUpdate = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(contacts.customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -331,8 +331,9 @@ private class ProfileUpdateImpl(
     override fun commit(): ProfileUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): ProfileUpdate.Result {
-        // TODO issue #144 log this
-        return if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
+        onPreExecute()
+
+        return if (rawContacts.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             ProfileUpdateFailed()
         } else {
             val results = mutableMapOf<Long, Boolean>()
@@ -347,16 +348,16 @@ private class ProfileUpdateImpl(
                     // design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    contacts.applicationContext.contentResolver
-                        .deleteRawContactWithId(rawContact.id)
+                    contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    contacts.updateRawContact(include.fields, rawContact)
+                    contactsApi.updateRawContact(include.fields, rawContact)
                 }
             }
 
             ProfileUpdateResult(results)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 

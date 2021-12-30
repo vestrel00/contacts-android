@@ -89,7 +89,7 @@ import contacts.core.util.*
  *      .commit();
  * ```
  */
-interface ProfileInsert : Redactable {
+interface ProfileInsert : CrudApi {
 
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
@@ -269,7 +269,7 @@ interface ProfileInsert : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): ProfileInsert
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * The ID of the successfully created RawContact. Null if the insertion failed.
@@ -290,11 +290,11 @@ interface ProfileInsert : Redactable {
 internal fun ProfileInsert(contacts: Contacts): ProfileInsert = ProfileInsertImpl(contacts)
 
 private class ProfileInsertImpl(
-    private val contacts: Contacts,
+    override val contactsApi: Contacts,
 
     private var allowBlanks: Boolean = false,
     private var allowMultipleRawContactsPerAccount: Boolean = false,
-    private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var account: Account? = null,
     private var rawContact: NewRawContact? = null,
 
@@ -309,13 +309,13 @@ private class ProfileInsertImpl(
                 include: $include
                 account: $account
                 rawContact: $rawContact
-                hasPermission: ${contacts.permissions.canInsert()}
+                hasPermission: ${permissions.canInsert()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): ProfileInsert = ProfileInsertImpl(
-        contacts,
+        contactsApi,
 
         allowBlanks,
         allowMultipleRawContactsPerAccount,
@@ -348,7 +348,7 @@ private class ProfileInsertImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileInsert = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(contacts.customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -367,39 +367,37 @@ private class ProfileInsertImpl(
     override fun commit(): ProfileInsert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): ProfileInsert.Result {
-        // TODO issue #144 log this
-        val rawContact = rawContact
+        onPreExecute()
 
+        val rawContact = rawContact
         return if (rawContact == null
             || (!allowBlanks && rawContact.isBlank)
-            || !contacts.permissions.canInsert()
+            || !permissions.canInsert()
             || cancel()
         ) {
             ProfileInsertFailed()
         } else {
             // This ensures that a valid account is used. Otherwise, null is used.
-            account = account?.nullIfNotInSystem(contacts.accounts())
+            account = account?.nullIfNotInSystem(contactsApi.accounts())
 
             if (
-                (!allowMultipleRawContactsPerAccount &&
-                        contacts.applicationContext.contentResolver.hasProfileRawContactForAccount(
-                            account
-                        ))
+                (!allowMultipleRawContactsPerAccount
+                        && contentResolver.hasProfileRawContactForAccount(account))
                 || cancel()
             ) {
                 ProfileInsertFailed()
             } else {
                 // No need to propagate the cancel function to within insertRawContactForAccount
                 // as that operation should be fast and CPU time should be trivial.
-                val rawContactId =
-                    contacts.insertRawContactForAccount(
-                        account, include.fields, rawContact, IS_PROFILE
-                    )
+                val rawContactId = contactsApi.insertRawContactForAccount(
+                    account, include.fields, rawContact, IS_PROFILE
+                )
 
                 return ProfileInsertResult(rawContactId)
             }
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     private companion object {

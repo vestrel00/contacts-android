@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentProviderOperation.newUpdate
+import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
 import contacts.core.entities.ExistingRawContactEntity
@@ -50,7 +51,7 @@ import contacts.core.util.*
  *      .commit()
  * ```
  */
-interface AccountsLocalRawContactsUpdate : Redactable {
+interface AccountsLocalRawContactsUpdate : CrudApi {
 
     /**
      * The [Account] that will be associated with the existing local RawContacts specified in
@@ -161,7 +162,7 @@ interface AccountsLocalRawContactsUpdate : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): AccountsLocalRawContactsUpdate
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if the RawContacts have been successfully associated to the given Account.
@@ -208,13 +209,13 @@ interface AccountsLocalRawContactsUpdate : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsLocalRawContactsUpdate(accounts: Accounts, isProfile: Boolean):
+internal fun AccountsLocalRawContactsUpdate(contacts: Contacts, isProfile: Boolean):
         AccountsLocalRawContactsUpdate = AccountsLocalRawContactsUpdateImpl(
-    accounts, isProfile
+    contacts, isProfile
 )
 
 private class AccountsLocalRawContactsUpdateImpl(
-    private val accounts: Accounts,
+    override val contactsApi: Contacts,
     private val isProfile: Boolean,
 
     private var account: Account? = null,
@@ -229,14 +230,14 @@ private class AccountsLocalRawContactsUpdateImpl(
                 isProfile: $isProfile
                 account: $account
                 rawContactIds: $rawContactIds
-                hasPermission: ${accounts.permissions.canUpdateLocalRawContactsAccount()}
+                hasPermission: ${accountsPermissions.canUpdateLocalRawContactsAccount()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): AccountsLocalRawContactsUpdate =
         AccountsLocalRawContactsUpdateImpl(
-            accounts, isProfile,
+            contactsApi, isProfile,
 
             // Redact account info
             account?.redactedCopy(),
@@ -264,15 +265,16 @@ private class AccountsLocalRawContactsUpdateImpl(
     override fun commit() = commit { false }
 
     override fun commit(cancel: () -> Boolean): AccountsLocalRawContactsUpdate.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         val account = account
         return if (
             rawContactIds.isEmpty()
-            || !accounts.permissions.canUpdateLocalRawContactsAccount()
+            || !accountsPermissions.canUpdateLocalRawContactsAccount()
             || cancel()
         ) {
             AccountsRawContactsAssociationsUpdateResultFailed(FailureReason.UNKNOWN)
-        } else if (account?.isInSystem(accounts) != true) {
+        } else if (account?.isInSystem(contactsApi.accounts()) != true) {
             // Either account was not specified (null) or it is not in system.
             AccountsRawContactsAssociationsUpdateResultFailed(FailureReason.INVALID_ACCOUNT)
         } else {
@@ -280,16 +282,17 @@ private class AccountsLocalRawContactsUpdateImpl(
             for (rawContactId in rawContactIds) {
                 if (cancel() || rawContactId.isProfileId != isProfile) {
                     failureReasons[rawContactId] = FailureReason.UNKNOWN
-                } else if (accounts.rawContactHasAccount(rawContactId)) {
+                } else if (contentResolver.rawContactHasAccount(rawContactId)) {
                     failureReasons[rawContactId] = FailureReason.RAW_CONTACT_IS_NOT_LOCAL
-                } else if (!accounts.setRawContactAccount(account, rawContactId)) {
+                } else if (!contentResolver.setRawContactAccount(account, rawContactId)) {
                     failureReasons[rawContactId] = FailureReason.UNKNOWN
                 }
                 // else operation succeeded. No Failure reason.
             }
             AccountsRawContactsAssociationsUpdateResult(failureReasons)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 
@@ -302,9 +305,9 @@ private class AccountsLocalRawContactsUpdateImpl(
  * Note that local RawContacts may have a group membership to an Account that it is not associated
  * with. Therefore, we need to delete that membership.
  */
-private fun Accounts.setRawContactAccount(
+private fun ContentResolver.setRawContactAccount(
     account: Account, rawContactId: Long
-): Boolean = applicationContext.contentResolver.applyBatch(
+): Boolean = applyBatch(
     arrayListOf<ContentProviderOperation>().apply {
         // First delete existing group memberships.
         newDelete(if (rawContactId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri)
@@ -325,19 +328,18 @@ private fun Accounts.setRawContactAccount(
     }
 ) != null
 
-private fun Accounts.rawContactHasAccount(rawContactId: Long): Boolean =
-    applicationContext.contentResolver.query(
-        if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
-        Include(RawContactsFields.Id),
-        RawContactsFields.run {
-            Id.equalTo(rawContactId) and
-                    AccountName.isNotNullOrEmpty() and
-                    AccountType.isNotNullOrEmpty()
-        }
-    ) {
-        val matchingRawContactId: Long? = it.getNextOrNull { it.rawContactsCursor().rawContactId }
-        matchingRawContactId == rawContactId
-    } ?: false
+private fun ContentResolver.rawContactHasAccount(rawContactId: Long): Boolean = query(
+    if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+    Include(RawContactsFields.Id),
+    RawContactsFields.run {
+        Id.equalTo(rawContactId) and
+                AccountName.isNotNullOrEmpty() and
+                AccountType.isNotNullOrEmpty()
+    }
+) {
+    val matchingRawContactId: Long? = it.getNextOrNull { it.rawContactsCursor().rawContactId }
+    matchingRawContactId == rawContactId
+} ?: false
 
 
 private class AccountsRawContactsAssociationsUpdateResult private constructor(

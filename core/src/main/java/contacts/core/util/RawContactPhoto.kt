@@ -53,7 +53,7 @@ fun ExistingRawContactEntity.photoInputStream(contacts: Contacts): InputStream? 
 
     var inputStream: InputStream? = null
     try {
-        val fd = contacts.applicationContext.contentResolver.openAssetFileDescriptor(photoUri, "r")
+        val fd = contacts.contentResolver.openAssetFileDescriptor(photoUri, "r")
         inputStream = fd?.createInputStream()
     } catch (ioe: IOException) {
         // do nothing
@@ -124,7 +124,7 @@ fun ExistingRawContactEntity.photoBitmap(contacts: Contacts): Bitmap? =
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun ExistingRawContactEntity.photoBitmapDrawable(contacts: Contacts): BitmapDrawable? =
     photoInputStream(contacts)?.apply {
-        BitmapDrawable(contacts.applicationContext.resources, it)
+        BitmapDrawable(contacts.resources, it)
     }
 
 internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
@@ -161,7 +161,7 @@ fun ExistingRawContactEntity.photoThumbnailInputStream(contacts: Contacts): Inpu
         return null
     }
 
-    return contacts.applicationContext.contentResolver.query(
+    return contacts.contentResolver.query(
         if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         Include(Fields.Photo.PhotoThumbnail),
         (Fields.RawContact.Id equalTo id)
@@ -235,7 +235,7 @@ fun ExistingRawContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun ExistingRawContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): BitmapDrawable? =
     photoThumbnailInputStream(contacts)?.apply {
-        BitmapDrawable(contacts.applicationContext.resources, it)
+        BitmapDrawable(contacts.resources, it)
     }
 
 // endregion
@@ -328,7 +328,7 @@ internal fun Contacts.setRawContactPhoto(
         // Didn't want to force unwrap because I'm trying to keep the codebase free of it.
         // I wanted to fold the if-return using ?: but it results in a lint error about unreachable
         // code (it's not unreachable).
-        val fd = applicationContext.contentResolver
+        val fd = contentResolver
             .openAssetFileDescriptor(photoUri, "rw")
         if (fd != null) {
             val os = fd.createOutputStream()
@@ -393,7 +393,7 @@ fun ExistingRawContactEntity.removePhoto(contacts: Contacts): Boolean {
         return false
     }
 
-    return contacts.applicationContext.contentResolver.applyBatch(
+    return contacts.contentResolver.applyBatch(
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
                 (Fields.RawContact.Id equalTo id)

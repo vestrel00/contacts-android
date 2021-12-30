@@ -3,7 +3,8 @@ package contacts.core
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import contacts.core.accounts.accountForRawContactWithId
-import contacts.core.entities.*
+import contacts.core.entities.ExistingContactEntity
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
@@ -80,7 +81,7 @@ import contacts.core.util.unsafeLazy
  *      .commit();
  * ```
  */
-interface Update : Redactable {
+interface Update : CrudApi {
 
     /**
      * If [deleteBlanks] is set to true, then updating blank RawContacts
@@ -244,7 +245,7 @@ interface Update : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): Update
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if all Contacts and RawContacts have successfully been updated. False if even one
@@ -279,10 +280,10 @@ interface Update : Redactable {
 internal fun Update(contacts: Contacts): Update = UpdateImpl(contacts)
 
 private class UpdateImpl(
-    private val contacts: Contacts,
+    override val contactsApi: Contacts,
 
     private var deleteBlanks: Boolean = true,
-    private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -294,13 +295,13 @@ private class UpdateImpl(
                 deleteBlanks: $deleteBlanks
                 include: $include
                 rawContacts: $rawContacts
-                hasPermission: ${contacts.permissions.canUpdateDelete()}
+                hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): Update = UpdateImpl(
-        contacts,
+        contactsApi,
 
         deleteBlanks,
         include,
@@ -320,7 +321,7 @@ private class UpdateImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Update = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(contacts.customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -351,8 +352,9 @@ private class UpdateImpl(
     override fun commit(): Update.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Update.Result {
-        // TODO issue #144 log this
-        return if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
+        onPreExecute()
+
+        return if (rawContacts.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             UpdateFailed()
         } else {
             val results = mutableMapOf<Long, Boolean>()
@@ -367,15 +369,15 @@ private class UpdateImpl(
                     // enforce API design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    contacts.applicationContext.contentResolver
-                        .deleteRawContactWithId(rawContact.id)
+                    contentResolver.deleteRawContactWithId(rawContact.id)
                 } else {
-                    contacts.updateRawContact(include.fields, rawContact)
+                    contactsApi.updateRawContact(include.fields, rawContact)
                 }
             }
             UpdateResult(results)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 
@@ -393,20 +395,20 @@ internal fun Contacts.updateRawContact(
     rawContact: ExistingRawContactEntity
 ): Boolean {
     val isProfile = rawContact.isProfile
-    val account = applicationContext.contentResolver.accountForRawContactWithId(rawContact.id)
+    val account = contentResolver.accountForRawContactWithId(rawContact.id)
     val hasAccount = account != null
 
     val operations = arrayListOf<ContentProviderOperation>()
 
     operations.addAll(
         AddressOperation(isProfile, Fields.Address.intersect(includeFields)).updateInsertOrDelete(
-            rawContact.addresses, rawContact.id, applicationContext.contentResolver
+            rawContact.addresses, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
         EmailOperation(isProfile, Fields.Email.intersect(includeFields)).updateInsertOrDelete(
-            rawContact.emails, rawContact.id, applicationContext.contentResolver
+            rawContact.emails, rawContact.id, contentResolver
         )
     )
 
@@ -416,7 +418,7 @@ internal fun Contacts.updateRawContact(
         // follow in the footsteps of the native Contacts app...
         operations.addAll(
             EventOperation(isProfile, Fields.Event.intersect(includeFields)).updateInsertOrDelete(
-                rawContact.events, rawContact.id, applicationContext.contentResolver
+                rawContact.events, rawContact.id, contentResolver
             )
         )
     }
@@ -438,30 +440,30 @@ internal fun Contacts.updateRawContact(
 
     operations.addAll(
         ImOperation(isProfile, Fields.Im.intersect(includeFields)).updateInsertOrDelete(
-            rawContact.ims, rawContact.id, applicationContext.contentResolver
+            rawContact.ims, rawContact.id, contentResolver
         )
     )
 
     NameOperation(isProfile, Fields.Name.intersect(includeFields)).updateInsertOrDelete(
-        rawContact.name, rawContact.id, applicationContext.contentResolver
+        rawContact.name, rawContact.id, contentResolver
     )?.let(operations::add)
 
     NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields)).updateInsertOrDelete(
-        rawContact.nickname, rawContact.id, applicationContext.contentResolver
+        rawContact.nickname, rawContact.id, contentResolver
     )?.let(operations::add)
 
     NoteOperation(isProfile, Fields.Note.intersect(includeFields)).updateInsertOrDelete(
-        rawContact.note, rawContact.id, applicationContext.contentResolver
+        rawContact.note, rawContact.id, contentResolver
     )?.let(operations::add)
 
     OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields))
         .updateInsertOrDelete(
-            rawContact.organization, rawContact.id, applicationContext.contentResolver
+            rawContact.organization, rawContact.id, contentResolver
         )?.let(operations::add)
 
     operations.addAll(
         PhoneOperation(isProfile, Fields.Phone.intersect(includeFields)).updateInsertOrDelete(
-            rawContact.phones, rawContact.id, applicationContext.contentResolver
+            rawContact.phones, rawContact.id, contentResolver
         )
     )
 
@@ -475,26 +477,26 @@ internal fun Contacts.updateRawContact(
         operations.addAll(
             RelationOperation(isProfile, Fields.Relation.intersect(includeFields))
                 .updateInsertOrDelete(
-                    rawContact.relations, rawContact.id, applicationContext.contentResolver
+                    rawContact.relations, rawContact.id, contentResolver
                 )
         )
     }
 
     SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields))
         .updateInsertOrDelete(
-            rawContact.sipAddress, rawContact.id, applicationContext.contentResolver
+            rawContact.sipAddress, rawContact.id, contentResolver
         )?.let(operations::add)
 
     operations.addAll(
         WebsiteOperation(isProfile, Fields.Website.intersect(includeFields)).updateInsertOrDelete(
-            rawContact.websites, rawContact.id, applicationContext.contentResolver
+            rawContact.websites, rawContact.id, contentResolver
         )
     )
 
     // Process custom data
     operations.addAll(
         rawContact.customDataUpdateInsertOrDeleteOperations(
-            applicationContext.contentResolver, includeFields, customDataRegistry
+            contentResolver, includeFields, customDataRegistry
         )
     )
 
@@ -502,7 +504,7 @@ internal fun Contacts.updateRawContact(
      * Atomically update all of the associated Data rows. All of the above operations will
      * either succeed or fail.
      */
-    return applicationContext.contentResolver.applyBatch(operations) != null
+    return contentResolver.applyBatch(operations) != null
 }
 
 private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(

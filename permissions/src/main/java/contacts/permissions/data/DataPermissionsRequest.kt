@@ -15,8 +15,8 @@ import contacts.permissions.requestWritePermission
  * If permission is already granted, then immediately returns a new [DataQueryFactory] instance.
  */
 suspend fun Data.queryWithPermission(): DataQueryFactory {
-    if (!permissions.canQuery()) {
-        applicationContext.requestReadPermission()
+    if (!contactsApi.permissions.canQuery()) {
+        contactsApi.applicationContext.requestReadPermission()
     }
 
     return query()
@@ -29,8 +29,8 @@ suspend fun Data.queryWithPermission(): DataQueryFactory {
  * If permission is already granted, then immediately returns a new [DataUpdate] instance.
  */
 suspend fun Data.updateWithPermission(): DataUpdate {
-    if (!permissions.canUpdateDelete()) {
-        applicationContext.requestWritePermission()
+    if (!contactsApi.permissions.canUpdateDelete()) {
+        contactsApi.applicationContext.requestWritePermission()
     }
 
     return update()
@@ -43,8 +43,8 @@ suspend fun Data.updateWithPermission(): DataUpdate {
  * If permissions are already granted, then immediately returns a new [DataDelete] instance.
  */
 suspend fun Data.deleteWithPermission(): DataDelete {
-    if (!permissions.canUpdateDelete()) {
-        applicationContext.requestWritePermission()
+    if (!contactsApi.permissions.canUpdateDelete()) {
+        contactsApi.applicationContext.requestWritePermission()
     }
 
     return delete()

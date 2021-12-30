@@ -44,7 +44,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface DataDelete : Redactable {
+interface DataDelete : CrudApi {
 
     /**
      * Adds the given [data] to the delete queue, which will be deleted on [commit].
@@ -103,7 +103,7 @@ interface DataDelete : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): DataDelete
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if all data have successfully been deleted. False if even one delete failed.
@@ -122,14 +122,11 @@ interface DataDelete : Redactable {
 
 @Suppress("FunctionName")
 internal fun DataDelete(contacts: Contacts, isProfile: Boolean): DataDelete = DataDeleteImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions,
-    isProfile
+    contacts, isProfile
 )
 
 private class DataDeleteImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
+    override val contactsApi: Contacts,
     private val isProfile: Boolean,
 
     private val dataIds: MutableSet<Long> = mutableSetOf(),
@@ -148,7 +145,7 @@ private class DataDeleteImpl(
         """.trimIndent()
 
     override fun redactedCopy(): DataDelete = DataDeleteImpl(
-        contentResolver, permissions, isProfile,
+        contactsApi, isProfile,
         dataIds,
         isRedacted = true
     )
@@ -162,7 +159,8 @@ private class DataDeleteImpl(
     }
 
     override fun commit(): DataDelete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
             DataDeleteResult(emptyMap())
         } else {
@@ -180,12 +178,14 @@ private class DataDeleteImpl(
             }
 
             DataDeleteResult(dataIdsResultMap)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     override fun commitInOneTransaction(): DataDelete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         // I know this if-else can be folded. But this is way more readable IMO =)
         val isSuccessful = if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
             false
@@ -201,8 +201,9 @@ private class DataDeleteImpl(
             }
         }
 
-        return DataDeleteAllResult(isSuccessful).redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        return DataDeleteAllResult(isSuccessful)
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 
