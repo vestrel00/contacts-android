@@ -4,19 +4,16 @@ import android.content.ContentResolver
 import contacts.core.accounts.AccountsPermissions
 import contacts.core.entities.custom.CustomDataRegistry
 
+// ## Developer notes
+//
+// This should actually be an internal interface. It is public because public APIs implement this.
+// Anyways, this enforces some level of uniformity for all CRUD APIs. However, we should try to
+// keep the contract loose to allow for the most flexibility. Who knows? Consumers might find some
+// use for this. There is no howto page for this until we can find an official use for it.
+
 /**
  * All CRUD (Insert*, Query*, Update*, Delete*) APIs, accessible via a [Contacts], must implement
  * this interface.
- *
- * ## Developer notes
- *
- * This should actually be an internal interface. It is public because public APIs implement this.
- *
- * Anyways, this enforces some level of uniformity for all CRUD APIs. However, we should try to
- * keep the contract loose to allow for the most flexibility.
- *
- * Who knows? Consumers might find some use for this. There is no howto page for this until we can
- * find an official use for it.
  */
 interface CrudApi : Redactable {
 
