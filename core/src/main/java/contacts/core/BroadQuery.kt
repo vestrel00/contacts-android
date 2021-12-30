@@ -145,7 +145,7 @@ import contacts.core.util.unsafeLazy
  *
  * Matching is **case-insensitive** (case is ignored).
  */
-interface BroadQuery : Redactable {
+interface BroadQuery : CrudApi {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
@@ -444,7 +444,7 @@ interface BroadQuery : Redactable {
     // I know that this interface also exist in Query but I want each API to have its own
     // interface for the results in case we need to deviate implementation. Besides, this is the
     // only pair of APIs in the library that have the same name for its results interface.
-    interface Result : List<Contact>, Redactable {
+    interface Result : List<Contact>, CrudApi.Result {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -452,21 +452,15 @@ interface BroadQuery : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun BroadQuery(contacts: Contacts): BroadQuery = BroadQueryImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions,
-    contacts.customDataRegistry
-)
+internal fun BroadQuery(contacts: Contacts): BroadQuery = BroadQueryImpl(contacts)
 
 private class BroadQueryImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    override val contactsApi: Contacts,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var groupMembershipWhere: Where<GroupMembershipField>? = DEFAULT_GROUP_MEMBERSHIP_WHERE,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var searchString: String? = DEFAULT_SEARCH_STRING,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -491,10 +485,9 @@ private class BroadQueryImpl(
         """.trimIndent()
 
     override fun redactedCopy(): BroadQuery = BroadQueryImpl(
-        contentResolver, permissions, customDataRegistry,
+        contactsApi,
 
         includeBlanks,
-
         // Redact Account information.
         rawContactsWhere?.redactedCopy(),
         groupMembershipWhere,
@@ -539,7 +532,7 @@ private class BroadQueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): BroadQuery = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -588,7 +581,8 @@ private class BroadQueryImpl(
     override fun find(): BroadQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): BroadQuery.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         val contacts = if (!permissions.canQuery()) {
             emptyList()
         } else {
@@ -599,8 +593,9 @@ private class BroadQueryImpl(
             )
         }
 
-        return BroadQueryResult(contacts).redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        return BroadQueryResult(contacts)
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     private companion object {

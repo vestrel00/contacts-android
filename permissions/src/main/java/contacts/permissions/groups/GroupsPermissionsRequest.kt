@@ -13,8 +13,8 @@ import contacts.permissions.requestWritePermission
  * If permission is already granted, then immediately returns a new [GroupsQuery] instance.
  */
 suspend fun Groups.queryWithPermission(): GroupsQuery {
-    if (!permissions.canQuery()) {
-        applicationContext.requestReadPermission()
+    if (!contactsApi.permissions.canQuery()) {
+        contactsApi.applicationContext.requestReadPermission()
     }
 
     return query()
@@ -29,9 +29,9 @@ suspend fun Groups.queryWithPermission(): GroupsQuery {
  * If permissions are already granted, then immediately returns a new [GroupsInsert] instance.
  */
 suspend fun Groups.insertWithPermission(): GroupsInsert {
-    if (!permissions.canInsert()) {
-        applicationContext.requestWritePermission()
-        applicationContext.requestGetAccountsPermission()
+    if (!contactsApi.permissions.canInsert()) {
+        contactsApi.applicationContext.requestWritePermission()
+        contactsApi.applicationContext.requestGetAccountsPermission()
     }
 
     return insert()
@@ -44,8 +44,8 @@ suspend fun Groups.insertWithPermission(): GroupsInsert {
  * If permissions are already granted, then immediately returns a new [GroupsUpdate] instance.
  */
 suspend fun Groups.updateWithPermission(): GroupsUpdate {
-    if (!permissions.canUpdateDelete()) {
-        applicationContext.requestWritePermission()
+    if (!contactsApi.permissions.canUpdateDelete()) {
+        contactsApi.applicationContext.requestWritePermission()
     }
 
     return update()
@@ -58,8 +58,8 @@ suspend fun Groups.updateWithPermission(): GroupsUpdate {
  * If permissions are already granted, then immediately returns a new [GroupsDelete] instance.
  */
 suspend fun Groups.deleteWithPermission(): GroupsDelete? {
-    if (!permissions.canUpdateDelete()) {
-        applicationContext.requestWritePermission()
+    if (!contactsApi.permissions.canUpdateDelete()) {
+        contactsApi.applicationContext.requestWritePermission()
     }
 
     return delete()

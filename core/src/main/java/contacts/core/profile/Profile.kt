@@ -1,8 +1,6 @@
 package contacts.core.profile
 
-import android.content.Context
 import contacts.core.Contacts
-import contacts.core.ContactsPermissions
 import contacts.core.data.Data
 
 /**
@@ -47,34 +45,27 @@ interface Profile {
     fun data(): Data
 
     /**
-     * Returns a [ContactsPermissions] instance, which provides functions for checking required
-     * permissions.
+     * A reference to the [Contacts] instance that constructed this. This is mostly used internally
+     * to shorten internal code.
+     *
+     * Don't worry, [Contacts] does not keep references to instances of this. There are no circular
+     * references that could cause leaks =). [Contacts] is just a factory.
      */
-    val permissions: ContactsPermissions
-
-    /**
-     * Reference to the Application's Context for use in extension functions and external library
-     * modules. This is safe to hold on to. Not meant for consumer use.
-     */
-    val applicationContext: Context
+    val contactsApi: Contacts
 }
 
 @Suppress("FunctionName")
 internal fun Profile(contacts: Contacts): Profile = ProfileImpl(contacts)
 
-private class ProfileImpl(private val contacts: Contacts) : Profile {
+private class ProfileImpl(override val contactsApi: Contacts) : Profile {
 
-    override fun query() = ProfileQuery(contacts)
+    override fun query() = ProfileQuery(contactsApi)
 
-    override fun insert() = ProfileInsert(contacts)
+    override fun insert() = ProfileInsert(contactsApi)
 
-    override fun update() = ProfileUpdate(contacts)
+    override fun update() = ProfileUpdate(contactsApi)
 
-    override fun delete() = ProfileDelete(contacts)
+    override fun delete() = ProfileDelete(contactsApi)
 
-    override fun data() = Data(contacts, true)
-
-    override val permissions: ContactsPermissions = contacts.permissions
-
-    override val applicationContext: Context = contacts.applicationContext
+    override fun data() = Data(contactsApi, true)
 }

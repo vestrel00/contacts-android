@@ -44,7 +44,7 @@ import contacts.core.util.*
  * query function of Accounts need not be as extensive (or at all) as other Queries. Where, orderBy,
  * offset, and limit functions are left to consumers to implement if they wish.
  */
-interface AccountsQuery : Redactable {
+interface AccountsQuery : CrudApi {
 
     /**
      * Limits the search to Accounts that have one of the given [accountTypes].
@@ -149,7 +149,7 @@ interface AccountsQuery : Redactable {
      *
      * Use [accountFor] to retrieve the Account for the specified RawContact.
      */
-    interface Result : List<Account>, Redactable {
+    interface Result : List<Account>, CrudApi.Result {
 
         /**
          * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
@@ -178,19 +178,17 @@ interface AccountsQuery : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsQuery(accounts: Accounts, isProfile: Boolean): AccountsQuery =
+internal fun AccountsQuery(contacts: Contacts, isProfile: Boolean): AccountsQuery =
     AccountsQueryImpl(
-        accounts.applicationContext.contentResolver,
-        AccountManager.get(accounts.applicationContext),
-        accounts.permissions,
+        contacts,
+        AccountManager.get(contacts.applicationContext),
         isProfile
     )
 
 @SuppressWarnings("MissingPermission")
 private class AccountsQueryImpl(
-    private val contentResolver: ContentResolver,
+    override val contactsApi: Contacts,
     private val accountManager: AccountManager,
-    private val permissions: AccountsPermissions,
     private val isProfile: Boolean,
 
     private val accountTypes: MutableSet<String> = mutableSetOf(),
@@ -205,13 +203,13 @@ private class AccountsQueryImpl(
                 isProfile: $isProfile
                 accountType: $accountTypes
                 rawContactIds: $rawContactIds
-                hasPermission: ${permissions.canQueryAccounts()}
+                hasPermission: ${accountsPermissions.canQueryAccounts()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): AccountsQuery = AccountsQueryImpl(
-        contentResolver, accountManager, permissions, isProfile,
+        contactsApi, accountManager, isProfile,
 
         accountTypes = accountTypes.redactStrings().toMutableSet(),
         rawContactIds = rawContactIds,
@@ -241,14 +239,14 @@ private class AccountsQueryImpl(
     override fun find(): AccountsQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): AccountsQuery.Result {
-        // TODO issue #144 log this
+        onPreExecute()
 
         // We start off with the full set of accounts in the system (which is typically not
         // more than a handful). Then we'll trim the fat as we process the query parameters.
         var accounts: Set<Account> = accountManager.accounts.toSet()
         return if (
             cancel()
-            || !permissions.canQueryAccounts()
+            || !accountsPermissions.canQueryAccounts()
             // If the isProfile parameter does not match for all RawContacts, fail immediately.
             || rawContactIds.allAreProfileIds != isProfile
             // No accounts in the system. No point in processing the rest of the query.
@@ -282,9 +280,9 @@ private class AccountsQueryImpl(
             }
 
             AccountsQueryResult(accounts, rawContactIdsAccountsMap)
-
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 

@@ -1,6 +1,5 @@
 package contacts.core.groups
 
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.operation.GroupsOperation
@@ -40,7 +39,7 @@ import contacts.core.util.unsafeLazy
  *
  * DO NOT USE THIS ON API VERSION BELOW 26! Or use at your own peril =)
  */
-interface GroupsDelete : Redactable {
+interface GroupsDelete : CrudApi {
 
     /**
      * Adds the given [groups] to the delete queue, which will be deleted on [commit].
@@ -101,7 +100,7 @@ interface GroupsDelete : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): GroupsDelete
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if all Groups have successfully been deleted. False if even one delete failed.
@@ -119,14 +118,10 @@ interface GroupsDelete : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsDelete(contacts: Contacts): GroupsDelete = GroupsDeleteImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions
-)
+internal fun GroupsDelete(contacts: Contacts): GroupsDelete = GroupsDeleteImpl(contacts)
 
 private class GroupsDeleteImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
+    override val contactsApi: Contacts,
 
     private val groups: MutableSet<ExistingGroupEntity> = mutableSetOf(),
 
@@ -143,7 +138,7 @@ private class GroupsDeleteImpl(
         """.trimIndent()
 
     override fun redactedCopy(): GroupsDelete = GroupsDeleteImpl(
-        contentResolver, permissions,
+        contactsApi,
 
         // Redact group data.
         groups.asSequence().redactedCopies().toMutableSet(),
@@ -160,7 +155,8 @@ private class GroupsDeleteImpl(
     }
 
     override fun commit(): GroupsDelete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if (groups.isEmpty() || !permissions.canUpdateDelete()) {
             GroupsDeleteResult(emptyMap())
         } else {
@@ -174,20 +170,23 @@ private class GroupsDeleteImpl(
                 }
             }
             GroupsDeleteResult(results)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     override fun commitInOneTransaction(): GroupsDelete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         val isSuccessful = permissions.canUpdateDelete()
                 && groups.isNotEmpty()
                 // Fail immediately if the set contains a read-only group.
                 && groups.find { it.readOnly } == null
                 && contentResolver.applyBatch(GroupsOperation().delete(groups.map { it.id })) != null
 
-        return GroupsDeleteAllResult(isSuccessful).redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        return GroupsDeleteAllResult(isSuccessful)
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 

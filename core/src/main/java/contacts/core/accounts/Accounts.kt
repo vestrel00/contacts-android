@@ -1,6 +1,5 @@
 package contacts.core.accounts
 
-import android.content.Context
 import contacts.core.Contacts
 
 /**
@@ -45,16 +44,13 @@ interface Accounts {
     fun profile(): Accounts
 
     /**
-     * Returns a [AccountsPermissions] instance, which provides functions for checking required
-     * permissions.
+     * A reference to the [Contacts] instance that constructed this. This is mostly used internally
+     * to shorten internal code.
+     *
+     * Don't worry, [Contacts] does not keep references to instances of this. There are no circular
+     * references that could cause leaks =). [Contacts] is just a factory.
      */
-    val permissions: AccountsPermissions
-
-    /**
-     * Reference to the Application's Context for use in extension functions and external library
-     * modules. This is safe to hold on to. Not meant for consumer use.
-     */
-    val applicationContext: Context
+    val contactsApi: Contacts
 }
 
 /**
@@ -62,24 +58,22 @@ interface Accounts {
  */
 @Suppress("FunctionName")
 internal fun Accounts(contacts: Contacts, isProfile: Boolean): Accounts = AccountsImpl(
-    contacts.applicationContext,
-    AccountsPermissions(contacts.applicationContext),
+    contacts,
     isProfile
 )
 
 @SuppressWarnings("MissingPermission")
 private class AccountsImpl(
-    override val applicationContext: Context,
-    override val permissions: AccountsPermissions,
+    override val contactsApi: Contacts,
     private val isProfile: Boolean
 ) : Accounts {
 
-    override fun query() = AccountsQuery(this, isProfile)
+    override fun query() = AccountsQuery(contactsApi, isProfile)
 
-    override fun queryRawContacts() = AccountsRawContactsQuery(this, isProfile)
+    override fun queryRawContacts() = AccountsRawContactsQuery(contactsApi, isProfile)
 
     override fun updateLocalRawContactsAccount() =
-        AccountsLocalRawContactsUpdate(this, isProfile)
+        AccountsLocalRawContactsUpdate(contactsApi, isProfile)
 
-    override fun profile(): Accounts = AccountsImpl(applicationContext, permissions, true)
+    override fun profile(): Accounts = AccountsImpl(contactsApi, true)
 }

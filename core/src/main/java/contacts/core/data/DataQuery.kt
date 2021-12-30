@@ -95,9 +95,7 @@ interface DataQueryFactory {
 
 @Suppress("FunctionName")
 internal fun DataQuery(contacts: Contacts, isProfile: Boolean): DataQueryFactory =
-    DataQueryFactoryImpl(
-        contacts, isProfile
-    )
+    DataQueryFactoryImpl(contacts, isProfile)
 
 private class DataQueryFactoryImpl(
     private val contacts: Contacts,
@@ -218,7 +216,7 @@ private class DataQueryFactoryImpl(
  * ```
  */
 interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity> :
-    Redactable {
+    CrudApi {
 
     /**
      * Limits this query to only search for data associated with one of the given [accounts].
@@ -425,7 +423,7 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
      *
      * You may print individual data in this list by iterating through it.
      */
-    interface Result<E : ExistingDataEntity> : List<E>, Redactable {
+    interface Result<E : ExistingDataEntity> : List<E>, CrudApi.Result {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result<E>
@@ -433,7 +431,7 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
 }
 
 private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity>(
-    private val contacts: Contacts,
+    override val contactsApi: Contacts,
 
     private val allFields: S,
     private val mimeType: MimeType,
@@ -464,13 +462,13 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
-                hasPermission: ${contacts.permissions.canQuery()}
+                hasPermission: ${permissions.canQuery()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): DataQuery<F, S, E> = DataQueryImpl(
-        contacts, allFields, mimeType, isProfile,
+        contactsApi, allFields, mimeType, isProfile,
 
         // Redact account info.
         rawContactsWhere?.redactedCopy(),
@@ -548,11 +546,12 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
     override fun find(): DataQuery.Result<E> = find { false }
 
     override fun find(cancel: () -> Boolean): DataQuery.Result<E> {
-        // TODO issue #144 log this
-        val data: List<E> = if (!contacts.permissions.canQuery()) {
+        onPreExecute()
+
+        val data: List<E> = if (!permissions.canQuery()) {
             emptyList()
         } else {
-            contacts.resolveDataEntity(
+            contactsApi.resolveDataEntity(
                 isProfile, mimeType,
                 rawContactsWhere, include, where,
                 orderBy, limit, offset,
@@ -560,8 +559,9 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
             )
         }
 
-        return DataQueryResult(data).redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        return DataQueryResult(data)
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     private companion object {
@@ -592,8 +592,8 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
     if (rawContactsWhere != null) {
         // Limit the data to the set associated with the RawContacts found in the RawContacts
         // table matching the rawContactsWhere.
-        val rawContactIds = applicationContext.contentResolver
-            .findRawContactIdsInRawContactsTable(isProfile, rawContactsWhere, cancel)
+        val rawContactIds =
+            contentResolver.findRawContactIdsInRawContactsTable(isProfile, rawContactsWhere, cancel)
 
         dataWhere = dataWhere and (Fields.RawContact.Id `in` rawContactIds)
     }
@@ -602,7 +602,7 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
         dataWhere = dataWhere and where
     }
 
-    return applicationContext.contentResolver.query(
+    return contentResolver.query(
         // mimeType.contentUri(),
         if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"

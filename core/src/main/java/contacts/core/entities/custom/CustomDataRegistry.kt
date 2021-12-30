@@ -2,11 +2,14 @@ package contacts.core.entities.custom
 
 import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractCustomDataFieldSet
+import contacts.core.Contacts
 import contacts.core.entities.*
 
 /**
  * Registry of custom data components, enabling queries, inserts, updates, and deletes for custom
  * data.
+ *
+ * There should only be a single instance of [CustomDataRegistry] per [Contacts] instance.
  */
 class CustomDataRegistry {
 
@@ -23,7 +26,7 @@ class CustomDataRegistry {
      * Register custom data [entries].
      */
     @SafeVarargs
-    fun register(vararg entries: Entry<*, *, *, *>) {
+    fun register(vararg entries: Entry<*, *, *, *>): CustomDataRegistry = apply {
         for (entry in entries) {
             @Suppress("UNCHECKED_CAST")
             entryMap[entry.mimeType.value] = entry as Entry<
@@ -37,7 +40,7 @@ class CustomDataRegistry {
     /**
      * Register custom data entries via the given [registrations].
      */
-    fun register(vararg registrations: EntryRegistration) {
+    fun register(vararg registrations: EntryRegistration): CustomDataRegistry = apply {
         for (registration in registrations) {
             registration.registerTo(this)
         }

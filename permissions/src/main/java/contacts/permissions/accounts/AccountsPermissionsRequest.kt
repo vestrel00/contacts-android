@@ -16,8 +16,8 @@ import contacts.permissions.requestWritePermission
  * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
  */
 suspend fun Accounts.queryWithPermission(): AccountsQuery {
-    if (!permissions.canQueryAccounts()) {
-        applicationContext.requestQueryAccountsPermission()
+    if (!contactsApi.accountsPermissions.canQueryAccounts()) {
+        contactsApi.applicationContext.requestQueryAccountsPermission()
     }
 
     return query()
@@ -31,8 +31,8 @@ suspend fun Accounts.queryWithPermission(): AccountsQuery {
  * instance.
  */
 suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery {
-    if (!permissions.canQueryRawContacts()) {
-        applicationContext.requestQueryRawContactsPermission()
+    if (!contactsApi.accountsPermissions.canQueryRawContacts()) {
+        contactsApi.applicationContext.requestQueryRawContactsPermission()
     }
 
     return queryRawContacts()
@@ -48,8 +48,8 @@ suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery 
  */
 suspend fun Accounts.updateLocalRawContactsAccountWithPermission():
         AccountsLocalRawContactsUpdate {
-    if (!permissions.canUpdateLocalRawContactsAccount()) {
-        applicationContext.requestUpdateLocalRawContactsAccountPermission()
+    if (!contactsApi.accountsPermissions.canUpdateLocalRawContactsAccount()) {
+        contactsApi.applicationContext.requestUpdateLocalRawContactsAccountPermission()
     }
 
     return updateLocalRawContactsAccount()

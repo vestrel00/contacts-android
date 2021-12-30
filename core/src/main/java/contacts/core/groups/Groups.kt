@@ -1,9 +1,7 @@
 package contacts.core.groups
 
-import android.content.Context
 import android.os.Build
 import contacts.core.Contacts
-import contacts.core.ContactsPermissions
 
 /**
  * Provides new [GroupsQuery], [GroupsInsert], [GroupsUpdate], and [GroupsDelete] instances.
@@ -44,36 +42,29 @@ interface Groups {
     fun delete(): GroupsDelete?
 
     /**
-     * Returns a [ContactsPermissions] instance, which provides functions for checking required
-     * permissions.
+     * A reference to the [Contacts] instance that constructed this. This is mostly used internally
+     * to shorten internal code.
+     *
+     * Don't worry, [Contacts] does not keep references to instances of this. There are no circular
+     * references that could cause leaks =). [Contacts] is just a factory.
      */
-    val permissions: ContactsPermissions
-
-    /**
-     * Reference to the Application's Context for use in extension functions and external library
-     * modules. This is safe to hold on to. Not meant for consumer use.
-     */
-    val applicationContext: Context
+    val contactsApi: Contacts
 }
 
 @Suppress("FunctionName")
 internal fun Groups(contacts: Contacts): Groups = GroupsImpl(contacts)
 
-private class GroupsImpl(private val contacts: Contacts) : Groups {
+private class GroupsImpl(override val contactsApi: Contacts) : Groups {
 
-    override fun query() = GroupsQuery(contacts)
+    override fun query() = GroupsQuery(contactsApi)
 
-    override fun insert() = GroupsInsert(contacts)
+    override fun insert() = GroupsInsert(contactsApi)
 
-    override fun update() = GroupsUpdate(contacts)
+    override fun update() = GroupsUpdate(contactsApi)
 
     override fun delete() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        GroupsDelete(contacts)
+        GroupsDelete(contactsApi)
     } else {
         null
     }
-
-    override val permissions: ContactsPermissions = contacts.permissions
-
-    override val applicationContext: Context = contacts.applicationContext
 }

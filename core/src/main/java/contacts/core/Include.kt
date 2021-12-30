@@ -59,9 +59,8 @@ internal class Include<out T : Field>(
     override fun toString(): String = columnNames.joinToString(", ")
 }
 
-internal fun allDataFields(
-    customDataRegistry: CustomDataRegistry
-): Include<AbstractDataField> = Include(Fields.all + customDataRegistry.allFields())
+internal fun Contacts.includeAllFields(): Include<AbstractDataField> =
+    Include(Fields.all + customDataRegistry.allFields())
 
 /**
  * Returns a new instance of [Include] where only [ContactsFields] in [this] are included.

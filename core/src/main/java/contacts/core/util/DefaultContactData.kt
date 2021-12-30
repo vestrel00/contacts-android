@@ -55,7 +55,7 @@ fun ExistingDataEntity.setAsDefault(contacts: Contacts): Boolean {
         return false
     }
 
-    return contacts.applicationContext.contentResolver.applyBatch(
+    return contacts.contentResolver.applyBatch(
         clearPrimary(rawContactId),
         clearSuperPrimary(contactId),
         setPrimaryAndSuperPrimary(dataId)
@@ -111,7 +111,7 @@ fun ExistingDataEntity.clearDefault(contactsApi: Contacts): Boolean {
         return false
     }
 
-    return contactsApi.applicationContext.contentResolver.applyBatch(
+    return contactsApi.contentResolver.applyBatch(
         clearPrimary(rawContactId),
         clearSuperPrimary(contactId)
     ) != null

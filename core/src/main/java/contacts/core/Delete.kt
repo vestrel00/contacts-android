@@ -36,7 +36,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface Delete : Redactable {
+interface Delete : CrudApi {
 
     /**
      * Adds the given [rawContacts] to the delete queue, which will be deleted on [commit].
@@ -123,7 +123,7 @@ interface Delete : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): Delete
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * True if all Contacts and RawContacts have successfully been deleted. False if even one
@@ -156,14 +156,10 @@ interface Delete : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun Delete(contacts: Contacts): Delete = DeleteImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.permissions
-)
+internal fun Delete(contacts: Contacts): Delete = DeleteImpl(contacts)
 
 private class DeleteImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
+    override val contactsApi: Contacts,
 
     private val rawContactIds: MutableSet<Long> = mutableSetOf(),
     private val contactIds: MutableSet<Long> = mutableSetOf(),
@@ -183,9 +179,10 @@ private class DeleteImpl(
 
     // There isn't really anything to redact =)
     override fun redactedCopy(): Delete = DeleteImpl(
-        contentResolver, permissions,
+        contactsApi,
 
-        rawContactIds, contactIds,
+        rawContactIds,
+        contactIds,
 
         isRedacted = true
     )
@@ -210,7 +207,8 @@ private class DeleteImpl(
     }
 
     override fun commit(): Delete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
             DeleteAllResult(isSuccessful = false)
         } else {
@@ -240,12 +238,14 @@ private class DeleteImpl(
             }
 
             DeleteResult(rawContactsResult, contactsResults)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     override fun commitInOneTransaction(): Delete.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         return if ((rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete()) {
             DeleteAllResult(isSuccessful = false)
         } else {
@@ -274,15 +274,15 @@ private class DeleteImpl(
 
                 DeleteAllResult(isSuccessful = contentResolver.applyBatch(operations) != null)
             }
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 
-internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean =
-    applyBatch(
-        RawContactsOperation(rawContactId.isProfileId).deleteRawContact(rawContactId)
-    ) != null
+internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean = applyBatch(
+    RawContactsOperation(rawContactId.isProfileId).deleteRawContact(rawContactId)
+) != null
 
 private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
     applyBatch(

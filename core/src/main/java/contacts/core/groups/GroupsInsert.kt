@@ -3,7 +3,6 @@ package contacts.core.groups
 import android.accounts.Account
 import android.content.ContentResolver
 import contacts.core.*
-import contacts.core.accounts.AccountsQuery
 import contacts.core.entities.NewGroup
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.groups.GroupsInsert.Result.FailureReason
@@ -44,7 +43,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface GroupsInsert : Redactable {
+interface GroupsInsert : CrudApi {
 
     /**
      * Adds a new [NewGroup] to the insert queue, which will be inserted on [commit].
@@ -136,7 +135,7 @@ interface GroupsInsert : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): GroupsInsert
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * The list of IDs of successfully created Groups.
@@ -205,18 +204,10 @@ interface GroupsInsert : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun GroupsInsert(contacts: Contacts): GroupsInsert = GroupsInsertImpl(
-    contacts.applicationContext.contentResolver,
-    contacts.accounts().query(),
-    contacts.groups().query(),
-    contacts.permissions
-)
+internal fun GroupsInsert(contacts: Contacts): GroupsInsert = GroupsInsertImpl(contacts)
 
 private class GroupsInsertImpl(
-    private val contentResolver: ContentResolver,
-    private val accountsQuery: AccountsQuery,
-    private val groupsQuery: GroupsQuery,
-    private val permissions: ContactsPermissions,
+    override val contactsApi: Contacts,
 
     private val groups: MutableSet<NewGroup> = mutableSetOf(),
 
@@ -233,7 +224,7 @@ private class GroupsInsertImpl(
         """.trimIndent()
 
     override fun redactedCopy(): GroupsInsert = GroupsInsertImpl(
-        contentResolver, accountsQuery, groupsQuery, permissions,
+        contactsApi,
 
         // Redact group data.
         groups.asSequence().redactedCopies().toMutableSet(),
@@ -255,8 +246,9 @@ private class GroupsInsertImpl(
     override fun commit(): GroupsInsert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsInsert.Result {
-        // TODO issue #144 log this
-        val accounts = accountsQuery.find()
+        onPreExecute()
+
+        val accounts = contactsApi.accounts().query().find()
         return if (
             groups.isEmpty()
             || !permissions.canInsert()
@@ -270,7 +262,7 @@ private class GroupsInsertImpl(
             val groupsAccounts = groups.map { it.account }
 
             // Gather the existing titles per account to prevent duplicates.
-            val existingGroups = groupsQuery
+            val existingGroups = contactsApi.groups().query()
                 // Limit the accounts for optimization in case there are a lot of accounts in the system
                 .accounts(groupsAccounts)
                 .find()
@@ -312,8 +304,9 @@ private class GroupsInsertImpl(
             }
 
             GroupsInsertResult(results, failureReasons)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 }
 

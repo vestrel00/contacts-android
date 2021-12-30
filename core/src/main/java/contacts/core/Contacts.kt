@@ -1,9 +1,11 @@
 package contacts.core
 
+import android.content.ContentResolver
 import android.content.Context
+import android.content.res.Resources
 import contacts.core.accounts.Accounts
+import contacts.core.accounts.AccountsPermissions
 import contacts.core.data.Data
-import contacts.core.entities.MimeType
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
 import contacts.core.profile.Profile
@@ -95,9 +97,15 @@ interface Contacts {
 
     /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
-     * permissions.
+     * permissions for Contacts Provider operations.
      */
     val permissions: ContactsPermissions
+
+    /**
+     * Returns a [AccountsPermissions] instance, which provides functions for checking required
+     * permissions for Account operations.
+     */
+    val accountsPermissions: AccountsPermissions
 
     /**
      * Reference to the Application's Context for use in extension functions and external library
@@ -120,9 +128,15 @@ interface Contacts {
     val applicationContext: Context
 
     /**
-     * Provides functions required to support custom data, which have [MimeType.Custom].
+     * Registry of custom data components, enabling queries, inserts, updates, and deletes for
+     * custom data.
      */
     val customDataRegistry: CustomDataRegistry
+
+    /**
+     * Registry for all [CrudApi.Listener]s.
+     */
+    val apiListenerRegistry: CrudApiListenerRegistry
 }
 
 /**
@@ -132,17 +146,21 @@ interface Contacts {
 @Suppress("FunctionName")
 fun Contacts(
     context: Context,
-    customDataRegistry: CustomDataRegistry = CustomDataRegistry()
+    customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
+    apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
 ): Contacts = ContactsImpl(
     context.applicationContext,
     ContactsPermissions(context.applicationContext),
-    customDataRegistry
+    AccountsPermissions(context.applicationContext),
+    customDataRegistry,
+    apiListenerRegistry
 )
 
 /**
  * Creates a new [Contacts] instance.
  *
- * This is mainly for Java convenience. Kotlin users should use [Contacts] function instead.
+ * This is mainly exist for traditional Java conventions. Kotlin users should use the [Contacts]
+ * function instead.
  */
 object ContactsFactory {
 
@@ -150,14 +168,17 @@ object ContactsFactory {
     @JvmOverloads
     fun create(
         context: Context,
-        customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-    ): Contacts = Contacts(context, customDataRegistry)
+        customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
+        apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
+    ): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry)
 }
 
 private class ContactsImpl(
     override val applicationContext: Context,
     override val permissions: ContactsPermissions,
-    override val customDataRegistry: CustomDataRegistry
+    override val accountsPermissions: AccountsPermissions,
+    override val customDataRegistry: CustomDataRegistry,
+    override val apiListenerRegistry: CrudApiListenerRegistry
 ) : Contacts {
 
     override fun query() = Query(this)
@@ -180,3 +201,13 @@ private class ContactsImpl(
 
     override fun accounts(isProfile: Boolean) = Accounts(this, isProfile)
 }
+
+// region Shortcuts
+
+internal val Contacts.contentResolver: ContentResolver
+    get() = applicationContext.contentResolver
+
+internal val Contacts.resources: Resources
+    get() = applicationContext.resources
+
+// endregion

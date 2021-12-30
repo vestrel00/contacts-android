@@ -78,7 +78,7 @@ import contacts.core.util.unsafeLazy
  * Unlike [BroadQuery.groups], this does not have a groups function. You may still match groups
  * (in a much flexible way) by using [Fields.GroupMembership] with [where].
  */
-interface Query : Redactable {
+interface Query : CrudApi {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts or blank
@@ -407,7 +407,7 @@ interface Query : Redactable {
     // I know that this interface also exist in BroadQuery but I want each API to have its own
     // interface for the results in case we need to deviate implementation. Besides, this is the
     // only pair of APIs in the library that have the same name for its results interface.
-    interface Result : List<Contact>, Redactable {
+    interface Result : List<Contact>, CrudApi.Result {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -415,21 +415,14 @@ interface Query : Redactable {
 }
 
 @Suppress("FunctionName")
-internal fun Query(contacts: Contacts): Query =
-    QueryImpl(
-        contacts.applicationContext.contentResolver,
-        contacts.permissions,
-        contacts.customDataRegistry
-    )
+internal fun Query(contacts: Contacts): Query = QueryImpl(contacts)
 
 private class QueryImpl(
-    private val contentResolver: ContentResolver,
-    private val permissions: ContactsPermissions,
-    private val customDataRegistry: CustomDataRegistry,
+    override val contactsApi: Contacts,
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -454,7 +447,7 @@ private class QueryImpl(
         """.trimIndent()
 
     override fun redactedCopy(): Query = QueryImpl(
-        contentResolver, permissions, customDataRegistry,
+        contactsApi,
 
         includeBlanks,
         // Redact Account information.
@@ -487,7 +480,7 @@ private class QueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Query = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -538,7 +531,8 @@ private class QueryImpl(
     override fun find(): Query.Result = find { false }
 
     override fun find(cancel: () -> Boolean): Query.Result {
-        // TODO issue #144 log this
+        onPreExecute()
+
         val contacts = if (!permissions.canQuery() || cancel()) {
             emptyList()
         } else {
@@ -555,8 +549,9 @@ private class QueryImpl(
             )
         }
 
-        return QueryResult(contacts).redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        return QueryResult(contacts)
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     private companion object {

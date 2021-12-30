@@ -36,7 +36,7 @@ fun ExistingContactEntity.options(contacts: Contacts): Options? {
         return null
     }
 
-    return contacts.applicationContext.contentResolver.query(
+    return contacts.contentResolver.query(
         if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
         Include(ContactsFields.Options),
         ContactsFields.Id equalTo id
@@ -102,7 +102,7 @@ fun ExistingContactEntity.setOptions(contacts: Contacts, options: MutableOptions
         return false
     }
 
-    return contacts.applicationContext.contentResolver.applyBatch(
+    return contacts.contentResolver.applyBatch(
         OptionsOperation().updateContactOptions(id, options)
     ) != null
 }

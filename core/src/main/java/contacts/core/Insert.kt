@@ -81,7 +81,7 @@ import contacts.core.util.*
  *      .commit();
  * ```
  */
-interface Insert : Redactable {
+interface Insert : CrudApi {
 
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
@@ -242,7 +242,7 @@ interface Insert : Redactable {
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): Insert
 
-    interface Result : Redactable {
+    interface Result : CrudApi.Result {
 
         /**
          * The list of IDs of successfully created RawContacts.
@@ -279,10 +279,10 @@ interface Insert : Redactable {
 internal fun Insert(contacts: Contacts): Insert = InsertImpl(contacts)
 
 private class InsertImpl(
-    private val contacts: Contacts,
+    override val contactsApi: Contacts,
 
     private var allowBlanks: Boolean = false,
-    private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
+    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var account: Account? = null,
     private val rawContacts: MutableSet<NewRawContact> = mutableSetOf(),
 
@@ -296,13 +296,13 @@ private class InsertImpl(
                 include: $include
                 account: $account
                 rawContacts: $rawContacts
-                hasPermission: ${contacts.permissions.canInsert()}
+                hasPermission: ${permissions.canInsert()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): Insert = InsertImpl(
-        contacts,
+        contactsApi,
 
         allowBlanks,
         include,
@@ -328,7 +328,7 @@ private class InsertImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Insert = apply {
         include = if (fields.isEmpty()) {
-            allDataFields(contacts.customDataRegistry)
+            contactsApi.includeAllFields()
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -353,12 +353,13 @@ private class InsertImpl(
     override fun commit(): Insert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Insert.Result {
-        // TODO issue #144 log this
-        return if (rawContacts.isEmpty() || !contacts.permissions.canInsert() || cancel()) {
+        onPreExecute()
+
+        return if (rawContacts.isEmpty() || !permissions.canInsert() || cancel()) {
             InsertFailed()
         } else {
             // This ensures that a valid account is used. Otherwise, null is used.
-            account = account?.nullIfNotInSystem(contacts.accounts())
+            account = account?.nullIfNotInSystem(contactsApi.accounts())
 
             val results = mutableMapOf<NewRawContact, Long?>()
             for (rawContact in rawContacts) {
@@ -371,7 +372,7 @@ private class InsertImpl(
                 } else {
                     // No need to propagate the cancel function to within insertRawContactForAccount
                     // as that operation should be fast and CPU time should be trivial.
-                    contacts.insertRawContactForAccount(
+                    contactsApi.insertRawContactForAccount(
                         account,
                         include.fields,
                         rawContact,
@@ -380,8 +381,9 @@ private class InsertImpl(
                 }
             }
             InsertResult(results)
-        }.redactedCopyOrThis(isRedacted)
-        // TODO issue #144 log result
+        }
+            .redactedCopyOrThis(isRedacted)
+            .apply { onPostExecute(contactsApi) }
     }
 
     private companion object {
@@ -514,7 +516,7 @@ internal fun Contacts.insertRawContactForAccount(
      * Atomically create the RawContact row and all of the associated Data rows. All of the
      * above operations will either succeed or fail.
      */
-    val results = applicationContext.contentResolver.applyBatch(operations)
+    val results = contentResolver.applyBatch(operations)
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the
