@@ -20,6 +20,8 @@ internal class OptionsMapper(private val optionsCursor: OptionsCursor<*>) : Enti
 
             customRingtone = optionsCursor.customRingtone,
 
-            sendToVoicemail = optionsCursor.sendToVoicemail
+            sendToVoicemail = optionsCursor.sendToVoicemail,
+
+            isRedacted = false
         )
 }

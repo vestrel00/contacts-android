@@ -54,11 +54,11 @@ import contacts.core.util.unsafeLazy
  *      .find();
  * ```
  */
-interface ProfileQuery {
+interface ProfileQuery : Redactable {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
-     * blanks are not be included. If the Profile Contact only contains blank RawContacts, then
+     * blanks will not be included. If the Profile Contact only contains blank RawContacts, then
      * the query will still return the blank Contact regardless of this flag. This flag is set to
      * true by default.
      *
@@ -164,7 +164,7 @@ interface ProfileQuery {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): ProfileQuery
 
     /**
-     * Returns the profile [Contact], if available.
+     * Returns the profile [Contact] (inside the [Result]), if available.
      *
      * ## Permissions
      *
@@ -179,10 +179,10 @@ interface ProfileQuery {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): Contact?
+    fun find(): Result
 
     /**
-     * Returns the profile [Contact], if available.
+     * Returns the profile [Contact] (inside the [Result]), if available.
      *
      * ## Permissions
      *
@@ -206,8 +206,35 @@ interface ProfileQuery {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): Contact?
-    fun find(cancel: () -> Boolean): Contact?
+    // fun find(cancel: () -> Boolean = { false }): Result
+    fun find(cancel: () -> Boolean): Result
+
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ProfileQuery
+
+    /**
+     * Contains the Profile [contact].
+     */
+    interface Result : Redactable {
+
+        /**
+         * The Profile [Contact], if exist.
+         */
+        val contact: Contact?
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
+    }
 }
 
 @Suppress("FunctionName")
@@ -224,7 +251,9 @@ private class ProfileQueryImpl(
 
     private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry)
+    private var include: Include<AbstractDataField> = allDataFields(customDataRegistry),
+
+    override val isRedacted: Boolean = false
 ) : ProfileQuery {
 
     override fun toString(): String =
@@ -233,8 +262,21 @@ private class ProfileQueryImpl(
                 includeBlanks: $includeBlanks
                 rawContactsWhere: $rawContactsWhere
                 include: $include
+                hasPermission: ${permissions.canQuery()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): ProfileQuery = ProfileQueryImpl(
+        contentResolver, permissions, customDataRegistry,
+
+        includeBlanks,
+        // Redact Account information.
+        rawContactsWhere?.redactedCopy(),
+        include,
+
+        isRedacted = true
+    )
 
     override fun includeBlanks(includeBlanks: Boolean): ProfileQuery = apply {
         this.includeBlanks = includeBlanks
@@ -245,7 +287,7 @@ private class ProfileQueryImpl(
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): ProfileQuery = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -263,16 +305,19 @@ private class ProfileQueryImpl(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
-    override fun find(): Contact? = find { false }
+    override fun find(): ProfileQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): Contact? {
-        if (!permissions.canQuery()) {
-            return null
+    override fun find(cancel: () -> Boolean): ProfileQuery.Result {
+        // TODO issue #144 log this
+        val profileContact = if (!permissions.canQuery()) {
+            null
+        } else {
+            contentResolver.resolve(
+                customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
+            )
         }
-
-        return contentResolver.resolve(
-            customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
-        )
+        return ProfileQueryResult(profileContact).redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {
@@ -358,3 +403,24 @@ private fun ContentResolver.rawContactIds(
         }
     }
 } ?: emptySet()
+
+private class ProfileQueryResult private constructor(
+    override val contact: Contact?,
+    override val isRedacted: Boolean
+) : ProfileQuery.Result {
+
+    constructor(contact: Contact?) : this(contact, false)
+
+    override fun toString(): String =
+        """
+            ProfileQuery.Result {
+                Profile contact: $contact
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): ProfileQuery.Result = ProfileQueryResult(
+        contact?.redactedCopy(),
+        isRedacted = true
+    )
+}

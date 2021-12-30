@@ -1,11 +1,12 @@
 package contacts.core.entities
 
 import android.os.Parcelable
+import contacts.core.Redactable
 
 /**
  * Base of all entities provided in this library.
  */
-sealed interface Entity : Parcelable {
+sealed interface Entity : Redactable, Parcelable {
 
     /**
      * Returns true all property values are either null, empty, or blank.
@@ -19,6 +20,9 @@ sealed interface Entity : Parcelable {
     val idOrNull: Long?
         get() = null
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Entity
+
     companion object {
         internal const val INVALID_ID: Long = -1L
     }
@@ -29,7 +33,11 @@ sealed interface Entity : Parcelable {
  *
  * These entities are only used for insert operations.
  */
-sealed interface NewEntity : Entity
+sealed interface NewEntity : Entity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): NewEntity
+}
 
 /**
  * An [Entity] that has already been inserted into the database.
@@ -46,6 +54,9 @@ sealed interface ExistingEntity : Entity {
      */
     val id: Long
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingEntity
+
     override val idOrNull: Long?
         get() = id
 }
@@ -56,7 +67,11 @@ sealed interface ExistingEntity : Entity {
  * Implementations of this interface must guarantee immutability. No properties can change once
  * instances are created. This guarantees thread-safety.
  */
-sealed interface ImmutableEntity : Entity
+sealed interface ImmutableEntity : Entity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableEntity
+}
 
 /**
  * An [ImmutableEntity] that has a mutable type [T].
@@ -77,6 +92,9 @@ sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEn
      * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
      */
     fun mutableCopy(newCopy: T.() -> Unit): T = mutableCopy().apply(newCopy)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableEntityWithMutableType<T>
 }
 
 /**
@@ -99,6 +117,9 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
      * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
      */
     fun mutableCopy(newCopy: T.() -> Unit): T? = mutableCopy()?.apply(newCopy)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableEntityWithNullableMutableType<T>
 }
 
 /**
@@ -110,7 +131,11 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
  * This is **NOT thread-safe**. You must perform synchronizations yourself if you are trying to use
  * shared instances of this in multi-threaded environments.
  */
-sealed interface MutableEntity : Entity
+sealed interface MutableEntity : Entity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableEntity
+}
 
 /**
  * Returns a reference to this list if it is an instance of [MutableList]. Otherwise, it returns a
@@ -155,6 +180,17 @@ fun <T : Entity> MutableCollection<T>.removeAll(instance: T, byReference: Boolea
     }
 }
 
+/**
+ * Returns true if all elements are null or blank.
+ *
+ * If the collection is empty, this returns true.
+ */
+fun propertiesAreAllNullOrBlank(vararg properties: Any?): Boolean =
+    properties.none { it.isNotNullOrBlank() }
+
+/**
+ * Returns true if this is not null or blank =)
+ */
 internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     null -> false
     is Entity -> !this.isBlank
@@ -163,29 +199,14 @@ internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     else -> true
 }
 
-private fun Collection<*>.isNotNullOrBlank(): Boolean {
-    for (it in this) {
-        if (it.isNotNullOrBlank()) {
-            return true
-        }
-    }
-    return false
-}
+// TODO migrate all of the below functions to use all, any, none and add documentation
+// https://play.kotlinlang.org/byExample/05_Collections/05_existential
+// Make some temporary tests to ensure the new function versions match the output of the old.
+// Make sure to test the case where the list is empty!!!
 
-fun propertiesAreAllNullOrBlank(vararg properties: Any?): Boolean {
-    for (property in properties) {
-        if (property.isNotNullOrBlank()) {
-            return false
-        }
-    }
-    return true
-}
-
-internal fun entitiesAreAllBlank(vararg collectionOfEntities: Collection<Entity>): Boolean {
-    for (entities in collectionOfEntities) {
-        if (entities.isNotNullOrBlank()) {
-            return false
-        }
-    }
-    return true
-}
+/**
+ * Returns true if there is at least one element in the collection that is not null or blank.
+ *
+ * If the collection is empty, this returns false.
+ */
+private fun Collection<*>.isNotNullOrBlank(): Boolean = any { it.isNotNullOrBlank() }

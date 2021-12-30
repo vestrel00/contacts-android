@@ -28,7 +28,7 @@ suspend fun GroupsDelete.commitWithContext(
  */
 suspend fun GroupsDelete.commitInOneTransactionWithContext(
     context: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(context) { commitInOneTransaction() }
+): GroupsDelete.Result = withContext(context) { commitInOneTransaction() }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -50,4 +50,4 @@ fun GroupsDelete.commitAsync(
  */
 fun GroupsDelete.commitInOneTransactionAsync(
     context: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(context).async { commitInOneTransaction() }
+): Deferred<GroupsDelete.Result> = CoroutineScope(context).async { commitInOneTransaction() }

@@ -6,10 +6,7 @@ import contacts.core.entities.NewRawContact
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
-import contacts.core.util.applyBatch
-import contacts.core.util.isEmpty
-import contacts.core.util.nullIfNotInSystem
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * Inserts one or more RawContacts and Data.
@@ -84,7 +81,7 @@ import contacts.core.util.unsafeLazy
  *      .commit();
  * ```
  */
-interface Insert {
+interface Insert : Redactable {
 
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
@@ -232,7 +229,20 @@ interface Insert {
     // fun commit(cancel: () -> Boolean = { false }): Result
     fun commit(cancel: () -> Boolean): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Insert
+
+    interface Result : Redactable {
 
         /**
          * The list of IDs of successfully created RawContacts.
@@ -259,6 +269,9 @@ interface Insert {
          * Returns null if the insert operation failed.
          */
         fun rawContactId(rawContact: NewRawContact): Long?
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -271,7 +284,9 @@ private class InsertImpl(
     private var allowBlanks: Boolean = false,
     private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
     private var account: Account? = null,
-    private val rawContacts: MutableSet<NewRawContact> = mutableSetOf()
+    private val rawContacts: MutableSet<NewRawContact> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : Insert {
 
     override fun toString(): String =
@@ -281,15 +296,30 @@ private class InsertImpl(
                 include: $include
                 account: $account
                 rawContacts: $rawContacts
+                hasPermission: ${contacts.permissions.canInsert()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): Insert = InsertImpl(
+        contacts,
+
+        allowBlanks,
+        include,
+        // Redact account info.
+        account?.redactedCopy(),
+        // Redact contact data.
+        rawContacts.asSequence().redactedCopies().toMutableSet(),
+
+        isRedacted = true
+    )
 
     override fun allowBlanks(allowBlanks: Boolean): Insert = apply {
         this.allowBlanks = allowBlanks
     }
 
     override fun forAccount(account: Account?): Insert = apply {
-        this.account = account
+        this.account = account?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -317,34 +347,41 @@ private class InsertImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<NewRawContact>): Insert = apply {
-        this.rawContacts.addAll(rawContacts)
+        this.rawContacts.addAll(rawContacts.redactedCopiesOrThis(isRedacted))
     }
 
     override fun commit(): Insert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Insert.Result {
-        if (rawContacts.isEmpty() || !contacts.permissions.canInsert() || cancel()) {
-            return InsertFailed()
-        }
+        // TODO issue #144 log this
+        return if (rawContacts.isEmpty() || !contacts.permissions.canInsert() || cancel()) {
+            InsertFailed()
+        } else {
+            // This ensures that a valid account is used. Otherwise, null is used.
+            account = account?.nullIfNotInSystem(contacts.accounts())
 
-        // This ensures that a valid account is used. Otherwise, null is used.
-        account = account?.nullIfNotInSystem(contacts.accounts())
+            val results = mutableMapOf<NewRawContact, Long?>()
+            for (rawContact in rawContacts) {
+                if (cancel()) {
+                    break
+                }
 
-        val results = mutableMapOf<NewRawContact, Long?>()
-        for (rawContact in rawContacts) {
-            if (cancel()) {
-                break
+                results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
+                    null
+                } else {
+                    // No need to propagate the cancel function to within insertRawContactForAccount
+                    // as that operation should be fast and CPU time should be trivial.
+                    contacts.insertRawContactForAccount(
+                        account,
+                        include.fields,
+                        rawContact,
+                        IS_PROFILE
+                    )
+                }
             }
-
-            results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
-                null
-            } else {
-                // No need to propagate the cancel function to within insertRawContactForAccount
-                // as that operation should be fast and CPU time should be trivial.
-                contacts.insertRawContactForAccount(account, include.fields, rawContact, IS_PROFILE)
-            }
-        }
-        return InsertResult(results)
+            InsertResult(results)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {
@@ -523,8 +560,28 @@ private fun NewRawContact.customDataInsertOperations(
     }
 }
 
-private class InsertResult(private val rawContactMap: Map<NewRawContact, Long?>) :
-    Insert.Result {
+private class InsertResult private constructor(
+    private val rawContactMap: Map<NewRawContact, Long?>,
+    override val isRedacted: Boolean
+) : Insert.Result {
+
+    constructor(rawContactMap: Map<NewRawContact, Long?>) : this(rawContactMap, false)
+
+    override fun toString(): String =
+        """
+            Insert.Result {
+                isSuccessful: $isSuccessful
+                rawContactIds: $rawContactIds
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Insert.Result = InsertResult(
+        // This is not included in the toString function but we'll redact it anyways just in case in
+        // the future. #YAGNI-violation
+        rawContactMap.redactedKeys(),
+        isRedacted = true
+    )
 
     override val rawContactIds: List<Long> by unsafeLazy {
         rawContactMap.values.asSequence()
@@ -532,7 +589,10 @@ private class InsertResult(private val rawContactMap: Map<NewRawContact, Long?>)
             .toList()
     }
 
-    override val isSuccessful: Boolean by unsafeLazy { rawContactMap.all { it.value != null } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        rawContactMap.run { isNotEmpty() && all { it.value != null } }
+    }
 
     override fun isSuccessful(rawContact: NewRawContact): Boolean =
         rawContactId(rawContact) != null
@@ -541,7 +601,21 @@ private class InsertResult(private val rawContactMap: Map<NewRawContact, Long?>)
         rawContactMap.getOrElse(rawContact) { null }
 }
 
-private class InsertFailed : Insert.Result {
+private class InsertFailed private constructor(
+    override val isRedacted: Boolean
+) : Insert.Result {
+
+    constructor() : this(false)
+
+    override fun toString(): String =
+        """
+            Insert.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Insert.Result = InsertFailed(true)
 
     override val rawContactIds: List<Long> = emptyList()
 

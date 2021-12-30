@@ -116,6 +116,9 @@ sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
             city, region, postcode, country
         )
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): AddressEntity
+
     enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
@@ -123,7 +126,6 @@ sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
         WORK(CommonDataKinds.StructuredPostal.TYPE_WORK),
         OTHER(CommonDataKinds.StructuredPostal.TYPE_OTHER),
         CUSTOM(CommonDataKinds.StructuredPostal.TYPE_CUSTOM);
-
 
         override fun labelStr(resources: Resources, label: String?): String =
             CommonDataKinds.StructuredPostal.getTypeLabel(resources, value, label).toString()
@@ -177,6 +179,9 @@ sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithType
         set(value) {
             formattedAddress = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableAddressEntity
 }
 
 /**
@@ -202,7 +207,9 @@ data class Address internal constructor(
     override val city: String?,
     override val region: String?,
     override val postcode: String?,
-    override val country: String?
+    override val country: String?,
+
+    override val isRedacted: Boolean
 
 ) : AddressEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableAddress> {
 
@@ -224,7 +231,22 @@ data class Address internal constructor(
         city = city,
         region = region,
         postcode = postcode,
-        country = country
+        country = country,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        formattedAddress = formattedAddress?.redact(),
+        street = street?.redact(),
+        poBox = poBox?.redact(),
+        neighborhood = neighborhood?.redact(),
+        city = city?.redact(),
+        region = region?.redact(),
+        postcode = postcode?.redact(),
+        country = country?.redact()
     )
 }
 
@@ -251,9 +273,25 @@ data class MutableAddress internal constructor(
     override var city: String?,
     override var region: String?,
     override var postcode: String?,
-    override var country: String?
+    override var country: String?,
 
-) : AddressEntity, ExistingDataEntity, MutableAddressEntity
+    override val isRedacted: Boolean
+
+) : AddressEntity, ExistingDataEntity, MutableAddressEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        formattedAddress = formattedAddress?.redact(),
+        street = street?.redact(),
+        poBox = poBox?.redact(),
+        neighborhood = neighborhood?.redact(),
+        city = city?.redact(),
+        region = region?.redact(),
+        postcode = postcode?.redact(),
+        country = country?.redact()
+    )
+}
 
 /**
  * A new mutable [AddressEntity].
@@ -271,6 +309,22 @@ data class NewAddress @JvmOverloads constructor(
     override var city: String? = null,
     override var region: String? = null,
     override var postcode: String? = null,
-    override var country: String? = null
+    override var country: String? = null,
 
-) : AddressEntity, NewDataEntity, MutableAddressEntity
+    override val isRedacted: Boolean = false
+
+) : AddressEntity, NewDataEntity, MutableAddressEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        formattedAddress = formattedAddress?.redact(),
+        street = street?.redact(),
+        poBox = poBox?.redact(),
+        neighborhood = neighborhood?.redact(),
+        city = city?.redact(),
+        region = region?.redact(),
+        postcode = postcode?.redact(),
+        country = country?.redact()
+    )
+}

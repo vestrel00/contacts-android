@@ -24,6 +24,8 @@ internal class AddressMapper(private val addressCursor: AddressCursor) : DataEnt
             city = addressCursor.city,
             region = addressCursor.region,
             postcode = addressCursor.postcode,
-            country = addressCursor.country
+            country = addressCursor.country,
+
+            isRedacted = false
         )
 }

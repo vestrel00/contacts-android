@@ -14,6 +14,8 @@ internal class WebsiteMapper(private val websiteCursor: WebsiteCursor) : DataEnt
             isPrimary = websiteCursor.isPrimary,
             isSuperPrimary = websiteCursor.isSuperPrimary,
 
-            url = websiteCursor.url
+            url = websiteCursor.url,
+
+            isRedacted = false
         )
 }

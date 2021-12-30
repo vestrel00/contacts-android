@@ -54,6 +54,7 @@ internal fun Contacts.findContactWithId(
         profile()
             .query()
             .find(cancel)
+            .contact
     } else {
         query()
             .where { Contact.Id equalTo contactId }

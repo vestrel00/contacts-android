@@ -44,7 +44,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface DataDelete {
+interface DataDelete : Redactable {
 
     /**
      * Adds the given [data] to the delete queue, which will be deleted on [commit].
@@ -88,9 +88,22 @@ interface DataDelete {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun commitInOneTransaction(): Boolean
+    fun commitInOneTransaction(): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): DataDelete
+
+    interface Result : Redactable {
 
         /**
          * True if all data have successfully been deleted. False if even one delete failed.
@@ -101,6 +114,9 @@ interface DataDelete {
          * True if the [data] has been successfully deleted. False otherwise.
          */
         fun isSuccessful(data: ExistingDataEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -115,7 +131,10 @@ private class DataDeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
     private val isProfile: Boolean,
-    private val dataIds: MutableSet<Long> = mutableSetOf()
+
+    private val dataIds: MutableSet<Long> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : DataDelete {
 
     override fun toString(): String =
@@ -123,8 +142,16 @@ private class DataDeleteImpl(
             DataDelete {
                 isProfile: $isProfile
                 dataIds: $dataIds
+                hasPermission: ${permissions.canUpdateDelete()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): DataDelete = DataDeleteImpl(
+        contentResolver, permissions, isProfile,
+        dataIds,
+        isRedacted = true
+    )
 
     override fun data(vararg data: ExistingDataEntity) = data(data.asSequence())
 
@@ -135,40 +162,47 @@ private class DataDeleteImpl(
     }
 
     override fun commit(): DataDelete.Result {
-        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
-            return DataDeleteFailed()
-        }
+        // TODO issue #144 log this
+        return if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
+            DataDeleteResult(emptyMap())
+        } else {
+            val dataIdsResultMap = mutableMapOf<Long, Boolean>()
+            for (dataId in dataIds) {
+                dataIdsResultMap[dataId] =
+                    if (dataId.isProfileId != isProfile) {
+                        // Intentionally fail the operation to ensure that this is only used for profile
+                        // or non-profile deletes. Otherwise, operation can succeed. This is only done
+                        // to enforce API design.
+                        false
+                    } else {
+                        contentResolver.deleteDataWithId(dataId)
+                    }
+            }
 
-        val dataIdsResultMap = mutableMapOf<Long, Boolean>()
-        for (dataId in dataIds) {
-            dataIdsResultMap[dataId] =
-                if (dataId.isProfileId != isProfile) {
-                    // Intentionally fail the operation to ensure that this is only used for profile
-                    // or non-profile deletes. Otherwise, operation can succeed. This is only done
-                    // to enforce API design.
-                    false
-                } else {
-                    contentResolver.deleteDataWithId(dataId)
-                }
-        }
-
-        return DataDeleteResult(dataIdsResultMap)
+            DataDeleteResult(dataIdsResultMap)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
-    override fun commitInOneTransaction(): Boolean {
-        if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
-            return false
+    override fun commitInOneTransaction(): DataDelete.Result {
+        // TODO issue #144 log this
+        // I know this if-else can be folded. But this is way more readable IMO =)
+        val isSuccessful = if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
+            false
+        } else {
+            val validDataIds = dataIds.filter { it.isProfileId == isProfile }
+
+            if (dataIds.size != validDataIds.size) {
+                // There are some invalid ids or profile or non-profile data ids, fail without
+                // performing operation.
+                false
+            } else {
+                contentResolver.deleteDataRowsWithIds(dataIds, isProfile)
+            }
         }
 
-        val validDataIds = dataIds.filter { it.isProfileId == isProfile }
-
-        if (dataIds.size != validDataIds.size) {
-            // There are some invalid ids or profile or non-profile data ids, fail without
-            // performing operation.
-            return false
-        }
-
-        return contentResolver.deleteDataRowsWithIds(dataIds, isProfile)
+        return DataDeleteAllResult(isSuccessful).redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 }
 
@@ -186,19 +220,58 @@ private fun ContentResolver.deleteDataRowsWithIds(
         .build()
 ) != null
 
-private class DataDeleteResult(
-    private val dataIdsResultMap: Map<Long, Boolean>
+private class DataDeleteResult private constructor(
+    private val dataIdsResultMap: Map<Long, Boolean>,
+    override val isRedacted: Boolean
 ) : DataDelete.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy { dataIdsResultMap.all { it.value } }
+    constructor(dataIdsResultMap: Map<Long, Boolean>) : this(dataIdsResultMap, false)
+
+    override fun toString(): String =
+        """
+            DataDelete.Result {
+                isSuccessful: $isSuccessful
+                dataIdsResultMap: $dataIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): DataDelete.Result = DataDeleteResult(
+        dataIdsResultMap,
+        isRedacted = true
+    )
+
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        dataIdsResultMap.run { isNotEmpty() && all { it.value } }
+    }
 
     override fun isSuccessful(data: ExistingDataEntity): Boolean =
         dataIdsResultMap.getOrElse(data.id) { false }
 }
 
-private class DataDeleteFailed : DataDelete.Result {
+private class DataDeleteAllResult private constructor(
+    override val isSuccessful: Boolean,
+    override val isRedacted: Boolean
+) : DataDelete.Result {
 
-    override val isSuccessful: Boolean = false
+    constructor(isSuccessful: Boolean) : this(
+        isSuccessful = isSuccessful,
+        isRedacted = false
+    )
 
-    override fun isSuccessful(data: ExistingDataEntity): Boolean = false
+    override fun toString(): String =
+        """
+            DataDelete.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): DataDelete.Result = DataDeleteAllResult(
+        isSuccessful = isSuccessful,
+        isRedacted = true
+    )
+
+    override fun isSuccessful(data: ExistingDataEntity): Boolean = isSuccessful
 }

@@ -26,6 +26,9 @@ internal sealed interface TestDataEntity : CustomDataEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(value)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): TestDataEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -63,6 +66,9 @@ internal sealed interface MutableTestDataEntity : TestDataEntity, MutableCustomD
         set(value) {
             this.value = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableTestDataEntity
 }
 
 /**
@@ -78,9 +84,32 @@ internal data class TestData(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val value: String?
+    override val value: String?,
 
-) : TestDataEntity, ExistingCustomDataEntity, ImmutableCustomDataEntity
+    override val isRedacted: Boolean
+
+) : TestDataEntity, ExistingCustomDataEntity,
+    ImmutableCustomDataEntityWithMutableType<MutableTestData> {
+
+    override fun mutableCopy() = MutableTestData(
+        id = id,
+        rawContactId = rawContactId,
+        contactId = contactId,
+
+        isPrimary = isPrimary,
+        isSuperPrimary = isSuperPrimary,
+
+        value = value,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        value = value?.redact()
+    )
+}
 
 /**
  * An existing mutable [TestDataEntity].
@@ -95,9 +124,18 @@ internal data class MutableTestData(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override var value: String?
+    override var value: String?,
 
-) : TestDataEntity, ExistingCustomDataEntity, MutableTestDataEntity
+    override val isRedacted: Boolean
+
+) : TestDataEntity, ExistingCustomDataEntity, MutableTestDataEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        value = value?.redact()
+    )
+}
 
 /**
  * A new mutable [TestDataEntity].
@@ -105,6 +143,15 @@ internal data class MutableTestData(
 @Parcelize
 internal data class NewTestData @JvmOverloads constructor(
 
-    override var value: String? = null
+    override var value: String? = null,
 
-) : TestDataEntity, NewCustomDataEntity, MutableTestDataEntity
+    override val isRedacted: Boolean = false
+
+) : TestDataEntity, NewCustomDataEntity, MutableTestDataEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        value = value?.redact()
+    )
+}

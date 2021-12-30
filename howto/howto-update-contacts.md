@@ -34,6 +34,7 @@ val updateResult = Contacts(context)
 
 To update a RawContact directly,
 
+```kotlin
 val updateResult = Contacts(context)
     .update()
     .rawContacts(johnDoeFromGmail.mutableCopy {
@@ -46,6 +47,7 @@ val updateResult = Contacts(context)
        }
     })
     .commit()
+```
 
 ## Deleting blanks
 
@@ -194,3 +196,6 @@ As per documentation in `android.provider.ContactsContract.Contacts`,
 
 > Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
 > Changing any of these columns on the Contact also changes them on all constituent raw contacts.
+
+The rest of the APIs provided in this library allow you to modify Data fields (e.g. Email, Phone, 
+etc). Essentially, anything that the Contacts Provider allows for modification =) 

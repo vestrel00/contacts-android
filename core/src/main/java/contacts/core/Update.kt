@@ -2,6 +2,7 @@ package contacts.core
 
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
+import contacts.core.accounts.accountForRawContactWithId
 import contacts.core.entities.*
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
@@ -79,7 +80,7 @@ import contacts.core.util.unsafeLazy
  *      .commit();
  * ```
  */
-interface Update {
+interface Update : Redactable {
 
     /**
      * If [deleteBlanks] is set to true, then updating blank RawContacts
@@ -230,7 +231,20 @@ interface Update {
     // fun commit(cancel: () -> Boolean = { false }): Result
     fun commit(cancel: () -> Boolean): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Update
+
+    interface Result : Redactable {
 
         /**
          * True if all Contacts and RawContacts have successfully been updated. False if even one
@@ -255,6 +269,9 @@ interface Update {
          * update queue via [Update.rawContacts].
          */
         fun isSuccessful(contact: ExistingContactEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -266,7 +283,9 @@ private class UpdateImpl(
 
     private var deleteBlanks: Boolean = true,
     private var include: Include<AbstractDataField> = allDataFields(contacts.customDataRegistry),
-    private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf()
+    private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : Update {
 
     override fun toString(): String =
@@ -275,8 +294,21 @@ private class UpdateImpl(
                 deleteBlanks: $deleteBlanks
                 include: $include
                 rawContacts: $rawContacts
+                hasPermission: ${contacts.permissions.canUpdateDelete()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): Update = UpdateImpl(
+        contacts,
+
+        deleteBlanks,
+        include,
+        // Redact contact data.
+        rawContacts.asSequence().redactedCopies().toMutableSet(),
+
+        isRedacted = true
+    )
 
     override fun deleteBlanks(deleteBlanks: Boolean): Update = apply {
         this.deleteBlanks = deleteBlanks
@@ -304,7 +336,7 @@ private class UpdateImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Update = apply {
-        this.rawContacts.addAll(rawContacts)
+        this.rawContacts.addAll(rawContacts.redactedCopiesOrThis(isRedacted))
     }
 
     override fun contacts(vararg contacts: ExistingContactEntity) =
@@ -319,29 +351,31 @@ private class UpdateImpl(
     override fun commit(): Update.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Update.Result {
-        if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
-            return UpdateFailed()
-        }
+        // TODO issue #144 log this
+        return if (rawContacts.isEmpty() || !contacts.permissions.canUpdateDelete() || cancel()) {
+            UpdateFailed()
+        } else {
+            val results = mutableMapOf<Long, Boolean>()
+            for (rawContact in rawContacts) {
+                if (cancel()) {
+                    break
+                }
 
-        val results = mutableMapOf<Long, Boolean>()
-        for (rawContact in rawContacts) {
-            if (cancel()) {
-                break
+                results[rawContact.id] = if (rawContact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // non-profile updates. Otherwise, operation can succeed. This is only done to
+                    // enforce API design.
+                    false
+                } else if (rawContact.isBlank && deleteBlanks) {
+                    contacts.applicationContext.contentResolver
+                        .deleteRawContactWithId(rawContact.id)
+                } else {
+                    contacts.updateRawContact(include.fields, rawContact)
+                }
             }
-
-            results[rawContact.id] = if (rawContact.isProfile) {
-                // Intentionally fail the operation to ensure that this is only used for
-                // non-profile updates. Otherwise, operation can succeed. This is only done to
-                // enforce API design.
-                false
-            } else if (rawContact.isBlank && deleteBlanks) {
-                contacts.applicationContext.contentResolver
-                    .deleteRawContactWithId(rawContact.id)
-            } else {
-                contacts.updateRawContact(include.fields, rawContact)
-            }
-        }
-        return UpdateResult(results)
+            UpdateResult(results)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 }
 
@@ -359,7 +393,7 @@ internal fun Contacts.updateRawContact(
     rawContact: ExistingRawContactEntity
 ): Boolean {
     val isProfile = rawContact.isProfile
-    val account = accounts(isProfile).query().accountFor(rawContact)
+    val account = applicationContext.contentResolver.accountForRawContactWithId(rawContact.id)
     val hasAccount = account != null
 
     val operations = arrayListOf<ContentProviderOperation>()
@@ -501,9 +535,31 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
     }
 }
 
-private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean>) : Update.Result {
+private class UpdateResult private constructor(
+    private val rawContactIdsResultMap: Map<Long, Boolean>,
+    override val isRedacted: Boolean
+) : Update.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy { rawContactIdsResultMap.all { it.value } }
+    constructor(rawContactIdsResultMap: Map<Long, Boolean>) : this(rawContactIdsResultMap, false)
+
+    override fun toString(): String =
+        """
+            Update.Result {
+                isSuccessful: $isSuccessful
+                rawContactIdsResultMap: $rawContactIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Update.Result = UpdateResult(
+        rawContactIdsResultMap,
+        isRedacted = true
+    )
+
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+    }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
         isSuccessful(rawContact.id)
@@ -521,7 +577,21 @@ private class UpdateResult(private val rawContactIdsResultMap: Map<Long, Boolean
             && rawContactIdsResultMap.getOrElse(rawContactId) { false }
 }
 
-private class UpdateFailed : Update.Result {
+private class UpdateFailed private constructor(
+    override val isRedacted: Boolean
+) : Update.Result {
+
+    constructor() : this(false)
+
+    override fun toString(): String =
+        """
+            Update.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Update.Result = UpdateFailed(true)
 
     override val isSuccessful: Boolean = false
 

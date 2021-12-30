@@ -41,6 +41,9 @@ sealed interface GroupMembershipEntity : DataEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(groupId)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): GroupMembershipEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -67,9 +70,15 @@ data class GroupMembership internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val groupId: Long?
+    override val groupId: Long?,
 
-) : GroupMembershipEntity, ExistingDataEntity, ImmutableDataEntity
+    override val isRedacted: Boolean
+
+) : GroupMembershipEntity, ExistingDataEntity, ImmutableDataEntity {
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
+}
 
 /**
  * A new immutable [GroupMembershipEntity].
@@ -80,6 +89,12 @@ data class GroupMembership internal constructor(
 @Parcelize
 data class NewGroupMembership internal constructor(
 
-    override val groupId: Long?
+    override val groupId: Long?,
 
-) : GroupMembershipEntity, NewDataEntity, ImmutableDataEntity
+    override val isRedacted: Boolean
+
+) : GroupMembershipEntity, NewDataEntity, ImmutableDataEntity {
+
+    // Nothing to redact.
+    override fun redactedCopy() = copy(isRedacted = true)
+}

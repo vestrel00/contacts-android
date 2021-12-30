@@ -17,6 +17,8 @@ internal class EmailMapper(private val emailCursor: EmailCursor) : DataEntityMap
             type = emailCursor.type,
             label = emailCursor.label,
 
-            address = emailCursor.address
+            address = emailCursor.address,
+
+            isRedacted = false
         )
 }

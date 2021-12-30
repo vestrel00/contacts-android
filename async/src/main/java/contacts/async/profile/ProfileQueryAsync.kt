@@ -1,7 +1,6 @@
 package contacts.async.profile
 
 import contacts.async.ASYNC_DISPATCHER
-import contacts.core.entities.Contact
 import contacts.core.profile.ProfileQuery
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -14,8 +13,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * See [ProfileQuery.find].
  */
-suspend fun ProfileQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER): Contact? =
-    withContext(context) { find { !isActive } }
+suspend fun ProfileQuery.findWithContext(
+    context: CoroutineContext = ASYNC_DISPATCHER
+): ProfileQuery.Result = withContext(context) { find { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -25,5 +25,6 @@ suspend fun ProfileQuery.findWithContext(context: CoroutineContext = ASYNC_DISPA
  *
  * See [ProfileQuery.find].
  */
-fun ProfileQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<Contact?> =
-    CoroutineScope(context).async { find { !isActive } }
+fun ProfileQuery.findAsync(
+    context: CoroutineContext = ASYNC_DISPATCHER
+): Deferred<ProfileQuery.Result> = CoroutineScope(context).async { find { !isActive } }

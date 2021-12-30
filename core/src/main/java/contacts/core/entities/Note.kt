@@ -27,6 +27,9 @@ sealed interface NoteEntity : DataEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(note)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): NoteEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -64,6 +67,9 @@ sealed interface MutableNoteEntity : NoteEntity, MutableDataEntity {
         set(value) {
             note = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableNoteEntity
 }
 
 /**
@@ -79,7 +85,9 @@ data class Note internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val note: String?
+    override val note: String?,
+
+    override val isRedacted: Boolean
 
 ) : NoteEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableNote> {
 
@@ -91,7 +99,15 @@ data class Note internal constructor(
         isPrimary = isPrimary,
         isSuperPrimary = isSuperPrimary,
 
-        note = note
+        note = note,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        note = note?.redact()
     )
 }
 
@@ -108,9 +124,18 @@ data class MutableNote internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override var note: String?
+    override var note: String?,
 
-) : NoteEntity, ExistingDataEntity, MutableNoteEntity
+    override val isRedacted: Boolean
+
+) : NoteEntity, ExistingDataEntity, MutableNoteEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        note = note?.redact()
+    )
+}
 
 /**
  * A new mutable [NoteEntity].
@@ -118,6 +143,15 @@ data class MutableNote internal constructor(
 @Parcelize
 data class NewNote @JvmOverloads constructor(
 
-    override var note: String? = null
+    override var note: String? = null,
 
-) : NoteEntity, NewDataEntity, MutableNoteEntity
+    override val isRedacted: Boolean = false
+
+) : NoteEntity, NewDataEntity, MutableNoteEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        note = note?.redact()
+    )
+}

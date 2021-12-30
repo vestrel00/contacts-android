@@ -5,7 +5,7 @@ import contacts.core.Contacts
 
 /**
  * Provides new [AccountsQuery], [AccountsRawContactsQuery], and
- * [AccountsRawContactsAssociationsUpdate] for Profile OR non-Profile (depending on instance)
+ * [AccountsLocalRawContactsUpdate] for Profile OR non-Profile (depending on instance)
  * operations.
  *
  * ## Permissions
@@ -15,7 +15,7 @@ import contacts.core.Contacts
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to use
  *   [queryRawContacts].
  * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.WRITE_CONTACTS" to the
- *   AndroidManifest in order to use [updateRawContactsAssociations].
+ *   AndroidManifest in order to use [updateLocalRawContactsAccount].
  *
  * Use [permissions] convenience functions to check for required permissions.
  */
@@ -34,12 +34,10 @@ interface Accounts {
     fun queryRawContacts(): AccountsRawContactsQuery
 
     /**
-     * Returns a new [AccountsRawContactsAssociationsUpdate] instance Profile OR non-Profile
+     * Returns a new [AccountsLocalRawContactsUpdate] instance Profile OR non-Profile
      * (depending on instance) RawContacts associations operations.
-     *
-     * Operations for Profile RawContacts may fail.
      */
-    fun updateRawContactsAssociations(): AccountsRawContactsAssociationsUpdate
+    fun updateLocalRawContactsAccount(): AccountsLocalRawContactsUpdate
 
     /**
      * Returns a new [Accounts] instance for Profile operations.
@@ -80,8 +78,8 @@ private class AccountsImpl(
 
     override fun queryRawContacts() = AccountsRawContactsQuery(this, isProfile)
 
-    override fun updateRawContactsAssociations() =
-        AccountsRawContactsAssociationsUpdate(this, isProfile)
+    override fun updateLocalRawContactsAccount() =
+        AccountsLocalRawContactsUpdate(this, isProfile)
 
     override fun profile(): Accounts = AccountsImpl(applicationContext, permissions, true)
 }

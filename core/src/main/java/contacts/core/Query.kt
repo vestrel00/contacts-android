@@ -78,13 +78,13 @@ import contacts.core.util.unsafeLazy
  * Unlike [BroadQuery.groups], this does not have a groups function. You may still match groups
  * (in a much flexible way) by using [Fields.GroupMembership] with [where].
  */
-interface Query {
+interface Query : Redactable {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts or blank
-     * Contacts ([Contact.isBlank]). Otherwise, blanks are not be included. This flag is set to true
-     * by default, which results in more database queries so setting this to false will increase
-     * performance, especially for large Contacts databases.
+     * Contacts ([Contact.isBlank]). Otherwise, blanks will not be included. This flag is set to
+     * true by default, which results in more database queries so setting this to false will
+     * increase performance, especially for large Contacts databases.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
@@ -349,7 +349,7 @@ interface Query {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): List<Contact>
+    fun find(): Result
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -374,8 +374,44 @@ interface Query {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): List<Contact>
-    fun find(cancel: () -> Boolean): List<Contact>
+    // fun find(cancel: () -> Boolean = { false }): Result
+    fun find(cancel: () -> Boolean): Result
+
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Query
+
+    /**
+     * A list of [Contact]s.
+     *
+     * ## The [toString] function
+     *
+     * The [toString] function of instances of this will not return the string representation of
+     * every contact in the list. It will instead return a summary of the contacts in the list and
+     * perhaps the first contact only.
+     *
+     * This is done due to the potentially large quantities of contacts and entities within each
+     * contact, which could block the UI if not logging in background threads.
+     *
+     * You may print individual contacts in this list by iterating through it.
+     */
+    // I know that this interface also exist in BroadQuery but I want each API to have its own
+    // interface for the results in case we need to deviate implementation. Besides, this is the
+    // only pair of APIs in the library that have the same name for its results interface.
+    interface Result : List<Contact>, Redactable {
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
+    }
 }
 
 @Suppress("FunctionName")
@@ -397,7 +433,9 @@ private class QueryImpl(
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
-    private var offset: Int = DEFAULT_OFFSET
+    private var offset: Int = DEFAULT_OFFSET,
+
+    override val isRedacted: Boolean = false
 ) : Query {
 
     override fun toString(): String =
@@ -410,8 +448,26 @@ private class QueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                hasPermission: ${permissions.canQuery()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): Query = QueryImpl(
+        contentResolver, permissions, customDataRegistry,
+
+        includeBlanks,
+        // Redact Account information.
+        rawContactsWhere?.redactedCopy(),
+        include,
+        // Redact search input.
+        where?.redactedCopy(),
+        orderBy,
+        limit,
+        offset,
+
+        isRedacted = true
+    )
 
     override fun includeBlanks(includeBlanks: Boolean): Query = apply {
         this.includeBlanks = includeBlanks
@@ -422,7 +478,7 @@ private class QueryImpl(
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): Query = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -442,7 +498,7 @@ private class QueryImpl(
 
     override fun where(where: Where<AbstractDataField>?): Query = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
-        this.where = where ?: DEFAULT_WHERE
+        this.where = (where ?: DEFAULT_WHERE)?.redactedCopyOrThis(isRedacted)
     }
 
     override fun where(where: Fields.() -> Where<AbstractDataField>?) = where(where(Fields))
@@ -479,24 +535,28 @@ private class QueryImpl(
         }
     }
 
-    override fun find(): List<Contact> = find { false }
+    override fun find(): Query.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): List<Contact> {
-        if (!permissions.canQuery() || cancel()) {
-            return emptyList()
+    override fun find(cancel: () -> Boolean): Query.Result {
+        // TODO issue #144 log this
+        val contacts = if (!permissions.canQuery() || cancel()) {
+            emptyList()
+        } else {
+            // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
+            // attributes even if the consumer does not call these functions. This allows delegators to
+            // make necessary modifications to private attributes without having to make this class
+            // open for inheritance or exposing unnecessary attributes to consumers.
+            include(include.fields)
+            where(where)
+
+            contentResolver.resolve(
+                customDataRegistry, includeBlanks,
+                rawContactsWhere, include, where, orderBy, limit, offset, cancel
+            )
         }
 
-        // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
-        // attributes even if the consumer does not call these functions. This allows delegators to
-        // make necessary modifications to private attributes without having to make this class
-        // open for inheritance or exposing unnecessary attributes to consumers.
-        include(include.fields)
-        where(where)
-
-        return contentResolver.resolve(
-            customDataRegistry, includeBlanks,
-            rawContactsWhere, include, where, orderBy, limit, offset, cancel
-        )
+        return QueryResult(contacts).redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {
@@ -670,3 +730,25 @@ internal fun ContentResolver.findContactIdsInDataTable(
     }
     contactIds
 } ?: emptySet()
+
+private class QueryResult private constructor(
+    contacts: List<Contact>,
+    override val isRedacted: Boolean
+) : ArrayList<Contact>(contacts), Query.Result {
+
+    constructor(contacts: List<Contact>) : this(contacts, false)
+
+    override fun toString(): String =
+        """
+            Query.Result {
+                Number of contacts found: $size
+                First contact: ${firstOrNull()}
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Query.Result = QueryResult(
+        redactedCopies(),
+        isRedacted = true
+    )
+}

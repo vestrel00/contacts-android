@@ -26,7 +26,7 @@ suspend fun DataDelete.commitWithContext(
  */
 suspend fun DataDelete.commitInOneTransactionWithContext(
     context: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(context) { commitInOneTransaction() }
+): DataDelete.Result = withContext(context) { commitInOneTransaction() }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -46,4 +46,4 @@ fun DataDelete.commitAsync(
  */
 fun DataDelete.commitInOneTransactionAsync(
     context: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(context).async { commitInOneTransaction() }
+): Deferred<DataDelete.Result> = CoroutineScope(context).async { commitInOneTransaction() }

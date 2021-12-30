@@ -1,7 +1,6 @@
 package contacts.async
 
 import contacts.core.Query
-import contacts.core.entities.Contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -13,7 +12,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * See [Query.find].
  */
-suspend fun Query.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER): List<Contact> =
+suspend fun Query.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER): Query.Result =
     withContext(context) { find { !isActive } }
 
 /**
@@ -24,5 +23,5 @@ suspend fun Query.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
  *
  * See [Query.find].
  */
-fun Query.findAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Contact>> =
+fun Query.findAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<Query.Result> =
     CoroutineScope(context).async { find { !isActive } }

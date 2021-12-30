@@ -3,6 +3,7 @@ package contacts.core.entities
 import contacts.core.entities.custom.AbstractCustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
+import contacts.core.redactedCopies
 import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 
@@ -113,8 +114,7 @@ sealed interface RawContactEntity : Entity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            name, nickname, note, organization, sipAddress
-        ) && entitiesAreAllBlank(
+            name, nickname, note, organization, sipAddress,
             addresses, emails, events, groupMemberships, ims, phones, relations, websites,
             customDataEntities.values.flatMap { it.entities }
         )
@@ -124,6 +124,9 @@ sealed interface RawContactEntity : Entity {
      */
     val isProfile: Boolean
         get() = false
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): RawContactEntity
 
     // The Data table contains the options columns for Contacts, not for RawContacts.
     // Use the RawContactOptions extension functions to get/set options.
@@ -168,6 +171,9 @@ sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
 
     override val isProfile: Boolean
         get() = id.isProfileId
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingRawContactEntity
 }
 
 /**
@@ -195,7 +201,9 @@ data class RawContact internal constructor(
     override val relations: List<Relation>,
     override val sipAddress: SipAddress?,
     override val websites: List<Website>,
-    override val customDataEntities: Map<String, ImmutableCustomDataEntityHolder>
+    override val customDataEntities: Map<String, ImmutableCustomDataEntityHolder>,
+
+    override val isRedacted: Boolean
 
 ) : ExistingRawContactEntity, ImmutableEntityWithMutableType<MutableRawContact> {
 
@@ -220,7 +228,31 @@ data class RawContact internal constructor(
 
         customDataEntities = customDataEntities
             .mapValues { it.value.toCustomDataEntityHolder() }
-            .toMutableMap()
+            .toMutableMap(),
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        addresses = addresses.redactedCopies(),
+        emails = emails.redactedCopies(),
+        events = events.redactedCopies(),
+        groupMemberships = groupMemberships.redactedCopies(),
+        ims = ims.redactedCopies(),
+        name = name?.redactedCopy(),
+        nickname = nickname?.redactedCopy(),
+        organization = organization?.redactedCopy(),
+        phones = phones.redactedCopies(),
+        photo = photo?.redactedCopy(),
+        relations = relations.redactedCopies(),
+        sipAddress = sipAddress?.redactedCopy(),
+        websites = websites.redactedCopies(),
+
+        customDataEntities = customDataEntities.mapValues {
+            it.value.redactedCopy()
+        }
     )
 }
 
@@ -250,9 +282,34 @@ data class MutableRawContact internal constructor(
     override var sipAddress: MutableSipAddressEntity?,
     override var websites: MutableList<MutableWebsiteEntity>,
 
-    override val customDataEntities: MutableMap<String, CustomDataEntityHolder>
+    override val customDataEntities: MutableMap<String, CustomDataEntityHolder>,
 
-) : ExistingRawContactEntity, MutableEntity
+    override val isRedacted: Boolean
+
+) : ExistingRawContactEntity, MutableEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        addresses = addresses.asSequence().redactedCopies().toMutableList(),
+        emails = emails.asSequence().redactedCopies().toMutableList(),
+        events = events.asSequence().redactedCopies().toMutableList(),
+        groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
+        ims = ims.asSequence().redactedCopies().toMutableList(),
+        name = name?.redactedCopy(),
+        nickname = nickname?.redactedCopy(),
+        organization = organization?.redactedCopy(),
+        phones = phones.asSequence().redactedCopies().toMutableList(),
+        photo = photo?.redactedCopy(),
+        relations = relations.asSequence().redactedCopies().toMutableList(),
+        sipAddress = sipAddress?.redactedCopy(),
+        websites = websites.asSequence().redactedCopies().toMutableList(),
+
+        customDataEntities = customDataEntities.mapValues {
+            it.value.redactedCopy()
+        }.toMutableMap()
+    )
+}
 
 /**
  * A new mutable [RawContactEntity].
@@ -277,9 +334,34 @@ data class NewRawContact @JvmOverloads constructor(
     override var sipAddress: NewSipAddress? = null,
     override var websites: MutableList<NewWebsite> = mutableListOf(),
 
-    override val customDataEntities: MutableMap<String, CustomDataEntityHolder> = mutableMapOf()
+    override val customDataEntities: MutableMap<String, CustomDataEntityHolder> = mutableMapOf(),
 
-) : RawContactEntity, NewEntity, MutableEntity
+    override val isRedacted: Boolean = false
+
+) : RawContactEntity, NewEntity, MutableEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        addresses = addresses.asSequence().redactedCopies().toMutableList(),
+        emails = emails.asSequence().redactedCopies().toMutableList(),
+        events = events.asSequence().redactedCopies().toMutableList(),
+        groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
+        ims = ims.asSequence().redactedCopies().toMutableList(),
+        name = name?.redactedCopy(),
+        nickname = nickname?.redactedCopy(),
+        organization = organization?.redactedCopy(),
+        phones = phones.asSequence().redactedCopies().toMutableList(),
+        photo = photo?.redactedCopy(),
+        relations = relations.asSequence().redactedCopies().toMutableList(),
+        sipAddress = sipAddress?.redactedCopy(),
+        websites = websites.asSequence().redactedCopies().toMutableList(),
+
+        customDataEntities = customDataEntities.mapValues {
+            it.value.redactedCopy()
+        }.toMutableMap()
+    )
+}
 
 /**
  * A blank [ExistingRawContactEntity] that contains no data (e.g. email, phone, etc), although
@@ -288,6 +370,7 @@ data class NewRawContact @JvmOverloads constructor(
  */
 @Parcelize
 data class BlankRawContact internal constructor(
+
     override val id: Long,
     val contactId: Long,
 
@@ -305,7 +388,9 @@ data class BlankRawContact internal constructor(
      */
     // This can only be retrieved from RawContacts table queries. The Data table contains the
     // display name for Contacts, not for RawContacts.
-    val displayNameAlt: String?
+    val displayNameAlt: String?,
+
+    override val isRedacted: Boolean
 
     // Intentionally not extending ExistingRawContactEntity to limit the amount possibilities to
     // only RawContact and MutableRawContact, which are the main consumer-facing entities.
@@ -358,6 +443,13 @@ data class BlankRawContact internal constructor(
 
     override val customDataEntities: Map<String, AbstractCustomDataEntityHolder>
         get() = emptyMap()
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        displayNamePrimary = displayNamePrimary?.redact(),
+        displayNameAlt = displayNameAlt?.redact()
+    )
 }
 
 /**
@@ -385,7 +477,9 @@ internal data class TempRawContact constructor(
     override var relations: MutableList<Relation>,
     override var sipAddress: SipAddress?,
     override var websites: MutableList<Website>,
-    override val customDataEntities: MutableMap<String, ImmutableCustomDataEntityHolder>
+    override val customDataEntities: MutableMap<String, ImmutableCustomDataEntityHolder>,
+
+    override val isRedacted: Boolean
 
     // Intentionally not extending ExistingRawContactEntity to limit the amount possibilities to
     // only RawContact and MutableRawContact, which are the main consumer-facing entities.
@@ -409,6 +503,30 @@ internal data class TempRawContact constructor(
         relations = relations.toList(),
         sipAddress = sipAddress,
         websites = websites.toList(),
-        customDataEntities = customDataEntities.toMap() // send a shallow copy
+        customDataEntities = customDataEntities.toMap(), // send a shallow copy
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        addresses = addresses.asSequence().redactedCopies().toMutableList(),
+        emails = emails.asSequence().redactedCopies().toMutableList(),
+        events = events.asSequence().redactedCopies().toMutableList(),
+        groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
+        ims = ims.asSequence().redactedCopies().toMutableList(),
+        name = name?.redactedCopy(),
+        nickname = nickname?.redactedCopy(),
+        organization = organization?.redactedCopy(),
+        phones = phones.asSequence().redactedCopies().toMutableList(),
+        photo = photo?.redactedCopy(),
+        relations = relations.asSequence().redactedCopies().toMutableList(),
+        sipAddress = sipAddress?.redactedCopy(),
+        websites = websites.asSequence().redactedCopies().toMutableList(),
+
+        customDataEntities = customDataEntities.mapValues {
+            it.value.redactedCopy()
+        }.toMutableMap()
     )
 }

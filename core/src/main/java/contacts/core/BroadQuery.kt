@@ -145,7 +145,7 @@ import contacts.core.util.unsafeLazy
  *
  * Matching is **case-insensitive** (case is ignored).
  */
-interface BroadQuery {
+interface BroadQuery : Redactable {
 
     /**
      * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
@@ -388,7 +388,7 @@ interface BroadQuery {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): List<Contact>
+    fun find(): Result
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -411,8 +411,44 @@ interface BroadQuery {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): List<Contact>
-    fun find(cancel: () -> Boolean): List<Contact>
+    // fun find(cancel: () -> Boolean = { false }): Result
+    fun find(cancel: () -> Boolean): Result
+
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): BroadQuery
+
+    /**
+     * A list of [Contact]s.
+     *
+     * ## The [toString] function
+     *
+     * The [toString] function of instances of this will not return the string representation of
+     * every contact in the list. It will instead return a summary of the contacts in the list and
+     * perhaps the first contact only.
+     *
+     * This is done due to the potentially large quantities of contacts and entities within each
+     * contact, which could block the UI if not logging in background threads.
+     *
+     * You may print individual contacts in this list by iterating through it.
+     */
+    // I know that this interface also exist in Query but I want each API to have its own
+    // interface for the results in case we need to deviate implementation. Besides, this is the
+    // only pair of APIs in the library that have the same name for its results interface.
+    interface Result : List<Contact>, Redactable {
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
+    }
 }
 
 @Suppress("FunctionName")
@@ -434,7 +470,9 @@ private class BroadQueryImpl(
     private var searchString: String? = DEFAULT_SEARCH_STRING,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
-    private var offset: Int = DEFAULT_OFFSET
+    private var offset: Int = DEFAULT_OFFSET,
+
+    override val isRedacted: Boolean = false
 ) : BroadQuery {
 
     override fun toString(): String =
@@ -448,8 +486,27 @@ private class BroadQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): BroadQuery = BroadQueryImpl(
+        contentResolver, permissions, customDataRegistry,
+
+        includeBlanks,
+
+        // Redact Account information.
+        rawContactsWhere?.redactedCopy(),
+        groupMembershipWhere,
+        include,
+        // Redact search input.
+        searchString?.redact(),
+        orderBy,
+        limit,
+        offset,
+
+        isRedacted = true
+    )
 
     override fun includeBlanks(includeBlanks: Boolean): BroadQuery = apply {
         this.includeBlanks = includeBlanks
@@ -460,7 +517,7 @@ private class BroadQueryImpl(
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account?>): BroadQuery = apply {
-        rawContactsWhere = accounts.toRawContactsWhere()
+        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun groups(vararg groups: Group) = groups(groups.asSequence())
@@ -493,7 +550,7 @@ private class BroadQueryImpl(
 
     override fun whereAnyContactDataPartiallyMatches(searchString: String?): BroadQuery = apply {
         // Yes, I know DEFAULT_SEARCH_STRING is null. This reads better though.
-        this.searchString = searchString ?: DEFAULT_SEARCH_STRING
+        this.searchString = (searchString ?: DEFAULT_SEARCH_STRING)?.redactStringOrThis(isRedacted)
     }
 
     override fun orderBy(vararg orderBy: OrderBy<ContactsField>) = orderBy(orderBy.asSequence())
@@ -528,18 +585,22 @@ private class BroadQueryImpl(
         }
     }
 
-    override fun find(): List<Contact> = find { false }
+    override fun find(): BroadQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): List<Contact> {
-        if (!permissions.canQuery()) {
-            return emptyList()
+    override fun find(cancel: () -> Boolean): BroadQuery.Result {
+        // TODO issue #144 log this
+        val contacts = if (!permissions.canQuery()) {
+            emptyList()
+        } else {
+            contentResolver.resolve(
+                customDataRegistry,
+                includeBlanks, rawContactsWhere, groupMembershipWhere, include, searchString,
+                orderBy, limit, offset, cancel
+            )
         }
 
-        return contentResolver.resolve(
-            customDataRegistry,
-            includeBlanks, rawContactsWhere, groupMembershipWhere, include, searchString,
-            orderBy, limit, offset, cancel
-        )
+        return BroadQueryResult(contacts).redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
     private companion object {
@@ -644,3 +705,25 @@ private fun ContentResolver.findContactIdsInContactsTable(
     }
     contactIds
 } ?: emptySet()
+
+private class BroadQueryResult private constructor(
+    contacts: List<Contact>,
+    override val isRedacted: Boolean
+) : ArrayList<Contact>(contacts), BroadQuery.Result {
+
+    constructor(contacts: List<Contact>) : this(contacts, false)
+
+    override fun toString(): String =
+        """
+            BroadQuery.Result {
+                Number of contacts found: $size
+                First contact: ${firstOrNull()}
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): BroadQuery.Result = BroadQueryResult(
+        redactedCopies(),
+        isRedacted = true
+    )
+}

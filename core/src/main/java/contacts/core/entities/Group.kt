@@ -1,6 +1,7 @@
 package contacts.core.entities
 
 import android.accounts.Account
+import contacts.core.util.redactedCopy
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -109,6 +110,9 @@ sealed interface GroupEntity : Entity {
     @IgnoredOnParcel
     override val isBlank: Boolean
         get() = false
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): GroupEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -130,7 +134,11 @@ sealed interface GroupEntity : Entity {
 /**
  * A [GroupEntity] that has already been inserted into the database.
  */
-sealed interface ExistingGroupEntity : GroupEntity, ExistingEntity
+sealed interface ExistingGroupEntity : GroupEntity, ExistingEntity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingGroupEntity
+}
 
 /**
  * An existing immutable [GroupEntity].
@@ -139,6 +147,7 @@ sealed interface ExistingGroupEntity : GroupEntity, ExistingEntity
 data class Group internal constructor(
 
     override val id: Long,
+
     override val systemId: String?,
 
     override val title: String,
@@ -146,7 +155,9 @@ data class Group internal constructor(
     override val readOnly: Boolean,
     override val favorites: Boolean,
     override val autoAdd: Boolean,
-    override val account: Account
+    override val account: Account,
+
+    override val isRedacted: Boolean
 
 ) : ExistingGroupEntity, ImmutableEntityWithNullableMutableType<MutableGroup> {
 
@@ -156,8 +167,15 @@ data class Group internal constructor(
     override fun mutableCopy(): MutableGroup? = if (readOnly) {
         null
     } else {
-        MutableGroup(id, systemId, title, readOnly, favorites, autoAdd, account)
+        MutableGroup(id, systemId, title, readOnly, favorites, autoAdd, account, isRedacted)
     }
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        title = title.redact(),
+        account = account.redactedCopy()
+    )
 }
 
 /**
@@ -167,6 +185,7 @@ data class Group internal constructor(
 data class MutableGroup internal constructor(
 
     override val id: Long,
+
     override val systemId: String?,
 
     override var title: String,
@@ -174,17 +193,31 @@ data class MutableGroup internal constructor(
     override val readOnly: Boolean,
     override val favorites: Boolean,
     override val autoAdd: Boolean,
-    override val account: Account
+    override val account: Account,
 
-) : ExistingGroupEntity, MutableEntity
+    override val isRedacted: Boolean
+
+) : ExistingGroupEntity, MutableEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        title = title.redact(),
+        account = account.redactedCopy()
+    )
+}
 
 /**
  * A new mutable [GroupEntity].
  */
 @Parcelize
-data class NewGroup(
+data class NewGroup @JvmOverloads constructor(
+
     override var title: String,
-    override var account: Account
+    override var account: Account,
+
+    override val isRedacted: Boolean = false
+
 ) : GroupEntity, NewEntity, MutableEntity {
 
     override val systemId: String?
@@ -198,6 +231,13 @@ data class NewGroup(
 
     override val autoAdd: Boolean
         get() = false
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        title = title.redact(),
+        account = account.redactedCopy()
+    )
 }
 
 /**

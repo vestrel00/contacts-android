@@ -18,7 +18,7 @@ val query = Contacts(context).profile().query()
 To get the profile Contact,
 
 ```kotlin
-val profile = Contacts(context).profile().query().find()
+val profileContact = Contacts(context).profile().query().find().contact
 ```
 
 ## Including blank (raw) contacts

@@ -44,6 +44,9 @@ sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): PhoneEntity
+
     enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
@@ -122,6 +125,9 @@ sealed interface MutablePhoneEntity : PhoneEntity, MutableDataEntityWithTypeAndL
         set(value) {
             number = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutablePhoneEntity
 }
 
 /**
@@ -141,7 +147,9 @@ data class Phone internal constructor(
     override val label: String?,
 
     override val number: String?,
-    override val normalizedNumber: String?
+    override val normalizedNumber: String?,
+
+    override val isRedacted: Boolean
 
 ) : PhoneEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutablePhone> {
 
@@ -157,7 +165,16 @@ data class Phone internal constructor(
         label = label,
 
         number = number,
-        normalizedNumber = normalizedNumber
+        normalizedNumber = normalizedNumber,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        number = number?.redact(),
+        normalizedNumber = normalizedNumber?.redact()
     )
 }
 
@@ -178,9 +195,19 @@ data class MutablePhone internal constructor(
     override var label: String?,
 
     override var number: String?,
-    override var normalizedNumber: String?
+    override var normalizedNumber: String?,
 
-) : PhoneEntity, ExistingDataEntity, MutablePhoneEntity
+    override val isRedacted: Boolean
+
+) : PhoneEntity, ExistingDataEntity, MutablePhoneEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        number = number?.redact(),
+        normalizedNumber = normalizedNumber?.redact()
+    )
+}
 
 /**
  * A new mutable [PhoneEntity].
@@ -192,6 +219,16 @@ data class NewPhone @JvmOverloads constructor(
     override var label: String? = null,
 
     override var number: String? = null,
-    override var normalizedNumber: String? = null
+    override var normalizedNumber: String? = null,
 
-) : PhoneEntity, NewDataEntity, MutablePhoneEntity
+    override val isRedacted: Boolean = false
+
+) : PhoneEntity, NewDataEntity, MutablePhoneEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        number = number?.redact(),
+        normalizedNumber = normalizedNumber?.redact()
+    )
+}

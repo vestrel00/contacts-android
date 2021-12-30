@@ -1,19 +1,20 @@
 package contacts.core.util
 
 import contacts.core.entities.*
+import contacts.core.redactedCopyOrThis
 
 /**
  * Adds the given [address] to [NewRawContact.addresses].
  */
 fun NewRawContact.addAddress(address: NewAddress) {
-    addresses.add(address)
+    addresses.add(address.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new address (configured by [configureAddress]) to [NewRawContact.addresses].
  */
 fun NewRawContact.addAddress(configureAddress: NewAddress.() -> Unit) {
-    addresses.add(NewAddress().apply(configureAddress))
+    addAddress(NewAddress().apply(configureAddress))
 }
 
 /**
@@ -39,14 +40,14 @@ fun NewRawContact.removeAllAddresses() {
  * Adds the given [email] to [NewRawContact.emails].
  */
 fun NewRawContact.addEmail(email: NewEmail) {
-    emails.add(email)
+    emails.add(email.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new email (configured by [configureEmail]) to [NewRawContact.emails].
  */
 fun NewRawContact.addEmail(configureEmail: NewEmail.() -> Unit) {
-    emails.add(NewEmail().apply(configureEmail))
+    addEmail(NewEmail().apply(configureEmail))
 }
 
 /**
@@ -72,14 +73,14 @@ fun NewRawContact.removeAllEmails() {
  * Adds the given [event] to [NewRawContact.events].
  */
 fun NewRawContact.addEvent(event: NewEvent) {
-    events.add(event)
+    events.add(event.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new event (configured by [configureEvent]) to [NewRawContact.events].
  */
 fun NewRawContact.addEvent(configureEvent: NewEvent.() -> Unit) {
-    events.add(NewEvent().apply(configureEvent))
+    addEvent(NewEvent().apply(configureEvent))
 }
 
 /**
@@ -111,7 +112,7 @@ fun NewRawContact.removeAllEvents() {
  * will be inserted.
  */
 fun NewRawContact.addGroupMembership(groupMembership: NewGroupMembership) {
-    groupMemberships.add(groupMembership)
+    groupMemberships.add(groupMembership.redactedCopyOrThis(isRedacted))
 }
 
 /**
@@ -144,14 +145,14 @@ fun NewRawContact.removeAllGroupMemberships() {
  * Adds the given [im] to [NewRawContact.ims].
  */
 fun NewRawContact.addIm(im: NewIm) {
-    ims.add(im)
+    ims.add(im.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new IM (configured by [configureIm]) to [NewRawContact.ims].
  */
 fun NewRawContact.addIm(configureIm: NewIm.() -> Unit) {
-    ims.add(NewIm().apply(configureIm))
+    addIm(NewIm().apply(configureIm))
 }
 
 /**
@@ -177,42 +178,42 @@ fun NewRawContact.removeAllIms() {
  * Sets the [NewRawContact.name] to the given [name].
  */
 fun NewRawContact.setName(name: NewName?) {
-    this.name = name
+    this.name = name?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [NewRawContact.name] (configured by [configureName]) to a new name.
  */
 fun NewRawContact.setName(configureName: NewName.() -> Unit) {
-    this.name = NewName().apply(configureName)
+    setName(NewName().apply(configureName))
 }
 
 /**
  * Sets the [NewRawContact.nickname] to the given [nickname].
  */
 fun NewRawContact.setNickname(nickname: NewNickname?) {
-    this.nickname = nickname
+    this.nickname = nickname?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [NewRawContact.nickname] (configured by [configureNickname]) to a new nickname.
  */
 fun NewRawContact.setNickname(configureNickname: NewNickname.() -> Unit) {
-    this.nickname = NewNickname().apply(configureNickname)
+    setNickname(NewNickname().apply(configureNickname))
 }
 
 /**
  * Sets the [NewRawContact.note] to the given [note].
  */
 fun NewRawContact.setNote(note: NewNote?) {
-    this.note = note
+    this.note = note?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [NewRawContact.note] (configured by [configureNote]) to a new note.
  */
 fun NewRawContact.setNote(configureNote: NewNote.() -> Unit) {
-    this.note = NewNote().apply(configureNote)
+    setNote(NewNote().apply(configureNote))
 }
 
 // Options intentionally left out because a Contact and associated RawContacts have independent
@@ -222,28 +223,28 @@ fun NewRawContact.setNote(configureNote: NewNote.() -> Unit) {
  * Sets the [NewRawContact.organization] to the given [organization].
  */
 fun NewRawContact.setOrganization(organization: NewOrganization?) {
-    this.organization = organization
+    this.organization = organization?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [NewRawContact.organization] (configured by [configureOrganization]) to a new org.
  */
 fun NewRawContact.setOrganization(configureOrganization: NewOrganization.() -> Unit) {
-    this.organization = NewOrganization().apply(configureOrganization)
+    setOrganization(NewOrganization().apply(configureOrganization))
 }
 
 /**
  * Adds the given [phone] to [NewRawContact.phones].
  */
 fun NewRawContact.addPhone(phone: NewPhone) {
-    phones.add(phone)
+    phones.add(phone.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new phone (configured by [configurePhone]) to [NewRawContact.phones].
  */
 fun NewRawContact.addPhone(configurePhone: NewPhone.() -> Unit) {
-    phones.add(NewPhone().apply(configurePhone))
+    addPhone(NewPhone().apply(configurePhone))
 }
 
 /**
@@ -272,14 +273,14 @@ fun NewRawContact.removeAllPhones() {
  * Adds the given [relation] to [NewRawContact.relations].
  */
 fun NewRawContact.addRelation(relation: NewRelation) {
-    relations.add(relation)
+    relations.add(relation.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new relation (configured by [configureRelation]) to [NewRawContact.relations].
  */
 fun NewRawContact.addRelation(configureRelation: NewRelation.() -> Unit) {
-    relations.add(NewRelation().apply(configureRelation))
+    addRelation(NewRelation().apply(configureRelation))
 }
 
 /**
@@ -308,28 +309,28 @@ fun NewRawContact.removeAllRelations() {
  * Sets the [NewRawContact.sipAddress] to the given [sipAddress].
  */
 fun NewRawContact.setSipAddress(sipAddress: NewSipAddress?) {
-    this.sipAddress = sipAddress
+    this.sipAddress = sipAddress?.redactedCopyOrThis(isRedacted)
 }
 
 /**
  * Sets the [NewRawContact.sipAddress] (configured by [configureSipAddress]) to a new address.
  */
 fun NewRawContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) {
-    this.sipAddress = NewSipAddress().apply(configureSipAddress)
+    setSipAddress(NewSipAddress().apply(configureSipAddress))
 }
 
 /**
  * Adds the given [website] to [NewRawContact.websites].
  */
 fun NewRawContact.addWebsite(website: NewWebsite) {
-    websites.add(website)
+    websites.add(website.redactedCopyOrThis(isRedacted))
 }
 
 /**
  * Adds a new website (configured by [configureWebsite]) to [NewRawContact.websites].
  */
 fun NewRawContact.addWebsite(configureWebsite: NewWebsite.() -> Unit) {
-    websites.add(NewWebsite().apply(configureWebsite))
+    addWebsite((NewWebsite().apply(configureWebsite)))
 }
 
 /**

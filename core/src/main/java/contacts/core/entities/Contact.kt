@@ -1,6 +1,7 @@
 package contacts.core.entities
 
 import android.net.Uri
+import contacts.core.redactedCopies
 import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -146,7 +147,10 @@ sealed interface ContactEntity : Entity {
     // in the Data table. The attributes in this class (e.g. displayNamePrimary) are not columns of
     // the Data table, which is why they are not part of the blank check.
     override val isBlank: Boolean
-        get() = entitiesAreAllBlank(rawContacts)
+        get() = propertiesAreAllNullOrBlank(rawContacts)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ContactEntity
 
     /**
      * True if this contact represents the user's personal profile entry.
@@ -198,6 +202,9 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      */
     override val isProfile: Boolean
         get() = id.isProfileId
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingContactEntity
 }
 
 /**
@@ -224,7 +231,9 @@ data class Contact internal constructor(
     override val photoUri: Uri?,
     override val photoThumbnailUri: Uri?,
 
-    override val hasPhoneNumber: Boolean?
+    override val hasPhoneNumber: Boolean?,
+
+    override val isRedacted: Boolean
 
 ) : ExistingContactEntity, ImmutableEntityWithMutableType<MutableContact> {
 
@@ -239,7 +248,19 @@ data class Contact internal constructor(
         options = options,
         photoUri = photoUri,
         photoThumbnailUri = photoThumbnailUri,
-        hasPhoneNumber = hasPhoneNumber
+        hasPhoneNumber = hasPhoneNumber,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        rawContacts = rawContacts.redactedCopies(),
+
+        displayNamePrimary = displayNamePrimary?.redact(),
+        displayNameAlt = displayNameAlt?.redact(),
+        options = options?.redactedCopy(),
     )
 }
 
@@ -265,9 +286,22 @@ data class MutableContact internal constructor(
     override val photoUri: Uri?,
     override val photoThumbnailUri: Uri?,
 
-    override val hasPhoneNumber: Boolean?
+    override val hasPhoneNumber: Boolean?,
 
-) : ExistingContactEntity, MutableEntity
+    override val isRedacted: Boolean
+
+) : ExistingContactEntity, MutableEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        rawContacts = rawContacts.redactedCopies(),
+
+        displayNamePrimary = displayNamePrimary?.redact(),
+        displayNameAlt = displayNameAlt?.redact(),
+        options = options?.redactedCopy(),
+    )
+}
 
 // Note that there is no "NewContact". A new "Contact" is created automatically by the Contacts
 // Provider when a "NewRawContact" is inserted.

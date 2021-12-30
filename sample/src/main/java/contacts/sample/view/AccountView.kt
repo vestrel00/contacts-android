@@ -4,7 +4,7 @@ import android.accounts.Account
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
-import contacts.async.accounts.accountForWithContext
+import contacts.async.accounts.findWithContext
 import contacts.core.Contacts
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.RawContactEntity
@@ -64,7 +64,9 @@ class AccountView @JvmOverloads constructor(
             if (it is ExistingRawContactEntity) {
                 contacts.accounts(it.isProfile)
                     .queryWithPermission()
-                    .accountForWithContext(it)
+                    .associatedWith(it)
+                    .findWithContext()
+                    .firstOrNull()
             } else {
                 // TODO Support selecting account when creating new RawContact
                 null

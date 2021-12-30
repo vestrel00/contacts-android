@@ -2,11 +2,11 @@ package contacts.core.groups
 
 import android.accounts.Account
 import android.content.ContentResolver
-import contacts.core.Contacts
-import contacts.core.ContactsPermissions
+import contacts.core.*
 import contacts.core.accounts.AccountsQuery
 import contacts.core.entities.NewGroup
 import contacts.core.entities.operation.GroupsOperation
+import contacts.core.groups.GroupsInsert.Result.FailureReason
 import contacts.core.util.applyBatch
 import contacts.core.util.unsafeLazy
 
@@ -44,7 +44,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface GroupsInsert {
+interface GroupsInsert : Redactable {
 
     /**
      * Adds a new [NewGroup] to the insert queue, which will be inserted on [commit].
@@ -123,7 +123,20 @@ interface GroupsInsert {
     // fun commit(cancel: () -> Boolean = { false }): Result
     fun commit(cancel: () -> Boolean): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): GroupsInsert
+
+    interface Result : Redactable {
 
         /**
          * The list of IDs of successfully created Groups.
@@ -155,6 +168,9 @@ interface GroupsInsert {
          */
         fun failureReason(group: NewGroup): FailureReason?
 
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
+
         enum class FailureReason {
 
             /**
@@ -176,7 +192,7 @@ interface GroupsInsert {
             INVALID_ACCOUNT,
 
             /**
-             * The update failed because of no permissions, no groups specified for update, etc...
+             * The update failed because of no permissions or no groups specified for update, etc...
              *
              * ## Dev note
              *
@@ -201,15 +217,29 @@ private class GroupsInsertImpl(
     private val accountsQuery: AccountsQuery,
     private val groupsQuery: GroupsQuery,
     private val permissions: ContactsPermissions,
-    private val groups: MutableSet<NewGroup> = mutableSetOf()
+
+    private val groups: MutableSet<NewGroup> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : GroupsInsert {
 
     override fun toString(): String =
         """
             GroupsInsert {
                 groups: $groups
+                hasPermission: ${permissions.canInsert()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): GroupsInsert = GroupsInsertImpl(
+        contentResolver, accountsQuery, groupsQuery, permissions,
+
+        // Redact group data.
+        groups.asSequence().redactedCopies().toMutableSet(),
+
+        isRedacted = true
+    )
 
     override fun group(title: String, account: Account): GroupsInsert =
         groups(NewGroup(title, account))
@@ -219,67 +249,71 @@ private class GroupsInsertImpl(
     override fun groups(groups: Collection<NewGroup>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<NewGroup>): GroupsInsert = apply {
-        this.groups.addAll(groups)
+        this.groups.addAll(groups.redactedCopiesOrThis(isRedacted))
     }
 
     override fun commit(): GroupsInsert.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsInsert.Result {
-        if (groups.isEmpty() || !permissions.canInsert() || cancel()) {
-            return GroupsInsertFailed()
-        }
-
-        val accounts = accountsQuery.allAccounts()
-        if (accounts.isEmpty()) {
+        // TODO issue #144 log this
+        val accounts = accountsQuery.find()
+        return if (
+            groups.isEmpty()
+            || !permissions.canInsert()
             // Fail if there are no accounts. A group requires Accounts in the system to exist!
-            return GroupsInsertFailed()
-        }
+            || accounts.isEmpty()
+            || cancel()
+        ) {
+            GroupsInsertFailed()
+        } else {
+            // Gather the accounts for groups that will be inserted.
+            val groupsAccounts = groups.map { it.account }
 
-        // Gather the accounts for groups that will be inserted.
-        val groupsAccounts = groups.map { it.account }
-
-        // Gather the existing titles per account to prevent duplicates.
-        val existingGroups = groupsQuery
-            // Limit the accounts for optimization in case there are a lot of accounts in the system
-            .accounts(groupsAccounts)
-            .find()
-        val existingAccountGroupsTitles = mutableMapOf<Account, MutableSet<String>>()
-        for (group in existingGroups) {
-            val existingTitles = existingAccountGroupsTitles
-                .getOrPut(group.account) { mutableSetOf() }
-            existingTitles.add(group.title)
-        }
-
-        val results = mutableMapOf<NewGroup, Long?>()
-        val failureReasons = mutableMapOf<NewGroup, GroupsInsert.Result.FailureReason>()
-
-        for (group in groups) {
-            if (cancel()) {
-                break
-            }
-
-            results[group] = if (accounts.contains(group.account)) { // Group has a valid account.
+            // Gather the existing titles per account to prevent duplicates.
+            val existingGroups = groupsQuery
+                // Limit the accounts for optimization in case there are a lot of accounts in the system
+                .accounts(groupsAccounts)
+                .find()
+            val existingAccountGroupsTitles = mutableMapOf<Account, MutableSet<String>>()
+            for (group in existingGroups) {
                 val existingTitles = existingAccountGroupsTitles
                     .getOrPut(group.account) { mutableSetOf() }
-                if (existingTitles.contains(group.title)) { // Group title already exist.
-                    failureReasons[group] = GroupsInsert.Result.FailureReason.TITLE_ALREADY_EXIST
-                    null
-                } else { // Group title does not yet exist. Proceed to insert.
-                    contentResolver.insertGroup(group).also { id ->
-                        if (id == null) { // Insert failed.
-                            failureReasons[group] = GroupsInsert.Result.FailureReason.UNKNOWN
-                        } else { // Insert succeeded. Add title to existing titles list.
-                            existingTitles.add(group.title)
-                        }
-                    }
-                }
-            } else { // Group has an invalid account.
-                failureReasons[group] = GroupsInsert.Result.FailureReason.INVALID_ACCOUNT
-                null
+                existingTitles.add(group.title)
             }
-        }
 
-        return GroupsInsertResult(results, failureReasons)
+            val results = mutableMapOf<NewGroup, Long?>()
+            val failureReasons = mutableMapOf<NewGroup, FailureReason>()
+
+            for (group in groups) {
+                if (cancel()) {
+                    break
+                }
+
+                results[group] =
+                    if (accounts.contains(group.account)) { // Group has a valid account.
+                        val existingTitles = existingAccountGroupsTitles
+                            .getOrPut(group.account) { mutableSetOf() }
+                        if (existingTitles.contains(group.title)) { // Group title already exist.
+                            failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
+                            null
+                        } else { // Group title does not yet exist. Proceed to insert.
+                            contentResolver.insertGroup(group).also { id ->
+                                if (id == null) { // Insert failed.
+                                    failureReasons[group] = FailureReason.UNKNOWN
+                                } else { // Insert succeeded. Add title to existing titles list.
+                                    existingTitles.add(group.title)
+                                }
+                            }
+                        }
+                    } else { // Group has an invalid account.
+                        failureReasons[group] = FailureReason.INVALID_ACCOUNT
+                        null
+                    }
+            }
+
+            GroupsInsertResult(results, failureReasons)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 }
 
@@ -303,10 +337,32 @@ private fun ContentResolver.insertGroup(group: NewGroup): Long? {
     }
 }
 
-private class GroupsInsertResult(
+private class GroupsInsertResult private constructor(
     private val groupsMap: Map<NewGroup, Long?>,
-    private val failureReasons: Map<NewGroup, GroupsInsert.Result.FailureReason>
+    private val failureReasons: Map<NewGroup, FailureReason>,
+    override val isRedacted: Boolean
 ) : GroupsInsert.Result {
+
+    constructor(
+        groupsMap: Map<NewGroup, Long?>,
+        failureReasons: Map<NewGroup, FailureReason>
+    ) : this(groupsMap, failureReasons, false)
+
+    override fun toString(): String =
+        """
+            GroupsInsert.Result {
+                isSuccessful: $isSuccessful
+                groupsMap: $groupsMap
+                failureReasons: $failureReasons
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): GroupsInsert.Result = GroupsInsertResult(
+        groupsMap.redactedKeys(),
+        failureReasons.redactedKeys(),
+        isRedacted = true
+    )
 
     override val groupIds: List<Long> by unsafeLazy {
         groupsMap.asSequence()
@@ -314,16 +370,32 @@ private class GroupsInsertResult(
             .toList()
     }
 
-    override val isSuccessful: Boolean by unsafeLazy { groupsMap.all { it.value != null } }
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        groupsMap.run { isNotEmpty() && all { it.value != null } }
+    }
 
     override fun isSuccessful(group: NewGroup): Boolean = groupId(group) != null
 
     override fun groupId(group: NewGroup): Long? = groupsMap.getOrElse(group) { null }
 
-    override fun failureReason(group: NewGroup) = failureReasons[group]
+    override fun failureReason(group: NewGroup): FailureReason? = failureReasons[group]
 }
 
-private class GroupsInsertFailed : GroupsInsert.Result {
+private class GroupsInsertFailed private constructor(override val isRedacted: Boolean) :
+    GroupsInsert.Result {
+
+    constructor() : this(false)
+
+    override fun toString(): String =
+        """
+            GroupsInsert.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): GroupsInsert.Result = GroupsInsertFailed(true)
 
     override val groupIds: List<Long> = emptyList()
 
@@ -333,5 +405,5 @@ private class GroupsInsertFailed : GroupsInsert.Result {
 
     override fun groupId(group: NewGroup): Long? = null
 
-    override fun failureReason(group: NewGroup) = GroupsInsert.Result.FailureReason.UNKNOWN
+    override fun failureReason(group: NewGroup) = FailureReason.UNKNOWN
 }

@@ -107,7 +107,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     internal fun updateInsertOrDelete(
         entities: Collection<E>, rawContactId: Long, contentResolver: ContentResolver
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
-        if (!entitiesAreAllBlank(entities)) {
+        if (!propertiesAreAllNullOrBlank(entities)) {
             // Get all entities with a valid Id, which means they are (or have been) in the DB.
             val validEntitiesMap = mutableMapOf<Long, E>().apply {
                 for (entity in entities) {

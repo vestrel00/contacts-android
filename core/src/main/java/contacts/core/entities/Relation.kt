@@ -35,6 +35,9 @@ sealed interface RelationEntity : DataEntityWithTypeAndLabel<Type> {
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(name)
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): RelationEntity
+
     enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
@@ -99,6 +102,9 @@ sealed interface MutableRelationEntity : RelationEntity, MutableDataEntityWithTy
         set(value) {
             name = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableRelationEntity
 }
 
 /**
@@ -117,7 +123,9 @@ data class Relation internal constructor(
     override val type: Type?,
     override val label: String?,
 
-    override val name: String?
+    override val name: String?,
+
+    override val isRedacted: Boolean
 
 ) : RelationEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableRelation> {
 
@@ -132,7 +140,15 @@ data class Relation internal constructor(
         type = type,
         label = label,
 
-        name = name
+        name = name,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact()
     )
 }
 
@@ -152,9 +168,18 @@ data class MutableRelation internal constructor(
     override var type: Type?,
     override var label: String?,
 
-    override var name: String?
+    override var name: String?,
 
-) : RelationEntity, ExistingDataEntity, MutableRelationEntity
+    override val isRedacted: Boolean
+
+) : RelationEntity, ExistingDataEntity, MutableRelationEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact()
+    )
+}
 
 /**
  * A new mutable [RelationEntity].
@@ -165,6 +190,15 @@ data class NewRelation @JvmOverloads constructor(
     override var type: Type? = null,
     override var label: String? = null,
 
-    override var name: String? = null
+    override var name: String? = null,
 
-) : RelationEntity, NewDataEntity, MutableRelationEntity
+    override val isRedacted: Boolean = false
+
+) : RelationEntity, NewDataEntity, MutableRelationEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact()
+    )
+}

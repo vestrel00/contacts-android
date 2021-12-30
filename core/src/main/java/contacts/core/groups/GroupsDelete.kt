@@ -1,8 +1,7 @@
 package contacts.core.groups
 
 import android.content.ContentResolver
-import contacts.core.Contacts
-import contacts.core.ContactsPermissions
+import contacts.core.*
 import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.util.applyBatch
@@ -10,6 +9,9 @@ import contacts.core.util.unsafeLazy
 
 /**
  * Deletes one or more groups from the groups table.
+ *
+ * Note that groups are not immediately deleted. It is deleted in the background by the Contacts
+ * Provider depending on sync settings.
  *
  * ## Permissions
  *
@@ -38,7 +40,7 @@ import contacts.core.util.unsafeLazy
  *
  * DO NOT USE THIS ON API VERSION BELOW 26! Or use at your own peril =)
  */
-interface GroupsDelete {
+interface GroupsDelete : Redactable {
 
     /**
      * Adds the given [groups] to the delete queue, which will be deleted on [commit].
@@ -84,9 +86,22 @@ interface GroupsDelete {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun commitInOneTransaction(): Boolean
+    fun commitInOneTransaction(): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): GroupsDelete
+
+    interface Result : Redactable {
 
         /**
          * True if all Groups have successfully been deleted. False if even one delete failed.
@@ -97,6 +112,9 @@ interface GroupsDelete {
          * True if the [group] has been successfully deleted. False otherwise.
          */
         fun isSuccessful(group: ExistingGroupEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -109,61 +127,122 @@ internal fun GroupsDelete(contacts: Contacts): GroupsDelete = GroupsDeleteImpl(
 private class GroupsDeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
-    private val groups: MutableSet<ExistingGroupEntity> = mutableSetOf()
+
+    private val groups: MutableSet<ExistingGroupEntity> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : GroupsDelete {
 
     override fun toString(): String =
         """
             GroupsDelete {
                 groups: $groups
+                hasPermission: ${permissions.canUpdateDelete()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): GroupsDelete = GroupsDeleteImpl(
+        contentResolver, permissions,
+
+        // Redact group data.
+        groups.asSequence().redactedCopies().toMutableSet(),
+
+        isRedacted = true
+    )
 
     override fun groups(vararg groups: ExistingGroupEntity) = groups(groups.asSequence())
 
     override fun groups(groups: Collection<ExistingGroupEntity>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<ExistingGroupEntity>): GroupsDelete = apply {
-        this.groups.addAll(groups)
+        this.groups.addAll(groups.redactedCopiesOrThis(isRedacted))
     }
 
     override fun commit(): GroupsDelete.Result {
-        if (groups.isEmpty() || !permissions.canUpdateDelete()) {
-            return GroupsDeleteFailed()
-        }
-
-        val results = mutableMapOf<Long, Boolean>()
-        for (group in groups) {
-            results[group.id] = if (group.readOnly) {
-                // Do not attempt to delete read-only groups.
-                false
-            } else {
-                contentResolver.applyBatch(GroupsOperation().delete(group.id)) != null
+        // TODO issue #144 log this
+        return if (groups.isEmpty() || !permissions.canUpdateDelete()) {
+            GroupsDeleteResult(emptyMap())
+        } else {
+            val results = mutableMapOf<Long, Boolean>()
+            for (group in groups) {
+                results[group.id] = if (group.readOnly) {
+                    // Do not attempt to delete read-only groups.
+                    false
+                } else {
+                    contentResolver.applyBatch(GroupsOperation().delete(group.id)) != null
+                }
             }
-        }
-        return GroupsDeleteResult(results)
+            GroupsDeleteResult(results)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
-    override fun commitInOneTransaction(): Boolean = permissions.canUpdateDelete()
-            && groups.isNotEmpty()
-            // Fail immediately if the set contains a read-only group.
-            && groups.find { it.readOnly } == null
-            && contentResolver.applyBatch(GroupsOperation().delete(groups.map { it.id })) != null
+    override fun commitInOneTransaction(): GroupsDelete.Result {
+        // TODO issue #144 log this
+        val isSuccessful = permissions.canUpdateDelete()
+                && groups.isNotEmpty()
+                // Fail immediately if the set contains a read-only group.
+                && groups.find { it.readOnly } == null
+                && contentResolver.applyBatch(GroupsOperation().delete(groups.map { it.id })) != null
+
+        return GroupsDeleteAllResult(isSuccessful).redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
+    }
 }
 
-private class GroupsDeleteResult(private val groupIdsResultMap: Map<Long, Boolean>) :
-    GroupsDelete.Result {
+private class GroupsDeleteResult private constructor(
+    private val groupIdsResultMap: Map<Long, Boolean>,
+    override val isRedacted: Boolean
+) : GroupsDelete.Result {
 
-    override val isSuccessful: Boolean by unsafeLazy { groupIdsResultMap.all { it.value } }
+    constructor(groupIdsResultMap: Map<Long, Boolean>) : this(groupIdsResultMap, false)
+
+    override fun toString(): String =
+        """
+            GroupsDelete.Result {
+                isSuccessful: $isSuccessful
+                groupIdsResultMap: $groupIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): GroupsDelete.Result = GroupsDeleteResult(
+        groupIdsResultMap, true
+    )
+
+    override val isSuccessful: Boolean by unsafeLazy {
+        // By default, all returns true when the collection is empty. So, we override that.
+        groupIdsResultMap.run { isNotEmpty() && all { it.value } }
+    }
 
     override fun isSuccessful(group: ExistingGroupEntity): Boolean {
         return groupIdsResultMap.getOrElse(group.id) { false }
     }
 }
 
-private class GroupsDeleteFailed : GroupsDelete.Result {
+private class GroupsDeleteAllResult private constructor(
+    override val isSuccessful: Boolean,
+    override val isRedacted: Boolean
+) : GroupsDelete.Result {
 
-    override val isSuccessful: Boolean = false
+    constructor(isSuccessful: Boolean) : this(
+        isSuccessful = isSuccessful,
+        isRedacted = false
+    )
 
-    override fun isSuccessful(group: ExistingGroupEntity): Boolean = false
+    override fun toString(): String =
+        """
+            GroupsDelete.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): GroupsDelete.Result = GroupsDeleteAllResult(
+        isSuccessful = isSuccessful,
+        isRedacted = true
+    )
+
+    override fun isSuccessful(group: ExistingGroupEntity): Boolean = isSuccessful
 }

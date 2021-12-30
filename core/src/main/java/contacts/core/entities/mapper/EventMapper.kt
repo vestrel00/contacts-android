@@ -18,6 +18,8 @@ internal class EventMapper(private val eventCursor: EventCursor) : DataEntityMap
             type = eventCursor.type,
             label = eventCursor.label,
 
-            date = EventDate.fromDateStrFromDb(eventCursor.date)
+            date = EventDate.fromDateStrFromDb(eventCursor.date),
+
+            isRedacted = false
         )
 }

@@ -24,6 +24,8 @@ private class GenderMapper(cursor: GenderDataCursor) :
         isSuperPrimary = cursor.isSuperPrimary,
 
         type = cursor.type,
-        label = cursor.label
+        label = cursor.label,
+
+        isRedacted = false
     )
 }

@@ -60,7 +60,7 @@ import contacts.core.util.unsafeLazy
  * there are no available accounts, the native Contacts app does not show the groups field because
  * there are no rows in the groups table.
  */
-interface GroupsQuery {
+interface GroupsQuery : Redactable {
 
     /**
      * Limits the group(s) returned by this query to groups belonging to one of the [accounts].
@@ -140,7 +140,7 @@ interface GroupsQuery {
     fun offset(offset: Int): GroupsQuery
 
     /**
-     * Returns the [GroupsList] matching the preceding query options.
+     * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
      *
@@ -151,10 +151,10 @@ interface GroupsQuery {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun find(): GroupsList
+    fun find(): Result
 
     /**
-     * Returns the [GroupsList] matching the preceding query options.
+     * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
      *
@@ -174,8 +174,21 @@ interface GroupsQuery {
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
     // @JvmOverloads cannot be used in interface methods...
-    // fun find(cancel: () -> Boolean = { false }): GroupsList
-    fun find(cancel: () -> Boolean): GroupsList
+    // fun find(cancel: () -> Boolean = { false }): Result
+    fun find(cancel: () -> Boolean): Result
+
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): GroupsQuery
 
     /**
      * The combined list of [Group]s from the specified Accounts ordered by [orderBy].
@@ -183,8 +196,19 @@ interface GroupsQuery {
      * The [offset] and [limit] functions applies to this list.
      *
      * Use [from], to get the list of Groups for a specific Account.
+     *
+     * ## The [toString] function
+     *
+     * The [toString] function of instances of this will not return the string representation of
+     * every group in the list. It will instead return a summary of the groups in the list and
+     * perhaps the first group only.
+     *
+     * This is done due to the potentially large quantities of groups, which could block the UI if
+     * not logging in background threads.
+     *
+     * You may print individual groups in this list by iterating through it.
      */
-    interface GroupsList : List<Group> {
+    interface Result : List<Group>, Redactable {
 
         /**
          * The list of [Group]s from the specified [account] ordered by [orderBy].
@@ -192,6 +216,9 @@ interface GroupsQuery {
          * The [offset] and [limit] functions DOES NOT apply to this list.
          */
         fun from(account: Account): List<Group>
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -211,7 +238,9 @@ private class GroupsQueryImpl(
     private var where: Where<GroupsField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<GroupsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
-    private var offset: Int = DEFAULT_OFFSET
+    private var offset: Int = DEFAULT_OFFSET,
+
+    override val isRedacted: Boolean = false
 ) : GroupsQuery {
 
     override fun toString(): String =
@@ -222,20 +251,36 @@ private class GroupsQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                hasPermission: ${permissions.canQuery()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): GroupsQuery = GroupsQueryImpl(
+        contentResolver, permissions,
+
+        // Redact account info.
+        rawContactsWhere?.redactedCopy(),
+        // Redact search input.
+        where?.redactedCopy(),
+        orderBy,
+        limit,
+        offset,
+
+        isRedacted = true
+    )
 
     override fun accounts(vararg accounts: Account) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Collection<Account>) = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Sequence<Account>): GroupsQuery = apply {
-        rawContactsWhere = accounts.toGroupsWhere()
+        rawContactsWhere = accounts.toGroupsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
     override fun where(where: Where<GroupsField>?): GroupsQuery = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
-        this.where = where ?: DEFAULT_WHERE
+        this.where = (where ?: DEFAULT_WHERE)?.redactedCopyOrThis(isRedacted)
     }
 
     override fun where(where: GroupsFields.() -> Where<GroupsField>?) = where(where(GroupsFields))
@@ -271,16 +316,19 @@ private class GroupsQueryImpl(
         }
     }
 
-    override fun find(): GroupsQuery.GroupsList = find { false }
+    override fun find(): GroupsQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): GroupsQuery.GroupsList =
-        if (!permissions.canQuery()) {
-            GroupsListImpl()
+    override fun find(cancel: () -> Boolean): GroupsQuery.Result {
+        // TODO issue #144 log this
+        return if (!permissions.canQuery()) {
+            GroupsQueryResult(emptyList())
         } else {
             contentResolver.resolve(
                 rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
             )
-        }
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
+    }
 
     companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<GroupsField>? = null
@@ -300,7 +348,7 @@ private fun ContentResolver.resolve(
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
-): GroupsQuery.GroupsList = query(
+): GroupsQuery.Result = query(
     Table.Groups,
     include,
     if (rawContactsWhere != null) {
@@ -314,7 +362,7 @@ private fun ContentResolver.resolve(
     },
     sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
 ) {
-    val groupsList = GroupsListImpl()
+    val groupsList = mutableListOf<Group>()
     val groupMapper = it.groupMapper()
 
     while (!cancel() && it.moveToNext()) {
@@ -326,10 +374,30 @@ private fun ContentResolver.resolve(
         groupsList.clear()
     }
 
-    groupsList
-} ?: GroupsListImpl()
+    GroupsQueryResult(groupsList)
 
-private class GroupsListImpl : ArrayList<Group>(), GroupsQuery.GroupsList {
+} ?: GroupsQueryResult(emptyList())
+
+private class GroupsQueryResult private constructor(
+    groups: List<Group>,
+    override val isRedacted: Boolean
+) : ArrayList<Group>(groups), GroupsQuery.Result {
+
+    constructor(groups: List<Group>) : this(groups, false)
+
+    override fun toString(): String =
+        """
+            GroupsQuery.Result {
+                Number of groups found: $size
+                First group: ${firstOrNull()}
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): GroupsQuery.Result = GroupsQueryResult(
+        redactedCopies(),
+        isRedacted = true
+    )
 
     override fun from(account: Account): List<Group> = filter { it.account == account }
 }

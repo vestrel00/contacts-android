@@ -4,10 +4,13 @@ import android.accounts.Account
 import android.content.ContentResolver
 import contacts.core.Contacts
 import contacts.core.ContactsPermissions
+import contacts.core.Redactable
 import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.Group
 import contacts.core.entities.MutableGroup
 import contacts.core.entities.operation.GroupsOperation
+import contacts.core.groups.GroupsUpdate.Result.FailureReason
+import contacts.core.redactedCopyOrThis
 import contacts.core.util.applyBatch
 import contacts.core.util.unsafeLazy
 
@@ -47,7 +50,7 @@ import contacts.core.util.unsafeLazy
  * }
  * ```
  */
-interface GroupsUpdate {
+interface GroupsUpdate : Redactable {
 
     /**
      * Adds the given [groups] to the update queue, which will be updated on [commit].
@@ -113,7 +116,20 @@ interface GroupsUpdate {
     // fun commit(cancel: () -> Boolean = { false }): Result
     fun commit(cancel: () -> Boolean): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): GroupsUpdate
+
+    interface Result : Redactable {
 
         /**
          * True if all Groups have successfully been updated. False if even one update failed.
@@ -129,6 +145,9 @@ interface GroupsUpdate {
          * Returns the reason why the insert failed for this [group]. Null if it did not fail.
          */
         fun failureReason(group: ExistingGroupEntity?): FailureReason?
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
 
         enum class FailureReason {
 
@@ -170,70 +189,84 @@ private class GroupsUpdateImpl(
     private val contentResolver: ContentResolver,
     private val groupsQuery: GroupsQuery,
     private val permissions: ContactsPermissions,
-    private val groups: MutableSet<ExistingGroupEntity?> = mutableSetOf()
+
+    private val groups: MutableSet<ExistingGroupEntity?> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : GroupsUpdate {
 
     override fun toString(): String =
         """
             GroupsUpdate {
                 groups: $groups
+                hasPermission: ${permissions.canUpdateDelete()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    override fun redactedCopy(): GroupsUpdate = GroupsUpdateImpl(
+        contentResolver, groupsQuery, permissions,
+
+        // Redact group info.
+        groups.asSequence().map { it?.redactedCopy() }.toMutableSet(),
+
+        isRedacted = true
+    )
 
     override fun groups(vararg groups: ExistingGroupEntity?) = groups(groups.asSequence())
 
     override fun groups(groups: Collection<ExistingGroupEntity?>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<ExistingGroupEntity?>): GroupsUpdate = apply {
-        this.groups.addAll(groups)
+        this.groups.addAll(groups.asSequence().map { it?.redactedCopy() })
     }
 
     override fun commit(): GroupsUpdate.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): GroupsUpdate.Result {
-        if (groups.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
-            return GroupsUpdateFailed()
-        }
+        // TODO issue #144 log this
+        return if (groups.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+            GroupsUpdateFailed()
+        } else {
+            // Gather the accounts for groups that will be updated.
+            val groupsAccounts = groups.mapNotNull { it?.account }
 
-        // Gather the accounts for groups that will be updated.
-        val groupsAccounts = groups.mapNotNull { it?.account }
-
-        // Gather the existing groups per account to prevent duplicate titles.
-        val existingGroups = groupsQuery
-            // Limit the accounts for optimization in case there are a lot of accounts in the system
-            .accounts(groupsAccounts)
-            .find()
-            // Convert to mutable group so that titles can be mutated during update processing.
-            // Use the data class copy function intentionally to include read-only groups.
-            .mapNotNull {
-                it.copy(readOnly = false).mutableCopy()
-            } //  Consumers should never do this!
-        val existingAccountGroups = mutableMapOf<Account, MutableSet<ExistingGroupEntity>>()
-        for (group in existingGroups) {
-            existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {
-                it.add(group)
-            }
-        }
-
-        val failureReasons = mutableMapOf<ExistingGroupEntity?, GroupsUpdate.Result.FailureReason>()
-
-        for (group in groups) {
-            if (cancel()) {
-                break
+            // Gather the existing groups per account to prevent duplicate titles.
+            val existingGroups = groupsQuery
+                // Limit the accounts for optimization in case there are a lot of accounts in the system
+                .accounts(groupsAccounts)
+                .find()
+                // Convert to mutable group so that titles can be mutated during update processing.
+                // Use the data class copy function intentionally to include read-only groups.
+                .mapNotNull {
+                    it.copy(readOnly = false).mutableCopy()
+                } //  Consumers should never do this!
+            val existingAccountGroups = mutableMapOf<Account, MutableSet<ExistingGroupEntity>>()
+            for (group in existingGroups) {
+                existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {
+                    it.add(group)
+                }
             }
 
-            if (group?.id != null) { // Make sure the ID is not null to ensure the group exists.
-                val accountGroups = existingAccountGroups
-                    .getOrPut(group.account) { mutableSetOf(group) }
+            val failureReasons = mutableMapOf<ExistingGroupEntity?, FailureReason>()
 
-                val differentGroupWithSameTitle = accountGroups
-                    .find { it.title == group.title && it.id != group.id }
+            for (group in groups) {
+                // Intentionally not breaking if cancelled so that all groups are assigned a failure
+                // reason. Unlike other APIs in this library, this API will indicate success if there
+                // is no failure reason.
 
-                if (differentGroupWithSameTitle != null) {
-                    // The title of this group belongs to a different existing group.
-                    failureReasons[group] = GroupsUpdate.Result.FailureReason.TITLE_ALREADY_EXIST
-                } else if (contentResolver.updateGroup(group)) {
-                    /*
+                if (!cancel() && group != null) {
+                    val accountGroups = existingAccountGroups
+                        .getOrPut(group.account) { mutableSetOf(group) }
+
+                    val differentGroupWithSameTitle = accountGroups
+                        .find { it.title == group.title && it.id != group.id }
+
+                    if (differentGroupWithSameTitle != null) {
+                        // The title of this group belongs to a different existing group.
+                        failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
+                    } else if (!cancel() && contentResolver.updateGroup(group)) {
+                        /*
                      * Update success.
                      *
                      * We also need to update the title in our temporary list to ensure that the
@@ -246,50 +279,85 @@ private class GroupsUpdateImpl(
                      * If we did not update our list from [A, B, C] to [A, B, D],
                      * the update for B -> C will fail with TITLE_ALREADY_EXIST
                      */
-                    accountGroups.find { it.id == group.id }?.let { groupInMemory ->
-                        when (groupInMemory) {
-                            is MutableGroup -> groupInMemory.title = group.title
-                            is Group -> {
-                                // We have to replace because this is immutable.
-                                accountGroups.remove(groupInMemory)
-                                accountGroups.add(groupInMemory.copy(title = group.title))
+                        accountGroups.find { it.id == group.id }?.let { groupInMemory ->
+                            when (groupInMemory) {
+                                is MutableGroup -> groupInMemory.title = group.title
+                                is Group -> {
+                                    // We have to replace because this is immutable.
+                                    accountGroups.remove(groupInMemory)
+                                    accountGroups.add(groupInMemory.copy(title = group.title))
+                                }
                             }
                         }
+                    } else {
+                        failureReasons[group] = FailureReason.UNKNOWN
                     }
                 } else {
-                    // Update failed.
-                    failureReasons[group] = GroupsUpdate.Result.FailureReason.UNKNOWN
+                    failureReasons[group] = FailureReason.UNKNOWN
                 }
-            } else {
-                failureReasons[group] = GroupsUpdate.Result.FailureReason.UNKNOWN
             }
-        }
 
-        return GroupsUpdateResult(failureReasons)
+            GroupsUpdateResult(failureReasons)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log this
     }
 }
 
 private fun ContentResolver.updateGroup(group: ExistingGroupEntity): Boolean =
     applyBatch(GroupsOperation().update(group)) != null
 
-private class GroupsUpdateResult(
-    private val failureReasons: Map<ExistingGroupEntity?, GroupsUpdate.Result.FailureReason>
+private class GroupsUpdateResult private constructor(
+    private val failureReasons: Map<ExistingGroupEntity?, FailureReason>,
+    override val isRedacted: Boolean = false
 ) : GroupsUpdate.Result {
+
+    constructor(failureReasons: Map<ExistingGroupEntity?, FailureReason>) : this(
+        failureReasons,
+        false
+    )
+
+    override fun toString(): String =
+        """
+            GroupsUpdate.Result {
+                isSuccessful: $isSuccessful
+                failureReasons: $failureReasons
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): GroupsUpdate.Result = GroupsUpdateResult(
+        // Redact group data.
+        failureReasons.mapKeys { it.key?.redactedCopy() },
+        isRedacted = true
+    )
 
     override val isSuccessful: Boolean by unsafeLazy { failureReasons.isEmpty() }
 
     override fun isSuccessful(group: ExistingGroupEntity?): Boolean = failureReason(group) == null
 
-    override fun failureReason(group: ExistingGroupEntity?): GroupsUpdate.Result.FailureReason? =
+    override fun failureReason(group: ExistingGroupEntity?): FailureReason? =
         failureReasons[group]
 }
 
-private class GroupsUpdateFailed : GroupsUpdate.Result {
+private class GroupsUpdateFailed(override val isRedacted: Boolean = false) : GroupsUpdate.Result {
+
+    constructor() : this(false)
+
+
+    override fun toString(): String =
+        """
+            GroupsUpdate.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): GroupsUpdate.Result = GroupsUpdateFailed(true)
 
     override val isSuccessful: Boolean = false
 
     override fun isSuccessful(group: ExistingGroupEntity?): Boolean = false
 
     override fun failureReason(group: ExistingGroupEntity?) =
-        GroupsUpdate.Result.FailureReason.UNKNOWN
+        FailureReason.UNKNOWN
 }

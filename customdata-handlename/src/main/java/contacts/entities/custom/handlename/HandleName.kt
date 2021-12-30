@@ -33,6 +33,9 @@ sealed interface HandleNameEntity : CustomDataEntity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(handle)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): HandleNameEntity
 }
 
 /* DEV NOTES: Necessary Abstractions
@@ -70,6 +73,9 @@ sealed interface MutableHandleNameEntity : HandleNameEntity, MutableCustomDataEn
         set(value) {
             handle = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableHandleNameEntity
 }
 
 /**
@@ -85,7 +91,9 @@ data class HandleName internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val handle: String?
+    override val handle: String?,
+
+    override val isRedacted: Boolean
 
 ) : HandleNameEntity, ExistingCustomDataEntity,
     ImmutableCustomDataEntityWithMutableType<MutableHandleName> {
@@ -98,7 +106,15 @@ data class HandleName internal constructor(
         isPrimary = isPrimary,
         isSuperPrimary = isSuperPrimary,
 
-        handle = handle
+        handle = handle,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        handle = handle?.redact()
     )
 }
 
@@ -115,9 +131,18 @@ data class MutableHandleName internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override var handle: String?
+    override var handle: String?,
 
-) : HandleNameEntity, ExistingCustomDataEntity, MutableHandleNameEntity
+    override val isRedacted: Boolean
+
+) : HandleNameEntity, ExistingCustomDataEntity, MutableHandleNameEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        handle = handle?.redact()
+    )
+}
 
 
 /**
@@ -126,6 +151,15 @@ data class MutableHandleName internal constructor(
 @Parcelize
 data class NewHandleName @JvmOverloads constructor(
 
-    override var handle: String? = null
+    override var handle: String? = null,
 
-) : HandleNameEntity, NewCustomDataEntity, MutableHandleNameEntity
+    override val isRedacted: Boolean = false
+
+) : HandleNameEntity, NewCustomDataEntity, MutableHandleNameEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        handle = handle?.redact()
+    )
+}

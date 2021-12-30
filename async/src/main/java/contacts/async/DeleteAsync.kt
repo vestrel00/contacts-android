@@ -23,7 +23,7 @@ suspend fun Delete.commitWithContext(context: CoroutineContext = ASYNC_DISPATCHE
  * See [Delete.commitInOneTransaction].
  */
 suspend fun Delete.commitInOneTransactionWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
-        Boolean = withContext(context) { commitInOneTransaction() }
+        Delete.Result = withContext(context) { commitInOneTransaction() }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -41,4 +41,4 @@ fun Delete.commitAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<D
  * See [Delete.commitInOneTransaction].
  */
 fun Delete.commitInOneTransactionAsync(context: CoroutineContext = ASYNC_DISPATCHER):
-        Deferred<Boolean> = CoroutineScope(context).async { commitInOneTransaction() }
+        Deferred<Delete.Result> = CoroutineScope(context).async { commitInOneTransaction() }

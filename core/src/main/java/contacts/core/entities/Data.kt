@@ -91,6 +91,9 @@ sealed interface DataEntity : Entity {
     val isProfile: Boolean
         get() = false
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): DataEntity
+
     /**
      * A type of data. Used by data that may have several types.
      */
@@ -132,6 +135,9 @@ sealed interface DataEntityWithTypeAndLabel<out T : DataEntity.Type> : DataEntit
      * when the [type] is custom.
      */
     val label: String?
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): DataEntityWithTypeAndLabel<T>
 }
 
 /**
@@ -144,6 +150,9 @@ sealed interface NewDataEntity : DataEntity, NewEntity {
 
     override val isSuperPrimary: Boolean
         get() = false
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): NewDataEntity
 }
 
 /**
@@ -168,26 +177,41 @@ sealed interface ExistingDataEntity : DataEntity, ExistingEntity {
 
     override val isProfile: Boolean
         get() = id.isProfileId
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingDataEntity
 }
 
 
 /**
  * An immutable [DataEntity].
  */
-sealed interface ImmutableDataEntity : DataEntity, ImmutableEntity
+sealed interface ImmutableDataEntity : DataEntity, ImmutableEntity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableDataEntity
+}
 
 /**
  * An [ImmutableDataEntity] that has a mutable type [T].
  */
 sealed interface ImmutableDataEntityWithMutableType<T : MutableDataEntity> : ImmutableDataEntity,
-    ImmutableEntityWithMutableType<T>
+    ImmutableEntityWithMutableType<T> {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableDataEntityWithMutableType<T>
+}
 
 /**
  * An [ImmutableDataEntity] that has a mutable type [T] that may or may not be null.
  */
 sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntity> :
     ImmutableDataEntity,
-    ImmutableEntityWithNullableMutableType<T>
+    ImmutableEntityWithNullableMutableType<T> {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableDataEntityWithNullableMutableType<T>
+}
 
 /**
  * A mutable [DataEntity], with a mutable [primaryValue].
@@ -195,6 +219,9 @@ sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntit
 sealed interface MutableDataEntity : DataEntity, MutableEntity {
 
     override var primaryValue: String?
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableDataEntity
 }
 
 /**
@@ -217,4 +244,7 @@ sealed interface MutableDataEntityWithTypeAndLabel<T : DataEntity.Type> : Mutabl
     fun setTypeUnsafe(unsafeType: DataEntity.Type?) {
         type = unsafeType as T?
     }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableDataEntityWithTypeAndLabel<T>
 }

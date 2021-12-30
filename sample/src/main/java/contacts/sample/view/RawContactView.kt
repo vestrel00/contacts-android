@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import contacts.async.accounts.accountForWithContext
+import contacts.async.accounts.findWithContext
 import contacts.core.Contacts
 import contacts.core.entities.*
 import contacts.core.util.setName
@@ -132,7 +132,9 @@ class RawContactView @JvmOverloads constructor(
             val account = rawContact.runIfExist {
                 contacts.accounts(it.isProfile)
                     .queryWithPermission()
-                    .accountForWithContext(it)
+                    .associatedWith(it)
+                    .findWithContext()
+                    .firstOrNull()
             }
 
             // The native Contacts app hides these from the UI for local raw contacts. Let's follow

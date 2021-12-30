@@ -14,6 +14,8 @@ internal class NicknameMapper(private val nicknameCursor: NicknameCursor) : Data
             isPrimary = nicknameCursor.isPrimary,
             isSuperPrimary = nicknameCursor.isSuperPrimary,
 
-            name = nicknameCursor.name
+            name = nicknameCursor.name,
+
+            isRedacted = false
         )
 }

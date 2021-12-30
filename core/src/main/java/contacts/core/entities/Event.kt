@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.os.Build
 import android.os.Parcelable
 import android.provider.ContactsContract.CommonDataKinds
+import contacts.core.Redactable
 import contacts.core.entities.EventEntity.Type
 import kotlinx.parcelize.Parcelize
 import java.text.ParseException
@@ -53,6 +54,9 @@ sealed interface EventEntity : DataEntityWithTypeAndLabel<Type> {
     // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(date)
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): EventEntity
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
@@ -121,6 +125,9 @@ sealed interface MutableEventEntity : EventEntity, MutableDataEntityWithTypeAndL
             // the ambiguity may still cause bugs. We could implement this if the community really
             // wants to but for now... leaving it blank!
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableEventEntity
 }
 
 /**
@@ -139,7 +146,9 @@ data class Event internal constructor(
     override val type: Type?,
     override val label: String?,
 
-    override val date: EventDate?
+    override val date: EventDate?,
+
+    override val isRedacted: Boolean
 
 ) : EventEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableEvent> {
 
@@ -154,7 +163,15 @@ data class Event internal constructor(
         type = type,
         label = label,
 
-        date = date
+        date = date,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        date = date?.redactedCopy()
     )
 }
 
@@ -174,9 +191,18 @@ data class MutableEvent internal constructor(
     override var type: Type?,
     override var label: String?,
 
-    override var date: EventDate?
+    override var date: EventDate?,
 
-) : EventEntity, ExistingDataEntity, MutableEventEntity
+    override val isRedacted: Boolean
+
+) : EventEntity, ExistingDataEntity, MutableEventEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        date = date?.redactedCopy()
+    )
+}
 
 /**
  * A new mutable [EventEntity].
@@ -187,9 +213,18 @@ data class NewEvent @JvmOverloads constructor(
     override var type: Type? = null,
     override var label: String? = null,
 
-    override var date: EventDate? = null
+    override var date: EventDate? = null,
 
-) : EventEntity, NewDataEntity, MutableEventEntity
+    override val isRedacted: Boolean = false
+
+) : EventEntity, NewDataEntity, MutableEventEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        date = date?.redactedCopy()
+    )
+}
 
 /**
  * An Event date that may or may not have a year.
@@ -227,15 +262,25 @@ data class EventDate internal constructor(
     /**
      * The [Calendar.DAY_OF_MONTH].
      */
-    val dayOfMonth: Int
+    val dayOfMonth: Int,
 
-) : Parcelable /* This is not a database Entity */ {
+    override val isRedacted: Boolean
+
+) : Redactable, Parcelable /* This is not a database Entity */ {
 
     /**
      * The 0-based [month] as 1-based for interfacing with the database.
      */
     internal val monthInDb: Int
         get() = month + 1
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        year = null,
+        month = 0,
+        dayOfMonth = 1
+    )
 
     companion object {
 
@@ -304,7 +349,8 @@ data class EventDate internal constructor(
             return EventDate(
                 if (noYear) null else calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.DAY_OF_MONTH),
+                false
             )
         }
     }
@@ -353,7 +399,13 @@ private fun Int.toDoubleDigitStr(): String = toString().padStart(2, '0')
  *
  * The month used here is the [EventDate.monthInDb], which is 1-based.
  */
-fun EventDate.toDisplayString(): String = toDbString()
+fun EventDate.toDisplayString(): String = toDbString().let {
+    if (isRedacted) {
+        it.redact()
+    } else {
+        it
+    }
+}
 
 /**
  * Returns the string representation of this [EventDate].

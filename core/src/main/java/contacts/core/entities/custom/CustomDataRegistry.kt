@@ -69,7 +69,11 @@ class CustomDataRegistry {
     ) {
         val entry = entryOf(customDataEntity.mimeType)
         val entityHolder = customDataEntities.getOrPut(entry.mimeType.value) {
-            CustomDataEntityHolder(mutableListOf(), entry.countRestriction)
+            CustomDataEntityHolder(
+                mutableListOf(),
+                entry.countRestriction,
+                customDataEntity.isRedacted
+            )
         }
 
         // Use when instead of if (entry.countRestriction == AT_MOST_ONE) for exhaustive checks.

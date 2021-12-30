@@ -12,6 +12,8 @@ internal class PhotoMapper(private val photoCursor: PhotoCursor) : DataEntityMap
             contactId = photoCursor.contactId,
 
             isPrimary = photoCursor.isPrimary,
-            isSuperPrimary = photoCursor.isSuperPrimary
+            isSuperPrimary = photoCursor.isSuperPrimary,
+
+            isRedacted = false
         )
 }

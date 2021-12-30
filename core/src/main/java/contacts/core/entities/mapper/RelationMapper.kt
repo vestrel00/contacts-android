@@ -18,6 +18,8 @@ internal class RelationMapper(private val relationCursor: RelationCursor) :
             type = relationCursor.type,
             label = relationCursor.label,
 
-            name = relationCursor.name
+            name = relationCursor.name,
+
+            isRedacted = false
         )
 }

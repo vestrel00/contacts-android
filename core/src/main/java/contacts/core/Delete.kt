@@ -36,7 +36,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  */
-interface Delete {
+interface Delete : Redactable {
 
     /**
      * Adds the given [rawContacts] to the delete queue, which will be deleted on [commit].
@@ -108,9 +108,22 @@ interface Delete {
      * This should be called in a background thread to avoid blocking the UI thread.
      */
     // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-    fun commitInOneTransaction(): Boolean
+    fun commitInOneTransaction(): Result
 
-    interface Result {
+    /**
+     * Returns a redacted instance where all private user data are redacted.
+     *
+     * ## Redacted instances may produce invalid results!
+     *
+     * Redacted instance may have critical information redacted, which is required to make
+     * the operation work properly.
+     *
+     * **Redacted operations should typically only be used for logging in production!**
+     */
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): Delete
+
+    interface Result : Redactable {
 
         /**
          * True if all Contacts and RawContacts have successfully been deleted. False if even one
@@ -136,6 +149,9 @@ interface Delete {
          * deleted. This is used in conjunction with [Delete.contacts].
          */
         fun isSuccessful(contact: ExistingContactEntity): Boolean
+
+        // We have to cast the return type because we are not using recursive generic types.
+        override fun redactedCopy(): Result
     }
 }
 
@@ -148,8 +164,11 @@ internal fun Delete(contacts: Contacts): Delete = DeleteImpl(
 private class DeleteImpl(
     private val contentResolver: ContentResolver,
     private val permissions: ContactsPermissions,
+
     private val rawContactIds: MutableSet<Long> = mutableSetOf(),
-    private val contactIds: MutableSet<Long> = mutableSetOf()
+    private val contactIds: MutableSet<Long> = mutableSetOf(),
+
+    override val isRedacted: Boolean = false
 ) : Delete {
 
     override fun toString(): String =
@@ -157,8 +176,19 @@ private class DeleteImpl(
             Delete {
                 rawContactIds: $rawContactIds
                 contactIds: $contactIds
+                hasPermission: ${permissions.canUpdateDelete()}
+                isRedacted: $isRedacted
             }
         """.trimIndent()
+
+    // There isn't really anything to redact =)
+    override fun redactedCopy(): Delete = DeleteImpl(
+        contentResolver, permissions,
+
+        rawContactIds, contactIds,
+
+        isRedacted = true
+    )
 
     override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())
@@ -180,68 +210,72 @@ private class DeleteImpl(
     }
 
     override fun commit(): Delete.Result {
-        if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
-            return DeleteFailed()
-        }
+        // TODO issue #144 log this
+        return if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
+            DeleteAllResult(isSuccessful = false)
+        } else {
+            val rawContactsResult = mutableMapOf<Long, Boolean>()
+            for (rawContactId in rawContactIds) {
+                rawContactsResult[rawContactId] =
+                    if (rawContactId.isProfileId) {
+                        // Intentionally fail the operation to ensure that this is only used for
+                        // non-profile updates. Otherwise, operation can succeed. This is only done to
+                        // enforce API design.
+                        false
+                    } else {
+                        contentResolver.deleteRawContactWithId(rawContactId)
+                    }
+            }
 
-        val rawContactsResult = mutableMapOf<Long, Boolean>()
-        for (rawContactId in rawContactIds) {
-            rawContactsResult[rawContactId] =
-                if (rawContactId.isProfileId) {
+            val contactsResults = mutableMapOf<Long, Boolean>()
+            for (contactId in contactIds) {
+                contactsResults[contactId] = if (contactId.isProfileId) {
                     // Intentionally fail the operation to ensure that this is only used for
-                    // non-profile updates. Otherwise, operation can succeed. This is only done to
+                    // non-profile deletes. Otherwise, operation can succeed. This is only done to
                     // enforce API design.
                     false
                 } else {
-                    contentResolver.deleteRawContactWithId(rawContactId)
+                    contentResolver.deleteContactWithId(contactId)
                 }
-        }
-
-        val contactsResults = mutableMapOf<Long, Boolean>()
-        for (contactId in contactIds) {
-            contactsResults[contactId] = if (contactId.isProfileId) {
-                // Intentionally fail the operation to ensure that this is only used for
-                // non-profile deletes. Otherwise, operation can succeed. This is only done to
-                // enforce API design.
-                false
-            } else {
-                contentResolver.deleteContactWithId(contactId)
             }
-        }
 
-        return DeleteResult(rawContactsResult, contactsResults)
+            DeleteResult(rawContactsResult, contactsResults)
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 
-    override fun commitInOneTransaction(): Boolean {
-        if ((rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete()) {
-            return false
-        }
+    override fun commitInOneTransaction(): Delete.Result {
+        // TODO issue #144 log this
+        return if ((rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete()) {
+            DeleteAllResult(isSuccessful = false)
+        } else {
+            val nonProfileRawContactIds = rawContactIds.filter { !it.isProfileId }
+            val nonProfileContactIds = contactIds.filter { !it.isProfileId }
 
-        val nonProfileRawContactIds = rawContactIds.filter { !it.isProfileId }
-        val nonProfileContactIds = contactIds.filter { !it.isProfileId }
+            if (rawContactIds.size != nonProfileRawContactIds.size ||
+                contactIds.size != nonProfileContactIds.size
+            ) {
+                // There are some invalid ids or profile RawContacts, fail without performing operation.
+                DeleteAllResult(isSuccessful = false)
+            } else {
+                val operations = arrayListOf<ContentProviderOperation>()
 
-        if (rawContactIds.size != nonProfileRawContactIds.size ||
-            contactIds.size != nonProfileContactIds.size
-        ) {
-            // There are some invalid ids or profile RawContacts, fail without performing operation.
-            return false
-        }
+                if (nonProfileRawContactIds.isNotEmpty()) {
+                    RawContactsOperation(false)
+                        .deleteRawContacts(nonProfileRawContactIds)
+                        .let(operations::add)
+                }
 
-        val operations = arrayListOf<ContentProviderOperation>()
+                if (nonProfileContactIds.isNotEmpty()) {
+                    RawContactsOperation(false)
+                        .deleteRawContactsWithContactIds(nonProfileContactIds)
+                        .let(operations::add)
+                }
 
-        if (nonProfileRawContactIds.isNotEmpty()) {
-            RawContactsOperation(false)
-                .deleteRawContacts(nonProfileRawContactIds)
-                .let(operations::add)
-        }
-
-        if (nonProfileContactIds.isNotEmpty()) {
-            RawContactsOperation(false)
-                .deleteRawContactsWithContactIds(nonProfileContactIds)
-                .let(operations::add)
-        }
-
-        return contentResolver.applyBatch(operations) != null
+                DeleteAllResult(isSuccessful = contentResolver.applyBatch(operations) != null)
+            }
+        }.redactedCopyOrThis(isRedacted)
+        // TODO issue #144 log result
     }
 }
 
@@ -255,13 +289,36 @@ private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
         RawContactsOperation(contactId.isProfileId).deleteRawContactsWithContactId(contactId)
     ) != null
 
-private class DeleteResult(
+private class DeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,
-    private val contactIdsResultMap: Map<Long, Boolean>
+    private val contactIdsResultMap: Map<Long, Boolean>,
+    override val isRedacted: Boolean
 ) : Delete.Result {
 
+    constructor(
+        rawContactIdsResultMap: Map<Long, Boolean>,
+        contactIdsResultMap: Map<Long, Boolean>
+    ) : this(rawContactIdsResultMap, contactIdsResultMap, false)
+
+    override fun toString(): String =
+        """
+            Delete.Result {
+                isSuccessful: $isSuccessful
+                rawContactIdsResultMap: $rawContactIdsResultMap
+                contactIdsResultMap: $contactIdsResultMap
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
+
+    override fun redactedCopy(): Delete.Result = DeleteResult(
+        rawContactIdsResultMap, contactIdsResultMap,
+        isRedacted = true
+    )
+
     override val isSuccessful: Boolean by unsafeLazy {
-        rawContactIdsResultMap.all { it.value } || contactIdsResultMap.all { it.value }
+        // By default, all returns true when the collection is empty. So, we override that.
+        rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+                || contactIdsResultMap.run { isNotEmpty() && all { it.value } }
     }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
@@ -271,11 +328,30 @@ private class DeleteResult(
         contactIdsResultMap.getOrElse(contact.id) { false }
 }
 
-private class DeleteFailed : Delete.Result {
+private class DeleteAllResult private constructor(
+    override val isSuccessful: Boolean,
+    override val isRedacted: Boolean
+) : Delete.Result {
 
-    override val isSuccessful: Boolean = false
+    constructor(isSuccessful: Boolean) : this(
+        isSuccessful = isSuccessful,
+        isRedacted = false
+    )
 
-    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = false
+    override fun toString(): String =
+        """
+            Delete.Result {
+                isSuccessful: $isSuccessful
+                isRedacted: $isRedacted
+            }
+        """.trimIndent()
 
-    override fun isSuccessful(contact: ExistingContactEntity): Boolean = false
+    override fun redactedCopy(): Delete.Result = DeleteAllResult(
+        isSuccessful = isSuccessful,
+        isRedacted = true
+    )
+
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = isSuccessful
+
+    override fun isSuccessful(contact: ExistingContactEntity): Boolean = isSuccessful
 }

@@ -23,6 +23,8 @@ private class HandleNameMapper(cursor: HandleNameDataCursor) :
         isPrimary = cursor.isPrimary,
         isSuperPrimary = cursor.isSuperPrimary,
 
-        handle = cursor.handle
+        handle = cursor.handle,
+
+        isRedacted = false
     )
 }

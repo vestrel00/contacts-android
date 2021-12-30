@@ -1,7 +1,6 @@
 package contacts.async
 
 import contacts.core.BroadQuery
-import contacts.core.entities.Contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -14,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
  * See [BroadQuery.find].
  */
 suspend fun BroadQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
-        List<Contact> = withContext(context) { find { !isActive } }
+        BroadQuery.Result = withContext(context) { find { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -24,5 +23,5 @@ suspend fun BroadQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATC
  *
  * See [BroadQuery.find].
  */
-fun BroadQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<List<Contact>> =
+fun BroadQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER): Deferred<BroadQuery.Result> =
     CoroutineScope(context).async { find { !isActive } }

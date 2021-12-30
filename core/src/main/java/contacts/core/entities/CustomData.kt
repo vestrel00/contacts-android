@@ -14,6 +14,9 @@ interface CustomDataEntity : DataEntity {
 
     // Override this to cast type from MimeType to MimeType.Custom
     override val mimeType: MimeType.Custom
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): CustomDataEntity
 }
 
 /**
@@ -24,47 +27,79 @@ interface CustomDataEntity : DataEntity {
  */
 // Intentionally not sealed so that consumers can define their own implementations.
 interface CustomDataEntityWithTypeAndLabel<T : DataEntity.Type> : CustomDataEntity,
-    DataEntityWithTypeAndLabel<T>
+    DataEntityWithTypeAndLabel<T> {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): CustomDataEntityWithTypeAndLabel<T>
+}
 
 /**
  * A [DataEntity] that has NOT yet been inserted into the database.
  */
-interface NewCustomDataEntity : CustomDataEntity, NewDataEntity
+interface NewCustomDataEntity : CustomDataEntity, NewDataEntity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): NewCustomDataEntity
+}
 
 /**
  * A [DataEntity] that has already been inserted into the database.
  */
-interface ExistingCustomDataEntity : CustomDataEntity, ExistingDataEntity
+interface ExistingCustomDataEntity : CustomDataEntity, ExistingDataEntity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingCustomDataEntity
+}
 
 /**
  * An immutable [CustomDataEntity].
  */
 // Intentionally not sealed so that consumers can define their own implementations.
-interface ImmutableCustomDataEntity : CustomDataEntity, ImmutableDataEntity
+interface ImmutableCustomDataEntity : CustomDataEntity, ImmutableDataEntity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableCustomDataEntity
+}
 
 /**
  * An [ImmutableCustomDataEntity] with a mutable type.
  */
 // Intentionally not sealed so that consumers can define their own implementations.
 interface ImmutableCustomDataEntityWithMutableType<T : MutableCustomDataEntity> :
-    ImmutableCustomDataEntity, ImmutableDataEntityWithMutableType<T>
+    ImmutableCustomDataEntity, ImmutableDataEntityWithMutableType<T> {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableCustomDataEntityWithMutableType<T>
+}
 
 /**
  * An [ImmutableCustomDataEntity] that has a mutable type [T] that may or may not be null.
  */
 // Intentionally not sealed so that consumers can define their own implementations.
 interface ImmutableCustomDataEntityWithNullableMutableType<T : MutableCustomDataEntity> :
-    ImmutableCustomDataEntity, ImmutableDataEntityWithNullableMutableType<T>
+    ImmutableCustomDataEntity, ImmutableDataEntityWithNullableMutableType<T> {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ImmutableCustomDataEntityWithNullableMutableType<T>
+}
 
 /**
  * A mutable [CustomDataEntity].
  */
 // Intentionally not sealed so that consumers can define their own implementations.
-interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity
+interface MutableCustomDataEntity : CustomDataEntity, MutableDataEntity {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableCustomDataEntity
+}
 
 /**
  * A [MutableCustomDataEntity], with a mutable [type] and [label].
  */
 // Intentionally not sealed so that consumers can define their own implementations.
 interface MutableCustomDataEntityWithTypeAndLabel<T : DataEntity.Type> : MutableCustomDataEntity,
-    MutableDataEntityWithTypeAndLabel<T>, CustomDataEntityWithTypeAndLabel<T>
+    MutableDataEntityWithTypeAndLabel<T>, CustomDataEntityWithTypeAndLabel<T> {
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableCustomDataEntityWithTypeAndLabel<T>
+}

@@ -32,6 +32,9 @@ sealed interface EmailEntity : DataEntityWithTypeAndLabel<Type> {
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(address)
 
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): EmailEntity
+
     enum class Type(override val value: Int) : DataEntity.Type {
 
         // Order of declaration is the same as seen in the native contacts app
@@ -89,6 +92,9 @@ sealed interface MutableEmailEntity : EmailEntity, MutableDataEntityWithTypeAndL
         set(value) {
             address = value
         }
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableEmailEntity
 }
 
 /**
@@ -107,7 +113,9 @@ data class Email internal constructor(
     override val type: Type?,
     override val label: String?,
 
-    override val address: String?
+    override val address: String?,
+
+    override val isRedacted: Boolean
 
 ) : EmailEntity, ExistingDataEntity, ImmutableDataEntityWithMutableType<MutableEmail> {
 
@@ -122,7 +130,15 @@ data class Email internal constructor(
         type = type,
         label = label,
 
-        address = address
+        address = address,
+
+        isRedacted = isRedacted
+    )
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        address = address?.redact()
     )
 }
 
@@ -141,9 +157,18 @@ data class MutableEmail internal constructor(
 
     override var type: Type?,
     override var label: String?,
-    override var address: String?
+    override var address: String?,
 
-) : EmailEntity, ExistingDataEntity, MutableEmailEntity
+    override val isRedacted: Boolean
+
+) : EmailEntity, ExistingDataEntity, MutableEmailEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        address = address?.redact()
+    )
+}
 
 /**
  * An new mutable [EmailEntity].
@@ -153,6 +178,15 @@ data class NewEmail @JvmOverloads constructor(
 
     override var type: Type? = null,
     override var label: String? = null,
-    override var address: String? = null
+    override var address: String? = null,
 
-) : EmailEntity, NewDataEntity, MutableEmailEntity
+    override val isRedacted: Boolean = false
+
+) : EmailEntity, NewDataEntity, MutableEmailEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        address = address?.redact()
+    )
+}
