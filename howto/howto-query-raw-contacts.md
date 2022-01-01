@@ -195,17 +195,7 @@ form WHERE clauses.
 > This howto page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
 > If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
-For example, to get all favorite RawContacts,
-
-```kotlin
-val favoriteRawContacts = Contacts(context)
-    .accounts()
-    .queryRawContacts()
-    .where { Options.Starred equalTo true }
-    .find()
-```
-
-To get a list of RawContacts with the given IDs,
+For example, to get a list of RawContacts with the given IDs,
 
 ```kotlin
 val favoriteRawContacts = Contacts(context)
