@@ -1,10 +1,12 @@
 # How do I learn more about the Contact lookup key vs ID?
 
 The _Contact ID_ is a number in the Contacts table that serves as the _unique identifier for a row
-in the **local** Contacts table_.
+in the **local** Contacts table_. These look like any number used as an ID in a database table. For
+example; `4`, `8`, `15`, `16`, `23`, `42`, ...
 
 The _Contact lookup key_ is a string that serves as the _unique identifier for a Contact in the
-**local and remote** databases_.
+**local and remote** databases_. These look like randomly generated or hashed strings. For example;
+`2059i4a27289d88a0a4e7`, `2059i7820d35c8f2c1b1a`, ...
 
 The official documentation for the Contact lookup key is,
 
@@ -28,8 +30,7 @@ Unlike the Contact ID, the lookup key is the same across devices and will not ch
 aggregation. The lookup key points to a Contact entity rather than just a row in a table. It is the
 unique identifier used by local and remote sync adapters to identify an aggregate Contact.
 
-> For more info on how to sync contact data,
-> read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
+> For more info on how to sync contact data, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
 
 ## When to use lookup key vs ID?
 
