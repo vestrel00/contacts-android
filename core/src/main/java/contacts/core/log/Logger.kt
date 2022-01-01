@@ -10,9 +10,9 @@ class EmptyLogger : Logger {
   override fun log(message: String) {}
 }
 
-class AndroidLogger : Logger {
+class AndroidLogger(private val tag: String = TAG) : Logger {
   override fun log(message: String) {
-    Log.d(TAG, message)
+    Log.d(tag, message)
   }
 
   companion object {
