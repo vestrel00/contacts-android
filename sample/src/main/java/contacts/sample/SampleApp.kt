@@ -4,6 +4,7 @@ import android.app.Application
 import contacts.core.Contacts
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.log.AndroidLogger
+import contacts.core.log.LoggerRegistry
 import contacts.entities.custom.gender.GenderRegistration
 import contacts.entities.custom.handlename.HandleNameRegistration
 
@@ -18,7 +19,10 @@ class SampleApp : Application() {
         GenderRegistration(),
         HandleNameRegistration()
       ),
-      logger = AndroidLogger(),
+      loggerRegistry = LoggerRegistry(
+        logger = AndroidLogger(),
+        redactMessages = !BuildConfig.DEBUG, // Apps must provide it's own way to decide
+      ),
     )
   }
 }

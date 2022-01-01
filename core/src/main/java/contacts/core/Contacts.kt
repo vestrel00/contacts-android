@@ -10,6 +10,7 @@ import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
 import contacts.core.log.EmptyLogger
 import contacts.core.log.Logger
+import contacts.core.log.LoggerRegistry
 import contacts.core.profile.Profile
 
 /**
@@ -43,8 +44,6 @@ import contacts.core.profile.Profile
  * For accounts operations, use [accounts].
  */
 interface Contacts {
-
-    var logger: Logger
 
     /**
      * Returns a new [Query] instance.
@@ -141,6 +140,11 @@ interface Contacts {
      * Registry for all [CrudApi.Listener]s.
      */
     val apiListenerRegistry: CrudApiListenerRegistry
+
+    /**
+     * Registry for [Logger]
+     */
+    var loggerRegistry: LoggerRegistry
 }
 
 /**
@@ -150,16 +154,16 @@ interface Contacts {
 @Suppress("FunctionName")
 fun Contacts(
     context: Context,
-    logger: Logger = EmptyLogger(),
     customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
-    apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
+    apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry(),
+    loggerRegistry: LoggerRegistry = LoggerRegistry(),
 ): Contacts = ContactsImpl(
     context.applicationContext,
     ContactsPermissions(context.applicationContext),
     AccountsPermissions(context.applicationContext),
     customDataRegistry,
-    apiListenerRegistry,
-    logger,
+    apiListenerRegistry.register(loggerRegistry.apiListener),
+    loggerRegistry,
 )
 
 /**
@@ -174,10 +178,10 @@ object ContactsFactory {
     @JvmOverloads
     fun create(
         context: Context,
-        logger: Logger = EmptyLogger(),
+        loggerRegistry: LoggerRegistry = LoggerRegistry(),
         customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
         apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
-    ): Contacts = Contacts(context, logger, customDataRegistry, apiListenerRegistry)
+    ): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry, loggerRegistry)
 }
 
 private class ContactsImpl(
@@ -186,7 +190,7 @@ private class ContactsImpl(
     override val accountsPermissions: AccountsPermissions,
     override val customDataRegistry: CustomDataRegistry,
     override val apiListenerRegistry: CrudApiListenerRegistry,
-    override var logger: Logger,
+    override var loggerRegistry: LoggerRegistry,
 ) : Contacts {
 
     override fun query() = Query(this)

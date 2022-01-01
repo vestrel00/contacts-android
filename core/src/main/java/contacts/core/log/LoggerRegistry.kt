@@ -1,0 +1,29 @@
+package contacts.core.log
+
+import contacts.core.CrudApi
+import contacts.core.Redactable
+import contacts.core.redactedCopyOrThis
+
+class LoggerRegistry @JvmOverloads constructor(
+   private val logger: Logger = EmptyLogger(),
+   private val redactMessages: Boolean = true
+) {
+
+    internal val apiListener: CrudApi.Listener = Listener()
+
+    // Prevent consumers from invoking the listener functions by not having the registry implement
+    // it directly.
+    private inner class Listener : CrudApi.Listener {
+        override fun onPreExecute(api: CrudApi) {
+            logRedactable(api)
+        }
+
+        override fun onPostExecute(result: CrudApi.Result) {
+            logRedactable(result)
+        }
+
+        private fun logRedactable(redactable: Redactable) {
+            logger.log(redactable.redactedCopyOrThis(redactMessages).toString())
+        }
+    }
+}
