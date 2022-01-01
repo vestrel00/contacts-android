@@ -14,7 +14,7 @@ class SampleApp : Application() {
     val contacts: Contacts by lazy(LazyThreadSafetyMode.NONE) {
         Contacts(
             this,
-            logger = AndroidLogger(),
+            logger = AndroidLogger(redactMessages = !BuildConfig.DEBUG),
             customDataRegistry = CustomDataRegistry().register(
                 GenderRegistration(),
                 HandleNameRegistration()

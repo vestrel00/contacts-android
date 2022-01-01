@@ -34,7 +34,7 @@ class EmptyLogger : Logger {
  */
 class AndroidLogger(
     private val tag: String = TAG,
-    override val redactMessages: Boolean = true,
+    override val redactMessages: Boolean = true
 ) : Logger {
 
     override fun log(message: String) {

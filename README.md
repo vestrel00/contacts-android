@@ -77,6 +77,7 @@ The core library supports;
   (e.g. default/primary phone number, email, etc).
 - [Miscellaneous convenience functions](/howto/howto-use-miscellaneous-extensions.md).
 - [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md).
+- [Support for logging API input and output](/howto/howto-log-api-input-output.md)
 - [Redactable entities and API input and output](/howto/howto-redact-apis-and-entities.md).
 
 There are also extensions that add functionality to every core function;

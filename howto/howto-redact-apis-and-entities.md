@@ -5,8 +5,11 @@ All of the entities and Create (Query), Read (Query), Update, and Delete APIs
 library are `Redactable`.
 
 Redactables indicates that there could be sensitive private user data that could be redacted, for 
-legal purposes. If you are logging contact data in production to remote data centers for analytics 
-or crash reporting, then it is important to redact certain parts of every contact's data.
+legal purposes such as upholding [GDPR](https://gdpr-info.eu) guidelines. If you are logging 
+contact data in production to remote data centers for analytics or crash reporting, then it is 
+important to redact certain parts of every contact's data.
+
+> For more info on logging, read [How do I log API input and output?](/howto/howto-log-api-input-output.md)
 
 ## DISCLAIMER: This is NOT legal advice!
 
@@ -59,7 +62,7 @@ For example,
 
 ```
 Query {
-    rawContactsWhere: (account_name LIKE 'hoalwking@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
+    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
     where: data1 LIKE '%@gmail.com%' ESCAPE '\' AND mimetype = 'vnd.android.cursor.item/email_v2'
     isRedacted: false
     // the rest is omitted for brevity
