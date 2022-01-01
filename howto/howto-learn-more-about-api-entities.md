@@ -118,20 +118,9 @@ when integrating custom data via the `CustomDataCountRestriction`.
 ## Data kinds Account restrictions
 
 Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
-associated with an Account). These data kinds are;
+associated with an Account). 
 
-- `GroupMembership`
-    - Groups can only exist if it is associated with an Account. Therefore, memberships to groups
-      is not possible when there is no associated Account.
-- `Event`
-    - It is not clear why this requires an associated Account. Maybe because these are typically
-      birth dates that users expect to be synced with their calendar across devices?
-- `Relation`
-    - It is not clear why this requires an associated Account...
-
-The Contacts Provider may or may not enforce these Account restrictions. However, the native Contacts
-app imposes these restrictions. Therefore, this library also imposes these restrictions and
-disables consumers from violating them.
+For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 ## Automatic data kinds creation
 
@@ -280,6 +269,8 @@ For more info on how to easily aggregate data from all RawContacts in a Contact,
 
 To look into the actual Contacts Provider tables, read [How do I debug the Contacts Provider tables?](/howto/howto-debug-contacts-provider-tables.md)
 
+To learn more about the Contact lookup key, read [How do I learn more about the Contact lookup key vs ID?](/howto/howto-learn-more-contact-lookup-key.md)
+
 ## Redacting entities
 
 All `Entity` in this library are `Redactable, which indicates that there could be sensitive private 
@@ -288,3 +279,10 @@ to remote data centers for analytics or crash reporting, then it is important to
 parts of every contact's data.
 
 For more info, read [How do I redact entities and API input and output in production?](/howto/howto-redact-apis-and-entities.md)
+
+## Syncing contact data
+
+Syncing contact data, including groups, are done automatically by the Contacts Provider depending on
+the account sync settings.
+
+For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)

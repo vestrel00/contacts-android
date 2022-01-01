@@ -904,6 +904,7 @@ permissions. There is no need to ask for profile permissions at runtime because 
 permissions in the AndroidManifest have to be accepted prior to installation.
 
 ### Syncing Data / Sync Adapters
+
 First, it’s good to know the official documentation of sync adapters; 
 https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters
 
@@ -943,7 +944,7 @@ official documentation; https://developer.android.com/guide/topics/providers/con
 
 We are currently not utilizing these things because I haven't found usages of them while using the
 native Contacts app. They are probably working behind the scenes but until we find uses for these,
-let's leave it out because YAGNI.
+let's leave it out because [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it).
 
 - `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
     - Might be useful to add this for `SHOULD_SYNC` and `UNGROUPED_VISIBLE`.
