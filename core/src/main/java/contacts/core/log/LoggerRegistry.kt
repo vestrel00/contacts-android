@@ -8,11 +8,13 @@ class LoggerRegistry @JvmOverloads constructor(
    private val logger: Logger = EmptyLogger(),
 ) {
 
-    internal val apiListener: CrudApi.Listener = Listener()
+    internal val apiListener: CrudApi.Listener = Listener(logger)
 
     // Prevent consumers from invoking the listener functions by not having the registry implement
     // it directly.
-    private inner class Listener : CrudApi.Listener {
+    private inner class Listener(
+        private val logger: Logger,
+    ) : CrudApi.Listener {
         override fun onPreExecute(api: CrudApi) {
             logRedactable(api)
         }

@@ -157,18 +157,9 @@ fun Contacts(
     customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
     apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry(),
     logger: Logger = EmptyLogger(),
-): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry, LoggerRegistry(logger))
-
-/**
- * Creates a new [Contacts] instance.
- */
-@Suppress("FunctionName")
-fun Contacts(
-    context: Context,
-    customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
-    apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry(),
-    loggerRegistry: LoggerRegistry = LoggerRegistry(),
-): Contacts = ContactsImpl(
+): Contacts {
+    val loggerRegistry = LoggerRegistry(logger)
+    return ContactsImpl(
         context.applicationContext,
         ContactsPermissions(context.applicationContext),
         AccountsPermissions(context.applicationContext),
@@ -176,6 +167,7 @@ fun Contacts(
         apiListenerRegistry.register(loggerRegistry.apiListener),
         loggerRegistry,
     )
+}
 
 /**
  * Creates a new [Contacts] instance.
@@ -193,14 +185,6 @@ object ContactsFactory {
         customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
         apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
     ): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry, logger)
-
-    @JvmStatic
-    fun create(
-        context: Context,
-        loggerRegistry: LoggerRegistry = LoggerRegistry(),
-        customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
-        apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
-    ): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry, loggerRegistry)
 }
 
 private class ContactsImpl(
