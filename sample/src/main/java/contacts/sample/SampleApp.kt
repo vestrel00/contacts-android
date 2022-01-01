@@ -9,16 +9,16 @@ import contacts.entities.custom.handlename.HandleNameRegistration
 
 class SampleApp : Application() {
 
-  // Obviously, this is not the way to provide a singleton when using dependency injection
-  // frameworks such as dagger, hilt, or koin. Again, this sample is made to be barebones!
-  val contacts: Contacts by lazy(LazyThreadSafetyMode.NONE) {
-    Contacts(
-      this,
-      customDataRegistry = CustomDataRegistry().register(
-        GenderRegistration(),
-        HandleNameRegistration()
-      ),
-      logger = AndroidLogger(),
-    )
-  }
+    // Obviously, this is not the way to provide a singleton when using dependency injection
+    // frameworks such as dagger, hilt, or koin. Again, this sample is made to be barebones!
+    val contacts: Contacts by lazy(LazyThreadSafetyMode.NONE) {
+        Contacts(
+            this,
+            logger = AndroidLogger(),
+            customDataRegistry = CustomDataRegistry().register(
+                GenderRegistration(),
+                HandleNameRegistration()
+            )
+        )
+    }
 }

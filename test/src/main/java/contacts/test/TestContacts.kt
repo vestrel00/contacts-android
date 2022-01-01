@@ -23,11 +23,11 @@ import contacts.test.entities.TestDataRegistration
 fun TestContacts(
     context: Context,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-): Contacts = TestContacts(Contacts(context)).also {
+): Contacts = TestContacts(Contacts(context, customDataRegistry = customDataRegistry)).also {
     customDataRegistry.register(TestDataRegistration())
 }
 
-object ContactsFactory {
+object TestContactsFactory {
 
     @JvmStatic
     @JvmOverloads
@@ -45,8 +45,6 @@ object ContactsFactory {
  * TODO document this
  */
 private class TestContacts(private val contactsApi: Contacts) : Contacts {
-
-    override var loggerRegistry: LoggerRegistry = LoggerRegistry()
 
     override fun query(): Query = TestQuery(contactsApi.query(), contactsApi)
 
@@ -89,6 +87,8 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
     override val accountsPermissions = contactsApi.accountsPermissions
 
     override val applicationContext = contactsApi.applicationContext
+
+    override var loggerRegistry = contactsApi.loggerRegistry
 
     override val customDataRegistry = contactsApi.customDataRegistry
 
