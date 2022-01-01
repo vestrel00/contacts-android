@@ -156,15 +156,26 @@ fun Contacts(
     context: Context,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
     apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry(),
+    logger: Logger = EmptyLogger(),
+): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry, LoggerRegistry(logger))
+
+/**
+ * Creates a new [Contacts] instance.
+ */
+@Suppress("FunctionName")
+fun Contacts(
+    context: Context,
+    customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
+    apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry(),
     loggerRegistry: LoggerRegistry = LoggerRegistry(),
 ): Contacts = ContactsImpl(
-    context.applicationContext,
-    ContactsPermissions(context.applicationContext),
-    AccountsPermissions(context.applicationContext),
-    customDataRegistry,
-    apiListenerRegistry.register(loggerRegistry.apiListener),
-    loggerRegistry,
-)
+        context.applicationContext,
+        ContactsPermissions(context.applicationContext),
+        AccountsPermissions(context.applicationContext),
+        customDataRegistry,
+        apiListenerRegistry.register(loggerRegistry.apiListener),
+        loggerRegistry,
+    )
 
 /**
  * Creates a new [Contacts] instance.
@@ -176,6 +187,14 @@ object ContactsFactory {
 
     @JvmStatic
     @JvmOverloads
+    fun create(
+        context: Context,
+        logger: Logger = EmptyLogger(),
+        customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
+        apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
+    ): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry, logger)
+
+    @JvmStatic
     fun create(
         context: Context,
         loggerRegistry: LoggerRegistry = LoggerRegistry(),

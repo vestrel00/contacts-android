@@ -14,6 +14,7 @@ import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
 import contacts.core.log.EmptyLogger
 import contacts.core.log.Logger
+import contacts.core.log.LoggerRegistry
 import contacts.core.profile.Profile
 import contacts.test.entities.TestDataRegistration
 
@@ -22,7 +23,7 @@ import contacts.test.entities.TestDataRegistration
 fun TestContacts(
     context: Context,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-): Contacts = TestContacts(Contacts(context, EmptyLogger(), customDataRegistry)).also {
+): Contacts = TestContacts(Contacts(context)).also {
     customDataRegistry.register(TestDataRegistration())
 }
 
@@ -45,7 +46,7 @@ object ContactsFactory {
  */
 private class TestContacts(private val contactsApi: Contacts) : Contacts {
 
-    override var logger: Logger = EmptyLogger()
+    override var loggerRegistry: LoggerRegistry = LoggerRegistry()
 
     override fun query(): Query = TestQuery(contactsApi.query(), contactsApi)
 

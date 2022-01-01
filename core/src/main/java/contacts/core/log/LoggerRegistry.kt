@@ -6,7 +6,6 @@ import contacts.core.redactedCopyOrThis
 
 class LoggerRegistry @JvmOverloads constructor(
    private val logger: Logger = EmptyLogger(),
-   private val redactMessages: Boolean = true
 ) {
 
     internal val apiListener: CrudApi.Listener = Listener()
@@ -23,7 +22,7 @@ class LoggerRegistry @JvmOverloads constructor(
         }
 
         private fun logRedactable(redactable: Redactable) {
-            logger.log(redactable.redactedCopyOrThis(redactMessages).toString())
+            logger.log(redactable.redactedCopyOrThis(logger.redactMessages).toString())
         }
     }
 }
