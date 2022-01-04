@@ -309,6 +309,19 @@ infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != nul
 // region Non-infix convenience functions
 
 /**
+ * A shorthand extension function to ease the construction of [Where] instances with multiple
+ * operators on a single [Field].
+ */
+inline operator fun <F : Field> F.invoke(where: F.() -> Where<F>): Where<F> = where(this)
+
+/**
+ * A shorthand extension function to ease the construction of [Where] instances with (multiple)
+ * operators on multiple fields of a [FieldSet].
+ */
+inline operator fun <T : Field, FS : FieldSet<T>> FS.invoke(where: FS.() -> Where<T>): Where<T> =
+    where(this)
+
+/**
  * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
  * making misleading queries.
  *
