@@ -4,7 +4,7 @@ import contacts.core.CrudApi
 import contacts.core.Redactable
 import contacts.core.redactedCopyOrThis
 
-class LoggerRegistry(logger: Logger = EmptyLogger()) {
+class LoggerRegistry(logger: Logger) {
 
     internal val apiListener: CrudApi.Listener = Listener(logger)
 

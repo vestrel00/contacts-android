@@ -45,11 +45,14 @@
 
     <application
         android:name=".SampleApp"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/contacts"
         android:supportsRtl="true">
 
-        <activity android:name=".ContactsActivity">
+        <activity
+            android:name=".ContactsActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
