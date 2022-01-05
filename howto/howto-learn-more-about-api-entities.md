@@ -171,16 +171,16 @@ the native Contacts app behavior, which also disregards this rule =P
 Rule 3 is intentionally ignored. There are two types of data; 
 
 a. those that are defined in the Contacts Provider (e.g. name, email, phone number, etc)
-b. those that are defined by other apps (e.g. custom data from social media)
+b. those that are defined by other apps (e.g. custom data from other apps)
 
 This library allows modification of native data kinds and custom data kinds. Native data kinds should 
 obviously be modifiable as it is the entire reason why the Contacts Provider exposes these data kinds
 to us in the first place. The question is, should this library provide functions for modifying 
-(insert, update, delete) custom data defined by other apps/services such as social media 
+(insert, update, delete) custom data defined by other apps/services such as other apps 
 (e.g. WhatsApp, Facebook, etc)? The answer to that will be determined when the time comes to support 
-custom data from social media in the future... (Probably, yes!)
+custom data from other apps in the future... (Probably, yes!)
 
-For more info, read [How do I integrate custom data from social media?](/howto/howto-integrate-custom-data-from-social-media.md)
+For more info, read [How do I integrate custom data from other apps?](/howto/howto-integrate-custom-data-from-other-apps.md)
 
 ## Accessing contact data
 

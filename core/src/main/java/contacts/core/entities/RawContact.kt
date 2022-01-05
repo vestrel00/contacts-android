@@ -151,7 +151,20 @@ sealed interface RawContactEntity : Entity {
 /**
  * A [RawContactEntity] that has already been inserted into the database.
  */
-sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
+sealed interface ExistingRawContactEntity : RawContactEntity,
+    ExistingRawContactEntityWithContactId {
+
+    override val isProfile: Boolean
+        get() = id.isProfileId
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingRawContactEntity
+}
+
+/**
+ * An existing RawContact entity that holds a reference to it's parent [Contact.id].
+ */
+sealed interface ExistingRawContactEntityWithContactId : ExistingEntity {
     /**
      * The id of the RawContacts row this represents.
      *
@@ -169,11 +182,8 @@ sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
 
     // The Data table contains the display name for Contacts, not for RawContacts.
 
-    override val isProfile: Boolean
-        get() = id.isProfileId
-
     // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): ExistingRawContactEntity
+    override fun redactedCopy(): ExistingRawContactEntityWithContactId
 }
 
 /**
@@ -372,7 +382,7 @@ data class NewRawContact @JvmOverloads constructor(
 data class BlankRawContact internal constructor(
 
     override val id: Long,
-    val contactId: Long,
+    override val contactId: Long,
 
     /**
      * The RawContact's display name (given name first), which may be different from the parent
@@ -394,7 +404,7 @@ data class BlankRawContact internal constructor(
 
     // Intentionally not extending ExistingRawContactEntity to limit the amount possibilities to
     // only RawContact and MutableRawContact, which are the main consumer-facing entities.
-) : RawContactEntity, ExistingEntity, ImmutableEntity {
+) : RawContactEntity, ExistingRawContactEntityWithContactId, ImmutableEntity {
 
     override val isBlank: Boolean
         get() = true

@@ -8,6 +8,7 @@ import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
 import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.MimeType
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.operation.withSelection
@@ -72,21 +73,21 @@ interface AccountsLocalRawContactsUpdate : CrudApi {
      * by the Contacts Provider upon successful operation.
      */
     fun localRawContacts(
-        vararg rawContacts: ExistingRawContactEntity
+        vararg rawContacts: ExistingRawContactEntityWithContactId
     ): AccountsLocalRawContactsUpdate
 
     /**
      * See [AccountsLocalRawContactsUpdate.localRawContacts].
      */
     fun localRawContacts(
-        rawContacts: Collection<ExistingRawContactEntity>
+        rawContacts: Collection<ExistingRawContactEntityWithContactId>
     ): AccountsLocalRawContactsUpdate
 
     /**
      * See [AccountsLocalRawContactsUpdate.localRawContacts].
      */
     fun localRawContacts(
-        rawContacts: Sequence<ExistingRawContactEntity>
+        rawContacts: Sequence<ExistingRawContactEntityWithContactId>
     ): AccountsLocalRawContactsUpdate
 
     /**
@@ -250,14 +251,14 @@ private class AccountsLocalRawContactsUpdateImpl(
         this.account = account.redactedCopyOrThis(isRedacted)
     }
 
-    override fun localRawContacts(vararg rawContacts: ExistingRawContactEntity) =
+    override fun localRawContacts(vararg rawContacts: ExistingRawContactEntityWithContactId) =
         localRawContacts(rawContacts.asSequence())
 
-    override fun localRawContacts(rawContacts: Collection<ExistingRawContactEntity>) =
+    override fun localRawContacts(rawContacts: Collection<ExistingRawContactEntityWithContactId>) =
         localRawContacts(rawContacts.asSequence())
 
     override fun localRawContacts(
-        rawContacts: Sequence<ExistingRawContactEntity>
+        rawContacts: Sequence<ExistingRawContactEntityWithContactId>
     ): AccountsLocalRawContactsUpdate = apply {
         rawContactIds.addAll(rawContacts.map { it.id })
     }

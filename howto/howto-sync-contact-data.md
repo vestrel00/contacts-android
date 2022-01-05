@@ -41,11 +41,11 @@ and they have no sync adapters and no remote service to interface with.
 
 > For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
 
-## Custom data from social media may be synced
+## Custom data from other apps may be synced
 
 This library has no control over contact data that belongs to other apps and services. For example,
-WhatsApp, Facebook, and other social media define their own set of custom data that their own sync
-sync adapters sync with their own remote services, which requires authentication.
+Google Contacts, WhatsApp, and other apps define their own set of custom data that their own sync
+adapters sync with their own remote services, which requires authentication.
 
 ## This library does not provide syncing APIs
 

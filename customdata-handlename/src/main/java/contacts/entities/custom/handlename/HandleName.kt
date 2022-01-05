@@ -5,11 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * What is a handle name? In the online world, a handle is another word for a username. It can refer
- * to the name you use in chat rooms, web forums, and social media services like Twitter.
+ * to the name you use in chat rooms, web forums, etc (e.g. Steam).
  *
  * https://techterms.com/definition/handle
  *
- * This is different from a nick name. Stay hip!
+ * This is different from a nickname. Stay hip!
  *
  * A RawContact may have multiple handle names.
  */

@@ -927,8 +927,8 @@ https://developer.android.com/guide/topics/providers/contacts-provider#CustomDat
 
 Now, let’s ingest the official docs… Custom mimetypes do not belong to the native Contacts Provider 
 mimetype set (e.g. address, email, phone, etc). The Contacts Provider allows for the creation of 
-new / custom mimetypes. This is especially useful for social media apps (Facebook, Twitter, 
-WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
+new / custom mimetypes. This is especially useful for other apps (Google Contacts, Facebook, 
+Twitter, WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
 
 Custom data are NOT synced, including those that belong to RawContacts that are associated with an 
 Account. Custom sync adapters are required to sync custom data. This library currently does NOT 
