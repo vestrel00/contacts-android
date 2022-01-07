@@ -360,6 +360,7 @@ data class NewRawContact @JvmOverloads constructor(
         ims = ims.asSequence().redactedCopies().toMutableList(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
+        note = note?.redactedCopy(),
         organization = organization?.redactedCopy(),
         phones = phones.asSequence().redactedCopies().toMutableList(),
         photo = photo?.redactedCopy(),

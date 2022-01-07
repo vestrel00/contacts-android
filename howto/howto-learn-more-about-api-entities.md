@@ -194,8 +194,16 @@ val rawContact: RawContact = contact.rawContacts.first()
 Log.d(
     "Contact",
     """
+        ID: ${contact.id}
+
         Display name: ${contact.displayNamePrimary}
+        Display name alt: ${contact.displayNameAlt}
+
+        Photo Uri: ${contact.photoUri}
+        Thumbnail Uri: ${contact.photoThumbnailUri}
+
         Last updated: ${contact.lastUpdatedTimestamp}
+
         Starred?: ${contact.options?.starred}
         Send to voicemail?: ${contact.options?.sendToVoicemail}
         Ringtone: ${contact.options?.customRingtone}
