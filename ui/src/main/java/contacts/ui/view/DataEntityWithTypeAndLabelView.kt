@@ -61,7 +61,7 @@ open class DataEntityWithTypeAndLabelView<T : DataEntity.Type, E : DataEntityWit
 
             val data = data // reassignment required for null-check and casting successfully.
             if (value != null && data != null && data is MutableDataEntityWithTypeAndLabel<*>) {
-                data.setTypeUnsafe(data.type)
+                data.setTypeUnsafe(value.type)
                 data.label = if (value.type.isCustomType) value.typeLabel else null
             }
         }
