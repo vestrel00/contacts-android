@@ -3,7 +3,6 @@ package contacts.entities.custom.gender
 import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractCustomDataField.ColumnName
 import contacts.core.AbstractCustomDataFieldSet
-import contacts.core.Where
 import contacts.core.entities.MimeType
 
 data class GenderField internal constructor(private val columnName: ColumnName) :
@@ -43,11 +42,3 @@ object GenderFields : AbstractCustomDataFieldSet<GenderField>() {
     @JvmStatic
     fun forMatching() = forMatching
 }
-
-@Suppress("FunctionName")
-inline fun GenderFields.Type(where: GenderField.() -> Where<GenderField>): Where<GenderField> =
-    where(Type)
-
-@Suppress("FunctionName")
-inline fun GenderFields.Label(where: GenderField.() -> Where<GenderField>): Where<GenderField> =
-    where(Label)

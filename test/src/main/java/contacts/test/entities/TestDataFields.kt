@@ -3,7 +3,6 @@ package contacts.test.entities
 import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractCustomDataField.ColumnName
 import contacts.core.AbstractCustomDataFieldSet
-import contacts.core.Where
 import contacts.core.entities.MimeType
 
 internal data class TestDataField internal constructor(private val columnName: ColumnName) :
@@ -20,8 +19,3 @@ internal object TestDataFields : AbstractCustomDataFieldSet<TestDataField>() {
 
     override val forMatching: Set<TestDataField> = emptySet()
 }
-
-@Suppress("FunctionName")
-internal inline fun TestDataFields.Handle(
-    where: TestDataField.() -> Where<TestDataField>
-): Where<TestDataField> = where(Value)
