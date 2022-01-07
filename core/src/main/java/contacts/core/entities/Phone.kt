@@ -58,13 +58,7 @@ sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
         FAX_HOME(CommonDataKinds.Phone.TYPE_FAX_HOME),
         PAGER(CommonDataKinds.Phone.TYPE_PAGER),
         OTHER(CommonDataKinds.Phone.TYPE_OTHER),
-        CUSTOM(CommonDataKinds.Phone.TYPE_CUSTOM);
-
-        /*
-        Not including the rest of these because they are not shown in the native contacts app.
-        Probably because they aren't useful? Or is there another reason? Maybe these should be
-        visible too? Community will speak up if they want to on this matter.
-
+        CUSTOM(CommonDataKinds.Phone.TYPE_CUSTOM),
         CALLBACK(CommonDataKinds.Phone.TYPE_CALLBACK),
         CAR(CommonDataKinds.Phone.TYPE_CAR),
         COMPANY_MAIN(CommonDataKinds.Phone.TYPE_COMPANY_MAIN),
@@ -76,8 +70,7 @@ sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
         WORK_MOBILE(CommonDataKinds.Phone.TYPE_WORK_MOBILE),
         WORK_PAGER(CommonDataKinds.Phone.TYPE_WORK_PAGER),
         ASSISTANT(CommonDataKinds.Phone.TYPE_ASSISTANT),
-        MMS(CommonDataKinds.Phone.TYPE_MMS),
-         */
+        MMS(CommonDataKinds.Phone.TYPE_MMS);
 
         override fun labelStr(resources: Resources, label: String?): String =
             CommonDataKinds.Phone.getTypeLabel(resources, value, label).toString()
