@@ -207,8 +207,8 @@ becomes available. Local contacts remain local.
 
 **Account removal**
 
-Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
-Groups tables locally. This includes user Profile data in those tables.
+Removing the Account will remove all of the associated rows in the **local** Contact, RawContact,
+Data, and Groups tables. This includes user Profile data in those tables.
 
 **SyncColumns modifications**
 
