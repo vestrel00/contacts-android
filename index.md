@@ -1,6 +1,6 @@
 # Contacts, Reborn!
 
-![Android Contacts, Reborn banner](/banner.gif)
+![Android Contacts, Reborn banner](/media/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
@@ -19,15 +19,26 @@ Whether you just need to get all or some Contacts for a small part of your app (
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
 as the native Android Contacts app, this library has you covered!
 
-Documentation and how-to guides are all available and linked in the repository. The GitHub wiki hosts the 
-[project roadmap][project-roadmap]. It contains all planned work and release schedules, which are  organized using issues, milestones, and projects.
+## About this repository
 
-You can also learn more about this library through the articles I wrote about it =) 
+Documentation and how-to guides are all available and linked in the repository. You can browse the
+[Howto pages](/howto/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
+the GitHub pages are updated only for each release.
+
+[Releases][releases] have a corresponding "Release Checklist", which are in the 
+[discussions section][discussions]. The checklist contains the issues that will be included in the 
+release and other relevant information. The current release that is being worked on is pinned at 
+the top. Release Checklists are also used as discussion pages after releases have been published.
+
+The GitHub wiki hosts the [project roadmap][project-roadmap]. It contains all planned work, which 
+are organized using issues, milestones, and projects.
+
+There are also articles that have been written about this repo...
  
 1. [Android Contacts, Reborn][medium-blog]
 2. [I spent 3 years writing an Android Contacts API in Kotlin with Java interop. What I’ve learned…][devto-blog]
 
-**Note: This repo was open-sourced on October 4, 2021. It was private prior to that.**
+> **Note: This repo was open-sourced on October 4, 2021. It was private prior to that.**
 
 ## Features
 
@@ -40,8 +51,8 @@ The core library supports;
 - [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
   of Contacts and RawContacts from zero or more Accounts. [Include only desired fields](/howto/howto-include-only-desired-data.md)
   in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria 
-  in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table columns. 
-  Limit and offset functions.
+  in an SQL WHERE clause fashion using Kotlin infix functions. **Order by (sort)** contact table 
+  columns. **Limit** and **offset** functions.
 - [Insert](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
   causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
 - [Update](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
@@ -66,6 +77,8 @@ The core library supports;
   (e.g. default/primary phone number, email, etc).
 - [Miscellaneous convenience functions](/howto/howto-use-miscellaneous-extensions.md).
 - [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md).
+- [Support for logging API input and output](/howto/howto-log-api-input-output.md)
+- [Redactable entities and API input and output](/howto/howto-redact-apis-and-entities.md).
 
 There are also extensions that add functionality to every core function;
 - [Asynchronous work using Kotlin Coroutines](/howto/howto-use-api-with-async-execution.md).
@@ -81,7 +94,7 @@ There are also more features that are on the way!
 1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
 2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
 3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
-4. [Social media custom data (WhatsApp, Twitter, Facebook, etc)](https://github.com/vestrel00/contacts-android/issues/27).
+4. [Custom data from other apps (Google Contacts, WhatsApp, etc)](https://github.com/vestrel00/contacts-android/issues/27).
 
 ## Installation
 
@@ -97,7 +110,7 @@ To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.9'
+     implementation 'com.github.vestrel00:contacts-android:0.1.10'
 }
 ```
 
@@ -105,7 +118,7 @@ To import specific modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.9'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.10'
 }
 ```
 
@@ -149,7 +162,7 @@ That's it! BUT, THAT IS BORING! Let's take a look at something more advanced…
 
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
 the results) ordered by display name in descending order, matching ALL of these rules;
-- a first name starting with "leo" 
+- a first name starting with "leo"
 - has emails from gmail or hotmail
 - lives in the US
 - has been born prior to making this query
@@ -162,21 +175,25 @@ the results) ordered by display name in descending order, matching ALL of these 
 ```kotlin
 val contacts = Contacts(context)
     .query()
-    .where(
-        (Fields.Name.GivenName startsWith "leo") and
-                ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
-                (Fields.Address.Country equalToIgnoreCase "us") and
-                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)) and
-                (Fields.Contact.Options.Starred equalTo true) and
-                (Fields.Nickname.Name equalTo "DarEdEvil") and
-                (Fields.Organization.Company `in` listOf("facebook", "FB")) and
-                (Fields.Note.Note.isNotNullOrEmpty())
-    )
+    .where {
+        (Name.GivenName startsWith "leo") and
+        (Email.Address { endsWith("gmail.com") or endsWith("hotmail.com") }) and
+        (Address.Country equalToIgnoreCase "us") and
+        (Event { (Date lessThan Date().toWhereString()) and (Type equalTo EventEntity.Type.BIRTHDAY) }) and
+        (Contact.Options.Starred equalTo true) and
+        (Nickname.Name equalTo "DarEdEvil") and
+        (Organization.Company `in` listOf("facebook", "FB")) and
+        (Note.Note.isNotNullOrEmpty())
+    }
     .accounts(
         Account("john.doe@gmail.com", "com.google"),
         Account("john.doe@myspace.com", "com.myspace"),
     )
-    .include(Fields.Contact.Id, Fields.Contact.DisplayNamePrimary, Fields.Phone.Number, Fields.Phone.NormalizedNumber)
+    .include { setOf(
+        Contact.Id,
+        Contact.DisplayNamePrimary,
+        Phone.Number
+    ) }
     .orderBy(ContactsFields.DisplayNamePrimary.desc())
     .offset(0)
     .limit(5)
@@ -258,7 +275,7 @@ val emails = Contacts(context)
     .data()
     .query()
     .emails()
-    .where(Fields.Email.Address endsWith  "gmail.com")
+    .where { Email.Address endsWith "gmail.com" }
     .orderBy(Fields.Email.Address.desc(ignoreCase = true))
     .offset(0)
     .limit(20)
@@ -514,6 +531,8 @@ In any case, create issues for any bugs found and I'll get to it when I get the 
 severity of the issue.
 
 [project-roadmap]: https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap
+[discussions]: https://github.com/vestrel00/contacts-android/discussions
+[releases]: https://github.com/vestrel00/contacts-android/releases
 [github-pages]: https://vestrel00.github.io/contacts-android/
 [medium-blog]: https://proandroiddev.com/android-contacts-reborn-19985c73ad43
 [devto-blog]: https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp

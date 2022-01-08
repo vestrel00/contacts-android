@@ -5,7 +5,7 @@ TODO
 - Provide info on how to show custom data natively in the contacts app.
 https://developer.android.com/guide/topics/providers/contacts-provider#CustomData
 
-Custom data from social media will also be supported. For more info, read [How do I integrate custom data from social media?](/contacts-android/howto/howto-integrate-custom-data-from-social-media.html)
+Custom data from other apps will also be supported. For more info, read [How do I integrate custom data from other apps?](/contacts-android/howto/howto-integrate-custom-data-from-other-apps.html)
 
 Custom data without sync adapters will not be synced! For more info, read [How do I sync contact data across devices?](/contacts-android/howto/howto-sync-contact-data.html)
 

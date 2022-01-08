@@ -118,20 +118,9 @@ when integrating custom data via the `CustomDataCountRestriction`.
 ## Data kinds Account restrictions
 
 Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
-associated with an Account). These data kinds are;
+associated with an Account). 
 
-- `GroupMembership`
-    - Groups can only exist if it is associated with an Account. Therefore, memberships to groups
-      is not possible when there is no associated Account.
-- `Event`
-    - It is not clear why this requires an associated Account. Maybe because these are typically
-      birth dates that users expect to be synced with their calendar across devices?
-- `Relation`
-    - It is not clear why this requires an associated Account...
-
-The Contacts Provider may or may not enforce these Account restrictions. However, the native Contacts
-app imposes these restrictions. Therefore, this library also imposes these restrictions and
-disables consumers from violating them.
+For more info, read [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto/howto-learn-more-about-local-contacts.html)
 
 ## Automatic data kinds creation
 
@@ -182,16 +171,16 @@ the native Contacts app behavior, which also disregards this rule =P
 Rule 3 is intentionally ignored. There are two types of data; 
 
 a. those that are defined in the Contacts Provider (e.g. name, email, phone number, etc)
-b. those that are defined by other apps (e.g. custom data from social media)
+b. those that are defined by other apps (e.g. custom data from other apps)
 
 This library allows modification of native data kinds and custom data kinds. Native data kinds should 
 obviously be modifiable as it is the entire reason why the Contacts Provider exposes these data kinds
 to us in the first place. The question is, should this library provide functions for modifying 
-(insert, update, delete) custom data defined by other apps/services such as social media 
+(insert, update, delete) custom data defined by other apps/services such as other apps 
 (e.g. WhatsApp, Facebook, etc)? The answer to that will be determined when the time comes to support 
-custom data from social media in the future... (Probably, yes!)
+custom data from other apps in the future... (Probably, yes!)
 
-For more info, read [How do I integrate custom data from social media?](/contacts-android/howto/howto-integrate-custom-data-from-social-media.html)
+For more info, read [How do I integrate custom data from other apps?](/contacts-android/howto/howto-integrate-custom-data-from-other-apps.html)
 
 ## Accessing contact data
 
@@ -205,8 +194,16 @@ val rawContact: RawContact = contact.rawContacts.first()
 Log.d(
     "Contact",
     """
+        ID: ${contact.id}
+
         Display name: ${contact.displayNamePrimary}
+        Display name alt: ${contact.displayNameAlt}
+
+        Photo Uri: ${contact.photoUri}
+        Thumbnail Uri: ${contact.photoThumbnailUri}
+
         Last updated: ${contact.lastUpdatedTimestamp}
+
         Starred?: ${contact.options?.starred}
         Send to voicemail?: ${contact.options?.sendToVoicemail}
         Ringtone: ${contact.options?.customRingtone}
@@ -279,3 +276,21 @@ For more info on how to easily aggregate data from all RawContacts in a Contact,
 [How do I use some miscellaneous extension functions to make my life easier?](/contacts-android/howto/howto-use-miscellaneous-extensions.html)
 
 To look into the actual Contacts Provider tables, read [How do I debug the Contacts Provider tables?](/contacts-android/howto/howto-debug-contacts-provider-tables.html)
+
+To learn more about the Contact lookup key, read [How do I learn more about the Contact lookup key vs ID?](/contacts-android/howto/howto-learn-more-contact-lookup-key.html)
+
+## Redacting entities
+
+All `Entity` in this library are `Redactable, which indicates that there could be sensitive private 
+user data that could be redacted, for legal purposes. If you are logging contact data in production 
+to remote data centers for analytics or crash reporting, then it is important to redact certain 
+parts of every contact's data.
+
+For more info, read [How do I redact entities and API input and output in production?](/contacts-android/howto/howto-redact-apis-and-entities.html)
+
+## Syncing contact data
+
+Syncing contact data, including groups, are done automatically by the Contacts Provider depending on
+the account sync settings.
+
+For more info, read [How do I sync contact data across devices?](/contacts-android/howto/howto-sync-contact-data.html)

@@ -34,6 +34,7 @@ val updateResult = Contacts(context)
 
 To update a RawContact directly,
 
+```kotlin
 val updateResult = Contacts(context)
     .update()
     .rawContacts(johnDoeFromGmail.mutableCopy {
@@ -46,6 +47,7 @@ val updateResult = Contacts(context)
        }
     })
     .commit()
+```
 
 ## Deleting blanks
 
@@ -72,10 +74,10 @@ To include only the given set of fields (data) in each of the update operation,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
@@ -120,7 +122,7 @@ Once you have performed the updates, you can retrieve the updated Contacts refer
 ```kotlin
 val updatedContacts = contactsApi
     .query()
-    .where(Fields.Contact.Id `in` listOf(contact1.id))
+    .where { Contact.Id `in` listOf(contact1.id) }
     .find()
 ```
 
@@ -187,3 +189,13 @@ You may, of course, use other permission handling libraries or just do it yourse
 ## Custom data support
  
 The `Update` API supports custom data. For more info, read [How do I use update APIs to update custom data?](/contacts-android/howto/howto-update-custom-data.html)
+
+## Modifiable Contact fields
+
+As per documentation in `android.provider.ContactsContract.Contacts`,
+
+> Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
+> Changing any of these columns on the Contact also changes them on all constituent raw contacts.
+
+The rest of the APIs provided in this library allow you to modify Data fields (e.g. Email, Phone, 
+etc). Essentially, anything that the Contacts Provider allows for modification =) 

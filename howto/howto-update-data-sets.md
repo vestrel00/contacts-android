@@ -23,6 +23,16 @@ val updateResult = Contacts(context)
     .commit()
 ```
 
+If you want to update a list of mutable emails and phones,
+
+```kotlin
+val updateResult = Contacts(context)
+    .data()
+    .update()
+    .data(mutableEmails + mutablePhones)
+    .commit()
+```
+
 ## Blank data are deleted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
@@ -38,10 +48,10 @@ To include only the given set of fields (data) in each of the update operation,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
@@ -90,7 +100,7 @@ val updatedEmail = contactsApi
     .data()
     .query()
     .emails()
-    .where(Fields.Email.Id equalTo emailId)
+    .where { Email.Id equalTo emailId }
     .find()
 ```
 

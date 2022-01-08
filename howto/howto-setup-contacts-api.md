@@ -27,9 +27,17 @@ It's up to you if you just want to create instances on demand. Or, hold on to in
 [black box testing][black-box-testing] and [white box testing][white-box-testing] a walk in the
 park!
 
+## Logging support
+
+Instances of `Contacts` hold on to a `Logger` for logging support.
+
+For more info, read [How do I log API input and output?](/contacts-android/howto/howto-log-api-input-output.html)
+
+## Custom data integration
+
 Instances of `Contacts` hold on to an instance of `CustomDataRegistry` for custom data integration.
-For how to create instances of the `Contacts` API with custom data integration, read 
-[How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
+
+For more info, read [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
 
 ## Optional, but recommended setup
 

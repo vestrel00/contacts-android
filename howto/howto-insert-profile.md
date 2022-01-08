@@ -1,10 +1,7 @@
 # How do I create/insert the device owner Contact profile?
 
 This library provides the `ProfileInsert` API that allows you to insert one or more RawContacts and 
-Data. 
-
-The insertion of a RawContact triggers automatic insertion of a new Contact subject to automatic
-aggregation by the Contacts Provider.
+Data. Note that there can be only one profile Contact, which may be made up of one or more RawContacts.
 
 An instance of the `ProfileInsert` API is obtained by,
 
@@ -16,7 +13,7 @@ val insert = Contacts(context).profile().insert()
 
 ## A basic insert
 
-To create/insert a contact with a name of "John Doe" who works at Amazon with a work email of
+To create/insert a raw contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
 
 ```kotlin
@@ -172,10 +169,10 @@ To include only the given set of fields (data) in each of the insert operation,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
@@ -220,7 +217,7 @@ Once you have the RawContact ID, you can retrieve the newly created Contact via 
 ```kotlin
 val contacts = contactsApi
     .query()
-    .where(Fields.RawContact.Id equalTo rawContactId)
+    .where { RawContact.Id equalTo rawContactId }
     .find()
 ```
 
@@ -289,4 +286,16 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Custom data support
  
-The `ProfileInsert` API supports custom data. For more info, read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/contacts-android/howto/howto-insert-custom-data.html)
+The `ProfileInsert` API supports custom data. For more info, 
+read [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/contacts-android/howto/howto-insert-custom-data.html)
+
+## RawContact and Contact aggregation
+
+As per documentation in `android.provider.ContactsContract.Profile`,
+
+> The user's profile entry cannot be created explicitly (attempting to do so will throw an
+> exception). When a raw contact is inserted into the profile, the provider will check for the
+> existence of a profile on the device. If one is found, the raw contact's RawContacts.CONTACT_ID
+> column gets the _ID of the profile Contact. If no match is found, the profile Contact is
+> created and its _ID is put into the RawContacts.CONTACT_ID column of the newly inserted raw
+> contact.

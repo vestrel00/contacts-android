@@ -167,7 +167,7 @@ If you want to get the Contacts and all associated RawContacts and Data from a s
 ```kotlin
 val contacts = Contacts(context)
     .query()
-    .where(Fields.RawContact.Id `in` blankRawContactIds)
+    .where { RawContact.Id `in` blankRawContactIds }
     .find()
 ```
 
@@ -195,23 +195,13 @@ form WHERE clauses.
 > This howto page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
 > If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
-For example, to get all favorite RawContacts,
+For example, to get a list of RawContacts with the given IDs,
 
 ```kotlin
 val favoriteRawContacts = Contacts(context)
     .accounts()
     .queryRawContacts()
-    .where(RawContactsFields.Options.Starred equalTo true)
-    .find()
-```
-
-To get a list of RawContacts with the given IDs,
-
-```kotlin
-val favoriteRawContacts = Contacts(context)
-    .accounts()
-    .queryRawContacts()
-    .where(RawContactsFields.Id `in` rawContactIds)
+    .where { Id `in` rawContactIds }
     .find()
 ```
 

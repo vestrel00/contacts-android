@@ -61,10 +61,10 @@ To include only the given set of fields (data) in each of the update operation,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
@@ -177,3 +177,11 @@ You may, of course, use other permission handling libraries or just do it yourse
 ## Custom data support
  
 The `ProfileUpdate` API supports custom data. For more info, read [How do I use update APIs to update custom data?](/contacts-android/howto/howto-update-custom-data.html)
+
+## Modifiable Contact fields
+
+As per documentation in `android.provider.ContactsContract.Profile`,
+
+> The profile Contact has the same update restrictions as Contacts in general...
+> Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
+> Changing any of these columns on the Contact also changes them on all constituent raw contacts.

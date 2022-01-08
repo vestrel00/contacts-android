@@ -18,7 +18,7 @@ val query = Contacts(context).profile().query()
 To get the profile Contact,
 
 ```kotlin
-val profile = Contacts(context).profile().query().find()
+val profileContact = Contacts(context).profile().query().find().contact
 ```
 
 ## Including blank (raw) contacts
@@ -70,10 +70,10 @@ To include only the given set of fields (data) in each of the Profile Contact,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)

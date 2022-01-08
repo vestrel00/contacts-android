@@ -14,12 +14,15 @@ This library provides several query APIs that support custom data integration.
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
 and `Gender` custom data.
 
-> For more info, read [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
+> For more info, read [How do I integrate the gender custom data?](/contacts-android/howto/howto-integrate-gender-custom-data.html)
+> and [How do I integrate the handle name custom data?](/contacts-android/howto/howto-integrate-handlename-custom-data.html)
 
-## Getting custom data from a RawContact
+## Getting custom data from a Contact or RawContact
 
 Custom data, just like regular data kinds, are attached to a RawContact. They follow the same rules
 as regular data kinds. 
+
+> For more info, read [How do I learn more about the API entities?](/contacts-android/howto/howto-learn-more-about-api-entities.html)
 
 For example, you are able to get the handle names and gender of a RawContact,
 
@@ -28,13 +31,38 @@ val handleNames = rawContact.handleNames(contactsApi)
 val gender = rawContact.gender(contactsApi)
 ```
 
-> For more info, read [How do I learn more about the API entities?](/contacts-android/howto/howto-learn-more-about-api-entities.html)
+There are also extensions that allow you to get custom data from a Contact, which can be made up of 
+one or more RawContacts,
 
-There should also be extensions that allow you to get custom data from a Contact, which can be made 
-up of one or more RawContacts.
+```kotlin
+val handleNames = contact.handleNames(contactsApi)
+val genders = contact.genders(contactsApi)
+```
 
-> For more info, read [How do I integrate the gender custom data?](/contacts-android/howto/howto-integrate-gender-custom-data.html)
-> and [How do I integrate the handle name custom data?](/contacts-android/howto/howto-integrate-handlename-custom-data.html)
+## Getting specific custom data kinds directly
+
+Every custom data provides an extension to the `DataQuery` that allows you to query for only that
+specific custom data kind.
+
+For example, to get all available `HandleName`s and `Gender`s from all contacts,
+
+```kotlin
+val handleNames = Contacts(context).data().query().handleNames().find()
+val genders = Contacts(context).data().query().genders().find()
+```
+
+To get all `HandleName`s starting with the letter "h",
+
+```kotlin
+val handleNames = Contacts(context)
+    .data()
+    .query()
+    .handleNames()
+    .where { Handle startsWith "h" }
+    .find()
+```
+
+For more info, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-data-sets.html)
 
 ## The `include` function and custom data
 
@@ -42,12 +70,12 @@ All of the above mentioned APIs provide an `include` function that allows you to
 given set of fields (data) in each of the returned entities. Custom data entries provides fields 
 that can be used in this function. 
 
-By default, not calling the `include` function will include all fields, including custom data. 
+By default, not calling the `include` function will include all fields, including custom data fields. 
 
-For example, to specifically include only `HandleName` and `Gender` fields, 
+For example, to explicitly include all `HandleName` fields, 
 
 ```kotlin
-.include(HandleNameFields.all + GenderFields.all)
+.include(HandleNameFields.all)
 ```
 
 For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
@@ -59,7 +87,7 @@ criteria based on specific field values. Custom data entries provides fields tha
 this function. For example, to match `HandleName`s starting with the letter "h",
 
 ```kotlin
-.where(HandleNameFields.Handle startsWith "h")
+.where { Handle startsWith "h" }
 ```
 
 The `BroadQuery` API provides a `whereAnyContactDataPartiallyMatches` function that NOT support
@@ -81,29 +109,4 @@ The `Query` and `BroadQuery` APIs provides an `orderBy` function that only takes
 the Contacts table, not data. So there is no custom data, or native data, support for this.
 
 The `ProfileQuery` API does not provide an `orderBy` function as there can only be at most one 
-profile Contact on the device. 
-
-## The `DataQuery` API and custom data
-
-Every custom data provides an extension to the `DataQuery` that allows you to query for only that 
-specific custom data kind.
-
-For example, to get all available `HandleName`s and `Gender`s from all contacts,
-
-```kotlin
-val handleNames = Contacts(context).data().query().handleNames().find()
-val genders = Contacts(context).data().query().genders().find()
-```
-
-To get all `HandleName`s starting with the letter "h",
-
-```kotlin
-val handleNames = Contacts(context)
-    .data()
-    .query()
-    .handleNames()
-    .where(HandleNameFields.Handle startsWith "h")
-    .find()
-```
-
-For more info, read [How do I get a list of specific data kinds?](/contacts-android/howto/howto-query-data-sets.html)
+profile Contact on the device.

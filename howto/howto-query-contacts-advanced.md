@@ -25,7 +25,7 @@ val query = Contacts(context).query()
 To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
 the results) ordered by display name in descending order, matching ALL of these rules;
 
-- a first name starting with "leo" 
+- a first name starting with "leo"
 - has emails from gmail or hotmail
 - lives in the US
 - has been born prior to making this query
@@ -38,21 +38,25 @@ the results) ordered by display name in descending order, matching ALL of these 
 ```kotlin
 val contacts = Contacts(context)
     .query()
-    .where(
-        (Fields.Name.GivenName startsWith "leo") and
-                ((Fields.Email.Address endsWith "gmail.com") or (Fields.Email.Address endsWith "hotmail.com")) and
-                (Fields.Address.Country equalToIgnoreCase "us") and
-                ((Fields.Event.Date lessThan Date().toWhereString()) and (Fields.Event.Type equalTo EventEntity.Type.BIRTHDAY)) and
-                (Fields.Contact.Options.Starred equalTo true) and
-                (Fields.Nickname.Name equalTo "DarEdEvil") and
-                (Fields.Organization.Company `in` listOf("facebook", "FB")) and
-                (Fields.Note.Note.isNotNullOrEmpty())
-    )
+    .where {
+        (Name.GivenName startsWith "leo") and
+        (Email.Address { endsWith("gmail.com") or endsWith("hotmail.com") }) and
+        (Address.Country equalToIgnoreCase "us") and
+        (Event { (Date lessThan Date().toWhereString()) and (Type equalTo EventEntity.Type.BIRTHDAY) }) and
+        (Contact.Options.Starred equalTo true) and
+        (Nickname.Name equalTo "DarEdEvil") and
+        (Organization.Company `in` listOf("facebook", "FB")) and
+        (Note.Note.isNotNullOrEmpty())
+    }
     .accounts(
         Account("john.doe@gmail.com", "com.google"),
         Account("john.doe@myspace.com", "com.myspace"),
     )
-    .include(Fields.Contact.Id, Fields.Contact.DisplayNamePrimary, Fields.Phone.Number, Fields.Phone.NormalizedNumber)
+    .include { setOf(
+        Contact.Id,
+        Contact.DisplayNamePrimary,
+        Phone.Number
+    ) }
     .orderBy(ContactsFields.DisplayNamePrimary.desc())
     .offset(0)
     .limit(5)
@@ -78,9 +82,13 @@ To get all contacts with a phone number AND email,
 val contacts = Contacts(context)
     .query()
     ...
-    .where(Fields.Phone.Number.isNotNullOrEmpty() and Fields.Email.Address.isNotNullOrEmpty())
+    .where{ Phone.Number.isNotNullOrEmpty() and Email.Address.isNotNullOrEmpty() }
     .find()
 ```
+
+> Note that phone numbers are a special case because the Contacts Provider keeps track of the 
+> existence of a phone number for any given contact. Use `Contact.HasPhoneNumber equalTo true`
+> instead for a more optimized query.
 
 To get a list of contacts with the given IDs,
 
@@ -88,7 +96,7 @@ To get a list of contacts with the given IDs,
 val contacts = Contacts(context)
     .query()
     ...
-    .where(Fields.Contact.Id `in` contactIds)
+    .where { Contact.Id `in` contactIds }
     .find()
 ```
 
@@ -143,10 +151,10 @@ To include only the given set of fields (data) in each of the matching contacts,
 .include(fields)
 ```
 
-For example, to only include email fields,
+For example, to only include email and name fields,
 
 ```kotlin
-.include(Fields.Email.all)
+.include { Email.all + Name.all }
 ```
 
 For more info, read [How do I include only the data that I want?](/contacts-android/howto/howto-include-only-desired-data.html)
@@ -156,7 +164,7 @@ For more info, read [How do I include only the data that I want?](/contacts-andr
 To limit the search to only those RawContacts associated with at least one of the given groups,
 
 ```kotlin
-.where(Fields.GroupMembership.GroupId `in` groups.mapNotNull { it.id })
+.where { GroupMembership.GroupId `in` groups.mapNotNull { it.id } }
 ```
 
 > For more info, read [How do I retrieve groups?](/contacts-android/howto/howto-query-groups.html)
@@ -295,7 +303,7 @@ For example, to get all contacts with a phone number AND email,
 val contacts = Contacts(context)
     .query()
     ...
-    .where(Fields.Phone.Number.isNotNullOrEmpty() and Fields.Email.Address.isNotNullOrEmpty())
+    .where { Phone.Number.isNotNullOrEmpty() and Email.Address.isNotNullOrEmpty() }
     .find()
 ```
 
@@ -305,7 +313,7 @@ To get a list of contacts with the given IDs,
 val contacts = Contacts(context)
     .query()
     ...
-    .where(Fields.Contact.Id `in` contactIds)
+    .where { Contact.Id `in` contactIds }
     .find()
 ```
 
@@ -331,12 +339,12 @@ that were not part of the first query results. For example,
 ```kotlin
 val contactsWithEmails = query
     .include(Fields.Contact.Id)
-    .where(Fields.Email.Address.isNotNullOrEmpty())
+    .where { Email.Address.isNotNullOrEmpty() }
     .find()
 
 val contactIdsWithEmails = contactsWithEmails.mapNotNull { it.id }
 val contactsWithoutEmails = query
-    .where(Fields.Contact.Id notIn contactIdsWithEmails)
+    .where { Contact.Id notIn contactIdsWithEmails }
     .find()
 ```
 
@@ -351,7 +359,7 @@ queries. For example,
 
 ```kotlin
 val contactsWithNoPhoneNumbers = query
-    .where(Fields.Contact.HasPhoneNumber notEqualTo true)
+    .where { Contact.HasPhoneNumber notEqualTo true }
     .find()
 ```
      

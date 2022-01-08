@@ -58,8 +58,7 @@ Contacts(context)
     .commit()
  ```
  
- > For more info, read [How do I update the device owner Contact profile?](/contacts-android/howto/howto-update-profile.html)
-
+> For more info, read [How do I update the device owner Contact profile?](/contacts-android/howto/howto-update-profile.html)
 
 ## Blank data are not inserted
 
