@@ -1,4 +1,4 @@
-## How do I log API input and output?
+# How do I log API input and output?
 
 By default the all APIs provided in this library does not log anything at all. To enable logging all
 API input/output using the `android.util.Log`, specify the `Logger` when constructing an instance

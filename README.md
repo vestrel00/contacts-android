@@ -51,8 +51,8 @@ The core library supports;
 - [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
   of Contacts and RawContacts from zero or more Accounts. [Include only desired fields](/howto/howto-include-only-desired-data.md)
   in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria 
-  in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table columns. 
-  Limit and offset functions.
+  in an SQL WHERE clause fashion using Kotlin infix functions. **Order by (sort)** contact table 
+  columns. **Limit** and **offset** functions.
 - [Insert](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
   causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
 - [Update](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
@@ -110,7 +110,7 @@ To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.9'
+     implementation 'com.github.vestrel00:contacts-android:0.1.10'
 }
 ```
 
@@ -118,7 +118,7 @@ To import specific modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.9'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.10'
 }
 ```
 
