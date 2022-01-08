@@ -1,6 +1,6 @@
 # Contacts, Reborn!
 
-![Android Contacts, Reborn banner](/media/banner.gif)
+![Android Contacts, Reborn banner](/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
@@ -20,10 +20,6 @@ or Java), or you are looking to create your own full-fledged Contacts app with t
 as the native Android Contacts app, this library has you covered!
 
 ## About this repository
-
-Documentation and how-to guides are all available and linked in the repository. You can browse the
-[Howto pages](/howto/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
-the GitHub pages are updated only for each release.
 
 [Releases][releases] have a corresponding "Release Checklist", which are in the 
 [discussions section][discussions]. The checklist contains the issues that will be included in the 
