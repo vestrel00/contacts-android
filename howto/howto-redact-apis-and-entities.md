@@ -133,7 +133,10 @@ build some cool stuff using it. I'll let your imagination take over from here =)
 
 ## Logging API input and output
 
-TODO Create a howto for issue #144 and link it here.
+All terminal API functions such as `find` and `commit` can be automatically logged prior and post 
+execution to get visibility on input and output. All log outputs are also redactable!
+
+For more info on logging, read [How do I log API input and output?](/howto/howto-log-api-input-output.md)
 
 ## Developer notes
 
