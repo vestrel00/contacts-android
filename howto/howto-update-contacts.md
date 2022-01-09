@@ -9,9 +9,11 @@ An instance of the `Update` API is obtained by,
 val update = Contacts(context).update()
 ```
 
-> If you want to update the device owner Contact Profile, read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
+> If you want to update the device owner Contact Profile, 
+> read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
 
-> If you want to update a set of Data, read [How do I update existing sets of data?](/howto/howto-update-data-sets.md)
+> If you want to update a set of Data, 
+> read [How do I update existing sets of data?](/howto/howto-update-data-sets.md)
 
 ## A basic update
 

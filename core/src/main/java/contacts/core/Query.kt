@@ -641,10 +641,11 @@ internal fun ContentResolver.resolve(
         return emptyList()
     }
 
-    // Collect Contacts with Ids in contactIds (which may include blanks), including included
-    // Contacts fields. Order by, limit, and offset results within the query itself.
+    // Collect Contacts, RawContacts, and Data with this mapper.
     val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
+    // Collect Contacts (which may include blanks) that are in the given contactIds.
+    // If contactIds is null, then all Contacts are collected.
     query(
         Table.Contacts, include.onlyContactsFields(), contactIds?.let {
             ContactsFields.Id `in` it
@@ -657,8 +658,8 @@ internal fun ContentResolver.resolve(
         return emptyList()
     }
 
-    // Collect Data (and non-blank RawContacts) belonging to Contacts with Ids in contactIds. If
-    // contactIds is null, collect all Data.
+    // Collect Data for non-blank RawContact and Contact in the given contactIds.
+    // If contactIds is null, then all Data and non-blank RawContacts and Contacts are collected.
     query(
         Table.Data, include, contactIds?.let {
             Fields.Contact.Id `in` it
@@ -680,6 +681,7 @@ internal fun ContentResolver.resolve(
         )
     }
 
+    // Output all collected Contacts, RawContacts, and Data.
     return if (cancel()) emptyList() else contactsMapper.map()
 }
 
