@@ -199,3 +199,13 @@ As per documentation in `android.provider.ContactsContract.Contacts`,
 
 The rest of the APIs provided in this library allow you to modify Data fields (e.g. Email, Phone, 
 etc). Essentially, anything that the Contacts Provider allows for modification =) 
+
+### Local RawContacts
+
+Updates to local RawContacts are not synced!
+
+> For more info, read [How do I sync contact data across devices?](/contacts-android/howto/howto-sync-contact-data.html).
+
+There are also certain data kinds that are ignored on insert or update if the RawContact is local.
+
+> For more info, read [How do I learn more about "local" (device-only) contacts?](/contacts-android/howto/howto-learn-more-about-local-contacts.html)
