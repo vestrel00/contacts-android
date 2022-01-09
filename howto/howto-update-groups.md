@@ -5,7 +5,7 @@ This library provides the `GroupsUpdate` API that allows you to update existing 
 An instance of the `GroupsUpdate` API is obtained by,
 
 ```kotlin
-val query = Contacts(context).groups().update()
+val update = Contacts(context).groups().update()
 ```
 
 ## A basic update

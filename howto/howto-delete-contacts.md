@@ -10,7 +10,7 @@ val delete = Contacts(context).delete()
 ```
 
 > If you want to delete the device owner Contact Profile, 
-> read [How do I delete the Profile Contact/RawContacts?](/howto/howto-delete-profile.md)
+> read [How do I delete the device owner Contact profile?](/howto/howto-delete-profile.md)
 
 > If you want to delete a set of Data, 
 > read [How do I delete existing sets of data?](/howto/howto-delete-data-sets.md)
@@ -51,14 +51,14 @@ If you want to delete all given Contacts and RawContacts in a single atomic tran
 .commitInOneTransaction()
 ```
 
-### Handling the delete result
-
-The `commit` and `commitInOneTransaction` functions returns a `Result`,
-
 The call to `commitInOneTransaction` will only succeed if ALL given Contacts and RawContacts are
 successfully deleted. If one delete fails, the entire operation will fail and everything will be
 reverted prior to the delete operation. In contrast, `commit` allows for some deletes to succeed
 and some to fail.
+
+### Handling the delete result
+
+The `commit` and `commitInOneTransaction` functions returns a `Result`,
 
 To check if all deletes succeeded,
 
@@ -93,6 +93,10 @@ To perform the delete with permission, use the extensions provided in the `permi
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Custom data support
+
+The `Delete` API supports custom data. For more info, read [How do I use delete APIs to delete custom data?](/howto/howto-delete-custom-data.md)
 
 ## Contacts are deleted automatically when all constituent RawContacts are deleted.
 

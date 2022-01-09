@@ -6,7 +6,7 @@ an `Account`.
 An instance of the `GroupsInsert` API is obtained by,
 
 ```kotlin
-val query = Contacts(context).groups().insert()
+val insert = Contacts(context).groups().insert()
 ```
 
 ## A basic insert
