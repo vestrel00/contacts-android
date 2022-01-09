@@ -134,32 +134,17 @@ For example, to associated the new RawContact to an account,
 
 > For more info, read [How do I query for Accounts?](/howto/howto-query-accounts.md)
 
-If no Account is provided, or null is provided, or if an incorrect account is provided, the 
-RawContacts inserted will not be associated with an Account. RawContacts inserted without an 
+### Local RawContacts
+
+If no Account is provided, or null is provided, or if an incorrect account is provided, the
+RawContacts inserted will not be associated with an Account. RawContacts inserted without an
 associated account are considered local or device-only contacts, which are not synced.
-     
-> For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
 
-**Lollipop (API 22) and below**
+> For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md).
 
-When an Account is added, from a state where no accounts have yet been added to the system, the
-Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
-RawContacts table to that Account's name and type.
+There are also certain data kinds that are ignored on insert or update if the RawContact is local.
 
-RawContacts inserted without an associated account will automatically get assigned to an account if
-there are any available. This may take a few seconds, whenever the Contacts Provider decides to do
-it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
-back to an Account.
-
-**Marshmallow (API 23) and above**
-
-The Contacts Provider no longer associates local contacts to an account when an account is or
-becomes available. Local contacts remain local.
-
-**Account removal**
-
-Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
-Groups tables locally. This includes user Profile data in those tables.
+> For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
 ## Including only specific data
 
