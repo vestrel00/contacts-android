@@ -10,7 +10,7 @@ Contact or only some of its constituent RawContacts.
 An instance of the `ProfileDelete` API is obtained by,
 
 ```kotlin
-val delete = Contacts(context).delete()
+val delete = Contacts(context).profile().delete()
 ```
 
 > If you want to delete non-Profile Contacts,
