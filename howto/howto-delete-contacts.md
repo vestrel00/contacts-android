@@ -98,7 +98,11 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 The `Delete` API supports custom data. For more info, read [How do I use delete APIs to delete custom data?](/howto/howto-delete-custom-data.md)
 
-## Contacts are deleted automatically when all constituent RawContacts are deleted.
+## Data belonging to RawContacts/Contact are deleted
+
+When a RawContact is deleted, all of its data are also deleted.
+
+## Contacts are deleted automatically when all constituent RawContacts are deleted
 
 Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained
 in the documentation in `ContactsContract.RawContacts`;

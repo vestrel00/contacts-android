@@ -752,9 +752,9 @@ belonging to the same account to exist. In older versions of Android, the native
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 
-In newer versions, the group with the duplicate title gets deleted either automatically by the 
-Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
-on insert or update. This could lead to bugs!
+> In newer versions, the group with the duplicate title gets deleted either automatically by the 
+> Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
+> on insert or update. This could lead to bugs!
 
 ### Groups Table & GroupMemberships (Data Table)
 
@@ -774,8 +774,6 @@ When the `ContactOptionsColumns.STARRED` column of a Contact in the Contacts tab
 the Contacts Provider automatically adds a group membership to the favorites group for all 
 RawContacts linked to the Contact. Setting `STARRED` to false removes all group memberships to the
 favorites group.
-
-> If the RawContact is not associated with an Account, then no group memberships that are created.
 
 The `STARRED` is interdependent with group memberships to the favorites group. Adding a group 
 membership to the favorites group results in `STARRED` being set to true. Removing the membership 

@@ -20,6 +20,16 @@ Syncing contacts across devices is possible with sync adapters and Contacts' loo
 
 > For more info, read [How do I learn more about the Contact lookup key vs ID?](/howto/howto-learn-more-contact-lookup-key.md)
 
+## Adding or removing Accounts
+
+When an Account is added to the system and Contacts syncing is enabled and there is network 
+connection, the Contacts Provider will automatically fetch all Contacts, RawContacts, Data, and
+Groups that belong to that Account.
+
+Similarly, when an Account is removed from the system though regardless of Contacts syncing enabled
+or network availability, the Contacts Provider will automatically remove Contacts, RawContacts, 
+Data, and Groups that belong to that Account.
+
 ## Only contacts that are associated with an Account are synced
 
 More specifically, RawContacts that are not associated with an Account (local, device-only) are not
