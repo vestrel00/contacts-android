@@ -9,6 +9,8 @@ An instance of the `AccountsQuery` API is obtained by,
 val query = Contacts(context).accounts().query()
 ```
 
+## A basic query
+
 To get all available accounts in the system,
 
 ```kotlin

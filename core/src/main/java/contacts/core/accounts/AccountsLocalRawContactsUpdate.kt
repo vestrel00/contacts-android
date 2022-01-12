@@ -21,20 +21,6 @@ import contacts.core.util.*
  * Associates **local** RawContacts (those that are not associated with an Account) to an
  * Account to enable syncing....
  *
- * Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
- * provides an API to support;
- *
- * - Associate local RawContacts (those that are not associated with an Account) to an Account,
- *   allowing syncing between devices.
- *
- * The library does not provide an API that supports;
- *
- * - Dissociate RawContacts from their Account such that they remain local to the device and not
- *   synced between devices.
- * - Transfer RawContacts from one Account to another.
- *
- * Read the **SyncColumns modifications** section of the DEV_NOTES for more details.
- *
  * ## Permissions
  *
  * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
@@ -51,6 +37,23 @@ import contacts.core.util.*
  *      .localRawContacts(rawContacts)
  *      .commit()
  * ```
+ *
+ * ## Developer notes
+ *
+ * Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
+ * provides an API to support;
+ *
+ * - Associate local RawContacts (those that are not associated with an Account) to an Account,
+ *   allowing syncing between devices.
+ *
+ * The library does not provide an API that supports;
+ *
+ * - Dissociate RawContacts from their Account such that they remain local to the device and not
+ *   synced between devices.
+ * - Transfer RawContacts from one Account to another.
+ *
+ * Read the **SyncColumns modifications** section of the DEV_NOTES for more details.
+ *
  */
 interface AccountsLocalRawContactsUpdate : CrudApi {
 

@@ -130,14 +130,12 @@ val group = insertResult.group(contactsApi, newGroup1)
 The insert may fail for a particular group for various reasons,
 
 ```kotlin
-if (!insertResult.isSuccessful(newGroup1)) {
-    insertResult.failureReason(newGroup1)?.let {
-        when (it) {
-            TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
-            INVALID_ACCOUNT -> promptUserToPickDifferentAccount()
-            UNKNOWN -> showGenericErrorMessage()
-        }   
-    }
+insertResult.failureReason(newGroup1)?.let {
+    when (it) {
+        TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
+        INVALID_ACCOUNT -> promptUserToPickDifferentAccount()
+        UNKNOWN -> showGenericErrorMessage()
+    }   
 }
 ```
 
@@ -162,6 +160,19 @@ launch {
     }
 }
 ```
+
+## Performing the insert and result processing asynchronously
+
+Inserts are executed when the `commit` function is invoked. The work is done in the same thread as
+the call-site. This may result in a choppy UI.
+
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in
+the `async` module. For more info,
+read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+
+You may, of course, use other multi-threading libraries or just do it yourself =)
+
+> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the insert with permission
 

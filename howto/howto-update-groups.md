@@ -95,13 +95,11 @@ val firstUpdateSuccessful = updateResult.isSuccessful(mutableGroup1)
 The update may fail for a particular group for various reasons,
 
 ```kotlin
-if (!updateResult.isSuccessful(mutableGroup1)) {
-    updateResult.failureReason(mutableGroup1)?.let {
-        when (it) {
-            TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
-            UNKNOWN -> showGenericErrorMessage()
-        }   
-    }
+updateResult.failureReason(mutableGroup1)?.let {
+    when (it) {
+        TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
+        UNKNOWN -> showGenericErrorMessage()
+    }   
 }
 ```
 
@@ -126,6 +124,19 @@ launch {
     }
 }
 ```
+
+## Performing the update and result processing asynchronously
+
+Updates are executed when the `commit` function is invoked. The work is done in the same thread as
+the call-site. This may result in a choppy UI.
+
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in
+the `async` module. For more info,
+read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+
+You may, of course, use other multi-threading libraries or just do it yourself =)
+
+> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the update with permission
 
