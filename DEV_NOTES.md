@@ -557,7 +557,6 @@ created, we get the following state;
 | C         | 0           | 0                 |
 | D         | 0           | 0                 |
 
-
 The state does not change when RawContact X is linked with RawContact Y.
 
 After setting Email A as the "default" email, it becomes primary and super primary;

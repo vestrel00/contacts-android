@@ -81,8 +81,11 @@ Each entity has an immutable version (typically returned by queries) and a mutab
 `mutableCopy` function that returns a mutable copy (typically to be used for inserts and updates 
 and other mutating API functions).
 
-Custom data types may also be integrated into the contacts database (though not synced across devices).
-Read more in [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+> Custom data types may also be integrated into the contacts database (though not synced across devices).
+> For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+
+> Default native and custom data may be retrieved, set, or cleared.
+> For more info, read [How do I get/set/clear default Contact data?](/howto/howto-get-set-clear-default-data.md)
 
 ## Data kinds count restrictions
 

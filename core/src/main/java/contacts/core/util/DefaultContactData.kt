@@ -21,7 +21,22 @@ fun <T : ExistingDataEntity> Sequence<T>.default(): T? = firstOrNull { it.isDefa
 
 /**
  * Sets this data as the default for the set of data of the same type (e.g. email) for the aggregate
- * Contact. If a default data already exist before this call, then it will no longer be the default.
+ * Contact. If a default data of the same type for the aggregate Contact already exist before this
+ * call, then it will no longer be the default.
+ *
+ * For example, these emails belong to the same aggregate Contact;
+ *
+ * - x@x.com (default)
+ * - y@y.com
+ * - z@z.com
+ *
+ * Calling this function on a non-default data (e.g. y@y.com) will remove the default status for
+ * data that was previously set as the default. This data will then be set as the default. This
+ * results in;
+ *
+ * - x@x.com
+ * - y@y.com (default)
+ * - z@z.com
  *
  * Supports profile/non-profile native/custom data.
  *
@@ -63,16 +78,18 @@ fun ExistingDataEntity.setAsDefault(contacts: Contacts): Boolean {
 }
 
 /**
- * Removes any default data of the same type (e.g. email), if any, for the aggregate Contact.
+ * Removes the default status of any data of the same type (e.g. email), if any, for the aggregate
+ * Contact.
  *
  * For example, these emails belong to the same aggregate Contact;
  *
- * - x@x.com
- * - y@y.com (default)
+ * - x@x.com (default)
+ * - y@y.com
  * - z@z.com
  *
- * Calling this function on the default (y@y.com) or any of the non-default emails (x@x.com or
- * z@z.com) will remove any default email set for the aggregate contact, which results in;
+ * Calling this function on any data of the same kind for the aggregate contact (default or not)
+ * will remove the default status on all data of the same kind for the aggregate Contact. This
+ * results in;
  *
  * - x@x.com
  * - y@y.com

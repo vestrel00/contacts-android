@@ -132,6 +132,8 @@ A few things to keep in mind.
 
 ## Changes are immediate and are not applied to the receiver
 
+These apply to set and remove functions.
+
 1. Changes are immediate.
    - These functions will make the changes to the Contacts Provider database immediately. You do
      not need to use update APIs to commit the changes.

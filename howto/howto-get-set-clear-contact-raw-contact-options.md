@@ -57,6 +57,8 @@ This is useful if you only want to set certain properties and keep other propert
 
 ## Changes are immediate and are not applied to the receiver
 
+These apply to set and update functions.
+
 1. Changes are immediate.
     - These functions will make the changes to the Contacts Provider database immediately. You do
       not need to use update APIs to commit the changes.
@@ -116,7 +118,7 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 ## Performing options management with permission
 
 Getting and setting options require the `android.permission.READ_CONTACTS` and
-`android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting/setting 
+`android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting and setting 
 options will fail.
 
 To perform the get/set/update options operations with permission, use the extensions provided in the
