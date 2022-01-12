@@ -202,6 +202,12 @@ As per documentation in `android.provider.ContactsContract.Contacts`,
 The rest of the APIs provided in this library allow you to modify Data fields (e.g. Email, Phone, 
 etc). Essentially, anything that the Contacts Provider allows for modification =) 
 
+## Updating photos and thumbnails
+
+Full-sized photos (and by API design thumbnails) can be set using other functions.
+
+For more info, read [How do I get/set/remove full-sized and thumbnail contact photos?](/howto/howto-get-set-remove-contact-raw-contact-photo.md)
+
 ### Local RawContacts
 
 Updates to local RawContacts are not synced!

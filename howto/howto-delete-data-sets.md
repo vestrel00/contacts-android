@@ -91,6 +91,17 @@ For more info, read [How do I use the permissions module to simplify permission 
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
+## Profile data
+
+The `DataDelete` API also supports deleting the Profile (device owner) contact data. To get an
+instance of this API for Profile data deletes,
+
+```kotlin
+val profileDataDelete = Contacts(context).profile().data().delete()
+```
+
+All deletes will be limited to the Profile, whether it exists or not.
+
 ## Custom data support
 
 The `DataDelete` API supports custom data. For more info, read [How do I use delete APIs to delete custom data?](/howto/howto-delete-custom-data.md)

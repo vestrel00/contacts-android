@@ -110,6 +110,17 @@ For more info, read [How do I use the permissions module to simplify permission 
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
+## Profile data
+
+The `AccountsLocalRawContactsUpdate` API also supports updating the Profile (device owner) 
+RawContacts. To get an instance of this API for Profile data updates,
+
+```kotlin
+val profileDataUpdate = Contacts(context).accounts().profile().updateLocalRawContactsAccount()
+```
+
+All updates will be limited to the Profile RawContacts, whether it exists or not.
+
 ## Developer notes
 
 Due to certain limitations and behaviors imposed by the Contacts Provider, this library only

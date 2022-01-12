@@ -147,3 +147,11 @@ To perform the update with permission, use the extensions provided in the `permi
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+### Starred in Android (Favorites)
+
+When a Contact is starred, the Contacts Provider automatically adds a group membership to the
+favorites group for all RawContacts linked to the Contact. Setting the Contact starred to false
+removes all group memberships to the favorites group.
+
+For more info, read [How do I get/set/remove Contact options?](/howto/howto-get-set-clear-contact-raw-contact-options.md)

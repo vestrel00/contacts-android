@@ -11,6 +11,8 @@ import contacts.ui.R
 /**
  * Launches an external activity to pick a ringtone.
  *
+ * The [currentRingtoneUri] determines the initially selected ringtone in the picker.
+ *
  * This (sub)activity is the same one used in the native Contacts app and typically looks and
  * behaves like an alert dialog that floats on top of the current activity with a translucent dimmed
  * overlay.
@@ -30,7 +32,8 @@ import contacts.ui.R
  * </queries>
  * ```
  */
-fun Activity.selectRingtone(currentRingtoneUri: Uri?) {
+@JvmOverloads
+fun Activity.selectRingtone(currentRingtoneUri: Uri? = null) {
     val selectRingtoneIntent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
         putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE)
         putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, currentRingtoneUri)

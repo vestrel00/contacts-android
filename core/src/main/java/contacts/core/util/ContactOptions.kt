@@ -14,9 +14,9 @@ import contacts.core.entities.table.Table
  * Returns the most up-to-date [Options] of this [ExistingContactEntity], which may be different
  * from this instance's options immutable member variable as it may be stale.
  *
- * Note that changes to the options of a RawContact may affect the options of the parent Contact.
- * On the other hand, changes to the options of the parent Contact will be propagated to all child
- * RawContact options.
+ * Note that changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * the parent Contact.
  *
  * This will return null if the contact no longer exist or permissions have not been granted.
  *
@@ -48,9 +48,9 @@ fun ExistingContactEntity.options(contacts: Contacts): Options? {
 /**
  * Updates this [ExistingContactEntity.options] with the given [options].
  *
- * Note that changes to the options of a RawContact may affect the options of the parent Contact.
- * On the other hand, changes to the options of the parent Contact will be propagated to all child
- * RawContact options.
+ * Note that changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * the parent Contact.
  *
  * Supports profile and non-profile Contacts.
  *
@@ -71,8 +71,6 @@ fun ExistingContactEntity.options(contacts: Contacts): Options? {
  * When a Contact is starred, the Contacts Provider automatically adds a group membership to the
  * favorites group for all RawContacts linked to the Contact. Setting starred to false removes all
  * group memberships to the favorites group.
- *
- * If the RawContact is not associated with an Account, then no group memberships that are created.
  *
  * The starred option is interdependent with group memberships to the favorites group. Adding a
  * group membership to the favorites group results in starred being set to true. Removing the
@@ -111,9 +109,9 @@ fun ExistingContactEntity.setOptions(contacts: Contacts, options: MutableOptions
  * Updates this [ExistingContactEntity.options] in [update]. If this contact has no options, a
  * new blank options will be used in [update].
  *
- * Note that changes to the options of a RawContact may affect the options of the parent Contact.
- * On the other hand, changes to the options of the parent Contact will be propagated to all child
- * RawContact options.
+ * Note that changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * the parent Contact.
  *
  * ## Changes are immediate
  *
@@ -132,8 +130,6 @@ fun ExistingContactEntity.setOptions(contacts: Contacts, options: MutableOptions
  * When a Contact is starred, the Contacts Provider automatically adds a group membership to the
  * favorites group for all RawContacts linked to the Contact. Setting starred to false removes all
  * group memberships to the favorites group.
- *
- * If the RawContact is not associated with an Account, then no group memberships that are created.
  *
  * The starred option is interdependent with group memberships to the favorites group. Adding a
  * group membership to the favorites group results in starred being set to true. Removing the

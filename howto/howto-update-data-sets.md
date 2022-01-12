@@ -167,7 +167,7 @@ instance of this API for Profile data updates,
 val profileDataUpdate = Contacts(context).profile().data().update()
 ```
 
-All queries will be limited to the Profile, whether it exists or not.
+All updates will be limited to the Profile, whether it exists or not.
 
 ## Custom data support
  
