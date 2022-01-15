@@ -1,4 +1,4 @@
-# How do I get/set/remove Contact options?
+# How do I get/set Contact options?
 
 This library provides several functions to interact with Contact and RawContact options;
 starred, send to voicemail, and ringtone.

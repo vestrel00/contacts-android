@@ -154,4 +154,4 @@ When a Contact is starred, the Contacts Provider automatically adds a group memb
 favorites group for all RawContacts linked to the Contact. Setting the Contact starred to false
 removes all group memberships to the favorites group.
 
-For more info, read [How do I get/set/remove Contact options?](/howto/howto-get-set-clear-contact-raw-contact-options.md)
+For more info, read [How do I get/set Contact options?](/howto/howto-get-set-clear-contact-raw-contact-options.md)
