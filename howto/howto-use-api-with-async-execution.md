@@ -1,7 +1,7 @@
 # How do I use the async module to simplify executing work outside of the UI thread using coroutines?
 
 This library provides extensions in the `async` module that allow you to execute all core API 
-functions outside of the main, UI thread. The extensions use [Kotlin Coroutines][coroutines].
+functions outside of the main, UI thread. These extensions use [Kotlin Coroutines][coroutines].
 
 The extension functions are lightweight and mostly exist for Coroutine user's convenience. The 
 extensions can be generalized in two categories; `withContext` and `async`. These use, you guessed
@@ -87,8 +87,13 @@ launch {
 
 ## Not compatible with Java
 
-Unlike the `core` module, the `async` module is not compatible with Java as it requires Kotlin
+Unlike the `core` module, the `async` module is not compatible with Java because it requires Kotlin
 Coroutines.
+
+## These extensions are optional
+
+You are free to use the core APIs however you want with whatever libraries or frameworks you want 
+that works with Java such as Reactive, AsyncTask (hope not), WorkManager, or your own DIY solution.
 
 ## Extensions for RxJava and Flow are in the roadmap
 
