@@ -200,16 +200,14 @@ Getting and setting photos require the `android.permission.READ_CONTACTS` and
 `android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting/setting photos
 will fail.
 
-To perform the get/set/remove photo operations with permission, use the extensions provided in the 
-`permissions` module. For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
-
-You may, of course, use other permission handling libraries or just do it yourself =)
+TODO Update this section as part of issue [#119](https://github.com/vestrel00/contacts-android/issues/119).
 
 ## FAQs
 
 ### Can contacts be insert with photo?
 
-> Related issues; #116 and #119
+> Related issues; [#116](https://github.com/vestrel00/contacts-android/issues/116) 
+> and [#119](https://github.com/vestrel00/contacts-android/issues/119)
 
 You cannot get/set/remove photos for Contacts/RawContacts that have not yet been inserted in the
 Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or result
@@ -230,7 +228,7 @@ succeeds, proceed to set the photo.
 
 ### Can photo be set using a uri instead of bytes and bitmaps? 
 
-> Related issues; #110
+> Related issues; [#109](https://github.com/vestrel00/contacts-android/issues/110)
 
 No and yes. The core APIs provided in this library only provides functions that the Contacts 
 Provider natively supports. This means setting Contact or RawContact photo only using bytes (and 

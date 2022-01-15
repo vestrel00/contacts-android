@@ -121,10 +121,7 @@ Getting and setting options require the `android.permission.READ_CONTACTS` and
 `android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting and setting 
 options will fail.
 
-To perform the get/set/update options operations with permission, use the extensions provided in the
-`permissions` module. For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
-
-You may, of course, use other permission handling libraries or just do it yourself =)
+TODO Update this section as part of issue [#120](https://github.com/vestrel00/contacts-android/issues/120).
       
 ## Starred in Android (Favorites)
 

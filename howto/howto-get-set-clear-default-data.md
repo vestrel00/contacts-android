@@ -112,13 +112,11 @@ Getting and setting/clearing default data require the `android.permission.READ_C
 `android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting and 
 setting/clearing default data will fail.
 
-To perform the get/set/clear default data operations with permission, use the extensions provided 
-in the `permissions` module. For more info, read 
-[How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
+## Developer notes (or for advanced users)
 
-You may, of course, use other permission handling libraries or just do it yourself =)
-
-## Developer notes
+> The following section are note from developers of this library for other developers. It is copied
+> from the [DEV_NOTES](/DEV_NOTES.md). You may still read the following as a consumer of the library
+> in case you need deeper insight.
 
 As per documentation, for a set of data rows with the same mimetype (e.g. a set of emails), there
 should only be one primary data row (e.g. email) per RawContact and one super primary data row per

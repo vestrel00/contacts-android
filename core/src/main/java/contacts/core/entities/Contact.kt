@@ -69,8 +69,16 @@ sealed interface ContactEntity : Entity {
      * - [Nickname]
      * - [Phone]
      *
-     * This is a read-only attribute as the Contacts Provider automatically sets this value.
-     * This is ignored for insert, update, and delete functions.
+     * ## Display name may change upon data updates
+     *
+     * The native Contacts app also sets the most recently updated name as the default at every update
+     * (and new Contact creation). This results in the Contact display name changing to the most
+     * recently updated name from one of the associated RawContacts. The "most recently updated name"
+     * is the name field that was last updated by the user when editing in the Contacts app, which is
+     * irrelevant to its value. It does not matter if the user deleted the last character of the name,
+     * added back the same character (undo), and then saved. It still counts as the most recently
+     * updated. This logic is not implemented in this library. It is up to the consumers to implement it
+     * or not, or do it differently.
      */
     val displayNamePrimary: String?
 
