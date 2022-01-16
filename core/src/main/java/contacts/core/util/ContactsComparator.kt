@@ -39,22 +39,17 @@ import java.util.*
  * )
  * ```
  */
+@JvmOverloads
 fun Collection<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomDataRegistry
+    customDataRegistry: CustomDataRegistry? = null
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
  * See [contactsComparator].
  */
-fun Set<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomDataRegistry
-): Comparator<Contact> = ContactsComparator(customDataRegistry, this)
-
-/**
- * See [contactsComparator].
- */
+@JvmOverloads
 fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(
-    customDataRegistry: CustomDataRegistry
+    customDataRegistry: CustomDataRegistry? = null
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, toSet())
 
 /**
@@ -75,15 +70,16 @@ fun Sequence<OrderBy<AbstractDataField>>.contactsComparator(
  * )
  * ```
  */
+@JvmOverloads
 fun OrderBy<AbstractDataField>.contactsComparator(
-    customDataRegistry: CustomDataRegistry
+    customDataRegistry: CustomDataRegistry? = null
 ): Comparator<Contact> = ContactsComparator(customDataRegistry, setOf(this))
 
 /**
  * Compares [Contact] objects using one or more [OrderBy]s, which may be constructed from [Fields].
  */
 private class ContactsComparator(
-    private val customDataRegistry: CustomDataRegistry,
+    private val customDataRegistry: CustomDataRegistry?,
     private val orderBys: Set<OrderBy<AbstractDataField>>
 ) : Comparator<Contact> {
 
@@ -119,7 +115,7 @@ private class ContactsComparator(
  * Compares [Contact] values corresponding to [Field]s defined in [Fields].
  */
 private fun AbstractDataField.compare(
-    customDataRegistry: CustomDataRegistry,
+    customDataRegistry: CustomDataRegistry?,
     lhs: Contact,
     rhs: Contact,
     ignoreCase: Boolean
@@ -348,15 +344,20 @@ private fun AbstractDataField.compare(
 
     // CUSTOM
     is AbstractCustomDataField -> {
-        val mimeType = customDataRegistry.mimeTypeOf(this)
+        if (customDataRegistry == null) {
+            // Custom data is unhandled if registry is not provided.
+            0
+        } else {
+            val mimeType = customDataRegistry.mimeTypeOf(this)
 
-        val fieldMapper = customDataRegistry.entryOf(mimeType).fieldMapper
+            val fieldMapper = customDataRegistry.entryOf(mimeType).fieldMapper
 
-        val lhsCustomDataEntities = lhs.customDataSequenceOf(mimeType)
-        val rhsCustomDataEntities = rhs.customDataSequenceOf(mimeType)
+            val lhsCustomDataEntities = lhs.customDataSequenceOf(mimeType)
+            val rhsCustomDataEntities = rhs.customDataSequenceOf(mimeType)
 
-        lhsCustomDataEntities.compareTo(ignoreCase, rhsCustomDataEntities) {
-            fieldMapper.valueOf(this, it)
+            lhsCustomDataEntities.compareTo(ignoreCase, rhsCustomDataEntities) {
+                fieldMapper.valueOf(this, it)
+            }
         }
     }
 
