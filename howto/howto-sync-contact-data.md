@@ -57,7 +57,7 @@ This library has no control over contact data that belongs to other apps and ser
 Google Contacts, WhatsApp, and other apps define their own set of custom data that their own sync
 adapters sync with their own remote services, which requires authentication.
 
-## This library does not provide syncing APIs
+## This library does not provide sync adapters
 
 This library does not have any APIs related to syncing. It is considered out of scope of this
 library as it requires access to remote databases and account-specific data. Let's talk about it

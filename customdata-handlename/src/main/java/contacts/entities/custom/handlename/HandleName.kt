@@ -144,7 +144,6 @@ data class MutableHandleName internal constructor(
     )
 }
 
-
 /**
  * A new mutable [HandleNameEntity].
  */
