@@ -1,9 +1,23 @@
 # How do I integrate custom data?
 
-In order to create and integrate your own custom data for use in your own apps, there is a bit of
-boilerplate code that needs to be written. Thankfully none of this stuff is difficult!
+If you are looking to integrate custom data from other apps, read
+[How do I integrate custom data from other apps?](/howto/howto-integrate-custom-data-from-other-apps.md)
 
-Here are the steps, in chronological order, of how to define and use your own custom data,
+If you are looking to create and integrate your own custom data, you are in the right place!
+
+There are two parts to "integrating custom data";
+
+1. Providing create (insert), read (query), update, and delete (CRUD) APIs for custom data 
+   associated with RawContacts.
+2. Providing sync adapters to sync custom data across devices.
+
+This library only handles the first part. If you want to sync your custom data, then you need to 
+implement a sync adapter to interface with your remote server. That is out of scope of this library.
+
+In order to create and integrate your own custom data for use in your own apps, there is a bit of
+boilerplate code that needs to be written. Thankfully none of this stuff is difficult! 
+
+Here are the steps, in chronological order, on how to define and use your own custom data,
 
 1. Define the mimetype
 2. Define the entities
@@ -36,7 +50,8 @@ At the bottom of this page, we'll also discuss,
 
 - Consider adding your custom data to this library
 - Custom data without sync adapters will not be synced
-- Displaying custom data in other Contacts apps
+- Displaying your custom data in other Contacts apps
+- Summary of limitations
 
 > Some of the code used in these examples are in Kotlin. If you would like a Java version of this
 > page, create an issue in GitHub. You are also free to file a pull request with your own page. In
@@ -404,6 +419,10 @@ A few things to note,
             - When setting/adding a new custom data entity,
               `MutableRawContact` -> `NewGender`, `NewHandleName`
         - `NewRawContact` -> `NewGender`, `NewHandleName`
+- Setters for custom data with count restriction of `AT_MOST_ONE` should use `setXXX` for the 
+  function name.
+- Setters for custom data with count restriction of `NO_LIMIT` should use `addXXX` and `removeXXX` 
+  for the function names.
 
 ## 9. Define Contact getters and setters
 
@@ -618,18 +637,16 @@ app will be the only app that will be able to perform operations on it (unless t
 you are using is also used by others). This is definitely something you want to do if you don't
 really want others to mess with your custom data (though you can't really stop others).
 
-If you want to add your custom data to this library so that other apps using this library can
-optionally integrate it into their own apps, you can create a GitHub issue and file a pull request!
+If you want to add your custom data to this library so that other people using this library can
+optionally integrate it into their own apps, please create a GitHub issue and file a pull request!
 
 ## Custom data without sync adapters will not be synced
 
 Custom data provided by this library such as those in those in the `customdata-gender` and
 `customdata-handlename` modules are not synced because there are no sync adapters and a remote
 service to store those data. Therefore, they are not synced across devices and will remain local to
-the device regardless of Account sync settings.
-
-Despite this library not providing sync adapters, you are completely free to implement your own sync
-adapters!
+the device regardless of Account sync settings. It is up to you to implement your own sync adapters
+for your own custom data. 
 
 For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
 
@@ -736,6 +753,34 @@ A few things to note,
     
 Again, in order for your custom data to be shown in the Contacts app, you must also provide a sync
 adapter implementation. For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
+
+## Summary of limitations
+
+To reiterate, this library does not provide a remote server or sync adapters to interface with
+that server. This library provides create (insert), read (query), update, and delete (CRUD) APIs
+for pretty, type-safe, and well-documented read and write operations on all data kinds, including
+custom data. 
+
+This means that if you do not implement your own sync adapter for your custom data, then you will
+NOT be able to do the following;
+
+- sync your custom data across devices.
+- show your custom data in AOSP and [Google Contacts][google-contacts] apps, and other Contacts apps
+  that show custom data from other apps.
   
+You may still do creative things with custom data without sync adapters as long as you understand
+these limitations.
+
+This library provides CRUD API integration with custom data with no sync adapters;
+
+- `customdata-gender`
+- `customdata-handlename`
+
+Also provided are CRUD API integration with custom data from other apps that do have sync adapters;
+
+- `customdata-googlecontacts`
+
+> Please update the above list whenever adding new custom data modules.
+
 [google-contacts]: https://play.google.com/store/apps/details?id=com.google.android.contacts
 [contacts-xml]: https://developer.android.com/guide/topics/providers/contacts-provider#ContactsFile
