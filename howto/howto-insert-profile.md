@@ -1,7 +1,11 @@
 # How do I create/insert the device owner Contact profile?
 
 This library provides the `ProfileInsert` API that allows you to insert one or more RawContacts and 
-Data. Note that there can be only one profile Contact, which may be made up of one or more RawContacts.
+Data. 
+
+> Note that there can be only one device owner Contact, which is either set (not null) or not yet
+> set (null). However, like other regular Contacts, the Profile Contact may have one or more
+> RawContacts.
 
 An instance of the `ProfileInsert` API is obtained by,
 

@@ -1,7 +1,10 @@
 # How do I get the device owner Contact profile?
 
 This library provides the `ProfileQuery` API that allows you to get the device owner Profile Contact.
-There can be only one device owner, which is either set (not null) or not yet set (null).
+
+> Note that there can be only one device owner Contact, which is either set (not null) or not yet
+> set (null). However, like other regular Contacts, the Profile Contact may have one or more
+> RawContacts.
 
 An instance of the `ProfileQuery` API is obtained by,
 

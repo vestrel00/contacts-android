@@ -8,6 +8,12 @@ remote service as it is not associated with any account.
 
 > For more info, read [How do I sync contact data across devices?](/contacts-android/howto/howto-sync-contact-data.html)
 
+## Associating a local RawContact to an Account
+
+Local RawContacts can be associated with an Account to enable syncing.
+
+For more info, read [How do I associate a local RawContacts to an Account?](/contacts-android/howto/howto-associate-device-local-raw-contacts-to-an-account.html)
+
 ## Adding an Account to the device
 
 Depending on the API level, the Contacts Provider behaves differently when the user adds an account

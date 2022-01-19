@@ -1,12 +1,15 @@
 # How do I update the device owner Contact profile?
 
 This library provides the `ProfileUpdate` API that allows you to update the device owner Profile Contact.
-There can be only one device owner, which is either set (not null) or not yet set (null).
+
+> Note that there can be only one device owner Contact, which is either set (not null) or not yet
+> set (null). However, like other regular Contacts, the Profile Contact may have one or more
+> RawContacts.
 
 An instance of the `ProfileUpdate` API is obtained by,
 
 ```kotlin
-val query = Contacts(context).profile().update()
+val update = Contacts(context).profile().update()
 ```
 
 > If you want to update non-Profile Contacts, read [How do I update contacts?](/contacts-android/howto/howto-update-contacts.html)

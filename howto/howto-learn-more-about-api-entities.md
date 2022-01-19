@@ -81,8 +81,11 @@ Each entity has an immutable version (typically returned by queries) and a mutab
 `mutableCopy` function that returns a mutable copy (typically to be used for inserts and updates 
 and other mutating API functions).
 
-Custom data types may also be integrated into the contacts database (though not synced across devices).
-Read more in [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
+> Custom data kinds may also be integrated into the contacts database (though not synced across devices).
+> For more info, read [How do I integrate custom data?](/contacts-android/howto/howto-integrate-custom-data.html)
+
+> Default native and custom data may be retrieved, set, or cleared.
+> For more info, read [How do I get/set/clear default Contact data?](/contacts-android/howto/howto-get-set-clear-default-data.html)
 
 ## Data kinds count restrictions
 
@@ -168,7 +171,7 @@ that a name has to be provided for every `RawContact`, which is not practical at
 be able to create contacts with just an email or phone number, without a name. This library follows 
 the native Contacts app behavior, which also disregards this rule =P
 
-Rule 3 is intentionally ignored. There are two types of data; 
+Rule 3 is intentionally ignored. There are two kinds of data; 
 
 a. those that are defined in the Contacts Provider (e.g. name, email, phone number, etc)
 b. those that are defined by other apps (e.g. custom data from other apps)

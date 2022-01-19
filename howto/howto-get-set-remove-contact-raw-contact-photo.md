@@ -1,7 +1,7 @@
-# How do I get/set/remove full-sized and thumbnail photos?
+# How do I get/set/remove full-sized and thumbnail contact photos?
 
-This library provides several ways to interact with Contact and RawContact full-sized and thumbnail 
-photos.
+This library provides several functions to interact with Contact and RawContact full-sized and 
+thumbnail photos.
 
 ## Contact and RawContact photos
 
@@ -113,61 +113,6 @@ rawContact.setPhoto(contactsApi, photoBitmapDrawable)
 
 > Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.
 
-A few things to keep in mind.
-
-1. Changes are immediate.
-    - These functions will make the changes to the Contacts Provider database immediately. You do 
-      not need to use update APIs to commit the changes.
-2. Changes are not applied to the receiver.
-    - This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
-      query APIs or refresh extensions or process the result of this function call to get the most
-      up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
-      Provider database.
-
-### Inserting contacts with photo
-
-You cannot get/set/remove photos for Contacts/RawContacts that have not yet been inserted in the 
-Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or result
-APIs can use the extension functions in `contacts.core.util.ContactPhoto.kt` and 
-`contacts.core.util.RawContactPhoto.kt`.
-
-To insert a new contact "with photo", you should insert the contact first. Then, if the insert 
-succeeds, proceed to set the photo.
-
-Do,
-
-```kotlin
-val insertResult = Contacts(context)
-    .insert()
-    .rawContact {
-        ...
-    }
-    .commit()
-
-val contact = insertResult.contacts(contactsApi).firstOrNull()
-contact?.setPhoto(...)
-```
-
-Don't,
-
-```kotlin
-val insertResult = Contacts(context)
-    .insert()
-    .rawContact {
-        setPhoto(...)
-    }
-    .commit()
-```
-
-> For more info about insert, read [How do I create/insert contacts?](/contacts-android/howto/howto-insert-contacts.html)
-
-> Note for contributors; It is possible to include photo **thumbnail** data as part of the insertion
-> of a new RawContact using `ContactsContract.CommonDataKinds.Photo.PHOTO`. The Contacts Provider 
-> will use the thumbnail as the full-sized photo as well. However, this is not good practice as the 
-> full-sized photo will have a really low resolution. Showing the full-sized photo in a big view 
-> will not look good. Therefore, this library does not allow this. Consumers must first insert their
-> new RawContact so that they can set the full-sized photo.
-
 ## Removing contact photo
 
 To remove the Contact (and corresponding RawContact) photo (full-sized and thumbnail),
@@ -185,14 +130,18 @@ rawContact.removePhoto(contactsApi)
 > Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.
 A few things to keep in mind.
 
+## Changes are immediate and are not applied to the receiver
+
+These apply to set and remove functions.
+
 1. Changes are immediate.
-    - These functions will make the changes to the Contacts Provider database immediately. You do 
-      not need to use update APIs to commit the changes.
+   - These functions will make the changes to the Contacts Provider database immediately. You do
+     not need to use update APIs to commit the changes.
 2. Changes are not applied to the receiver.
-    - This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
-      query APIs or refresh extensions or process the result of this function call to get the most
-      up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
-      Provider database.
+   - This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+     query APIs or refresh extensions or process the result of this function call to get the most
+     up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+     Provider database.
       
 ## Using the ui PhotoPicker extensions
 
@@ -251,16 +200,35 @@ Getting and setting photos require the `android.permission.READ_CONTACTS` and
 `android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting/setting photos
 will fail.
 
-To perform the get/set/remove photo operations with permission, use the extensions provided in the 
-`permissions` module. For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/contacts-android/howto/howto-use-api-with-permissions-handling.html)
-
-You may, of course, use other permission handling libraries or just do it yourself =)
+TODO Update this section as part of issue [#119](https://github.com/vestrel00/contacts-android/issues/119).
 
 ## FAQs
 
+### Can contacts be insert with photo?
+
+> Related issues; [#116](https://github.com/vestrel00/contacts-android/issues/116) 
+> and [#119](https://github.com/vestrel00/contacts-android/issues/119)
+
+You cannot get/set/remove photos for Contacts/RawContacts that have not yet been inserted in the
+Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or result
+APIs can use the extension functions in `contacts.core.util.ContactPhoto.kt` and
+`contacts.core.util.RawContactPhoto.kt`.
+
+To insert a new contact "with photo", you should insert the contact first. Then, if the insert
+succeeds, proceed to set the photo.
+
+> For more info about insert, read [How do I create/insert contacts?](/contacts-android/howto/howto-insert-contacts.html)
+
+> Note for contributors; It is possible to include photo **thumbnail** data as part of the insertion
+> of a new RawContact using `ContactsContract.CommonDataKinds.Photo.PHOTO`. The Contacts Provider
+> will use the thumbnail as the full-sized photo as well. However, this is not good practice as the
+> full-sized photo will have a really low resolution. Showing the full-sized photo in a big view
+> will not look good. Therefore, this library does not allow this. Consumers must first insert their
+> new RawContact so that they can set the full-sized photo.
+
 ### Can photo be set using a uri instead of bytes and bitmaps? 
 
-> Related issues; #110
+> Related issues; [#109](https://github.com/vestrel00/contacts-android/issues/110)
 
 No and yes. The core APIs provided in this library only provides functions that the Contacts 
 Provider natively supports. This means setting Contact or RawContact photo only using bytes (and 
