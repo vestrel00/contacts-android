@@ -5,7 +5,7 @@ This library provides the `GroupsUpdate` API that allows you to update existing 
 An instance of the `GroupsUpdate` API is obtained by,
 
 ```kotlin
-val query = Contacts(context).groups().update()
+val update = Contacts(context).groups().update()
 ```
 
 ## A basic update
@@ -62,9 +62,9 @@ belonging to the same account to exist. In older versions of Android, the native
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 
-In newer versions, the group with the duplicate title gets deleted either automatically by the 
-Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
-on insert or update. This could lead to bugs!
+> In newer versions, the group with the duplicate title gets deleted either automatically by the 
+> Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
+> on insert or update. This could lead to bugs!
 
 ## Executing the update
 
@@ -95,13 +95,11 @@ val firstUpdateSuccessful = updateResult.isSuccessful(mutableGroup1)
 The update may fail for a particular group for various reasons,
 
 ```kotlin
-if (!updateResult.isSuccessful(mutableGroup1)) {
-    updateResult.failureReason(mutableGroup1)?.let {
-        when (it) {
-            TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
-            UNKNOWN -> showGenericErrorMessage()
-        }   
-    }
+updateResult.failureReason(mutableGroup1)?.let {
+    when (it) {
+        TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
+        UNKNOWN -> showGenericErrorMessage()
+    }   
 }
 ```
 
@@ -127,6 +125,19 @@ launch {
 }
 ```
 
+## Performing the update and result processing asynchronously
+
+Updates are executed when the `commit` function is invoked. The work is done in the same thread as
+the call-site. This may result in a choppy UI.
+
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in
+the `async` module. For more info,
+read [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+
+You may, of course, use other multi-threading libraries or just do it yourself =)
+
+> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+
 ## Performing the update with permission
 
 Updates require the `android.permission.WRITE_CONTACTS`. If not granted, the update will do nothing 
@@ -136,3 +147,11 @@ To perform the update with permission, use the extensions provided in the `permi
 For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+### Starred in Android (Favorites)
+
+When a Contact is starred, the Contacts Provider automatically adds a group membership to the
+favorites group for all RawContacts linked to the Contact. Setting the Contact starred to false
+removes all group memberships to the favorites group.
+
+For more info, read [How do I get/set Contact options?](/howto/howto-get-set-clear-contact-raw-contact-options.md)

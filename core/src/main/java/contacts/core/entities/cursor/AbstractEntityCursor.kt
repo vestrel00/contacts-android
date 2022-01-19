@@ -20,7 +20,7 @@ import kotlin.reflect.KProperty
  *
  * 1. By delegate functions.
  *
- *    ```
+ *    ```kotlin
  *    val formattedAddress: String? by string(Fields.Address.FormattedAddress)
  *
  *    val type: AddressEntity.Type? by type(
@@ -30,7 +30,7 @@ import kotlin.reflect.KProperty
  *
  * 2. By regular functions.
  *
- *    ```
+ *    ```kotlin
  *    val formattedAddress: String?
  *        get() = getString(Fields.Address.FormattedAddress)
  *
@@ -40,7 +40,7 @@ import kotlin.reflect.KProperty
  *
  *    or
  *
- *    ```
+ *    ```kotlin
  *    fun getFormattedAddress(): String? = getString(Fields.Address.FormattedAddress)
  *
  *    fun getType(): AddressEntity.Type? = getType(
@@ -51,7 +51,7 @@ import kotlin.reflect.KProperty
  *
  *    For Java users, the only way would be to use the regular functions.
  *
- *    ```
+ *    ```kotlin
  *    @Nullable
  *    String getFormattedAddress() {
  *        return getString(Fields.Address.FormattedAddress);
@@ -81,18 +81,25 @@ import kotlin.reflect.KProperty
  * Cursor positions are dynamic! They may change at any time and may point at different data. This
  * means that properties or functions should be able to return data dynamically.
  *
- * Do not do this;
+ * Do NOT do this,
  *
- * ```
+ * ```kotlin
  * val formattedAddress: String? = getString(Fields.Address.FormattedAddress)
  * ```
  *
  * The value assigned to `formattedAddress` will most likely be null. Either way, the return value
  * of `formattedAddress` will always be the same. Bad!
  *
- * Do this;
+ * Do this,
  *
+ * ```kotlin
+ * val formattedAddress: String?
+ *     get() = getString(Fields.Address.FormattedAddress)
  * ```
+ *
+ * Or do this,
+ *
+ * ```kotlin
  * val formattedAddress: String? by string(Fields.Address.FormattedAddress)
  * ```
  */

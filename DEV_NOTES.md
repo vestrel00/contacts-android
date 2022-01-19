@@ -133,16 +133,17 @@ All of the above only applies to API 21 and above.
 **Display name resolution is different for APIs below 21 (pre-Lollipop)!**
 
 The `ContactsColumns.NAME_RAW_CONTACT_ID` was added in API 21. It changed the way display names
-are resolved when linking, which is what has been described so far.
+are resolved for Contacts with more than one constituent RawContacts, which is what has been 
+described so far.
 
 Before this change (APIs 20 and below), the native Contacts app is still able to set the Contact
 display name somehow. I'm not sure how. If someone figures it out, please let me know. I tried 
-updating the Contact DISPLAY_NAME directly but it does not work. Setting a name row as default also
-does not affect the Contact DISPLAY_NAME.
+updating the Contact `DISPLAY_NAME` directly but it does not work. Setting a name row as default 
+also does not affect the Contact `DISPLAY_NAME`.
 
 ### RawContacts; Accounts + Contacts
 
-The RawContacts table links the Contact to the `android.accounts.Account` that it belongs to. 
+The RawContacts table associates a person to an `android.accounts.Account` that it belongs to. 
 
 Each new RawContacts row created results in;
 
@@ -207,8 +208,8 @@ becomes available. Local contacts remain local.
 
 **Account removal**
 
-Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
-Groups tables locally. This includes user Profile data in those tables.
+Removing the Account will remove all of the associated rows in the **local** RawContact, Data, and 
+Groups tables. This includes user Profile data in those tables.
 
 **SyncColumns modifications**
 
@@ -318,16 +319,16 @@ A more likely scenario that causes multiple RawContacts per Contact is when two 
 
 ### Behavior of linking/merging/joining contacts (AggregationExceptions)
 
-> The Contacts app terminology has changed over time;
->   - API 22 and below; join / separate
->   - API 23; merge / unmerge
->   - API 24 and above; link / unlink 
-> 
-> However, the internals have not changed; KEEP_TOGETHER / KEEP_SEPARATE.
-> 
-> These operations are supported by the `ContactsContract.AggregationExceptions`.
+The native Contacts app terminology has changed over time;
 
-Given the following tables;
+- API 22 and below; join / separate
+- API 23; merge / unmerge
+- API 24 and above; link / unlink 
+
+However, the internals have not changed; `KEEP_TOGETHER` / `KEEP_SEPARATE`. These operations are 
+supported by the `ContactsContract.AggregationExceptions`.
+
+For example, given the following tables,
 
 ```
 ### Contacts table
@@ -418,8 +419,8 @@ references to the "chosen" RawContact's full-sized photo and thumbnail (though t
 
 **Data inserts**
 
-In the native Contacts app, Data inserted in combined contacts mode will be associated to the first
-RawContact in the list sorted by the RawContact ID. 
+In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
+first RawContact in the list sorted by the RawContact ID. 
 
 > This may not be the same as the RawContact referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
 
@@ -432,6 +433,14 @@ individual RawContact Data rows in which case the groups field is displayed and 
 In the native Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
 set to true. This and all other "unique" mimetypes (organization) and non-unique mimetypes (email)
 per RawContact are shown only if they are not blank.
+
+**Showing multiple RawContact's data in the same edit screen (combined mode)**
+
+In older version of the native, Android Open Source Project (AOSP) Contacts app, data from multiple
+RawContacts was being shown in the same edit screen. This caused a lot of confusion about which
+data belonged to which RawContact. Newer versions of AOSP Contacts only allow editing one RawContact
+at a time to avoid confusion. Though, several RawContacts' data are still shown (not-editable) 
+in the same screen.
 
 ### AggregationExceptions table
 
@@ -456,7 +465,6 @@ Results in the following AggregationExceptions rows respectively;
 
 ```
 Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
-
 ```
 
 ```
@@ -556,7 +564,6 @@ created, we get the following state;
 | B         | 0           | 0                 |
 | C         | 0           | 0                 |
 | D         | 0           | 0                 |
-
 
 The state does not change when RawContact X is linked with RawContact Y.
 
@@ -752,9 +759,9 @@ belonging to the same account to exist. In older versions of Android, the native
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 
-In newer versions, the group with the duplicate title gets deleted either automatically by the 
-Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
-on insert or update. This could lead to bugs!
+> In newer versions, the group with the duplicate title gets deleted either automatically by the 
+> Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
+> on insert or update. This could lead to bugs!
 
 ### Groups Table & GroupMemberships (Data Table)
 
@@ -774,8 +781,6 @@ When the `ContactOptionsColumns.STARRED` column of a Contact in the Contacts tab
 the Contacts Provider automatically adds a group membership to the favorites group for all 
 RawContacts linked to the Contact. Setting `STARRED` to false removes all group memberships to the
 favorites group.
-
-> If the RawContact is not associated with an Account, then no group memberships that are created.
 
 The `STARRED` is interdependent with group memberships to the favorites group. Adding a group 
 membership to the favorites group results in `STARRED` being set to true. Removing the membership 
@@ -927,8 +932,8 @@ https://developer.android.com/guide/topics/providers/contacts-provider#CustomDat
 
 Now, let’s ingest the official docs… Custom mimetypes do not belong to the native Contacts Provider 
 mimetype set (e.g. address, email, phone, etc). The Contacts Provider allows for the creation of 
-new / custom mimetypes. This is especially useful for social media apps (Facebook, Twitter, 
-WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
+new / custom mimetypes. This is especially useful for other apps (Google Contacts, Facebook, 
+Twitter, WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
 
 Custom data are NOT synced, including those that belong to RawContacts that are associated with an 
 Account. Custom sync adapters are required to sync custom data. This library currently does NOT 

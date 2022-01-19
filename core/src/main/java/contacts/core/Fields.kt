@@ -1004,9 +1004,24 @@ abstract class AbstractCustomDataField(
 
         /**
          * Another piece of data if the primary data [DATA] is not enough to describe the entity.
+         *
          * By convention, this field is used to store BLOBs (binary data).
+         *
+         * ## Do not use this for anything but binary data!
+         *
+         * If you use this for a simple string, users of you custom data that include these fields
+         * in their queries may suffer from performance degradations. For example, the photo
+         * thumbnails are stored in this field. So if your users include this field, include photo
+         * thumbnails (and other binary data) may inadvertently get included by database cursors.
+         * This could hurt CPU and memory usage during query processing.
+         *
+         * ## Do not add this to [AbstractCustomDataFieldSet.all]
+         *
+         * Similar to [PhotoFields.PhotoThumbnail], blob fields are not included in `all` fields
+         * to prevent inadvertently including them in queries using default include all fields.
+         * Users have to explicitly include these blob fields to ensure intentionality.
          */
-        DATA15(Data.DATA15)
+        BLOB(Data.DATA15)
     }
 }
 

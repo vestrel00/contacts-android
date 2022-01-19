@@ -8,6 +8,9 @@ import contacts.core.accounts.AccountsPermissions
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
+import contacts.core.log.EmptyLogger
+import contacts.core.log.Logger
+import contacts.core.log.LoggerRegistry
 import contacts.core.profile.Profile
 
 /**
@@ -128,6 +131,11 @@ interface Contacts {
     val applicationContext: Context
 
     /**
+     * Registry for [Logger].
+     */
+    val loggerRegistry: LoggerRegistry
+
+    /**
      * Registry of custom data components, enabling queries, inserts, updates, and deletes for
      * custom data.
      */
@@ -146,15 +154,20 @@ interface Contacts {
 @Suppress("FunctionName")
 fun Contacts(
     context: Context,
-    customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
-    apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
-): Contacts = ContactsImpl(
-    context.applicationContext,
-    ContactsPermissions(context.applicationContext),
-    AccountsPermissions(context.applicationContext),
-    customDataRegistry,
-    apiListenerRegistry
-)
+    logger: Logger = EmptyLogger(),
+    customDataRegistry: CustomDataRegistry = CustomDataRegistry()
+): Contacts {
+    val apiListenerRegistry = CrudApiListenerRegistry()
+    val loggerRegistry = LoggerRegistry(logger)
+    return ContactsImpl(
+        context.applicationContext,
+        ContactsPermissions(context.applicationContext),
+        AccountsPermissions(context.applicationContext),
+        loggerRegistry,
+        customDataRegistry,
+        apiListenerRegistry.register(loggerRegistry.apiListener)
+    )
+}
 
 /**
  * Creates a new [Contacts] instance.
@@ -168,15 +181,16 @@ object ContactsFactory {
     @JvmOverloads
     fun create(
         context: Context,
-        customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
-        apiListenerRegistry: CrudApiListenerRegistry = CrudApiListenerRegistry()
-    ): Contacts = Contacts(context, customDataRegistry, apiListenerRegistry)
+        logger: Logger = EmptyLogger(),
+        customDataRegistry: CustomDataRegistry = CustomDataRegistry()
+    ): Contacts = Contacts(context, logger, customDataRegistry)
 }
 
 private class ContactsImpl(
     override val applicationContext: Context,
     override val permissions: ContactsPermissions,
     override val accountsPermissions: AccountsPermissions,
+    override val loggerRegistry: LoggerRegistry,
     override val customDataRegistry: CustomDataRegistry,
     override val apiListenerRegistry: CrudApiListenerRegistry
 ) : Contacts {

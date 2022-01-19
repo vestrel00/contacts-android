@@ -309,6 +309,19 @@ infix fun <T : Field> Where<T>.or(where: Where<T>?): Where<T> = if (where != nul
 // region Non-infix convenience functions
 
 /**
+ * A shorthand extension function to ease the construction of [Where] instances with multiple
+ * operators on a single [Field].
+ */
+inline operator fun <F : Field> F.invoke(where: F.() -> Where<F>): Where<F> = where(this)
+
+/**
+ * A shorthand extension function to ease the construction of [Where] instances with (multiple)
+ * operators on multiple fields of a [FieldSet].
+ */
+inline operator fun <T : Field, FS : FieldSet<T>> FS.invoke(where: FS.() -> Where<T>): Where<T> =
+    where(this)
+
+/**
  * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
  * making misleading queries.
  *
@@ -375,7 +388,7 @@ internal fun <T : Field> T.isNull(): Where<T> = Where(
  * Outputs
  *
  * ```
- * // (display_name LIKE 'a%%') OR (display_name LIKE 'b%%') OR (display_name LIKE 'c%%')
+ * // (display_name LIKE 'a%') OR (display_name LIKE 'b%') OR (display_name LIKE 'c%')
  * ```
  *
  * Another, more useful example is a where starting with a number;
@@ -395,7 +408,7 @@ internal fun <T : Field> T.isNull(): Where<T> = Where(
  * Outputs
  *
  * ```
- * // (display_name LIKE 'letter%%') OR (data1 LIKE 'letter%%' <omitted for brevity>)
+ * // (display_name LIKE 'letter%') OR (data1 LIKE 'letter%' <omitted for brevity>)
  * ```
  */
 // Not inlined because of private functions and classes.
@@ -423,7 +436,7 @@ infix fun <F : Field, V : Any?> Sequence<V>.whereOr(generateWhere: (V) -> Where<
  * Outputs
  *
  * ```
- * (display_name NOT LIKE 'a%%') AND (display_name NOT LIKE 'b%%') AND (display_name NOT LIKE 'c%%')
+ * (display_name NOT LIKE 'a%') AND (display_name NOT LIKE 'b%') AND (display_name NOT LIKE 'c%')
  * ```
  *
  * This may also be applied to a collection of [Field]s. For example,
@@ -436,7 +449,7 @@ infix fun <F : Field, V : Any?> Sequence<V>.whereOr(generateWhere: (V) -> Where<
  * Outputs
  *
  * ```
- * // (display_name NOT LIKE 'letter%%') AND (data1 NOT LIKE 'letter%%' <omitted for brevity>)
+ * // (display_name NOT LIKE 'letter%') AND (data1 NOT LIKE 'letter%' <omitted for brevity>)
  */
 // Not inlined because of private functions and classes.
 infix fun <F : Field, V : Any?> Collection<V>.whereAnd(generateWhere: (V) -> Where<F>): Where<F>? =
@@ -547,8 +560,8 @@ internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawCon
  * two different ways (hence the private constructor and two secondary constructors).
  *
  * - Base case: (lhs=FieldHolder, rhs=ValueHolder)
- *     - THis can have a parent or siblings but cannot have children. AKA a leaf node.
- *     - This can be the only node (the root not) in a tree.
+ *     - This can have a parent or siblings but cannot have children. AKA a leaf node.
+ *     - This can be the only node (the root node) in a tree.
  * - Recursive case: (lhs=WhereHolder, rhs=WhereHolder)
  *     - This can have a parent or siblings and MUST have children.
  *     - This cannot be the only node in a tree though it can be the root node.
@@ -674,7 +687,7 @@ class Where<out T : Field> private constructor(
             // This should not happen with the current structure. If this does happen, it means
             // that we made some changes that broke the structure.
             throw ContactsException(
-                "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs:${rhs.javaClass.simpleName}"
+                "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
             )
         }
     }
@@ -686,7 +699,9 @@ class Where<out T : Field> private constructor(
     private val evaluatedWhereString: String by unsafeLazy {
 
         var whereString = when (operator) {
+            // Recursive case. Traverse lhs and rhs.
             is Operator.Combine -> "($lhs) $operator ($rhs)"
+            // Base case. Evaluate the expression.
             is Operator.Match -> "$lhs $operator $rhs"
         }
 

@@ -20,6 +20,16 @@ Syncing contacts across devices is possible with sync adapters and Contacts' loo
 
 > For more info, read [How do I learn more about the Contact lookup key vs ID?](/howto/howto-learn-more-contact-lookup-key.md)
 
+## Adding or removing Accounts
+
+When an Account is added to the system and Contacts syncing is enabled and there is network 
+connection, the Contacts Provider will automatically fetch all Contacts, RawContacts, Data, and
+Groups that belong to that Account.
+
+Similarly, when an Account is removed from the system though regardless of Contacts syncing enabled
+or network availability, the Contacts Provider will automatically remove Contacts, RawContacts, 
+Data, and Groups that belong to that Account.
+
 ## Only contacts that are associated with an Account are synced
 
 More specifically, RawContacts that are not associated with an Account (local, device-only) are not
@@ -34,20 +44,22 @@ possibly through some remote configuration.
 
 > For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
-## Custom data provided in this library are not synced
+## Some custom data provided in this library are not synced
 
 The `Gender` and `HandleName` custom data will not be synced because they are not account specific
 and they have no sync adapters and no remote service to interface with.
 
 > For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
 
-## Custom data from social media may be synced
+## Custom data from other apps may be synced
 
-This library has no control over contact data that belongs to other apps and services. For example,
-WhatsApp, Facebook, and other social media define their own set of custom data that their own sync
-sync adapters sync with their own remote services, which requires authentication.
+This library does not sync contact data that belongs to other apps and services. For example, 
+[Google Contacts][google-contacts], WhatsApp, and other apps define their own set of custom data 
+that their own sync adapters sync with their own remote services, which requires authentication.
 
-## This library does not provide syncing APIs
+> For more info, read [How do I integrate custom data from other apps?](/howto/howto-integrate-custom-data-from-other-apps.md)
+
+## This library does not provide sync adapters
 
 This library does not have any APIs related to syncing. It is considered out of scope of this
 library as it requires access to remote databases and account-specific data. Let's talk about it
@@ -79,3 +91,7 @@ thing that typically happens outside of an application UI. This library is focus
 Update, and Delete (CRUD) operations on native and custom data to and from the local database.
 Syncing the local database to and from a remote database in the background is a totally different
 story altogether :grin:
+
+> For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+
+[google-contacts]: https://play.google.com/store/apps/details?id=com.google.android.contacts

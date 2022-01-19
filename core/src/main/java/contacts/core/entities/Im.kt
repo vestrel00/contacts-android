@@ -17,6 +17,9 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
     /**
      * The [Protocol] of this Im.
+     *
+     * As of API 31, you should always set this to [Protocol.CUSTOM] along with the name of the
+     * custom protocol in [customProtocol].
      */
     val protocol: Protocol?
 
@@ -72,15 +75,35 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
         // \_-_-_/. One thing is for sure IMO. The dev who wrote this code is different from the dev
         // that wrote most of the CommonDataKinds.
 
+        // Note that as of API 31, everything except PROTOCOL_CUSTOM has been deprecated. We still
+        // want consumers of this API to be able to use the deprecated stuff for as long as we
+        // support API 30 and below! All we should do is document this fact!
+
         // Order of declaration is the same as seen in the native contacts app
-        AIM(CommonDataKinds.Im.PROTOCOL_AIM), // Default
-        MSN(CommonDataKinds.Im.PROTOCOL_MSN),
-        YAHOO(CommonDataKinds.Im.PROTOCOL_YAHOO),
-        SKYPE(CommonDataKinds.Im.PROTOCOL_SKYPE),
-        QQ(CommonDataKinds.Im.PROTOCOL_QQ),
-        HANGOUTS(CommonDataKinds.Im.PROTOCOL_GOOGLE_TALK),
-        ICQ(CommonDataKinds.Im.PROTOCOL_ICQ),
-        JABBER(CommonDataKinds.Im.PROTOCOL_JABBER),
+        @Deprecated(DEPRECATED_PROTOCOL)
+        AIM(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_AIM), // Default
+
+        @Deprecated(DEPRECATED_PROTOCOL)
+        MSN(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_MSN),
+
+        @Deprecated(DEPRECATED_PROTOCOL)
+        YAHOO(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_YAHOO),
+
+        @Deprecated(DEPRECATED_PROTOCOL)
+        SKYPE(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_SKYPE),
+
+        @Deprecated(DEPRECATED_PROTOCOL)
+        QQ(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_QQ),
+
+        @Deprecated(DEPRECATED_PROTOCOL)
+        HANGOUTS(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_GOOGLE_TALK),
+
+        @Deprecated(DEPRECATED_PROTOCOL)
+        ICQ(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_ICQ),
+
+        @Deprecated(DEPRECATED_PROTOCOL)
+        JABBER(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_JABBER),
+
         CUSTOM(CommonDataKinds.Im.PROTOCOL_CUSTOM);
 
         // Not including the rest of these because they are not shown in the native contacts app.
@@ -99,6 +122,10 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
         internal companion object {
 
             fun fromValue(value: Int?): Protocol? = values().find { it.value == value }
+
+            // Message taken directly from official docs.
+            private const val DEPRECATED_PROTOCOL =
+                "This constant was deprecated in API level 31. Use CUSTOM with customProtocol."
         }
     }
 }

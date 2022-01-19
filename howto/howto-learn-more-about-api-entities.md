@@ -81,8 +81,11 @@ Each entity has an immutable version (typically returned by queries) and a mutab
 `mutableCopy` function that returns a mutable copy (typically to be used for inserts and updates 
 and other mutating API functions).
 
-Custom data types may also be integrated into the contacts database (though not synced across devices).
-Read more in [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+> Custom data kinds may also be integrated into the contacts database (though not synced across devices).
+> For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
+
+> Default native and custom data may be retrieved, set, or cleared.
+> For more info, read [How do I get/set/clear default Contact data?](/howto/howto-get-set-clear-default-data.md)
 
 ## Data kinds count restrictions
 
@@ -168,19 +171,19 @@ that a name has to be provided for every `RawContact`, which is not practical at
 be able to create contacts with just an email or phone number, without a name. This library follows 
 the native Contacts app behavior, which also disregards this rule =P
 
-Rule 3 is intentionally ignored. There are two types of data; 
+Rule 3 is intentionally ignored. There are two kinds of data; 
 
 a. those that are defined in the Contacts Provider (e.g. name, email, phone number, etc)
-b. those that are defined by other apps (e.g. custom data from social media)
+b. those that are defined by other apps (e.g. custom data from other apps)
 
 This library allows modification of native data kinds and custom data kinds. Native data kinds should 
 obviously be modifiable as it is the entire reason why the Contacts Provider exposes these data kinds
 to us in the first place. The question is, should this library provide functions for modifying 
-(insert, update, delete) custom data defined by other apps/services such as social media 
+(insert, update, delete) custom data defined by other apps/services such as other apps 
 (e.g. WhatsApp, Facebook, etc)? The answer to that will be determined when the time comes to support 
-custom data from social media in the future... (Probably, yes!)
+custom data from other apps in the future... (Probably, yes!)
 
-For more info, read [How do I integrate custom data from social media?](/howto/howto-integrate-custom-data-from-social-media.md)
+For more info, read [How do I integrate custom data from other apps?](/howto/howto-integrate-custom-data-from-other-apps.md)
 
 ## Accessing contact data
 
@@ -194,8 +197,16 @@ val rawContact: RawContact = contact.rawContacts.first()
 Log.d(
     "Contact",
     """
+        ID: ${contact.id}
+
         Display name: ${contact.displayNamePrimary}
+        Display name alt: ${contact.displayNameAlt}
+
+        Photo Uri: ${contact.photoUri}
+        Thumbnail Uri: ${contact.photoThumbnailUri}
+
         Last updated: ${contact.lastUpdatedTimestamp}
+
         Starred?: ${contact.options?.starred}
         Send to voicemail?: ${contact.options?.sendToVoicemail}
         Ringtone: ${contact.options?.customRingtone}

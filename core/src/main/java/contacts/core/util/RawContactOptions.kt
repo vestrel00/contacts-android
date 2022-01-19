@@ -13,9 +13,9 @@ import contacts.core.entities.table.Table
 /**
  * Returns the [Options] of this [ExistingRawContactEntity].
  *
- * Note that changes to the options of a RawContact may affect the options of the parent Contact.
- * On the other hand, changes to the options of the parent Contact will be propagated to all child
- * RawContact options.
+ * Note that changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * the parent Contact.
  *
  * This will return null if the contact no longer exist or permissions have not been granted.
  *
@@ -47,9 +47,9 @@ fun ExistingRawContactEntity.options(contacts: Contacts): Options? {
 /**
  * Updates this [ExistingRawContactEntity.options] with the given [options].
  *
- * Note that changes to the options of a RawContact may affect the options of the parent Contact.
- * On the other hand, changes to the options of the parent Contact will be propagated to all child
- * RawContact options.
+ * Note that changes to the options of the parent Contact will be propagated to all child
+ * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * the parent Contact.
  *
  * Supports profile and non-profile RawContacts.
  *

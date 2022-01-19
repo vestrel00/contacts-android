@@ -9,9 +9,11 @@ An instance of the `Update` API is obtained by,
 val update = Contacts(context).update()
 ```
 
-> If you want to update the device owner Contact Profile, read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
+> If you want to update the device owner Contact Profile, 
+> read [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
 
-> If you want to update a set of Data, read [How do I update existing sets of data?](/howto/howto-update-data-sets.md)
+> If you want to update a set of Data, 
+> read [How do I update existing sets of data?](/howto/howto-update-data-sets.md)
 
 ## A basic update
 
@@ -199,3 +201,19 @@ As per documentation in `android.provider.ContactsContract.Contacts`,
 
 The rest of the APIs provided in this library allow you to modify Data fields (e.g. Email, Phone, 
 etc). Essentially, anything that the Contacts Provider allows for modification =) 
+
+## Updating photos and thumbnails
+
+Full-sized photos (and by API design thumbnails) can be set using other functions.
+
+For more info, read [How do I get/set/remove full-sized and thumbnail contact photos?](/howto/howto-get-set-remove-contact-raw-contact-photo.md)
+
+### Local RawContacts
+
+Updates to local RawContacts are not synced!
+
+> For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md).
+
+There are also certain data kinds that are ignored on insert or update if the RawContact is local.
+
+> For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)

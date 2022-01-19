@@ -1,11 +1,20 @@
 package contacts.test
 
 import android.content.Context
-import contacts.core.*
+import contacts.core.BroadQuery
+import contacts.core.Contacts
+import contacts.core.ContactsPermissions
+import contacts.core.Delete
+import contacts.core.Insert
+import contacts.core.Query
+import contacts.core.Update
 import contacts.core.accounts.Accounts
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
+import contacts.core.log.EmptyLogger
+import contacts.core.log.Logger
+import contacts.core.log.LoggerRegistry
 import contacts.core.profile.Profile
 import contacts.test.entities.TestDataRegistration
 
@@ -14,11 +23,11 @@ import contacts.test.entities.TestDataRegistration
 fun TestContacts(
     context: Context,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-): Contacts = TestContacts(Contacts(context, customDataRegistry)).also {
+): Contacts = TestContacts(Contacts(context, customDataRegistry = customDataRegistry)).also {
     customDataRegistry.register(TestDataRegistration())
 }
 
-object ContactsFactory {
+object TestContactsFactory {
 
     @JvmStatic
     @JvmOverloads
@@ -78,6 +87,8 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
     override val accountsPermissions = contactsApi.accountsPermissions
 
     override val applicationContext = contactsApi.applicationContext
+
+    override var loggerRegistry = contactsApi.loggerRegistry
 
     override val customDataRegistry = contactsApi.customDataRegistry
 

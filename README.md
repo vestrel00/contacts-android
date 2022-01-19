@@ -11,6 +11,8 @@
 [![Kotlin Trends](https://img.shields.io/badge/KotlinTrends-Newsletter%20%2364-7f51ff.svg?style=flat&logo=kotlin)](https://dormoshe.io/newsletters/ag/kotlin/64)
 [![ProAndroidDev](https://img.shields.io/badge/ProAndroidDev-Contacts,%20Reborn!-f53e28.svg?style=flat&logo=medium)](https://proandroiddev.com/android-contacts-reborn-19985c73ad43)
 [![Dev.to](https://img.shields.io/badge/Dev.to%20-3%20years%20to%20open%20source-0a0a0a.svg?style=flat&logo=devdotto)](https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp)
+[![Reddit](https://img.shields.io/badge/Reddit%20-Share%20with%20the%20community-ff4500.svg?style=flat&logo=reddit)](https://www.reddit.com/r/androiddev/comments/rz370s/i_dedicated_3_years_to_building_this_android/)
+[![YouTube](https://img.shields.io/badge/YouTube%20-Contacts%20Reborn%20+%20SAO-ff0000.svg?style=flat&logo=youtube)](https://youtu.be/NlRve_B1RA0)
 
 Looking for the easiest way to get full-access to the breadth of Contacts in Android without having
 to deal with the [Contacts Provider][contacts-provider] and cursors? Well, look no further =)
@@ -33,10 +35,12 @@ the top. Release Checklists are also used as discussion pages after releases hav
 The GitHub wiki hosts the [project roadmap][project-roadmap]. It contains all planned work, which 
 are organized using issues, milestones, and projects.
 
-There are also articles that have been written about this repo...
+There are also articles (and videos) that have been written about this repo...
  
 1. [Android Contacts, Reborn][medium-blog]
-2. [I spent 3 years writing an Android Contacts API in Kotlin with Java interop. What I’ve learned…][devto-blog]
+2. [I spent 3 years writing an Android Contacts API in Kotlin with Java interop. What I’ve learned][devto-blog]
+3. [Sharing Contacts, Reborn with the Reddit community][reddit-blog]
+4. [When Contacts, Reborn meets Sword Art Online][youtube-sao]
 
 > **Note: This repo was open-sourced on October 4, 2021. It was private prior to that.**
 
@@ -51,8 +55,8 @@ The core library supports;
 - [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
   of Contacts and RawContacts from zero or more Accounts. [Include only desired fields](/howto/howto-include-only-desired-data.md)
   in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria 
-  in an SQL WHERE clause fashion using Kotlin infix functions. Order by contact table columns. 
-  Limit and offset functions.
+  in an SQL WHERE clause fashion using Kotlin infix functions. **Order by (sort)** contact table 
+  columns. **Limit** and **offset** functions.
 - [Insert](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
   causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
 - [Update](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
@@ -77,6 +81,7 @@ The core library supports;
   (e.g. default/primary phone number, email, etc).
 - [Miscellaneous convenience functions](/howto/howto-use-miscellaneous-extensions.md).
 - [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md).
+- [Support for logging API input and output](/howto/howto-log-api-input-output.md)
 - [Redactable entities and API input and output](/howto/howto-redact-apis-and-entities.md).
 
 There are also extensions that add functionality to every core function;
@@ -93,7 +98,7 @@ There are also more features that are on the way!
 1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
 2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
 3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
-4. [Social media custom data (WhatsApp, Twitter, Facebook, etc)](https://github.com/vestrel00/contacts-android/issues/27).
+4. [Custom data from other apps (Google Contacts, WhatsApp, etc)](https://github.com/vestrel00/contacts-android/issues/27).
 
 ## Installation
 
@@ -109,7 +114,7 @@ To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.9'
+     implementation 'com.github.vestrel00:contacts-android:0.1.10'
 }
 ```
 
@@ -117,7 +122,7 @@ To import specific modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.9'
+     implementation 'com.github.vestrel00.contacts-android:core:0.1.10'
 }
 ```
 
@@ -535,5 +540,7 @@ severity of the issue.
 [github-pages]: https://vestrel00.github.io/contacts-android/
 [medium-blog]: https://proandroiddev.com/android-contacts-reborn-19985c73ad43
 [devto-blog]: https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp
+[reddit-blog]: https://www.reddit.com/r/androiddev/comments/rz370s/i_dedicated_3_years_to_building_this_android/
+[youtube-sao]: https://youtu.be/NlRve_B1RA0
 [contacts-provider]: https://developer.android.com/guide/topics/providers/contacts-provider
 [coroutines-proguard]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro

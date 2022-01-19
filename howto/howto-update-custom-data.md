@@ -4,9 +4,9 @@ This library provides several update APIs that support custom data integration.
 
 1. `Update`
     - [How do I update contacts?](/howto/howto-update-contacts.md)
-3. `ProfileUpdate`
+2. `ProfileUpdate`
     - [How do I update the device owner Contact profile?](/howto/howto-update-profile.md)
-4. `DataUpdate`
+3. `DataUpdate`
     - [How do I update existing sets of data?](/howto/howto-update-data-sets.md)
 
 To help illustrate how custom data integrates with these update APIs, we'll use the `HandleName`
@@ -45,7 +45,7 @@ mutableContact.genders(contactsApi).firstOrNull()?.apply {
 ```
 
 Once you have made the updates to existing custom data, you can perform the update operation on the 
-RawContact to commit your changes into the database.
+RawContact to commit your changes into the database using `Update` or `ProfileUpdate`.
 
 ## Updating sets of custom data directly
 

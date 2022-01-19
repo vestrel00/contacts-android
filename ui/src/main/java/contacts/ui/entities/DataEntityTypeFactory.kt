@@ -117,6 +117,7 @@ object ImsTypeFactory : DataEntityTypeFactory<ImEntity, ImEntity.Protocol> {
             )
         }
 
+    @Suppress("Deprecation")
     private val DEFAULT_TYPE = ImEntity.Protocol.AIM
 }
 

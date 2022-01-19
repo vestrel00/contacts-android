@@ -8,6 +8,7 @@ import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
 import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.MimeType
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.operation.withSelection
@@ -19,20 +20,6 @@ import contacts.core.util.*
 /**
  * Associates **local** RawContacts (those that are not associated with an Account) to an
  * Account to enable syncing....
- *
- * Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
- * provides an API to support;
- *
- * - Associate local RawContacts (those that are not associated with an Account) to an Account,
- *   allowing syncing between devices.
- *
- * The library does not provide an API that supports;
- *
- * - Dissociate RawContacts from their Account such that they remain local to the device and not
- *   synced between devices.
- * - Transfer RawContacts from one Account to another.
- *
- * Read the **SyncColumns modifications** section of the DEV_NOTES for more details.
  *
  * ## Permissions
  *
@@ -50,6 +37,23 @@ import contacts.core.util.*
  *      .localRawContacts(rawContacts)
  *      .commit()
  * ```
+ *
+ * ## Developer notes
+ *
+ * Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
+ * provides an API to support;
+ *
+ * - Associate local RawContacts (those that are not associated with an Account) to an Account,
+ *   allowing syncing between devices.
+ *
+ * The library does not provide an API that supports;
+ *
+ * - Dissociate RawContacts from their Account such that they remain local to the device and not
+ *   synced between devices.
+ * - Transfer RawContacts from one Account to another.
+ *
+ * Read the **SyncColumns modifications** section of the DEV_NOTES for more details.
+ *
  */
 interface AccountsLocalRawContactsUpdate : CrudApi {
 
@@ -72,21 +76,21 @@ interface AccountsLocalRawContactsUpdate : CrudApi {
      * by the Contacts Provider upon successful operation.
      */
     fun localRawContacts(
-        vararg rawContacts: ExistingRawContactEntity
+        vararg rawContacts: ExistingRawContactEntityWithContactId
     ): AccountsLocalRawContactsUpdate
 
     /**
      * See [AccountsLocalRawContactsUpdate.localRawContacts].
      */
     fun localRawContacts(
-        rawContacts: Collection<ExistingRawContactEntity>
+        rawContacts: Collection<ExistingRawContactEntityWithContactId>
     ): AccountsLocalRawContactsUpdate
 
     /**
      * See [AccountsLocalRawContactsUpdate.localRawContacts].
      */
     fun localRawContacts(
-        rawContacts: Sequence<ExistingRawContactEntity>
+        rawContacts: Sequence<ExistingRawContactEntityWithContactId>
     ): AccountsLocalRawContactsUpdate
 
     /**
@@ -250,14 +254,14 @@ private class AccountsLocalRawContactsUpdateImpl(
         this.account = account.redactedCopyOrThis(isRedacted)
     }
 
-    override fun localRawContacts(vararg rawContacts: ExistingRawContactEntity) =
+    override fun localRawContacts(vararg rawContacts: ExistingRawContactEntityWithContactId) =
         localRawContacts(rawContacts.asSequence())
 
-    override fun localRawContacts(rawContacts: Collection<ExistingRawContactEntity>) =
+    override fun localRawContacts(rawContacts: Collection<ExistingRawContactEntityWithContactId>) =
         localRawContacts(rawContacts.asSequence())
 
     override fun localRawContacts(
-        rawContacts: Sequence<ExistingRawContactEntity>
+        rawContacts: Sequence<ExistingRawContactEntityWithContactId>
     ): AccountsLocalRawContactsUpdate = apply {
         rawContactIds.addAll(rawContacts.map { it.id })
     }

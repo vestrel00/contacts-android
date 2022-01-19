@@ -3,8 +3,8 @@ buildscript {
         versions = [
                 android: [
                         minSdk    : 19,
-                        targetSdk : 30,
-                        compileSdk: 30,
+                        targetSdk : 31,
+                        compileSdk: 31,
 
                         gradle    : '7.0.3',
                 ],

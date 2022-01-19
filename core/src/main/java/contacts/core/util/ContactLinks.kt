@@ -51,10 +51,8 @@ import contacts.core.entities.table.Table
  * single Contact. Details on how RawContacts are aggregated into a single Contact are left to the
  * Contacts Provider.
  *
- * This does nothing / fails if there is only one RawContact associated with [this].
- *
- * **Profile Contact & RawContacts are not supported!** This operation will fail if there are any
- * profile Contact or RawContacts in [contacts].
+ * **Profile Contact/RawContacts are not supported!** This operation will fail if there are any
+ * profile Contact/RawContacts in [contacts].
  *
  * ## Changes are immediate
  *
@@ -82,17 +80,6 @@ import contacts.core.entities.table.Table
  * the Contact Provider choose a suitable name.
  *
  * The same logic is employed here in this function.
- *
- * **A side note**
- *
- * The native Contacts app also sets the most recently updated name as the default at every update
- * (and new Contact creation). This results in the Contact display name changing to the most
- * recently updated name from one of the associated RawContacts. The "most recently updated name"
- * is the name field that was last updated by the user when editing in the Contacts app, which is
- * irrelevant to its value. It does not matter if the user deleted the last character of the name,
- * added back the same character (undo), and then saved. It still counts as the most recently
- * updated. This logic is not implemented in this library. It is up to the consumers to implement it
- * or not, or do it differently.
  *
  * ## Contact Display Name Resolution does not work for APIs below 21 (pre-Lollipop)!
  *
@@ -183,8 +170,8 @@ fun ExistingContactEntity.link(
 
     // Get the new Contact id of the RawContacts from the queried name. If no name is found,
     // then use the contact id of the first RawContact.
-    // Technically, the LOOKUP_KEY would be best suited for this but we already have the name so
-    // we might as well just use that.
+    // Technically, the LOOKUP_KEY would be best suited for this but we already have the name or
+    // the RawContact so we might as well just use that.
     val contactId =
         name?.contactId ?: contactsApi.contactIdOfRawContact(sortedRawContactIds.first())
 

@@ -18,6 +18,12 @@ import contacts.core.equalTo
  * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
  * returned if the permission is not granted.
  *
+ * ## Cancellation
+ *
+ * To cancel this operation at any time, the [cancel] function should return true.
+ *
+ * This is useful when running this function in a background thread or coroutine.
+ *
  * ## Thread Safety
  *
  * This should be called in a background thread to avoid blocking the UI thread.
@@ -50,6 +56,12 @@ fun Insert.Result.rawContact(
  * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
  * returned if the permission is not granted.
  *
+ * ## Cancellation
+ *
+ * To cancel this operation at any time, the [cancel] function should return true.
+ *
+ * This is useful when running this function in a background thread or coroutine.
+ *
  * ## Thread Safety
  *
  * This should be called in a background thread to avoid blocking the UI thread.
@@ -77,6 +89,12 @@ fun Insert.Result.rawContacts(
  *
  * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
  * returned if the permission is not granted.
+ *
+ * ## Cancellation
+ *
+ * To cancel this operation at any time, the [cancel] function should return true.
+ *
+ * This is useful when running this function in a background thread or coroutine.
  *
  * ## Thread Safety
  *
@@ -110,6 +128,12 @@ fun Insert.Result.contact(
  *
  * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required. Otherwise, null will be
  * returned if the permission is not granted.
+ *
+ * ## Cancellation
+ *
+ * To cancel this operation at any time, the [cancel] function should return true.
+ *
+ * This is useful when running this function in a background thread or coroutine.
  *
  * ## Thread Safety
  *

@@ -124,8 +124,7 @@ interface Insert : CrudApi {
      *
      * **Account removal**
      *
-     * Removing the Account will delete all of the associated rows in the Contact, RawContact, and
-     * Data tables.
+     * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
      */
     fun forAccount(account: Account?): Insert
 

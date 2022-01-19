@@ -75,7 +75,7 @@ fun MutableContact.removeHandleName(
     byReference: Boolean = false
 ) {
     for (rawContact in rawContacts) {
-        contacts.customDataRegistry.removeCustomDataEntityFrom(rawContact, byReference, handleName)
+        rawContact.removeHandleName(contacts, handleName, byReference)
     }
 }
 
@@ -84,7 +84,7 @@ fun MutableContact.removeHandleName(
  */
 fun MutableContact.removeAllHandleNames(contacts: Contacts) {
     for (rawContact in rawContacts) {
-        contacts.customDataRegistry.removeAllCustomDataEntityFrom(rawContact, HandleNameMimeType)
+        rawContact.removeAllHandleNames(contacts)
     }
 }
 
