@@ -610,6 +610,9 @@ HandleNameRegistration().registerTo(contacts.customDataRegistry)
 
 Using `Gender` and `HandleName` entry,
 
+> Note that this is not possible with `Gender` and `HandleName` as their entries are internal.
+> This is for demonstration purposes only.
+
 ```kotlin
 val contactsApi = Contacts(
     context,
@@ -761,12 +764,12 @@ that server. This library provides create (insert), read (query), update, and de
 for pretty, type-safe, and well-documented read and write operations on all data kinds, including
 custom data. 
 
-This means that if you do not implement your own sync adapter for your custom data, then you will
-NOT be able to do the following;
+This means that if you do not implement your own sync adapter for your custom data, then your 
+custom data...
 
-- sync your custom data across devices.
-- show your custom data in AOSP and [Google Contacts][google-contacts] apps, and other Contacts apps
-  that show custom data from other apps.
+- will NOT be synced across devices
+- will NOT be shown in AOSP and [Google Contacts][google-contacts] apps, and other Contacts apps
+  that show custom data from other apps
   
 You may still do creative things with custom data without sync adapters as long as you understand
 these limitations.
