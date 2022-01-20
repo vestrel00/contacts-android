@@ -674,9 +674,12 @@ internal fun ContentResolver.resolve(
     // Collect blank RawContacts.
     if (includeBlanks) {
         query(
-            Table.RawContacts, include.onlyRawContactsFields(), contactIds?.let {
-                RawContactsFields.ContactId `in` it
-            },
+            Table.RawContacts, include.onlyRawContactsFields(),
+            if (contactIds != null) {
+                RawContactsFields.ContactId `in` contactIds
+            } else {
+                RawContactsFields.ContactId.isNotNull()
+           },
             processCursor = contactsMapper::processRawContactsCursor
         )
     }
