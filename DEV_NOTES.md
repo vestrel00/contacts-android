@@ -141,6 +141,14 @@ display name somehow. I'm not sure how. If someone figures it out, please let me
 updating the Contact `DISPLAY_NAME` directly but it does not work. Setting a name row as default 
 also does not affect the Contact `DISPLAY_NAME`.
 
+### Contacts; ID vs LOOKUP_KEY
+
+The `Contacts._ID` is the unique identifier for the row in the Contacts table. The 
+`Contacts.LOOKUP_KEY` is the unique identifier for an aggregate Contact (a person). The `_ID` may
+change due to aggregation and sync but the `LOOKUP_KEY` remains the same, even across devices.
+
+TODO 
+
 ### RawContacts; Accounts + Contacts
 
 The RawContacts table associates a person to an `android.accounts.Account` that it belongs to. 
