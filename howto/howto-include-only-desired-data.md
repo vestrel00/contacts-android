@@ -68,14 +68,14 @@ By default, not calling the `include` function will include all fields, includin
 However, the below code will include all native fields but exclude custom data;
 
 ```kotlin
-query.include(Fields.all)
+.include(Fields.all)
 ```
 
 If you want to include everything, including custom data, and for some reason you must invoke the 
 `include` function,
 
 ```kotlin
-query.include(Fields.all + contactsApi.customDataRegistry.allFields())
+.include(Fields.all + contactsApi.customDataRegistry.allFields())
 ```
 
 ## Performing updates on entities with partial includes
@@ -106,4 +106,4 @@ update.contacts(mutableContacts).include(Fields.all).commit()
 ```
 
 This gives you the most flexibility when it comes to specifying what fields to include/exclude in 
-queries, inserts, and update, which will allow you to do things beyond your wildest imagination!
+queries, inserts, and updates, which will allow you to do things beyond your wildest imagination!

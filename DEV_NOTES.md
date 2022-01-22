@@ -145,9 +145,122 @@ also does not affect the Contact `DISPLAY_NAME`.
 
 The `Contacts._ID` is the unique identifier for the row in the Contacts table. The 
 `Contacts.LOOKUP_KEY` is the unique identifier for an aggregate Contact (a person). The `_ID` may
-change due to aggregation and sync but the `LOOKUP_KEY` remains the same, even across devices.
+change due to aggregation and sync but the `LOOKUP_KEY` remains the same, even across devices. 
 
-TODO 
+Let's take a look at the following Contacts and RawContacts table rows,
+
+```
+#### Contacts table
+Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
+```
+
+There are two Contacts each having one RawContact. 
+
+> Notice that the lookup keys are a bit different.
+> 
+> - Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
+> - Contact With Synced RawContact: 2059i6f5de8460f7f227e
+> 
+> The Contact with unsynced, device-only, local RawContact has a much longer lookup key and starts 
+> with "xxxx-". Furthermore, the characters after the "xxxx-" are all uppercase. We probably don't 
+> need to worry about this difference and we also should not rely on it. I'm just pointing out what 
+> I see, even if they are irrelevant for this library.
+
+When we link the two, we get...
+
+```
+Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+```
+
+Notice,
+
+- Contact with ID 56 has been deleted.
+- Contact with ID 55 still exist with the lookup keys of both Contact 55 and 56 combined separated 
+  by a ".".
+- RawContacts remain unchanged except reference to Contact 56 has been replaced with 55.
+- The primary display name of Contact 55 came from RawContact 55 prior to the link and now comes
+  from RawContact 56 after the link.
+  - This primary name resolution is probably irrelevant so pay no attention to it.
+    
+The most important part to notice is that the lookup keys get combined.
+
+The lookup uri is required to build a `Contacts.CONTENT_LOOKUP_URI`...
+
+```java
+/**
+ * A content:// style URI for this table that should be used to create
+ * shortcuts or otherwise create long-term links to contacts. This URI
+ * should always be followed by a "/" and the contact's {@link #LOOKUP_KEY}.
+ * It can optionally also have a "/" and last known contact ID appended after
+ * that. This "complete" format is an important optimization and is highly recommended.
+ * <p>
+ * As long as the contact's row ID remains the same, this URI is
+ * equivalent to {@link #CONTENT_URI}. If the contact's row ID changes
+ * as a result of a sync or aggregation, this URI will look up the
+ * contact using indirect information (sync IDs or constituent raw
+ * contacts).
+ * <p>
+ * Lookup key should be appended unencoded - it is stored in the encoded
+ * form, ready for use in a URI.
+ */
+public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, "lookup");
+
+/**
+ * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the
+ * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.
+ * <p>
+ * Returns null if unable to construct a valid lookup URI from the
+ * provided parameters.
+ */
+public static Uri getLookupUri(long contactId, String lookupKey) {
+    if (TextUtils.isEmpty(lookupKey)) {
+        return null;
+    }
+    return ContentUris.withAppendedId(Uri.withAppendedPath(Contacts.CONTENT_LOOKUP_URI, lookupKey), contactId);
+}
+```
+
+From the lookup uri, we can lookup the Contact row...
+
+```java
+public static Uri lookupContact(ContentResolver resolver, Uri lookupUri) { ... }
+```
+
+Or simply get the Contact ID...
+
+```java
+resolver.query(lookupUri, new String[]{Contacts._ID}, null, null, null)
+```
+
+However, given that the lookup key of the deleted Contact 56 still lives on, it is possible to get 
+the linked Contact 55 using the lookup key of Contact 56 using our standard query APIs!
+
+```kotlin
+.where { Contact.LookupKey contains lookupKey }
+```
+
+The above is correct as long as these assumptions hold true;
+
+- the lookup key is unique 
+- there is no lookup key that can contain a shorter lookup key
+    - the Contact ID fails this test because a smaller number is contained in a larger number
+    - synced contacts have shorter lookup keys than local contacts. However, local contacts' 
+      lookup keys are capitalized whereas synced contact are not. Also, there seems to be other
+      differences in pattern between long and short lookup keys. It should be safe to make this
+      assumption.
+
+Until the community finds that this assumption is flawed, we'll assume that it is true! For now, we
+can **avoid having to create another API or extensions just for using lookup keys**. 
+
+TODO Link/Unlink.
+TODO Move local to synced and vice versa.
 
 ### RawContacts; Accounts + Contacts
 
@@ -299,7 +412,7 @@ in the documentation in `ContactsContract.RawContacts`;
 > it sets the ContactsContract.RawContactsColumns.DELETED flag on the raw contact and removes the 
 > raw contact from its aggregate contact. The sync adapter then deletes the raw contact from the
 > server and finalizes phone-side deletion by calling resolver.delete(...) again and passing the 
-> ContactsContract#CALLER_IS_SYNCADAPTER  query parameter. 
+> ContactsContract#CALLER_IS_SYNCADAPTER query parameter. 
 > 
 > Some sync adapters are read-only, meaning that they only sync server-side changes to the phone,
 > but not the reverse. If one of those raw contacts is marked for deletion, it will remain on the
