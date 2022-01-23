@@ -10,7 +10,7 @@ remote service as it is not associated with any account.
 
 ## Associating a local RawContact to an Account
 
-Local RawContacts can be associated with an Account to enable syncing.
+Local RawContacts can be associated to an Account to enable syncing.
 
 For more info, read [How do I associate a local RawContacts to an Account?](/howto/howto-associate-device-local-raw-contacts-to-an-account.md)
 
@@ -65,10 +65,3 @@ These data kinds are;
 The Contacts Provider may or may not enforce these Account restrictions. However, the native
 Contacts app imposes these restrictions. Therefore, this library also imposes these restrictions and
 disables consumers from violating them.
-
-## Local contacts and the Contact lookup key
-
-TODO
-
-For more info,
-read [How do I learn more about the Contact lookup key vs ID?](/howto/howto-learn-more-contact-lookup-key.md)

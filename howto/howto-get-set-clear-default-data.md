@@ -112,6 +112,8 @@ Getting and setting/clearing default data require the `android.permission.READ_C
 `android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting and 
 setting/clearing default data will fail.
 
+------------------------
+
 ## Developer notes (or for advanced users)
 
 > The following section are note from developers of this library for other developers. It is copied

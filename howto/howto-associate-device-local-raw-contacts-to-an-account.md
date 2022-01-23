@@ -121,6 +121,8 @@ val profileDataUpdate = Contacts(context).accounts().profile().updateLocalRawCon
 
 All updates will be limited to the Profile RawContacts, whether it exists or not.
 
+------------------------
+
 ## Developer notes (or for advanced users)
 
 > The following section are note from developers of this library for other developers. It is copied

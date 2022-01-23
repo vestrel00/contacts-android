@@ -44,6 +44,24 @@ possibly through some remote configuration.
 
 > For more info, read [How do I learn more about "local" (device-only) contacts?](/howto/howto-learn-more-about-local-contacts.md)
 
+## When are changes synced?
+
+In general, the Contacts Provider and the registered sync adapters are responsible for triggering 
+sync events as long as Contacts sync is enabled for the Account in the system settings. 
+
+You can manually trigger a sync through the system sync settings. Some events that will probably 
+trigger a sync are;
+
+- Getting network connection from a state where there was not network connection (offline -> online).
+- Adding an Account.
+- Removing an Account
+
+Until changes are synced, local changes will not take effect. Some examples are;
+
+- RawContact rows are marked for deletion but remain until synced.
+- Group rows are marked for deletion but remain until synced.
+- New lookup key is not assigned after associating a local RawContact to an Account.
+
 ## Some custom data provided in this library are not synced
 
 The `Gender` and `HandleName` custom data will not be synced because they are not account specific
