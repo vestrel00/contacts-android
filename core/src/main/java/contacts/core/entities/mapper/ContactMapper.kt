@@ -15,6 +15,7 @@ internal class ContactMapper(
     override val value: Contact
         get() = Contact(
             id = contactsCursor.contactId,
+            lookupKey = contactsCursor.lookupKey,
 
             rawContacts = emptyList(),
 

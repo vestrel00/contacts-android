@@ -143,9 +143,13 @@ also does not affect the Contact `DISPLAY_NAME`.
 
 ### Contacts; ID vs LOOKUP_KEY
 
-The `Contacts._ID` is the unique identifier for the row in the Contacts table. The 
+The `Contacts._ID` is the unique identifier for the row in the Contacts table. The
 `Contacts.LOOKUP_KEY` is the unique identifier for an aggregate Contact (a person). The `_ID` may
-change due to aggregation and sync but the `LOOKUP_KEY` remains the same, even across devices. 
+change due to aggregation and sync. The same goes for the `LOOKUP_KEY` but unlike the `ID` it may
+still be used to find the aggregate contact.
+
+Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
+with an Account ad are synced).
 
 > Note that I did the following investigation with a much larger data set. I simplified it here for brevity.
 

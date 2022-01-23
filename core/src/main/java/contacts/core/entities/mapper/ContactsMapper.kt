@@ -159,6 +159,7 @@ internal class ContactsMapper(
             contactList.add(
                 Contact(
                     id = entry.key,
+                    lookupKey = null,
                     rawContacts = entry.value.sortedBy { it.id },
                     displayNamePrimary = null,
                     displayNameAlt = null,

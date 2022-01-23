@@ -4,9 +4,9 @@ The _Contact ID_ is a number in the Contacts table that serves as the _unique id
 in the **local** Contacts table_. These look like any number used as an ID in a database table. For
 example; `4`, `8`, `15`, `16`, `23`, `42`, ...
 
-The _Contact lookup key_ is a string that serves as the _unique identifier for a Contact in the
-**local and remote** databases_. These look like randomly generated or hashed strings. For example;
-`2059i4a27289d88a0a4e7`, `0r62-2A2C2E`, ...
+The _Contact lookup key_ is a string that serves as the _unique identifier for an aggregate contact 
+in the **local and remote** databases_. These look like randomly generated or hashed strings. 
+For example; `2059i4a27289d88a0a4e7`, `0r62-2A2C2E`, ...
 
 The official documentation for the Contact lookup key is,
 
@@ -26,18 +26,22 @@ Let's dissect the documentation,
       Contact row. Unlinking will result in the original Contacts prior to linking to have different
       IDs in the Contacts table because the previously deleted row IDs cannot be reused.
 
-Unlike the Contact ID, the lookup key is the same across devices. The lookup key points to a 
-Contact entity rather than just a row in a table. It is the unique identifier used by local and 
-remote sync adapters to identify an aggregate Contact.
+Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
+with an Account and are synced). The lookup key points to a person entity rather than just a row 
+in a table. It is the unique identifier used by local and remote sync adapters to identify an 
+aggregate contact.
 
-> Actually, it seems like the Contact lookup key is a reference to a RawContact. RawContacts have a 
-> reference to the parent Contact via the Contact ID. Similarly, the parent Contact has a reference 
-> to all of its constituent RawContacts via the lookup key.
+> Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
+> constituent RawContacts). RawContacts have a reference to the parent Contact via the Contact ID. 
+> Similarly, the parent Contact has a reference to all of its constituent RawContacts via the 
+> lookup key.
+
+Note that RawContacts do not have a lookup key. It is exclusive to Contacts.
 
 ## When to use Contact lookup key vs Contact ID?
 
-Use the **Contact lookup key** when you need to save a reference to a Contact that you want to fetch after some 
-period of time.
+Use the **Contact lookup key** when you need to save a reference to a Contact that you want to 
+fetch after some period of time.
 
 - Saving/restoring activity/fragment instance state.
 - Saving to an external database, preferences, or files.
@@ -63,7 +67,7 @@ explicitly specify the lookup key,
 
 For more info, read [How do I include only the data that I want?](/howto/howto-include-only-desired-data.md)
 
-## How to use the Contact lookup key?
+## How to get Contacts using lookup keys?
 
 To get a Contact by lookup key,
 
@@ -81,6 +85,8 @@ val contact = Contacts(context).query().where { lookupKeys whereOr { Contact.Loo
 
 Unlike getting Contacts by list of IDs, you must use `contains` in combination with `whereOr`
 instead of just `in`.
+
+> For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
 ## Moving RawContacts between accounts and the lookup key
 
@@ -140,7 +146,11 @@ In both cases, the shortcut successfully opens the correct aggregate Contact.
 
 The `Contacts._ID` is the unique identifier for the row in the Contacts table. The
 `Contacts.LOOKUP_KEY` is the unique identifier for an aggregate Contact (a person). The `_ID` may
-change due to aggregation and sync but the `LOOKUP_KEY` remains the same, even across devices.
+change due to aggregation and sync. The same goes for the `LOOKUP_KEY` but unlike the `ID` it may 
+still be used to find the aggregate contact.
+
+Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated 
+with an Account ad are synced).
 
 > Note that I did the following investigation with a much larger data set. I simplified it here for brevity.
 

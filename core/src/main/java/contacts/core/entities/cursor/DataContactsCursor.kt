@@ -15,6 +15,8 @@ import java.util.*
 internal class DataContactsCursor(cursor: Cursor, includeFields: Set<DataContactsField>) :
     AbstractDataCursor<DataContactsField>(cursor, includeFields), JoinedContactsCursor {
 
+    override val lookupKey: String? by string(Fields.Contact.LookupKey)
+
     override val displayNamePrimary: String? by string(Fields.Contact.DisplayNamePrimary)
 
     override val displayNameAlt: String? by string(Fields.Contact.DisplayNameAlt)

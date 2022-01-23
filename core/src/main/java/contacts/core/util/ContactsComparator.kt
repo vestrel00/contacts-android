@@ -154,6 +154,7 @@ private fun AbstractDataField.compare(
 
     // CONTACT
     Fields.Contact.Id -> lhs.id.compareTo(rhs.id)
+    Fields.Contact.LookupKey -> lhs.lookupKey.compareTo(ignoreCase, rhs.lookupKey)
     Fields.Contact.DisplayNamePrimary -> {
         lhs.displayNamePrimary.compareTo(
             ignoreCase, rhs.displayNamePrimary

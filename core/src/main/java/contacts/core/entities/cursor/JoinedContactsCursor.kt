@@ -17,6 +17,8 @@ import java.util.*
  */
 internal sealed interface JoinedContactsCursor : ContactIdCursor {
 
+    val lookupKey: String?
+
     val displayNamePrimary: String?
 
     val displayNameAlt: String?
