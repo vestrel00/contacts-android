@@ -15,6 +15,31 @@ import contacts.core.equalTo
  *
  * Supports profile and non-profile Contacts with native/custom data.
  *
+ * ## Contact linking/unlinking and changing Accounts
+ *
+ * Note that this uses the [ExistingContactEntity.lookupKey] (**if available**) instead of the
+ * [ExistingContactEntity.id] to fetch the Contact. The ID may change due to sync or aggregation.
+ * You may use this function to refresh a Contact reference that you are holding on to for longer
+ * periods of time. For example,
+ *
+ * - Saving/restoring activity/fragment instance state.
+ * - Saving to an external database, preferences, or files.
+ * - Creating shortcuts.
+ *
+ * This function will still return the correct Contact. It is able to do this using the
+ * [ExistingContactEntity.lookupKey] with query APIs.
+ *
+ * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
+ * same behavior as the native AOSP and Google Contacts app.
+ *
+ * If the lookupKey of this instance is null, then it was probably not included in the query. In
+ * this case, the ID will be used instead.
+ *
+ * **Important!** If this is a reference to a Contact with two or more constituent RawContacts
+ * and the Contact has been unlinked (thereby creating separate Contact instances), this will only
+ * return one of the Contacts it finds instead of all of the previously linked contacts. Use the
+ * [contacts.core.Query] API in conjunction with the lookup key instead of this function.
+ *
  * ## Permissions
  *
  * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
@@ -35,7 +60,7 @@ fun <T : ExistingContactEntity> T.refresh(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): T? {
-    val contact = contacts.findContactWithId(id, cancel)
+    val contact = contacts.findContactWithLookupKeyOrId(lookupKey, id, cancel)
 
     @Suppress("UNCHECKED_CAST")
     return when (this) {
@@ -54,16 +79,27 @@ fun <T : ExistingContactEntity> T.refresh(
 internal fun Contacts.findContactWithId(
     contactId: Long,
     cancel: () -> Boolean
-): Contact? =
-    if (contactId.isProfileId) {
-        // Remember there is only one profile Contact so there is no need to look for ID.
-        profile()
-            .query()
-            .find(cancel)
-            .contact
-    } else {
-        query()
-            .where { Contact.Id equalTo contactId }
-            .find(cancel)
-            .firstOrNull()
-    }
+): Contact? = findContactWithLookupKeyOrId(null, contactId, cancel)
+
+private fun Contacts.findContactWithLookupKeyOrId(
+    lookupKey: String?,
+    contactId: Long,
+    cancel: () -> Boolean
+): Contact? = if (contactId.isProfileId) {
+    // Remember there is only one profile Contact.
+    profile()
+        .query()
+        .find(cancel)
+        .contact
+} else {
+    query()
+        .where {
+            if (lookupKey != null) {
+                Contact.lookupKeyIn(lookupKey)
+            } else {
+                Contact.Id equalTo contactId
+            }
+        }
+        .find(cancel)
+        .firstOrNull()
+}
