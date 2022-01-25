@@ -206,6 +206,58 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
     override val id: Long
 
     /**
+     * The unique identifier for an aggregate contact in the **local and remote** databases_.
+     * These look like randomly generated or hashed strings. For example; `2059i4a27289d88a0a4e7`,
+     * `0r62-2A2C2E`, ...
+     *
+     * Unlike the Contact ID, the lookup key is the same across devices (for contacts that are
+     * associated with an Account and are synced). The lookup key points to a person entity rather
+     * than just a row in a table. It is the unique identifier used by local and remote sync
+     * adapters to identify an aggregate contact.
+     *
+     * Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
+     * constituent RawContacts). RawContacts have a reference to the parent Contact via the
+     * Contact ID. Similarly, the parent Contact has a reference to all of its constituent
+     * RawContacts via the lookup key.
+     *
+     * ## When to use Contact lookup key vs Contact ID?
+     *
+     * Use the **Contact lookup key** when you need to save a reference to a Contact that you want
+     * to fetch after some period of time.
+     *
+     * - Saving/restoring activity/fragment instance state.
+     * - Saving to an external database, preferences, or files.
+     * - Creating shortcuts.
+     *
+     * Use the **Contact ID** for everything else.
+     *
+     * - Performing read/write operations in the same function call or session in your app.
+     * - Performing read/write operations that require ID (e.g. Contact photo and options).
+     *
+     * ## How to get Contacts using lookup keys?
+     *
+     * Use the [contacts.core.util.decomposedLookupKeys] to get contacts by lookup key,
+     *
+     * ```kotlin
+     * val contacts = query.where { decomposedLookupKeys(lookupKeys) whereOr { Contact.LookupKey contains it } }.find()
+     * ```
+     *
+     * Or use [contacts.core.util.lookupKeyIn],
+     *
+     * ```kotlin
+     * val contacts = query.where { Contact.lookupKeyIn(lookupKeys) }.find()
+     * ```
+     *
+     * For an explanation on why you should use those functions instead of the lookup key directly,
+     * read the function documentation.
+     *
+     * Note that if the lookup key is a reference to a linked Contact (a Contact with two or more
+     * constituent RawContacts), and the linked Contact is unlinked, then the query will return
+     * multiple Contacts.
+     */
+    val lookupKey: String?
+
+    /**
      * True if this contact represents the user's personal profile entry.
      */
     override val isProfile: Boolean
@@ -226,6 +278,7 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
 data class Contact internal constructor(
 
     override val id: Long,
+    override val lookupKey: String?,
 
     override val rawContacts: List<RawContact>,
 
@@ -247,6 +300,7 @@ data class Contact internal constructor(
 
     override fun mutableCopy() = MutableContact(
         id = id,
+        lookupKey = lookupKey,
 
         rawContacts = rawContacts.asSequence().mutableCopies().toMutableList(),
 
@@ -281,6 +335,7 @@ data class Contact internal constructor(
 data class MutableContact internal constructor(
 
     override val id: Long,
+    override val lookupKey: String?,
 
     override val rawContacts: List<MutableRawContact>,
 

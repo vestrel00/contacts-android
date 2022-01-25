@@ -347,6 +347,9 @@ class DataContactsFields internal constructor() : AbstractDataFieldSet<DataConta
     val Id = DataContactsField(Data.CONTACT_ID, required = true)
 
     @JvmField
+    val LookupKey = DataContactsField(Data.LOOKUP_KEY)
+
+    @JvmField
     val DisplayNamePrimary = DataContactsField(Data.DISPLAY_NAME_PRIMARY)
 
     @JvmField
@@ -369,7 +372,7 @@ class DataContactsFields internal constructor() : AbstractDataFieldSet<DataConta
 
     override val all by unsafeLazy {
         mutableSetOf(
-            Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
+            Id, LookupKey, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
             PhotoUri, PhotoThumbnailUri, HasPhoneNumber
         ).apply {
             addAll(Options.all)
@@ -1081,6 +1084,9 @@ object ContactsFields : FieldSet<ContactsField>() {
     val Id = ContactsField(Contacts._ID, required = true)
 
     @JvmField
+    val LookupKey = ContactsField(Data.LOOKUP_KEY)
+
+    @JvmField
     val DisplayNamePrimary = ContactsField(Contacts.DISPLAY_NAME_PRIMARY)
 
     @JvmField
@@ -1112,7 +1118,7 @@ object ContactsFields : FieldSet<ContactsField>() {
 
     override val all by unsafeLazy {
         mutableSetOf(
-            Id, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
+            Id, LookupKey, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
             PhotoUri, PhotoThumbnailUri, PhotoFileId, HasPhoneNumber
         ).apply {
             addAll(Options.all)

@@ -141,6 +141,241 @@ display name somehow. I'm not sure how. If someone figures it out, please let me
 updating the Contact `DISPLAY_NAME` directly but it does not work. Setting a name row as default 
 also does not affect the Contact `DISPLAY_NAME`.
 
+### Contacts; ID vs LOOKUP_KEY
+
+The `Contacts._ID` is the unique identifier for the row in the Contacts table. The
+`Contacts.LOOKUP_KEY` is the unique identifier for an aggregate Contact (a person). The `_ID` may
+change due to aggregation and sync. The same goes for the `LOOKUP_KEY` but unlike the `ID` it may
+still be used to find the aggregate contact.
+
+Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
+with an Account and are synced).
+
+> Note that I did the following investigation with a much larger data set. I simplified it here for brevity.
+
+Let's take a look at the following Contacts and RawContacts table rows,
+
+```
+#### Contacts table
+Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
+```
+
+There are two Contacts each having one RawContact. 
+
+Notice that the lookup keys are a bit different.
+
+- Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
+- Contact With Synced RawContact: 2059i6f5de8460f7f227e
+
+The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
+lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The 
+other thing to notice is that the "55" in "0r55-" seems to be the same as the RawContact ID (I did 
+a bit more experiments than what is written in these notes to confirm that it is indeed the 
+RawContact ID and not the Contact ID). We probably don't need to worry about these details though 
+the Contacts Provider probably uses these things internally. We also should not rely on it. 
+
+However, it may be safe to assume that the **Contact lookup key is a reference to a RawContact** 
+(or reference to more than one constituent RawContact when multiple RawContacts are linked). Again,
+an internal Contacts Provider detail we should not rely on BUT is probably relevant when implementing
+sync adapters.
+
+**When we link** the two, we get...
+
+```
+Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+```
+
+Notice,
+
+- Contact with ID 56 has been deleted.
+- Contact with ID 55 still exist with the **lookup keys of both Contact 55 and 56 combined separated by a "."**. 
+    - This holds true in cases where two or more local-only or non-local-only RawContacts are linked.
+- RawContacts remain unchanged except reference to Contact 56 has been replaced with 55.
+- The primary display name of Contact 55 came from RawContact 55 prior to the link and now comes
+  from RawContact 56 after the link.
+  - This primary name resolution is probably irrelevant so pay no attention to it.
+    
+The most important part to notice is that the lookup keys get combined.
+
+The lookup uri is required to build a `Contacts.CONTENT_LOOKUP_URI`...
+
+```java
+/**
+ * A content:// style URI for this table that should be used to create
+ * shortcuts or otherwise create long-term links to contacts. This URI
+ * should always be followed by a "/" and the contact's {@link #LOOKUP_KEY}.
+ * It can optionally also have a "/" and last known contact ID appended after
+ * that. This "complete" format is an important optimization and is highly recommended.
+ * <p>
+ * As long as the contact's row ID remains the same, this URI is
+ * equivalent to {@link #CONTENT_URI}. If the contact's row ID changes
+ * as a result of a sync or aggregation, this URI will look up the
+ * contact using indirect information (sync IDs or constituent raw
+ * contacts).
+ * <p>
+ * Lookup key should be appended unencoded - it is stored in the encoded
+ * form, ready for use in a URI.
+ */
+public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, "lookup");
+
+/**
+ * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the
+ * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.
+ * <p>
+ * Returns null if unable to construct a valid lookup URI from the
+ * provided parameters.
+ */
+public static Uri getLookupUri(long contactId, String lookupKey) {
+    if (TextUtils.isEmpty(lookupKey)) {
+        return null;
+    }
+    return ContentUris.withAppendedId(Uri.withAppendedPath(Contacts.CONTENT_LOOKUP_URI, lookupKey), contactId);
+}
+```
+
+From the lookup uri, we can lookup the Contact row...
+
+```java
+public static Uri lookupContact(ContentResolver resolver, Uri lookupUri) { ... }
+```
+
+Or simply get the Contact ID...
+
+```java
+// code inside `public static Uri lookupContact`
+resolver.query(lookupUri, new String[]{Contacts._ID}, null, null, null)
+```
+
+However, given that the lookup key of the deleted Contact 56 still lives on, it is possible to get 
+the linked Contact 55 using the lookup key of Contact 56 using our standard query APIs!
+
+```kotlin
+.where { Contact.LookupKey contains lookupKey }
+```
+
+The above is correct as long as these assumptions hold true;
+
+- the lookup key is unique 
+- there is no lookup key that can contain a shorter lookup key
+    - the Contact ID fails this test because a smaller number is contained in a larger number
+    - synced contacts have shorter lookup keys than local contacts. However, local contacts' 
+      lookup keys are capitalized whereas synced contact are not. Also, there seems to be other
+      differences in pattern between long and short lookup keys. It should be safe to make this
+      assumption.
+
+Until the community finds that this assumption is flawed, we'll assume that it is true! For now, we
+can **avoid having to create another API or extensions just for using lookup keys**. 
+
+**When we unlink**, we get...
+
+```
+#### Contacts table
+Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 58, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+```
+
+Notice,
+
+- A new Contact row with ID of 58 is created.
+- The lookup keys are separated and distributed between Contact 55 and 58.
+- RawContact 55 Contact reference has been set to Contact 58.
+
+Let's compare the Contact-RawContact relationship before and after linking and then unlinking.
+
+|            | **Contact ID** | **Lookup Key**                                                                      | **RawContact.Contact ID** |
+|------------|----------------|-------------------------------------------------------------------------------------|---------------------------|
+| **Before** | 55,<br>56      | 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50,<br>2059i6f5de8460f7f227e | 55,<br>56                 |
+| **After**  | 55,<br>58      | 2059i6f5de8460f7f227e,<br>0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50 | 58,<br>55                 |
+
+Notice,
+
+- Contact ID 55 swapped lookup keys with the former Contact 56 (now 58).
+- RawContact ID 55 swapped Contact reference with RawContact 56.
+
+The Contact IDs and lookup keys got shuffled BUT the Contact-RawContact relationship remains the 
+same if using the lookup keys as point of reference! Here is another way to look at the table,
+using the lookup key as the constant...
+
+| **Lookup Key**                                            | **Before**                   | **After**                    |
+|-----------------------------------------------------------|------------------------------|------------------------------|
+| 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50 | Contact 55,<br>RawContact 55 | Contact 58,<br>RawContact 55 |
+| 2059i6f5de8460f7f227e                                     | Contact 56,<br>RawContact 56 | Contact 55,<br>RawContact 56 |
+
+Notice that the indirect relationship between the lookup key and RawContacts remains the same 
+before and after the link-unlink even though the Contact IDs changed.
+
+> As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the RawContact ID.
+> In other words, since local RawContacts are not synced or tracked in a remote database where
+> Contacts -> RawContacts mappings exist, the Contacts Provider most likely uses this 
+> "0r<RawContact ID>-" pattern to make the connection. This is not really relevant for us as we are
+> not relying on this mechanism. I'm just pointing out my observations, which could be incorrect.
+
+This means that...
+
+- If users of this library saved a reference Contact ID 55, then a link-unlink (or sync adapter 
+  functions) occur. 
+    - Getting Contact by ID 55 will result in the RawContact-Data of the former Contact 56 to be 
+      returned. This is a bug! Same goes if users saved a reference to Contact ID 56.
+- If users of this library saved a reference to the lookup keys, then a link-unlink (or sync adapter
+  functions) occur.
+    - Getting Contact by lookup key will result in the correct RawContact-Data to be returned.
+
+So when to use Contact ID vs lookup key?
+
+- Lookup key: for a reference to a Contact that needs to be loaded after some period of time.
+    - Saving/restoring activity/fragment instance state.
+    - Saving to an external database, preferences, or files.
+    - Creating shortcuts.
+- ID: for everything else.
+    - Performing read/write operations in the same function call or session in your app.
+    - Performing read/write operations that require ID (e.g. Contact photo and options).
+
+Another thing to check is what happens when associating a local RawContact to an Account (move from
+device to Account) and vice versa. Is the lookup key of the Contact affected?
+
+After associating the local RawContact to an Account...
+
+```
+#### Contacts table
+Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
+#### RawContacts table
+RawContact id: 55, contactId: 58
+```
+
+The lookup key changed but the Contact ID remained the same! In this case, loading a reference to
+the previously local Contact will fail! I verified that this is indeed the behavior of the native
+(AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while 
+having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
+not exist" message in the AOSP Contacts app!
+
+> The RawContact and its Data also remained the same in this case.
+
+Removing the account from it results in...
+
+```
+#### Contacts table
+Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
+#### RawContacts table
+RawContact id: 58, contactId: 59
+```
+
+The Contact and RawContacts row have been deleted and new rows have been created to replace them!
+I also verified that the Data rows have also been deleted and new rows have been created to 
+replace them!
+
+This stuff is not really relevant for lookup key but still good to know for implementing
+moving between accounts in the future.
+
 ### RawContacts; Accounts + Contacts
 
 The RawContacts table associates a person to an `android.accounts.Account` that it belongs to. 
@@ -291,7 +526,7 @@ in the documentation in `ContactsContract.RawContacts`;
 > it sets the ContactsContract.RawContactsColumns.DELETED flag on the raw contact and removes the 
 > raw contact from its aggregate contact. The sync adapter then deletes the raw contact from the
 > server and finalizes phone-side deletion by calling resolver.delete(...) again and passing the 
-> ContactsContract#CALLER_IS_SYNCADAPTER  query parameter. 
+> ContactsContract#CALLER_IS_SYNCADAPTER query parameter. 
 > 
 > Some sync adapters are read-only, meaning that they only sync server-side changes to the phone,
 > but not the reverse. If one of those raw contacts is marked for deletion, it will remain on the

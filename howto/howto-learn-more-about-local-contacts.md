@@ -10,7 +10,7 @@ remote service as it is not associated with any account.
 
 ## Associating a local RawContact to an Account
 
-Local RawContacts can be associated with an Account to enable syncing.
+Local RawContacts can be associated to an Account to enable syncing.
 
 For more info, read [How do I associate a local RawContacts to an Account?](/howto/howto-associate-device-local-raw-contacts-to-an-account.md)
 

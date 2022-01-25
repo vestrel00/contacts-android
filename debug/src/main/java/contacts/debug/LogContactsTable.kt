@@ -20,6 +20,7 @@ internal fun Context.logContactsTable(contentUri: Uri) {
         contentUri,
         arrayOf(
             ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.LOOKUP_KEY,
             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
             ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE,
             ContactsContract.Contacts.STARRED,
@@ -43,26 +44,24 @@ internal fun Context.logContactsTable(contentUri: Uri) {
     while (cursor.moveToNext()) {
         // Use getString instead of getLong, getInt, etc so that the value could be null.
         val id = cursor.getString(0)
-        val displayNamePrimary = cursor.getString(1)
-        val displayNameAlt = cursor.getString(2)
+        val lookupKey = cursor.getString(1)
+        val displayNamePrimary = cursor.getString(2)
+        val displayNameAlt = cursor.getString(3)
 
-        val starred = cursor.getString(3)
-        // val timesContacted = cursor.getString(4)
-        // val lastTimeContacted = cursor.getString(5)
-        val customRingtone = cursor.getString(4)
-        val sendToVoicemail = cursor.getString(5)
-        val photoFileId = cursor.getString(6)
-        val photoUri = cursor.getString(7)
-        val photoThumbnailUri = cursor.getString(8)
-        val hasPhoneNumber = cursor.getString(9)
+        val starred = cursor.getString(4)
+        val customRingtone = cursor.getString(5)
+        val sendToVoicemail = cursor.getString(6)
+        val photoFileId = cursor.getString(7)
+        val photoUri = cursor.getString(8)
+        val photoThumbnailUri = cursor.getString(9)
+        val hasPhoneNumber = cursor.getString(10)
 
         log(
             """
-                Contact id: $id, displayNamePrimary: $displayNamePrimary,
-                 displayNameAlt: $displayNameAlt, starred: $starred,
-                 customRingtone: $customRingtone, sendToVoicemail: $sendToVoicemail,
-                 photoFileId: $photoFileId, photoUri: $photoUri,
-                 photoThumbnailUri: $photoThumbnailUri,
+                Contact id: $id, lookupKey: $lookupKey,
+                 displayNamePrimary: $displayNamePrimary, displayNameAlt: $displayNameAlt, 
+                 starred: $starred, customRingtone: $customRingtone, sendToVoicemail: $sendToVoicemail,
+                 photoFileId: $photoFileId, photoUri: $photoUri, photoThumbnailUri: $photoThumbnailUri,
                  hasPhoneNumber: $hasPhoneNumber
             """.trimIndent().replace("\n", "")
         )

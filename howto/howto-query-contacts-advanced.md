@@ -100,6 +100,8 @@ val contacts = Contacts(context)
     .find()
 ```
 
+To get a Contact by lookup key, read [How do I learn more about the Contact lookup key vs ID?](/howto/howto-learn-more-contact-lookup-key.md)
+
 ## Including blank contacts
 
 The API allows you to specify if you want to include blank contacts or not,
