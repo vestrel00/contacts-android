@@ -383,9 +383,8 @@ private fun ContentResolver.rawContactIds(
 ): Set<Long> = query(
     ProfileUris.RAW_CONTACTS.uri,
     Include(RawContactsFields.Id),
-    // There may be lingering RawContacts whose associated contact was already deleted.
-    // Such RawContacts have contact id column value as null.
-    RawContactsFields.ContactId.isNotNull() and rawContactsWhere
+    // There may be RawContacts that are marked for deletion that have not yet been deleted.
+    (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere
 ) {
     mutableSetOf<Long>().apply {
         val rawContactsCursor = it.rawContactsCursor()

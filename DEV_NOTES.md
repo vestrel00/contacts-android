@@ -539,8 +539,22 @@ To delete a contacts and all associated rows, simply delete all RawContact rows 
 Contacts id. Deletion of the Contacts row and associated Data row(s) will be done automatically by
 the Contacts Provider.
 
-Note that deleting a RawContacts row may not immediately (or at all) actually delete the RawContacts
-row. In this case, it is marked as deleted and its reference to a contact id is nulled.
+Note that deleting a RawContacts row may not immediately delete the RawContacts row. In this case, 
+it is marked as deleted and its reference to a contact id is nulled. The Contact may still exist if 
+it still has at least one constituent RawContact that is not marked for deletion.
+
+> A RawContact is marked for deletion as specified by `RawContactsColumns.DELETED`.
+
+Typically, deleting RawContacts immediately removes the row from the RawContacts table. However, 
+RawContacts row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
+One of the reasons syncs do not occur is when the system sync settings are turned off for the 
+Account or there is no network connection.
+
+Such RawContacts should not be included in query results for Contacts. The AOSP and Google Contacts 
+app also does not show them.
+
+Note that local RawContacts rows (not associated with an Account) are deleted immediately as no sync
+needs to occur.
 
 ### Multiple RawContacts Per Contact
 
@@ -1047,6 +1061,24 @@ are two or more Accounts, then this does not occur. Also, this does not occur fo
 RawContact that has a group membership AND a RawContact that has no group membership.
 
 ### Groups; Deletion
+
+Similar to deleting RawContacts, deleting a Groups row may not immediately delete the Groups row. 
+In this case, it is marked as deleted. 
+
+> A Group is marked for deletion as specified by `GroupsColumns.DELETED`.
+
+Typically, deleting Groups immediately removes the row from the Groups table. However,
+Groups row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
+One of the reasons syncs do not occur is when the system sync settings are turned off for the
+Account or there is no network connection.
+
+Such Groups should not be included in query results for Contacts. The AOSP and Google Contacts app 
+also does not show them.
+
+Note that local Groups rows (not associated with an Account) are deleted immediately as no sync
+needs to occur.
+
+**Groups deletion prior to API 26**
 
 Prior to Android 8.0 (Oreo, API 26), group deletion is unpredictable. Groups that are marked for
 deletion remain in the DB and is still shown in the native Contacts app. Sometimes they do get

@@ -1252,9 +1252,11 @@ object RawContactsFields : FieldSet<RawContactsField>() {
     @JvmField
     val Options = RawContactsOptionsFields()
 
+    internal val Deleted = RawContactsField(RawContacts.DELETED)
+
     override val all by unsafeLazy {
         mutableSetOf(
-            Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType
+            Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
         ).apply {
             addAll(Options.all)
         }.toSet() // ensure that this is not modifiable at runtime

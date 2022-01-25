@@ -339,7 +339,8 @@ private fun ContentResolver.resolve(
 ): AccountsRawContactsQuery.Result = query(
     if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
     include,
-    RawContactsFields.ContactId.isNotNull() and rawContactsWhere and where,
+    // There may be RawContacts that are marked for deletion that have not yet been deleted.
+    (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere and where,
     sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
 ) {
     val accountRawContactsMap = mutableMapOf<Account?, MutableList<BlankRawContact>>()

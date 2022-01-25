@@ -675,10 +675,14 @@ internal fun ContentResolver.resolve(
     if (includeBlanks) {
         query(
             Table.RawContacts, include.onlyRawContactsFields(),
+            (RawContactsFields.Deleted notEqualTo true) and
             if (contactIds != null) {
+                // Note that we do not need to check for the DELETED flag here because RawContacts
+                // that are marked for deletion also have a null Contact ID reference.
                 RawContactsFields.ContactId `in` contactIds
             } else {
-                RawContactsFields.ContactId.isNotNull()
+                // There may be RawContacts that are marked for deletion that have not yet been deleted.
+                RawContactsFields.Deleted notEqualTo true
            },
             processCursor = contactsMapper::processRawContactsCursor
         )
@@ -707,9 +711,8 @@ internal fun ContentResolver.findContactIdsInRawContactsTable(
 ): Set<Long> = query(
     Table.RawContacts,
     Include(RawContactsFields.ContactId),
-    // There may be lingering RawContacts whose associated contact was already deleted.
-    // Such RawContacts have contact id column value as null.
-    RawContactsFields.ContactId.isNotNull() and rawContactsWhere,
+    // There may be RawContacts that are marked for deletion that have not yet been deleted.
+    (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere,
     suppressDbExceptions = suppressDbExceptions
 ) {
     mutableSetOf<Long>().apply {

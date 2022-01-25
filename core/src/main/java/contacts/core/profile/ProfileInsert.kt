@@ -407,9 +407,8 @@ private class ProfileInsertImpl(
 private fun ContentResolver.hasProfileRawContactForAccount(account: Account?): Boolean = query(
     ProfileUris.RAW_CONTACTS.uri,
     Include(RawContactsFields.Id),
-    // There may be lingering RawContacts whose associated contact was already deleted.
-    // Such RawContacts have contact id column value as null.
-    RawContactsFields.ContactId.isNotNull() and account.toRawContactsWhere()
+    // There may be RawContacts that are marked for deletion that have not yet been deleted.
+    (RawContactsFields.Deleted notEqualTo true) and account.toRawContactsWhere()
 ) {
     it.getNextOrNull { it.rawContactsCursor().rawContactId } != null
 } ?: false

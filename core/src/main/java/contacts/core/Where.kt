@@ -322,6 +322,8 @@ inline operator fun <T : Field, FS : FieldSet<T>> FS.invoke(where: FS.() -> Wher
     where(this)
 
 /**
+ * ## Developer notes
+ *
  * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
  * making misleading queries.
  *
@@ -343,6 +345,8 @@ fun <T : Field> T.isNotNull(): Where<T> = Where(
 )
 
 /**
+ * ## Developer notes
+ *
  * Note that functions for "isNull" or "isNullOrEmpty" are not exposed to consumers to prevent
  * making misleading queries.
  *
@@ -362,6 +366,8 @@ fun <T : Field> T.isNotNullOrEmpty(): Where<T> = isNotNull() and notEqualTo("")
 /**
  * Keep this function internal. Do not expose to consumers. Read the docs on [isNotNull] or
  * [isNotNullOrEmpty].
+ *
+ * Do not use this for Data table queries.
  */
 internal fun <T : Field> T.isNull(): Where<T> = Where(
     lhs = FieldHolder(this),
