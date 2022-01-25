@@ -69,22 +69,26 @@ For more info, read [How do I include only the data that I want?](/howto/howto-i
 
 ## How to get Contacts using lookup keys?
 
-To get a Contact by lookup key,
+Use the `decomposedLookupKeys` functions in `contacts.core.util.ContactLookupKey.kt` to get contacts 
+by lookup key,
 
 ```kotlin
-val contact = Contacts(context).query().where { Contact.LookupKey contains lookupKey }.find()
+val contacts = query.where { decomposedLookupKeys(lookupKeys) whereOr { Contact.LookupKey contains it } }.find()
 ```
 
-Unlike getting Contact by ID, you must use `contains` instead of `equalTo`.
-
-To get several Contacts by a list of lookup keys,
+Or use the `lookupKeyIn` extensions in `contacts.core.util.ContactLookupKey.kt` to get contacts
+by lookup key,
 
 ```kotlin
-val contact = Contacts(context).query().where { lookupKeys whereOr { Contact.LookupKey contains it } }.find()
+val contacts = query.where { Contact.lookupKeyIn(lookupKeys) }.find()
 ```
 
-Unlike getting Contacts by list of IDs, you must use `contains` in combination with `whereOr`
-instead of just `in`.
+For an explanation on why you should use those functions instead of the lookup key directly,
+read the function documentation.
+
+Note that if the lookup key is a reference to a linked Contact (a Contact with two or more
+constituent RawContacts), and the linked Contact is unlinked, then the query will return
+multiple Contacts.
 
 > For more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
 
@@ -150,7 +154,7 @@ change due to aggregation and sync. The same goes for the `LOOKUP_KEY` but unlik
 still be used to find the aggregate contact.
 
 Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated 
-with an Account ad are synced).
+with an Account and are synced).
 
 > Note that I did the following investigation with a much larger data set. I simplified it here for brevity.
 
@@ -196,8 +200,7 @@ RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawCon
 Notice,
 
 - Contact with ID 56 has been deleted.
-- Contact with ID 55 still exist with the lookup keys of both Contact 55 and 56 combined separated
-  by a ".".
+- Contact with ID 55 still exist with the **lookup keys** of both Contact 55 and 56 **combined separated by a "."**.
     - This holds true in cases where two or more local-only or non-local-only RawContacts are linked.
 - RawContacts remain unchanged except reference to Contact 56 has been replaced with 55.
 - The primary display name of Contact 55 came from RawContact 55 prior to the link and now comes

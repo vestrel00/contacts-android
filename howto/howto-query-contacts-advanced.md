@@ -100,24 +100,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-To get a Contact by lookup key,
-
-```kotlin
-val contact = Contacts(context).query().where { Contact.LookupKey contains lookupKey }.find()
-```
-
-Unlike getting Contact by ID, you must use `contains` instead of `equalTo`.
-
-To get several Contacts by a list of lookup keys,
-
-```kotlin
-val contact = Contacts(context).query().where { lookupKeys whereOr { Contact.LookupKey contains it } }.find()
-```
-
-Unlike getting Contacts by list of IDs, you must use `contains` in combination with `whereOr`
-instead of just `in`.
-
-> For more info, read [How do I learn more about the Contact lookup key vs ID?](/howto/howto-learn-more-contact-lookup-key.md)
+To get a Contact by lookup key, read [How do I learn more about the Contact lookup key vs ID?](/howto/howto-learn-more-contact-lookup-key.md)
 
 ## Including blank contacts
 

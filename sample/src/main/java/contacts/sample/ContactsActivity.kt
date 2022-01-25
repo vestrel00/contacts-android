@@ -130,24 +130,20 @@ class ContactsActivity : BaseActivity() {
             searchResults = contacts.broadQueryWithPermission()
                 .accounts(selectedAccounts)
                 .include(
+                    Fields.Contact.LookupKey,
                     Fields.Contact.DisplayNamePrimary,
                     Fields.Email.Address,
                     Fields.Phone.Number
                 )
                 .whereAnyContactDataPartiallyMatches(searchText)
                 .orderBy(ContactsFields.DisplayNamePrimary.asc())
-                // Not showing how to load x number of contacts at a time and then loading more when
+                // Not showing how to low 4xad x number of contacts at a time and then loading more when
                 // scrolled to the very bottom of the list for brevity. Consumers can figure it out.
                 // .offset(...)
                 // .limit(...)
                 .findWithContext()
 
             setContactsAdapterItems()
-
-            // Uncommenting this may make the UI thread choppy because it may result in logging
-            // thousands of table rows. Only use this for debugging purposes.
-            // TODO Make sure to comment out the below and remove all logging before going public!
-            // this@ContactsActivity.logContactsProviderTables()
         }
     }
 
@@ -190,9 +186,9 @@ class ContactsActivity : BaseActivity() {
 
     private inner class OnContactClickListener : AdapterView.OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            val contactId = searchResults[position].id
-
-            ContactDetailsActivity.viewContactDetails(this@ContactsActivity, contactId)
+            searchResults[position].lookupKey?.let {
+                ContactDetailsActivity.viewContactDetails(this@ContactsActivity, it)
+            }
         }
     }
 }

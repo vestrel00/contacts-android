@@ -149,7 +149,7 @@ change due to aggregation and sync. The same goes for the `LOOKUP_KEY` but unlik
 still be used to find the aggregate contact.
 
 Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
-with an Account ad are synced).
+with an Account and are synced).
 
 > Note that I did the following investigation with a much larger data set. I simplified it here for brevity.
 
@@ -195,8 +195,7 @@ RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawCon
 Notice,
 
 - Contact with ID 56 has been deleted.
-- Contact with ID 55 still exist with the lookup keys of both Contact 55 and 56 combined separated 
-  by a ".". 
+- Contact with ID 55 still exist with the **lookup keys of both Contact 55 and 56 combined separated by a "."**. 
     - This holds true in cases where two or more local-only or non-local-only RawContacts are linked.
 - RawContacts remain unchanged except reference to Contact 56 has been replaced with 55.
 - The primary display name of Contact 55 came from RawContact 55 prior to the link and now comes

@@ -234,24 +234,26 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      * - Performing read/write operations in the same function call or session in your app.
      * - Performing read/write operations that require ID (e.g. Contact photo and options).
      *
-     * ## How to use the Contact lookup key?
+     * ## How to get Contacts using lookup keys?
      *
-     * To get a Contact by lookup key,
-     *
-     * ```kotlin
-     * val contact = Contacts(context).query().where { Contact.LookupKey contains lookupKey }.find()
-     * ```
-     *
-     * Unlike getting Contact by ID, you must use `contains` instead of `equalTo`.
-     *
-     * To get several Contacts by a list of lookup keys,
+     * Use the [contacts.core.util.decomposedLookupKeys] to get contacts by lookup key,
      *
      * ```kotlin
-     * val contact = Contacts(context).query().where { lookupKeys whereOr { Contact.LookupKey contains it } }.find()
+     * val contacts = query.where { decomposedLookupKeys(lookupKeys) whereOr { Contact.LookupKey contains it } }.find()
      * ```
      *
-     * Unlike getting Contacts by list of IDs, you must use `contains` in combination with `whereOr`
-     * instead of just `in`.
+     * Or use [contacts.core.util.lookupKeyIn],
+     *
+     * ```kotlin
+     * val contacts = query.where { Contact.lookupKeyIn(lookupKeys) }.find()
+     * ```
+     *
+     * For an explanation on why you should use those functions instead of the lookup key directly,
+     * read the function documentation.
+     *
+     * Note that if the lookup key is a reference to a linked Contact (a Contact with two or more
+     * constituent RawContacts), and the linked Contact is unlinked, then the query will return
+     * multiple Contacts.
      */
     val lookupKey: String?
 

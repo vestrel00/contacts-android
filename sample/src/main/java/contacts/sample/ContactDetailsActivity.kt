@@ -9,10 +9,9 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 
 /**
- * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_ID]. Also
+ * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_LOOKUP_KEY]. Also
  * provides functions to create new contacts, edit existing contacts, and deleting existing
  * contacts.
  *
@@ -47,7 +46,7 @@ import java.lang.IllegalStateException
  */
 class ContactDetailsActivity : BaseActivity() {
 
-    private var contactId: Long? = null
+    private var contactLookupKey: String? = null
 
     private var mode: Mode = Mode.VIEW
         set(value) {
@@ -66,10 +65,10 @@ class ContactDetailsActivity : BaseActivity() {
         contactView = findViewById(R.id.contactView)
 
         if (savedInstanceState != null) {
-            contactId = savedInstanceState.getLong(CONTACT_ID)
+            contactLookupKey = savedInstanceState.getString(CONTACT_LOOKUP_KEY)
             mode = savedInstanceState.getSerializable(MODE) as Mode
         } else {
-            contactId = intent.contactId
+            contactLookupKey = intent.contactLookupKey
             mode = intent.mode
         }
     }
@@ -123,7 +122,7 @@ class ContactDetailsActivity : BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(CONTACT_ID, contactId)
+        outState.putSerializable(CONTACT_LOOKUP_KEY, contactLookupKey)
         outState.putSerializable(MODE, mode)
     }
 
@@ -145,8 +144,8 @@ class ContactDetailsActivity : BaseActivity() {
     }
 
     private suspend fun loadContact() {
-        val loadSuccess = contactId?.let {
-            contactView.loadContactWithId(it, contacts)
+        val loadSuccess = contactLookupKey?.let {
+            contactView.loadContactWithLookupKey(it, contacts)
         } == true
 
         if (!loadSuccess) {
@@ -163,8 +162,8 @@ class ContactDetailsActivity : BaseActivity() {
     private fun createNewContact() = launch {
         showProgressDialog()
 
-        contactId = contactView.createNewContact(contacts)
-        val createSuccess = contactId != null
+        contactLookupKey = contactView.createNewContact(contacts)
+        val createSuccess = contactLookupKey != null
 
         val resultMessageRes = if (createSuccess) {
             R.string.contact_details_create_success
@@ -221,10 +220,10 @@ class ContactDetailsActivity : BaseActivity() {
     companion object {
 
         // region VIEW
-        fun viewContactDetails(activity: Activity, contactId: Long) {
+        fun viewContactDetails(activity: Activity, contactLookupKey: String) {
             val intent = Intent(activity, ContactDetailsActivity::class.java).apply {
                 putExtra(REQUEST_CODE, REQUEST_VIEW)
-                putExtra(CONTACT_ID, contactId)
+                putExtra(CONTACT_LOOKUP_KEY, contactLookupKey)
             }
 
             activity.startActivityForResult(intent, REQUEST_VIEW)
@@ -241,7 +240,7 @@ class ContactDetailsActivity : BaseActivity() {
         fun editContactDetails(activity: Activity, contactId: Long) {
             val intent = Intent(activity, ContactDetailsActivity::class.java).apply {
                 putExtra(REQUEST_CODE, REQUEST_EDIT)
-                putExtra(CONTACT_ID, contactId)
+                putExtra(CONTACT_LOOKUP_KEY, contactId)
             }
 
             activity.startActivityForResult(intent, REQUEST_EDIT)
@@ -306,15 +305,15 @@ private val Intent.mode: Mode
     }
 
 /**
- * The id of an existing Contact. Defaults to -1 if not provided.
+ * The lookup key of an existing Contact. Defaults to -null if not provided.
  */
-private val Intent.contactId: Long
-    get() = getLongExtra(CONTACT_ID, -1L)
+private val Intent.contactLookupKey: String?
+    get() = getStringExtra(CONTACT_LOOKUP_KEY)
 
 private const val REQUEST_VIEW = 111
 private const val REQUEST_EDIT = 222
 private const val REQUEST_CREATE = 333
 
 private const val REQUEST_CODE = "requestCode"
-private const val CONTACT_ID = "contactId"
+private const val CONTACT_LOOKUP_KEY = "contactLookupKey"
 private const val MODE = "mode"

@@ -407,7 +407,7 @@ display name somehow. I'm not sure how. If someone figures it out, please let me
 updating the Contact `DISPLAY_NAME` directly but it does not work. Setting a name row as default
 also does not affect the Contact `DISPLAY_NAME`.
 
-## Effects of linking/unlinking Contact ID
+## Effects of linking/unlinking contacts
 
 When two or more Contacts (along with their constituent RawContacts) are linked into a single
 Contact those Contacts will be merged into one of the existing Contact row. The Contacts that have

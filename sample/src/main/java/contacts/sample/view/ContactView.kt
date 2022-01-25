@@ -21,6 +21,7 @@ import contacts.core.Contacts
 import contacts.core.Fields
 import contacts.core.entities.*
 import contacts.core.equalTo
+import contacts.core.util.lookupKeyIn
 import contacts.permissions.deleteWithPermission
 import contacts.permissions.insertWithPermission
 import contacts.permissions.queryWithPermission
@@ -185,13 +186,13 @@ class ContactView @JvmOverloads constructor(
     }
 
     /**
-     * Loads the contact with the given [contactId] using the given [contacts] API.
+     * Loads the contact with the given [lookupKey] using the given [contacts] API.
      *
      * Returns true if the load succeeded.
      */
-    suspend fun loadContactWithId(contactId: Long, contacts: Contacts): Boolean {
+    suspend fun loadContactWithLookupKey(lookupKey: String, contacts: Contacts): Boolean {
         val contact = contacts.queryWithPermission()
-            .where { Contact.Id equalTo contactId }
+            .where { Contact.lookupKeyIn(lookupKey) }
             .findWithContext()
             .firstOrNull()
             ?.mutableCopy()
@@ -213,9 +214,9 @@ class ContactView @JvmOverloads constructor(
     /**
      * Inserts the new (raw) contact to the database using the given [contacts] API.
      *
-     * Returns the newly created contact's ID. Returns null if the insert failed.
+     * Returns the newly created contact's lookup key. Returns null if the insert failed.
      */
-    suspend fun createNewContact(contacts: Contacts): Long? {
+    suspend fun createNewContact(contacts: Contacts): String? {
         val rawContact = newRawContactView?.rawContact
         if (rawContact == null || rawContact !is NewRawContact) {
             // Only new RawContacts can be inserted.
@@ -231,7 +232,7 @@ class ContactView @JvmOverloads constructor(
 
         // TODO Make sure that if a contact only has a photo, that it still gets inserted!
 
-        return newContact?.id
+        return newContact?.lookupKey
     }
 
     /**
