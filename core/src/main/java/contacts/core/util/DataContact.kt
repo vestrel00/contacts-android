@@ -1,10 +1,11 @@
 package contacts.core.util
 
-import contacts.core.Contacts
-import contacts.core.Fields
+import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.entities.ExistingDataEntity
-import contacts.core.equalTo
+import contacts.core.entities.cursor.dataCursor
+import contacts.core.entities.table.ProfileUris
+import contacts.core.entities.table.Table
 
 /**
  * Returns the [Contact] with the [ExistingDataEntity.contactId].
@@ -30,28 +31,15 @@ import contacts.core.equalTo
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
 fun ExistingDataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
-    contacts.getContactIdFromDataTable(id, cancel)?.let { contactIdFromDb ->
+    contacts.getContactIdFromDataTable(id)?.let { contactIdFromDb ->
         contacts.findContactWithId(contactIdFromDb, cancel)
     }
 
-private fun Contacts.getContactIdFromDataTable(
-    dataId: Long,
-    cancel: () -> Boolean
-): Long? = if (dataId.isProfileId) {
-    // Remember there is only one profile Contact. We don't really need to perform this query
-    // because even if the Profile Contact ID changed due to sync or aggregation, the ID will
-    // still be a profile ID. The query in which the value this returns will still be correct.
-    // This query is only done for documentation / OCD purposes only...
-    profile()
-        .query()
-        .include(Fields.Contact.Id)
-        .find(cancel)
-        .contact?.id
-} else {
-    query()
-        .include(Fields.Contact.Id)
-        .where { DataId equalTo dataId }
-        .find(cancel)
-        .firstOrNull()
-        ?.id
-}
+private fun Contacts.getContactIdFromDataTable(dataId: Long): Long? =
+    contentResolver.query(
+        if (dataId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri,
+        Include(Fields.Contact.Id),
+        Fields.DataId equalTo dataId
+    ) {
+        it.getNextOrNull { it.dataCursor().contactId }
+    }
