@@ -22,7 +22,8 @@ fun Context.logGroupsTable() {
             ContactsContract.Groups.AUTO_ADD,
             ContactsContract.Groups.SHOULD_SYNC,
             ContactsContract.Groups.ACCOUNT_NAME,
-            ContactsContract.Groups.ACCOUNT_TYPE
+            ContactsContract.Groups.ACCOUNT_TYPE,
+            ContactsContract.Groups.DELETED
         ),
         null,
         null,
@@ -42,12 +43,14 @@ fun Context.logGroupsTable() {
         val shouldSync = cursor.getString(6)
         val accountName = cursor.getString(7)
         val accountType = cursor.getString(8)
+        val deleted = cursor.getString(9)
 
         log(
             """
                 Group id: $id, systemId: $systemId, title: $title,
                  readOnly: $readOnly, favorites: $favorites, autoAdd: $autoAdd,
-                 shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType
+                 shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType,
+                 deleted: $deleted
             """.trimIndent().replace("\n", "")
         )
     }

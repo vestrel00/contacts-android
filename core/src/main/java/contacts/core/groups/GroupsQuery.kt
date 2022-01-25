@@ -349,15 +349,19 @@ private fun ContentResolver.resolve(
 ): GroupsQuery.Result = query(
     Table.Groups,
     include,
-    if (rawContactsWhere != null) {
-        if (where != null) {
-            rawContactsWhere and where
-        } else {
-            rawContactsWhere
-        }
-    } else {
-        where
-    },
+    // There may be Groups that are marked for deletion that have not yet been deleted.
+    (GroupsFields.Deleted notEqualTo true)
+        .and(
+            if (rawContactsWhere != null) {
+                if (where != null) {
+                    rawContactsWhere and where
+                } else {
+                    rawContactsWhere
+                }
+            } else {
+                where
+            }
+        ),
     sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
 ) {
     val groupsList = mutableListOf<Group>()

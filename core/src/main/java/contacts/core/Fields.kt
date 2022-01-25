@@ -1203,8 +1203,10 @@ object GroupsFields : FieldSet<GroupsField>() {
     // From protected SyncColumns
     val AccountType = GroupsField(Groups.ACCOUNT_TYPE)
 
+    internal val Deleted = GroupsField(Groups.DELETED)
+
     override val all by unsafeLazy {
-        setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType)
+        setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType, Deleted)
     }
 
     /**
