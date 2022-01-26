@@ -1,6 +1,5 @@
 package contacts.core.groups
 
-import android.os.Build
 import contacts.core.Contacts
 
 /**
@@ -37,9 +36,9 @@ interface Groups {
     fun update(): GroupsUpdate
 
     /**
-     * Returns a new [GroupsDelete] instance if API level is 26 or above. Returns null otherwise.
+     * Returns a new [GroupsDelete] instance.
      */
-    fun delete(): GroupsDelete?
+    fun delete(): GroupsDelete
 
     /**
      * A reference to the [Contacts] instance that constructed this. This is mostly used internally
@@ -62,9 +61,5 @@ private class GroupsImpl(override val contactsApi: Contacts) : Groups {
 
     override fun update() = GroupsUpdate(contactsApi)
 
-    override fun delete() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        GroupsDelete(contactsApi)
-    } else {
-        null
-    }
+    override fun delete() = GroupsDelete(contactsApi)
 }

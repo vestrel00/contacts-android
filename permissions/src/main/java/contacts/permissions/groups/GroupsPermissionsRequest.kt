@@ -57,7 +57,7 @@ suspend fun Groups.updateWithPermission(): GroupsUpdate {
  *
  * If permissions are already granted, then immediately returns a new [GroupsDelete] instance.
  */
-suspend fun Groups.deleteWithPermission(): GroupsDelete? {
+suspend fun Groups.deleteWithPermission(): GroupsDelete {
     if (!contactsApi.permissions.canUpdateDelete()) {
         contactsApi.applicationContext.requestWritePermission()
     }
