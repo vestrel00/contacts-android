@@ -198,6 +198,7 @@ Log.d(
     "Contact",
     """
         ID: ${contact.id}
+        Lookup Key: ${contact.lookupKey}
 
         Display name: ${contact.displayNamePrimary}
         Display name alt: ${contact.displayNameAlt}
@@ -238,6 +239,7 @@ Log.d(
     "Contact",
     """
         ID: ${contact.id}
+        Lookup Key: ${contact.lookupKey}
 
         Display name: ${contact.displayNamePrimary}
         Display name alt: ${contact.displayNameAlt}

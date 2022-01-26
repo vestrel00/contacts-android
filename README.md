@@ -53,10 +53,10 @@ The core library supports;
   [address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website](/howto/howto-learn-more-about-api-entities.md).
 - [Custom data integration](/howto/howto-integrate-custom-data.md).
 - [Broad queries](/howto/howto-query-contacts.md) and [advanced queries](/howto/howto-query-contacts-advanced.md)
-  of Contacts and RawContacts from zero or more Accounts. [Include only desired fields](/howto/howto-include-only-desired-data.md)
-  in the results (e.g. name and phone number) to conserve CPU and memory. Specify matching criteria 
-  in an SQL WHERE clause fashion using Kotlin infix functions. **Order by (sort)** contact table 
-  columns. **Limit** and **offset** functions.
+  of Contacts and RawContacts from zero or more Accounts and/or Groups. Optionally use [Contact lookup keys](/howto/howto-learn-more-contact-lookup-key.md).
+  [Include only desired fields](/howto/howto-include-only-desired-data.md) in the results (e.g. name and phone number) to conserve CPU and memory. 
+  Specify matching criteria in an SQL WHERE clause fashion using Kotlin infix functions. 
+  **Order by (sort)** contact table columns. **Limit** and **offset** functions.
 - [Insert](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
   causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
 - [Update](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
@@ -219,6 +219,7 @@ Log.d(
     "Contact",
     """
         ID: ${contact.id}
+        Lookup Key: ${contact.lookupKey}
 
         Display name: ${contact.displayNamePrimary}
         Display name alt: ${contact.displayNameAlt}
