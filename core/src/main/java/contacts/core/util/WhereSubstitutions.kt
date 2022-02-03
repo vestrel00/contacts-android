@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import android.content.ContentResolver
-import android.util.Log
 import contacts.core.*
 
 /**
@@ -155,8 +154,6 @@ internal fun <T : Field, R : Field> Where<T>.copyWithFieldValueSubstitutions(
  *
  * where  -> (Email or Phone) and (Organization or Website)
  * reduce -> (ContactIDs) and (Organization or Website)
- * reduce -> (ContactIDs) and (ContactIDs)
- * optimize -> ContactIDs intersect ContactIDs
  *
  * The idea is to reduce the amount of mimetype-aware matches such that there is 0 mimetype-aware
  * match in one side of the AND.
@@ -169,41 +166,50 @@ internal fun ContentResolver.reduce(
 ): Where<AbstractDataField> = if (cancel()) {
     where
 } else {
-
-    Log.d("YOLO", "WHERE: $where")
-
     where.copyWithSubstitutions { lhs, operator, rhs, options, isRedacted ->
-        Log.d(
-            "YOLO",
-            """
-                substitute...
-                lhs: $lhs
-                operator: $operator
-                rhs: $rhs
-            """.trimIndent()
-        )
-
         // The following code block assumes that the where binary tree is being traversed in
         // post-order, making substitutions to reduce the number of mimeTypes and keep the
         // aggregate mimetype count of lhs and rhs to at most one.
 
-        if (operator == Operator.Combine.And && TODO()) {
-            // Operator is AND plus TODO...
+        if (
+            operator == Operator.Combine.And &&
+            (lhs.mimeTypes.isNotEmpty() && rhs.mimeTypes.isNotEmpty()) &&
+            lhs.mimeTypes != rhs.mimeTypes
+        ) {
+            // Reduce the side that has the lesser amount of unique mime types.
+            val lhsHasLessMimeTypes = lhs.mimeTypes.size < rhs.mimeTypes.size
+            val lhsHasContactIdAccumulator = lhs.hasContactIdAccumulator
+            val rhsHasContactIdAccumulator = rhs.hasContactIdAccumulator
+
+            // Whichever side has the ContactId accumulator gets priority. Otherwise, priority is
+            // determined based on mime type count (lower mimetype count, higher priority).
+            val reduceLhs = lhsHasContactIdAccumulator ||
+                    (lhsHasLessMimeTypes && !rhsHasContactIdAccumulator)
+
             Where(
-                WhereHolder(Fields.Contact.Id `in` findContactIdsInDataTable(lhs, cancel)),
+                WhereHolder(
+                    if (reduceLhs) {
+                        Fields.Contact.Id `in` findContactIdsInDataTable(lhs, cancel)
+                    } else {
+                        lhs
+                    }
+                ),
                 operator,
-                WhereHolder(rhs),
+                WhereHolder(
+                    if (reduceLhs) {
+                        rhs
+                    } else {
+                        Fields.Contact.Id `in` findContactIdsInDataTable(rhs, cancel)
+                    }
+                ),
                 options,
                 isRedacted
             )
-
         } else {
             // No need to reduce. Just return this.
             // E.G. Email OR Phone, ContactIDs and Phone, ContactIDs, Email AND Email
             Where(WhereHolder(lhs), operator, WhereHolder(rhs), options, isRedacted)
         }
-    }.apply {
-        Log.d("YOLO", "REDUCED: $this")
     }
 }
 
@@ -248,3 +254,16 @@ private fun <T : Field> Where<T>.copyWithSubstitutions(
         "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
     )
 }
+
+private val Where<*>.hasContactIdAccumulator: Boolean
+    get() = if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
+        // Base case.
+        lhs.field == Fields.Contact.Id && operator == Operator.Match.In
+    } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
+        // Recursive case.
+        lhs.where.hasContactIdAccumulator || rhs.where.hasContactIdAccumulator
+    } else {
+        throw ContactsException(
+            "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
+        )
+    }

@@ -210,6 +210,19 @@ interface Query : CrudApi {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      *
+     * For every usage of the `and` operator where the left-hand-side and right-hand-side are
+     * different data kinds, an internal database query is performed. This is due to the way the
+     * Data table is structured in relation to Contacts. For example,
+     *
+     * ```kotlin
+     * Email.Address.isNotNull() and Phone.Number.isNotNull() and Address.FormattedAddress.isNotNull()
+     * ```
+     *
+     * The above will require two additional internal database queries in order to simplify the
+     * query such that it can actually provide matching Contacts.
+     *
+     * Using the `or` operator does not have this performance hit.
+     *
      * ## Blank Contacts
      *
      * This where clause is only used to query the Data table. Some contacts do not have any Data

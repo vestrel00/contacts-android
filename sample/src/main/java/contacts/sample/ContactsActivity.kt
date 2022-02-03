@@ -12,16 +12,16 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
 import contacts.async.findWithContext
-import contacts.core.*
+import contacts.core.ContactsFields
+import contacts.core.Fields
+import contacts.core.asc
 import contacts.core.entities.Contact
-import contacts.core.util.*
+import contacts.core.util.emails
+import contacts.core.util.phones
 import contacts.permissions.broadQueryWithPermission
-import contacts.permissions.queryWithPermission
 import contacts.ui.text.AbstractTextWatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Displays a search field that allows users to broadly search for contacts using the Contacts
@@ -145,12 +145,6 @@ class ContactsActivity : BaseActivity() {
                 .findWithContext()
 
             setContactsAdapterItems()
-
-            contacts.queryWithPermission()
-                .where {
-                    Email.Address.isNotNull() and Phone.Number.isNotNull() and Address.FormattedAddress.isNotNull()
-                }
-                .find()
         }
     }
 

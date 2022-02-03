@@ -597,11 +597,11 @@ class Where<out T : Field> private constructor(
      */
     internal val mimeTypes: Set<MimeType> by unsafeLazy {
         mutableSetOf<MimeType>().apply {
-            if (lhs is FieldHolder) {
+            if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
                 if (lhs.field is DataField) {
                     add(lhs.field.mimeType)
                 }
-            } else if (lhs is WhereHolder && rhs is WhereHolder) {
+            } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
                 addAll(lhs.where.mimeTypes)
                 addAll(rhs.where.mimeTypes)
             } else {
