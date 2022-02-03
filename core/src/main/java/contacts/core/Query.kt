@@ -9,10 +9,7 @@ import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.mapper.ContactsMapper
 import contacts.core.entities.table.Table
-import contacts.core.util.isEmpty
-import contacts.core.util.query
-import contacts.core.util.toRawContactsWhere
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * Queries the Contacts Provider tables and returns a list of contacts matching a specific search
@@ -212,6 +209,19 @@ interface Query : CrudApi {
      * This may require one or more additional queries, internally performed in this function, which
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
+     *
+     * For every usage of the `and` operator where the left-hand-side and right-hand-side are
+     * different data kinds, an internal database query is performed. This is due to the way the
+     * Data table is structured in relation to Contacts. For example,
+     *
+     * ```kotlin
+     * Email.Address.isNotNull() and Phone.Number.isNotNull() and Address.FormattedAddress.isNotNull()
+     * ```
+     *
+     * The above will require two additional internal database queries in order to simplify the
+     * query such that it can actually provide matching Contacts.
+     *
+     * Using the `or` operator does not have this performance hit.
      *
      * ## Blank Contacts
      *
@@ -582,7 +592,7 @@ private fun ContentResolver.resolve(
     // Get Contact Ids matching where from the Data table. If where is null, skip.
     if (where != null && !cancel()) {
         contactIds = mutableSetOf<Long>().apply {
-            addAll(findContactIdsInDataTable(where, cancel))
+            addAll(findContactIdsInDataTable(reduce(where, cancel), cancel))
         }
 
         // Get the Contacts Ids of blank RawContacts and blank Contacts matching the where from the
@@ -676,14 +686,14 @@ internal fun ContentResolver.resolve(
         query(
             Table.RawContacts, include.onlyRawContactsFields(),
             (RawContactsFields.Deleted notEqualTo true) and
-            if (contactIds != null) {
-                // Note that we do not need to check for the DELETED flag here because RawContacts
-                // that are marked for deletion also have a null Contact ID reference.
-                RawContactsFields.ContactId `in` contactIds
-            } else {
-                // There may be RawContacts that are marked for deletion that have not yet been deleted.
-                RawContactsFields.Deleted notEqualTo true
-           },
+                    if (contactIds != null) {
+                        // Note that we do not need to check for the DELETED flag here because RawContacts
+                        // that are marked for deletion also have a null Contact ID reference.
+                        RawContactsFields.ContactId `in` contactIds
+                    } else {
+                        // There may be RawContacts that are marked for deletion that have not yet been deleted.
+                        RawContactsFields.Deleted notEqualTo true
+                    },
             processCursor = contactsMapper::processRawContactsCursor
         )
     }
@@ -694,45 +704,51 @@ internal fun ContentResolver.resolve(
 
 private fun ContentResolver.findContactIdsInContactsTable(
     contactsWhere: Where<ContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
-): Set<Long> = query(
-    Table.Contacts, Include(ContactsFields.Id), contactsWhere,
-    suppressDbExceptions = suppressDbExceptions
-) {
-    mutableSetOf<Long>().apply {
-        val contactsCursor = it.contactsCursor()
-        while (!cancel() && it.moveToNext()) {
-            add(contactsCursor.contactId)
+): Set<Long> = if (cancel()) emptySet() else {
+    query(
+        Table.Contacts, Include(ContactsFields.Id), contactsWhere,
+        suppressDbExceptions = suppressDbExceptions
+    ) {
+        mutableSetOf<Long>().apply {
+            val contactsCursor = it.contactsCursor()
+            while (!cancel() && it.moveToNext()) {
+                add(contactsCursor.contactId)
+            }
         }
-    }
-} ?: emptySet()
+    } ?: emptySet()
+}
 
 internal fun ContentResolver.findContactIdsInRawContactsTable(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
-): Set<Long> = query(
-    Table.RawContacts,
-    Include(RawContactsFields.ContactId),
-    // There may be RawContacts that are marked for deletion that have not yet been deleted.
-    (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere,
-    suppressDbExceptions = suppressDbExceptions
-) {
-    mutableSetOf<Long>().apply {
-        val rawContactsCursor = it.rawContactsCursor()
-        while (!cancel() && it.moveToNext()) {
-            add(rawContactsCursor.contactId)
+): Set<Long> = if (cancel()) emptySet() else {
+    query(
+        Table.RawContacts,
+        Include(RawContactsFields.ContactId),
+        // There may be RawContacts that are marked for deletion that have not yet been deleted.
+        (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere,
+        suppressDbExceptions = suppressDbExceptions
+    ) {
+        mutableSetOf<Long>().apply {
+            val rawContactsCursor = it.rawContactsCursor()
+            while (!cancel() && it.moveToNext()) {
+                add(rawContactsCursor.contactId)
+            }
         }
-    }
-} ?: emptySet()
+    } ?: emptySet()
+}
 
 internal fun ContentResolver.findContactIdsInDataTable(
     where: Where<AbstractDataField>?, cancel: () -> Boolean
-): Set<Long> = query(Table.Data, Include(Fields.Contact.Id), where) {
-    val contactIds = mutableSetOf<Long>()
-    val contactsCursor = it.dataContactsCursor()
-    while (!cancel() && it.moveToNext()) {
-        contactIds.add(contactsCursor.contactId)
-    }
-    contactIds
-} ?: emptySet()
+): Set<Long> = if (cancel()) emptySet() else {
+    query(Table.Data, Include(Fields.Contact.Id), where) {
+        val contactIds = mutableSetOf<Long>()
+        val contactsCursor = it.dataContactsCursor()
+        while (!cancel() && it.moveToNext()) {
+            contactIds.add(contactsCursor.contactId)
+        }
+        contactIds
+    } ?: emptySet()
+}
 
 private class QueryResult private constructor(
     contacts: List<Contact>,

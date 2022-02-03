@@ -55,7 +55,7 @@ private class DataImpl(
     private val isProfile: Boolean
 ) : Data {
 
-    override fun query() = DataQuery(contactsApi, isProfile)
+    override fun query() = DataQueryFactory(contactsApi, isProfile)
 
     override fun update() = DataUpdate(contactsApi, isProfile)
 

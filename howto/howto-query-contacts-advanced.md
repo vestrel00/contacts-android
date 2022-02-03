@@ -319,6 +319,25 @@ val contacts = Contacts(context)
     .find()
 ```
 
+### Performance
+
+Using `where` may require one or more additional queries, internally performed by the API, which
+increases the time it takes for the query to complete. Therefore, you should only use `where` if 
+you actually need it.
+
+For every usage of the `and` operator where the left-hand-side and right-hand-side are different 
+data kinds, an internal database query is performed. This is due to the way the Data table is 
+structured in relation to Contacts. For example,
+
+```kotlin
+Email.Address.isNotNull() and Phone.Number.isNotNull() and Address.FormattedAddress.isNotNull()
+```
+
+The above will require two additional internal database queries in order to simplify the query such 
+that it can actually provide matching Contacts.
+
+Using the `or` operator does not have this performance hit.
+
 ### Limitations
 
 This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
