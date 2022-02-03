@@ -6,7 +6,7 @@ buildscript {
                         targetSdk : 31,
                         compileSdk: 31,
 
-                        gradle    : '7.0.3',
+                        gradle    : '7.1.0',
                 ],
 
                 java   : [
