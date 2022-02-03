@@ -5,6 +5,7 @@ import contacts.core.entities.DataEntity
 import contacts.core.entities.EventDate
 import contacts.core.entities.MimeType
 import contacts.core.entities.toWhereString
+import contacts.core.util.copyWithFieldValueSubstitutions
 import contacts.core.util.unsafeLazy
 import java.util.*
 
@@ -501,49 +502,6 @@ private fun <F : Field, V : Any?> Sequence<V>.combineWhere(
 
 // endregion
 
-// region Conversions
-
-/**
- * Converts [this] Data where clause to a where clause that is usable for the Contacts table.
- *
- * More specifically, this translates the following column names to work with the Contacts table;
- *
- * - RawContacts.CONTACT_ID -> Contacts._ID
- * - Data.CONTACT_ID -> Contacts._ID
- *
- * This does no translate anything else. So any fields used that does not exist in the Contacts
- * table will remain.
- */
-internal fun <T : AbstractDataField> Where<T>.inContactsTable(): Where<ContactsField> =
-    copyWithNewFieldType { fieldHolder ->
-        when (fieldHolder.field) {
-            // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
-            // For the sake of OCD and just-in-case, I'm performing this redundant replacement. SUE ME!
-            RawContactsFields.ContactId, Fields.Contact.Id -> FieldHolder(ContactsFields.Id)
-            else -> fieldHolder // no substitution
-        }
-    }
-
-/**
- * Converts [this] Data where clause to a where clause that is usable for the RawContacts table.
- *
- * More specifically, this translates the following column names to work with the RawContacts table;
- *
- * - Data.RAW_CONTACT_ID -> RawContacts._ID
- *
- * This does no translate anything else. So any fields used that does not exist in the RawContacts
- * table will remain.
- */
-internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawContactsField> =
-    copyWithNewFieldType { fieldHolder ->
-        when (fieldHolder.field) {
-            Fields.RawContact.Id -> FieldHolder(RawContactsFields.Id)
-            else -> fieldHolder // no substitution
-        }
-    }
-
-// endregion
-
 // region Where
 
 /**
@@ -582,119 +540,75 @@ internal fun <T : AbstractDataField> Where<T>.inRawContactsTable(): Where<RawCon
  *  With this in mind, we can do some cool stuff like in [copyWithNewFieldType]!
  */
 class Where<out T : Field> private constructor(
-    private val lhs: LeftHandSide,
-    private val operator: Operator,
-    private val rhs: RightHandSide,
+    internal val lhs: LeftHandSide,
+    internal val operator: Operator,
+    internal val rhs: RightHandSide,
 
     /**
      * More WHERE clause functions to add to the statement. E.G. ESCAPE.
      */
-    private val options: String?,
+    internal val options: String?,
 
     override val isRedacted: Boolean = false
 ) : Redactable {
 
     /**
-     * Construct a where in the form of field match value.
+     * Construct a where in the form of "field match value".
      *
      * E.G. email.address contains "gmail".
      */
     internal constructor(
         lhs: FieldHolder, operator: Operator.Match, rhs: ValueHolder,
-        options: String? = null
+        options: String? = null, isRedacted: Boolean = false
     ) : this(
         lhs = lhs as LeftHandSide,
         operator = operator,
         rhs = rhs as RightHandSide,
-        options = options
+        options = options,
+        isRedacted = isRedacted
     )
 
     /**
-     * Construct a where in the form of where combine where.
+     * Construct a where in the form of "where combine where".
      *
      * E.G. (email contains "gmail") and (name startsWith "i")
      */
     internal constructor(
         lhs: WhereHolder, operator: Operator.Combine, rhs: WhereHolder,
-        options: String? = null
+        options: String? = null, isRedacted: Boolean = false
     ) : this(
         lhs = lhs as LeftHandSide,
         operator = operator,
         rhs = rhs as RightHandSide,
-        options = options
-    )
-
-    /**
-     * Construct a copy of this where with the new field type determined by [substituteField].
-     */
-    // Note that this function cannot be inlined because it is recursive (it calls itself). The
-    // compiler is smart enough to detect this. If the compiler allowed inlining a recursive
-    // function, then the code generation would look forever! Think about it!
-    internal fun <R : Field> copyWithNewFieldType(
-        substituteField: (FieldHolder) -> FieldHolder
-    ): Where<R> = copyWithFieldValueSubstitutions(
-        substituteField = substituteField
+        options = options,
+        isRedacted = isRedacted
     )
 
     override fun redactedCopy(): Where<T> = copyWithFieldValueSubstitutions(
-        substituteValue = {
-            it.redactedCopy()
-        }
+        substituteValue = { it.redactedCopy() }
     )
 
     /**
-     * Returns a copy of this [Where] such that LHS fields are substituted with the output of
-     * [substituteField] and RHS values are substituted with the output of [substituteValue].
+     * Returns the [MimeType]s of all of the fields (for wheres in the form of "field match value")
+     * in this where tree.
+     *
+     * The order of traversal is preorder (this, lhs, rhs). The first mimeType in the list will be
+     * the mimeType of this (if it holds a field).
      */
-    private fun <R : Field> copyWithFieldValueSubstitutions(
-        substituteField: (FieldHolder) -> FieldHolder = { it },
-        substituteValue: (ValueHolder) -> ValueHolder = { it },
-    ): Where<R> {
-        /*
-         * Okay. Time for some "recursion" hehehe =). You know, I can't believe this interview
-         * skill is actually coming in handy... for once LOL! Ohh I'm so excited to have encountered
-         * this problem in the REAL LIFE! Ohh, I'm so hyped! Anyways, this is probably an easy level
-         * question in leet code. Standard tree traversal. So, I'll translate this to a leet code
-         * question. It's essentially "find leaf nodes of a binary tree".
-         *
-         * Given the root node (this) of a binary tree, use the substituteField and substituteValue
-         * functions to replace the leaf nodes. See the class documentation for the binary tree
-         * structure.
-         *
-         * Without further ado, here is the code!
-         */
-        return if (lhs is FieldHolder && rhs is ValueHolder) {
-            // Base case. Perform the substitution.
-            Where(
-                lhs = substituteField(lhs),
-                operator = operator,
-                rhs = substituteValue(rhs),
-                options = options
-            )
-        } else if (lhs is WhereHolder && rhs is WhereHolder) {
-            // Recursive case. Traverse tree.
-            Where(
-                lhs = WhereHolder(
-                    lhs.where.copyWithFieldValueSubstitutions(
-                        substituteField,
-                        substituteValue
-                    )
-                ),
-                operator = operator,
-                rhs = WhereHolder(
-                    rhs.where.copyWithFieldValueSubstitutions(
-                        substituteField,
-                        substituteValue
-                    )
-                ),
-                options = options
-            )
-        } else {
-            // This should not happen with the current structure. If this does happen, it means
-            // that we made some changes that broke the structure.
-            throw ContactsException(
-                "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
-            )
+    internal val mimeTypes: Set<MimeType> by unsafeLazy {
+        mutableSetOf<MimeType>().apply {
+            if (lhs is FieldHolder) {
+                if (lhs.field is DataField) {
+                    add(lhs.field.mimeType)
+                }
+            } else if (lhs is WhereHolder && rhs is WhereHolder) {
+                addAll(lhs.where.mimeTypes)
+                addAll(rhs.where.mimeTypes)
+            } else {
+                throw ContactsException(
+                    "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
+                )
+            }
         }
     }
 
@@ -703,7 +617,6 @@ class Where<out T : Field> private constructor(
     // and will not mutate along with the mutable property values (e.g. a mutable list). I don't
     // think consumers expect this to mutate anyways if they happen to save a reference to it.
     private val evaluatedWhereString: String by unsafeLazy {
-
         var whereString = when (operator) {
             // Recursive case. Traverse lhs and rhs.
             is Operator.Combine -> "($lhs) $operator ($rhs)"
@@ -763,6 +676,12 @@ internal sealed interface LeftHandSide
  */
 internal sealed interface RightHandSide
 
+/**
+ * The [where] can take one of the following forms;
+ *
+ * - "where combine where"
+ * - "field operator value"
+ */
 internal class WhereHolder(val where: Where<Field>) : LeftHandSide, RightHandSide {
     override fun toString(): String = where.toString()
 }

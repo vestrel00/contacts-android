@@ -199,11 +199,6 @@ internal fun Any?.isNotNullOrBlank(): Boolean = when (this) {
     else -> true
 }
 
-// TODO migrate all of the below functions to use all, any, none and add documentation
-// https://play.kotlinlang.org/byExample/05_Collections/05_existential
-// Make some temporary tests to ensure the new function versions match the output of the old.
-// Make sure to test the case where the list is empty!!!
-
 /**
  * Returns true if there is at least one element in the collection that is not null or blank.
  *

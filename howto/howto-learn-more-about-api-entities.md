@@ -179,9 +179,9 @@ b. those that are defined by other apps (e.g. custom data from other apps)
 This library allows modification of native data kinds and custom data kinds. Native data kinds should 
 obviously be modifiable as it is the entire reason why the Contacts Provider exposes these data kinds
 to us in the first place. The question is, should this library provide functions for modifying 
-(insert, update, delete) custom data defined by other apps/services such as other apps 
-(e.g. WhatsApp, Facebook, etc)? The answer to that will be determined when the time comes to support 
-custom data from other apps in the future... (Probably, yes!)
+(insert, update, delete) custom data defined by other apps/services 
+(e.g. Google Contacts, WhatsApp, etc)? The answer to that will be determined when the time comes to 
+support custom data from other apps in the future... Probably, yes!
 
 For more info, read [How do I integrate custom data from other apps?](/howto/howto-integrate-custom-data-from-other-apps.md)
 
@@ -286,7 +286,7 @@ To learn more about the Contact lookup key, read [How do I learn more about the 
 
 ## Redacting entities
 
-All `Entity` in this library are `Redactable, which indicates that there could be sensitive private 
+All `Entity` in this library are `Redactable`, which indicates that there could be sensitive private 
 user data that could be redacted, for legal purposes. If you are logging contact data in production 
 to remote data centers for analytics or crash reporting, then it is important to redact certain 
 parts of every contact's data.

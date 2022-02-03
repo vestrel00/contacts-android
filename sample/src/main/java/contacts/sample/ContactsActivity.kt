@@ -16,6 +16,7 @@ import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.util.*
 import contacts.permissions.broadQueryWithPermission
+import contacts.permissions.queryWithPermission
 import contacts.ui.text.AbstractTextWatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -144,6 +145,12 @@ class ContactsActivity : BaseActivity() {
                 .findWithContext()
 
             setContactsAdapterItems()
+
+            contacts.queryWithPermission()
+                .where {
+                    Email.Address.isNotNull() and Phone.Number.isNotNull() and Address.FormattedAddress.isNotNull()
+                }
+                .find()
         }
     }
 

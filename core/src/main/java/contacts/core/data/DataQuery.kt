@@ -94,7 +94,7 @@ interface DataQueryFactory {
 }
 
 @Suppress("FunctionName")
-internal fun DataQuery(contacts: Contacts, isProfile: Boolean): DataQueryFactory =
+internal fun DataQueryFactory(contacts: Contacts, isProfile: Boolean): DataQueryFactory =
     DataQueryFactoryImpl(contacts, isProfile)
 
 private class DataQueryFactoryImpl(
