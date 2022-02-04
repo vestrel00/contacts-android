@@ -1,6 +1,7 @@
 include ':async'
 include ':core'
 include ':customdata-gender'
+include ':customdata-googlecontacts'
 include ':customdata-handlename'
 include ':debug'
 include ':permissions'
