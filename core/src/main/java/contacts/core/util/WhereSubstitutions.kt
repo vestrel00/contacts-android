@@ -104,11 +104,7 @@ internal fun <T : Field, R : Field> Where<T>.copyWithFieldValueSubstitutions(
             isRedacted = isRedacted
         )
     } else {
-        // This should not happen with the current structure. If this does happen, it means
-        // that we made some changes that broke the structure.
-        throw ContactsException(
-            "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
-        )
+        throw InvalidWhereFormException(this)
     }
 
 /**
@@ -248,11 +244,7 @@ private fun <T : Field> Where<T>.copyWithSubstitutions(
         isRedacted
     )
 } else {
-    // This should not happen with the current structure. If this does happen, it means
-    // that we made some changes that broke the structure.
-    throw ContactsException(
-        "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
-    )
+    throw InvalidWhereFormException(this)
 }
 
 private val Where<*>.hasContactIdAccumulator: Boolean
@@ -263,7 +255,5 @@ private val Where<*>.hasContactIdAccumulator: Boolean
         // Recursive case.
         lhs.where.hasContactIdAccumulator || rhs.where.hasContactIdAccumulator
     } else {
-        throw ContactsException(
-            "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
-        )
+        throw InvalidWhereFormException(this)
     }
