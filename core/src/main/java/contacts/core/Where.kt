@@ -605,9 +605,7 @@ class Where<out T : Field> private constructor(
                 addAll(lhs.where.mimeTypes)
                 addAll(rhs.where.mimeTypes)
             } else {
-                throw ContactsException(
-                    "Unhandled Where form lhs: ${lhs.javaClass.simpleName}, rhs: ${rhs.javaClass.simpleName}"
-                )
+                throw InvalidWhereFormException(this@Where)
             }
         }
     }
@@ -839,6 +837,20 @@ fun Any.likeWildcardsEscaped(escapeExpression: String = LIKE_ESCAPE_EXPR): Strin
 
     return builder.toString()
 }
+
+/**
+ * Exception thrown if the given where is not one of the following valid forms,
+ *
+ * - "field match value"
+ * - "where combine where"
+ */
+internal class InvalidWhereFormException(where: Where<*>): ContactsException(
+    """
+        lhs: ${where.lhs.javaClass.simpleName}
+        operator: ${where.operator}
+        rhs: ${where.rhs.javaClass.simpleName}
+    """.trimIndent()
+)
 
 private fun Any?.toSqlString(redactStringValue: Boolean): String = when (this) {
     null -> "NULL"
