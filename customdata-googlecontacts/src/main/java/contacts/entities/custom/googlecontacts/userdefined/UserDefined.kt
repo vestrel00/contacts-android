@@ -127,7 +127,7 @@ data class MutableUserDefined internal constructor(
     override val isPrimary: Boolean,
     override val isSuperPrimary: Boolean,
 
-    override val field: String?,
+    override var field: String?,
     override var label: String?,
 
     override val isRedacted: Boolean
@@ -148,7 +148,7 @@ data class MutableUserDefined internal constructor(
 @Parcelize
 data class NewUserDefined @JvmOverloads constructor(
 
-    override val field: String? = null,
+    override var field: String? = null,
     override var label: String? = null,
 
     override val isRedacted: Boolean = false
