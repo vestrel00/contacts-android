@@ -2,9 +2,9 @@ package contacts.entities.custom.googlecontacts.userdefined
 
 import contacts.core.entities.MimeType
 import contacts.core.entities.custom.AbstractCustomDataOperation
-import contacts.entities.custom.googlecontacts.UserDefinedField
 import contacts.entities.custom.googlecontacts.GoogleContactsFields
 import contacts.entities.custom.googlecontacts.GoogleContactsMimeType
+import contacts.entities.custom.googlecontacts.UserDefinedField
 
 internal class UserDefinedOperationFactory :
     AbstractCustomDataOperation.Factory<UserDefinedField, UserDefinedEntity> {
