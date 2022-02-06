@@ -16,7 +16,7 @@ import contacts.entities.custom.googlecontacts.GoogleContactsMimeType
 /**
  * Returns the sequence of [UserDefined] of this RawContact.
  */
-fun RawContact.userDefineds(contacts: Contacts): Sequence<UserDefined> {
+fun RawContact.userDefined(contacts: Contacts): Sequence<UserDefined> {
     val customDataEntities = contacts.customDataRegistry
         .customDataEntitiesFor<UserDefined>(this, GoogleContactsMimeType.UserDefined)
 
@@ -27,7 +27,7 @@ fun RawContact.userDefineds(contacts: Contacts): Sequence<UserDefined> {
  * Returns the list of [UserDefined]s of this RawContact.
  */
 fun RawContact.userDefinedList(contacts: Contacts): List<UserDefined> =
-    userDefineds(contacts).toList()
+    userDefined(contacts).toList()
 
 // endregion
 
@@ -36,7 +36,7 @@ fun RawContact.userDefinedList(contacts: Contacts): List<UserDefined> =
 /**
  * Returns the sequence of [MutableUserDefinedEntity]s of this RawContact.
  */
-fun MutableRawContact.userDefineds(contacts: Contacts): Sequence<MutableUserDefinedEntity> {
+fun MutableRawContact.userDefined(contacts: Contacts): Sequence<MutableUserDefinedEntity> {
     val customDataEntities = contacts.customDataRegistry
         .customDataEntitiesFor<MutableUserDefinedEntity>(this, GoogleContactsMimeType.UserDefined)
 
@@ -47,7 +47,7 @@ fun MutableRawContact.userDefineds(contacts: Contacts): Sequence<MutableUserDefi
  * Returns the list of [MutableUserDefinedEntity]s of this RawContact.
  */
 fun MutableRawContact.userDefinedList(contacts: Contacts): List<MutableUserDefinedEntity> =
-    userDefineds(contacts).toList()
+    userDefined(contacts).toList()
 
 /**
  * Adds the given [userDefined] to this RawContact.
@@ -87,7 +87,7 @@ fun MutableRawContact.removeUserDefined(
 /**
  * Removes all user defined field-values from this RawContact.
  */
-fun MutableRawContact.removeAllUserDefineds(contacts: Contacts) {
+fun MutableRawContact.removeAllUserDefined(contacts: Contacts) {
     contacts.customDataRegistry.removeAllCustomDataEntityFrom(
         this,
         GoogleContactsMimeType.UserDefined
@@ -101,7 +101,7 @@ fun MutableRawContact.removeAllUserDefineds(contacts: Contacts) {
 /**
  * Returns the sequence of [NewUserDefined]s of this RawContact.
  */
-fun NewRawContact.userDefineds(contacts: Contacts): Sequence<NewUserDefined> {
+fun NewRawContact.userDefined(contacts: Contacts): Sequence<NewUserDefined> {
     val customDataEntities = contacts.customDataRegistry
         .customDataEntitiesFor<NewUserDefined>(this, GoogleContactsMimeType.UserDefined)
 
@@ -112,7 +112,7 @@ fun NewRawContact.userDefineds(contacts: Contacts): Sequence<NewUserDefined> {
  * Returns the list of [NewUserDefined]s of this RawContact.
  */
 fun NewRawContact.userDefinedList(contacts: Contacts): List<NewUserDefined> =
-    userDefineds(contacts).toList()
+    userDefined(contacts).toList()
 
 /**
  * Adds the given [userDefined] to this RawContact.
@@ -149,7 +149,7 @@ fun NewRawContact.removeUserDefined(
 /**
  * Removes all user defined field-values from this RawContact.
  */
-fun NewRawContact.removeAllUserDefineds(contacts: Contacts) {
+fun NewRawContact.removeAllUserDefined(contacts: Contacts) {
     contacts.customDataRegistry.removeAllCustomDataEntityFrom(
         this,
         GoogleContactsMimeType.UserDefined
