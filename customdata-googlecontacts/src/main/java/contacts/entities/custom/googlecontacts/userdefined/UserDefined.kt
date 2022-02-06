@@ -148,7 +148,7 @@ data class MutableUserDefined internal constructor(
 @Parcelize
 data class NewUserDefined @JvmOverloads constructor(
 
-    override val field: String?,
+    override val field: String? = null,
     override var label: String? = null,
 
     override val isRedacted: Boolean = false
