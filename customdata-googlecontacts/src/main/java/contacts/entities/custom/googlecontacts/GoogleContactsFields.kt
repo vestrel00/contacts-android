@@ -5,7 +5,7 @@ import contacts.core.AbstractCustomDataField.ColumnName
 import contacts.core.AbstractCustomDataFieldSet
 import contacts.core.entities.MimeType
 
-class GoogleContactsFields : AbstractCustomDataFieldSet<GoogleContactsField>() {
+object GoogleContactsFields : AbstractCustomDataFieldSet<GoogleContactsField>() {
 
     @JvmField
     val FileAs = FileAsFields()
