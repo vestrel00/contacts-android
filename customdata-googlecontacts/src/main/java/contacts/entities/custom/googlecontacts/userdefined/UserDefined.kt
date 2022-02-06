@@ -27,7 +27,7 @@ sealed interface UserDefinedEntity : CustomDataEntity {
         get() = null
 
     override val mimeType: MimeType.Custom
-        get() = GoogleContactsMimeType.UserDefinedField
+        get() = GoogleContactsMimeType.UserDefined
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(this.field, label)

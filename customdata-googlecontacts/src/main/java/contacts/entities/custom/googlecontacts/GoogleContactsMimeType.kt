@@ -10,7 +10,7 @@ internal sealed class GoogleContactsMimeType : MimeType.Custom() {
         override val value: String = "vnd.com.google.cursor.item/contact_file_as"
     }
 
-    internal object UserDefinedField : GoogleContactsMimeType() {
+    internal object UserDefined : GoogleContactsMimeType() {
         override val value: String = "vnd.com.google.cursor.item/contact_user_defined_field"
     }
 }

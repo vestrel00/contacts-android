@@ -40,7 +40,7 @@ class FileAsFields internal constructor() : AbstractCustomDataFieldSet<FileAsFie
 data class UserDefinedField internal constructor(private val columnName: ColumnName) :
     GoogleContactsField(columnName) {
 
-    override val customMimeType: MimeType.Custom = GoogleContactsMimeType.UserDefinedField
+    override val customMimeType: MimeType.Custom = GoogleContactsMimeType.UserDefined
 }
 
 class UserDefinedFields internal constructor() : AbstractCustomDataFieldSet<UserDefinedField>() {
