@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 package contacts.entities.custom.googlecontacts
 
 import contacts.core.AbstractCustomDataField
