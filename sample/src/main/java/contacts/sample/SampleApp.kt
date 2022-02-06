@@ -5,6 +5,7 @@ import contacts.core.Contacts
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.log.AndroidLogger
 import contacts.entities.custom.gender.GenderRegistration
+import contacts.entities.custom.googlecontacts.GoogleContactsRegistration
 import contacts.entities.custom.handlename.HandleNameRegistration
 
 class SampleApp : Application() {
@@ -14,9 +15,11 @@ class SampleApp : Application() {
     val contacts: Contacts by lazy(LazyThreadSafetyMode.NONE) {
         Contacts(
             this,
+            logger = AndroidLogger(),
             customDataRegistry = CustomDataRegistry().register(
                 GenderRegistration(),
-                HandleNameRegistration()
+                HandleNameRegistration(),
+                GoogleContactsRegistration()
             )
         )
     }
