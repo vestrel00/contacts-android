@@ -4,6 +4,7 @@
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android%20Contacts,%20Reborn-green.svg?style=flat&logo=android)](https://android-arsenal.com/details/1/8393)
 [![Android Weekly](https://img.shields.io/badge/AndroidWeekly-Issue%20%23491-2299cc.svg?style=flat&logo=android)](https://androidweekly.net/issues/issue-491)
 [![Kotlin Weekly](https://img.shields.io/badge/KotlinWeekly-Issue%20%23275-7549b5.svg?style=flat&logo=kotlin)](https://us12.campaign-archive.com/?u=f39692e245b94f7fb693b6d82&id=c864ecd437)
 [![Java Trends](https://img.shields.io/badge/JavaTrends-Newsletter%20%2358-f8981c.svg?style=flat&logo=java)](https://dormoshe.io/newsletters/ag/java/58)
