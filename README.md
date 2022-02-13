@@ -10,6 +10,7 @@
 [![Java Trends](https://img.shields.io/badge/JavaTrends-Newsletter%20%2358-f8981c.svg?style=flat&logo=java)](https://dormoshe.io/newsletters/ag/java/58)
 [![Android Trends](https://img.shields.io/badge/AndroidTrends-Newsletter%20%2381-3ddc84.svg?style=flat&logo=android)](https://dormoshe.io/newsletters/ag/android/81)
 [![Kotlin Trends](https://img.shields.io/badge/KotlinTrends-Newsletter%20%2364-7f51ff.svg?style=flat&logo=kotlin)](https://dormoshe.io/newsletters/ag/kotlin/64)
+[![droidcon](https://img.shields.io/badge/droidcon-Android%20Contacts,%20Reborn-blue.svg?style=flat&logo=android)](https://www.droidcon.com/2021/11/23/android-contacts-reborn/)
 [![ProAndroidDev](https://img.shields.io/badge/ProAndroidDev-Contacts,%20Reborn!-f53e28.svg?style=flat&logo=medium)](https://proandroiddev.com/android-contacts-reborn-19985c73ad43)
 [![Dev.to](https://img.shields.io/badge/Dev.to%20-3%20years%20to%20open%20source-0a0a0a.svg?style=flat&logo=devdotto)](https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp)
 [![Reddit](https://img.shields.io/badge/Reddit%20-Share%20with%20the%20community-ff4500.svg?style=flat&logo=reddit)](https://www.reddit.com/r/androiddev/comments/rz370s/i_dedicated_3_years_to_building_this_android/)
