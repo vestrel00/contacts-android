@@ -7,17 +7,50 @@ import kotlinx.parcelize.Parcelize
 /**
  * The "Custom field" and "Custom label" pair used in the Google Contacts app for a RawContact.
  *
- * A RawContact may have 0 or 1 entry of this data kind.
+ * A RawContact may have 0, 1, or more entry of this data kind.
+ *
+ * ## Google Contacts app data integrity
+ *
+ * When inserting or updating this data kind, the Google Contacts app enforces [field] and [label]
+ * to both be non-null and non-blank. Otherwise, the insert or update operation fails. To protect
+ * the data integrity that the Google Contacts app imposes, this library is silently not performing
+ * insert or update operations for these instances. Consumers are informed via documentation (this).
+ *
+ * Both [field] and [label] must be non-null and non-blank strings in order for insert and update
+ * operations to be performed on them. The corresponding fields must also be included in the insert
+ * or update operation. Otherwise, the update and insert operation will silently NOT be performed.
+ *
+ * We might change the way we handle this in the future. Maybe we'll throw an exception instead or
+ * fail the entire insert/update and bubble up the reason. For now, to avoid complicating the API
+ * in these early stages, we'll go with silent but documented. We'll see what the community thinks!
  */
 sealed interface UserDefinedEntity : CustomDataEntity {
 
     /**
      * The "Custom field" value.
+     *
+     * ## Data integrity
+     *
+     * Both [field] and [label] must be non-null and non-blank strings in order for insert and
+     * update operations to be performed on them. The corresponding fields must also be included
+     * in the insert or update operation. Otherwise, the update and insert operation will silently
+     * NOT be performed.
+     *
+     * For more info, read the class documentation.
      */
     val field: String?
 
     /**
      * The "Custom label" value.
+     *
+     * ## Data integrity
+     *
+     * Both [field] and [label] must be non-null and non-blank strings in order for insert and
+     * update operations to be performed on them. The corresponding fields must also be included
+     * in the insert or update operation. Otherwise, the update and insert operation will silently
+     * NOT be performed.
+     *
+     * For more info, read the class documentation.
      */
     val label: String?
 
@@ -57,9 +90,12 @@ sealed interface UserDefinedEntity : CustomDataEntity {
  */
 
 /**
- * A mutable [UserDefinedEntity]. `
+ * A mutable [UserDefinedEntity].
  */
 sealed interface MutableUserDefinedEntity : UserDefinedEntity, MutableCustomDataEntity {
+
+    override var field: String?
+    override var label: String?
 
     // The primary value is the combination of both the field and label. So, this does nothing to
     // avoid complicating the API implementation. It is unused and will always return null.

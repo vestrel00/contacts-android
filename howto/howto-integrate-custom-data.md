@@ -234,9 +234,6 @@ A few things to note,
 - The delegate functions are prettier but use Kotlin reflection, which could slightly affect runtime
   performance.
 - You can either extract nullable or non-nullable values using these functions.
-- Do not keep a reference to the `cursor: Cursor` or `includeFields: Set<HandleNameField>`.
-    - You don't need them as long as you use the functions defined in `AbstractEntityCursor`.
-    - Just pass them to the super.
 
 ## 5. Implement the mapper
 
@@ -604,8 +601,8 @@ Alternatively,
 
 ```kotlin
 val contactsApi = Contacts(context)
-GenderRegistration().registerTo(contacts.customDataRegistry)
-HandleNameRegistration().registerTo(contacts.customDataRegistry)
+GenderRegistration().registerTo(contactsApi.customDataRegistry)
+HandleNameRegistration().registerTo(contactsApi.customDataRegistry)
 ```
 
 Using `Gender` and `HandleName` entry,
@@ -776,12 +773,12 @@ these limitations.
 
 This library provides CRUD API integration with custom data with no sync adapters;
 
-- `customdata-gender`
-- `customdata-handlename`
+- [`customdata-gender`](/howto/howto-integrate-gender-custom-data.md)
+- [`customdata-handlename`](/howto/howto-integrate-handlename-custom-data.md)
 
 Also provided are CRUD API integration with custom data from other apps that do have sync adapters;
 
-- `customdata-googlecontacts`
+- [`customdata-googlecontacts`](/howto/howto-integrate-googlecontacts-custom-data.md)
 
 > Please update the above list whenever adding new custom data modules.
 

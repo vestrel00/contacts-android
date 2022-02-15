@@ -237,7 +237,7 @@ data class RawContact internal constructor(
         websites = websites.asSequence().mutableCopies().toMutableList(),
 
         customDataEntities = customDataEntities
-            .mapValues { it.value.toCustomDataEntityHolder() }
+            .mapValues { it.value.mutableCopy() }
             .toMutableMap(),
 
         isRedacted = isRedacted

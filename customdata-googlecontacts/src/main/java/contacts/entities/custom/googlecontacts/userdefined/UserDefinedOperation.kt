@@ -23,7 +23,24 @@ private class UserDefinedOperation(isProfile: Boolean, includeFields: Set<UserDe
     override fun setCustomData(
         data: UserDefinedEntity, setValue: (field: UserDefinedField, value: Any?) -> Unit
     ) {
-        setValue(GoogleContactsFields.UserDefined.Field, data.field)
-        setValue(GoogleContactsFields.UserDefined.Label, data.label)
+        /*
+         * When inserting or updating this data kind, the Google Contacts app enforces field and
+         * label to both be non-null and non-blank. Otherwise, the insert or update operation fails.
+         * To protect the data integrity that the Google Contacts app imposes, this library is
+         * silently not performing insert or update operations for these instances. Consumers are
+         * informed via documentation. We might change the way we handle this in the future. Maybe
+         * throw an exception instead or fail the entire insert/update and bubble up the reason.
+         * For now, to avoid complicating the API in these early stages, we'll go with silent but
+         * documented =) We'll see what the community thinks!
+         */
+        if (
+            !data.field.isNullOrBlank() && !data.label.isNullOrBlank() &&
+            includeFields.containsAll(GoogleContactsFields.UserDefined.all)
+        ) {
+            // Note that if `setValue` is not invoked at least once, then no insert or update
+            // operation will be performed for this instance.
+            setValue(GoogleContactsFields.UserDefined.Field, data.field)
+            setValue(GoogleContactsFields.UserDefined.Label, data.label)
+        }
     }
 }
