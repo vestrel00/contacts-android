@@ -164,9 +164,9 @@ internal fun ContentResolver.reduce(
 } else {
     where.copyWithSubstitutions { lhs, operator, rhs, options, isRedacted ->
         // The following code block assumes that the where binary tree is being traversed in
-        // post-order, making substitutions to reduce the number of mimeTypes and keep the
-        // aggregate mimetype count of lhs and rhs to at most one.
-
+        // **post-order**, making substitutions as necessary in order to keep one side of the
+        // where AND where free of mimetype-aware fields.
+        // Note that **post-order** traversal is very important here.
         if (
             operator == Operator.Combine.And &&
             (lhs.mimeTypes.isNotEmpty() && rhs.mimeTypes.isNotEmpty()) &&
@@ -210,8 +210,8 @@ internal fun ContentResolver.reduce(
 }
 
 /**
- * Performs a post-order traversal (lhs, rhs, this) of the Where binary tree structure and returns
- * a copy of this by making substitutions along the way using [substitute].
+ * Performs a post-order traversal (lhs, rhs, this), from leaf nodes bubbling up to the root node,
+ * of the Where binary tree structure and returns a copy of this by making substitutions along the way using [substitute].
  */
 @Suppress("UNCHECKED_CAST")
 private fun <T : Field> Where<T>.copyWithSubstitutions(

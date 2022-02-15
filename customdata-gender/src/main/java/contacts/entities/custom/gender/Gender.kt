@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 /**
  * Describes the gender of a RawContact.
  *
- * A RawContact may only have one Gender entry.
+ * A RawContact may have 0 or 1 entry of this data kind.
  */
 sealed interface GenderEntity : CustomDataEntityWithTypeAndLabel<Type> {
 

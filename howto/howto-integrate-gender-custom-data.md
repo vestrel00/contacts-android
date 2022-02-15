@@ -1,7 +1,7 @@
 # How do I integrate the gender custom data?
 
-This library comes with `Gender` custom data that allows you to add gender information for all of
-you contacts. This custom data lives in the `customdata-gender` module. It is optional.
+This provides extensions for `Gender` custom data that allows you to read and write gender date for 
+all of your contacts. These (optional) extensions live in the `customdata-gender` module.
 
 > If you are looking to create your own custom data or get more insight on how the `Gender` custom
 > data was built, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
@@ -23,7 +23,7 @@ Or, alternatively after creating the `Contacts` API instance,
 
 ```kotlin
 val contactsApi = Contacts(context)
-GenderRegistration().registerTo(contacts.customDataRegistry)
+GenderRegistration().registerTo(contactsApi.customDataRegistry)
 ```
 
 ## Get/set gender custom data 
@@ -66,15 +66,15 @@ mutableContact.setGender(contacts) {
 
 ## Use the gender custom data in queries, inserts, updates, and deletes
 
-Once you have registered your custom data with the `Contacts` API instance, the API instance is now
-able to perform read and write operations on it.
+Once you have registered your gender custom data with the `Contacts` API instance, the API instance 
+is now able to perform read and write operations on it.
 
 - [How do I use query APIs to get custom data?](/howto/howto-query-custom-data.md)
 - [How do I use insert and update APIs to create/insert custom data into new or existing contacts?](/howto/howto-insert-custom-data.md)
 - [How do I use update APIs to update custom data?](/howto/howto-update-custom-data.md)
 - [How do I use delete APIs to delete custom data?](/howto/howto-delete-custom-data.md)
 
-## Limitations
+## Syncing gender custom data
 
 This library does not provide sync adapters for gender custom data. Unless you implement your own 
 sync adapter, gender custom data...
@@ -82,5 +82,7 @@ sync adapter, gender custom data...
 - will NOT be synced across devices
 - will NOT be shown in AOSP and [Google Contacts][google-contacts] apps, and other Contacts apps
   that show custom data from other apps
+
+For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
 
 [google-contacts]: https://play.google.com/store/apps/details?id=com.google.android.contacts

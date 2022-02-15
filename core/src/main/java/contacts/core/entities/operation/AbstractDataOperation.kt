@@ -22,7 +22,7 @@ import contacts.core.util.query
  */
 abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     isProfile: Boolean,
-    private val includeFields: Set<F>
+    protected val includeFields: Set<F>
 ) {
 
     internal val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri

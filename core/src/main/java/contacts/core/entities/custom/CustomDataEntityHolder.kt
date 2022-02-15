@@ -49,7 +49,7 @@ data class ImmutableCustomDataEntityHolder internal constructor(
     override val isRedacted: Boolean
 ) : AbstractCustomDataEntityHolder(), Parcelable {
 
-    fun toCustomDataEntityHolder() = CustomDataEntityHolder(
+    fun mutableCopy() = CustomDataEntityHolder(
         entities.toMutableListOfCustomDataEntity(),
         countRestriction,
 
