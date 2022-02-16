@@ -91,9 +91,10 @@ There are also extensions that add functionality to every core function;
 - [Permissions request/handling using Kotlin Coroutines](/howto/howto-use-api-with-permissions-handling.md).
 
 Also included are some pre-baked goodies to be used as is or just for reference;
-- [Google Contacts custom Data](/howto/howto-integrate-googlecontacts-custom-data.md).
-- [Gender custom Data](/howto/howto-integrate-gender-custom-data.md).
-- [Handle name custom Data](/howto/howto-integrate-handlename-custom-data.md).
+- [Google Contacts custom data](/howto/howto-integrate-googlecontacts-custom-data.md).
+- [Gender custom data](/howto/howto-integrate-gender-custom-data.md).
+- [Handle name custom data](/howto/howto-integrate-handlename-custom-data.md).
+- [Role Playing Game (RPG) custom data](/howto/howto-integrate-rpg-custom-data.md).
 - [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
 - [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
 

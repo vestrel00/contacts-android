@@ -7,6 +7,7 @@ import contacts.core.log.AndroidLogger
 import contacts.entities.custom.gender.GenderRegistration
 import contacts.entities.custom.googlecontacts.GoogleContactsRegistration
 import contacts.entities.custom.handlename.HandleNameRegistration
+import contacts.entities.custom.rpg.RpgRegistration
 
 class SampleApp : Application() {
 
@@ -20,6 +21,7 @@ class SampleApp : Application() {
                 GenderRegistration(),
                 HandleNameRegistration(),
                 GoogleContactsRegistration(),
+                RpgRegistration()
             )
         )
     }

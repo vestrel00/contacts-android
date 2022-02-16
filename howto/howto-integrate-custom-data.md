@@ -775,6 +775,7 @@ This library provides CRUD API integration with custom data with no sync adapter
 
 - [`customdata-gender`](/howto/howto-integrate-gender-custom-data.md)
 - [`customdata-handlename`](/howto/howto-integrate-handlename-custom-data.md)
+- [`customdata-rpg`](/howto/howto-integrate-rpg-custom-data.md)
 
 Also provided are CRUD API integration with custom data from other apps that do have sync adapters;
 
