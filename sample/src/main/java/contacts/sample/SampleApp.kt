@@ -19,7 +19,7 @@ class SampleApp : Application() {
             customDataRegistry = CustomDataRegistry().register(
                 GenderRegistration(),
                 HandleNameRegistration(),
-                GoogleContactsRegistration()
+                GoogleContactsRegistration(),
             )
         )
     }
