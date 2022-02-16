@@ -86,12 +86,19 @@ interface Redactable {
      * Returns a redacted copy of this string. All characters are replaced with [REDACTED_CHAR].
      */
     fun String.redact(): String = redactString()
+
+    /**
+     * Returns a redacted copy of this Int, which is 0.
+     */
+    fun Int.redact(): Int = redactInt()
 }
 
 private const val REDACTED_CHAR = "*"
 
 // FIXME? Preserve spaces, tabs, and newlines?
 internal fun String.redactString(): String = REDACTED_CHAR.repeat(length)
+
+internal fun Int.redactInt(): Int = 0
 
 internal fun Collection<String>.redactStrings(): List<String> = map { it.redactString() }
 

@@ -27,6 +27,7 @@ dependencies {
     implementation project(':customdata-gender')
     implementation project(':customdata-handlename')
     implementation project(':customdata-googlecontacts')
+    implementation project(':customdata-rpg')
     implementation project(':debug')
     implementation project(':permissions')
     implementation project(':ui')

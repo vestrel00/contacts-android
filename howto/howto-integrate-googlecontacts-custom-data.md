@@ -1,4 +1,4 @@
-# How do I integrate the google Contacts custom data?
+# How do I integrate the Google Contacts custom data?
 
 This library provides extensions for custom data from the [Google Contacts][google-contacts] app; 
 `FileAs` and `UserDefined`, which allows you to read and write Google Contacts data for all of your 
@@ -27,7 +27,7 @@ val contactsApi = Contacts(context)
 GoogleContactsRegistration().registerTo(contactsApi.customDataRegistry)
 ```
 
-## Get/set Google Contacts custom data 
+## Read/write Google Contacts custom data 
 
 ### Get/set `FileAs`
 
