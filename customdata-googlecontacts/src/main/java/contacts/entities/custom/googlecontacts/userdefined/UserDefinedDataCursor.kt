@@ -9,6 +9,5 @@ internal class UserDefinedDataCursor(cursor: Cursor, includeFields: Set<UserDefi
     AbstractCustomDataCursor<UserDefinedField>(cursor, includeFields) {
 
     val field: String? by string(GoogleContactsFields.UserDefined.Field)
-
     val label: String? by string(GoogleContactsFields.UserDefined.Label)
 }
