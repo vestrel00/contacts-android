@@ -7,6 +7,7 @@ import contacts.core.log.AndroidLogger
 import contacts.entities.custom.gender.GenderRegistration
 import contacts.entities.custom.googlecontacts.GoogleContactsRegistration
 import contacts.entities.custom.handlename.HandleNameRegistration
+import contacts.entities.custom.pokemon.PokemonRegistration
 import contacts.entities.custom.rpg.RpgRegistration
 
 class SampleApp : Application() {
@@ -19,8 +20,9 @@ class SampleApp : Application() {
             logger = AndroidLogger(),
             customDataRegistry = CustomDataRegistry().register(
                 GenderRegistration(),
-                HandleNameRegistration(),
                 GoogleContactsRegistration(),
+                HandleNameRegistration(),
+                PokemonRegistration(),
                 RpgRegistration()
             )
         )

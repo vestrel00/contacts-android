@@ -18,6 +18,20 @@ object RpgFields : AbstractCustomDataFieldSet<RpgField>() {
     override val all: Set<RpgField> = Profession.all + Stats.all
 
     override val forMatching: Set<RpgField> = Profession.forMatching + Stats.forMatching
+
+    /**
+     * Same as [all], but as a function. This mainly exists for Java support. This makes it visible
+     * to Java consumers when accessing this using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+
+    /**
+     * Same as [forMatching], but as a function. This makes it visible to Java consumers when
+     * accessing this using the object reference directly.
+     */
+    @JvmStatic
+    fun forMatching() = forMatching
 }
 
 sealed class RpgField(columnName: ColumnName) : AbstractCustomDataField(columnName)

@@ -19,6 +19,20 @@ object GoogleContactsFields : AbstractCustomDataFieldSet<GoogleContactsField>() 
 
     override val forMatching: Set<GoogleContactsField> =
         FileAs.forMatching + UserDefined.forMatching
+
+    /**
+     * Same as [all], but as a function. This mainly exists for Java support. This makes it visible
+     * to Java consumers when accessing this using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+
+    /**
+     * Same as [forMatching], but as a function. This makes it visible to Java consumers when
+     * accessing this using the object reference directly.
+     */
+    @JvmStatic
+    fun forMatching() = forMatching
 }
 
 sealed class GoogleContactsField(columnName: ColumnName) : AbstractCustomDataField(columnName)

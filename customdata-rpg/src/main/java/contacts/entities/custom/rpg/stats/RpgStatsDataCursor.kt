@@ -9,12 +9,8 @@ internal class RpgStatsDataCursor(cursor: Cursor, includeFields: Set<RpgStatsFie
     AbstractCustomDataCursor<RpgStatsField>(cursor, includeFields) {
 
     val level: Int? by int(RpgFields.Stats.Level)
-
     val speed: Int? by int(RpgFields.Stats.Speed)
-
     val strength: Int? by int(RpgFields.Stats.Strength)
-
     val intelligence: Int? by int(RpgFields.Stats.Intelligence)
-
     val luck: Int? by int(RpgFields.Stats.Luck)
 }
