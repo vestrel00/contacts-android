@@ -642,11 +642,11 @@ optionally integrate it into their own apps, please create a GitHub issue and fi
 
 ## Custom data without sync adapters will not be synced
 
-Custom data provided by this library such as those in those in the `customdata-gender` and
-`customdata-handlename` modules are not synced because there are no sync adapters and a remote
-service to store those data. Therefore, they are not synced across devices and will remain local to
-the device regardless of Account sync settings. It is up to you to implement your own sync adapters
-for your own custom data. 
+Custom data provided by this library such as those in those in the `customdata-gender`,
+`customdata-handlename`, `customdata-pokemon`, and `customdata-rpg` modules are not synced because 
+there are no sync adapters and a remote service to store those data. Therefore, they are not synced 
+across devices and will remain local to the device regardless of Account sync settings. It is up to
+you to implement your own sync adapters for your own custom data. 
 
 For more info, read [How do I sync contact data across devices?](/howto/howto-sync-contact-data.md)
 

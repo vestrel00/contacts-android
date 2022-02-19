@@ -64,8 +64,9 @@ Until changes are synced, local changes will not take effect. Some examples are;
 
 ## Some custom data provided in this library are not synced
 
-The `Gender` and `HandleName` custom data will not be synced because they are not account specific
-and they have no sync adapters and no remote service to interface with.
+The `Gender`, `HandleName`, `Pokemon`, `RpgStats`, and `RpgProfession` custom data will not be 
+synced because they are not account specific and they have no sync adapters and no remote service 
+to interface with.
 
 > For more info, read [How do I integrate custom data?](/howto/howto-integrate-custom-data.md)
 

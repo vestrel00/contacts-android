@@ -103,7 +103,6 @@ There are also more features that are on the way!
 1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
 2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
 3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
-4. [Custom data from other apps (Google Contacts, WhatsApp, etc)](https://github.com/vestrel00/contacts-android/issues/27).
 
 ## Installation
 
