@@ -11,8 +11,8 @@ import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
 
 /**
- * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_LOOKUP_KEY]. Also
- * provides functions to create new contacts, edit existing contacts, and deleting existing
+ * Shows all Data of all RawContacts associated with the given Contact with [CONTACT_LOOKUP_KEY].
+ * Also provides functions to create new contacts, edit existing contacts, and deleting existing
  * contacts.
  *
  * #### Modes

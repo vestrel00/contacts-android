@@ -102,7 +102,9 @@ Also included are some pre-baked goodies to be used as is or just for reference;
 There are also more features that are on the way!
 1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
 2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
-3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
+3. [Work profile contacts](https://github.com/vestrel00/contacts-android/issues/186)
+4. [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
+5. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
 
 ## Installation
 

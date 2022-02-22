@@ -44,4 +44,8 @@
     <string name="raw_contact_events_label">Events</string>
     <string name="raw_contact_relations_label">Relations</string>
     <string name="raw_contact_group_memberships_label">Labels (Group Memberships)</string>
+
+    <!-- Block numbers -->
+    <string name="blocked_numbers">Blocked numbers</string>
+
 </resources>

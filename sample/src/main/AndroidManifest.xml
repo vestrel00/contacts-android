@@ -69,6 +69,27 @@
         <activity
             android:name=".AccountsActivity"
             android:label="@string/accounts" />
+
+        <activity
+            android:name=".BlockedNumbersActivity"
+            android:exported="true"
+            android:label="@string/blocked_numbers">
+            <!-- Required to successfully request to be the default dialer -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.DIAL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tel" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

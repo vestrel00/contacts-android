@@ -9,14 +9,15 @@ fault or not. This is most useful for contributors of this library. It allows us
 work we are doing is correct. Consumers may also use it, especially if they are building their own
 full-fledged contacts application.
 
-| **ContactsContract Table** | **Function**                         |
-|----------------------------|--------------------------------------|
-| `Groups`                   | `Context.logGroupsTable()`           |
-| `AggregationExceptions`    | `Context.logAggregationExceptions()` |
-| `Profile`                  | `Context.logProfile()`               |
-| `Contacts`                 | `Context.logContactsTable()`         |
-| `RawContacts`              | `Context.logRawContactsTable()`      |
-| `Data`                     | `Context.logDataTable()`             |
+| **ContactsContract Table** | **Function**                              |
+|----------------------------|-------------------------------------------|
+| `BlockedNumbers`           | `Context.logBlockedNumbersTable()`        |
+| `Groups`                   | `Context.logGroupsTable()`                |
+| `AggregationExceptions`    | `Context.logAggregationExceptionsTable()` |
+| `Profile`                  | `Context.logProfile()`                    |
+| `Contacts`                 | `Context.logContactsTable()`              |
+| `RawContacts`              | `Context.logRawContactsTable()`           |
+| `Data`                     | `Context.logDataTable()`                  |
 
 To log all of the above tables in a single call,
 

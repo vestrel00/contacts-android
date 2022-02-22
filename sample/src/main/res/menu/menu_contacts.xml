@@ -14,8 +14,15 @@
         android:title="@string/accounts" />
 
     <item
+        android:id="@+id/blocked_numbers"
+        android:icon="@android:drawable/stat_sys_warning"
+        android:showAsAction="ifRoom"
+        android:title="@string/blocked_numbers" />
+
+    <item
         android:id="@+id/refresh"
         android:icon="@android:drawable/ic_menu_rotate"
         android:showAsAction="ifRoom"
         android:title="@string/contacts_refresh" />
+
 </menu>
