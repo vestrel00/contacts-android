@@ -29,10 +29,24 @@ interface BlockedNumbers {
     fun startBlockedNumbersActivity()
 
     /**
+     * Returns a new [BlockedNumbersQuery] instance.
+     */
+    fun query(): BlockedNumbersQuery
+
+    /**
      * Returns a [BlockedNumbersPrivileges] instance, which provides functions for checking required
      * privileges for blocked number operations.
      */
     val privileges: BlockedNumbersPrivileges
+
+    /**
+     * A reference to the [Contacts] instance that constructed this. This is mostly used internally
+     * to shorten internal code.
+     *
+     * Don't worry, [Contacts] does not keep references to instances of this. There are no circular
+     * references that could cause leaks =). [Contacts] is just a factory.
+     */
+    val contactsApi: Contacts
 }
 
 /**
@@ -40,25 +54,25 @@ interface BlockedNumbers {
  */
 @Suppress("FunctionName")
 internal fun BlockedNumbers(contacts: Contacts): BlockedNumbers =
-    BlockedNumbersImpl(
-        BlockedNumberPrivileges(contacts.applicationContext),
-        contacts.applicationContext
-    )
+    BlockedNumbersImpl(BlockedNumbersPrivileges(contacts.applicationContext), contacts)
 
 private class BlockedNumbersImpl(
     override val privileges: BlockedNumbersPrivileges,
-    private val applicationContext: Context
+    override val contactsApi: Contacts
 ) : BlockedNumbers {
 
     override fun startBlockedNumbersActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val telecomManager =
-                applicationContext.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+            val telecomManager = contactsApi
+                .applicationContext
+                .getSystemService(Context.TELECOM_SERVICE) as TelecomManager
 
-            applicationContext.startActivity(
+            contactsApi.applicationContext.startActivity(
                 telecomManager.createManageBlockedNumbersIntent(),
                 null
             )
         }
     }
+
+    override fun query() = BlockedNumbersQuery(contactsApi)
 }

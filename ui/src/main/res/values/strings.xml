@@ -4,6 +4,11 @@
     <!-- Address -->
     <string name="contacts_ui_address_hint">Address</string>
 
+    <!-- Blocked Numbers -->
+    <string name="contacts_ui_blocked_numbers">Blocked numbers</string>
+    <string name="contacts_ui_blocked_numbers_unavailable">Unable to show blocked numbers</string>
+    <string name="contacts_ui_blocked_numbers_empty">There are no blocked numbers</string>
+
     <!-- Custom label input dialog -->
     <string name="contacts_ui_custom_label_input_dialog_title">Custom label name</string>
 

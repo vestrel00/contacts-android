@@ -260,9 +260,6 @@ Log.d(
 )
  ```
 
-> Each Contact may have more than one of the following data if the Contact is made up of 2 or more
-> RawContacts; name, nickname, note, organization, sip address.
-
 > For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
 
 ## Setup
@@ -527,19 +524,6 @@ If you use Proguard and the `async` and/or `permissions`, you may need to add ru
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-## Support
-
-This is a newly open sourced library with only one contributor so far (me). Don’t expect much
-support in the beginning. I am only able to work on this (and respond to issues) outside of work
-hours. This means late nights, weekends, and maybe holidays.
-
-As time passes, hopefully this library gets more and more contributors. At some point, I hope to
-gain contributors that have become experts on this library to help me support the community by
-maintaining it and making admin-level decisions.
-
-In any case, create issues for any bugs found and I'll get to it when I get the chance depending on
-severity of the issue.
 
 [project-roadmap]: https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap
 [discussions]: https://github.com/vestrel00/contacts-android/discussions

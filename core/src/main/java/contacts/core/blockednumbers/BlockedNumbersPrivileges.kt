@@ -64,7 +64,7 @@ interface BlockedNumbersPrivileges {
 }
 
 @Suppress("FunctionName")
-internal fun BlockedNumberPrivileges(context: Context): BlockedNumbersPrivileges =
+internal fun BlockedNumbersPrivileges(context: Context): BlockedNumbersPrivileges =
     BlockedNumbersPrivilegesImpl(context.applicationContext)
 
 private class BlockedNumbersPrivilegesImpl(

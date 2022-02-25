@@ -5,10 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import contacts.debug.logBlockedNumbersTable
+import contacts.async.blockednumbers.findWithContext
 import contacts.ui.util.isDefaultDialerApp
 import contacts.ui.util.onRequestToBeDefaultDialerAppResult
 import contacts.ui.util.requestToBeTheDefaultDialerApp
+import contacts.ui.view.BlockedNumbersView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 /**
  * Shows a brief explanation of how blocked phone numbers work in Android 7.0+ (N/API 24). Several functions
@@ -30,9 +33,14 @@ import contacts.ui.util.requestToBeTheDefaultDialerApp
  */
 class BlockedNumbersActivity : BaseActivity() {
 
+    private lateinit var blockedNumbersView: BlockedNumbersView
+
+    private var queryJob: Job? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_blocked_numbers)
+        blockedNumbersView = findViewById(R.id.blocked_numbers_list)
     }
 
     override fun onResume() {
@@ -40,10 +48,7 @@ class BlockedNumbersActivity : BaseActivity() {
 
         setupDefaultBlockedNumbersActivityButton()
         setupSetAsDefaultDialerButton()
-
-        if (isDefaultDialerApp()) {
-            onBeingDefaultDialerApp()
-        }
+        refreshBlockedNumbersView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -76,7 +81,7 @@ class BlockedNumbersActivity : BaseActivity() {
     private fun onBeingDefaultDialerApp() {
         if (contacts.blockedNumbers().privileges.canReadAndWrite()) {
             setupSetAsDefaultDialerButton()
-            showBlockedNumbers()
+            refreshBlockedNumbersView()
         } else {
             // If this is already the default dialer app, then it could be that the current user
             // that is in a multi-user environment is not allowed to read/write blocked numbers.
@@ -85,9 +90,17 @@ class BlockedNumbersActivity : BaseActivity() {
         }
     }
 
-    private fun showBlockedNumbers() {
-        // TODO()
-        logBlockedNumbersTable()
+    private fun refreshBlockedNumbersView() {
+        queryJob?.cancel()
+        queryJob = launch {
+            val blockedNumbers = if (contacts.blockedNumbers().privileges.canReadAndWrite()) {
+                contacts.blockedNumbers().query().findWithContext()
+            } else {
+                null
+            }
+
+            blockedNumbersView.set(blockedNumbers)
+        }
     }
 
     private fun onReadWriteBlockedNumbersRestricted() {
