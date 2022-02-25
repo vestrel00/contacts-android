@@ -11,8 +11,6 @@ import contacts.core.Contacts
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
  *   [update], and [delete].
  *
- * Use [permissions] convenience functions to check for required permissions.
- *
  * ## Deleting Groups
  *
  * Deleting groups, even user-created groups, is currently not supported due to some limitations

@@ -14,8 +14,6 @@ import contacts.core.Contacts
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [update] and
  * [delete].
- *
- * Use [permissions] convenience functions to check for required permissions.
  */
 interface Data {
 

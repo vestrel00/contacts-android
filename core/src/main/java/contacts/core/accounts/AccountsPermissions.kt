@@ -8,7 +8,7 @@ import contacts.core.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISS
 import contacts.core.isPermissionGrantedFor
 
 /**
- * Provides functions for checking permissions.
+ * Provides functions for checking account permissions.
  */
 interface AccountsPermissions {
 

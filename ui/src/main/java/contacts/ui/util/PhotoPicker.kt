@@ -18,6 +18,19 @@ import contacts.ui.R
  *
  * This is used in conjunction with [onPhotoPicked] to process the results.
  *
+ * ## Manifest
+ *
+ * Starting with Android 11 (API 30), you must include the following to your manifest in order to
+ * successfully use this function.
+ *
+ * ```
+ * <queries>
+ *     <intent>
+ *         <action android:name="android.intent.action.PICK" />
+ *     </intent>
+ * </queries>
+ * ```
+ *
  * ## Important!
  *
  * This uses [Activity.takeNewPhoto], which only provides a thumbnail version of the photo taken.
@@ -58,7 +71,7 @@ fun Activity.showPhotoPickerDialog(
 }
 
 /**
- * Launches an external activity to take a new photo using the camera.
+ * Starts an activity to take a new photo using the camera.
  *
  * This is used in the [showPhotoPickerDialog] but can also be used on its own in conjunction
  * with [onPhotoPicked].
@@ -81,6 +94,7 @@ fun Activity.showPhotoPickerDialog(
  *     </intent>
  * </queries>
  * ```
+ *
  * ## Important!
  *
  * This only provides a thumbnail version of the photo taken. To get full-sized photos, see
@@ -101,12 +115,12 @@ fun Activity.takeNewPhoto() {
 }
 
 /**
- * Launches an external activity to select an existing photo.
+ * Starts an activity to select an existing photo.
  *
  * This is used in the [showPhotoPickerDialog] but can also be used on its own in conjunction
  * with [onPhotoPicked].
  *
- * #### Manifest
+ * ## Manifest
  *
  * Starting with Android 11 (API 30), you must include the following to your manifest in order to
  * successfully use this function.
@@ -135,6 +149,9 @@ fun Activity.selectPhoto() {
  * Call this in [Activity.onActivityResult] to get the image bitmap or uri after the take or select
  * photo activity has finished. This is used in conjunction with [showPhotoPickerDialog] or
  * [takeNewPhoto] or [selectPhoto].
+ *
+ * The given [photoBitmapPicked] or [photoUriPicked] function will be invoked if the user took a
+ * new photo or selected an existing one. Otherwise, this will do nothing.
  */
 fun onPhotoPicked(
     requestCode: Int, resultCode: Int, intent: Intent?,

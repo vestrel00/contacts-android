@@ -9,7 +9,7 @@ import android.widget.Toast
 import contacts.ui.R
 
 /**
- * Launches an external activity to pick a ringtone.
+ * Starts an activity to pick a ringtone.
  *
  * The [currentRingtoneUri] determines the initially selected ringtone in the picker.
  *
@@ -19,7 +19,7 @@ import contacts.ui.R
  *
  * This is used in conjunction with [onRingtoneSelected] to process the results.
  *
- * #### Manifest
+ * ## Manifest
  *
  * Starting with Android 11 (API 30), you must include the following to your manifest in order to
  * successfully use this function.
@@ -51,6 +51,9 @@ fun Activity.selectRingtone(currentRingtoneUri: Uri? = null) {
 /**
  * Call this in [Activity.onActivityResult] to get the selected ringtone uri after the ringtone
  * select activity has finished. This is used in conjunction with [selectRingtone].
+ *
+ * The given [ringtoneSelected] function will be invoked if the user selected a ringtone. Otherwise,
+ * this will do nothing.
  */
 fun onRingtoneSelected(
     requestCode: Int, resultCode: Int, intent: Intent?,

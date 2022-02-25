@@ -9,7 +9,7 @@ import contacts.core.ContactsPermissions.Companion.WRITE_PERMISSION
 import contacts.core.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
 
 /**
- * Provides functions for checking required permissions.
+ * Provides functions for checking contacts permissions.
  */
 interface ContactsPermissions {
 

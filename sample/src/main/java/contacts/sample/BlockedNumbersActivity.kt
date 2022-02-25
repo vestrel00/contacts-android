@@ -1,18 +1,11 @@
 package contacts.sample
 
-import android.annotation.TargetApi
 import android.app.Activity
-import android.app.role.RoleManager
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.os.Build
 import android.os.Bundle
-import android.provider.BlockedNumberContract
-import android.provider.Telephony
-import android.telecom.TelecomManager
-import android.util.Log
 import contacts.debug.logBlockedNumbersTable
+import contacts.ui.util.onRequestToBeDefaultDialerAppResult
+import contacts.ui.util.requestToBeTheDefaultDialerAppIfNeeded
 
 
 /**
@@ -37,7 +30,7 @@ class BlockedNumbersActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (!contacts.blockedNumbers().privileges.isCurrentApiVersionSupported()) {
             onBlockedNumbersUnSupported()
         } else {
             onBlockedNumbersSupported()
@@ -46,71 +39,24 @@ class BlockedNumbersActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER && resultCode == RESULT_OK) {
-            onBeingDefaultDialerApp()
-        }
+        onRequestToBeDefaultDialerAppResult(requestCode, resultCode, ::onBeingDefaultDialerApp)
     }
 
     private fun onBlockedNumbersSupported() {
-        requestToBeTheDefaultDialerAppIfNeeded()
+        requestToBeTheDefaultDialerAppIfNeeded(::onBeingDefaultDialerApp)
     }
 
     private fun onBlockedNumbersUnSupported() {
         // TODO
     }
 
-    // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
-    @TargetApi(Build.VERSION_CODES.M)
-    private fun requestToBeTheDefaultDialerAppIfNeeded() {
-        val telecomManager = getSystemService(TELECOM_SERVICE) as TelecomManager // Requires API 21+
-        val isAlreadyDefaultDialer =
-            packageName == telecomManager.defaultDialerPackage // Requires API 23+
-        if (isAlreadyDefaultDialer) {
-            onBeingDefaultDialerApp()
-        } else {
-            requestToBeTheDefaultDialerApp()
-        }
-    }
-
-    // TODO move this to the UI package
-    // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
-    @TargetApi(Build.VERSION_CODES.M)
-    private fun requestToBeTheDefaultDialerApp() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
-                .putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, packageName)
-            startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER)
-        } else {
-            val roleManager = getSystemService(ROLE_SERVICE) as RoleManager
-            startActivityForResult(
-                roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER),
-                REQUEST_CODE_SET_DEFAULT_DIALER
-            )
-        }
-    }
-
     private fun onBeingDefaultDialerApp() {
-        if (canReadWriteBlockedNumbers()) {
+        if (contacts.blockedNumbers().privileges.canReadAndWrite()) {
             // TODO Update activity
             logBlockedNumbersTable()
         } else {
             onBlockedNumbersUnSupported()
         }
-    }
-
-    // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
-    @TargetApi(Build.VERSION_CODES.N)
-    private fun canReadWriteBlockedNumbers(): Boolean {
-        val defaultDialerPackage =
-            (getSystemService(Context.TELECOM_SERVICE) as TelecomManager).defaultDialerPackage
-        val defaultSmsPackage = Telephony.Sms.getDefaultSmsPackage(this)
-
-        val canCurrentUserBlockNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(this)
-        val isDefaultDialer = packageName == defaultDialerPackage
-        val isDefaultSms = packageName == defaultSmsPackage
-
-        // A check that is omitted here is if this is a system app. We are just assuming that it is not.
-        return canCurrentUserBlockNumbers && (isDefaultDialer || isDefaultSms)
     }
 
     companion object {
@@ -119,5 +65,3 @@ class BlockedNumbersActivity : BaseActivity() {
         }
     }
 }
-
-private const val REQUEST_CODE_SET_DEFAULT_DIALER = 123

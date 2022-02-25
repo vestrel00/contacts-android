@@ -32,20 +32,26 @@
 
     <!-- Required starting on Android 11 (API 30) -->
     <queries>
+        <!-- Required by RingtonePicker extensions. -->
         <intent>
             <action android:name="android.intent.action.RINGTONE_PICKER" />
         </intent>
+        <!-- Required by PhotoPicker extensions. -->
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
+        <!-- Required by PhotoPicker extensions. -->
         <intent>
             <action android:name="android.intent.action.PICK" />
+        </intent>
+        <!-- Required by BlockerNumber checks (for getting the default SMS app package. -->
+        <intent>
+            <action android:name="android.provider.Telephony.SMS_DELIVER" />
         </intent>
     </queries>
 
     <application
         android:name=".SampleApp"
-        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/contacts"
         android:supportsRtl="true">
@@ -59,22 +65,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
-        <activity
-            android:name=".ContactDetailsActivity"
-            android:label="@string/contact_details"
-            android:windowSoftInputMode="stateHidden" />
-
-        <activity
-            android:name=".AccountsActivity"
-            android:label="@string/accounts" />
-
-        <activity
-            android:name=".BlockedNumbersActivity"
-            android:exported="true"
-            android:label="@string/blocked_numbers">
-            <!-- Required to successfully request to be the default dialer -->
+            <!--
+                Required to successfully request to be the default dialer.
+                Note that these can be placed in any activity within the application.
+             -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.DIAL" />
@@ -90,6 +85,19 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ContactDetailsActivity"
+            android:label="@string/contact_details"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".AccountsActivity"
+            android:label="@string/accounts" />
+
+        <activity
+            android:name=".BlockedNumbersActivity"
+            android:label="@string/blocked_numbers" />
     </application>
 
 </manifest>

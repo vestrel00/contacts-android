@@ -13,9 +13,6 @@ import contacts.core.data.Data
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
  * [update], and [delete].
  *     - For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required.
- *
- * Use [permissions] convenience functions to check for required permissions.
- *
  */
 interface Profile {
 

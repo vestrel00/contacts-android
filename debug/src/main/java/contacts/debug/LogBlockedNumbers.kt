@@ -1,6 +1,5 @@
 package contacts.debug
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
@@ -36,13 +35,18 @@ fun Context.logBlockedNumbersTable() {
                 cursor.close()
             }
         } catch (se: SecurityException) {
-            log("#### Blocked numbers table - $se")
+            log("#### Blocked numbers table - error")
+            log(se.toString())
         }
     }
 }
 
-@TargetApi(Build.VERSION_CODES.N)
+// [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
 private fun Context.canReadWriteBlockedNumbers(): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        return false
+    }
+
     val defaultDialerPackage =
         (getSystemService(Context.TELECOM_SERVICE) as TelecomManager).defaultDialerPackage
     val defaultSmsPackage = Telephony.Sms.getDefaultSmsPackage(this)
