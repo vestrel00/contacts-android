@@ -62,10 +62,6 @@ belonging to the same account to exist. In older versions of Android, the native
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 
-> In newer versions, the group with the duplicate title gets deleted either automatically by the 
-> Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
-> on insert or update. This could lead to bugs!
-
 ## Executing the update
 
 To execute the update,

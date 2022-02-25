@@ -1,6 +1,8 @@
 package contacts.core.blockednumbers
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.telecom.TelecomManager
 import contacts.core.Contacts
@@ -20,18 +22,29 @@ interface BlockedNumbers {
      * This is the same activity used by the native (AOSP) Contacts app and Google Contacts app
      * when accessing the "Blocked numbers".
      *
+     * If the [activity] is null, the activity will be launched as a new task, separate from the
+     * current application instance. If it is provided, then the activity will be part of the
+     * current application's stack/history.
+     *
      * ## API Version
      *
      * Blocked numbers have been introduced in Android 7.0 (N) (API 24). Therefore, this will do
      * nothing for versions prior to API 24.
      */
     // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
-    fun startBlockedNumbersActivity()
+    fun startBlockedNumbersActivity(activity: Activity?)
 
     /**
      * Returns a new [BlockedNumbersQuery] instance.
      */
     fun query(): BlockedNumbersQuery
+
+    /**
+     * Returns a new [BlockedNumbersInsert] instance.
+     */
+    fun insert(): BlockedNumbersInsert
+
+    // As per official documentation, updates are not supported. Use Delete, and Insert instead.
 
     /**
      * Returns a [BlockedNumbersPrivileges] instance, which provides functions for checking required
@@ -61,18 +74,24 @@ private class BlockedNumbersImpl(
     override val contactsApi: Contacts
 ) : BlockedNumbers {
 
-    override fun startBlockedNumbersActivity() {
+    override fun startBlockedNumbersActivity(activity: Activity?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val telecomManager = contactsApi
                 .applicationContext
                 .getSystemService(Context.TELECOM_SERVICE) as TelecomManager
 
-            contactsApi.applicationContext.startActivity(
-                telecomManager.createManageBlockedNumbersIntent(),
+            (activity ?: contactsApi.applicationContext).startActivity(
+                telecomManager.createManageBlockedNumbersIntent().apply {
+                    if (activity == null) {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                },
                 null
             )
         }
     }
 
     override fun query() = BlockedNumbersQuery(contactsApi)
+
+    override fun insert() = BlockedNumbersInsert(contactsApi)
 }

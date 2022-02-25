@@ -14,7 +14,8 @@ import contacts.core.util.unsafeLazy
  *
  * ## Privileges
  *
- * Requires [BlockedNumbersPrivileges.canReadAndWrite].
+ * Requires [BlockedNumbersPrivileges.canReadAndWrite]. All queries will return an empty result if
+ * privileges are not acquired.
  *
  * ## Usage
  *

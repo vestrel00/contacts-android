@@ -5,12 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import contacts.async.blockednumbers.findWithContext
+import contacts.async.blockednumbers.commitWithContext
+import contacts.core.blockednumbers.BlockedNumbersInsert.Result.FailureReason
+import contacts.core.entities.NewBlockedNumber
+import contacts.sample.view.BlockedNumbersView
 import contacts.ui.util.isDefaultDialerApp
 import contacts.ui.util.onRequestToBeDefaultDialerAppResult
 import contacts.ui.util.requestToBeTheDefaultDialerApp
-import contacts.ui.view.BlockedNumbersView
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
@@ -31,16 +32,15 @@ import kotlinx.coroutines.launch
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.
  */
-class BlockedNumbersActivity : BaseActivity() {
+class BlockedNumbersActivity : BaseActivity(), BlockedNumbersView.EventListener {
 
     private lateinit var blockedNumbersView: BlockedNumbersView
-
-    private var queryJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_blocked_numbers)
         blockedNumbersView = findViewById(R.id.blocked_numbers_list)
+        blockedNumbersView.setEventListener(this)
     }
 
     override fun onResume() {
@@ -59,7 +59,7 @@ class BlockedNumbersActivity : BaseActivity() {
     private fun setupDefaultBlockedNumbersActivityButton() {
         val button = findViewById<Button>(R.id.blocked_numbers_default_activity)
         button.setOnClickListener {
-            contacts.blockedNumbers().startBlockedNumbersActivity()
+            contacts.blockedNumbers().startBlockedNumbersActivity(this)
         }
         button.isEnabled = contacts.blockedNumbers().privileges.isCurrentApiVersionSupported()
     }
@@ -91,16 +91,41 @@ class BlockedNumbersActivity : BaseActivity() {
     }
 
     private fun refreshBlockedNumbersView() {
-        queryJob?.cancel()
-        queryJob = launch {
-            val blockedNumbers = if (contacts.blockedNumbers().privileges.canReadAndWrite()) {
-                contacts.blockedNumbers().query().findWithContext()
-            } else {
-                null
-            }
+        launch { blockedNumbersView.loadBlockedNumbers(contacts) }
+    }
 
-            blockedNumbersView.set(blockedNumbers)
+    override fun onAddNumberToBlock(numberToBlock: String) {
+        launch {
+            val newNumberToBlock = NewBlockedNumber(number = numberToBlock)
+
+            val result = contacts.blockedNumbers()
+                .insert()
+                .blockedNumbers(newNumberToBlock)
+                .commitWithContext()
+
+            val failureReason = result.failureReason(newNumberToBlock)
+            if (failureReason == null) {
+                onNewBlockedNumberAddSuccess()
+            } else {
+                onNewBlockedNumberAddFailed(failureReason)
+            }
         }
+    }
+
+    private fun onNewBlockedNumberAddSuccess() {
+        Toast.makeText(this, R.string.blocked_numbers_add_success, Toast.LENGTH_SHORT)
+            .show()
+        refreshBlockedNumbersView()
+    }
+
+    private fun onNewBlockedNumberAddFailed(failureReason: FailureReason) {
+        val messageRes = when (failureReason) {
+            FailureReason.NUMBER_IS_BLANK -> R.string.blocked_numbers_add_fail_blank
+            FailureReason.NUMBER_ALREADY_BLOCKED -> R.string.blocked_numbers_add_fail_already_blocked
+            FailureReason.UNKNOWN -> R.string.blocked_numbers_add_fail_unknown
+        }
+
+        Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show()
     }
 
     private fun onReadWriteBlockedNumbersRestricted() {

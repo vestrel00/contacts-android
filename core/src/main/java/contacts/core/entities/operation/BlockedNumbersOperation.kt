@@ -14,10 +14,15 @@ private val TABLE = Table.BlockedNumbers
  */
 internal class BlockedNumbersOperation {
 
-    fun insert(blockedNumber: NewBlockedNumber): ContentProviderOperation = newInsert(TABLE)
-        .withValue(BlockedNumbersFields.Number, blockedNumber.number)
-        .withValue(BlockedNumbersFields.NormalizedNumber, blockedNumber.normalizedNumber)
-        .build()
+    fun insert(blockedNumber: NewBlockedNumber): ContentProviderOperation? =
+        if (blockedNumber.number.isNullOrBlank()) { // The number is mandatory
+            null
+        } else {
+            newInsert(TABLE)
+                .withValue(BlockedNumbersFields.Number, blockedNumber.number)
+                .withValue(BlockedNumbersFields.NormalizedNumber, blockedNumber.normalizedNumber)
+                .build()
+        }
 
     fun delete(blockedNumberId: Long): ContentProviderOperation = newDelete(TABLE)
         .withSelection(BlockedNumbersFields.Id equalTo blockedNumberId)

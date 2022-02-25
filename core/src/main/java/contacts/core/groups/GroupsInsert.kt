@@ -35,7 +35,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To insert a group with the title "Best Friends" for the given account;
+ * To insert a group with the title "Best Friends" for the given account,
  *
  * ```kotlin
  * val result = groupsInsert
@@ -70,10 +70,6 @@ interface GroupsInsert : CrudApi {
     /**
      * Inserts the [NewGroup]s in the queue (added via [groups]) and returns the [Result].
      *
-     * Groups with titles that already exist will be inserted. The Contacts Provider allows this
-     * and is the behavior of the native Contacts app. If desired, it is up to consumers to protect
-     * against multiple groups from the same account having the same titles.
-     *
      * This does nothing if there are no available accounts or no groups are in the insert queue or
      * if insert permission has not been granted. An empty map will be returned in this case.
      *
@@ -91,10 +87,6 @@ interface GroupsInsert : CrudApi {
 
     /**
      * Inserts the [NewGroup]s in the queue (added via [groups]) and returns the [Result].
-     *
-     * Groups with titles that already exist will be inserted. The Contacts Provider allows this
-     * and is the behavior of the native Contacts app. If desired, it is up to consumers to protect
-     * against multiple groups from the same account having the same titles.
      *
      * This does nothing if there are no available accounts or no groups are in the insert queue or
      * if insert permission has not been granted. An empty map will be returned in this case.
@@ -155,8 +147,7 @@ interface GroupsInsert : CrudApi {
 
         /**
          * Returns the ID of the newly created Group. Use the ID to get the newly created Group via
-         * a query. The manually constructed [NewGroup] passed to [GroupsInsert.groups] are not
-         * automatically updated and will remain to have an invalid ID.
+         * a query.
          *
          * Returns null if the insert operation failed.
          */

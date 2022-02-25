@@ -10,7 +10,7 @@ sealed interface BlockedNumberEntity : Entity {
     /**
      * The phone number to block as the user entered it.
      *
-     * E.G. (012) 345-6789
+     * This may or may not be formatted (e.g. (012) 345-6789).
      *
      * ## Email data
      *
@@ -30,6 +30,9 @@ sealed interface BlockedNumberEntity : Entity {
      * If present, [number] has to be set as well (it will be ignored otherwise).
      *
      * E.G. +10123456789
+     *
+     * If you want to set this value yourself, you may want to look at
+     * [android.telephony.PhoneNumberUtils].
      *
      * ## Email data
      *
@@ -90,8 +93,8 @@ data class BlockedNumber internal constructor(
 @Parcelize
 data class NewBlockedNumber @JvmOverloads constructor(
 
-    override val number: String? = null,
-    override val normalizedNumber: String? = null,
+    override var number: String? = null,
+    override var normalizedNumber: String? = null,
 
     override val isRedacted: Boolean = false
 

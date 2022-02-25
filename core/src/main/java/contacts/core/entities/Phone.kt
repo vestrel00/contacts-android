@@ -13,9 +13,9 @@ import kotlinx.parcelize.Parcelize
 sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
 
     /**
-     * The phone number as the user entered it.
+     * The phone number to block as the user entered it.
      *
-     * E.G. (012) 345-6789
+     * This may or may not be formatted (e.g. (012) 345-6789).
      */
     val number: String?
 
@@ -26,6 +26,9 @@ sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
      * If present, [number] has to be set as well (it will be ignored otherwise).
      *
      * E.G. +10123456789
+     *
+     * If you want to set this value yourself, you may want to look at
+     * [android.telephony.PhoneNumberUtils].
      */
     val normalizedNumber: String?
 

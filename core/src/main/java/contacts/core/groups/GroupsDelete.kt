@@ -51,7 +51,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To delete the given groups;
+ * To delete the given groups,
  *
  * ```kotlin
  * groupsDelete

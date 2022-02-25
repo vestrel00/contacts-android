@@ -65,5 +65,14 @@
     <string name="blocked_numbers_default_activity">Default blocked numbers activity</string>
     <string name="blocked_numbers_set_as_default_dialer">Set as default dialer app</string>
     <string name="blocked_numbers_already_default_dialer">This is the default dialer app</string>
-    <string name="blocked_numbers_read_write_restricted">You are not allowed to directly read/write blocked numbers.</string>
+    <string name="blocked_numbers_read_write_restricted">You are not allowed to directly read/write blocked numbers</string>
+
+    <string name="blocked_numbers_unavailable">Unable to show blocked numbers</string>
+    <string name="blocked_numbers_empty">There are no blocked numbers</string>
+    <string name="blocked_numbers_add_hint">Add number to block</string>
+    <string name="blocked_numbers_add">Block number</string>
+    <string name="blocked_numbers_add_success">Number is now blocked</string>
+    <string name="blocked_numbers_add_fail_blank">Number cannot be blank</string>
+    <string name="blocked_numbers_add_fail_already_blocked">Number is already blocked</string>
+    <string name="blocked_numbers_add_fail_unknown">Failed to block number</string>
 </resources>
