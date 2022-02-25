@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.Toast
 import contacts.async.blockednumbers.commitWithContext
 import contacts.core.blockednumbers.BlockedNumbersInsert.Result.FailureReason
+import contacts.core.entities.BlockedNumber
 import contacts.core.entities.NewBlockedNumber
 import contacts.sample.view.BlockedNumbersView
 import contacts.ui.util.isDefaultDialerApp
@@ -94,7 +95,7 @@ class BlockedNumbersActivity : BaseActivity(), BlockedNumbersView.EventListener 
         launch { blockedNumbersView.loadBlockedNumbers(contacts) }
     }
 
-    override fun onAddNumberToBlock(numberToBlock: String) {
+    override fun onBlockNumber(numberToBlock: String) {
         launch {
             val newNumberToBlock = NewBlockedNumber(number = numberToBlock)
 
@@ -105,20 +106,20 @@ class BlockedNumbersActivity : BaseActivity(), BlockedNumbersView.EventListener 
 
             val failureReason = result.failureReason(newNumberToBlock)
             if (failureReason == null) {
-                onNewBlockedNumberAddSuccess()
+                onBlockNumberSuccess()
             } else {
-                onNewBlockedNumberAddFailed(failureReason)
+                onBlockNumberFail(failureReason)
             }
         }
     }
 
-    private fun onNewBlockedNumberAddSuccess() {
+    private fun onBlockNumberSuccess() {
+        refreshBlockedNumbersView()
         Toast.makeText(this, R.string.blocked_numbers_add_success, Toast.LENGTH_SHORT)
             .show()
-        refreshBlockedNumbersView()
     }
 
-    private fun onNewBlockedNumberAddFailed(failureReason: FailureReason) {
+    private fun onBlockNumberFail(failureReason: FailureReason) {
         val messageRes = when (failureReason) {
             FailureReason.NUMBER_IS_BLANK -> R.string.blocked_numbers_add_fail_blank
             FailureReason.NUMBER_ALREADY_BLOCKED -> R.string.blocked_numbers_add_fail_already_blocked
@@ -126,6 +127,32 @@ class BlockedNumbersActivity : BaseActivity(), BlockedNumbersView.EventListener 
         }
 
         Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onUnblockNumber(blockedNumberToUnblock: BlockedNumber) {
+        launch {
+            val result = contacts.blockedNumbers()
+                .delete()
+                .blockedNumbers(blockedNumberToUnblock)
+                .commitWithContext()
+
+            if (result.isSuccessful) {
+                onUnblockNumberSuccess()
+            } else {
+                onUnblockNumberFail()
+            }
+        }
+    }
+
+    private fun onUnblockNumberSuccess() {
+        refreshBlockedNumbersView()
+        Toast.makeText(this, R.string.blocked_numbers_remove_success, Toast.LENGTH_SHORT)
+            .show()
+    }
+
+    private fun onUnblockNumberFail() {
+        Toast.makeText(this, R.string.blocked_numbers_remove_fail, Toast.LENGTH_SHORT)
+            .show()
     }
 
     private fun onReadWriteBlockedNumbersRestricted() {

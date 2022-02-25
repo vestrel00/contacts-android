@@ -8,7 +8,10 @@ import android.telecom.TelecomManager
 import contacts.core.Contacts
 
 /**
- * TODO
+ * Provides new [BlockedNumbersQuery], [BlockedNumbersInsert], and [BlockedNumbersDelete] instances.
+ *
+ * Note that updating an existing blocked number is not supported by the Blocked Number Provider.
+ * Use [delete] and [insert] operations instead.
  */
 interface BlockedNumbers {
 
@@ -45,6 +48,11 @@ interface BlockedNumbers {
     fun insert(): BlockedNumbersInsert
 
     // As per official documentation, updates are not supported. Use Delete, and Insert instead.
+
+    /**
+     * Returns a new [BlockedNumbersDelete] instance.
+     */
+    fun delete(): BlockedNumbersDelete
 
     /**
      * Returns a [BlockedNumbersPrivileges] instance, which provides functions for checking required
@@ -94,4 +102,6 @@ private class BlockedNumbersImpl(
     override fun query() = BlockedNumbersQuery(contactsApi)
 
     override fun insert() = BlockedNumbersInsert(contactsApi)
+
+    override fun delete() = BlockedNumbersDelete(contactsApi)
 }

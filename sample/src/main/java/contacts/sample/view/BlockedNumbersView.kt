@@ -9,7 +9,9 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.widget.*
 import contacts.async.blockednumbers.findWithContext
+import contacts.core.BlockedNumbersFields
 import contacts.core.Contacts
+import contacts.core.desc
 import contacts.core.entities.BlockedNumber
 import contacts.sample.R
 import contacts.ui.text.AbstractTextWatcher
@@ -61,7 +63,11 @@ class BlockedNumbersView @JvmOverloads constructor(
 
     suspend fun loadBlockedNumbers(contacts: Contacts) {
         val blockedNumbers = if (contacts.blockedNumbers().privileges.canReadAndWrite()) {
-            contacts.blockedNumbers().query().findWithContext()
+            contacts.blockedNumbers()
+                .query()
+                // The builtin native Blocked numbers activity shows the most recently added first
+                .orderBy(BlockedNumbersFields.Id.desc())
+                .findWithContext()
         } else {
             null
         }
@@ -104,7 +110,9 @@ class BlockedNumbersView @JvmOverloads constructor(
 
     private fun addBlockedNumberViews(blockedNumbers: List<BlockedNumber>?) {
         blockedNumbers?.forEach {
-            addView(BlockedNumberView(context, it))
+            BlockedNumberView(context, it) { blockedNumber ->
+                eventListener?.onUnblockNumber(blockedNumber)
+            }.also(::addView)
         }
     }
 
@@ -118,7 +126,7 @@ class BlockedNumbersView @JvmOverloads constructor(
             addView(this)
             setOnClickListener {
                 addNewBlockedNumberField.text?.toString()?.let { numberToBlock ->
-                    eventListener?.onAddNumberToBlock(numberToBlock)
+                    eventListener?.onBlockNumber(numberToBlock)
                 }
             }
             setText(R.string.blocked_numbers_add)
@@ -133,13 +141,16 @@ class BlockedNumbersView @JvmOverloads constructor(
     }
 
     interface EventListener {
-        fun onAddNumberToBlock(numberToBlock: String)
+        fun onBlockNumber(numberToBlock: String)
+        fun onUnblockNumber(blockedNumberToUnblock: BlockedNumber)
     }
 }
 
 @SuppressLint("ViewConstructor")
-private class BlockedNumberView(context: Context, blockedNumber: BlockedNumber) :
-    RelativeLayout(context) {
+private class BlockedNumberView(
+    context: Context, blockedNumber: BlockedNumber,
+    onDeleteButtonClicked: (BlockedNumber) -> Unit
+) : RelativeLayout(context) {
 
     init {
         inflate(context, R.layout.view_blocked_number, this)
@@ -156,7 +167,7 @@ private class BlockedNumberView(context: Context, blockedNumber: BlockedNumber) 
             }
 
         findViewById<ImageView>(R.id.delete).setOnClickListener {
-            // TODO
+            onDeleteButtonClicked(blockedNumber)
         }
     }
 }

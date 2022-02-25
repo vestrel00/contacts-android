@@ -36,10 +36,7 @@ sealed interface BlockedNumberEntity : Entity {
      *
      * ## Email data
      *
-     * Note that this column is not populated if normalization fails or if the address is not a
-     * phone number (eg: email).
-     *
-     * If [number] is an email, this should be null.
+     * This may contain an email if [number] is an email.
      */
     val normalizedNumber: String?
 

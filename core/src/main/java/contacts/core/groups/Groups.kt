@@ -10,11 +10,6 @@ import contacts.core.Contacts
  * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
  *   [update], and [delete].
- *
- * ## Deleting Groups
- *
- * Deleting groups, even user-created groups, is currently not supported due to some limitations
- * imposed by the Contacts Provider. For more details, see the DEV_NOTES "Groups; Deletion" section.
  */
 interface Groups {
 

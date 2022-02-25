@@ -75,4 +75,6 @@
     <string name="blocked_numbers_add_fail_blank">Number cannot be blank</string>
     <string name="blocked_numbers_add_fail_already_blocked">Number is already blocked</string>
     <string name="blocked_numbers_add_fail_unknown">Failed to block number</string>
+    <string name="blocked_numbers_remove_success">Number is no longer blocked</string>
+    <string name="blocked_numbers_remove_fail">Failed to unblock number</string>
 </resources>
