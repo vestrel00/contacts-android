@@ -3,17 +3,19 @@ package contacts.sample
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
 import contacts.debug.logBlockedNumbersTable
+import contacts.ui.util.isDefaultDialerApp
 import contacts.ui.util.onRequestToBeDefaultDialerAppResult
-import contacts.ui.util.requestToBeTheDefaultDialerAppIfNeeded
-
+import contacts.ui.util.requestToBeTheDefaultDialerApp
 
 /**
  * Shows a brief explanation of how blocked phone numbers work in Android 7.0+ (N/API 24). Several functions
  * are provided;
  *
- * 1. Launch the default blocked numbers activity, which is also used by AOSP Contacts and Google
- *    Contacts.
+ * 1. Launch the default blocked numbers activity, which is also used by the AOSP Contacts app and
+ *    Google Contacts app.
  * 2. Request to make this the default dialer app, which is one of the ways for the sample app to
  *    be able to read and write blocked numbers. If it is already the default dialer app or request
  *    is granted, then the blocked number list is populated with options to add or delete.
@@ -30,10 +32,17 @@ class BlockedNumbersActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!contacts.blockedNumbers().privileges.isCurrentApiVersionSupported()) {
-            onBlockedNumbersUnSupported()
-        } else {
-            onBlockedNumbersSupported()
+        setContentView(R.layout.activity_blocked_numbers)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        setupDefaultBlockedNumbersActivityButton()
+        setupSetAsDefaultDialerButton()
+
+        if (isDefaultDialerApp()) {
+            onBeingDefaultDialerApp()
         }
     }
 
@@ -42,21 +51,48 @@ class BlockedNumbersActivity : BaseActivity() {
         onRequestToBeDefaultDialerAppResult(requestCode, resultCode, ::onBeingDefaultDialerApp)
     }
 
-    private fun onBlockedNumbersSupported() {
-        requestToBeTheDefaultDialerAppIfNeeded(::onBeingDefaultDialerApp)
+    private fun setupDefaultBlockedNumbersActivityButton() {
+        val button = findViewById<Button>(R.id.blocked_numbers_default_activity)
+        button.setOnClickListener {
+            contacts.blockedNumbers().startBlockedNumbersActivity()
+        }
+        button.isEnabled = contacts.blockedNumbers().privileges.isCurrentApiVersionSupported()
     }
 
-    private fun onBlockedNumbersUnSupported() {
-        // TODO
+    private fun setupSetAsDefaultDialerButton() {
+        val button = findViewById<Button>(R.id.blocked_numbers_set_as_default_dialer)
+        if (isDefaultDialerApp()) {
+            button.setText(R.string.blocked_numbers_already_default_dialer)
+            button.isEnabled = false
+        } else {
+            button.setOnClickListener {
+                requestToBeTheDefaultDialerApp()
+            }
+            button.setText(R.string.blocked_numbers_set_as_default_dialer)
+            button.isEnabled = contacts.blockedNumbers().privileges.isCurrentApiVersionSupported()
+        }
     }
 
     private fun onBeingDefaultDialerApp() {
         if (contacts.blockedNumbers().privileges.canReadAndWrite()) {
-            // TODO Update activity
-            logBlockedNumbersTable()
+            setupSetAsDefaultDialerButton()
+            showBlockedNumbers()
         } else {
-            onBlockedNumbersUnSupported()
+            // If this is already the default dialer app, then it could be that the current user
+            // that is in a multi-user environment is not allowed to read/write blocked numbers.
+            // Typically, blocking numbers is only supported for one user at a time.
+            onReadWriteBlockedNumbersRestricted()
         }
+    }
+
+    private fun showBlockedNumbers() {
+        // TODO()
+        logBlockedNumbersTable()
+    }
+
+    private fun onReadWriteBlockedNumbersRestricted() {
+        Toast.makeText(this, R.string.blocked_numbers_read_write_restricted, Toast.LENGTH_LONG)
+            .show()
     }
 
     companion object {

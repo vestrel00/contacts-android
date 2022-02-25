@@ -47,5 +47,22 @@
 
     <!-- Block numbers -->
     <string name="blocked_numbers">Blocked numbers</string>
-
+    <string name="blocked_numbers_description">Blocked numbers have been introduced in Android 7.0.
+        If you are looking at this in prior versions, there is nothing for you to see or do here.
+        \n
+        \nTo launch the default blocked numbers activity, which is also used by the AOSP Contacts
+        app and the Google Contact app, tap the \"Default blocked numbers activity\" button.
+        \n
+        \nApps can also query, insert, and delete blocked numbers directly if the app is;
+        \n- a system app
+        \n- the default dialer/phone app
+        \n- the default SMS/messaging app
+        \n
+        \nTap the \"Set as default dialer app\" button in order to read/write blocked
+        numbers directly in this activity.
+    </string>
+    <string name="blocked_numbers_default_activity">Default blocked numbers activity</string>
+    <string name="blocked_numbers_set_as_default_dialer">Set as default dialer app</string>
+    <string name="blocked_numbers_already_default_dialer">This is the default dialer app</string>
+    <string name="blocked_numbers_read_write_restricted">You are not allowed to directly read/write blocked numbers.</string>
 </resources>
