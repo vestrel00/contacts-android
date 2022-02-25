@@ -108,3 +108,6 @@ internal fun CursorHolder<ContactsField>.optionsMapper(): EntityMapper<Options> 
 
 internal fun CursorHolder<GroupsField>.groupMapper(): EntityMapper<Group> =
     GroupMapper(groupsCursor())
+
+internal fun CursorHolder<BlockedNumbersField>.blockedNumberMapper(): EntityMapper<BlockedNumber> =
+    BlockedNumberMapper(blockedNumbersCursor())

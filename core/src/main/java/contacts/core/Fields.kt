@@ -4,6 +4,7 @@ package contacts.core
 
 import android.annotation.TargetApi
 import android.os.Build
+import android.provider.BlockedNumberContract
 import android.provider.ContactsContract.*
 import android.provider.ContactsContract.Contacts
 import contacts.core.AbstractCustomDataField.ColumnName
@@ -1045,24 +1046,86 @@ abstract class AbstractCustomDataFieldSet<out T : AbstractCustomDataField> :
 
 // endregion
 
-// region AggregationExceptions Table Fields
+// region RawContacts Table Fields
 
-data class AggregationExceptionsField internal constructor(override val columnName: String) :
-    Field()
+data class RawContactsField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : Field()
 
 /**
- * Fields for AggregationExceptions table operations.
+ * Fields for RawContacts table operations.
  */
-internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsField>() {
+object RawContactsFields : FieldSet<RawContactsField>() {
 
-    val Type = AggregationExceptionsField(AggregationExceptions.TYPE)
+    @JvmField
+    val Id = RawContactsField(RawContacts._ID, required = true)
 
-    val RawContactId1 = AggregationExceptionsField(AggregationExceptions.RAW_CONTACT_ID1)
+    @JvmField
+    val ContactId = RawContactsField(RawContacts.CONTACT_ID, required = true)
 
-    val RawContactId2 = AggregationExceptionsField(AggregationExceptions.RAW_CONTACT_ID2)
+    @JvmField
+    val DisplayNamePrimary = RawContactsField(RawContacts.DISPLAY_NAME_PRIMARY)
+
+    @JvmField
+    val DisplayNameAlt = RawContactsField(RawContacts.DISPLAY_NAME_ALTERNATIVE)
+
+    @JvmField
+    // From protected SyncColumns
+    val AccountName = RawContactsField(RawContacts.ACCOUNT_NAME)
+
+    @JvmField
+    // From protected SyncColumns
+    val AccountType = RawContactsField(RawContacts.ACCOUNT_TYPE)
+
+    @JvmField
+    val Options = RawContactsOptionsFields()
+
+    internal val Deleted = RawContactsField(RawContacts.DELETED)
 
     override val all by unsafeLazy {
-        setOf(Type, RawContactId1, RawContactId2)
+        mutableSetOf(
+            Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
+        ).apply {
+            addAll(Options.all)
+        }.toSet() // ensure that this is not modifiable at runtime
+    }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+}
+
+// Contains the same underlying column names as DataContactsOptionsFields and ContactsOptionsFields
+// but with a different Field type.
+class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsField>() {
+
+    internal val Id = RawContactsField(RawContacts._ID, required = true)
+
+    @JvmField
+    val Starred = RawContactsField(RawContacts.STARRED)
+
+    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
+    @JvmField
+    val TimesContacted = RawContactsField(RawContacts.TIMES_CONTACTED)
+
+    @JvmField
+    val LastTimeContacted = RawContactsField(RawContacts.LAST_TIME_CONTACTED)
+     */
+
+    @JvmField
+    val CustomRingtone = RawContactsField(RawContacts.CUSTOM_RINGTONE)
+
+    @JvmField
+    val SendToVoicemail = RawContactsField(RawContacts.SEND_TO_VOICEMAIL)
+
+    override val all by unsafeLazy {
+        setOf(
+            Id, Starred, CustomRingtone, SendToVoicemail
+        )
     }
 }
 
@@ -1219,49 +1282,55 @@ object GroupsFields : FieldSet<GroupsField>() {
 
 // endregion
 
-// region RawContacts Table Fields
+// region AggregationExceptions Table Fields
 
-data class RawContactsField internal constructor(
+data class AggregationExceptionsField internal constructor(override val columnName: String) :
+    Field()
+
+/**
+ * Fields for AggregationExceptions table operations.
+ */
+internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsField>() {
+
+    val Type = AggregationExceptionsField(AggregationExceptions.TYPE)
+
+    val RawContactId1 = AggregationExceptionsField(AggregationExceptions.RAW_CONTACT_ID1)
+
+    val RawContactId2 = AggregationExceptionsField(AggregationExceptions.RAW_CONTACT_ID2)
+
+    override val all by unsafeLazy {
+        setOf(Type, RawContactId1, RawContactId2)
+    }
+}
+
+// endregion
+
+// region Blocked Number Table Fields
+
+data class BlockedNumbersField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
 ) : Field()
 
 /**
- * Fields for RawContacts table operations.
+ * Fields for Blocked Numbers table operations.
  */
-object RawContactsFields : FieldSet<RawContactsField>() {
+// [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
+@TargetApi(Build.VERSION_CODES.N)
+object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
 
     @JvmField
-    val Id = RawContactsField(RawContacts._ID, required = true)
+    val Id = BlockedNumbersField(BlockedNumberContract.BlockedNumbers.COLUMN_ID, required = true)
 
     @JvmField
-    val ContactId = RawContactsField(RawContacts.CONTACT_ID, required = true)
+    val Number = BlockedNumbersField(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER)
 
     @JvmField
-    val DisplayNamePrimary = RawContactsField(RawContacts.DISPLAY_NAME_PRIMARY)
-
-    @JvmField
-    val DisplayNameAlt = RawContactsField(RawContacts.DISPLAY_NAME_ALTERNATIVE)
-
-    @JvmField
-    // From protected SyncColumns
-    val AccountName = RawContactsField(RawContacts.ACCOUNT_NAME)
-
-    @JvmField
-    // From protected SyncColumns
-    val AccountType = RawContactsField(RawContacts.ACCOUNT_TYPE)
-
-    @JvmField
-    val Options = RawContactsOptionsFields()
-
-    internal val Deleted = RawContactsField(RawContacts.DELETED)
+    val NormalizedNumber =
+        BlockedNumbersField(BlockedNumberContract.BlockedNumbers.COLUMN_E164_NUMBER)
 
     override val all by unsafeLazy {
-        mutableSetOf(
-            Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
-        ).apply {
-            addAll(Options.all)
-        }.toSet() // ensure that this is not modifiable at runtime
+        setOf(Id, Number, NormalizedNumber)
     }
 
     /**
@@ -1270,36 +1339,6 @@ object RawContactsFields : FieldSet<RawContactsField>() {
      */
     @JvmStatic
     fun all() = all
-}
-
-// Contains the same underlying column names as DataContactsOptionsFields and ContactsOptionsFields
-// but with a different Field type.
-class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsField>() {
-
-    internal val Id = RawContactsField(RawContacts._ID, required = true)
-
-    @JvmField
-    val Starred = RawContactsField(RawContacts.STARRED)
-
-    /* Deprecated in API 29 - contains useless value for all Android versions from the Play store.
-    @JvmField
-    val TimesContacted = RawContactsField(RawContacts.TIMES_CONTACTED)
-
-    @JvmField
-    val LastTimeContacted = RawContactsField(RawContacts.LAST_TIME_CONTACTED)
-     */
-
-    @JvmField
-    val CustomRingtone = RawContactsField(RawContacts.CUSTOM_RINGTONE)
-
-    @JvmField
-    val SendToVoicemail = RawContactsField(RawContacts.SEND_TO_VOICEMAIL)
-
-    override val all by unsafeLazy {
-        setOf(
-            Id, Starred, CustomRingtone, SendToVoicemail
-        )
-    }
 }
 
 // endregion

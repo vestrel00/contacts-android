@@ -1,11 +1,14 @@
 package contacts.core.util
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.ContentProviderOperation
 import android.content.ContentProviderResult
 import android.content.ContentResolver
 import android.database.SQLException
 import android.net.Uri
+import android.os.Build
+import android.provider.BlockedNumberContract
 import android.provider.ContactsContract
 import contacts.core.ContactsException
 import contacts.core.Field
@@ -97,5 +100,22 @@ internal fun ContentResolver.applyBatch(operations: ArrayList<ContentProviderOpe
     } catch (exception: Exception) {
         null
     }
+
+// Note that we are choosing not to add the authority as a parameter in applyBatch because of
+// naming conflicts with the actual ContentResolver.applyBatch function. So, we just create the
+// following functions. Minor code duplication for being a pragmatic programmer =)
+
+internal fun ContentResolver.applyBlockedNumberBatch(vararg operations: ContentProviderOperation) =
+    applyBlockedNumberBatch(arrayListOf(*operations))
+
+// [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
+@TargetApi(Build.VERSION_CODES.N)
+internal fun ContentResolver.applyBlockedNumberBatch(
+    operations: ArrayList<ContentProviderOperation>
+): Array<ContentProviderResult>? = try {
+    applyBatch(BlockedNumberContract.AUTHORITY, operations)
+} catch (exception: Exception) {
+    null
+}
 
 // endregion

@@ -20,8 +20,8 @@ sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
     val number: String?
 
     /**
-     * The phone number's E164 representation. This value can be omitted in which case the provider
-     * will try to automatically infer it.  (It'll be left null if the provider fails to infer.)
+     * The [number]'s E164 representation. This value can be omitted in which case the provider
+     * will try to automatically infer it. (It'll be left null if the provider fails to infer.)
      *
      * If present, [number] has to be set as well (it will be ignored otherwise).
      *
