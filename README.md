@@ -3,6 +3,7 @@
 ![Android Contacts, Reborn banner](/media/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+[![Monthly Downloads](https://jitpack.io/v/vestrel00/contacts-android/month.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android%20Contacts,%20Reborn-green.svg?style=flat&logo=android)](https://android-arsenal.com/details/1/8393)
 [![Android Weekly](https://img.shields.io/badge/AndroidWeekly-Issue%20%23491-2299cc.svg?style=flat&logo=android)](https://androidweekly.net/issues/issue-491)
