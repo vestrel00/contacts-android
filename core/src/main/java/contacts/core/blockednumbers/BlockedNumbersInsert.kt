@@ -21,11 +21,11 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To insert a number to block (i.e. (555)-555-5555),
+ * To insert a number to block (i.e. (555) 555-5555),
  *
  * ```kotlin
  * val result = blockedNumbersInsert
- *      .blockedNumbers(NewBlockedNumber(number = "(555)-555-5555"))
+ *      .blockedNumbers(NewBlockedNumber(number = "(555) 555-5555"))
  *      .commit()
  * ```
  */
