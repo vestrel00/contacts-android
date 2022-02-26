@@ -42,7 +42,7 @@ import contacts.core.util.unsafeLazy
  *
  * val blockedNumbers = blockedNumbersQuery
  *      .where(contains(Number, "555"))
- *      .orderBy(asc(BlockedNumbersFields.Number))
+ *      .orderBy(asc(Number))
  *      .limit(5)
  *      .offset(2)
  *      .find()
@@ -155,7 +155,7 @@ interface BlockedNumbersQuery : CrudApi {
     override fun redactedCopy(): BlockedNumbersQuery
 
     /**
-     * The combined list of [BlockedNumber]s from the specified Accounts ordered by [orderBy].
+     * A list of [BlockedNumber]s.
      *
      * ## The [toString] function
      *

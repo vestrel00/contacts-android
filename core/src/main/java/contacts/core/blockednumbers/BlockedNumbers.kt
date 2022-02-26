@@ -16,8 +16,8 @@ import contacts.core.Contacts
 interface BlockedNumbers {
 
     /**
-     * Launches the system Blocked numbers activity, which provides a fully functional UI allowing
-     * users to see, add, and remove blocked numbers.
+     * Launches the builtin system Blocked numbers activity, which provides a fully functional UI
+     * allowing users to see, add, and remove blocked numbers.
      *
      * This is useful for apps that do not have the privilege to read/write directly to the
      * blocked number provider. See [BlockedNumbersPrivileges] for more info.
@@ -25,9 +25,9 @@ interface BlockedNumbers {
      * This is the same activity used by the native (AOSP) Contacts app and Google Contacts app
      * when accessing the "Blocked numbers".
      *
-     * If the [activity] is null, the activity will be launched as a new task, separate from the
-     * current application instance. If it is provided, then the activity will be part of the
-     * current application's stack/history.
+     * If the [activity] is null, the builtin blocked numbers activity will be launched as a new
+     * task, separate from the current application instance. If it is provided, then the activity
+     * will be part of the current application's stack/history.
      *
      * ## API Version
      *

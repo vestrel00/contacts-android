@@ -16,10 +16,6 @@ sealed interface BlockedNumberEntity : Entity {
      *
      * Other than regular phone numbers, the blocked number provider can also store addresses (such
      * as email) from which a user can receive messages, and calls.
-     *
-     * **NOTE** that the above is taken directly from official documentation in
-     * [android.provider.BlockedNumberContract] (search for "email"). I would recommend using this
-     * only for phone numbers. I have not tested the behavior of putting emails here!
      */
     val number: String?
 
@@ -84,8 +80,6 @@ data class BlockedNumber internal constructor(
 
 /**
  * A new immutable [BlockedNumberEntity].
- *
- * Use functions in GroupToBlockedNumber to create instances of this from an existing group.
  */
 @Parcelize
 data class NewBlockedNumber @JvmOverloads constructor(

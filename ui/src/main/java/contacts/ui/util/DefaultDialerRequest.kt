@@ -50,8 +50,8 @@ fun Activity.requestToBeTheDefaultDialerAppIfNeeded(onBeingDefaultDialerApp: () 
  *
  * ## Manifest
  *
- * You must have an activity with following intent filters in your manifest. Otherwise, this will
- * do nothing.
+ * Your app must have an activity with following intent filters in your manifest. Otherwise, this
+ * will do nothing.
  *
  * ```
  * <intent-filter>

@@ -73,6 +73,8 @@ The core library supports;
   [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
 - [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
   [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.
+- [Query](/howto/howto-query-blocked-numbers.md), [insert](/howto/howto-insert-blocked-numbers.md),
+  and [delete](/howto/howto-delete-blocked-numbers.md) blocked numbers.
 - [Query](/howto/howto-query-accounts.md) for Accounts in the system or RawContacts table.
 - [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
 - [Associate local RawContacts (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
@@ -101,11 +103,10 @@ Also included are some pre-baked goodies to be used as is or just for reference;
 - [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
 
 There are also more features that are on the way!
-1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
-2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
-3. [Work profile contacts](https://github.com/vestrel00/contacts-android/issues/186)
-4. [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
-5. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
+1. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
+2. [Work profile contacts](https://github.com/vestrel00/contacts-android/issues/186)
+3. [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
+4. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
 
 ## Installation
 

@@ -1,5 +1,6 @@
 package contacts.core.blockednumbers
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
@@ -23,6 +24,8 @@ import android.telecom.TelecomManager
  * [android.provider.BlockedNumberContract.canCurrentUserBlockNumbers] function must also return
  * true.
  *
+ * Of course, the runtime version must be at least API 24 (N).
+ *
  * It's not about "permissions". It's about rights/privileges.
  */
 interface BlockedNumbersPrivileges {
@@ -32,6 +35,7 @@ interface BlockedNumbersPrivileges {
      * introduced in Android 7.0 (N) (API 24).
      */
     // [ANDROID X] @ChecksSdkIntAtLeast (not using annotation to avoid dependency on androidx.annotation)
+    @SuppressLint("AnnotateVersionCheck")
     fun isCurrentApiVersionSupported(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
 
     /**
@@ -47,12 +51,14 @@ interface BlockedNumbersPrivileges {
      * [android.provider.BlockedNumberContract.canCurrentUserBlockNumbers] function must also return
      * true.
      *
+     * Of course, the runtime version must be at least API 24 (N).
+     *
      * ## Manifest
      *
      * Starting with Android 11 (API 30), you must include the following to your manifest in order
      * to successfully use this function.
      *
-     * ```
+     * ```xml
      * <queries>
      *     <intent>
      *         <action android:name="android.provider.Telephony.SMS_DELIVER" />
