@@ -8,7 +8,7 @@ An instance of the `BlockedNumbersInsert` API is obtained by,
 val insert = Contacts(context).blockedNumbers().insert()
 ```
 
-Note that blocked number queries will only work for privileged apps. For more info, read
+Note that blocked number insertions will only work for privileged apps. For more info, read
 [How do I learn more about blocked numbers?](/howto/howto-learn-more-about-blocked-numbers.md)
 
 ## A basic insert

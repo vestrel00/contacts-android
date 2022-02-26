@@ -43,17 +43,21 @@ To check if all of the requirements specified above are met,
 val canReadAndWriteBlockedNumbers = Contacts(context).blockedNumbers().privileges.canReadAndWrite()
 ```
 
+> Note that there updates are not supported by the Blocked Number provider. Use delete and insert
+> instead.
+
 Starting with Android 11 (API 30), you must include the following to your app's manifest in order to
-successfully use this function.
+successfully use this function **and therefore the bocked number APIs provided in this library**.
 
 ```xml
-
 <queries>
     <intent>
         <action android:name="android.provider.Telephony.SMS_DELIVER" />
     </intent>
 </queries>
 ```
+
+> The above is required to be able to check if your app is the default SMS/messaging app.
 
 ## Use the builtin Blocked Numbers activity
 
