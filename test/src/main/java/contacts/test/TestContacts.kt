@@ -1,20 +1,12 @@
 package contacts.test
 
 import android.content.Context
-import contacts.core.BroadQuery
-import contacts.core.Contacts
-import contacts.core.ContactsPermissions
-import contacts.core.Delete
-import contacts.core.Insert
-import contacts.core.Query
-import contacts.core.Update
+import contacts.core.*
 import contacts.core.accounts.Accounts
+import contacts.core.blockednumbers.BlockedNumbers
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
-import contacts.core.log.EmptyLogger
-import contacts.core.log.Logger
-import contacts.core.log.LoggerRegistry
 import contacts.core.profile.Profile
 import contacts.test.entities.TestDataRegistration
 
@@ -79,6 +71,10 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
     override fun accounts() = accounts(false)
 
     override fun accounts(isProfile: Boolean): Accounts {
+        TODO("Not yet implemented")
+    }
+
+    override fun blockedNumbers(): BlockedNumbers {
         TODO("Not yet implemented")
     }
 

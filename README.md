@@ -3,6 +3,7 @@
 ![Android Contacts, Reborn banner](/media/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+[![Monthly Downloads](https://jitpack.io/v/vestrel00/contacts-android/month.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android%20Contacts,%20Reborn-green.svg?style=flat&logo=android)](https://android-arsenal.com/details/1/8393)
 [![Android Weekly](https://img.shields.io/badge/AndroidWeekly-Issue%20%23491-2299cc.svg?style=flat&logo=android)](https://androidweekly.net/issues/issue-491)
@@ -72,6 +73,8 @@ The core library supports;
   [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) specific kinds of Data.
 - [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
   [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) custom Data.
+- [Query](/howto/howto-query-blocked-numbers.md), [insert](/howto/howto-insert-blocked-numbers.md),
+  and [delete](/howto/howto-delete-blocked-numbers.md) blocked numbers.
 - [Query](/howto/howto-query-accounts.md) for Accounts in the system or RawContacts table.
 - [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
 - [Associate local RawContacts (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
@@ -100,9 +103,10 @@ Also included are some pre-baked goodies to be used as is or just for reference;
 - [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
 
 There are also more features that are on the way!
-1. [Blocked phone numbers](https://github.com/vestrel00/contacts-android/issues/24).
-2. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
-3. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
+1. [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
+2. [Work profile contacts](https://github.com/vestrel00/contacts-android/issues/186)
+3. [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
+4. [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
 
 ## Installation
 
@@ -257,9 +261,6 @@ Log.d(
     // There are also aggregate data functions that return a sequence instead of a list.
 )
  ```
-
-> Each Contact may have more than one of the following data if the Contact is made up of 2 or more
-> RawContacts; name, nickname, note, organization, sip address.
 
 > For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
 
@@ -525,19 +526,6 @@ If you use Proguard and the `async` and/or `permissions`, you may need to add ru
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-## Support
-
-This is a newly open sourced library with only one contributor so far (me). Don’t expect much
-support in the beginning. I am only able to work on this (and respond to issues) outside of work
-hours. This means late nights, weekends, and maybe holidays.
-
-As time passes, hopefully this library gets more and more contributors. At some point, I hope to
-gain contributors that have become experts on this library to help me support the community by
-maintaining it and making admin-level decisions.
-
-In any case, create issues for any bugs found and I'll get to it when I get the chance depending on
-severity of the issue.
 
 [project-roadmap]: https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap
 [discussions]: https://github.com/vestrel00/contacts-android/discussions

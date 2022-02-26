@@ -23,6 +23,7 @@ import contacts.ui.text.AbstractTextWatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+
 /**
  * Displays a search field that allows users to broadly search for contacts using the Contacts
  * Provider general matching algorithm. All matching contacts are displayed in a list view. Tapping
@@ -79,6 +80,9 @@ class ContactsActivity : BaseActivity() {
             }
             R.id.accounts -> {
                 AccountsActivity.selectAccounts(this, true, ArrayList(selectedAccounts))
+            }
+            R.id.blocked_numbers -> {
+                BlockedNumbersActivity.showBlockedNumbers(this)
             }
             R.id.refresh -> {
                 showContacts()

@@ -3,7 +3,7 @@ package contacts.debug
 import android.content.Context
 import android.provider.ContactsContract
 
-fun Context.logAggregationExceptions() {
+fun Context.logAggregationExceptionsTable() {
     if (!hasReadPermission()) {
         log("#### Aggregation exceptions table - read contacts permission not granted")
         return

@@ -73,3 +73,6 @@ internal fun CursorHolder<ContactsField>.optionsCursor() =
     ContactsOptionsCursor(cursor, includeFields)
 
 internal fun CursorHolder<GroupsField>.groupsCursor() = GroupsCursor(cursor, includeFields)
+
+internal fun CursorHolder<BlockedNumbersField>.blockedNumbersCursor() =
+    BlockedNumbersCursor(cursor, includeFields)

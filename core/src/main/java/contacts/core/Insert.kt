@@ -261,9 +261,7 @@ interface Insert : CrudApi {
 
         /**
          * Returns the ID of the newly created RawContact (from the [rawContact] passed to
-         * [Insert.rawContacts]). Use the ID to get the newly created RawContact via a query. The
-         * manually constructed [NewRawContact] passed to [Insert.rawContacts] are not
-         * automatically updated and will remain to have an invalid ID.
+         * [Insert.rawContacts]). Use the ID to get the newly created RawContact via a query.
          *
          * Returns null if the insert operation failed.
          */

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Resources
 import contacts.core.accounts.Accounts
 import contacts.core.accounts.AccountsPermissions
+import contacts.core.blockednumbers.BlockedNumbers
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
@@ -15,7 +16,7 @@ import contacts.core.profile.Profile
 
 /**
  * Provides new [Query], [BroadQuery], [Insert], [Update], [Delete], [Data], [Groups], [Profile],
- * and [Accounts] instances.
+ * [Accounts], and [BlockedNumbers] instances.
  *
  * ## Permissions
  *
@@ -25,7 +26,10 @@ import contacts.core.profile.Profile
  *   [update], and [delete].
  *
  * Use [permissions] convenience functions to check for required permissions. The same permissions
- * apply to [Data], [Groups], [Profile], and [Accounts].
+ * apply to [Data], [Groups], and [Profile].
+ *
+ * Use [accountsPermissions] convenience functions to check for required permissions to use the
+ * [Accounts] API.
  *
  * ## Data
  *
@@ -39,9 +43,13 @@ import contacts.core.profile.Profile
  *
  * For user profile operations, use [profile].
  *
- * ## Profile
+ * ## Accounts
  *
  * For accounts operations, use [accounts].
+ *
+ * ## Blocked numbers
+ *
+ * For blocked numbers operations, use [blockedNumbers].
  */
 interface Contacts {
 
@@ -97,6 +105,11 @@ interface Contacts {
     // @JvmOverloads cannot be used in interface methods...
     // fun accounts(isProfile: Boolean = false): Accounts
     fun accounts(isProfile: Boolean): Accounts
+
+    /**
+     * Returns a new [BlockedNumbers] instance.
+     */
+    fun blockedNumbers(): BlockedNumbers
 
     /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
@@ -214,6 +227,8 @@ private class ContactsImpl(
     override fun accounts() = accounts(false)
 
     override fun accounts(isProfile: Boolean) = Accounts(this, isProfile)
+
+    override fun blockedNumbers() = BlockedNumbers(this)
 }
 
 // region Shortcuts

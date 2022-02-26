@@ -21,7 +21,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * To update a groups' name to "Best Friends";
+ * To update a groups' name to "Best Friends",
  *
  * In Kotlin,
  *
@@ -259,18 +259,18 @@ private class GroupsUpdateImpl(
                         failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
                     } else if (!cancel() && contentResolver.updateGroup(group)) {
                         /*
-                     * Update success.
-                     *
-                     * We also need to update the title in our temporary list to ensure that the
-                     * next iteration of this for-loop has the updated set of titles. For example,
-                     *
-                     * 1. there are groups [A, B, C]
-                     * 2. update C -> D: [A, B, D]
-                     * 3. update B -> C: [A, C, D]
-                     *
-                     * If we did not update our list from [A, B, C] to [A, B, D],
-                     * the update for B -> C will fail with TITLE_ALREADY_EXIST
-                     */
+                         * Update success.
+                         *
+                         * We also need to update the title in our temporary list to ensure that the
+                         * next iteration of this for-loop has the updated set of titles. For example,
+                         *
+                         * 1. there are groups [A, B, C]
+                         * 2. update C -> D: [A, B, D]
+                         * 3. update B -> C: [A, C, D]
+                         *
+                         * If we did not update our list from [A, B, C] to [A, B, D],
+                         * the update for B -> C will fail with TITLE_ALREADY_EXIST
+                         */
                         accountGroups.find { it.id == group.id }?.let { groupInMemory ->
                             when (groupInMemory) {
                                 is MutableGroup -> groupInMemory.title = group.title

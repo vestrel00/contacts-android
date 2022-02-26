@@ -15,8 +15,6 @@ import contacts.core.Contacts
  *   [queryRawContacts].
  * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.WRITE_CONTACTS" to the
  *   AndroidManifest in order to use [updateLocalRawContactsAccount].
- *
- * Use [permissions] convenience functions to check for required permissions.
  */
 interface Accounts {
 
@@ -62,7 +60,6 @@ internal fun Accounts(contacts: Contacts, isProfile: Boolean): Accounts = Accoun
     isProfile
 )
 
-@SuppressWarnings("MissingPermission")
 private class AccountsImpl(
     override val contactsApi: Contacts,
     private val isProfile: Boolean

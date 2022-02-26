@@ -515,8 +515,8 @@ private fun <F : Field, V : Any?> Sequence<V>.combineWhere(
  * a Where composed of one or more GroupsField.
  *
  * The type [T] is not enforced within the class itself in order to support mutating functions
- * such as [inRawContactsTable] and [inContactsTable]. This will allow us to construct a Where<X>
- * from a Where<Y>.
+ * such as [contacts.core.util.inRawContactsTable] and [contacts.core.util.inContactsTable].
+ * This will allow us to construct a Where<X> from a Where<Y>.
  *
  * ### Binary tree structure
  *
@@ -537,7 +537,7 @@ private fun <F : Field, V : Any?> Sequence<V>.combineWhere(
  *                                           WhereHolder               FieldHolder-ValueHolder
  *                        FieldHolder-ValueHolder    FieldHolder-ValueHolder
  *
- *  With this in mind, we can do some cool stuff like in [copyWithNewFieldType]!
+ *  With this in mind, we can do some cool stuff like substitutions!
  */
 class Where<out T : Field> private constructor(
     internal val lhs: LeftHandSide,

@@ -182,6 +182,20 @@ Activity {
 }
 ```
 
+Starting with Android 11 (API 30), you must include the following to your manifest in order to
+successfully use the above functions.
+
+```
+<queries>
+   <intent>
+      <action android:name="android.media.action.IMAGE_CAPTURE" />
+   </intent>
+   <intent>
+      <action android:name="android.intent.action.PICK" />
+   </intent>
+</queries>
+```
+
 ## Performing photo management asynchronously
 
 All of the code shown in this guide are done in the same thread as the call-site. This may result 

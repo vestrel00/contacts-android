@@ -21,7 +21,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## Usage
  *
- * Here is an example query that returns the first 5 [Groups]s in the account, skipping the first 2,
+ * Here is an example query that returns the first 5 [Group]s in the account, skipping the first 2,
  * where the group's title starts with "a", ordered by the group title in ascending order
  * (ignoring case).
  *
@@ -192,8 +192,6 @@ interface GroupsQuery : CrudApi {
 
     /**
      * The combined list of [Group]s from the specified Accounts ordered by [orderBy].
-     *
-     * The [offset] and [limit] functions applies to this list.
      *
      * Use [from], to get the list of Groups for a specific Account.
      *
