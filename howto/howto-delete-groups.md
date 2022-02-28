@@ -96,10 +96,3 @@ failure.
 
 When a group is deleted, any membership to that group is deleted automatically by the
 Contacts Provider.
-
-## Deletion is not immediate
-
-**Groups are not immediately deleted**. However, they are marked for deletion and they do get
-deleted in the background by the Contacts Provider depending on sync settings.
-
-However, group memberships to those groups marked for deletion are immediately deleted!

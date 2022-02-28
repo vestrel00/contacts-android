@@ -129,6 +129,3 @@ in the documentation in `ContactsContract.RawContacts`;
 To delete a contacts and all associated rows, simply delete all RawContact rows with the desired
 Contacts id. Deletion of the Contacts row and associated Data row(s) will be done automatically by
 the Contacts Provider.
-
-Note that deleting a RawContacts row may not immediately (or at all) actually delete the RawContacts
-row. In this case, it is marked as deleted and its reference to a contact id is null.
