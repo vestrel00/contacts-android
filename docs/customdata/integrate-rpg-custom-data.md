@@ -5,7 +5,7 @@ write rpg data for all of your contacts. These (optional) extensions live in the
 `customdata-rpg` module.
 
 > If you are looking to create your own custom data or get more insight on how the `RpgStats` and 
-> `RpgProfession` custom data was built, read [Integrate custom data](/docs/customdata/integrate-custom-data.mdom-data.md).
+> `RpgProfession` custom data was built, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
 
 ## Register the RPG custom data with the Contacts API instance
 
@@ -118,10 +118,10 @@ mutableContact.setRpgProfession(contacts) {
 Once you have registered the RPG custom data with the `Contacts` API instance, the API instance is 
 now able to perform read and write operations on it.
 
-- [Query custom data](/docs/customdata/query-custom-data.mdom-data.md)
-- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.mdom-data.md)
-- [Update custom data](/docs/customdata/update-custom-data.mdom-data.md)
-- [Delete custom data](/docs/customdata/delete-custom-data.mdom-data.md)
+- [Query custom data](/docs/customdata/query-custom-data.md)
+- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.md)
+- [Update custom data](/docs/customdata/update-custom-data.md)
+- [Delete custom data](/docs/customdata/delete-custom-data.md)
 
 ## Syncing RPG custom data
 

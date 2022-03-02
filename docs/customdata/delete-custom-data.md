@@ -16,7 +16,7 @@ This library provides several APIs that supports deleting custom data.
 To help illustrate how custom data integrates with these update APIs, we'll use the `HandleName`
 and `Gender` custom data.
 
-> For more info about custom data, read [Integrate custom data](/docs/customdata/integrate-custom-data.mdom-data.md).
+> For more info about custom data, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
 
 ## Deleting custom data via Contacts/RawContacts
 

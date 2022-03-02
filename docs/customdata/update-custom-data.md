@@ -12,7 +12,7 @@ This library provides several update APIs that support custom data integration.
 To help illustrate how custom data integrates with these update APIs, we'll use the `HandleName`
 and `Gender` custom data.
 
-> For more info about custom data, read [Integrate custom data](/docs/customdata/integrate-custom-data.mdom-data.md).
+> For more info about custom data, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
 
 ## Updating custom data via Contacts/RawContacts
 

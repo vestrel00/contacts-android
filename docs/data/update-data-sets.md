@@ -38,7 +38,7 @@ val updateResult = Contacts(context)
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
 deleted by update APIs.
 
-For more info, read about [Blank data](/docs/data/about-blank-data.mda.md).
+For more info, read about [Blank data](/docs/entities/about-blank-data.md).
 
 ## Including only specific data
 
@@ -54,7 +54,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/data/include-only-desired-data.mda.md).
+For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
 
 ## Executing the update
 
@@ -104,7 +104,7 @@ val updatedEmail = contactsApi
     .find()
 ```
 
-> For more info, read [Query specific data kinds](/docs/data/query-data-sets.mds.md).
+> For more info, read [Query specific data kinds](/docs/data/query-data-sets.md).
 
 Alternatively, you may use the extensions provided in `DataRefresh`.
 

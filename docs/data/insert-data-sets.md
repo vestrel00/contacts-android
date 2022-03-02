@@ -65,4 +65,4 @@ Contacts(context)
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
 ignored and are not inserted by insert APIs.
 
-For more info, read about [Blank data](/docs/data/about-blank-data.mda.md).
+For more info, read about [Blank data](/docs/entities/about-blank-data.md).

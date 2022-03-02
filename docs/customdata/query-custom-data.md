@@ -14,8 +14,8 @@ This library provides several query APIs that support custom data integration.
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
 and `Gender` custom data.
 
-> For more info, read [Integrate the gender custom data](/docs/customdata/integrate-gender-custom-data.mdom-data.md)
-> and [Integrate the handle name custom data](/docs/customdata/integrate-handlename-custom-data.mdom-data.md).
+> For more info, read [Integrate the gender custom data](/docs/customdata/integrate-gender-custom-data.md)
+> and [Integrate the handle name custom data](/docs/customdata/integrate-handlename-custom-data.md).
 
 ## Getting custom data from a Contact or RawContact
 

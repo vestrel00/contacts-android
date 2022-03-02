@@ -289,7 +289,7 @@ user data that could be redacted, for legal purposes. If you are logging contact
 to remote data centers for analytics or crash reporting, then it is important to redact certain 
 parts of every contact's data.
 
-For more info, read [Redact entities and API input and output in production](/docs/entities/redact-apis-and-entities.mdities.md).
+For more info, read [Redact entities and API input and output in production](/docs/entities/redact-apis-and-entities.md).
 
 ## Syncing contact data
 

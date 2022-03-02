@@ -83,7 +83,7 @@ val blockedNumbers = contactsApi
     .find()
 ```
 
-> For more info, read [Query blocked numbers](/docs/blockednumbers/query-blocked-numbers.mdked-numbers.md).
+> For more info, read [Query blocked numbers](/docs/blockednumbers/query-blocked-numbers.md).
 
 Alternatively, you may use the extensions provided in `BlockedNumbersInsertResult`. To get all 
 newly created BlockedNumbers,

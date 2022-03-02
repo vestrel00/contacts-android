@@ -113,7 +113,7 @@ Once you have performed the updates, you can retrieve the updated profile Contac
 val updatedProfile = Contacts(context).profile().query().find()
 ```
 
-> For more info, read [Query device owner Contact profile](/docs/profile/query-profile.mdfile.md).
+> For more info, read [Query device owner Contact profile](/docs/profile/query-profile.md).
 
 Alternatively, you may use the extensions provided in `ContactRefresh` and `RawContactRefresh`.
 

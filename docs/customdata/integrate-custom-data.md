@@ -1,6 +1,7 @@
 # Integrate custom data
 
-If you are looking to integrate custom data from other apps, read [Integrate custom data from other apps](/docs/customdata/integrate-custom-data-from-other-apps.mder-apps.md).
+If you are looking to integrate custom data from other apps, 
+read [Integrate custom data from other apps](/docs/customdata/integrate-custom-data-from-other-apps.md).
 
 If you are looking to create and integrate your own custom data, you are in the right place!
 
@@ -42,8 +43,8 @@ To help illustrate the above steps, we'll use the `HandleName` and `Gender` cust
 this library's `customdata-handlename` and `customdata-gender` respectively as an example.
 
 > For more specifics on these custom data, read
-> [Integrate the gender custom data](/docs/customdata/integrate-gender-custom-data.mdom-data.md) and
-> [Integrate the handle name custom data](/docs/customdata/integrate-handlename-custom-data.mdom-data.md).
+> [Integrate the gender custom data](/docs/customdata/integrate-gender-custom-data.md) and
+> [Integrate the handle name custom data](/docs/customdata/integrate-handlename-custom-data.md).
 
 At the bottom of this page, we'll also discuss,
 
@@ -517,7 +518,7 @@ fun DataQueryFactory.handleNames(): DataQuery<HandleNameField, HandleNameFields,
 
 For more info on the `DataQuery` API, read
 [Query specific data kinds](/docs/data/query-data-sets.md) and
-[Query custom data](/docs/customdata/query-custom-data.mdom-data.md).
+[Query custom data](/docs/customdata/query-custom-data.md).
 
 ## 13. Define the custom data entry
 
@@ -624,10 +625,10 @@ val contactsApi = Contacts(
 Once you have registered your custom data with the `Contacts` API instance, the API instance is now
 able to perform read and write operations on it.
 
-- [Query custom data](/docs/customdata/query-custom-data.mdom-data.md)
-- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.mdom-data.md)
-- [Update custom data](/docs/customdata/update-custom-data.mdom-data.md)
-- [Delete custom data](/docs/customdata/delete-custom-data.mdom-data.md)
+- [Query custom data](/docs/customdata/query-custom-data.md)
+- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.md)
+- [Update custom data](/docs/customdata/update-custom-data.md)
+- [Delete custom data](/docs/customdata/delete-custom-data.md)
 
 ## Consider adding your custom data to this library
 
@@ -772,14 +773,14 @@ these limitations.
 
 This library provides CRUD API integration with custom data with no sync adapters;
 
-- [`customdata-gender`](/docs/customdata/integrate-gender-custom-data.mdom-data.md)
-- [`customdata-handlename`](/docs/customdata/integrate-handlename-custom-data.mdom-data.md)
-- [`customdata-pokemon`](/docs/customdata/integrate-pokemon-custom-data.mdom-data.md)
-- [`customdata-rpg`](/docs/customdata/integrate-rpg-custom-data.mdom-data.md)
+- [`customdata-gender`](/docs/customdata/integrate-gender-custom-data.md)
+- [`customdata-handlename`](/docs/customdata/integrate-handlename-custom-data.md)
+- [`customdata-pokemon`](/docs/customdata/integrate-pokemon-custom-data.md)
+- [`customdata-rpg`](/docs/customdata/integrate-rpg-custom-data.md)
 
 Also provided are CRUD API integration with custom data from other apps that do have sync adapters;
 
-- [`customdata-googlecontacts`](/docs/customdata/integrate-googlecontacts-custom-data.mdom-data.md)
+- [`customdata-googlecontacts`](/docs/customdata/integrate-googlecontacts-custom-data.md)
 
 > Please update the above list whenever adding new custom data modules.
 

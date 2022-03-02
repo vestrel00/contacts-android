@@ -51,7 +51,7 @@ if any, and does the following;
   insertion fails for that group
 - if there are no accounts in the system, [commit] does nothing and fails immediately
 
-> For more info on the relationship of Groups and Accounts, read [Query groups](/docs/groups/query-groups.mdups.md).
+> For more info on the relationship of Groups and Accounts, read [Query groups](/docs/groups/query-groups.md).
 
 ## Groups and duplicate titles
 
@@ -106,7 +106,7 @@ val groups = contactsApi
     .find()
 ```
 
-> For more info, read [Query groups](/docs/groups/query-groups.mdups.md).
+> For more info, read [Query groups](/docs/groups/query-groups.md).
 
 Alternatively, you may use the extensions provided in `GroupsInsertResult`. To get all newly created
 Groups,

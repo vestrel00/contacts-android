@@ -4,7 +4,7 @@ This library provides extensions for `Gender` custom data that allows you to rea
 data for all of your contacts. These (optional) extensions live in the `customdata-gender` module.
 
 > If you are looking to create your own custom data or get more insight on how the `Gender` custom
-> data was built, read [Integrate custom data](/docs/customdata/integrate-custom-data.mdom-data.md).
+> data was built, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
 
 ## Register the gender custom data with the Contacts API instance
 
@@ -25,7 +25,6 @@ Or, alternatively after creating the `Contacts` API instance,
 val contactsApi = Contacts(context)
 GenderRegistration().registerTo(contactsApi.customDataRegistry)
 ```
-
 ## Get/set gender custom data 
 
 Just like regular data kinds, gender custom data belong to a RawContact. A RawContact may only have
@@ -69,10 +68,10 @@ mutableContact.setGender(contacts) {
 Once you have registered your gender custom data with the `Contacts` API instance, the API instance 
 is now able to perform read and write operations on it.
 
-- [Query custom data](/docs/customdata/query-custom-data.mdom-data.md)
-- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.mdom-data.md)
-- [Update custom data](/docs/customdata/update-custom-data.mdom-data.md)
-- [Delete custom data](/docs/customdata/delete-custom-data.mdom-data.md)
+- [Query custom data](/docs/customdata/query-custom-data.md)
+- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.md)
+- [Update custom data](/docs/customdata/update-custom-data.md)
+- [Delete custom data](/docs/customdata/delete-custom-data.md)
 
 ## Syncing gender custom data
 

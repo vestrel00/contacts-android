@@ -101,7 +101,7 @@ For example, to only include the given name and family name in a names query,
 .include(Fields.Name.GivenName, Fields.Name.FamilyName)
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/data/include-only-desired-data.mda.md).
+For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
 
 ## Ordering
 
