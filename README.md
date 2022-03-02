@@ -56,42 +56,42 @@ are organized using issues, milestones, and projects.
 
 The `core` module provides,
 
-- ✅ [**All data kinds**](/howto/howto-learn-more-about-api-entities.md) in the Contacts Provider;
+- ✅ [**All data kinds**](/howto/about-api-entities.md) in the Contacts Provider;
   _address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website_.
-- ✅ [**Custom data** integration](/howto/howto-integrate-custom-data.md).
-- ✅ [**Broad queries**](/howto/howto-query-contacts.md) and [**advanced queries**](/howto/howto-query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups. 
-- ✅ [Contact **lookup keys**](/howto/howto-learn-more-contact-lookup-key.md)
-- ✅ [Include only desired fields](/howto/howto-include-only-desired-data.md) in read/write operations to **optimize CPU and memory**. 
+- ✅ [**Custom data** integration](/howto/integrate-custom-data.md).
+- ✅ [**Broad queries**](/howto/query-contacts.md) and [**advanced queries**](/howto/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups. 
+- ✅ [Contact **lookup keys**](/howto/about-contact-lookup-key.md)
+- ✅ [Include only desired fields](/howto/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**. 
 - ✅ Powerful, **type-safe query DSL**.
 - ✅ **Pagination** using order by, limit, and offset database functions.
-- ✅ [**Insert**](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
+- ✅ [**Insert**](/howto/insert-contacts.md) one or more RawContacts with an associated Account,
   causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
-- ✅ [**Update**](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
-- ✅ [**Delete**](/howto/howto-delete-contacts.md) one or more Contacts, RawContacts, and Data.
-- ✅ [Query](/howto/howto-query-profile.md), [insert](/howto/howto-insert-profile.md),
-  [update](/howto/howto-update-profile.md), and [delete](/howto/howto-delete-profile.md)
+- ✅ [**Update**](/howto/update-contacts.md) one or more Contacts, RawContacts, and Data.
+- ✅ [**Delete**](/howto/delete-contacts.md) one or more Contacts, RawContacts, and Data.
+- ✅ [Query](/howto/query-profile.md), [insert](/howto/insert-profile.md),
+  [update](/howto/update-profile.md), and [delete](/howto/delete-profile.md)
    **Profile (device owner)** Contact, RawContact, and Data.
-- ✅ [Query](/howto/howto-query-groups.md), [insert](/howto/howto-insert-groups.md),
-  [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) **Groups**.
-- ✅ [Query](/howto/howto-query-data-sets.md), [insert](/howto/howto-insert-data-sets.md)
-  [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) **specific kinds of data**.
-- ✅ [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
-  [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) **custom data**.
-- ✅ [Query](/howto/howto-query-blocked-numbers.md), [insert](/howto/howto-insert-blocked-numbers.md),
-  and [delete](/howto/howto-delete-blocked-numbers.md) **blocked numbers**.
-- ✅ [Query](/howto/howto-query-accounts.md) for Accounts in the system or RawContacts table.
-- ✅ [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
-- ✅ [Associate **local RawContacts** (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
-- ✅ [**Link/unlink**](/howto/howto-link-unlink-contacts.md) two or more Contacts.
-- ✅ [Get/set contact options](/howto/howto-get-set-clear-contact-raw-contact-options.md);
+- ✅ [Query](/howto/query-groups.md), [insert](/howto/insert-groups.md),
+  [update](/howto/update-groups.md), and [delete](/howto/delete-groups.md) **Groups**.
+- ✅ [Query](/howto/query-data-sets.md), [insert](/howto/insert-data-sets.md)
+  [update](/howto/update-data-sets.md ), and [delete](/howto/delete-data-sets.md) **specific kinds of data**.
+- ✅ [Query](/howto/query-custom-data.md), [insert](/howto/insert-custom-data.md), 
+  [update](/howto/update-custom-data.md), and [delete](/howto/delete-custom-data.md) **custom data**.
+- ✅ [Query](/howto/query-blocked-numbers.md), [insert](/howto/insert-blocked-numbers.md),
+  and [delete](/howto/delete-blocked-numbers.md) **blocked numbers**.
+- ✅ [Query](/howto/query-accounts.md) for Accounts in the system or RawContacts table.
+- ✅ [Query](/howto/query-raw-contacts.md) for just RawContacts.
+- ✅ [Associate **local RawContacts** (no Account) to an Account](/howto/associate-device-local-raw-contacts-to-an-account.md).
+- ✅ [**Link/unlink**](/howto/link-unlink-contacts.md) two or more Contacts.
+- ✅ [Get/set contact options](/howto/get-set-clear-contact-raw-contact-options.md);
   **_starred (favorite), custom ringtone, send to voicemail_**.
-- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/howto/howto-get-set-remove-contact-raw-contact-photo.md).
-- ✅ [Get/set **default (primary) Contact Data**](/howto/howto-get-set-clear-default-data.md)
+- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/howto/get-set-remove-contact-raw-contact-photo.md).
+- ✅ [Get/set **default (primary) Contact Data**](/howto/get-set-clear-default-data.md)
   (e.g. default/primary phone number, email, etc).
-- ✅ [Convenience functions](/howto/howto-use-miscellaneous-extensions.md).
-- ✅ [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md).
-- ✅ [Support for **logging API input and output**](/howto/howto-log-api-input-output.md)
-- ✅ [**Redactable entities** and API input and output](/howto/howto-redact-apis-and-entities.md)
+- ✅ [Convenience functions](/howto/convenience-functions.md).
+- ✅ [Contact data is synced automatically across devices](/howto/sync-contact-data.md).
+- ✅ [Support for **logging API input and output**](/howto/log-api-input-output.md)
+- ✅ [**Redactable entities** and API input and output](/howto/redact-apis-and-entities.md)
   for production-safe logging that upholds user data privacy laws to meet GDPR guidelines 
   _(this is not legal advice)_.
 - ✅ [Full **in-depth documentation/guides**](/howto/) in code and howto pages.
@@ -102,20 +102,20 @@ The `core` module provides,
 
 There are also extensions that add functionality to every core function,
 
-- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/howto/howto-use-api-with-async-execution.md).
-- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/howto/howto-use-api-with-permissions-handling.md).
+- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/howto/async-execution.md).
+- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/howto/permissions-handling.md).
 - 🔜 [**Kotlin Flow** extensions](https://github.com/vestrel00/contacts-android/milestone/8)
 - 🔜 [**RxJava** extensions](https://github.com/vestrel00/contacts-android/milestone/9)
 
 Also included are some pre-baked goodies to be used as is or just for reference,
 
-- 🍬 [Gender custom data](/howto/howto-integrate-gender-custom-data.md).
-- 🍬 [Google Contacts custom data](/howto/howto-integrate-googlecontacts-custom-data.md).
-- 🍬 [Handle name custom data](/howto/howto-integrate-handlename-custom-data.md).
-- 🍬 [Pokemon custom data](/howto/howto-integrate-pokemon-custom-data.md)
-- 🍬 [Role Playing Game (RPG) custom data](/howto/howto-integrate-rpg-custom-data.md).
-- 🍬 [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
-- 🍬 [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
+- 🍬 [Gender custom data](/howto/integrate-gender-custom-data.md).
+- 🍬 [Google Contacts custom data](/howto/integrate-googlecontacts-custom-data.md).
+- 🍬 [Handle name custom data](/howto/integrate-handlename-custom-data.md).
+- 🍬 [Pokemon custom data](/howto/integrate-pokemon-custom-data.md)
+- 🍬 [Role Playing Game (RPG) custom data](/howto/integrate-rpg-custom-data.md).
+- 🍬 [Rudimentary contacts-integrated UI components](/howto/integrate-rudimentary-contacts-integrated-ui-components.md).
+- 🍬 [Debug functions to aid in development](/howto/debug-contacts-provider-tables.md)
 
 There are also more features that are on the way!
 
@@ -180,7 +180,7 @@ val contacts = Contacts(context)
     .find()
  ```
 
-> For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
+> For more info, read [Query contacts (broad)](/howto/query-contacts.md).
 
 Something a bit more advanced...
 
@@ -224,7 +224,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> Fore more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+> Fore more info, read [Query contacts (advanced)](/howto/query-contacts-advanced.md).
 
 Once you have the contacts, you now have access to all of their data!
 
@@ -269,14 +269,14 @@ Log.d(
 )
  ```
 
-> For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
+> For more info, read about [API Entities](/howto/about-api-entities.md).
 
 ## Setup
 
 There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/howto/howto-setup-contacts-api.md)
+`contacts.core.Contacts(context)` API. For more info, read [Contacts API Setup](/howto/setup.md).
 
-It is also useful to read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
+It is also useful to read about [API Entities](/howto/about-api-entities.md).
 
 ## More than enough APIs that will allow you to build your own contacts app!
 
@@ -301,7 +301,7 @@ val emails = Contacts(context)
 
 It's not just for emails. It's for all data kinds (including custom data).
 
-> For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-data-sets.md)
+> For more info, read [Query specific data kinds](/howto/query-data-sets.md).
 
 To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
@@ -370,7 +370,7 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I create/insert contacts?](/howto/howto-insert-contacts.md)
+> For more info, read [Insert contacts](/howto/insert-contacts.md).
 
 If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his data,
 
@@ -389,7 +389,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I update contacts?](/howto/howto-update-contacts.md)
+> For more info, read [Update contacts](/howto/update-contacts.md).
 
 If we no longer like John Doe, we can **DELETE** him from our life,
 
@@ -400,7 +400,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I delete contacts?](/howto/howto-delete-contacts.md)
+> For more info, read [Delete Contacts and RawContacts](/howto/delete-contacts.md).
 
 ## Threading and permissions
 
@@ -422,8 +422,8 @@ launch {
 }
 ```
 
-> For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
-> and [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+> For more info, read [Permissions handling using coroutines](/howto/permissions-handling.md)
+> and [Execute work outside of the UI thread using coroutines](/howto/async-execution.md).
 
 So, if we call the above function and we don't yet have permission. The user will be prompted to
 give the appropriate permissions before the query proceeds. Then, the work is done in the coroutine
