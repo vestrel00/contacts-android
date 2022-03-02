@@ -19,12 +19,22 @@
 [![Reddit](https://img.shields.io/badge/Reddit%20-Share%20with%20the%20community-ff4500.svg?style=flat&logo=reddit)](https://www.reddit.com/r/androiddev/comments/rz370s/i_dedicated_3_years_to_building_this_android/)
 [![YouTube](https://img.shields.io/badge/YouTube%20-Contacts%20Reborn%20+%20SAO-ff0000.svg?style=flat&logo=youtube)](https://youtu.be/NlRve_B1RA0)
 
-This library gives you a complete set of APIs so that you no longer have to deal with 
-[Contacts Provider][contacts-provider] and cursors.
+This library gives you a complete set of APIs to do everything you need with Contacts in Android. 
+You no longer have to deal with the [Contacts Provider][contacts-provider], database operations, 
+and cursors. 
 
 Whether you just need to get all or some Contacts for a small part of your app (written in Kotlin
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
-as the native Android Contacts app, this library has you covered!
+as the native (AOSP) Android Contacts app and Google Contacts app, this library is for you!
+
+## Please help support this project!
+
+If you think that this library is helpful, please click the ⭐️. If you want to keep up-to-date, 
+please click the 👁. If it has really helped you out and would recommend it, please share it with 
+other folks and developer communities 🙏
+
+Please visit this discussion thread for more info and join the conversation;
+https://github.com/vestrel00/contacts-android/discussions/189
 
 ## About this repository
 

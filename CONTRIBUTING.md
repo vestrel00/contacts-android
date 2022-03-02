@@ -1,11 +1,6 @@
 # Contributing
 
-This library is close to my heart. I poured all of my heart and love into making this. So,
-I will be making sure that contributions follow the spirit of what I have created here. Early
-contributions will need my approval. As time passes, the community will become more and more
-familiar and comfortable with this library. Hopefully, in time, expert contributors will rise from
-the ashes with the contacts-spirit I've created instilled in them. When that time comes, not every
-contribution will need my approval and the community will (hopefully) drive the future <3
+There are only a few loose guidelines to follow. Read the **Setup** and **Guidelines** sections.
 
 ## Setup
 
