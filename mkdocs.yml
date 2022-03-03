@@ -91,7 +91,7 @@ nav:
 theme:
   name: 'material'
   language: 'en'
-  favicon: images/favicon.png
+  favicon: assets/images/favicon.png
   icon:
     logo: material/contacts
     repo: fontawesome/brands/github
