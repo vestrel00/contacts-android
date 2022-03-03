@@ -193,7 +193,7 @@ be synced even if it is linked to a Contact with a RawContact that is associated
 ## Developer notes (or for advanced users)
 
 > The following section are note from developers of this library for other developers. It is copied
-> from the [DEV_NOTES](/DEV_NOTES.md). You may still read the following as a consumer of the library
+> from the [DEV_NOTES](./../dev-notes.md). You may still read the following as a consumer of the library
 > in case you need deeper insight.
 
 ### Behavior of linking/merging/joining contacts (AggregationExceptions)

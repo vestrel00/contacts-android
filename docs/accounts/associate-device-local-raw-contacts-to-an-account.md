@@ -124,7 +124,7 @@ All updates will be limited to the Profile RawContacts, whether it exists or not
 ## Developer notes (or for advanced users)
 
 > The following section are note from developers of this library for other developers. It is copied
-> from the [DEV_NOTES](/DEV_NOTES.md). You may still read the following as a consumer of the library
+> from the [DEV_NOTES](./../dev-notes.md). You may still read the following as a consumer of the library
 > in case you need deeper insight.
 
 Due to certain limitations and behaviors imposed by the Contacts Provider, this library only

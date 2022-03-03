@@ -145,7 +145,7 @@ In both cases, the shortcut successfully opens the correct aggregate Contact.
 ## Developer notes (or for advanced users)
 
 > The following section are note from developers of this library for other developers. It is copied
-> from the [DEV_NOTES](/DEV_NOTES.md). You may still read the following as a consumer of the library
+> from the [DEV_NOTES](./../dev-notes.md). You may still read the following as a consumer of the library
 > in case you need deeper insight.
 
 The `Contacts._ID` is the unique identifier for the row in the Contacts table. The
