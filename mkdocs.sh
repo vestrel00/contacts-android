@@ -28,8 +28,8 @@ sed -i '' 's/\/docs/\./g' docs/index.md
 # find docs -type f -name '*.md' -exec sed -i '' 's/\.md/\//g' {} +
 
 # View MkDocs
-mkdocs serve
+# mkdocs serve
 
 # Build MkDocs
-# mkdocs build
+mkdocs build
 

@@ -18,3 +18,5 @@ Thumbs.db
 
 # MkDocs
 site/
+docs/contributing.md
+docs/index.md
