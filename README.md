@@ -2,7 +2,7 @@
 
 > Written with ♥️ and 🔥 since December 2018. Open sourced since October 4, 2021. 
 
-![Android Contacts, Reborn banner](/media/banner.gif)
+![Android Contacts, Reborn banner](/docs/assets/images/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 [![Monthly Downloads](https://jitpack.io/v/vestrel00/contacts-android/month.svg)](https://jitpack.io/#vestrel00/contacts-android)
@@ -39,7 +39,7 @@ https://github.com/vestrel00/contacts-android/discussions/189
 ## About this repository
 
 📜 Documentation and how-to guides are all available and linked in the repository. You can browse the
-[Howto pages](/howto/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
+[docs](/docs/) or visit the [GitHub Pages][github-pages]. Both contain the same info but
 the GitHub pages are updated only for each release.
 
 🚂 [Releases][releases] have a corresponding "Release Checklist", which are in the 
@@ -52,49 +52,49 @@ are organized using issues, milestones, and projects.
 
 ## Features
 
-> All features below are links to howto pages. Click on each of them to learn more!
+> All features below are links to documentation. Click on each of them to learn more!
 
 The `core` module provides,
 
-- ✅ [**All data kinds**](/howto/howto-learn-more-about-api-entities.md) in the Contacts Provider;
+- ✅ [**All data kinds**](/docs/entities/about-api-entities.md) in the Contacts Provider;
   _address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website_.
-- ✅ [**Custom data** integration](/howto/howto-integrate-custom-data.md).
-- ✅ [**Broad queries**](/howto/howto-query-contacts.md) and [**advanced queries**](/howto/howto-query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups. 
-- ✅ [Contact **lookup keys**](/howto/howto-learn-more-contact-lookup-key.md)
-- ✅ [Include only desired fields](/howto/howto-include-only-desired-data.md) in read/write operations to **optimize CPU and memory**. 
+- ✅ [**Custom data** integration](/docs/customdata/integrate-custom-data.md).
+- ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups. 
+- ✅ [Contact **lookup keys**](/docs/entities/about-contact-lookup-key.md)
+- ✅ [Include only desired fields](/docs/entities/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**. 
 - ✅ Powerful, **type-safe query DSL**.
 - ✅ **Pagination** using order by, limit, and offset database functions.
-- ✅ [**Insert**](/howto/howto-insert-contacts.md) one or more RawContacts with an associated Account,
+- ✅ [**Insert**](/docs/basics/insert-contacts.md) one or more RawContacts with an associated Account,
   causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
-- ✅ [**Update**](/howto/howto-update-contacts.md) one or more Contacts, RawContacts, and Data.
-- ✅ [**Delete**](/howto/howto-delete-contacts.md) one or more Contacts, RawContacts, and Data.
-- ✅ [Query](/howto/howto-query-profile.md), [insert](/howto/howto-insert-profile.md),
-  [update](/howto/howto-update-profile.md), and [delete](/howto/howto-delete-profile.md)
+- ✅ [**Update**](/docs/basics/update-contacts.md) one or more Contacts, RawContacts, and Data.
+- ✅ [**Delete**](/docs/basics/delete-contacts.md) one or more Contacts, RawContacts, and Data.
+- ✅ [Query](/docs/profile/query-profile.md), [insert](/docs/profile/insert-profile.md),
+  [update](/docs/profile/update-profile.md), and [delete](/docs/profile/delete-profile.md)
    **Profile (device owner)** Contact, RawContact, and Data.
-- ✅ [Query](/howto/howto-query-groups.md), [insert](/howto/howto-insert-groups.md),
-  [update](/howto/howto-update-groups.md), and [delete](/howto/howto-delete-groups.md) **Groups**.
-- ✅ [Query](/howto/howto-query-data-sets.md), [insert](/howto/howto-insert-data-sets.md)
-  [update](/howto/howto-update-data-sets.md ), and [delete](/howto/howto-delete-data-sets.md) **specific kinds of data**.
-- ✅ [Query](/howto/howto-query-custom-data.md), [insert](/howto/howto-insert-custom-data.md), 
-  [update](/howto/howto-update-custom-data.md), and [delete](/howto/howto-delete-custom-data.md) **custom data**.
-- ✅ [Query](/howto/howto-query-blocked-numbers.md), [insert](/howto/howto-insert-blocked-numbers.md),
-  and [delete](/howto/howto-delete-blocked-numbers.md) **blocked numbers**.
-- ✅ [Query](/howto/howto-query-accounts.md) for Accounts in the system or RawContacts table.
-- ✅ [Query](/howto/howto-query-raw-contacts.md) for just RawContacts.
-- ✅ [Associate **local RawContacts** (no Account) to an Account](/howto/howto-associate-device-local-raw-contacts-to-an-account.md).
-- ✅ [**Link/unlink**](/howto/howto-link-unlink-contacts.md) two or more Contacts.
-- ✅ [Get/set contact options](/howto/howto-get-set-clear-contact-raw-contact-options.md);
+- ✅ [Query](/docs/groups/query-groups.md), [insert](/docs/groups/insert-groups.md),
+  [update](/docs/groups/update-groups.md), and [delete](/docs/groups/delete-groups.md) **Groups**.
+- ✅ [Query](/docs/data/query-data-sets.md), [insert](/docs/data/insert-data-sets.md)
+  [update](/docs/data/update-data-sets.md ), and [delete](/docs/data/delete-data-sets.md) **specific kinds of data**.
+- ✅ [Query](/docs/customdata/query-custom-data.md), [insert](/docs/customdata/insert-custom-data.md), 
+  [update](/docs/customdata/update-custom-data.md), and [delete](/docs/customdata/delete-custom-data.md) **custom data**.
+- ✅ [Query](/docs/blockednumbers/query-blocked-numbers.md), [insert](/docs/blockednumbers/insert-blocked-numbers.md),
+  and [delete](/docs/blockednumbers/delete-blocked-numbers.md) **blocked numbers**.
+- ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table.
+- ✅ [Query](/docs/accounts/query-raw-contacts.md) for just RawContacts.
+- ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md).
+- ✅ [**Link/unlink**](/docs/other/link-unlink-contacts.md) two or more Contacts.
+- ✅ [Get/set contact options](/docs/other/get-set-clear-contact-raw-contact-options.md);
   **_starred (favorite), custom ringtone, send to voicemail_**.
-- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/howto/howto-get-set-remove-contact-raw-contact-photo.md).
-- ✅ [Get/set **default (primary) Contact Data**](/howto/howto-get-set-clear-default-data.md)
+- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/docs/other/get-set-remove-contact-raw-contact-photo.md).
+- ✅ [Get/set **default (primary) Contact Data**](/docs/other/get-set-clear-default-data.md)
   (e.g. default/primary phone number, email, etc).
-- ✅ [Convenience functions](/howto/howto-use-miscellaneous-extensions.md).
-- ✅ [Contact data is synced automatically across devices](/howto/howto-sync-contact-data.md).
-- ✅ [Support for **logging API input and output**](/howto/howto-log-api-input-output.md)
-- ✅ [**Redactable entities** and API input and output](/howto/howto-redact-apis-and-entities.md)
+- ✅ [Convenience functions](/docs/other/convenience-functions.md).
+- ✅ [Contact data is synced automatically across devices](/docs/entities/sync-contact-data.md).
+- ✅ [Support for **logging API input and output**](/docs/logging/log-api-input-output.md)
+- ✅ [**Redactable entities** and API input and output](/docs/entities/redact-apis-and-entities.md)
   for production-safe logging that upholds user data privacy laws to meet GDPR guidelines 
   _(this is not legal advice)_.
-- ✅ [Full **in-depth documentation/guides**](/howto/) in code and howto pages.
+- ✅ [Full **in-depth documentation/guides**][github-pages].
 - ✅ Full **Java interoptibilty**.
 - ✅ **Zero dependency**.
 - ✅ Clean separation between **Contacts vs RawContacts**.
@@ -102,20 +102,20 @@ The `core` module provides,
 
 There are also extensions that add functionality to every core function,
 
-- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/howto/howto-use-api-with-async-execution.md).
-- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/howto/howto-use-api-with-permissions-handling.md).
+- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/docs/async/async-execution-coroutines.md).
+- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/docs/permissions/permissions-handling-coroutines.md).
 - 🔜 [**Kotlin Flow** extensions](https://github.com/vestrel00/contacts-android/milestone/8)
 - 🔜 [**RxJava** extensions](https://github.com/vestrel00/contacts-android/milestone/9)
 
 Also included are some pre-baked goodies to be used as is or just for reference,
 
-- 🍬 [Gender custom data](/howto/howto-integrate-gender-custom-data.md).
-- 🍬 [Google Contacts custom data](/howto/howto-integrate-googlecontacts-custom-data.md).
-- 🍬 [Handle name custom data](/howto/howto-integrate-handlename-custom-data.md).
-- 🍬 [Pokemon custom data](/howto/howto-integrate-pokemon-custom-data.md)
-- 🍬 [Role Playing Game (RPG) custom data](/howto/howto-integrate-rpg-custom-data.md).
-- 🍬 [Rudimentary contacts-integrated UI components](/howto/howto-integrate-rudimentary-contacts-integrated-ui-components.md).
-- 🍬 [Debug functions to aid in development](/howto/howto-debug-contacts-provider-tables.md)
+- 🍬 [Gender custom data](/docs/customdata/integrate-gender-custom-data.md).
+- 🍬 [Google Contacts custom data](/docs/customdata/integrate-googlecontacts-custom-data.md).
+- 🍬 [Handle name custom data](/docs/customdata/integrate-handlename-custom-data.md).
+- 🍬 [Pokemon custom data](/docs/customdata/integrate-pokemon-custom-data.md)
+- 🍬 [Role Playing Game (RPG) custom data](/docs/customdata/integrate-rpg-custom-data.md).
+- 🍬 [Rudimentary contacts-integrated UI components](/docs/ui/integrate-rudimentary-contacts-integrated-ui-components.md).
+- 🍬 [Debug functions to aid in development](/docs/debug/debug-contacts-provider-tables.md)
 
 There are also more features that are on the way!
 
@@ -180,7 +180,7 @@ val contacts = Contacts(context)
     .find()
  ```
 
-> For more info, read [How do I get a list of contacts in the simplest way?](/howto/howto-query-contacts.md)
+> For more info, read [Query contacts](/docs/basics/query-contacts.md).
 
 Something a bit more advanced...
 
@@ -224,7 +224,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> Fore more info, read [How do I get a list of contacts in a more advanced way?](/howto/howto-query-contacts-advanced.md)
+> Fore more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 Once you have the contacts, you now have access to all of their data!
 
@@ -269,14 +269,14 @@ Log.d(
 )
  ```
 
-> For more info, read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
+> For more info, read about [API Entities](/docs/entities/about-api-entities.md).
 
 ## Setup
 
 There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. For more info, read [How do I setup the Contacts API?](/howto/howto-setup-contacts-api.md)
+`contacts.core.Contacts(context)` API. For more info, read [Contacts API Setup](/docs/setup/setup-contacts-api.md).
 
-It is also useful to read [How do I learn more about the API entities?](/howto/howto-learn-more-about-api-entities.md)
+It is also useful to read about [API Entities](/docs/entities/about-api-entities.md).
 
 ## More than enough APIs that will allow you to build your own contacts app!
 
@@ -301,7 +301,7 @@ val emails = Contacts(context)
 
 It's not just for emails. It's for all data kinds (including custom data).
 
-> For more info, read [How do I get a list of specific data kinds?](/howto/howto-query-data-sets.md)
+> For more info, read [Query specific data kinds](/docs/data/query-data-sets.md).
 
 To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
@@ -370,7 +370,7 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I create/insert contacts?](/howto/howto-insert-contacts.md)
+> For more info, read [Insert contacts](/docs/basics/insert-contacts.md).
 
 If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his data,
 
@@ -389,7 +389,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I update contacts?](/howto/howto-update-contacts.md)
+> For more info, read [Update contacts](/docs/basics/update-contacts.md).
 
 If we no longer like John Doe, we can **DELETE** him from our life,
 
@@ -400,7 +400,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [How do I delete contacts?](/howto/howto-delete-contacts.md)
+> For more info, read [Delete Contacts](/docs/basics/delete-contacts.md).
 
 ## Threading and permissions
 
@@ -422,8 +422,8 @@ launch {
 }
 ```
 
-> For more info, read [How do I use the permissions module to simplify permission handling using coroutines?](/howto/howto-use-api-with-permissions-handling.md)
-> and [How do I use the async module to simplify executing work outside of the UI thread using coroutines?](/howto/howto-use-api-with-async-execution.md)
+> For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md)
+> and [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 So, if we call the above function and we don't yet have permission. The user will be prompted to
 give the appropriate permissions before the query proceeds. Then, the work is done in the coroutine
@@ -433,11 +433,11 @@ return no results.
 > Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for listening
 > to Contacts database changes.
 
-## Full in-code documentation and Howto guides and samples
+## Full documentation, guides, and samples
 
 **The above examples barely scratches the surface of what this library provides.** For more in-depth
-Howtos, visit the [howto directory](/howto/). For a sample app reference, take a look at and run the
-`sample` module.
+documentation, visit the [docs](/docs/) or visit the [GitHub Pages][github-pages]. For a sample app 
+reference, take a look at and run the `sample` module.
 
 ## All APIs in the library are optimized!
 

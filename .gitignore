@@ -15,3 +15,8 @@ Thumbs.db
 
 # OSX files
 .DS_Store
+
+# MkDocs
+site/
+docs/contributing.md
+docs/index.md
