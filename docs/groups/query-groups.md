@@ -1,4 +1,4 @@
-# docs
+# Query groups
 
 This library provides the `GroupsQuery` API that allows you to get groups associated with an 
 `Account`.
