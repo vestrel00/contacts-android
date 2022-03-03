@@ -1988,95 +1988,91 @@ are organized using issues, milestones, and projects.</p>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="p">.</span><span class="na">broadQuery</span><span class="p">()</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="p">.</span><span class="na">whereAnyContactDataPartiallyMatches</span><span class="p">(</span><span class="n">searchText</span><span class="p">)</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a> <span class="err">```</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="o">&gt;</span> <span class="n">For</span> <span class="n">more</span> <span class="n">info</span><span class="p">,</span> <span class="n">read</span> <span class="o">[</span><span class="n">Query</span> <span class="n">contacts</span><span class="o">]</span><span class="p">(.</span><span class="o">/</span><span class="n">basics</span><span class="o">/</span><span class="n">query</span><span class="o">-</span><span class="n">contacts</span><span class="p">.</span><span class="na">md</span><span class="p">).</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">Something</span> <span class="n">a</span> <span class="n">bit</span> <span class="n">more</span> <span class="n">advanced</span><span class="p">...</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">To</span> <span class="n">retrieve</span> <span class="n">the</span> <span class="n">first</span> <span class="m">5</span> <span class="n">contacts</span> <span class="p">(</span><span class="n">including</span> <span class="n">only</span> <span class="n">the</span> <span class="n">contact</span> <span class="n">id</span><span class="p">,</span> <span class="n">display</span> <span class="n">name</span><span class="p">,</span> <span class="n">and</span> <span class="n">phone</span> <span class="n">numbers</span> <span class="k">in</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="n">the</span> <span class="n">results</span><span class="p">)</span> <span class="n">ordered</span> <span class="k">by</span> <span class="n">display</span> <span class="n">name</span> <span class="k">in</span> <span class="n">descending</span> <span class="n">order</span><span class="p">,</span> <span class="n">matching</span> <span class="n">ALL</span> <span class="n">of</span> <span class="n">these</span> <span class="n">rules</span><span class="p">;</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="o">-</span> <span class="n">a</span> <span class="n">first</span> <span class="n">name</span> <span class="n">starting</span> <span class="n">with</span> <span class="s">&quot;leo&quot;</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="o">-</span> <span class="n">has</span> <span class="n">emails</span> <span class="n">from</span> <span class="n">gmail</span> <span class="n">or</span> <span class="n">hotmail</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="o">-</span> <span class="n">lives</span> <span class="k">in</span> <span class="n">the</span> <span class="n">US</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="o">-</span> <span class="n">has</span> <span class="n">been</span> <span class="n">born</span> <span class="n">prior</span> <span class="n">to</span> <span class="n">making</span> <span class="k">this</span> <span class="n">query</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="o">-</span> <span class="k">is</span> <span class="n">favorited</span> <span class="p">(</span><span class="n">starred</span><span class="p">)</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="o">-</span> <span class="n">has</span> <span class="n">a</span> <span class="n">nickname</span> <span class="n">of</span> <span class="s">&quot;DarEdEvil&quot;</span> <span class="p">(</span><span class="n">case</span> <span class="n">sensitive</span><span class="p">)</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="o">-</span> <span class="n">works</span> <span class="k">for</span> <span class="n">Facebook</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="o">-</span> <span class="n">has</span> <span class="n">a</span> <span class="n">note</span>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="o">-</span> <span class="n">belongs</span> <span class="n">to</span> <span class="n">the</span> <span class="n">account</span> <span class="n">of</span> <span class="s">&quot;john.doe@gmail.com&quot;</span> <span class="n">or</span> <span class="s">&quot;john.doe@myspace.com&quot;</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="err">```</span><span class="n">kotlin</span>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>    <span class="p">.</span><span class="na">where</span> <span class="p">{</span>
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>        <span class="p">(</span><span class="n">Name</span><span class="p">.</span><span class="na">GivenName</span> <span class="n">startsWith</span> <span class="s">&quot;leo&quot;</span><span class="p">)</span> <span class="n">and</span>
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>        <span class="p">(</span><span class="n">Email</span><span class="p">.</span><span class="na">Address</span> <span class="p">{</span> <span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;gmail.com&quot;</span><span class="p">)</span> <span class="n">or</span> <span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;hotmail.com&quot;</span><span class="p">)</span> <span class="p">})</span> <span class="n">and</span>
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>        <span class="p">(</span><span class="n">Address</span><span class="p">.</span><span class="na">Country</span> <span class="n">equalToIgnoreCase</span> <span class="s">&quot;us&quot;</span><span class="p">)</span> <span class="n">and</span>
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>        <span class="p">(</span><span class="n">Event</span> <span class="p">{</span> <span class="p">(</span><span class="n">Date</span> <span class="n">lessThan</span> <span class="n">Date</span><span class="p">().</span><span class="na">toWhereString</span><span class="p">())</span> <span class="n">and</span> <span class="p">(</span><span class="n">Type</span> <span class="n">equalTo</span> <span class="n">EventEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">BIRTHDAY</span><span class="p">)</span> <span class="p">})</span> <span class="n">and</span>
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>        <span class="p">(</span><span class="n">Contact</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">Starred</span> <span class="n">equalTo</span> <span class="kc">true</span><span class="p">)</span> <span class="n">and</span>
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>        <span class="p">(</span><span class="n">Nickname</span><span class="p">.</span><span class="na">Name</span> <span class="n">equalTo</span> <span class="s">&quot;DarEdEvil&quot;</span><span class="p">)</span> <span class="n">and</span>
-<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>        <span class="p">(</span><span class="n">Organization</span><span class="p">.</span><span class="na">Company</span> <span class="n">`in`</span> <span class="n">listOf</span><span class="p">(</span><span class="s">&quot;facebook&quot;</span><span class="p">,</span> <span class="s">&quot;FB&quot;</span><span class="p">))</span> <span class="n">and</span>
-<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>        <span class="p">(</span><span class="n">Note</span><span class="p">.</span><span class="na">Note</span><span class="p">.</span><span class="na">isNotNullOrEmpty</span><span class="p">())</span>
-<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>    <span class="p">}</span>
-<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>    <span class="p">.</span><span class="na">accounts</span><span class="p">(</span>
-<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>        <span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.google&quot;</span><span class="p">),</span>
-<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>        <span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@myspace.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.myspace&quot;</span><span class="p">),</span>
-<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>    <span class="p">)</span>
-<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>    <span class="p">.</span><span class="na">include</span> <span class="p">{</span> <span class="n">setOf</span><span class="p">(</span>
-<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a>        <span class="n">Contact</span><span class="p">.</span><span class="na">Id</span><span class="p">,</span>
-<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a>        <span class="n">Contact</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">,</span>
-<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>        <span class="n">Phone</span><span class="p">.</span><span class="na">Number</span>
-<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a>    <span class="p">)</span> <span class="p">}</span>
-<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a>    <span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">desc</span><span class="p">())</span>
-<a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a>    <span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
-<a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a>    <span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
-<a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p>For more info, read <a href="basics/query-contacts/">Query contacts</a>.</p>
+</blockquote>
+<p>Something a bit more advanced...</p>
+<p>To retrieve the first 5 contacts (including only the contact id, display name, and phone numbers in
+the results) ordered by display name in descending order, matching ALL of these rules;
+- a first name starting with "leo"
+- has emails from gmail or hotmail
+- lives in the US
+- has been born prior to making this query
+- is favorited (starred)
+- has a nickname of "DarEdEvil" (case sensitive)
+- works for Facebook
+- has a note
+- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="p">.</span><span class="na">where</span> <span class="p">{</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="p">(</span><span class="n">Name</span><span class="p">.</span><span class="na">GivenName</span> <span class="n">startsWith</span> <span class="s">&quot;leo&quot;</span><span class="p">)</span> <span class="n">and</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>        <span class="p">(</span><span class="n">Email</span><span class="p">.</span><span class="na">Address</span> <span class="p">{</span> <span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;gmail.com&quot;</span><span class="p">)</span> <span class="n">or</span> <span class="n">endsWith</span><span class="p">(</span><span class="s">&quot;hotmail.com&quot;</span><span class="p">)</span> <span class="p">})</span> <span class="n">and</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>        <span class="p">(</span><span class="n">Address</span><span class="p">.</span><span class="na">Country</span> <span class="n">equalToIgnoreCase</span> <span class="s">&quot;us&quot;</span><span class="p">)</span> <span class="n">and</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>        <span class="p">(</span><span class="n">Event</span> <span class="p">{</span> <span class="p">(</span><span class="n">Date</span> <span class="n">lessThan</span> <span class="n">Date</span><span class="p">().</span><span class="na">toWhereString</span><span class="p">())</span> <span class="n">and</span> <span class="p">(</span><span class="n">Type</span> <span class="n">equalTo</span> <span class="n">EventEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">BIRTHDAY</span><span class="p">)</span> <span class="p">})</span> <span class="n">and</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        <span class="p">(</span><span class="n">Contact</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">Starred</span> <span class="n">equalTo</span> <span class="kc">true</span><span class="p">)</span> <span class="n">and</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>        <span class="p">(</span><span class="n">Nickname</span><span class="p">.</span><span class="na">Name</span> <span class="n">equalTo</span> <span class="s">&quot;DarEdEvil&quot;</span><span class="p">)</span> <span class="n">and</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>        <span class="p">(</span><span class="n">Organization</span><span class="p">.</span><span class="na">Company</span> <span class="n">`in`</span> <span class="n">listOf</span><span class="p">(</span><span class="s">&quot;facebook&quot;</span><span class="p">,</span> <span class="s">&quot;FB&quot;</span><span class="p">))</span> <span class="n">and</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>        <span class="p">(</span><span class="n">Note</span><span class="p">.</span><span class="na">Note</span><span class="p">.</span><span class="na">isNotNullOrEmpty</span><span class="p">())</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="p">}</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="p">.</span><span class="na">accounts</span><span class="p">(</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>        <span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.google&quot;</span><span class="p">),</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@myspace.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.myspace&quot;</span><span class="p">),</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="p">)</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>    <span class="p">.</span><span class="na">include</span> <span class="p">{</span> <span class="n">setOf</span><span class="p">(</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>        <span class="n">Contact</span><span class="p">.</span><span class="na">Id</span><span class="p">,</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="n">Contact</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">,</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>        <span class="n">Phone</span><span class="p">.</span><span class="na">Number</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="p">)</span> <span class="p">}</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>    <span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">desc</span><span class="p">())</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>    <span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>    <span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
 <p>Fore more info, read <a href="basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Once you have the contacts, you now have access to all of their data!</p>
-<p>```kotlin
-val contact: Contact
-Log.d(
-    "Contact",
-    """
-        ID: ${contact.id}
-        Lookup Key: ${contact.lookupKey}</p>
-<div class="highlight"><pre><span></span><code>    Display name: ${contact.displayNamePrimary}
-    Display name alt: ${contact.displayNameAlt}
-
-    Photo Uri: ${contact.photoUri}
-    Thumbnail Uri: ${contact.photoThumbnailUri}
-
-    Last updated: ${contact.lastUpdatedTimestamp}
-
-    Starred?: ${contact.options?.starred}
-    Send to voicemail?: ${contact.options?.sendToVoicemail}
-    Ringtone: ${contact.options?.customRingtone}
-
-    Aggregate data from all RawContacts of the contact
-    -----------------------------------
-    Addresses: ${contact.addressList()}
-    Emails: ${contact.emailList()}
-    Events: ${contact.eventList()}
-    Group memberships: ${contact.groupMembershipList()}
-    IMs: ${contact.imList()}
-    Names: ${contact.nameList()}
-    Nicknames: ${contact.nicknameList()}
-    Notes: ${contact.noteList()}
-    Organizations: ${contact.organizationList()}
-    Phones: ${contact.phoneList()}
-    Relations: ${contact.relationList()}
-    SipAddresses: ${contact.sipAddressList()}
-    Websites: ${contact.websiteList()}
-    -----------------------------------
-&quot;&quot;&quot;.trimIndent()
-// There are also aggregate data functions that return a sequence instead of a list.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span> <span class="nv">contact</span><span class="p">:</span> <span class="n">Contact</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="s">&quot;&quot;&quot;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="s">        ID: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">id</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s">        Lookup Key: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lookupKey</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="s">        Display name: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNamePrimary</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="s">        Display name alt: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNameAlt</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="s">        Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="s">        Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="s">        Last updated: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lastUpdatedTimestamp</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="s">        Starred?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">starred</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="s">        Send to voicemail?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">sendToVoicemail</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="s">        Ringtone: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="s">        Aggregate data from all RawContacts of the contact</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="s">        -----------------------------------</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="s">        Addresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">addressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="s">        Emails: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">emailList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="s">        Events: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">eventList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="s">        Group memberships: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">groupMembershipList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="s">        IMs: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">imList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="s">        Names: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="s">        Nicknames: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nicknameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="s">        Notes: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">noteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="s">        Organizations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">organizationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="s">        Phones: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">phoneList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="s">        Relations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">relationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="s">        SipAddresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">sipAddressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="s">        Websites: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">websiteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="s">        -----------------------------------</span>
+<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="s">    &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
+<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a>    <span class="c1">// There are also aggregate data functions that return a sequence instead of a list.</span>
+<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="p">)</span>
 </code></pre></div>
-<p>)
- ```</p>
 <blockquote>
 <p>For more info, read about <a href="entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
@@ -2089,15 +2085,15 @@ Log.d(
 full-fledged contacts app with it!</p>
 <p>Let's take a look at a few other APIs this library provides...</p>
 <p>To get the first 20 gmail emails ordered by email address in descending order,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span> <span class="nv">emails</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="p">.</span><span class="na">data</span><span class="p">()</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="p">.</span><span class="na">emails</span><span class="p">()</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Email</span><span class="p">.</span><span class="na">Address</span> <span class="n">endsWith</span> <span class="s">&quot;gmail.com&quot;</span> <span class="p">}</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">Address</span><span class="p">.</span><span class="na">desc</span><span class="p">(</span><span class="n">ignoreCase</span> <span class="o">=</span> <span class="kc">true</span><span class="p">))</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span> <span class="nv">emails</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="p">.</span><span class="na">data</span><span class="p">()</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="p">.</span><span class="na">emails</span><span class="p">()</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Email</span><span class="p">.</span><span class="na">Address</span> <span class="n">endsWith</span> <span class="s">&quot;gmail.com&quot;</span> <span class="p">}</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">Address</span><span class="p">.</span><span class="na">desc</span><span class="p">(</span><span class="n">ignoreCase</span> <span class="o">=</span> <span class="kc">true</span><span class="p">))</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
 </code></pre></div>
 <p>It's not just for emails. It's for all data kinds (including custom data).</p>
 <blockquote>
@@ -2105,87 +2101,87 @@ full-fledged contacts app with it!</p>
 </blockquote>
 <p>To <strong>CREATE/INSERT</strong> a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span> <span class="nv">insertResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="p">.</span><span class="na">insert</span><span class="p">()</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">NewRawContact</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>        <span class="n">name</span> <span class="o">=</span> <span class="n">NewName</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>            <span class="n">givenName</span> <span class="o">=</span> <span class="s">&quot;John&quot;</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>            <span class="n">familyName</span> <span class="o">=</span> <span class="s">&quot;Doe&quot;</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="p">}</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>        <span class="n">organization</span> <span class="o">=</span> <span class="n">NewOrganization</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="n">company</span> <span class="o">=</span> <span class="s">&quot;Amazon&quot;</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Superstar&quot;</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="p">}</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="n">emails</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>            <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;john.doe@amazon.com&quot;</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>            <span class="n">type</span> <span class="o">=</span> <span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>        <span class="p">})</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>    <span class="p">})</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
-</code></pre></div>
-<p>Or alternatively, in a more Kotlinized style using named arguments,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span> <span class="nv">insertResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="p">.</span><span class="na">insert</span><span class="p">()</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">NewRawContact</span><span class="p">(</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">name</span> <span class="o">=</span> <span class="n">NewName</span><span class="p">(</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>            <span class="n">givenName</span> <span class="o">=</span> <span class="s">&quot;John&quot;</span><span class="p">,</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>            <span class="n">familyName</span> <span class="o">=</span> <span class="s">&quot;Doe&quot;</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>        <span class="p">),</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        <span class="n">organization</span> <span class="o">=</span> <span class="n">NewOrganization</span><span class="p">(</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>            <span class="n">company</span> <span class="o">=</span> <span class="s">&quot;Amazon&quot;</span><span class="p">,</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Superstar&quot;</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="p">),</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>        <span class="n">emails</span> <span class="o">=</span> <span class="n">mutableListOf</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">(</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>            <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;john.doe@amazon.com&quot;</span><span class="p">,</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>            <span class="n">type</span> <span class="o">=</span> <span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>        <span class="p">))</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>    <span class="p">))</span>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
-</code></pre></div>
-<p>Or alternatively, using extension functions,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kd">val</span> <span class="nv">insertResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="p">.</span><span class="na">insert</span><span class="p">()</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="p">.</span><span class="na">rawContact</span> <span class="p">{</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="n">setName</span> <span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">NewRawContact</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="n">name</span> <span class="o">=</span> <span class="n">NewName</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>            <span class="n">givenName</span> <span class="o">=</span> <span class="s">&quot;John&quot;</span>
 <a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>            <span class="n">familyName</span> <span class="o">=</span> <span class="s">&quot;Doe&quot;</span>
 <a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="p">}</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>        <span class="n">setOrganization</span> <span class="p">{</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>        <span class="n">organization</span> <span class="o">=</span> <span class="n">NewOrganization</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
 <a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>            <span class="n">company</span> <span class="o">=</span> <span class="s">&quot;Amazon&quot;</span>
 <a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Superstar&quot;</span>
 <a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>        <span class="p">}</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>        <span class="n">addEmail</span> <span class="p">{</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>        <span class="n">emails</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
 <a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>            <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;john.doe@amazon.com&quot;</span>
 <a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>            <span class="n">type</span> <span class="o">=</span> <span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="p">}</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>    <span class="p">}</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="p">})</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>    <span class="p">})</span>
 <a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
+<p>Or alternatively, in a more Kotlinized style using named arguments,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kd">val</span> <span class="nv">insertResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="p">.</span><span class="na">insert</span><span class="p">()</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">NewRawContact</span><span class="p">(</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>        <span class="n">name</span> <span class="o">=</span> <span class="n">NewName</span><span class="p">(</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>            <span class="n">givenName</span> <span class="o">=</span> <span class="s">&quot;John&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>            <span class="n">familyName</span> <span class="o">=</span> <span class="s">&quot;Doe&quot;</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        <span class="p">),</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="n">organization</span> <span class="o">=</span> <span class="n">NewOrganization</span><span class="p">(</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>            <span class="n">company</span> <span class="o">=</span> <span class="s">&quot;Amazon&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Superstar&quot;</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        <span class="p">),</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>        <span class="n">emails</span> <span class="o">=</span> <span class="n">mutableListOf</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">(</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>            <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;john.doe@amazon.com&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>            <span class="n">type</span> <span class="o">=</span> <span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>        <span class="p">))</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="p">))</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
+<p>Or alternatively, using extension functions,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kd">val</span> <span class="nv">insertResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="p">.</span><span class="na">insert</span><span class="p">()</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="p">.</span><span class="na">rawContact</span> <span class="p">{</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="n">setName</span> <span class="p">{</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>            <span class="n">givenName</span> <span class="o">=</span> <span class="s">&quot;John&quot;</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>            <span class="n">familyName</span> <span class="o">=</span> <span class="s">&quot;Doe&quot;</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>        <span class="p">}</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>        <span class="n">setOrganization</span> <span class="p">{</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>            <span class="n">company</span> <span class="o">=</span> <span class="s">&quot;Amazon&quot;</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Superstar&quot;</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>        <span class="p">}</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>        <span class="n">addEmail</span> <span class="p">{</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>            <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;john.doe@amazon.com&quot;</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>            <span class="n">type</span> <span class="o">=</span> <span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>        <span class="p">}</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>    <span class="p">}</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
 <p>For more info, read <a href="basics/insert-contacts/">Insert contacts</a>.</p>
 </blockquote>
 <p>If John Doe switches jobs and heads over to Microsoft, we can <strong>UPDATE</strong> his data,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="p">.</span><span class="na">update</span><span class="p">()</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">johnDoe</span><span class="p">.</span><span class="na">mutableCopy</span> <span class="p">{</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>        <span class="n">setOrganization</span> <span class="p">{</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>            <span class="n">company</span> <span class="o">=</span> <span class="s">&quot;Microsoft&quot;</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Newb&quot;</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        <span class="p">}</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="n">emails</span><span class="p">().</span><span class="na">first</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>            <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;john.doe@microsoft.com&quot;</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>        <span class="p">}</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="p">})</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="p">.</span><span class="na">update</span><span class="p">()</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">johnDoe</span><span class="p">.</span><span class="na">mutableCopy</span> <span class="p">{</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>        <span class="n">setOrganization</span> <span class="p">{</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>            <span class="n">company</span> <span class="o">=</span> <span class="s">&quot;Microsoft&quot;</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Newb&quot;</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>        <span class="p">}</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>        <span class="n">emails</span><span class="p">().</span><span class="na">first</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>            <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;john.doe@microsoft.com&quot;</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>        <span class="p">}</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="p">})</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
 <p>For more info, read <a href="basics/update-contacts/">Update contacts</a>.</p>
 </blockquote>
 <p>If we no longer like John Doe, we can <strong>DELETE</strong> him from our life,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="p">.</span><span class="na">delete</span><span class="p">()</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">johnDoe</span><span class="p">)</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="p">.</span><span class="na">delete</span><span class="p">()</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">johnDoe</span><span class="p">)</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
 <p>For more info, read <a href="basics/delete-contacts/">Delete Contacts</a>.</p>
@@ -2193,18 +2189,18 @@ full-fledged contacts app with it!</p>
 <h2 id="threading-and-permissions">Threading and permissions<a class="headerlink" href="#threading-and-permissions" title="Permanent link">&para;</a></h2>
 <p>This library provides Kotlin coroutine extensions in the <code>permissions</code> module for all API functions
 to handle permissions and <code>async</code> module for executing work in background threads.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">launch</span> <span class="p">{</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>        <span class="p">.</span><span class="na">queryWithPermission</span><span class="p">()</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>        <span class="p">...</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>        <span class="p">.</span><span class="na">findWithContext</span><span class="p">()</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="kd">val</span> <span class="nv">deferredResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>        <span class="p">.</span><span class="na">insertWithPermission</span><span class="p">()</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>        <span class="p">...</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>        <span class="p">.</span><span class="na">commitAsync</span><span class="p">()</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="kd">val</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">deferredResult</span><span class="p">.</span><span class="na">await</span><span class="p">()</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">launch</span> <span class="p">{</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>        <span class="p">.</span><span class="na">queryWithPermission</span><span class="p">()</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>        <span class="p">...</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>        <span class="p">.</span><span class="na">findWithContext</span><span class="p">()</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="kd">val</span> <span class="nv">deferredResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>        <span class="p">.</span><span class="na">insertWithPermission</span><span class="p">()</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>        <span class="p">...</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>        <span class="p">.</span><span class="na">commitAsync</span><span class="p">()</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="kd">val</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">deferredResult</span><span class="p">.</span><span class="na">await</span><span class="p">()</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="p">}</span>
 </code></pre></div>
 <blockquote>
 <p>For more info, read <a href="permissions/permissions-handling-coroutines/">Permissions handling using coroutines</a>
@@ -2234,7 +2230,7 @@ internal database queries (depending on your query parameters).</p>
 <p>Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
 <strong>pagination</strong> with <code>limit</code> and <code>offset</code> functions :sunglasses:</p>
 <p><strong>Cancellations</strong> are also supported! To cancel a query amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">.</span><span class="na">find</span> <span class="p">{</span> <span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span> <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">.</span><span class="na">find</span> <span class="p">{</span> <span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span> <span class="p">}</span>
 </code></pre></div>
 <p>The find function optionally takes in a function that, if it returns true, will cancel query 
 processing as soon as possible. The function is called numerous times during query processing to 
@@ -2244,13 +2240,13 @@ used is when performing queries as the user types a search text. You are able to
 query when the user enters new text.</p>
 <p>For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is 
 cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">launch</span> <span class="p">{</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span> <span class="p">{</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>        <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">find</span> <span class="p">{</span> <span class="o">!</span><span class="n">isActive</span> <span class="p">}</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="p">}</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="c1">// Or, using the coroutine extensions in the async module...</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">findWithContext</span><span class="p">()</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">launch</span> <span class="p">{</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>        <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">find</span> <span class="p">{</span> <span class="o">!</span><span class="n">isActive</span> <span class="p">}</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="p">}</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="c1">// Or, using the coroutine extensions in the async module...</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">findWithContext</span><span class="p">()</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="all-core-apis-are-framework-agnostic-and-works-well-with-java-and-kotlin">All core APIs are framework-agnostic and works well with Java and Kotlin<a class="headerlink" href="#all-core-apis-are-framework-agnostic-and-works-well-with-java-and-kotlin" title="Permanent link">&para;</a></h2>
 <p><strong>The API does not and will not force you to use any frameworks (e.g. RxJava or Coroutines/Flow)!</strong>
