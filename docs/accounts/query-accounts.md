@@ -45,7 +45,7 @@ val accounts = Contacts(context).accounts().query()
 ```
 
 > RawContacts that are not associated with an Account are local to the device. For more info, read
-> about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+> about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Account for each specified RawContact
 
@@ -92,7 +92,7 @@ call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -104,7 +104,7 @@ Queries require the `android.permission.READ_CONTACTS` and `android.permission.G
 permissions. If not granted, the query will do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module. For
-more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 

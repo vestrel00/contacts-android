@@ -10,9 +10,9 @@ An instance of the `AccountsLocalRawContactsUpdate` API is obtained by,
 val accountsLocalRawContactsUpdate = Contacts(context).accounts().updateLocalRawContactsAccount()
 ```
 
-> For more info on local RawContacts, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+> For more info on local RawContacts, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
-> For more info on syncing, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+> For more info on syncing, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 ## Basic usage
 
@@ -92,7 +92,7 @@ the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -104,7 +104,7 @@ These updates require the `android.permission.GET_ACCOUNTS` and `android.permiss
 If not granted, the update will do nothing and return a failed result.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 

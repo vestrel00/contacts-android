@@ -60,4 +60,4 @@ non-blank data.
 
 Blank data are data entities that have only null, empty, or blank primary value(s).
 
-> For more info, read about [Blank data](/docs/entities/about-blank-data.md).
+> For more info, read about [Blank data](./../entities/about-blank-data.md).

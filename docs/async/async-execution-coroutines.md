@@ -103,7 +103,7 @@ then you are free to use the `core` module without using the `async` module func
 However, if you prefer to use something that comes with the library to ensure first-class support,
 then you might be interested in waiting for extensions for [RxJava][rx] and [Kotlin Flow][flow]!
 
-[coroutines]: https://kotlinlang.org/docs/coroutines-overview.html
+[coroutines]: https://kotlinlang.org./../coroutines-overview.html
 [with-context]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/with-context.html
 [async]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/async.html
 [flow]: https://github.com/vestrel00/contacts-android/milestone/8

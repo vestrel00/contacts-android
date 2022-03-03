@@ -5,7 +5,7 @@ This library provides extensions for custom data from the [Google Contacts][goog
 contacts. These (optional) extensions live in the `customdata-googlecontacts` module.
 
 > If you are looking to create your own custom data or get more insight on how the `FileAs` and 
-> `UserDefined` custom data was built, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
+> `UserDefined` custom data was built, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 ## Register the Google Contacts custom data with the Contacts API instance
 
@@ -113,10 +113,10 @@ mutableContact.addUserDefined(contacts) {
 Once you have registered the Google Contacts custom data with the `Contacts` API instance, the API 
 instance is now able to perform read and write operations on it.
 
-- [Query custom data](/docs/customdata/query-custom-data.md)
-- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.md)
-- [Update custom data](/docs/customdata/update-custom-data.md)
-- [Delete custom data](/docs/customdata/delete-custom-data.md)
+- [Query custom data](./../customdata/query-custom-data.md)
+- [Insert custom data into new or existing contacts](./../customdata/insert-custom-data.md)
+- [Update custom data](./../customdata/update-custom-data.md)
+- [Delete custom data](./../customdata/delete-custom-data.md)
 
 ## Google Contacts app data integrity
 
@@ -140,7 +140,7 @@ In the [Google Contacts app][google-contacts], the `FileAs` and `UserDefined` cu
 shown for RawContacts that are associated with a Google Account. Local (device-only) RawContacts do 
 not have these custom data!
 
-> For more info on local contacts, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+> For more info on local contacts, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Syncing Google Contacts custom data
 
@@ -150,6 +150,6 @@ these custom data should remain synced depending on account sync settings.
 
 > This library does not provide sync adapters for Google Contacts custom data.
 
-For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 [google-contacts]: https://play.google.com/store/apps/details?id=com.google.android.contacts

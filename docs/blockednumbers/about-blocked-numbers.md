@@ -27,9 +27,9 @@ at `android.telephony.PhoneNumberUtils`.
 
 ## Privileges to read/write blocked numbers directly
 
-The [`BlockedNumbersQuery`](/docs/blockednumbers/query-blocked-numbers.md), 
-[`BlockedNumbersInsert`](/docs/blockednumbers/insert-blocked-numbers.md), and
-[`BlockedNumbersDelete`](/docs/blockednumbers/delete-blocked-numbers.md) APIs this library
+The [`BlockedNumbersQuery`](./../blockednumbers/query-blocked-numbers.md), 
+[`BlockedNumbersInsert`](./../blockednumbers/insert-blocked-numbers.md), and
+[`BlockedNumbersDelete`](./../blockednumbers/delete-blocked-numbers.md) APIs this library
 provides will only work if all of the following requirements are met;
 
 - your app must is a system app and/or the default dialer/phone app and/or the default SMS/messaging

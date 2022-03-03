@@ -82,7 +82,7 @@ val contact = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactLikResult`. To get the parent Contact 
 of all linked RawContacts,
@@ -132,7 +132,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactLikResult`. To get the Contacts
 of all unlinked RawContacts,
@@ -163,7 +163,7 @@ choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -181,12 +181,12 @@ TODO Update this section as part of issue [#138](https://github.com/vestrel00/co
 You may link Contacts with RawContacts that belong to different Accounts. Any RawContact Data
 modifications are synced per Account sync settings.
 
-> For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 RawContacts that are not associated with an Account are local to the device and therefore will not
 be synced even if it is linked to a Contact with a RawContact that is associated with an Account.
 
-> For more info, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+> For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ------------------------
 
@@ -419,4 +419,4 @@ table with different IDs because the previously deleted row IDs cannot be reused
 Getting Contacts that have been linked into a single Contact or Contacts whose row IDs have change
 after unlinking is still possible using the Contact lookup key.
 
-For more info, read about [Contact lookup key vs ID](/docs/entities/about-contact-lookup-key.md).
+For more info, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).

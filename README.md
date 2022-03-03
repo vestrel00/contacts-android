@@ -2,7 +2,7 @@
 
 > Written with ♥️ and 🔥 since December 2018. Open sourced since October 4, 2021. 
 
-![Android Contacts, Reborn banner](./docs/assets/images/banner.gif)
+![Android Contacts, Reborn banner](/docs/assets/images/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 [![Monthly Downloads](https://jitpack.io/v/vestrel00/contacts-android/month.svg)](https://jitpack.io/#vestrel00/contacts-android)

@@ -31,11 +31,11 @@ In the example given (E.G.) above,
     - 2 of these rows belong to John Doe from Gmail and the other 2 belong to John Doe from Hotmail
 
 In the background, the Contacts Provider automatically performs the RawContacts linking/aggregation
-into a single Contact. To forcefully link or unlink sets of RawContacts, read [Link unlink Contacts](/docs/other/link-unlink-contacts.md).
+into a single Contact. To forcefully link or unlink sets of RawContacts, read [Link unlink Contacts](./../other/link-unlink-contacts.md).
 
 In the background, the Contacts Provider syncs all data from the local database to the remote database
 and vice versa (depending on system contact sync settings). Read more in
-[Sync contact data across devices](/docs/entities/sync-contact-data.md).
+[Sync contact data across devices](./../entities/sync-contact-data.md).
 
 That's all you need to know! Hopefully it wasn't too much. I know it was difficult for me to grasp
 in the beginning =P.
@@ -81,10 +81,10 @@ Each entity has an immutable version (typically returned by queries) and a mutab
 and other mutating API functions).
 
 > Custom data kinds may also be integrated into the contacts database (though not synced across devices).
-> For more info, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
+> For more info, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 > Default native and custom data may be retrieved, set, or cleared.
-> For more info, read [Get set clear default Contact data](/docs/other/get-set-clear-default-data.md).
+> For more info, read [Get set clear default Contact data](./../other/get-set-clear-default-data.md).
 
 ## Data kinds count restrictions
 
@@ -122,7 +122,7 @@ when integrating custom data via the `CustomDataCountRestriction`.
 Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
 associated with an Account). 
 
-For more info, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Automatic data kinds creation
 
@@ -142,11 +142,11 @@ creation. The name, nickname, and note are automatically created at a later time
 > Note that the query APIs in this library do not return blanks in results. In this case, the `Name`, 
 > `Nickname`, and `Note` will not be included in the RawContact because their primary values are all
 > null. Blanks are also ignored on insert and deleted on update. 
-> For more info, read about [Blank data](/docs/entities/about-blank-data.md).
+> For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 If a valid account is not provided, no entries of the above are automatically created.
 
-To determine if a RawContact is associated with an Account or not, read [Query for Accounts](/docs/accounts/query-accounts.md).
+To determine if a RawContact is associated with an Account or not, read [Query for Accounts](./../accounts/query-accounts.md).
 
 ## Data integrity
 
@@ -181,7 +181,7 @@ to us in the first place. The question is, should this library provide functions
 (e.g. Google Contacts, WhatsApp, etc)? The answer to that will be determined when the time comes to 
 support custom data from other apps in the future... Probably, yes!
 
-For more info, read [Integrate custom data from other apps](/docs/customdata/integrate-custom-data-from-other-apps.md).
+For more info, read [Integrate custom data from other apps](./../customdata/integrate-custom-data-from-other-apps.md).
 
 ## Accessing contact data
 
@@ -276,11 +276,11 @@ Each Contact may have more than one of the following data if the Contact is made
 RawContacts; name, nickname, note, organization, sip address.
 
 For more info on how to easily aggregate data from all RawContacts in a Contact, read
-[Convenience functions](/docs/other/convenience-functions.md).
+[Convenience functions](./../other/convenience-functions.md).
 
-To look into the actual Contacts Provider tables, read [Debug the Contacts Provider tables](/docs/debug/debug-contacts-provider-tables.md).
+To look into the actual Contacts Provider tables, read [Debug the Contacts Provider tables](./../debug/debug-contacts-provider-tables.md).
 
-To learn more about the Contact lookup key, read about [Contact lookup key vs ID](/docs/entities/about-contact-lookup-key.md).
+To learn more about the Contact lookup key, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
 
 ## Redacting entities
 
@@ -289,11 +289,11 @@ user data that could be redacted, for legal purposes. If you are logging contact
 to remote data centers for analytics or crash reporting, then it is important to redact certain 
 parts of every contact's data.
 
-For more info, read [Redact entities and API input and output in production](/docs/entities/redact-apis-and-entities.md).
+For more info, read [Redact entities and API input and output in production](./../entities/redact-apis-and-entities.md).
 
 ## Syncing contact data
 
 Syncing contact data, including groups, are done automatically by the Contacts Provider depending on
 the account sync settings.
 
-For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).

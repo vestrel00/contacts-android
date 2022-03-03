@@ -6,13 +6,13 @@ Contacts, or more specifically RawContacts, that are not associated with an
 This means that any RawContacts you create, update, or delete will NOT be synced on any device or
 remote service as it is not associated with any account.
 
-> For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 ## Associating a local RawContact to an Account
 
 Local RawContacts can be associated to an Account to enable syncing.
 
-For more info, read [Associate local RawContacts to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md).
+For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
 
 ## Adding an Account to the device
 

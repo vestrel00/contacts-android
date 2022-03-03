@@ -36,7 +36,7 @@ For example, to limit the search to groups belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](/docs/accounts/query-accounts.md).
+> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 Groups of all accounts are included in the search.
@@ -124,7 +124,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -136,7 +136,7 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 

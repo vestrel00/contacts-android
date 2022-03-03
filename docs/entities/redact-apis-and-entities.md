@@ -9,7 +9,7 @@ legal purposes such as upholding [GDPR](https://gdpr-info.eu) guidelines. If you
 contact data in production to remote data centers for analytics or crash reporting, then it is 
 important to redact certain parts of every contact's data.
 
-> For more info on logging, read [Log API input and output](/docs/logging/log-api-input-output.md).
+> For more info on logging, read [Log API input and output](./../logging/log-api-input-output.md).
 
 ## DISCLAIMER: This is NOT legal advice!
 
@@ -136,7 +136,7 @@ build some cool stuff using it. I'll let your imagination take over from here =)
 All terminal API functions such as `find` and `commit` can be automatically logged prior and post 
 execution to get visibility on input and output. All log outputs are also redactable!
 
-For more info on logging, read [Log API input and output](/docs/logging/log-api-input-output.md).
+For more info on logging, read [Log API input and output](./../logging/log-api-input-output.md).
 
 ## Developer notes
 

@@ -1,6 +1,6 @@
 # Integrate custom data from other apps
 
-If you are looking to create and integrate your own custom data, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
+If you are looking to create and integrate your own custom data, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 If you are looking to integrate custom data from other apps, you are in the right place!
 
@@ -51,7 +51,7 @@ Once you have figured out all of the details of all of the custom data (mimetype
 party app adds, you may proceed to write the code that will allow you and others to perform read
 and write operations on it using the CRUD APIs provided in this library.
 
-To proceed, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
+To proceed, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 ## Example, [Google Contacts app][google-contacts] custom data
 

@@ -51,7 +51,7 @@ if any, and does the following;
   insertion fails for that group
 - if there are no accounts in the system, [commit] does nothing and fails immediately
 
-> For more info on the relationship of Groups and Accounts, read [Query groups](/docs/groups/query-groups.md).
+> For more info on the relationship of Groups and Accounts, read [Query groups](./../groups/query-groups.md).
 
 ## Groups and duplicate titles
 
@@ -106,7 +106,7 @@ val groups = contactsApi
     .find()
 ```
 
-> For more info, read [Query groups](/docs/groups/query-groups.md).
+> For more info, read [Query groups](./../groups/query-groups.md).
 
 Alternatively, you may use the extensions provided in `GroupsInsertResult`. To get all newly created
 Groups,
@@ -164,7 +164,7 @@ the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -176,6 +176,6 @@ Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.
 permissions. If not granted, the insert will do nothing and return a failed result.
 
 To perform the insert with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)

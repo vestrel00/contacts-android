@@ -9,9 +9,9 @@ An instance of the `Delete` API is obtained by,
 val delete = Contacts(context).delete()
 ```
 
-> If you want to delete the device owner Contact Profile, read [Delete device owner Contact profile](/docs/profile/delete-profile.md).
+> If you want to delete the device owner Contact Profile, read [Delete device owner Contact profile](./../profile/delete-profile.md).
 
-> If you want to delete a set of Data, read [Delete existing sets of data](/docs/data/delete-data-sets.md).
+> If you want to delete a set of Data, read [Delete existing sets of data](./../data/delete-data-sets.md).
 
 ## A basic delete
 
@@ -76,7 +76,7 @@ Deletes are executed when the `commit` or `commitInOneTransaction` function is i
 done in the same thread as the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -88,13 +88,13 @@ Deletes require the `android.permission.WRITE_CONTACTS` permissions. If not gran
 will do nothing and return a failed result.
 
 To perform the delete with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
 
-The `Delete` API supports custom data. For more info, read [Delete custom data](/docs/customdata/delete-custom-data.md).
+The `Delete` API supports custom data. For more info, read [Delete custom data](./../customdata/delete-custom-data.md).
 
 ## Data belonging to RawContacts/Contact are deleted
 

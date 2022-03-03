@@ -3,27 +3,27 @@
 This library provides several APIs that supports deleting custom data.
 
 1. `DataDelete`
-   - [Delete existing sets of data](/docs/data/delete-data-sets.md)
+   - [Delete existing sets of data](./../data/delete-data-sets.md)
 2. `Delete`
-   - [Delete Contacts](/docs/basics/delete-contacts.md)
+   - [Delete Contacts](./../basics/delete-contacts.md)
 3. `ProfileDelete`
-   - [Delete device owner Contact profile](/docs/profile/delete-profile.md)
+   - [Delete device owner Contact profile](./../profile/delete-profile.md)
 4. `Update`
-   - [Update contacts](/docs/basics/update-contacts.md)
+   - [Update contacts](./../basics/update-contacts.md)
 5. `ProfileUpdate`
-   - [Update device owner Contact profile](/docs/profile/update-profile.md)
+   - [Update device owner Contact profile](./../profile/update-profile.md)
 
 To help illustrate how custom data integrates with these update APIs, we'll use the `HandleName`
 and `Gender` custom data.
 
-> For more info about custom data, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
+> For more info about custom data, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 ## Deleting custom data via Contacts/RawContacts
 
 Custom data, just like regular data kinds, are attached to a RawContact. They follow the same rules
 as regular data kinds.
 
-> For more info, read about [API Entities](/docs/entities/about-api-entities.md).
+> For more info, read about [API Entities](./../entities/about-api-entities.md).
 
 For example, you are able to delete existing handle names and the gender of an existing RawContact,
 
@@ -64,4 +64,4 @@ val deleteResult = Contacts(this)
    .commit()
 ```
 
-For more info, read [Delete existing sets of data](/docs/data/delete-data-sets.md).
+For more info, read [Delete existing sets of data](./../data/delete-data-sets.md).

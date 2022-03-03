@@ -25,11 +25,11 @@ cp DEV_NOTES.md docs/dev-notes.md
 # Replace links to "/DEV_NOTES" with "/dev-notes"
 find docs -type f -name '*.md' -exec sed -i '' 's/\/DEV_NOTES/\/dev-notes/g' {} +
 
-# Remove "/docs" in links
-find docs -type f -name '*.md' -exec sed -i '' 's/\/docs//g' {} +
+# Convert absolute links to relative links in the docs/index.md
+sed -i '' 's/\/docs/.//g' docs/index.md
 
 # Replace ".md" with "/" in links
-find docs -type f -name '*.md' -exec sed -i '' 's/\.md/\//g' {} +
+# find docs -type f -name '*.md' -exec sed -i '' 's/\.md/\//g' {} +
 
 # View MkDocs
 mkdocs serve

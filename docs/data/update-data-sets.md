@@ -9,7 +9,7 @@ An instance of the `DataUpdate` API is obtained by,
 val update = Contacts(context).data().update()
 ```
 
-> To update all kinds of data via Contacts/RawContacts, read [Update contacts](/docs/basics/update-contacts.md).
+> To update all kinds of data via Contacts/RawContacts, read [Update contacts](./../basics/update-contacts.md).
 
 ## A basic update
 
@@ -38,7 +38,7 @@ val updateResult = Contacts(context)
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
 deleted by update APIs.
 
-For more info, read about [Blank data](/docs/entities/about-blank-data.md).
+For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 ## Including only specific data
 
@@ -54,7 +54,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## Executing the update
 
@@ -104,7 +104,7 @@ val updatedEmail = contactsApi
     .find()
 ```
 
-> For more info, read [Query specific data kinds](/docs/data/query-data-sets.md).
+> For more info, read [Query specific data kinds](./../data/query-data-sets.md).
 
 Alternatively, you may use the extensions provided in `DataRefresh`.
 
@@ -142,7 +142,7 @@ Updates are executed when the `commit` function is invoked. The work is done in 
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -154,7 +154,7 @@ Updates require the `android.permission.WRITE_CONTACTS` permissions. If not gran
 will do nothing and return a failed result.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
@@ -171,4 +171,4 @@ All updates will be limited to the Profile, whether it exists or not.
 
 ## Custom data support
  
-The `DataUpdate` API supports custom data. For more info, read [Update custom data](/docs/customdata/update-custom-data.md).
+The `DataUpdate` API supports custom data. For more info, read [Update custom data](./../customdata/update-custom-data.md).

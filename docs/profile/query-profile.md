@@ -13,8 +13,8 @@ val query = Contacts(context).profile().query()
 ```
 
 > If you want to get non-Profile Contacts, read 
-> [Query contacts](/docs/basics/query-contacts.md) and
-> [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> [Query contacts](./../basics/query-contacts.md) and
+> [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 ## A basic query
 
@@ -32,7 +32,7 @@ The API allows you to specify if you want to include blank (raw) contacts or not
 .includeBlanks(true|false)
 ```
 
-For more info, read about [Blank contacts](/docs/entities/about-blank-contacts.md).
+For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
 
 ## Specifying Accounts
 
@@ -48,7 +48,7 @@ For example, to include only RawContacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](/docs/accounts/query-accounts.md).
+> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 The RawContacts returned will only belong to the specified accounts.
 
@@ -59,7 +59,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included. RawContacts without an associated account are considered local contacts or device-only 
 contacts, which are not synced.
 
-For more info, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -79,7 +79,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## Cancelling the query
 
@@ -109,7 +109,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -126,10 +126,10 @@ do nothing and return null.
 > prior to installation instead of at runtime.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
  
-The `ProfilQuery` API supports custom data. For more info, read [Query custom data](/docs/customdata/query-custom-data.md).
+The `ProfilQuery` API supports custom data. For more info, read [Query custom data](./../customdata/query-custom-data.md).

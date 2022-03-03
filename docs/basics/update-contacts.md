@@ -9,9 +9,9 @@ An instance of the `Update` API is obtained by,
 val update = Contacts(context).update()
 ```
 
-> If you want to update the device owner Contact Profile, read [Update device owner Contact profile](/docs/profile/update-profile.md).
+> If you want to update the device owner Contact Profile, read [Update device owner Contact profile](./../profile/update-profile.md).
 
-> If you want to update a set of Data, read [Update existing sets of data](/docs/data/update-data-sets.md).
+> If you want to update a set of Data, read [Update existing sets of data](./../data/update-data-sets.md).
 
 ## A basic update
 
@@ -57,14 +57,14 @@ The API allows you to specify if you want the update operation to delete blank c
 .deleteBlanks(true|false)
 ```
 
-For more info, read about [Blank contacts](/docs/entities/about-blank-contacts.md).
+For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
 
 ## Blank data are deleted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
 deleted by update APIs.
 
-For more info, read about [Blank data](/docs/entities/about-blank-data.md).
+For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 ## Including only specific data
 
@@ -80,7 +80,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## Executing the update
 
@@ -126,7 +126,7 @@ val updatedContacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactRefresh` and `RawContactRefresh`.
 
@@ -170,7 +170,7 @@ Updates are executed when the `commit` function is invoked. The work is done in 
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -182,13 +182,13 @@ Updates require the `android.permission.WRITE_CONTACTS` permissions. If not gran
 will do nothing and return a failed result.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
  
-The `Update` API supports custom data. For more info, read [Update custom data](/docs/customdata/update-custom-data.md).
+The `Update` API supports custom data. For more info, read [Update custom data](./../customdata/update-custom-data.md).
 
 ## Modifiable Contact fields
 
@@ -204,14 +204,14 @@ etc). Essentially, anything that the Contacts Provider allows for modification =
 
 Full-sized photos (and by API design thumbnails) can be set using other functions.
 
-For more info, read [Get set remove full-sized and thumbnail contact photos](/docs/other/get-set-remove-contact-raw-contact-photo.md).
+For more info, read [Get set remove full-sized and thumbnail contact photos](./../other/get-set-remove-contact-raw-contact-photo.md).
 
 ### Local RawContacts
 
 Updates to local RawContacts are not synced!
 
-> For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 There are also certain data kinds that are ignored on insert or update if the RawContact is local.
 
-> For more info, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+> For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).

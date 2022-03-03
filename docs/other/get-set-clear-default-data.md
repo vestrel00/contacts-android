@@ -7,7 +7,7 @@ Contacts app Contact details activity, long pressing an email or phone shows a p
 option to set it as default. When a particular email or phone is set as default, sending an email
 and making a phone call to that contact will use that default email and phone respectively.
 
-> For more info on the common data kinds, read about [API Entities](/docs/entities/about-api-entities.md).
+> For more info on the common data kinds, read about [API Entities](./../entities/about-api-entities.md).
 
 ## Getting default data
 
@@ -100,7 +100,7 @@ Setting or clearing default data is done in the same thread as the call-site. Th
 choppy UI. 
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 

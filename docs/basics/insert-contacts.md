@@ -8,9 +8,9 @@ An instance of the `Insert` API is obtained by,
 val insert = Contacts(context).insert()
 ```
 
-> If you want to create/insert the device owner Contact Profile, read [Insert device owner Contact profile](/docs/profile/insert-profile.md).
+> If you want to create/insert the device owner Contact Profile, read [Insert device owner Contact profile](./../profile/insert-profile.md).
 
-> If you want to insert Data into a new or existing contact, read [Insert data into new or existing contacts](/docs/data/insert-data-sets.md).
+> If you want to insert Data into a new or existing contact, read [Insert data into new or existing contacts](./../data/insert-data-sets.md).
 
 ## A basic insert
 
@@ -89,14 +89,14 @@ The API allows you to specify if you want to be able to insert blank contacts or
 .allowBlanks(true|false)
 ```
 
-For more info, read about [Blank contacts](/docs/entities/about-blank-contacts.md).
+For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
 
 ## Blank data are not inserted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are
 ignored and are not inserted by insert APIs.
 
-For more info, read about [Blank data](/docs/entities/about-blank-data.md).
+For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 ## Associating an Account
 
@@ -112,7 +112,7 @@ For example, to associated the new RawContact to an account,
 .forAccount(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](/docs/accounts/query-accounts.md).
+> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 ### Local RawContacts
 
@@ -120,11 +120,11 @@ If no Account is provided, or null is provided, or if an incorrect account is pr
 RawContacts inserted will not be associated with an Account. RawContacts inserted without an
 associated account are considered local or device-only contacts, which are not synced.
 
-> For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 There are also certain data kinds that are ignored on insert or update if the RawContact is local.
 
-> For more info, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+> For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Including only specific data
 
@@ -140,7 +140,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## Executing the insert
 
@@ -198,7 +198,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `InsertResult`. To get all newly created
 Contacts,
@@ -255,7 +255,7 @@ the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -267,13 +267,13 @@ Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.
 permissions. If not granted, the insert will do nothing and return a failed result.
 
 To perform the insert with permission, use the extensions provided in the `permissions` module. For
-more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
 
-The `Insert` API supports custom data. For more info, read [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.md).
+The `Insert` API supports custom data. For more info, read [Insert custom data into new or existing contacts](./../customdata/insert-custom-data.md).
 
 ## RawContact and Contacts aggregation
 
@@ -373,4 +373,4 @@ val insertResult = Contacts(context)
 
 Full-sized photos (and by API design thumbnails) can only be inserted after inserting the contact. 
 
-For more info, read [Get set remove full-sized and thumbnail contact photos](/docs/other/get-set-remove-contact-raw-contact-photo.md).
+For more info, read [Get set remove full-sized and thumbnail contact photos](./../other/get-set-remove-contact-raw-contact-photo.md).

@@ -14,11 +14,11 @@ val query = Contacts(context).query()
 ```
 
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
-> For more info, read [Query contacts](/docs/basics/query-contacts.md).
+> For more info, read [Query contacts](./../basics/query-contacts.md).
 
-> If you want to query Data directly instead of Contacts, read [Query specific data kinds](/docs/data/query-data-sets.md).
+> If you want to query Data directly instead of Contacts, read [Query specific data kinds](./../data/query-data-sets.md).
 
-> If you want to get the device owner Contact Profile, read [Query device owner Contact profile](/docs/profile/query-profile.md).
+> If you want to get the device owner Contact Profile, read [Query device owner Contact profile](./../profile/query-profile.md).
 
 ## An advanced query
 
@@ -100,7 +100,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-To get a Contact by lookup key, read about [Contact lookup key vs ID](/docs/entities/about-contact-lookup-key.md).
+To get a Contact by lookup key, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
 
 ## Including blank contacts
 
@@ -110,7 +110,7 @@ The API allows you to specify if you want to include blank contacts or not,
 .includeBlanks(true|false)
 ```
 
-For more info, read [Blank contacts](/docs/entities/about-blank-contacts.md).
+For more info, read [Blank contacts](./../entities/about-blank-contacts.md).
 
 ## Specifying Accounts
 
@@ -126,7 +126,7 @@ For example, to limit the search to contacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](/docs/accounts/query-accounts.md).
+> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
@@ -139,7 +139,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -159,7 +159,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ### Specifying Groups
 
@@ -169,7 +169,7 @@ To limit the search to only those RawContacts associated with at least one of th
 .where { GroupMembership.GroupId `in` groups.mapNotNull { it.id } }
 ```
 
-> For more info, read [Query groups](/docs/groups/query-groups.md).
+> For more info, read [Query groups](./../groups/query-groups.md).
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
@@ -207,7 +207,7 @@ Use `ContactsFields` to construct the orderBys.
 
 > If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
-> For more info, read [Convenience functions](/docs/other/convenience-functions.md).
+> For more info, read [Convenience functions](./../other/convenience-functions.md).
 
 ## Limiting and offsetting
 
@@ -270,7 +270,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -283,13 +283,13 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
  
-The `Query` API supports custom data. For more info, read [Query custom data](/docs/customdata/query-custom-data.md).
+The `Query` API supports custom data. For more info, read [Query custom data](./../customdata/query-custom-data.md).
      
 ## Using the `where` function to specify matching criteria
 
@@ -396,4 +396,4 @@ Data table with joins;
 Using these fields in the where clause does not have any effect in matching blank Contacts or 
 blank RawContacts simply because they have no Data rows containing these joined fields.
 
-For more info, read about [Blank contacts](/docs/entities/about-blank-contacts.md).
+For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).

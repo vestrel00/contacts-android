@@ -9,7 +9,7 @@ val insert = Contacts(context).blockedNumbers().insert()
 ```
 
 Note that blocked number insertions will only work for privileged apps. For more info, read about
-[Blocked numbers](/docs/blockednumbers/about-blocked-numbers.md).
+[Blocked numbers](./../blockednumbers/about-blocked-numbers.md).
 
 ## A basic insert
 
@@ -83,7 +83,7 @@ val blockedNumbers = contactsApi
     .find()
 ```
 
-> For more info, read [Query blocked numbers](/docs/blockednumbers/query-blocked-numbers.md).
+> For more info, read [Query blocked numbers](./../blockednumbers/query-blocked-numbers.md).
 
 Alternatively, you may use the extensions provided in `BlockedNumbersInsertResult`. To get all 
 newly created BlockedNumbers,
@@ -141,7 +141,7 @@ the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -150,4 +150,4 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 ## Performing the insert with permission
 
 There are no permissions required for blocked numbers. However, there are privileges that must be
-acquired. For more info, read about [Blocked numbers](/docs/blockednumbers/about-blocked-numbers.md).
+acquired. For more info, read about [Blocked numbers](./../blockednumbers/about-blocked-numbers.md).

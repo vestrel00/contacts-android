@@ -3,26 +3,26 @@
 This library provides several query APIs that support custom data integration.
 
 1. `Query`
-    - [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md)
+    - [Query contacts (advanced)](./../basics/query-contacts-advanced.md)
 2. `BroadQuery`
-    - [Query contacts](/docs/basics/query-contacts.md)
+    - [Query contacts](./../basics/query-contacts.md)
 3. `ProfileQuery`
-    - [Query device owner Contact profile](/docs/profile/query-profile.md)
+    - [Query device owner Contact profile](./../profile/query-profile.md)
 4. `DataQuery`
-    - [Query specific data kinds](/docs/data/query-data-sets.md)
+    - [Query specific data kinds](./../data/query-data-sets.md)
 
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
 and `Gender` custom data.
 
-> For more info, read [Integrate the gender custom data](/docs/customdata/integrate-gender-custom-data.md)
-> and [Integrate the handle name custom data](/docs/customdata/integrate-handlename-custom-data.md).
+> For more info, read [Integrate the gender custom data](./../customdata/integrate-gender-custom-data.md)
+> and [Integrate the handle name custom data](./../customdata/integrate-handlename-custom-data.md).
 
 ## Getting custom data from a Contact or RawContact
 
 Custom data, just like regular data kinds, are attached to a RawContact. They follow the same rules
 as regular data kinds. 
 
-> For more info, read about [API Entities](/docs/entities/about-api-entities.md).
+> For more info, read about [API Entities](./../entities/about-api-entities.md).
 
 For example, you are able to get the handle names and gender of a RawContact,
 
@@ -62,7 +62,7 @@ val handleNames = Contacts(context)
     .find()
 ```
 
-For more info, read [Query specific data kinds](/docs/data/query-data-sets.md).
+For more info, read [Query specific data kinds](./../data/query-data-sets.md).
 
 ## The `include` function and custom data
 
@@ -78,7 +78,7 @@ For example, to explicitly include all `HandleName` fields,
 .include(HandleNameFields.all)
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## The `where` function and custom data
 

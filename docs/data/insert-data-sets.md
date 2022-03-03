@@ -17,7 +17,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Insert contacts](/docs/basics/insert-contacts.md).
+> For more info, read [Insert contacts](./../basics/insert-contacts.md).
 
 To insert an email into a new Profile contact using the `ProfileInsert` API,
 
@@ -31,7 +31,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Insert device owner Contact profile](/docs/profile/insert-profile.md).
+> For more info, read [Insert device owner Contact profile](./../profile/insert-profile.md).
 
 To insert an email into an existing contact using the `Update` API,
  
@@ -44,7 +44,7 @@ Contacts(context)
     .commit()
  ```
  
- > For more info, read [Update contacts](/docs/basics/update-contacts.md).
+ > For more info, read [Update contacts](./../basics/update-contacts.md).
 
 To insert an email into an the existing Profile Contact using the `ProfileUpdate` API,
  
@@ -58,11 +58,11 @@ Contacts(context)
     .commit()
  ```
  
-> For more info, read [Update device owner Contact profile](/docs/profile/update-profile.md).
+> For more info, read [Update device owner Contact profile](./../profile/update-profile.md).
 
 ## Blank data are not inserted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
 ignored and are not inserted by insert APIs.
 
-For more info, read about [Blank data](/docs/entities/about-blank-data.md).
+For more info, read about [Blank data](./../entities/about-blank-data.md).

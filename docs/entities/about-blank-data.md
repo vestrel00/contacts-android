@@ -40,4 +40,4 @@ Blank data are data entities that have only null, empty, or blank primary value(
 Blank RawContacts and blank Contacts do not have any rows in the Data table. These do not have any 
 non-blank data.
 
-> For more info, read about [Blank contacts](/docs/entities/about-blank-contacts.md).
+> For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).

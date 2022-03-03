@@ -128,7 +128,7 @@ the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -140,7 +140,7 @@ Updates require the `android.permission.WRITE_CONTACTS`. If not granted, the upd
 and return a failed result.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
@@ -150,4 +150,4 @@ When a Contact is starred, the Contacts Provider automatically adds a group memb
 favorites group for all RawContacts linked to the Contact. Setting the Contact starred to false
 removes all group memberships to the favorites group.
 
-For more info, read [Get set Contact options](/docs/other/get-set-clear-contact-raw-contact-options.md).
+For more info, read [Get set Contact options](./../other/get-set-clear-contact-raw-contact-options.md).

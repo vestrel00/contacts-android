@@ -13,7 +13,7 @@ An instance of the `ProfileDelete` API is obtained by,
 val delete = Contacts(context).profile().delete()
 ```
 
-> If you want to delete non-Profile Contacts, read [Delete Contacts](/docs/basics/delete-contacts.md)
+> If you want to delete non-Profile Contacts, read [Delete Contacts](./../basics/delete-contacts.md)
 
 ## A basic delete
 
@@ -60,7 +60,7 @@ Deletes are executed when the `commit` function is invoked. The work is done in 
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -76,10 +76,10 @@ will do nothing and return a failed result.
 > prior to installation instead of at runtime.
 
 To perform the delete with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
 
-The `ProfileDelete` API supports custom data. For more info, read [Delete custom data](/docs/customdata/delete-custom-data.md).
+The `ProfileDelete` API supports custom data. For more info, read [Delete custom data](./../customdata/delete-custom-data.md).

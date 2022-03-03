@@ -12,7 +12,7 @@ An instance of the `ProfileUpdate` API is obtained by,
 val update = Contacts(context).profile().update()
 ```
 
-> If you want to update non-Profile Contacts, read [Update contacts](/docs/basics/update-contacts.md).
+> If you want to update non-Profile Contacts, read [Update contacts](./../basics/update-contacts.md).
 
 ## A basic update
 
@@ -47,14 +47,14 @@ The API allows you to specify if you want the update operation to delete blank R
 .deleteBlanks(true|false)
 ```
 
-For more info, read about [Blank contacts](/docs/entities/about-blank-contacts.md).
+For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
 
 ## Blank data are deleted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
 deleted by update APIs.
 
-For more info, read about [Blank data](/docs/entities/about-blank-data.md).
+For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 ## Including only specific data
 
@@ -70,7 +70,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## Executing the update
 
@@ -113,7 +113,7 @@ Once you have performed the updates, you can retrieve the updated profile Contac
 val updatedProfile = Contacts(context).profile().query().find()
 ```
 
-> For more info, read [Query device owner Contact profile](/docs/profile/query-profile.md).
+> For more info, read [Query device owner Contact profile](./../profile/query-profile.md).
 
 Alternatively, you may use the extensions provided in `ContactRefresh` and `RawContactRefresh`.
 
@@ -157,7 +157,7 @@ Updates are executed when the `commit` function is invoked. The work is done in 
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -173,13 +173,13 @@ will do nothing and return a failed result.
 > prior to installation instead of at runtime.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
  
-The `ProfileUpdate` API supports custom data. For more info, read [Update custom data](/docs/customdata/update-custom-data.md).
+The `ProfileUpdate` API supports custom data. For more info, read [Update custom data](./../customdata/update-custom-data.md).
 
 ## Modifiable Contact fields
 

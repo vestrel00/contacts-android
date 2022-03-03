@@ -4,7 +4,7 @@ This library provides extensions for `Gender` custom data that allows you to rea
 data for all of your contacts. These (optional) extensions live in the `customdata-gender` module.
 
 > If you are looking to create your own custom data or get more insight on how the `Gender` custom
-> data was built, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
+> data was built, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 ## Register the gender custom data with the Contacts API instance
 
@@ -68,10 +68,10 @@ mutableContact.setGender(contacts) {
 Once you have registered your gender custom data with the `Contacts` API instance, the API instance 
 is now able to perform read and write operations on it.
 
-- [Query custom data](/docs/customdata/query-custom-data.md)
-- [Insert custom data into new or existing contacts](/docs/customdata/insert-custom-data.md)
-- [Update custom data](/docs/customdata/update-custom-data.md)
-- [Delete custom data](/docs/customdata/delete-custom-data.md)
+- [Query custom data](./../customdata/query-custom-data.md)
+- [Insert custom data into new or existing contacts](./../customdata/insert-custom-data.md)
+- [Update custom data](./../customdata/update-custom-data.md)
+- [Delete custom data](./../customdata/delete-custom-data.md)
 
 ## Syncing gender custom data
 
@@ -82,6 +82,6 @@ sync adapter, gender custom data...
 - will NOT be shown in AOSP and [Google Contacts][google-contacts] apps, and other Contacts apps
   that show custom data from other apps
 
-For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 [google-contacts]: https://play.google.com/store/apps/details?id=com.google.android.contacts

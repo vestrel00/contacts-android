@@ -10,8 +10,8 @@ val query = Contacts(context).data().query()
 ```
 
 > To retrieve all kinds of data via Contacts/RawContacts, read 
-> [Query contacts](/docs/basics/query-contacts.md)
-> and [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> [Query contacts](./../basics/query-contacts.md)
+> and [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 ## Data queries
 
@@ -72,7 +72,7 @@ For example, to limit the search to data belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](/docs/accounts/query-accounts.md).
+> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 data are included in the search.
@@ -81,7 +81,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read about [Local (device-only) contacts](/docs/entities/about-local-contacts.md).
+For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 > Note that this may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
@@ -101,7 +101,7 @@ For example, to only include the given name and family name in a names query,
 .include(Fields.Name.GivenName, Fields.Name.FamilyName)
 ```
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## Ordering
 
@@ -183,7 +183,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -196,7 +196,7 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
@@ -214,7 +214,7 @@ All queries will be limited to the Profile, whether it exists or not.
 ## Custom data support
  
 The `DataQueryFactory` API (and its `DataQuery` instances) supports custom data. For more info, 
-read [Query custom data](/docs/customdata/query-custom-data.md).
+read [Query custom data](./../customdata/query-custom-data.md).
 
 ## Using the `where` function to specify matching criteria
 

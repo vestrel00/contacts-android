@@ -65,7 +65,7 @@ explicitly specify the lookup key,
 
 `Contact`s instances returned by the query will contain a value in the `Contact.lookupKey` property.
 
-For more info, read [Include only certain fields for read and write operations](/docs/entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## How to get Contacts using lookup keys?
 
@@ -90,7 +90,7 @@ Note that if the lookup key is a reference to a linked Contact (a Contact with t
 constituent RawContacts), and the linked Contact is unlinked, then the query will return
 multiple Contacts.
 
-> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 ## Moving RawContacts between accounts and the lookup key
 
@@ -99,7 +99,7 @@ general, set a RawContact's Account to something else will change the lookup key
 the changes to the lookup key will only be applied after the Contacts Provider and sync adapters
 sync the changes. This means that the local changes are not immediately applied.
 
-> For more info, read [Sync contact data across devices](/docs/entities/sync-contact-data.md).
+> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 Changing a RawContact's Account will result in a failed lookup using lookup keys prior to the 
 Account change.
@@ -115,7 +115,7 @@ For example, using the default AOSP Contacts app or the Google Contacts app...
 Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
 It is expected behavior due to the way the Contacts Provider works.
 
-> For more info, read [Associate local RawContacts to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md).
+> For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
 
 ## Linking/unlinking contacts and the lookup key
 
@@ -138,7 +138,7 @@ For example, using the default AOSP Contacts app or the Google Contacts app...
 
 In both cases, the shortcut successfully opens the correct aggregate Contact.
 
-> For more info on linking/unlinking, read [Link unlink Contacts](/docs/other/link-unlink-contacts.md).
+> For more info on linking/unlinking, read [Link unlink Contacts](./../other/link-unlink-contacts.md).
 
 ------------------------
 

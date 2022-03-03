@@ -11,7 +11,7 @@ val delete = Contacts(context).data().delete()
 
 > To delete all kinds of data via Contacts/RawContacts, you may remove them from the 
 > Contact/RawContact and then perform an update.
-> For more info, read [Update contacts](/docs/basics/update-contacts.md).
+> For more info, read [Update contacts](./../basics/update-contacts.md).
 
 ## A basic delete
 
@@ -75,7 +75,7 @@ Deletes are executed when the `commit` or `commitInOneTransaction` function is i
 done in the same thread as the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -87,7 +87,7 @@ Deletes require the `android.permission.WRITE_CONTACTS` permissions. If not gran
 will do nothing and return a failed result.
 
 To perform the delete with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
@@ -104,4 +104,4 @@ All deletes will be limited to the Profile, whether it exists or not.
 
 ## Custom data support
 
-The `DataDelete` API supports custom data. For more info, read [Delete custom data](/docs/customdata/delete-custom-data.md).
+The `DataDelete` API supports custom data. For more info, read [Delete custom data](./../customdata/delete-custom-data.md).

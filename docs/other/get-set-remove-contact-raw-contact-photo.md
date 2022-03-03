@@ -14,7 +14,7 @@ Contact photo is just a reference to the RawContact photo. The inverse is also t
 
 RawContact photos are retained when linking and unlinking.
 
-> For more info, read [Link unlink Contacts](/docs/other/link-unlink-contacts.md).
+> For more info, read [Link unlink Contacts](./../other/link-unlink-contacts.md).
 
 ## Full-sized photos and thumbnails
 
@@ -52,8 +52,8 @@ for (contact in contacts) {
 }
 ```
 
-> For more info, read [Query contacts](/docs/basics/query-contacts.md)
-> and [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> For more info, read [Query contacts](./../basics/query-contacts.md)
+> and [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Using one of the extension functions in `contacts.core.util.ContactPhoto.kt` to get photo data,
 
@@ -202,7 +202,7 @@ All of the code shown in this guide are done in the same thread as the call-site
 in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -231,7 +231,7 @@ APIs can use the extension functions in `contacts.core.util.ContactPhoto.kt` and
 To insert a new contact "with photo", you should insert the contact first. Then, if the insert
 succeeds, proceed to set the photo.
 
-> For more info about insert, read [Insert contacts](/docs/basics/insert-contacts.md).
+> For more info about insert, read [Insert contacts](./../basics/insert-contacts.md).
 
 > Note for contributors; It is possible to include photo **thumbnail** data as part of the insertion
 > of a new RawContact using `ContactsContract.CommonDataKinds.Photo.PHOTO`. The Contacts Provider

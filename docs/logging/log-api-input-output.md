@@ -11,7 +11,7 @@ val contactsApi = Contacts(
 )
 ```
 
-> For more info on `Contacts` API setup, read [Contacts API Setup](/docs/setup/setup-contacts-api.md).
+> For more info on `Contacts` API setup, read [Contacts API Setup](./../setup/setup-contacts-api.md).
 
 Invoking the `find` or `commit` functions in query, insert, update, and delete APIs will result in
 the following output in the Logcat,
@@ -97,4 +97,4 @@ development. A common way to redact messages in release builds but not debug bui
 AndroidLogger(redactMessages = !BuildConfig.DEBUG)
 ```
 
-For more info on redaction, read [Redact entities and API input and output in production](/docs/entities/redact-apis-and-entities.md).
+For more info on redaction, read [Redact entities and API input and output in production](./../entities/redact-apis-and-entities.md).
