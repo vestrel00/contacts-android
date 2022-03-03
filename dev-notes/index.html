@@ -1,0 +1,3447 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Android Contacts API Library for Kotlin and Java.">
+      
+      
+        <meta name="author" content="Vandolf Estrellado">
+      
+      
+        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/dev-notes/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.4">
+    
+    
+      
+        <title>Developer notes - Contacts, Reborn</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#ff6e42">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="deep-orange" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#developer-notes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Contacts, Reborn" class="md-header__button md-logo" aria-label="Contacts, Reborn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 0H4v2h16V0M4 24h16v-2H4v2M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-8 2.75A2.25 2.25 0 0 1 14.25 9 2.25 2.25 0 0 1 12 11.25 2.25 2.25 0 0 1 9.75 9 2.25 2.25 0 0 1 12 6.75M17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Contacts, Reborn
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Developer notes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/vestrel00/contacts-android/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    vestrel00/contacts-android
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Contacts, Reborn" class="md-nav__button md-logo" aria-label="Contacts, Reborn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 0H4v2h16V0M4 24h16v-2H4v2M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-8 2.75A2.25 2.25 0 0 1 14.25 9 2.25 2.25 0 0 1 12 11.25 2.25 2.25 0 0 1 9.75 9 2.25 2.25 0 0 1 12 6.75M17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/></svg>
+
+    </a>
+    Contacts, Reborn
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/vestrel00/contacts-android/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    vestrel00/contacts-android
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Setup
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Setup" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Setup
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/setup-contacts-api/" class="md-nav__link">
+        Contacts API Setup
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Entities
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Entities" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Entities
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/about-api-entities/" class="md-nav__link">
+        API entities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/about-blank-contacts/" class="md-nav__link">
+        Blank contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/about-blank-data/" class="md-nav__link">
+        Blank data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/about-local-contacts/" class="md-nav__link">
+        Local (device-only) contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/about-contact-lookup-key/" class="md-nav__link">
+        Contact lookup key vs ID
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/sync-contact-data/" class="md-nav__link">
+        Sync contact data across devices
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entities/redact-apis-and-entities/" class="md-nav__link">
+        Redact entities and API input and output in production
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Basics
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Basics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basics/query-contacts/" class="md-nav__link">
+        Query contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basics/query-contacts-advanced/" class="md-nav__link">
+        Query contacts (advanced)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basics/insert-contacts/" class="md-nav__link">
+        Insert contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basics/update-contacts/" class="md-nav__link">
+        Update contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basics/delete-contacts/" class="md-nav__link">
+        Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Data" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/query-data-sets/" class="md-nav__link">
+        Query specific data kinds
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/insert-data-sets/" class="md-nav__link">
+        Insert data into new or existing contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/update-data-sets/" class="md-nav__link">
+        Update existing sets of data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/delete-data-sets/" class="md-nav__link">
+        Delete existing sets of data
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Custom data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Custom data" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Custom data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/query-custom-data/" class="md-nav__link">
+        Query custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/insert-custom-data/" class="md-nav__link">
+        Insert custom data into new or existing contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/update-custom-data/" class="md-nav__link">
+        Update custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/delete-custom-data/" class="md-nav__link">
+        Delete custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/integrate-custom-data/" class="md-nav__link">
+        Integrate custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/integrate-custom-data-from-other-apps/" class="md-nav__link">
+        Integrate custom data from other apps
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/integrate-googlecontacts-custom-data/" class="md-nav__link">
+        Integrate the Google Contacts custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/integrate-gender-custom-data/" class="md-nav__link">
+        Integrate the Gender custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/integrate-handlename-custom-data/" class="md-nav__link">
+        Integrate the Handle Name custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/integrate-pokemon-custom-data/" class="md-nav__link">
+        Integrate the Pokemon custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customdata/integrate-rpg-custom-data/" class="md-nav__link">
+        Integrate the RPG custom data
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Groups
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Groups" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Groups
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../groups/query-groups/" class="md-nav__link">
+        Query groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../groups/insert-groups/" class="md-nav__link">
+        Insert groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../groups/update-groups/" class="md-nav__link">
+        Update groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../groups/delete-groups/" class="md-nav__link">
+        Delete groups
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Profile
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Profile" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Profile
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profile/query-profile/" class="md-nav__link">
+        Query device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profile/insert-profile/" class="md-nav__link">
+        Insert device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profile/update-profile/" class="md-nav__link">
+        Update device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profile/delete-profile/" class="md-nav__link">
+        Delete device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          Accounts
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Accounts" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Accounts
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../accounts/query-accounts/" class="md-nav__link">
+        Query for Accounts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../accounts/query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
+        Associate a local RawContact to an Account
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Blocked numbers
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Blocked numbers" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Blocked numbers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockednumbers/about-blocked-numbers/" class="md-nav__link">
+        About blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockednumbers/query-blocked-numbers/" class="md-nav__link">
+        Query blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockednumbers/insert-blocked-numbers/" class="md-nav__link">
+        Insert blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockednumbers/delete-blocked-numbers/" class="md-nav__link">
+        Delete blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11" type="checkbox" id="__nav_11" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_11">
+          Permissions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Permissions" data-md-level="1">
+        <label class="md-nav__title" for="__nav_11">
+          <span class="md-nav__icon md-icon"></span>
+          Permissions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permissions/permissions-handling-coroutines/" class="md-nav__link">
+        Permissions handling using coroutines
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12" type="checkbox" id="__nav_12" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_12">
+          Asynchronous work
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Asynchronous work" data-md-level="1">
+        <label class="md-nav__title" for="__nav_12">
+          <span class="md-nav__icon md-icon"></span>
+          Asynchronous work
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async/async-execution-coroutines/" class="md-nav__link">
+        Execute work outside of the UI thread using coroutines
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_13">
+          UI
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="UI" data-md-level="1">
+        <label class="md-nav__title" for="__nav_13">
+          <span class="md-nav__icon md-icon"></span>
+          UI
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui/integrate-rudimentary-contacts-integrated-ui-components/" class="md-nav__link">
+        Integrate rudimentary contacts ui components
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_14">
+          Other
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Other" data-md-level="1">
+        <label class="md-nav__title" for="__nav_14">
+          <span class="md-nav__icon md-icon"></span>
+          Other
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other/get-set-remove-contact-raw-contact-photo/" class="md-nav__link">
+        Get set remove full-sized and thumbnail contact photos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other/get-set-clear-contact-raw-contact-options/" class="md-nav__link">
+        Get set Contact options
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other/get-set-clear-default-data/" class="md-nav__link">
+        Get set clear default Contact data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other/link-unlink-contacts/" class="md-nav__link">
+        Link unlink Contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other/convenience-functions/" class="md-nav__link">
+        Convenience functions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_15" type="checkbox" id="__nav_15" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_15">
+          Logging
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Logging" data-md-level="1">
+        <label class="md-nav__title" for="__nav_15">
+          <span class="md-nav__icon md-icon"></span>
+          Logging
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logging/log-api-input-output/" class="md-nav__link">
+        Log API input and output
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16" type="checkbox" id="__nav_16" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_16">
+          Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Testing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_16">
+          <span class="md-nav__icon md-icon"></span>
+          Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/test-contacts-api/" class="md-nav__link">
+        Contacts API Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_17">
+          Debug
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Debug" data-md-level="1">
+        <label class="md-nav__title" for="__nav_17">
+          <span class="md-nav__icon md-icon"></span>
+          Debug
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug/debug-contacts-provider-tables/" class="md-nav__link">
+        Debug the Contacts Provider tables
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Developer notes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Developer notes
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#contacts-provider-contactscontract" class="md-nav__link">
+    Contacts Provider / ContactsContract
+  </a>
+  
+    <nav class="md-nav" aria-label="Contacts Provider / ContactsContract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contacts-display-name" class="md-nav__link">
+    Contacts; Display Name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contact-display-name-and-default-name-rows" class="md-nav__link">
+    Contact Display Name and Default Name Rows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contacts-id-vs-lookup_key" class="md-nav__link">
+    Contacts; ID vs LOOKUP_KEY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rawcontacts-accounts-contacts" class="md-nav__link">
+    RawContacts; Accounts + Contacts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rawcontacts-deletion" class="md-nav__link">
+    RawContacts; Deletion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-rawcontacts-per-contact" class="md-nav__link">
+    Multiple RawContacts Per Contact
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behavior-of-linkingmergingjoining-contacts-aggregationexceptions" class="md-nav__link">
+    Behavior of linking/merging/joining contacts (AggregationExceptions)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aggregationexceptions-table" class="md-nav__link">
+    AggregationExceptions table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-table" class="md-nav__link">
+    Data Table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-primary-and-super-primary-rows" class="md-nav__link">
+    Data Primary and Super Primary Rows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-table-joins" class="md-nav__link">
+    Data Table Joins
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-updates" class="md-nav__link">
+    Data Updates
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-required" class="md-nav__link">
+    Data Required
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-structuredname" class="md-nav__link">
+    Data StructuredName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-structuredpostal" class="md-nav__link">
+    Data StructuredPostal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#groups-table-accounts" class="md-nav__link">
+    Groups Table &amp; Accounts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-cost-of-the-current-immutability-implementation" class="md-nav__link">
+    The cost of the current immutability implementation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#avoiding-the-cost-shortcuts-and-pitfalls" class="md-nav__link">
+    Avoiding the cost... Shortcuts and pitfalls.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-not-add-android-x-support-library-dependencies" class="md-nav__link">
+    Why Not Add Android X / Support Library Dependencies?
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#contacts-provider-contactscontract" class="md-nav__link">
+    Contacts Provider / ContactsContract
+  </a>
+  
+    <nav class="md-nav" aria-label="Contacts Provider / ContactsContract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contacts-display-name" class="md-nav__link">
+    Contacts; Display Name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contact-display-name-and-default-name-rows" class="md-nav__link">
+    Contact Display Name and Default Name Rows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contacts-id-vs-lookup_key" class="md-nav__link">
+    Contacts; ID vs LOOKUP_KEY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rawcontacts-accounts-contacts" class="md-nav__link">
+    RawContacts; Accounts + Contacts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rawcontacts-deletion" class="md-nav__link">
+    RawContacts; Deletion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-rawcontacts-per-contact" class="md-nav__link">
+    Multiple RawContacts Per Contact
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behavior-of-linkingmergingjoining-contacts-aggregationexceptions" class="md-nav__link">
+    Behavior of linking/merging/joining contacts (AggregationExceptions)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aggregationexceptions-table" class="md-nav__link">
+    AggregationExceptions table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-table" class="md-nav__link">
+    Data Table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-primary-and-super-primary-rows" class="md-nav__link">
+    Data Primary and Super Primary Rows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-table-joins" class="md-nav__link">
+    Data Table Joins
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-updates" class="md-nav__link">
+    Data Updates
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-required" class="md-nav__link">
+    Data Required
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-structuredname" class="md-nav__link">
+    Data StructuredName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-structuredpostal" class="md-nav__link">
+    Data StructuredPostal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#groups-table-accounts" class="md-nav__link">
+    Groups Table &amp; Accounts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-cost-of-the-current-immutability-implementation" class="md-nav__link">
+    The cost of the current immutability implementation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#avoiding-the-cost-shortcuts-and-pitfalls" class="md-nav__link">
+    Avoiding the cost... Shortcuts and pitfalls.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-not-add-android-x-support-library-dependencies" class="md-nav__link">
+    Why Not Add Android X / Support Library Dependencies?
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/vestrel00/contacts-android/tree/main/docs/dev-notes.md" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+
+<h1 id="developer-notes">Developer Notes<a class="headerlink" href="#developer-notes" title="Permanent link">&para;</a></h1>
+<p>This document contains useful developer notes that should be kept in mind during development. It 
+serves as a memory of all the quirks and gotcha's of things like Android's <code>ContactsContract</code>.</p>
+<p>This is only meant to be read by contributors of this library, not consumers!</p>
+<h2 id="contacts-provider-contactscontract">Contacts Provider / ContactsContract<a class="headerlink" href="#contacts-provider-contactscontract" title="Permanent link">&para;</a></h2>
+<p>It is important to know about the ins and outs of Android's Contacts Provider. After all, this API 
+is just a wrapper around it. </p>
+<blockquote>
+<p>A very sweet, sugary wrapper! Sugar. Spice. And everything nice. :D</p>
+</blockquote>
+<p>It is important to get familiar with the <a href="https://developer.android.com/guide/topics/providers/contacts-provider">official documentation of the Contact's Provider</a>.</p>
+<p>Here is a summary;</p>
+<p>There are 3 main database tables used in dealing with contacts;</p>
+<ol>
+<li>Contacts</li>
+<li>RawContacts</li>
+<li>Data</li>
+</ol>
+<blockquote>
+<p>There are more but that is covered later.</p>
+</blockquote>
+<p>All of these tables and their fields are enumerated and documented in
+<code>android.provider.ContactsContract</code>. </p>
+<p>Each table serves a different purpose;</p>
+<ol>
+<li>Contacts<ul>
+<li>Rows representing different people.</li>
+</ul>
+</li>
+<li>RawContacts<ul>
+<li>Rows that link Contacts rows to specific Accounts.</li>
+</ul>
+</li>
+<li>Data<ul>
+<li>Rows containing data (e.g. name, email) for a RawContacts row.</li>
+</ul>
+</li>
+</ol>
+<p>These tables contain the following (notable) information (columns);</p>
+<ol>
+<li><code>Contacts</code><ul>
+<li><code>_ID</code></li>
+<li><code>DISPLAY_NAME_PRIMARY</code></li>
+</ul>
+</li>
+<li><code>RawContacts</code><ul>
+<li><code>_ID</code>: the <code>Contacts._ID</code></li>
+<li><code>ACCOUNT_NAME</code>: the <code>Account.name</code></li>
+<li><code>ACCOUNT_TYPE</code> the <code>Account.type</code></li>
+</ul>
+</li>
+<li><code>Data</code><ul>
+<li><code>RAW_CONTACT_ID</code>: the <code>RawContacts._ID</code></li>
+<li><code>CONTACT_ID</code>: the <code>Contacts._ID</code></li>
+<li><code>DATA_1</code> to <code>DATA_15</code>: contains a piece of contact data 
+  (e.g. first and last name, email address and type) determined by 
+  the <code>MIMETYPE</code></li>
+<li><code>MIMETYPE</code>: the type of data that this row's <code>DATA_X</code> columns contain
+  (e.g. name and email data)</li>
+</ul>
+</li>
+</ol>
+<p>The tables are connected the following way;</p>
+<ul>
+<li>RawContacts contains a reference to the Contacts row Id.</li>
+<li>Data contains a reference to the RawContacts row Id and Contacts row Id. </li>
+</ul>
+<h3 id="contacts-display-name">Contacts; Display Name<a class="headerlink" href="#contacts-display-name" title="Permanent link">&para;</a></h3>
+<p>The <code>Contacts.DISPLAY_NAME</code> name may be different than the Data <code>StructuredName</code> display name! If a
+structured name in the Data table is not provided, then other kinds of data will be used as the 
+<code>Contacts</code> row display name. For example, if an email is provided but no structured name then the
+display name will be the email. When a structured name is inserted, the Contacts Provider 
+automatically updates the Contacts row display name.</p>
+<blockquote>
+<p>In the case of <code>StructuredName</code>, the <code>Contacts.DISPLAY_NAME</code> is made up of the prefix, given,
+middle, family name, and suffix and not the unstructured display name.</p>
+</blockquote>
+<p>If no data rows suitable to be a display name are available, then the Contacts row display name will
+be null. Data suitable to be a Contacts row display name are enumerated in <code>DisplayNameSources</code>;</p>
+<ul>
+<li>email</li>
+<li>nickname</li>
+<li>organization</li>
+<li>phone number</li>
+<li>structured name</li>
+</ul>
+<p>Data not suitable to be display names are;</p>
+<ul>
+<li>address</li>
+<li>event</li>
+<li>group</li>
+<li>im</li>
+<li>note</li>
+<li>relation</li>
+<li>sip</li>
+<li>website</li>
+</ul>
+<p>The kind of data used as the display for the Contact is set in
+<code>ContactNameColumns.DISPLAY_NAME_SOURCE</code>.</p>
+<p><strong>A note about <code>StructuredName</code></strong></p>
+<p>There may be a scenario where the unstructured <code>StructuredName.DISPLAY_NAME</code> does not match the
+structured components. Such scenarios are possible but is considered incorrect. For example,
+it is possible to programmatically set the display name to "Ice Cold" but set the given and family
+name to "Hot Fire". The <code>Contacts.DISPLAY_NAME</code> is made up of the prefix, given, middle, family
+name, and suffix ("Hot Fire") and not the unstructured display name.</p>
+<p>The Contacts Provider's <a href="https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch">general matching</a> algorithm does <strong>not</strong> include the
+<code>Contacts.DISPLAY_NAME</code>. However, the <code>StructuredName.DISPLAY_NAME</code> is included in the matching
+process but not the rest of the structured components (e.g. given and family name).</p>
+<p>The native Contacts app displays the <code>Contacts.DISPLAY_NAME</code>. So, here comes the unusual scenario
+that looks like a bug. The <a href="https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch">general matching</a> algorithm will match the text "Ice" or "Cold" but
+not "Hot" or "Fire". The end result is that searching for the Contact "Ice Cold" will show a
+Contact called "Hot Fire"!</p>
+<h3 id="contact-display-name-and-default-name-rows">Contact Display Name and Default Name Rows<a class="headerlink" href="#contact-display-name-and-default-name-rows" title="Permanent link">&para;</a></h3>
+<p>If available, the "default" (isPrimary and isSuperPrimary set to 1) name row for a Contact is 
+automatically set as the Contact display name by the Contacts Provider. Otherwise, the Contacts
+Provider chooses from any of the other suitable data from the aggregate Contact.</p>
+<blockquote>
+<p>The <code>ContactsColumns.NAME_RAW_CONTACT_ID</code> is automatically updated by the Contacts Provider
+along with the display name.</p>
+</blockquote>
+<p>The default status of other sources (e.g. email) does not affect the Contact display name.</p>
+<p>The native Contacts app also sets the most recently updated name as the default at every update. 
+This results in the Contact display name changing to the most recently updated name from one of the
+associated RawContacts. The "most recently updated name" is the name field that was last updated
+by the user when editing in the Contacts app, which is irrelevant to its value. It does not matter
+if the user deleted the last character of the name, added the same character back, and then saved. 
+It still counts as the most recently updated. </p>
+<p>All of the above only applies to API 21 and above.</p>
+<p><strong>Display name resolution is different for APIs below 21 (pre-Lollipop)!</strong></p>
+<p>The <code>ContactsColumns.NAME_RAW_CONTACT_ID</code> was added in API 21. It changed the way display names
+are resolved for Contacts with more than one constituent RawContacts, which is what has been 
+described so far.</p>
+<p>Before this change (APIs 20 and below), the native Contacts app is still able to set the Contact
+display name somehow. I'm not sure how. If someone figures it out, please let me know. I tried 
+updating the Contact <code>DISPLAY_NAME</code> directly but it does not work. Setting a name row as default 
+also does not affect the Contact <code>DISPLAY_NAME</code>.</p>
+<h3 id="contacts-id-vs-lookup_key">Contacts; ID vs LOOKUP_KEY<a class="headerlink" href="#contacts-id-vs-lookup_key" title="Permanent link">&para;</a></h3>
+<p>The <code>Contacts._ID</code> is the unique identifier for the row in the Contacts table. The
+<code>Contacts.LOOKUP_KEY</code> is the unique identifier for an aggregate Contact (a person). The <code>_ID</code> may
+change due to aggregation and sync. The same goes for the <code>LOOKUP_KEY</code> but unlike the <code>ID</code> it may
+still be used to find the aggregate contact.</p>
+<p>Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
+with an Account and are synced).</p>
+<blockquote>
+<p>Note that I did the following investigation with a much larger data set. I simplified it here for brevity.</p>
+</blockquote>
+<p>Let's take a look at the following Contacts and RawContacts table rows,</p>
+<pre><code>#### Contacts table
+Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
+</code></pre>
+<p>There are two Contacts each having one RawContact. </p>
+<p>Notice that the lookup keys are a bit different.</p>
+<ul>
+<li>Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50</li>
+<li>Contact With Synced RawContact: 2059i6f5de8460f7f227e</li>
+</ul>
+<p>The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
+lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The 
+other thing to notice is that the "55" in "0r55-" seems to be the same as the RawContact ID (I did 
+a bit more experiments than what is written in these notes to confirm that it is indeed the 
+RawContact ID and not the Contact ID). We probably don't need to worry about these details though 
+the Contacts Provider probably uses these things internally. We also should not rely on it. </p>
+<p>However, it may be safe to assume that the <strong>Contact lookup key is a reference to a RawContact</strong> 
+(or reference to more than one constituent RawContact when multiple RawContacts are linked). Again,
+an internal Contacts Provider detail we should not rely on BUT is probably relevant when implementing
+sync adapters.</p>
+<p><strong>When we link</strong> the two, we get...</p>
+<pre><code>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+</code></pre>
+<p>Notice,</p>
+<ul>
+<li>Contact with ID 56 has been deleted.</li>
+<li>Contact with ID 55 still exist with the <strong>lookup keys of both Contact 55 and 56 combined separated by a "."</strong>. <ul>
+<li>This holds true in cases where two or more local-only or non-local-only RawContacts are linked.</li>
+</ul>
+</li>
+<li>RawContacts remain unchanged except reference to Contact 56 has been replaced with 55.</li>
+<li>The primary display name of Contact 55 came from RawContact 55 prior to the link and now comes
+  from RawContact 56 after the link.</li>
+<li>This primary name resolution is probably irrelevant so pay no attention to it.</li>
+</ul>
+<p>The most important part to notice is that the lookup keys get combined.</p>
+<p>The lookup uri is required to build a <code>Contacts.CONTENT_LOOKUP_URI</code>...</p>
+<pre><code class="language-java">/**
+ * A content:// style URI for this table that should be used to create
+ * shortcuts or otherwise create long-term links to contacts. This URI
+ * should always be followed by a &quot;/&quot; and the contact's {@link #LOOKUP_KEY}.
+ * It can optionally also have a &quot;/&quot; and last known contact ID appended after
+ * that. This &quot;complete&quot; format is an important optimization and is highly recommended.
+ * &lt;p&gt;
+ * As long as the contact's row ID remains the same, this URI is
+ * equivalent to {@link #CONTENT_URI}. If the contact's row ID changes
+ * as a result of a sync or aggregation, this URI will look up the
+ * contact using indirect information (sync IDs or constituent raw
+ * contacts).
+ * &lt;p&gt;
+ * Lookup key should be appended unencoded - it is stored in the encoded
+ * form, ready for use in a URI.
+ */
+public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, &quot;lookup&quot;);
+
+/**
+ * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the
+ * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.
+ * &lt;p&gt;
+ * Returns null if unable to construct a valid lookup URI from the
+ * provided parameters.
+ */
+public static Uri getLookupUri(long contactId, String lookupKey) {
+    if (TextUtils.isEmpty(lookupKey)) {
+        return null;
+    }
+    return ContentUris.withAppendedId(Uri.withAppendedPath(Contacts.CONTENT_LOOKUP_URI, lookupKey), contactId);
+}
+</code></pre>
+<p>From the lookup uri, we can lookup the Contact row...</p>
+<pre><code class="language-java">public static Uri lookupContact(ContentResolver resolver, Uri lookupUri) { ... }
+</code></pre>
+<p>Or simply get the Contact ID...</p>
+<pre><code class="language-java">// code inside `public static Uri lookupContact`
+resolver.query(lookupUri, new String[]{Contacts._ID}, null, null, null)
+</code></pre>
+<p>However, given that the lookup key of the deleted Contact 56 still lives on, it is possible to get 
+the linked Contact 55 using the lookup key of Contact 56 using our standard query APIs!</p>
+<pre><code class="language-kotlin">.where { Contact.LookupKey contains lookupKey }
+</code></pre>
+<p>The above is correct as long as these assumptions hold true;</p>
+<ul>
+<li>the lookup key is unique </li>
+<li>there is no lookup key that can contain a shorter lookup key<ul>
+<li>the Contact ID fails this test because a smaller number is contained in a larger number</li>
+<li>synced contacts have shorter lookup keys than local contacts. However, local contacts' 
+  lookup keys are capitalized whereas synced contact are not. Also, there seems to be other
+  differences in pattern between long and short lookup keys. It should be safe to make this
+  assumption.</li>
+</ul>
+</li>
+</ul>
+<p>Until the community finds that this assumption is flawed, we'll assume that it is true! For now, we
+can <strong>avoid having to create another API or extensions just for using lookup keys</strong>. </p>
+<p><strong>When we unlink</strong>, we get...</p>
+<pre><code>#### Contacts table
+Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+#### RawContacts table
+RawContact id: 55, contactId: 58, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+</code></pre>
+<p>Notice,</p>
+<ul>
+<li>A new Contact row with ID of 58 is created.</li>
+<li>The lookup keys are separated and distributed between Contact 55 and 58.</li>
+<li>RawContact 55 Contact reference has been set to Contact 58.</li>
+</ul>
+<p>Let's compare the Contact-RawContact relationship before and after linking and then unlinking.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Contact ID</strong></th>
+<th><strong>Lookup Key</strong></th>
+<th><strong>RawContact.Contact ID</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Before</strong></td>
+<td>55,<br>56</td>
+<td>0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50,<br>2059i6f5de8460f7f227e</td>
+<td>55,<br>56</td>
+</tr>
+<tr>
+<td><strong>After</strong></td>
+<td>55,<br>58</td>
+<td>2059i6f5de8460f7f227e,<br>0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50</td>
+<td>58,<br>55</td>
+</tr>
+</tbody>
+</table>
+<p>Notice,</p>
+<ul>
+<li>Contact ID 55 swapped lookup keys with the former Contact 56 (now 58).</li>
+<li>RawContact ID 55 swapped Contact reference with RawContact 56.</li>
+</ul>
+<p>The Contact IDs and lookup keys got shuffled BUT the Contact-RawContact relationship remains the 
+same if using the lookup keys as point of reference! Here is another way to look at the table,
+using the lookup key as the constant...</p>
+<table>
+<thead>
+<tr>
+<th><strong>Lookup Key</strong></th>
+<th><strong>Before</strong></th>
+<th><strong>After</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50</td>
+<td>Contact 55,<br>RawContact 55</td>
+<td>Contact 58,<br>RawContact 55</td>
+</tr>
+<tr>
+<td>2059i6f5de8460f7f227e</td>
+<td>Contact 56,<br>RawContact 56</td>
+<td>Contact 55,<br>RawContact 56</td>
+</tr>
+</tbody>
+</table>
+<p>Notice that the indirect relationship between the lookup key and RawContacts remains the same 
+before and after the link-unlink even though the Contact IDs changed.</p>
+<blockquote>
+<p>As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the RawContact ID.
+In other words, since local RawContacts are not synced or tracked in a remote database where
+Contacts -&gt; RawContacts mappings exist, the Contacts Provider most likely uses this 
+"0r<RawContact ID>-" pattern to make the connection. This is not really relevant for us as we are
+not relying on this mechanism. I'm just pointing out my observations, which could be incorrect.</p>
+</blockquote>
+<p>This means that...</p>
+<ul>
+<li>If users of this library saved a reference Contact ID 55, then a link-unlink (or sync adapter 
+  functions) occur. <ul>
+<li>Getting Contact by ID 55 will result in the RawContact-Data of the former Contact 56 to be 
+  returned. This is a bug! Same goes if users saved a reference to Contact ID 56.</li>
+</ul>
+</li>
+<li>If users of this library saved a reference to the lookup keys, then a link-unlink (or sync adapter
+  functions) occur.<ul>
+<li>Getting Contact by lookup key will result in the correct RawContact-Data to be returned.</li>
+</ul>
+</li>
+</ul>
+<p>So when to use Contact ID vs lookup key?</p>
+<ul>
+<li>Lookup key: for a reference to a Contact that needs to be loaded after some period of time.<ul>
+<li>Saving/restoring activity/fragment instance state.</li>
+<li>Saving to an external database, preferences, or files.</li>
+<li>Creating shortcuts.</li>
+</ul>
+</li>
+<li>ID: for everything else.<ul>
+<li>Performing read/write operations in the same function call or session in your app.</li>
+<li>Performing read/write operations that require ID (e.g. Contact photo and options).</li>
+</ul>
+</li>
+</ul>
+<p>Another thing to check is what happens when associating a local RawContact to an Account (move from
+device to Account) and vice versa. Is the lookup key of the Contact affected?</p>
+<p>After associating the local RawContact to an Account...</p>
+<pre><code>#### Contacts table
+Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
+#### RawContacts table
+RawContact id: 55, contactId: 58
+</code></pre>
+<p>The lookup key changed but the Contact ID remained the same! In this case, loading a reference to
+the previously local Contact will fail! I verified that this is indeed the behavior of the native
+(AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while 
+having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
+not exist" message in the AOSP Contacts app!</p>
+<blockquote>
+<p>The RawContact and its Data also remained the same in this case.</p>
+</blockquote>
+<p>Removing the account from it results in...</p>
+<pre><code>#### Contacts table
+Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
+#### RawContacts table
+RawContact id: 58, contactId: 59
+</code></pre>
+<p>The Contact and RawContacts row have been deleted and new rows have been created to replace them!
+I also verified that the Data rows have also been deleted and new rows have been created to 
+replace them!</p>
+<p>This stuff is not really relevant for lookup key but still good to know for implementing
+moving between accounts in the future.</p>
+<h3 id="rawcontacts-accounts-contacts">RawContacts; Accounts + Contacts<a class="headerlink" href="#rawcontacts-accounts-contacts" title="Permanent link">&para;</a></h3>
+<p>The RawContacts table associates a person to an <code>android.accounts.Account</code> that it belongs to. </p>
+<p>Each new RawContacts row created results in;</p>
+<ul>
+<li>a new row in the Contacts table (unless the RawContact is associated to another existing Contact)</li>
+<li>a new row in the RawContacts with account name and type set to null</li>
+<li>0 or more rows in the Data table with a reference to the new Contacts and RawContacts Ids</li>
+</ul>
+<blockquote>
+<p>It is possible to create RawContacts without any rows in the Data table. See the <strong>Data required</strong>
+section for more details.</p>
+</blockquote>
+<p>For example, creating 4 new contacts using the native Android Contacts app results in;</p>
+<pre><code>Contact id: 4, displayName: First Local Contact
+Contact id: 5, displayName: Second Local Contact
+Contact id: 6, displayName: Third Local Contact
+Contact id: 7, displayName: Third Local Contact
+RawContact id: 4, accountName: null, accountType: null
+RawContact id: 5, accountName: null, accountType: null
+RawContact id: 6, accountName: null, accountType: null
+RawContact id: 7, accountName: null, accountType: null
+Data id: 15, rawContactId: 4, contactId: 4, data: First Local Contact
+Data id: 16, rawContactId: 5, contactId: 5, data: Second Local Contact
+Data id: 17, rawContactId: 6, contactId: 6, data: Third Local Contact
+Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
+</code></pre>
+<p><strong>Local Contacts / RawContacts</strong></p>
+<p>RawContacts inserted without an associated account are considered local or device-only raw contacts,
+which are not synced.</p>
+<p>The native Contacts app hides the following UI fields when inserting or updating local raw contacts;
+- Event
+- Relation
+- Group memberships
+To enforce this behavior, this library ignores all of the above during inserts and updates for local
+raw contacts.</p>
+<p><strong>Lollipop (API 22) and below</strong></p>
+<p>When an Account is added, from a state where no accounts have yet been added to the system, the
+Contacts Provider automatically sets all of the null <code>accountName</code> and <code>accountType</code> in the
+RawContacts table to that Account's name and type;</p>
+<pre><code>RawContact id: 4, accountName: vestrel00@gmail.com, accountType: com.google
+RawContact id: 5, accountName: vestrel00@gmail.com, accountType: com.google
+RawContact id: 6, accountName: vestrel00@gmail.com, accountType: com.google
+RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
+</code></pre>
+<p>RawContacts inserted without an associated account will automatically get assigned to an account if
+there are any available. This may take a few seconds, whenever the Contacts Provider decides to do
+it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
+back to an Account.</p>
+<p><strong>Marshmallow (API 23) and above</strong></p>
+<p>The Contacts Provider no longer associates local contacts to an account when an account is or
+becomes available. Local contacts remain local.</p>
+<p><strong>Account removal</strong></p>
+<p>Removing the Account will remove all of the associated rows in the <strong>local</strong> RawContact, Data, and 
+Groups tables. This includes user Profile data in those tables.</p>
+<p><strong>SyncColumns modifications</strong></p>
+<p>This library supports modifying the <code>SyncColumns.ACCOUNT_NAME</code> and <code>SyncColumns.ACCOUNT_TYPE</code> of the
+RawContacts table in some cases only. In some cases does not work as intended and produces unwanted
+side-effects. It probably has something to do with syncing with remote servers and local Account /
+sync data not matching up similar to errors on network requests if the system time does not match
+network time.</p>
+<p>The motivation behind changing the Account columns of the RawContacts table rows is that it would
+allow users to;</p>
+<ul>
+<li>Associate local RawContacts (those that are not associated with an Account) to an Account,
+  allowing syncing between devices.</li>
+<li>Dissociate RawContacts from their Account such that they remain local to the device and not synced
+  between devices.</li>
+<li>Transfer RawContacts from one Account to another.</li>
+</ul>
+<p>When modifying the SyncColumns directly, the first works as intended. The second works with some
+unwanted side-effects. The third does not work at all and produces unwanted side-effects.</p>
+<p>These are the behaviors that I have found;</p>
+<ul>
+<li>Associating local RawContact A to Account X.<ul>
+<li>Works as intended.</li>
+<li>RawContact A is now associated with Account X and is synced across devices.</li>
+</ul>
+</li>
+<li>Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.<ul>
+<li>Partially works with some unwanted-side effects.</li>
+<li>Dissociates RawContact A from the device but not other devices.</li>
+<li>RawContact A is no longer visible in the native Contacts app UNLESS it retains the group
+  membership to at least the default group from an Account.</li>
+<li>At this point, RawContact A is a local contact. Changes to this local RawContact A will not be
+  synced across devices.</li>
+<li>If RawContact A is updated in another device and synced up to the server, then a syncing
+  side-effect occurs because the RawContact A in the device is different from the RawContact A
+  in the server. This causes the Contacts Provider to create another RawContact, resulting in a
+  "duplicate". The two RawContact As may get aggregated to the same Contact depending on how
+  similar they are.</li>
+<li>If local RawContact A is re-associated back to Account X, it will still no longer be synced.</li>
+</ul>
+</li>
+<li>Associating RawContact A from original Account X to Account Y.<ul>
+<li>Does not work and have bad side-effects.</li>
+<li>No change in other devices.</li>
+<li>For Lollipop (API 22) and below, RawContact A is no longer visible in the native Contacts app
+  and syncing Account Y in system settings fails.</li>
+<li>For Marshmallow (API 23) and above, RawContact A is no longer visible in the native Contacts
+  app. RawContact A is automatically deleted locally at some point by the Contacts Provider.
+  Syncing Account Y in system settings succeeds.</li>
+</ul>
+</li>
+</ul>
+<p>Given that associating originally local RawContacts to an Account is the only thing that actually
+works, it is the only function that will be exposed to consumers.</p>
+<p>If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
+RawContact associated with the desired Account and then delete the original RawContact. Same idea
+can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
+implement some functions in this library that does these things? We won't for now because the native
+Contacts app does not support these functions anyways. It can always be implemented later if the
+community really wants.</p>
+<p>Here are some other things to note.</p>
+<ol>
+<li>The Contacts Provider automatically creates a group membership to the default group of the target
+   Account when the account changes. This occurs even if the group membership already exists
+   resulting in duplicates.</li>
+<li>The Contacts Provider DOES NOT delete existing group memberships when the account changes.
+   This has to be done manually to prevent duplicates.</li>
+</ol>
+<h3 id="rawcontacts-deletion">RawContacts; Deletion<a class="headerlink" href="#rawcontacts-deletion" title="Permanent link">&para;</a></h3>
+<p>Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained
+in the documentation in <code>ContactsContract.RawContacts</code>;</p>
+<blockquote>
+<p>When a raw contact is deleted, all of its Data rows as well as StatusUpdates,
+AggregationExceptions, PhoneLookup rows are deleted automatically.</p>
+<p>When all raw contacts associated with a Contacts row are deleted, the Contacts row itself is also
+deleted automatically.</p>
+<p>The invocation of resolver.delete(...), does not immediately delete a raw contacts row. Instead, 
+it sets the ContactsContract.RawContactsColumns.DELETED flag on the raw contact and removes the 
+raw contact from its aggregate contact. The sync adapter then deletes the raw contact from the
+server and finalizes phone-side deletion by calling resolver.delete(...) again and passing the 
+ContactsContract#CALLER_IS_SYNCADAPTER query parameter. </p>
+<p>Some sync adapters are read-only, meaning that they only sync server-side changes to the phone,
+but not the reverse. If one of those raw contacts is marked for deletion, it will remain on the
+phone. However it will be effectively invisible, because it will not be part of any aggregate
+contact.</p>
+</blockquote>
+<p><strong>TLDR</strong></p>
+<p>To delete a contacts and all associated rows, simply delete all RawContact rows with the desired
+Contacts id. Deletion of the Contacts row and associated Data row(s) will be done automatically by
+the Contacts Provider.</p>
+<p>Note that deleting a RawContacts row may not immediately delete the RawContacts row. In this case, 
+it is marked as deleted and its reference to a contact id is nulled. The Contact may still exist if 
+it still has at least one constituent RawContact that is not marked for deletion.</p>
+<blockquote>
+<p>A RawContact is marked for deletion as specified by <code>RawContactsColumns.DELETED</code>.</p>
+</blockquote>
+<p>Typically, deleting RawContacts immediately removes the row from the RawContacts table. However, 
+RawContacts row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
+One of the reasons syncs do not occur is when the system sync settings are turned off for the 
+Account or there is no network connection.</p>
+<p>Such RawContacts should not be included in query results for Contacts. The AOSP and Google Contacts 
+app also does not show them.</p>
+<p>Note that local RawContacts rows (not associated with an Account) are deleted immediately as no sync
+needs to occur.</p>
+<h3 id="multiple-rawcontacts-per-contact">Multiple RawContacts Per Contact<a class="headerlink" href="#multiple-rawcontacts-per-contact" title="Permanent link">&para;</a></h3>
+<p>Each row in the Contacts table may be associated with more than one row in the RawContacts table. 
+The Contacts Provider may consolidate multiple contacts belonging to different accounts and combine 
+them into a single entry in the Contacts table whilst maintaining the separate entries in the 
+RawContacts table.</p>
+<p>A more likely scenario that causes multiple RawContacts per Contact is when two or more Contacts are
+"linked" (or "merged" for API 23 and below, or "joined" for API 22 and below).</p>
+<h3 id="behavior-of-linkingmergingjoining-contacts-aggregationexceptions">Behavior of linking/merging/joining contacts (AggregationExceptions)<a class="headerlink" href="#behavior-of-linkingmergingjoining-contacts-aggregationexceptions" title="Permanent link">&para;</a></h3>
+<p>The native Contacts app terminology has changed over time;</p>
+<ul>
+<li>API 22 and below; join / separate</li>
+<li>API 23; merge / unmerge</li>
+<li>API 24 and above; link / unlink </li>
+</ul>
+<p>However, the internals have not changed; <code>KEEP_TOGETHER</code> / <code>KEEP_SEPARATE</code>. These operations are 
+supported by the <code>ContactsContract.AggregationExceptions</code>.</p>
+<p>For example, given the following tables,</p>
+<pre><code>### Contacts table
+Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+### RawContacts table
+RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+### Data table
+Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 1
+Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 1
+Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 1
+</code></pre>
+<p>When Contact <strong>X</strong> links/merges/joins Contact <strong>Y</strong>, the tables becomes;</p>
+<pre><code>### Contacts table
+Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+
+### RawContacts table
+RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+### Data table
+Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 0
+Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 0
+Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 0
+</code></pre>
+<p><strong>What changed?</strong></p>
+<p>Contact Y's row has been deleted and its column values have been merged into Contact X row. If the 
+reverse occurred (Contact Y merged with Contact X), Contact Y's row would still be deleted. The 
+difference is that Contact X's display name will be set to Contact Y's display name, which is
+done by the native Contacts app manually by setting Contact Y's Data name row to be the "default" 
+(isPrimary and isSuperPrimary both set to 1).</p>
+<blockquote>
+<p>The AggregationExceptions table records the linked RawContacts's IDs in ascending order regardless
+of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.</p>
+</blockquote>
+<p>The RawContacts and Data table remains the same except the joined contactId column values have now
+been changed to the id of Contact X. All Data rows' isSuperPrimary value has been set to 0 though 
+the isPrimary columns remain the same. In other words, this clears any "default" set before the 
+link. These are done automatically by the Contacts Provider during the link operation.</p>
+<p>What is not done automatically by the Contacts Provider is that the name row of former Contact X is
+set as the default. The native Contacts app does this manually. The Contacts Providers automatically
+sets the Contact display name to whatever the default name row is for the Contact, if available.
+For more info on Contact display name resolution, read the <strong>Contact Display Name and Default Name
+Rows</strong> section.</p>
+<blockquote>
+<p>Note that display name resolution is different for APIs below 21 (pre-lollipop).</p>
+</blockquote>
+<p>The display name of the RawContacts remain the same.</p>
+<p>The Groups table remains unmodified.</p>
+<p><strong>Options updates</strong></p>
+<p>Changes to the options (starred, timesContacted, lastTimeContacted, customRingtone, and 
+sendToVoicemail) of a RawContact may affect the options of the parent Contact. On the other hand, 
+changes to the options of the parent Contact will be propagated to all child RawContact options.</p>
+<p><strong>Photo updates</strong></p>
+<p>A RawContact may have a full-sized photo saved as a file and a thumbnail version of that saved in
+the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
+references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).</p>
+<blockquote>
+<p>Note that when removing the photo in the native contacts app, the photo data row is not 
+immediately deleted, though the <code>PHOTO_FILE_ID</code> is immediately set to null. This may result in 
+the <code>PHOTO_URI</code> and <code>PHOTO_THUMBNAIL_URI</code> to still have a valid image uri even though the photo
+has been "removed". This library immediately deletes the photo data row, which seems to work
+perfectly.</p>
+</blockquote>
+<p><strong>Data inserts</strong></p>
+<p>In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
+first RawContact in the list sorted by the RawContact ID. </p>
+<blockquote>
+<p>This may not be the same as the RawContact referenced by <code>ContactsColumns.NAME_RAW_CONTACT_ID</code>.</p>
+</blockquote>
+<p><strong>UI changes?</strong></p>
+<p>The native Contacts App does not display the groups field when displaying / editing Contacts that
+have multiple RawContacts (linked/merged/joined) in combined mode. However, it does allow editing 
+individual RawContact Data rows in which case the groups field is displayed and editable.</p>
+<p>In the native Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
+set to true. This and all other "unique" mimetypes (organization) and non-unique mimetypes (email)
+per RawContact are shown only if they are not blank.</p>
+<p><strong>Showing multiple RawContact's data in the same edit screen (combined mode)</strong></p>
+<p>In older version of the native, Android Open Source Project (AOSP) Contacts app, data from multiple
+RawContacts was being shown in the same edit screen. This caused a lot of confusion about which
+data belonged to which RawContact. Newer versions of AOSP Contacts only allow editing one RawContact
+at a time to avoid confusion. Though, several RawContacts' data are still shown (not-editable) 
+in the same screen.</p>
+<h3 id="aggregationexceptions-table">AggregationExceptions table<a class="headerlink" href="#aggregationexceptions-table" title="Permanent link">&para;</a></h3>
+<p>Given the following Contacts and their RawContacts;</p>
+<ul>
+<li>Contact A<ul>
+<li>RawContact 1</li>
+</ul>
+</li>
+<li>Contact B<ul>
+<li>RawContact 2</li>
+</ul>
+</li>
+<li>Contact C<ul>
+<li>RawContact 3</li>
+</ul>
+</li>
+<li>Contact D<ul>
+<li>RawContact 4</li>
+</ul>
+</li>
+</ul>
+<p>Linking one by one in this order;</p>
+<ul>
+<li>Contact B link Contact A</li>
+<li>Contact C link Contact D</li>
+<li>Contact C link Contact B</li>
+</ul>
+<p>Results in the following AggregationExceptions rows respectively;</p>
+<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+</code></pre>
+<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+Aggregation exception id: 432, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre>
+<pre><code>Aggregation exception id: 436, type: 1, rawContactId1: 1, rawContactId2: 2
+Aggregation exception id: 439, type: 1, rawContactId1: 1, rawContactId2: 3
+Aggregation exception id: 442, type: 1, rawContactId1: 1, rawContactId2: 4
+Aggregation exception id: 440, type: 1, rawContactId1: 2, rawContactId2: 3
+Aggregation exception id: 443, type: 1, rawContactId1: 2, rawContactId2: 4
+Aggregation exception id: 444, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre>
+<p>There is a pattern here. RawContact ids are sorted in ascending order and linked from least to 
+greatest exhaustively but no double links (1-2 is the same as 2-1).</p>
+<ul>
+<li>RawContact 1 has a row with RawContact 2, 3, and 4.</li>
+<li>RawContact 2 has a row with RawContact 3 and 4.</li>
+<li>RawContact 3 has a row with RawContact 4.</li>
+</ul>
+<p>Linking all in one go;</p>
+<ul>
+<li>Contact C link Contact A, B, D</li>
+</ul>
+<p>Results in the same AggregationExceptions rows.</p>
+<p>Unlinking results in the same AggregationExceptions rows <strong>except</strong> the type is 2 
+(TYPE_KEEP_SEPARATE).</p>
+<h3 id="data-table">Data Table<a class="headerlink" href="#data-table" title="Permanent link">&para;</a></h3>
+<p>The Data table uses generic column names (e.g. "data1", "data2", ...) using the column "mimetype" to
+distinguish the type of data in that generic column. For example, the column name of 
+<code>StructuredName.DISPLAY_NAME</code> is the same as <code>Email.ADDRESS</code>, which is "data1". </p>
+<p>Each row in the Data table consists of a piece of RawContact data (e.g. a phone number), its
+"mimetype", and the associated RawContact and Contact id. A row does not contain all of the data for
+a contact.</p>
+<p>RawContacts may only have one row of certain mimetypes and may have multiple rows of other 
+mimetypes. Here is the list.</p>
+<p><strong>Unique mimetype per RawContact</strong></p>
+<ul>
+<li>Name (StructuredName)</li>
+<li>Nickname</li>
+<li>Note</li>
+<li>Organization</li>
+<li>Photo</li>
+<li>SipAddress</li>
+</ul>
+<p><strong>Non-unique mimetype per Raw Contact</strong></p>
+<ul>
+<li>Address (StructuredPostal)</li>
+<li>Email</li>
+<li>Event</li>
+<li>GroupMembership</li>
+<li>Im</li>
+<li>Phone</li>
+<li>Relation</li>
+<li>Website</li>
+</ul>
+<p>Although some mimetypes are unique per RawContact, none of those mimetypes are unique per Contact
+because a Contact is an aggregate of one or more RawContacts!</p>
+<h3 id="data-primary-and-super-primary-rows">Data Primary and Super Primary Rows<a class="headerlink" href="#data-primary-and-super-primary-rows" title="Permanent link">&para;</a></h3>
+<p>As per documentation, for a set of data rows with the same mimetype (e.g. a set of emails), there 
+should only be one primary data row (e.g. email) per RawContact and one super primary data row per
+Contact. Furthermore, a data row that is super primary must also be primary.</p>
+<p>Unfortunately, the Contacts Provider does not do any data set validation for the Data columns 
+<code>IS_PRIMARY</code> and <code>IS_SUPER_PRIMARY</code>. This means that it is possible to set more than one data row of
+the same mimetype as primary for the same RawContact and super primary for the same aggregate
+Contact. It is also possible to set a data row as super primary but not primary. Upholding the the
+contract is left to us... </p>
+<p>For example, given this relationship;</p>
+<ul>
+<li>Contact<ul>
+<li>RawContact X<ul>
+<li>Email A</li>
+<li>Email B</li>
+</ul>
+</li>
+<li>RawContact Y<ul>
+<li>Email C</li>
+<li>Email D</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>When Emails A, B, C, and D are inserted with the RawContacts or after the RawContacts have been 
+created, we get the following state;</p>
+<table>
+<thead>
+<tr>
+<th><strong>Email</strong></th>
+<th><strong>Primary</strong></th>
+<th><strong>Super Primary</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The state does not change when RawContact X is linked with RawContact Y.</p>
+<p>After setting Email A as the "default" email, it becomes primary and super primary;</p>
+<table>
+<thead>
+<tr>
+<th><strong>Email</strong></th>
+<th><strong>Primary</strong></th>
+<th><strong>Super Primary</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Then setting Email B as the default email, it becomes primary and super primary. Email A is no
+longer primary or super primary.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Email</strong></th>
+<th><strong>Primary</strong></th>
+<th><strong>Super Primary</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Then setting Email C as the default email, it becomes primary and super primary. Email B is still
+primary because it belongs to a different RawContact than Email C. However, Email B is no longer the
+super primary as there can only be one per aggregate Contact.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Email</strong></th>
+<th><strong>Primary</strong></th>
+<th><strong>Super Primary</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>C</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Then setting Email D as the default email, it becomes primary and super primary. Email C is no 
+longer primary or super primary.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Email</strong></th>
+<th><strong>Primary</strong></th>
+<th><strong>Super Primary</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>D</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Then clearing the default email D, removes its primary and super primary status. However, email B 
+remains a primary but not a super primary.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Email</strong></th>
+<th><strong>Primary</strong></th>
+<th><strong>Super Primary</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The above behavior is observed from the native Contacts app. The "super primary" data of an 
+aggregate Contact is referred to as the "default".</p>
+<blockquote>
+<p>At this point, the native Contacts app still shows email B as the first email in the list even
+though it isn't the "default" (super primary) because it is still a primary. This adds a bit of
+confusion in my opinion, especially when more than 2, 3, or 4 RawContacts are linked. A "fix" 
+would be to only order the list of emails using "super primary" instead of "super primary" and 
+"primary". OR to remove the primary status of the data set of all linked RawContacts.</p>
+<p>One benefit of the native Contacts implementation of this is that it retains the primary status
+when unlinking RawContacts. </p>
+<p>This library should follow what the native Contacts app is doing in spirit of recreating the
+native experience as closely as possible, even if it seems like a lesser experience.</p>
+</blockquote>
+<h3 id="data-table-joins">Data Table Joins<a class="headerlink" href="#data-table-joins" title="Permanent link">&para;</a></h3>
+<p>All columns accessible via cursors returned from Data table queries are specified in
+<code>DataColumnsWithJoins</code>, which includes the <code>DataColumns</code>, <code>ContactsColumns</code>, and
+<code>ContactOptionsColumns</code>. In code, mentions of the "Data table" typically refers to the joined table.</p>
+<p>The <code>DataColumns</code> gives us access to all of the columns in the Data table. All other joined columns,
+including the <code>ContactsColumns</code> are appended to each row in the query. This means that the 
+<code>ContactsColumns</code>; <code>DISPLAY_NAME</code>, <code>PHOTO_URI</code>, and <code>PHOTO_THUMBNAIL_URI</code> are repeated for all Data
+rows belonging to the same Contact.</p>
+<p>The <code>ContactOptionsColumns</code> values joined with the Data table are the values of the Contact, not
+the RawContact that the Data row belongs to! The same applies to the "display_name".</p>
+<h3 id="data-updates">Data Updates<a class="headerlink" href="#data-updates" title="Permanent link">&para;</a></h3>
+<p>A new row in the Data table is created for each new piece of data (e.g. email address) entered for 
+the contact. </p>
+<p>Removing a piece of existing data results in the deletion of the row in the Data table if that row
+no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is the 
+behavior of the native Android Contacts app. Therefore, querying for null fields is not possible. 
+For example, there may be no Data rows that exist where the email address is null. Thus, a query to 
+search for all contacts with null email address may return 0 contacts even if there are some
+contacts without email addresses.</p>
+<h3 id="data-required">Data Required<a class="headerlink" href="#data-required" title="Permanent link">&para;</a></h3>
+<p>Creating blank RawContacts without email address (or other fields), results in no rows in the Data
+table for the email address, and all other fields. There are a few exceptions. The following 
+Data rows are automatically created for all contacts, if not provided;</p>
+<ul>
+<li>Group membership, underlying value defaults to the account's default system group</li>
+<li>Name, underlying value defaults to null</li>
+<li>Nickname, underlying value defaults to null</li>
+<li>Note, underlying value defaults to null</li>
+</ul>
+<blockquote>
+<p>Note that all of the above rows are only automatically created for RawContacts that are associated
+with an Account.</p>
+</blockquote>
+<p>If a valid account is provided, the default (auto add) system group membership row is automatically
+created immediately by the Contacts Provider at the time of contact insertion. The name, nickname,
+and note are automatically created at a later time.</p>
+<p>If a valid account is not provided, none of the above data rows are automatically created.</p>
+<p><strong>Blank RawContacts</strong></p>
+<p>The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call them
+"blanks") to exist. The native Contacts app does not allow insertion of new RawContacts without at
+least one data row. It also deletes blanks on update. Despite seemingly not allowing blanks, the
+native Contacts app shows them.</p>
+<p>There are two scenarios where blanks may exist.</p>
+<ol>
+<li>Contact with RawContact(s) with no Data row(s).<ul>
+<li>In this case, the Contact is blank as well as its RawContact(s).</li>
+</ul>
+</li>
+<li>Contact that has RawContact with Data row(s) and a RawContact with no Data row.<ul>
+<li>In this case, the Contact and the RawContact with Data row(s) are not blank but the RawContact
+with no Data row is blank.</li>
+</ul>
+</li>
+</ol>
+<h3 id="data-structuredname">Data <code>StructuredName</code><a class="headerlink" href="#data-structuredname" title="Permanent link">&para;</a></h3>
+<p>The <code>DISPLAY_NAME</code> is the unstructured representation of the name. It is made up of structured
+components; <code>PREFIX</code>, <code>GIVEN_NAME</code>, <code>MIDDLE_NAME</code>, <code>FAMILY_NAME</code>, and <code>SUFFIX</code>.</p>
+<p>When updating or inserting a row;</p>
+<ul>
+<li>If the display name is null and there are non-null structured components provided (e.g. given and
+  family name), the Contacts Provider will automatically set the display name by combining the
+  structured components.</li>
+<li>If the display name is not null and all structured components are null, the Contacts Provider
+  automatically (to the best of its ability) derive the values for all the structured components.</li>
+<li>If the display name and structured components are not null, the Contacts Provider does nothing
+  automatically.</li>
+</ul>
+<h3 id="data-structuredpostal">Data <code>StructuredPostal</code><a class="headerlink" href="#data-structuredpostal" title="Permanent link">&para;</a></h3>
+<p>The <code>FORMATTED_ADDRESS</code> is the unstructured representation of the postal address. It is made up of
+structured components; <code>STREET</code>, <code>POBOX</code>, <code>NEIGHBORHOOD</code>, <code>CITY</code>, <code>REGION</code>, <code>POSTCODE</code>, and
+<code>COUNTRY</code>.</p>
+<p>When updating or inserting a row;</p>
+<ul>
+<li>If the formatted address is null and there are non-null structured components provided (e.g.
+  street and city), the Contacts Provider will automatically set the formatted address by combining
+  the structured components.</li>
+<li>If the formatted address is not null and all structured components are null, the Contacts Provider
+  automatically sets the street value to the formatted address.</li>
+<li>If the formatted address and structured components are not null, the Contacts Provider does
+  nothing automatically.</li>
+</ul>
+<h3 id="groups-table-accounts">Groups Table &amp; Accounts<a class="headerlink" href="#groups-table-accounts" title="Permanent link">&para;</a></h3>
+<p>Contacts are assigned to one or more groups via the <code>GroupMembership</code>. It typically looks like this;</p>
+<pre><code>Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+`````
+
+The actual groups are in a separate table; Groups. Each group is associated with an Account. No
+group can exist without an account. It is account-exclusive.
+
+Each account will have its own set of the above system groups. This means that there may be multiple
+groups with the same title belonging to different accounts.
+
+System ids are typically Contacts, Friends, Family, and Coworkers. These ids are typically the same
+across all copies of Android. Notes;
+- The Contacts system group is the default group in which all raw contacts of an account belongs to.
+  Therefore, it is typically hidden when showing the list of groups in the UI.
+- The starred (favorites) group is not a system group as it has null system id. However, it behaves
+  like one in that it is read only and it comes with most (if not all) copies of the native app.
+
+Removing the Account will delete all of the associated rows in the Groups table.
+
+**Groups, duplicate titles**
+
+The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
+belonging to the same account to exist. In older versions of Android, the native Contacts app 
+allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
+allowed. Therefore, this library does not allow for duplicate titles.
+
+&gt; In newer versions, the group with the duplicate title gets deleted either automatically by the 
+&gt; Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
+&gt; on insert or update. This could lead to bugs!
+
+### Groups Table &amp; GroupMemberships (Data Table)
+
+There may be multiple groups with the same title from different accounts. Therefore, the group
+membership should point to the group belonging to the same account as the raw contact. The native
+Contacts app displays only the groups belonging to the selected account.
+
+Updating group memberships of existing raw contacts seem to be almost instant. All raw contacts must
+be a part of at least the default group (system id is &quot;Contacts&quot;). Raw contacts with no group
+membership will be asynchronously added to the Account's default group by the Contacts Provider.
+
+Membership to the default group should never be deleted!
+
+### Starred in Android (Favorites)
+
+When the `ContactOptionsColumns.STARRED` column of a Contact in the Contacts table is set to true,
+the Contacts Provider automatically adds a group membership to the favorites group for all 
+RawContacts linked to the Contact. Setting `STARRED` to false removes all group memberships to the
+favorites group.
+
+The `STARRED` is interdependent with group memberships to the favorites group. Adding a group 
+membership to the favorites group results in `STARRED` being set to true. Removing the membership 
+sets it to false.
+
+Raw contacts that are not associated with an account do not have any group memberships. Even though
+these raw contacts may not have a membership to the favorites group, they may still be &quot;starred&quot;
+(favorited) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is not
+dependent on the existence of a favorites group membership.
+
+**Refresh RawContact instances after changing the starred value.** Otherwise, performing an update 
+on the RawContact with a stale set of group memberships may revert the star/unstar operation. For 
+example, query returns a starred RawContact -&gt; set starred to false -&gt; update RawContact (still 
+containing a group membership to the favorites group) -&gt; starred will be set back to true.
+
+### Group memberships &amp; Local RawContacts
+
+Local RawContacts may have a group membership to the default system group of an Account without
+being associated with the Account...
+
+The native Contacts app may not have an edit-RawContact option for newly inserted RawContacts that
+have no group membership to the default group when an Account is available. Though, edits can still
+be made in other ways. Instead, an option to &quot;Add to contacts&quot; is shown that adds a membership to
+the default group but does not associate the raw contact to the Account that owns the group. The
+edit UI does not show the group membership field.
+
+Weirdly, this only occurs when there is exactly only one Account. If there are no Accounts or there
+are two or more Accounts, then this does not occur. Also, this does not occur for a Contact with a
+RawContact that has a group membership AND a RawContact that has no group membership.
+
+### Groups; Deletion
+
+Similar to deleting RawContacts, deleting a Groups row may not immediately delete the Groups row. 
+In this case, it is marked as deleted. 
+
+&gt; A Group is marked for deletion as specified by `GroupsColumns.DELETED`.
+
+Typically, deleting Groups immediately removes the row from the Groups table. However,
+Groups row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
+One of the reasons syncs do not occur is when the system sync settings are turned off for the
+Account or there is no network connection.
+
+Such Groups should not be included in query results for Contacts. The AOSP and Google Contacts app 
+also does not show them.
+
+Note that local Groups rows (not associated with an Account) are deleted immediately as no sync
+needs to occur.
+
+### Groups; UI
+
+In newer Android versions of the native Contacts app, &quot;groups&quot; are now being referred to as
+&quot;labels&quot;. However, the underlying code still uses groups. Google is probably just trying to make it
+more user friendly by calling it label instead of group.
+
+### User Profile
+
+There exist one (profile) Contacts row that identifies the user;
+`ContactsColumns.IS_USER_PROFILE`. There is at least one RawContacts row that is associated with the
+user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts may or may
+not be associated with an Account. The RawContacts row(s) may have rows in the Data table as usual.
+These profile table rows have special IDs that differ from regular rows. See  
+`ContactsContract.isProfileId`.
+
+&gt; Note that the Contacts Provider will throw an IllegalArgument exception when attempting to include
+&gt; `ContactsColumns.IS_USER_PROFILE` and `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE` columns
+&gt; in Data table queries. I have not yet tried including these columns in the Contacts or RawContacts
+&gt; table queries.
+
+The profile Contact row may not be merged / linked with other contacts and do not belong to any
+group (favorites / starred).
+
+Profile rows in the Contacts, RawContacts, and Data table are not visible via queries in the
+respective tables. They will not be in the resulting cursor. To get the profile Contacts table rows,
+query the `Profile.CONTENT_URI`. To get profile RawContacts table rows, query the
+`Profile.CONTENT_RAW_CONTACTS_URI`. To get the profile Data table rows, query the
+`Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
+`RawContacts.Data.CONTENT_DIRECTORY`.
+
+To insert a new profile RawContact, use `Profile.CONTENT_RAW_CONTACTS_URI`. It will automatically
+be associated with the profile Contact. If the profile Contact does not yet exist, it will be  
+created automatically.
+
+To insert a new profile Data row, either;
+
+- insert to the `Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
+`RawContacts.Data.CONTENT_DIRECTORY`
+- insert to the Data table directly, referencing the RawContact id
+
+Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
+associated Contacts and Data table rows will automatically be deleted.
+
+**Profile aggregation**
+
+The RawContacts of a (Contact) Profile are linked via the indexed rows;
+`Profile.CONTENT_RAW_CONTACTS_URI`. Therefore, the AggregationsExceptions table is not used here.
+
+**Profile and users**
+
+Note that as of Android 5 Lollipop, there may exist multiple users in a device. Each user has a
+separate list of accounts and contact data. This also means that each user has a separate (local)
+profile contact.
+
+**Profile and Accounts**
+
+According to the `Profile` documentation; &quot;... each account (including data set, if applicable) on
+the device may contribute a single raw contact representing the user's personal profile data from
+that source.&quot;
+
+In other words, one account can have one profile RawContact. Whether or not profile RawContacts
+associated to an Account can be carried over and synced across devices and users is up to the
+Contacts Provider / Sync provider for that Account.
+
+&gt; From my experience, profile RawContacts associated to an Account is not carried over / synced
+&gt; across devices or users.
+
+Despite the documentation of &quot;one profile RawContact per one Account&quot;, the Contacts Provider allows
+for multiple RawContacts per Account, including multiple local RawContacts (no Account). Thus, we
+should let consumers exploit this but set defaults to be one-for-one.
+
+Creating / setting up the profile in the native Contacts app results in the creation of a local
+RawContact (not associated with an Account) even if there are available Accounts.
+
+The Contacts Provider does not associate local contacts to an account when an account is or becomes
+available (regardless of API level).
+
+Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
+Groups tables. This includes user Profile data in those tables.
+
+**Profile permissions**
+
+Profile permissions (READ_PROFILE and WRITE_PROFILE) have been removed since API 23. However, they
+are still required for API 22 and below. Reading and writing the profile is included in the Contacts
+permissions. There is no need to ask for profile permissions at runtime because prior to API 23,
+permissions in the AndroidManifest have to be accepted prior to installation.
+
+### Syncing Data / Sync Adapters
+
+First, it’s good to know the official documentation of sync adapters; 
+https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters
+
+Now, let’s ingest the official docs… Data belonging to a RawContact that is associated with a Google 
+account will be available anywhere the Google account is used; in any Android or iOS device, a web 
+browser, etc… Data is synced by Google’s sync adapters to and from their remote servers. Syncing 
+depends on the account sync settings, which can be configured in the native system settings app and 
+possibly through some remote configuration.
+
+This library does not provide any sync adapters. Instead, it relies on existing sync adapters to do 
+the syncing. Sync adapters and syncing are really out of scope of this library. Syncing is its own 
+thing that typically happens outside of an application UI. This library is focused on reading and 
+writing native and custom data to and from the local database. Syncing the local database to and 
+from a remote service is a different story altogether =)
+
+### Custom Data / MimeTypes
+
+First, it’s good to know the official documentation of custom data rows; 
+https://developer.android.com/guide/topics/providers/contacts-provider#CustomData
+
+Now, let’s ingest the official docs… Custom mimetypes do not belong to the native Contacts Provider 
+mimetype set (e.g. address, email, phone, etc). The Contacts Provider allows for the creation of 
+new / custom mimetypes. This is especially useful for other apps (Google Contacts, Facebook, 
+Twitter, WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
+
+Custom data are NOT synced, including those that belong to RawContacts that are associated with an 
+Account. Custom sync adapters are required to sync custom data. This library currently does NOT 
+provide custom sync adapters to sync custom data!
+
+Custom data from other apps such as Facebook, Twitter, WhatsApp, etc may or may not be synced. It 
+all depends on those applications and their custom sync adapters (if they have any) and sync settings.
+
+For insight on how aforementioned social media services may be syncing their data, read through the 
+official documentation; https://developer.android.com/guide/topics/providers/contacts-provider#SocialStream
+
+### Unused ContactsContract Stuff
+
+We are currently not utilizing these things because I haven't found usages of them while using the
+native Contacts app. They are probably working behind the scenes but until we find uses for these,
+let's leave it out because [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it).
+
+- `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
+    - Might be useful to add this for `SHOULD_SYNC` and `UNGROUPED_VISIBLE`.
+- `ContactsColumns.IN_VISIBLE_GROUP` + `Groups.GROUP_VISIBLE`. Flag indicating if the contacts
+   belonging to this group should be visible in any user interface.
+
+## Java Support
+
+This library is intended to be Java-friendly. The policy is that we should attempt to write 
+Java-friendly code that does not increase lines of code by much or add external dependencies to 
+cater exclusively to Java users.
+
+## Creating Entities &amp; data class
+
+First, consumers are not allowed to create immutable entities. Those must come from the API itself
+to ensure data integrity. Whether or not we will change this in the future is debatable =)
+
+Consumers are able to set read-only and private or internal variables though because all `Entity` 
+implementations are data classes. Data classes provide a `copy` function that allows for setting any
+property no matter their visibility and even if the constructor is private. As a matter of fact, 
+setting the constructor of a `data class` as `private` gives this warning by Android Studio: 
+&quot;Private data class constructor is exposed via the 'copy' method.
+
+There is currently no way to disable the `copy` function of data classes (that I know of). The only
+thing we can do is to provide documentation to consumers, insisting against the use of the `copy`
+method as it may lead to unwanted side effects when updating and deleting contacts.
+
+&gt; We could just use regular classes instead of data classes but entities should be data classes
+&gt; because it is what they are (know what I mean?!). Also, I'd hate to have to generate equals and
+&gt; hashcode functions for them, which will make the code harder to maintain. Though, we might do this
+&gt; anyways at some point if we want to make it possible for a mutable entity to equal an immutable
+&gt; entity. Time will tell =)
+&gt; FIXME? Hide / disable data class `copy` function if kotlin ever allows it. 
+&gt; https://discuss.kotlinlang.org/t/data-class-copy-visibility-modifier/19746
+
+## Immutable vs Mutable Entities
+
+This library provides **true immutability** for immutable entities.
+
+Take a look at the current (simplified) hierarchy;
+
+```kotlin
+sealed interface ContactEntity {
+    val rawContacts: List&lt;RawContactEntity&gt;
+}
+data class Contact(
+    override val rawContacts: List&lt;RawContact&gt;
+) : ContactEntity
+data class MutableContact(
+    override val rawContacts: List&lt;MutableRawContact&gt;
+) : ContactEntity
+
+sealed interface RawContactEntity
+data class RawContact(
+    val addresses: List&lt;Address&gt;
+) : RawContactEntity
+data class MutableRawContact(
+    val addresses: MutableList&lt;MutableAddress&gt;
+) : RawContactEntity
+
+data class Address(
+    val formattedAddress: String?
+)
+data class MutableAddress(
+    var formattedAddress: String?
+)
+</code></pre>
+<blockquote>
+<p>Note the use of <code>sealed class</code> is to prevent consumers from defining their own entities. This
+restriction may or may not change in the future.</p>
+</blockquote>
+<p>Notice that there is nothing mutable in the immutable <code>Contact</code>. Everything are <code>val</code>s and the data
+structures used (i.e. <code>RawContact</code>, <code>Address</code>, and <code>List</code>) are all immutable. This provides
+consumers 100% confidence that immutable entities are not mutable. They will not change or mutate
+in any way. Once they are constructed, they will always remain the same.</p>
+<p>Why immutability is so important will not be covered in this dev notes because it would be too big
+(that's what she said) and there are blogs and books written about this. One of the most important
+advantages of immutability is that it is thread-safe. Immutable instances can be used in several
+different threads without the need for synchronization and worries about deadlocks. In other words,
+they are thread-safe and faster than the mutable version.</p>
+<p>The current structure also allows consumers to be able to distinguish between immutable and mutable
+entities exhaustively. E.G.</p>
+<pre><code class="language-kotlin">fun doSomethingAndReturn(contact: ContactEntity) = when (contact) {
+    is Contact -&gt; {}
+    is MutableContact -&gt; {}
+}
+</code></pre>
+<blockquote>
+<p>Note that the <strong>mutable entities provided in this library are NOT thread-safe</strong>. Consumers will
+have to perform their own synchronizations if they want to use and mutate mutable entities in
+multi-threaded scenarios.</p>
+</blockquote>
+<h3 id="the-cost-of-the-current-immutability-implementation">The cost of the current immutability implementation<a class="headerlink" href="#the-cost-of-the-current-immutability-implementation" title="Permanent link">&para;</a></h3>
+<p>The cost of implementing true immutability is more lines of code. Notice that the <code>MutableContact</code>
+does not inherit from <code>Contact</code>. The same goes for the other entities. This leads to having to write
+seemingly duplicate code when writing functions and extensions.</p>
+<p>// FIXME? Furthermore, equality between immutable and mutable entities are not yet implemented. This
+means that <code>Contact("john") == MutableContact("john")</code> will return false even though their
+underlying contents are the same. This can be fixed by overriding the equals and hashcode functions
+of all entities. However, that is a lot more code that I would like to avoid, which is why I'm
+using <code>data class</code> for all entities in the first place! This may change in the future if the
+community really wants to change it =)</p>
+<p>On a side note, the same cost is incurred by Kotlin's standard libs. For example, notice that
+<code>AbstractMutableList</code> does not inherit from and is completely separate from <code>AbstractList</code>. I'm sure
+stdlib devs also had to write seemingly duplicate code in implementations of the <code>List</code> interface.</p>
+<h3 id="avoiding-the-cost-shortcuts-and-pitfalls">Avoiding the cost... Shortcuts and pitfalls.<a class="headerlink" href="#avoiding-the-cost-shortcuts-and-pitfalls" title="Permanent link">&para;</a></h3>
+<p>One thing that may come to mind in attempts to reduce lines of seemingly duplicate code is to have
+just a mutable implementation of an immutable declaration. For example, we can restructure the
+hierarchy to;</p>
+<pre><code class="language-kotlin">sealed interface Contact {
+    val rawContacts: List&lt;RawContact&gt;
+}
+data class MutableContact(
+    override val rawContacts: List&lt;MutableRawContact&gt;
+) : Contact
+
+sealed interface RawContact {
+    val addresses: List&lt;Address&gt;
+}
+data class MutableRawContact(
+    override var addresses: MutableList&lt;MutableAddress&gt;
+) : RawContact
+
+sealed interface Address {
+    val formattedAddress: String?
+}
+data class MutableAddress(
+    override var formattedAddress: String?
+) : Address
+</code></pre>
+<p>Notice that there is a non-concrete declaration (i.e. <code>Contact</code>, <code>RawContact</code>, and <code>Address</code>) and
+just one concrete implementation (i.e. <code>MutableContact</code>, <code>MutableRawContact</code>, and <code>MutableAddress</code>).</p>
+<blockquote>
+<p>Note that a <code>val</code> declaration can be overridden by a <code>var</code>. Keep in mind that <code>val</code> only requires
+getters whereas <code>var</code> requires both getters and setters. Therefore, a <code>var</code> cannot be overridden
+by a <code>val</code>. Or maybe there is a different reason Kotlin imposes this restriction =)
+On a similar note, the <code>List</code> interface can be overridden to a <code>MutableList</code>.</p>
+</blockquote>
+<p>We, as API contributors, can avoid having to write seemingly duplicate functions and extensions!</p>
+<p>However! Can you see what's wrong with this setup? If we do this, we would either be deceiving
+consumers to think that the instances of "immutable" class signatures (i.e. <code>Contact</code>, <code>RawContact</code>,
+and <code>Address</code>) are actually immutable OR we would have to let consumers know that the API does not
+really provide true immutability. Neither option is ideal (nor is it acceptable IMO).</p>
+<p>Consumers would have a reference to a <code>Contact</code>, which they may assume is immutable because of the
+usage of <code>val</code> instead of <code>var</code>, but in actuality the underlying implementation is mutable... This
+could be a cause of really hard to find bugs in multi-threaded usage. Consumers may use <code>Contact</code>
+with the assumption that it is immutable only to find that it can actually be mutated! We could
+fix this by just making the mutable implementation thread-safe but since that is the only
+implementation, consumers will be forced to use thread-safe code when they don't have to thereby
+negatively affecting performance.</p>
+<p>Keep in mind that thread safety is only one of several reasons for immutability. Those other
+reasons will be violated too.</p>
+<p>Consumers will be shocked if they ever do the following or something similar.</p>
+<pre><code class="language-kotlin">fun x(contact: Contact) = when(contact) {
+    is MutableContact -&gt; {} // this is always true
+    is Contact -&gt; {} // this is always true
+}
+</code></pre>
+<p>In any case, I have to admit, it is a nice trick that would save API contributors time. But that's
+just it! It's just a trick. A shortcut. A nice little time save at the cost of integrity. It is not
+worth it (IMO).</p>
+<h2 id="why-not-add-android-x-support-library-dependencies">Why Not Add Android X / Support Library Dependencies?<a class="headerlink" href="#why-not-add-android-x-support-library-dependencies" title="Permanent link">&para;</a></h2>
+<p>I want to keep the dependency list of this library to a minimum. The Contacts Provider is native to
+Android since the beginning. I want to honor that fact by avoiding adding dependencies here. I made
+a bit of an exception by adding the <a href="https://github.com/Karumi/Dexter">Dexter library</a> for permissions handling for the permissions
+modules (not in the core modules). I'm tempted to remove the Dexter dependency and implement 
+permissions handling myself because Dexter brings in a lot of other dependencies with it. However,
+it is not part of the core module so I'm able to live with this.</p>
+<p>TODO Remove/replace Dexter. It is no longer being maintained.</p>
+<p>Keeping dependencies to a minimum is just a small challenge I made up. We will see how long it can
+last!</p>
+<p>I left comments all over the code on when an androidx dependency may be useful. The most glaring
+example of this is @WorkerThread. Even with that, I'll hold off on adding the androidx annotation
+lib. I think we can all be consenting adults =)</p>
+<p>If the community strongly desires the addition of these support libs, then the community will win =)</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../contributing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Contributing" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Contributing
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5413a266.min.js"></script>
+      
+    
+  </body>
+</html>

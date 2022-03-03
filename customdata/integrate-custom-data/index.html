@@ -1,0 +1,2733 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Android Contacts API Library for Kotlin and Java.">
+      
+      
+        <meta name="author" content="Vandolf Estrellado">
+      
+      
+        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/customdata/integrate-custom-data/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.4">
+    
+    
+      
+        <title>Integrate custom data - Contacts, Reborn</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#ff6e42">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="deep-orange" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#integrate-custom-data" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Contacts, Reborn" class="md-header__button md-logo" aria-label="Contacts, Reborn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 0H4v2h16V0M4 24h16v-2H4v2M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-8 2.75A2.25 2.25 0 0 1 14.25 9 2.25 2.25 0 0 1 12 11.25 2.25 2.25 0 0 1 9.75 9 2.25 2.25 0 0 1 12 6.75M17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Contacts, Reborn
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Integrate custom data
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/vestrel00/contacts-android/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    vestrel00/contacts-android
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Contacts, Reborn" class="md-nav__button md-logo" aria-label="Contacts, Reborn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 0H4v2h16V0M4 24h16v-2H4v2M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-8 2.75A2.25 2.25 0 0 1 14.25 9 2.25 2.25 0 0 1 12 11.25 2.25 2.25 0 0 1 9.75 9 2.25 2.25 0 0 1 12 6.75M17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/></svg>
+
+    </a>
+    Contacts, Reborn
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/vestrel00/contacts-android/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    vestrel00/contacts-android
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Setup
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Setup" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Setup
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/setup-contacts-api/" class="md-nav__link">
+        Contacts API Setup
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Entities
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Entities" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Entities
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-api-entities/" class="md-nav__link">
+        API entities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-blank-contacts/" class="md-nav__link">
+        Blank contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-blank-data/" class="md-nav__link">
+        Blank data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-local-contacts/" class="md-nav__link">
+        Local (device-only) contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-contact-lookup-key/" class="md-nav__link">
+        Contact lookup key vs ID
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/sync-contact-data/" class="md-nav__link">
+        Sync contact data across devices
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/redact-apis-and-entities/" class="md-nav__link">
+        Redact entities and API input and output in production
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Basics
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Basics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/query-contacts/" class="md-nav__link">
+        Query contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/query-contacts-advanced/" class="md-nav__link">
+        Query contacts (advanced)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/insert-contacts/" class="md-nav__link">
+        Insert contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/update-contacts/" class="md-nav__link">
+        Update contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/delete-contacts/" class="md-nav__link">
+        Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Data" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/query-data-sets/" class="md-nav__link">
+        Query specific data kinds
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/insert-data-sets/" class="md-nav__link">
+        Insert data into new or existing contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/update-data-sets/" class="md-nav__link">
+        Update existing sets of data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/delete-data-sets/" class="md-nav__link">
+        Delete existing sets of data
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Custom data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Custom data" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Custom data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-custom-data/" class="md-nav__link">
+        Query custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../insert-custom-data/" class="md-nav__link">
+        Insert custom data into new or existing contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../update-custom-data/" class="md-nav__link">
+        Update custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../delete-custom-data/" class="md-nav__link">
+        Delete custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Integrate custom data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Integrate custom data
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-define-the-mimetype" class="md-nav__link">
+    1. Define the mimetype
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-define-the-entities" class="md-nav__link">
+    2. Define the entities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-define-the-fields" class="md-nav__link">
+    3. Define the fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-implement-the-cursor" class="md-nav__link">
+    4. Implement the cursor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-implement-the-mapper" class="md-nav__link">
+    5. Implement the mapper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-implement-the-operation" class="md-nav__link">
+    6. Implement the operation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-define-the-count-restriction" class="md-nav__link">
+    7. Define the count restriction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-define-rawcontact-getters-and-setters" class="md-nav__link">
+    8. Define RawContact getters and setters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-define-contact-getters-and-setters" class="md-nav__link">
+    9. Define Contact getters and setters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-define-exceptions" class="md-nav__link">
+    10. Define exceptions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-implement-the-field-mapper" class="md-nav__link">
+    11. Implement the field mapper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-define-the-data-query-function" class="md-nav__link">
+    12. Define the data query function
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-define-the-custom-data-entry" class="md-nav__link">
+    13. Define the custom data entry
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-define-the-custom-data-entry-registration" class="md-nav__link">
+    14. Define the custom data entry registration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-register-your-custom-data-with-the-contacts-api-instance" class="md-nav__link">
+    15. Register your custom data with the Contacts API instance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-use-your-custom-data-in-queries-inserts-updates-and-deletes" class="md-nav__link">
+    16. Use your custom data in queries, inserts, updates, and deletes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consider-adding-your-custom-data-to-this-library" class="md-nav__link">
+    Consider adding your custom data to this library
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-data-without-sync-adapters-will-not-be-synced" class="md-nav__link">
+    Custom data without sync adapters will not be synced
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#displaying-your-custom-data-in-other-contacts-apps" class="md-nav__link">
+    Displaying your custom data in other Contacts apps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-limitations" class="md-nav__link">
+    Summary of limitations
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-custom-data-from-other-apps/" class="md-nav__link">
+        Integrate custom data from other apps
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-googlecontacts-custom-data/" class="md-nav__link">
+        Integrate the Google Contacts custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-gender-custom-data/" class="md-nav__link">
+        Integrate the Gender custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-handlename-custom-data/" class="md-nav__link">
+        Integrate the Handle Name custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-pokemon-custom-data/" class="md-nav__link">
+        Integrate the Pokemon custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-rpg-custom-data/" class="md-nav__link">
+        Integrate the RPG custom data
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Groups
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Groups" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Groups
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/query-groups/" class="md-nav__link">
+        Query groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/insert-groups/" class="md-nav__link">
+        Insert groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/update-groups/" class="md-nav__link">
+        Update groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/delete-groups/" class="md-nav__link">
+        Delete groups
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Profile
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Profile" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Profile
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/query-profile/" class="md-nav__link">
+        Query device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/insert-profile/" class="md-nav__link">
+        Insert device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/update-profile/" class="md-nav__link">
+        Update device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/delete-profile/" class="md-nav__link">
+        Delete device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          Accounts
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Accounts" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Accounts
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../accounts/query-accounts/" class="md-nav__link">
+        Query for Accounts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
+        Associate a local RawContact to an Account
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Blocked numbers
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Blocked numbers" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Blocked numbers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/about-blocked-numbers/" class="md-nav__link">
+        About blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/query-blocked-numbers/" class="md-nav__link">
+        Query blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/insert-blocked-numbers/" class="md-nav__link">
+        Insert blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/delete-blocked-numbers/" class="md-nav__link">
+        Delete blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11" type="checkbox" id="__nav_11" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_11">
+          Permissions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Permissions" data-md-level="1">
+        <label class="md-nav__title" for="__nav_11">
+          <span class="md-nav__icon md-icon"></span>
+          Permissions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions/permissions-handling-coroutines/" class="md-nav__link">
+        Permissions handling using coroutines
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12" type="checkbox" id="__nav_12" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_12">
+          Asynchronous work
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Asynchronous work" data-md-level="1">
+        <label class="md-nav__title" for="__nav_12">
+          <span class="md-nav__icon md-icon"></span>
+          Asynchronous work
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../async/async-execution-coroutines/" class="md-nav__link">
+        Execute work outside of the UI thread using coroutines
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_13">
+          UI
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="UI" data-md-level="1">
+        <label class="md-nav__title" for="__nav_13">
+          <span class="md-nav__icon md-icon"></span>
+          UI
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/integrate-rudimentary-contacts-integrated-ui-components/" class="md-nav__link">
+        Integrate rudimentary contacts ui components
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_14">
+          Other
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Other" data-md-level="1">
+        <label class="md-nav__title" for="__nav_14">
+          <span class="md-nav__icon md-icon"></span>
+          Other
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../other/get-set-remove-contact-raw-contact-photo/" class="md-nav__link">
+        Get set remove full-sized and thumbnail contact photos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../other/get-set-clear-contact-raw-contact-options/" class="md-nav__link">
+        Get set Contact options
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../other/get-set-clear-default-data/" class="md-nav__link">
+        Get set clear default Contact data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../other/link-unlink-contacts/" class="md-nav__link">
+        Link unlink Contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../other/convenience-functions/" class="md-nav__link">
+        Convenience functions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_15" type="checkbox" id="__nav_15" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_15">
+          Logging
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Logging" data-md-level="1">
+        <label class="md-nav__title" for="__nav_15">
+          <span class="md-nav__icon md-icon"></span>
+          Logging
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../logging/log-api-input-output/" class="md-nav__link">
+        Log API input and output
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16" type="checkbox" id="__nav_16" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_16">
+          Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Testing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_16">
+          <span class="md-nav__icon md-icon"></span>
+          Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/test-contacts-api/" class="md-nav__link">
+        Contacts API Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_17">
+          Debug
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Debug" data-md-level="1">
+        <label class="md-nav__title" for="__nav_17">
+          <span class="md-nav__icon md-icon"></span>
+          Debug
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debug/debug-contacts-provider-tables/" class="md-nav__link">
+        Debug the Contacts Provider tables
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev-notes/" class="md-nav__link">
+        Developer notes
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-define-the-mimetype" class="md-nav__link">
+    1. Define the mimetype
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-define-the-entities" class="md-nav__link">
+    2. Define the entities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-define-the-fields" class="md-nav__link">
+    3. Define the fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-implement-the-cursor" class="md-nav__link">
+    4. Implement the cursor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-implement-the-mapper" class="md-nav__link">
+    5. Implement the mapper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-implement-the-operation" class="md-nav__link">
+    6. Implement the operation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-define-the-count-restriction" class="md-nav__link">
+    7. Define the count restriction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-define-rawcontact-getters-and-setters" class="md-nav__link">
+    8. Define RawContact getters and setters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-define-contact-getters-and-setters" class="md-nav__link">
+    9. Define Contact getters and setters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-define-exceptions" class="md-nav__link">
+    10. Define exceptions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-implement-the-field-mapper" class="md-nav__link">
+    11. Implement the field mapper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-define-the-data-query-function" class="md-nav__link">
+    12. Define the data query function
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-define-the-custom-data-entry" class="md-nav__link">
+    13. Define the custom data entry
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-define-the-custom-data-entry-registration" class="md-nav__link">
+    14. Define the custom data entry registration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-register-your-custom-data-with-the-contacts-api-instance" class="md-nav__link">
+    15. Register your custom data with the Contacts API instance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-use-your-custom-data-in-queries-inserts-updates-and-deletes" class="md-nav__link">
+    16. Use your custom data in queries, inserts, updates, and deletes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consider-adding-your-custom-data-to-this-library" class="md-nav__link">
+    Consider adding your custom data to this library
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-data-without-sync-adapters-will-not-be-synced" class="md-nav__link">
+    Custom data without sync adapters will not be synced
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#displaying-your-custom-data-in-other-contacts-apps" class="md-nav__link">
+    Displaying your custom data in other Contacts apps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-limitations" class="md-nav__link">
+    Summary of limitations
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/vestrel00/contacts-android/tree/main/docs/customdata/integrate-custom-data.md" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+
+<h1 id="integrate-custom-data">Integrate custom data<a class="headerlink" href="#integrate-custom-data" title="Permanent link">&para;</a></h1>
+<p>If you are looking to integrate custom data from other apps, 
+read <a href="../integrate-custom-data-from-other-apps/">Integrate custom data from other apps</a>.</p>
+<p>If you are looking to create and integrate your own custom data, you are in the right place!</p>
+<p>There are two parts to "integrating custom data";</p>
+<ol>
+<li>Providing create (insert), read (query), update, and delete (CRUD) APIs for custom data 
+   associated with RawContacts.</li>
+<li>Providing sync adapters to sync custom data across devices.</li>
+</ol>
+<p>This library only handles the first part. If you want to sync your custom data, then you need to 
+implement a sync adapter to interface with your remote server. That is out of scope of this library.</p>
+<p>In order to create and integrate your own custom data for use in your own apps, there is a bit of
+boilerplate code that needs to be written. Thankfully none of this stuff is difficult! </p>
+<p>Here are the steps, in chronological order, on how to define and use your own custom data,</p>
+<ol>
+<li>Define the mimetype</li>
+<li>Define the entities</li>
+<li>Define the fields</li>
+<li>Implement the cursor</li>
+<li>Implement the mapper</li>
+<li>Implement the operation</li>
+<li>Define the count restriction</li>
+<li>Define RawContact getters and setters</li>
+<li>Define Contact getters and setters</li>
+<li>Define exceptions</li>
+<li>Implement the field mapper</li>
+<li>Define the data query function</li>
+<li>Define the custom data entry</li>
+<li>Define the custom data entry registration</li>
+<li>Register your custom data with the Contacts API instance</li>
+<li>Use your custom data in queries, inserts, updates, and deletes</li>
+</ol>
+<blockquote>
+<p>Maybe someday someone with code generation experience (or I'll learn how to do it), will create
+annotations and annotation processors to eliminate having to manually write this stuff =)</p>
+</blockquote>
+<p>To help illustrate the above steps, we'll use the <code>HandleName</code> and <code>Gender</code> custom data provided in
+this library's <code>customdata-handlename</code> and <code>customdata-gender</code> respectively as an example.</p>
+<blockquote>
+<p>For more specifics on these custom data, read
+<a href="../integrate-gender-custom-data/">Integrate the gender custom data</a> and
+<a href="../integrate-handlename-custom-data/">Integrate the handle name custom data</a>.</p>
+</blockquote>
+<p>At the bottom of this page, we'll also discuss,</p>
+<ul>
+<li>Consider adding your custom data to this library</li>
+<li>Custom data without sync adapters will not be synced</li>
+<li>Displaying your custom data in other Contacts apps</li>
+<li>Summary of limitations</li>
+</ul>
+<blockquote>
+<p>Some of the code used in these examples are in Kotlin. If you would like a Java version of this
+page, create an issue in GitHub. You are also free to file a pull request with your own page. In
+the event that a Java version of this page is created, this quote block should be replaced with
+a link to that page.</p>
+</blockquote>
+<h2 id="1-define-the-mimetype">1. Define the mimetype<a class="headerlink" href="#1-define-the-mimetype" title="Permanent link">&para;</a></h2>
+<p>The mimetype is a string that describes what kind of data a row in the Data table represents.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">internal object GenderMimeType : MimeType.Custom() {
+
+    // Following Contacts Provider convention of &quot;vnd.android.cursor.item/&lt;package&gt;.&lt;mimetype&gt;&quot;
+    override val value: String = &quot;vnd.android.cursor.item/contacts.entities.custom.gender&quot;
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">internal object HandleNameMimeType : MimeType.Custom() {
+
+    // Following Contacts Provider convention of &quot;vnd.android.cursor.item/&lt;package&gt;.&lt;mimetype&gt;&quot;
+    override val value: String = &quot;vnd.android.cursor.item/contacts.entities.custom.handlename&quot;
+}
+</code></pre>
+<p><strong>Do not change the mimetype value!</strong> If you have already deployed apps to production that use these
+mimetype values, then changing them could result in "data loss". Old rows in the Data table will not
+be compatible if the mimetype value changes. You can certainly perform migrations by creating a new
+custom data altogether and migrating your old custom data to your new one.</p>
+<p><strong>Do not use built-in mimetypes!</strong> The Contacts Provider has predefined the mimetypes for all of the
+common data kinds it supports (e.g. email). Make sure that your custom data does not use any of
+those. You can take a look at built-in mimetypes in <code>contacs.core.entities.MimeType.kt</code>. But, here
+they are for your convenience =)</p>
+<table>
+<thead>
+<tr>
+<th><strong>Builtin data kind</strong></th>
+<th><strong>mimetype</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Address</td>
+<td>"vnd.android.cursor.item/postal-address_v2"</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>"vnd.android.cursor.item/email_v2"</td>
+</tr>
+<tr>
+<td>Event</td>
+<td>"vnd.android.cursor.item/contact_event"</td>
+</tr>
+<tr>
+<td>GroupMembership</td>
+<td>"vnd.android.cursor.item/group_membership"</td>
+</tr>
+<tr>
+<td>Im</td>
+<td>"vnd.android.cursor.item/im"</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>"vnd.android.cursor.item/name"</td>
+</tr>
+<tr>
+<td>Nickname</td>
+<td>"vnd.android.cursor.item/nickname"</td>
+</tr>
+<tr>
+<td>Note</td>
+<td>"vnd.android.cursor.item/note"</td>
+</tr>
+<tr>
+<td>Organization</td>
+<td>"vnd.android.cursor.item/organization"</td>
+</tr>
+<tr>
+<td>Phone</td>
+<td>"vnd.android.cursor.item/phone_v2"</td>
+</tr>
+<tr>
+<td>Photo</td>
+<td>"vnd.android.cursor.item/photo"</td>
+</tr>
+<tr>
+<td>Relation</td>
+<td>"vnd.android.cursor.item/relation"</td>
+</tr>
+<tr>
+<td>SipAddress</td>
+<td>"vnd.android.cursor.item/sip_address"</td>
+</tr>
+<tr>
+<td>Website</td>
+<td>"vnd.android.cursor.item/website"</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-define-the-entities">2. Define the entities<a class="headerlink" href="#2-define-the-entities" title="Permanent link">&para;</a></h2>
+<p>The entities are the main code that users of your custom data will be exposed to. The properties
+model/represent the fields/columns in the Data table.</p>
+<p>Due to the length of the <code>Gender.kt</code> and <code>HandleName.kt</code> files, I will not be copy-pasting them
+here. Please take a look at those files instead.</p>
+<p>A few things to note,</p>
+<ul>
+<li>Either inherit from <code>CustomDataEntity</code> or <code>CustomDataEntityWithTypeAndLabel</code>.</li>
+<li>Implement the <code>mimeType</code> using the mimetype you defined in the previous step.</li>
+<li>Implement the <code>isBlank</code> using the <code>contacts.core.entities.propertiesAreAllNullOrBlank</code> function.<ul>
+<li>Put the properties that you consider to be important such that if they are null, then the data
+  is useless (blank).</li>
+</ul>
+</li>
+<li>Define an immutable class so that instances can be returned on queries.<ul>
+<li>These would also need to inherit from <code>ExistingCustomDataEntity</code> and
+  <code>ImmutableCustomDataEntityWithMutableType</code> (or
+  <code>ImmutableCustomDataEntityWithNullableMutableType</code>).</li>
+<li>All properties and types defined here must be immutable (<code>val</code>).</li>
+</ul>
+</li>
+<li>Define a mutable class so that instances can be updated.<ul>
+<li>These would also need to inherit from <code>ExistingCustomDataEntity</code>.</li>
+<li>Only modifiable fields should have properties and types defined as mutable (<code>var</code>).</li>
+</ul>
+</li>
+<li>Define a "new" class so that instances can be inserted.<ul>
+<li>These would also need to inherit from <code>NewCustomDataEntity</code>.</li>
+<li>Only modifiable fields should have properties and types defined as mutable (<code>var</code>).</li>
+</ul>
+</li>
+<li>Properties that map to your custom data fields should be nullable (<code>?</code>).</li>
+<li>The following properties should always be immutable (<code>val</code>);<ul>
+<li><code>id</code>, <code>rawContactId</code>, <code>contactId</code>, <code>isPrimary</code>, <code>isSuperPrimary</code>, and <code>isRedacted</code>.</li>
+</ul>
+</li>
+<li>Be mindful of what properties should be redacted when implementing the <code>redactedCopy</code> function.</li>
+<li>All entity class must implement <code>Parecelable</code>.</li>
+</ul>
+<h2 id="3-define-the-fields">3. Define the fields<a class="headerlink" href="#3-define-the-fields" title="Permanent link">&para;</a></h2>
+<p>Fields (or columns) represent (or map to) one of the properties you defined in the previous step.
+These are used in queries, inserts, and update operations.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">data class GenderField internal constructor(private val columnName: ColumnName) :
+    AbstractCustomDataField(columnName) {
+
+    override val customMimeType: MimeType.Custom = GenderMimeType
+}
+
+object GenderFields : AbstractCustomDataFieldSet&lt;GenderField&gt;() {
+
+    @JvmField
+    val Type = GenderField(ColumnName.TYPE)
+
+    @JvmField
+    val Label = GenderField(ColumnName.LABEL)
+
+    override val all: Set&lt;GenderField&gt; = setOf(Type, Label)
+    override val forMatching: Set&lt;GenderField&gt; = emptySet()
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">data class HandleNameField internal constructor(private val columnName: ColumnName) :
+    AbstractCustomDataField(columnName) {
+
+    override val customMimeType: MimeType.Custom = HandleNameMimeType
+}
+
+object HandleNameFields : AbstractCustomDataFieldSet&lt;HandleNameField&gt;() {
+
+    @JvmField
+    val Handle = HandleNameField(ColumnName.DATA)
+
+    override val all: Set&lt;HandleNameField&gt; = setOf(Handle)
+    override val forMatching: Set&lt;HandleNameField&gt; = setOf(Handle)
+}
+</code></pre>
+<p>A few things to note,</p>
+<ul>
+<li>You need to define a <code>AbstractCustomDataField</code> and a <code>AbstractCustomDataFieldSet</code>.</li>
+<li>Annotate your field instances with <code>@JvmField</code> to make it more accessible for Java users.<ul>
+<li>This is only helpful if you are writing code for other people to use.</li>
+</ul>
+</li>
+<li>Carefully choose what to put in <code>all</code> and <code>forMatching</code>.<ul>
+<li>If you are using <code>ColumnName.BLOB</code>, do not put it in <code>all</code> or <code>forMatching</code>! For more info,
+  read the in-code documentation on it.</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-implement-the-cursor">4. Implement the cursor<a class="headerlink" href="#4-implement-the-cursor" title="Permanent link">&para;</a></h2>
+<p>Cursors read the values from the Data table and convert them into the types you want (e.g. String).</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">internal class GenderDataCursor(cursor: Cursor, includeFields: Set&lt;GenderField&gt;) :
+    AbstractCustomDataCursor&lt;GenderField&gt;(cursor, includeFields) {
+
+    val type: GenderEntity.Type? by type(
+        GenderFields.Type,
+        typeFromValue = GenderEntity.Type::fromValue
+    )
+
+    val label: String? by string(GenderFields.Label)
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">internal class HandleNameDataCursor(cursor: Cursor, includeFields: Set&lt;HandleNameField&gt;) :
+    AbstractCustomDataCursor&lt;HandleNameField&gt;(cursor, includeFields) {
+
+    val handle: String? by string(HandleNameFields.Handle)
+}
+</code></pre>
+<p>A few things to note,</p>
+<ul>
+<li>Inheritors of <code>AbstractCustomDataCursor</code> have access to several regular and delegate functions
+  that extract data. All of them are defined in <code>contacts.core.entities.cursor.AbstractEntityCursor</code>
+  .</li>
+<li>If you are using Java, you are only able to use the regular functions.</li>
+<li>The delegate functions are prettier but use Kotlin reflection, which could slightly affect runtime
+  performance.</li>
+<li>You can either extract nullable or non-nullable values using these functions.</li>
+</ul>
+<h2 id="5-implement-the-mapper">5. Implement the mapper<a class="headerlink" href="#5-implement-the-mapper" title="Permanent link">&para;</a></h2>
+<p>Mappers use the cursors implemented in the previous step in order to create instances of your custom
+data entities.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">internal class GenderMapperFactory :
+    AbstractCustomDataEntityMapper.Factory&lt;GenderField, GenderDataCursor, Gender&gt; {
+
+    override fun create(
+        cursor: Cursor, includeFields: Set&lt;GenderField&gt;
+    ): AbstractCustomDataEntityMapper&lt;GenderField, GenderDataCursor, Gender&gt; =
+        GenderMapper(GenderDataCursor(cursor, includeFields))
+}
+
+private class GenderMapper(cursor: GenderDataCursor) :
+    AbstractCustomDataEntityMapper&lt;GenderField, GenderDataCursor, Gender&gt;(cursor) {
+
+    override fun value(cursor: GenderDataCursor) = Gender(
+        id = cursor.dataId,
+        rawContactId = cursor.rawContactId,
+        contactId = cursor.contactId,
+
+        isPrimary = cursor.isPrimary,
+        isSuperPrimary = cursor.isSuperPrimary,
+
+        type = cursor.type,
+        label = cursor.label,
+
+        isRedacted = false
+    )
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">internal class HandleNameMapperFactory :
+    AbstractCustomDataEntityMapper.Factory&lt;HandleNameField, HandleNameDataCursor, HandleName&gt; {
+
+    override fun create(
+        cursor: Cursor, includeFields: Set&lt;HandleNameField&gt;
+    ): AbstractCustomDataEntityMapper&lt;HandleNameField, HandleNameDataCursor, HandleName&gt; =
+        HandleNameMapper(HandleNameDataCursor(cursor, includeFields))
+}
+
+private class HandleNameMapper(cursor: HandleNameDataCursor) :
+    AbstractCustomDataEntityMapper&lt;HandleNameField, HandleNameDataCursor, HandleName&gt;(cursor) {
+
+    override fun value(cursor: HandleNameDataCursor) = HandleName(
+        id = cursor.dataId,
+        rawContactId = cursor.rawContactId,
+        contactId = cursor.contactId,
+
+        isPrimary = cursor.isPrimary,
+        isSuperPrimary = cursor.isSuperPrimary,
+
+        handle = cursor.handle,
+
+        isRedacted = false
+    )
+}
+</code></pre>
+<p>A few things to note,</p>
+<ul>
+<li>This requires definitions and implementations done in the previous steps.<ul>
+<li>If you are having compile-time issues at this point, make sure that you did not skip a step!</li>
+</ul>
+</li>
+<li>Ensure that <code>isRedacted</code> is set to <code>false</code> (unless you are already performing the redaction) here.</li>
+</ul>
+<h2 id="6-implement-the-operation">6. Implement the operation<a class="headerlink" href="#6-implement-the-operation" title="Permanent link">&para;</a></h2>
+<p>Operations are used for inserts and updates from in-memory instances of your entities to the
+database.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">internal class GenderOperationFactory :
+    AbstractCustomDataOperation.Factory&lt;GenderField, GenderEntity&gt; {
+
+    override fun create(
+        isProfile: Boolean, includeFields: Set&lt;GenderField&gt;
+    ): AbstractCustomDataOperation&lt;GenderField, GenderEntity&gt; =
+        GenderOperation(isProfile, includeFields)
+}
+
+private class GenderOperation(isProfile: Boolean, includeFields: Set&lt;GenderField&gt;) :
+    AbstractCustomDataOperation&lt;GenderField, GenderEntity&gt;(isProfile, includeFields) {
+
+    override val mimeType: MimeType.Custom = GenderMimeType
+
+    override fun setCustomData(
+        data: GenderEntity, setValue: (field: GenderField, value: Any?) -&gt; Unit
+    ) {
+        setValue(GenderFields.Type, data.type?.value)
+        setValue(GenderFields.Label, data.label)
+    }
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">internal class HandleNameOperationFactory :
+    AbstractCustomDataOperation.Factory&lt;HandleNameField, HandleNameEntity&gt; {
+
+    override fun create(
+        isProfile: Boolean, includeFields: Set&lt;HandleNameField&gt;
+    ): AbstractCustomDataOperation&lt;HandleNameField, HandleNameEntity&gt; =
+        HandleNameOperation(isProfile, includeFields)
+}
+
+private class HandleNameOperation(isProfile: Boolean, includeFields: Set&lt;HandleNameField&gt;) :
+    AbstractCustomDataOperation&lt;HandleNameField, HandleNameEntity&gt;(isProfile, includeFields) {
+
+    override val mimeType: MimeType.Custom = HandleNameMimeType
+
+    override fun setCustomData(
+        data: HandleNameEntity, setValue: (field: HandleNameField, value: Any?) -&gt; Unit
+    ) {
+        setValue(HandleNameFields.Handle, data.handle)
+    }
+}
+</code></pre>
+<p>A few things to note,</p>
+<ul>
+<li>You just need to use your custom data fields and the corresponding data property it maps to in
+  the <code>setValue</code> function provided in the <code>setCustomData</code> function.</li>
+</ul>
+<h2 id="7-define-the-count-restriction">7. Define the count restriction<a class="headerlink" href="#7-define-the-count-restriction" title="Permanent link">&para;</a></h2>
+<p>The count restriction defines whether a RawContact can have 0 or 1 of your custom data or if it can
+have 0, 1, or more.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">/**
+ * A RawContact may have at most 1 gender.
+ */
+internal val GENDER_COUNT_RESTRICTION = CustomDataCountRestriction.AT_MOST_ONE
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">/**
+ * A RawContact may have 0, 1, or more handle names.
+ */
+internal val HANDLE_NAME_COUNT_RESTRICTION = CustomDataCountRestriction.NO_LIMIT
+</code></pre>
+<h2 id="8-define-rawcontact-getters-and-setters">8. Define RawContact getters and setters<a class="headerlink" href="#8-define-rawcontact-getters-and-setters" title="Permanent link">&para;</a></h2>
+<p>In order for you or your consumers to be able to get and set your custom data in instances of
+RawContacts they belong to, you must define a set of getters and setters.</p>
+<p>Due to the length of the <code>RawContactGender.kt</code> and <code>RawContactHandleName.kt</code> files, I will not be
+copy-pasting them here. Please take a look at those files instead.</p>
+<p>A few things to note,</p>
+<ul>
+<li>For getters, use the <code>Contacts.customDataRegistry.customDataEntitiesFor</code> function to extract the
+  custom data instance(s) for the RawContact with your custom mimetype.<ul>
+<li>Consider returning <code>Sequence</code> for the getters for optimizations in Kotlin.</li>
+</ul>
+</li>
+<li>For setters use,<ul>
+<li>the <code>Contacts.customDataRegistry.putCustomDataEntityInto</code> function to set the custom data
+  instance into the RawContact.</li>
+<li>the <code>Contacts.customDataRegistry.removeAllCustomDataEntityFrom</code> function to remove the custom
+  data instance from the RawContact.</li>
+</ul>
+</li>
+<li>Define getters and setters for <code>RawContact</code>, <code>MutableRawContact</code>, and <code>NewRawContact</code>.<ul>
+<li>Ensure to match the type of RawContact with the type of the custom data. For example,<ul>
+<li><code>RawContact</code> -&gt; <code>Gender</code>, <code>HandleName</code></li>
+<li><code>MutableRawContact</code> -&gt; <code>MutableGenderEntity</code>, <code>MutableHandleNameEntity</code><ul>
+<li>When setting/adding a new custom data entity,
+  <code>MutableRawContact</code> -&gt; <code>NewGender</code>, <code>NewHandleName</code></li>
+</ul>
+</li>
+<li><code>NewRawContact</code> -&gt; <code>NewGender</code>, <code>NewHandleName</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Setters for custom data with count restriction of <code>AT_MOST_ONE</code> should use <code>setXXX</code> for the 
+  function name.</li>
+<li>Setters for custom data with count restriction of <code>NO_LIMIT</code> should use <code>addXXX</code> and <code>removeXXX</code> 
+  for the function names.</li>
+</ul>
+<h2 id="9-define-contact-getters-and-setters">9. Define Contact getters and setters<a class="headerlink" href="#9-define-contact-getters-and-setters" title="Permanent link">&para;</a></h2>
+<p>Defining getters and setters for RawContacts is the bare minimum. However, if you want to add some
+convenience functions so that you can access RawContact getters and setters from a Contact, then you
+are free (and recommended) to do so.</p>
+<p>Due to the length of the <code>ContactGender.kt</code> and <code>ContactHandleName.kt</code> files, I will not be
+copy-pasting them here. Please take a look at those files instead.</p>
+<p>A few things to note,</p>
+<ul>
+<li>For getters, consider returning <code>Sequence</code> for optimizations in Kotlin.</li>
+<li>For setters, use the first RawContact (in case there are more than one).</li>
+<li>Consider returning <code>Sequence</code> for the getters for optimizations in Kotlin.</li>
+<li>Define getters and setters for <code>Contact</code> and <code>MutableContact</code>.<ul>
+<li>Ensure to match the type of Contact with the type of the custom data. For example,<ul>
+<li><code>Contact</code> -&gt; <code>Gender</code>, <code>HandleName</code></li>
+<li><code>MutableContact</code> -&gt; <code>MutableGenderEntity</code>, <code>MutableHandleNameEntity</code><ul>
+<li>When setting/adding a new custom data entity,
+  <code>MutableContact</code> -&gt; <code>NewGender</code>, <code>NewHandleName</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="10-define-exceptions">10. Define exceptions<a class="headerlink" href="#10-define-exceptions" title="Permanent link">&para;</a></h2>
+<p>Whether you are building this custom data just for your own app or for others to use, it is useful
+to define a subclass of <code>CustomDataException</code> to help identify errors in certain custom data
+integrations.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">class GenderDataException(message: String) : CustomDataException(message)
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">class HandleNameDataException(message: String) : CustomDataException(message)
+</code></pre>
+<h2 id="11-implement-the-field-mapper">11. Implement the field mapper<a class="headerlink" href="#11-implement-the-field-mapper" title="Permanent link">&para;</a></h2>
+<p>A field mapper maps your custom data field to the corresponding property in your custom data entity.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">internal class GenderFieldMapper : CustomDataFieldMapper&lt;GenderField, GenderEntity&gt; {
+
+    override fun valueOf(field: GenderField, customDataEntity: GenderEntity): String? =
+        when (field) {
+            GenderFields.Type -&gt; customDataEntity.type?.ordinal?.toString()
+            GenderFields.Label -&gt; customDataEntity.label
+            else -&gt; throw GenderDataException(&quot;Unrecognized gender field $field&quot;)
+        }
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">internal class HandleNameFieldMapper : CustomDataFieldMapper&lt;HandleNameField, HandleNameEntity&gt; {
+
+    override fun valueOf(field: HandleNameField, customDataEntity: HandleNameEntity): String? =
+        when (field) {
+            HandleNameFields.Handle -&gt; customDataEntity.handle
+            else -&gt; throw HandleNameDataException(&quot;Unrecognized handle name field $field&quot;)
+        }
+}
+</code></pre>
+<p>A few things to note,</p>
+<ul>
+<li>You should throw an instance of your custom data exception in the case that there is no mapping
+  from a field to a property. This ensures that your custom data integration will fail and fail-fast
+  in case you forget to add a mapping to a property.</li>
+</ul>
+<h2 id="12-define-the-data-query-function">12. Define the data query function<a class="headerlink" href="#12-define-the-data-query-function" title="Permanent link">&para;</a></h2>
+<p>These (extension) functions on the <code>DataQueryFactory</code> allows you and your consumers to use the
+<code>DataQuery</code> API to specifically query for only your custom data kind instead of Contacts.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">fun DataQueryFactory.genders(): DataQuery&lt;GenderField, GenderFields, Gender&gt; =
+    customData(GenderMimeType)
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">fun DataQueryFactory.handleNames(): DataQuery&lt;HandleNameField, HandleNameFields, HandleName&gt; =
+    customData(HandleNameMimeType)
+</code></pre>
+<p>For more info on the <code>DataQuery</code> API, read
+<a href="../../data/query-data-sets/">Query specific data kinds</a> and
+<a href="../query-custom-data/">Query custom data</a>.</p>
+<h2 id="13-define-the-custom-data-entry">13. Define the custom data entry<a class="headerlink" href="#13-define-the-custom-data-entry" title="Permanent link">&para;</a></h2>
+<p>The entry puts everything together so that it can be handed off to the custom data registry to
+integrate your custom data with all of the APIs provided in the library.</p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">internal class GenderEntry : Entry&lt;GenderField, GenderDataCursor, GenderEntity, Gender&gt; {
+    override val mimeType = GenderMimeType
+    override val fieldSet = GenderFields
+    override val fieldMapper = GenderFieldMapper()
+    override val countRestriction = GENDER_COUNT_RESTRICTION
+    override val mapperFactory = GenderMapperFactory()
+    override val operationFactory = GenderOperationFactory()
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">internal class HandleNameEntry : Entry&lt;HandleNameField, HandleNameDataCursor, HandleNameEntity, HandleName&gt; {
+    override val mimeType = HandleNameMimeType
+    override val fieldSet = HandleNameFields
+    override val fieldMapper = HandleNameFieldMapper()
+    override val countRestriction = HANDLE_NAME_COUNT_RESTRICTION
+    override val mapperFactory = HandleNameMapperFactory()
+    override val operationFactory = HandleNameOperationFactory()
+}
+</code></pre>
+<h2 id="14-define-the-custom-data-entry-registration">14. Define the custom data entry registration<a class="headerlink" href="#14-define-the-custom-data-entry-registration" title="Permanent link">&para;</a></h2>
+<p>The entry registration provides a way for you to keep your Entry <code>internal</code> to your library module.</p>
+<blockquote>
+<p>In Java, the closes thing to this is package-private.</p>
+</blockquote>
+<p>This is not necessary to implement. Feel free to make your <code>Entry</code> public so that it can be handed
+off to the custom data registry. </p>
+<p>For <code>Gender</code>,</p>
+<pre><code class="language-kotlin">class GenderRegistration : CustomDataRegistry.EntryRegistration {
+    override fun registerTo(customDataRegistry: CustomDataRegistry) {
+        customDataRegistry.register(GenderEntry())
+    }
+}
+</code></pre>
+<p>For <code>HandleName</code>,</p>
+<pre><code class="language-kotlin">class HandleNameRegistration : CustomDataRegistry.EntryRegistration {
+    override fun registerTo(customDataRegistry: CustomDataRegistry) {
+        customDataRegistry.register(HandleNameEntry())
+    }
+}
+</code></pre>
+<h2 id="15-register-your-custom-data-with-the-contacts-api-instance">15. Register your custom data with the Contacts API instance<a class="headerlink" href="#15-register-your-custom-data-with-the-contacts-api-instance" title="Permanent link">&para;</a></h2>
+<p>There are two ways to register your custom data. Either using the entry registration defined in the
+previous step or the entry itself defined in the step prior.</p>
+<p>Using <code>Gender</code> and <code>HandleName</code> entry registration,</p>
+<pre><code class="language-kotlin">val contactsApi = Contacts(
+    context,
+    customDataRegistry = CustomDataRegistry().register(
+        GenderRegistration(),
+        HandleNameRegistration()
+    )
+)
+</code></pre>
+<p>Alternatively,</p>
+<pre><code class="language-kotlin">val contactsApi = Contacts(context)
+GenderRegistration().registerTo(contactsApi.customDataRegistry)
+HandleNameRegistration().registerTo(contactsApi.customDataRegistry)
+</code></pre>
+<p>Using <code>Gender</code> and <code>HandleName</code> entry,</p>
+<blockquote>
+<p>Note that this is not possible with <code>Gender</code> and <code>HandleName</code> as their entries are internal.
+This is for demonstration purposes only.</p>
+</blockquote>
+<pre><code class="language-kotlin">val contactsApi = Contacts(
+    context,
+    customDataRegistry = CustomDataRegistry().register(
+        GenderEntry(),
+        HandleNameEntry()
+    )
+)
+</code></pre>
+<h2 id="16-use-your-custom-data-in-queries-inserts-updates-and-deletes">16. Use your custom data in queries, inserts, updates, and deletes<a class="headerlink" href="#16-use-your-custom-data-in-queries-inserts-updates-and-deletes" title="Permanent link">&para;</a></h2>
+<p>Once you have registered your custom data with the <code>Contacts</code> API instance, the API instance is now
+able to perform read and write operations on it.</p>
+<ul>
+<li><a href="../query-custom-data/">Query custom data</a></li>
+<li><a href="../insert-custom-data/">Insert custom data into new or existing contacts</a></li>
+<li><a href="../update-custom-data/">Update custom data</a></li>
+<li><a href="../delete-custom-data/">Delete custom data</a></li>
+</ul>
+<h2 id="consider-adding-your-custom-data-to-this-library">Consider adding your custom data to this library<a class="headerlink" href="#consider-adding-your-custom-data-to-this-library" title="Permanent link">&para;</a></h2>
+<p>Let's say that you have created your own custom data in your own app. That's great and all but your
+app will be the only app that will be able to perform operations on it (unless the mimetype value
+you are using is also used by others). This is definitely something you want to do if you don't
+really want others to mess with your custom data (though you can't really stop others).</p>
+<p>If you want to add your custom data to this library so that other people using this library can
+optionally integrate it into their own apps, please create a GitHub issue and file a pull request!</p>
+<h2 id="custom-data-without-sync-adapters-will-not-be-synced">Custom data without sync adapters will not be synced<a class="headerlink" href="#custom-data-without-sync-adapters-will-not-be-synced" title="Permanent link">&para;</a></h2>
+<p>Custom data provided by this library such as those in those in the <code>customdata-gender</code>,
+<code>customdata-handlename</code>, <code>customdata-pokemon</code>, and <code>customdata-rpg</code> modules are not synced because 
+there are no sync adapters and a remote service to store those data. Therefore, they are not synced 
+across devices and will remain local to the device regardless of Account sync settings. It is up to
+you to implement your own sync adapters for your own custom data. </p>
+<p>For more info, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
+<h2 id="displaying-your-custom-data-in-other-contacts-apps">Displaying your custom data in other Contacts apps<a class="headerlink" href="#displaying-your-custom-data-in-other-contacts-apps" title="Permanent link">&para;</a></h2>
+<p>If you want your custom data to be visible in the Android Open Source Project (AOSP) Contacts app 
+(the default Contacts app that comes with a vanilla version of Android) and the 
+<a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts app</a>, then read this section. This is optional. If you only want
+your custom data to be visible in your application, then you should NOT do the things described in
+this part of the guide.</p>
+<blockquote>
+<p>Note that the <a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts app</a> keeps its "File as" custom data invisible
+to other Contacts apps such as the AOSP Contacts app. However, it exposes the "Custom field+label"
+custom data by doing the things described in this section.</p>
+</blockquote>
+<p><strong>Important!</strong> The first criteria for being able to show your custom data in the Contacts app is to
+define and implement your own sync adapter. If you do not have a sync adapter implementation, your
+custom data will not be shown in the Contacts app! Again, this library does not provide any sync
+adapters. That is for you to implement based on your account services. This library provides you
+and users of your library an easy, uniform way to perform read and write operations on your custom
+data. The act of syncing is up to you.</p>
+<p>The <a href="https://developer.android.com/guide/topics/providers/contacts-provider#CustomData">official documentation on custom data rows</a>
+is as follows,</p>
+<blockquote>
+<p>By creating and using your own custom MIME types, you can insert, edit, delete, and retrieve your 
+own data rows in the <code>ContactsContract.Data</code> table. Your rows are limited to using the column 
+defined in <code>ContactsContract.DataColumns</code>, although you can map your own type-specific column 
+names to the default column names. In the device's contacts application, the data for your rows 
+is displayed but can't be edited or deleted, and users can't add additional data. To allow users 
+to modify your custom data rows, you must provide an editor activity in your own application.</p>
+<p>To display your custom data, provide a <code>contacts.xml</code> file containing a <code>&lt;ContactsAccountType&gt;</code> 
+element and one or more of its <code>&lt;ContactsDataKind&gt;</code> child elements. This is described in more 
+detail in the section <code>&lt;ContactsDataKind&gt;</code> element.</p>
+</blockquote>
+<p>Let's break down the official documentation.</p>
+<ul>
+<li>Contacts applications such as the Android Open Source Project (AOSP) Contacts app (the default 
+  Contacts app that comes with a vanilla version of Android) and the <a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts app</a> 
+  (and other Contacts app that support this feature) shows custom data from other apps when viewing 
+  contact details. </li>
+<li>Custom data from other apps are viewable but not editable in order to preserve and respect the 
+  rules surrounding those custom data managed by other apps. </li>
+</ul>
+<p>This library allows you to read (query) and write (insert, update, delete) custom data from other 
+apps. It is up to you whether you want to follow the same limitations imposed by the AOSP and 
+Google Contacts app.</p>
+<p>In order to show your custom data in the AOSP Contacts app and Google Contacts app (and other 
+Contacts app that support this feature), you must add an xml file in your app;
+<a href="https://developer.android.com/guide/topics/providers/contacts-provider#ContactsFile"><code>res/xml/contacts.xml</code></a>. The <a href="https://developer.android.com/guide/topics/providers/contacts-provider#ContactsFile"><code>res/xml/contacts.xml</code></a> template looks 
+like this,</p>
+<pre><code class="language-xml">&lt;ContactsAccountType
+        xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+        inviteContactActivity=&quot;activity_name&quot;
+        inviteContactActionLabel=&quot;invite_command_text&quot;
+        viewContactNotifyService=&quot;view_notify_service&quot;
+        viewGroupActivity=&quot;group_view_activity&quot;
+        viewGroupActionLabel=&quot;group_action_text&quot;
+        viewStreamItemActivity=&quot;viewstream_activity_name&quot;
+        viewStreamItemPhotoActivity=&quot;viewphotostream_activity_name&quot;&gt;
+    &lt;ContactsDataKind
+        android:mimeType=&quot;MIMEtype&quot;
+        android:icon=&quot;icon_resources&quot;
+        android:summaryColumn=&quot;column_name&quot;
+        android:detailColumn=&quot;column_name&quot; /&gt;
+&lt;/ContactsAccountType&gt;
+</code></pre>
+<p>The full official documentation for each of those tags and attributes within each tag are available
+by <a href="https://developer.android.com/guide/topics/providers/contacts-provider#ContactsFile">clicking this link</a>. </p>
+<p>For example, the bare-minimum <code>contacts.xml</code> for showing <code>Gender</code> and <code>HandleName</code> custom data in
+the AOSP and Google Contacts app is the following,</p>
+<pre><code class="language-xml">&lt;ContactsAccountType xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+
+    &lt;!-- Gender --&gt;
+    &lt;ContactsDataKind
+        android:mimeType=&quot;vnd.android.cursor.item/contacts.entities.custom.gender&quot;
+        android:summaryColumn=&quot;data2&quot;
+        android:detailColumn=&quot;data3&quot; /&gt;
+
+    &lt;!-- HandleName --&gt;
+    &lt;ContactsDataKind
+        android:mimeType=&quot;vnd.android.cursor.item/contacts.entities.custom.handlename&quot;
+        android:summaryColumn=&quot;data1&quot; /&gt;
+
+&lt;/ContactsAccountType&gt;
+</code></pre>
+<p>A few things to note,</p>
+<ul>
+<li>The value of <code>android:mimeType</code> corresponds to the String value defined in <code>GenderMimeType</code> and
+  <code>HandleNameMimeType</code> as seen in the previous sections of this guide.</li>
+<li>The value of <code>android:summaryColumn</code> and <code>android:detailColumn</code> corresponds to the 
+  values defined in <code>contacts.core.Fields.kt#AbstractCustomDataField.ColumnName</code> that are used by
+  <code>GenderFields</code> and <code>HandleNameFields</code>.<ul>
+<li>These values, as raw strings, are; <code>data1</code>, <code>data2</code>, <code>data3</code>,...<code>data15</code></li>
+</ul>
+</li>
+</ul>
+<p>Again, in order for your custom data to be shown in the Contacts app, you must also provide a sync
+adapter implementation. For more info, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
+<h2 id="summary-of-limitations">Summary of limitations<a class="headerlink" href="#summary-of-limitations" title="Permanent link">&para;</a></h2>
+<p>To reiterate, this library does not provide a remote server or sync adapters to interface with
+that server. This library provides create (insert), read (query), update, and delete (CRUD) APIs
+for pretty, type-safe, and well-documented read and write operations on all data kinds, including
+custom data. </p>
+<p>This means that if you do not implement your own sync adapter for your custom data, then your 
+custom data...</p>
+<ul>
+<li>will NOT be synced across devices</li>
+<li>will NOT be shown in AOSP and <a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts</a> apps, and other Contacts apps
+  that show custom data from other apps</li>
+</ul>
+<p>You may still do creative things with custom data without sync adapters as long as you understand
+these limitations.</p>
+<p>This library provides CRUD API integration with custom data with no sync adapters;</p>
+<ul>
+<li><a href="../integrate-gender-custom-data/"><code>customdata-gender</code></a></li>
+<li><a href="../integrate-handlename-custom-data/"><code>customdata-handlename</code></a></li>
+<li><a href="../integrate-pokemon-custom-data/"><code>customdata-pokemon</code></a></li>
+<li><a href="../integrate-rpg-custom-data/"><code>customdata-rpg</code></a></li>
+</ul>
+<p>Also provided are CRUD API integration with custom data from other apps that do have sync adapters;</p>
+<ul>
+<li><a href="../integrate-googlecontacts-custom-data/"><code>customdata-googlecontacts</code></a></li>
+</ul>
+<blockquote>
+<p>Please update the above list whenever adding new custom data modules.</p>
+</blockquote>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../delete-custom-data/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Delete custom data" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Delete custom data
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../integrate-custom-data-from-other-apps/" class="md-footer__link md-footer__link--next" aria-label="Next: Integrate custom data from other apps" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Integrate custom data from other apps
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.5413a266.min.js"></script>
+      
+    
+  </body>
+</html>

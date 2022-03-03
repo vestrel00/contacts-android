@@ -1,0 +1,2286 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Android Contacts API Library for Kotlin and Java.">
+      
+      
+        <meta name="author" content="Vandolf Estrellado">
+      
+      
+        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/other/link-unlink-contacts/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.4">
+    
+    
+      
+        <title>Link unlink Contacts - Contacts, Reborn</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#ff6e42">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="deep-orange" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#link-unlink-contacts" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Contacts, Reborn" class="md-header__button md-logo" aria-label="Contacts, Reborn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 0H4v2h16V0M4 24h16v-2H4v2M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-8 2.75A2.25 2.25 0 0 1 14.25 9 2.25 2.25 0 0 1 12 11.25 2.25 2.25 0 0 1 9.75 9 2.25 2.25 0 0 1 12 6.75M17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Contacts, Reborn
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Link unlink Contacts
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/vestrel00/contacts-android/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    vestrel00/contacts-android
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Contacts, Reborn" class="md-nav__button md-logo" aria-label="Contacts, Reborn" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 0H4v2h16V0M4 24h16v-2H4v2M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-8 2.75A2.25 2.25 0 0 1 14.25 9 2.25 2.25 0 0 1 12 11.25 2.25 2.25 0 0 1 9.75 9 2.25 2.25 0 0 1 12 6.75M17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/></svg>
+
+    </a>
+    Contacts, Reborn
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/vestrel00/contacts-android/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    vestrel00/contacts-android
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Setup
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Setup" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Setup
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup/setup-contacts-api/" class="md-nav__link">
+        Contacts API Setup
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Entities
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Entities" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Entities
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-api-entities/" class="md-nav__link">
+        API entities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-blank-contacts/" class="md-nav__link">
+        Blank contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-blank-data/" class="md-nav__link">
+        Blank data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-local-contacts/" class="md-nav__link">
+        Local (device-only) contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/about-contact-lookup-key/" class="md-nav__link">
+        Contact lookup key vs ID
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/sync-contact-data/" class="md-nav__link">
+        Sync contact data across devices
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entities/redact-apis-and-entities/" class="md-nav__link">
+        Redact entities and API input and output in production
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Basics
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Basics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/query-contacts/" class="md-nav__link">
+        Query contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/query-contacts-advanced/" class="md-nav__link">
+        Query contacts (advanced)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/insert-contacts/" class="md-nav__link">
+        Insert contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/update-contacts/" class="md-nav__link">
+        Update contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/delete-contacts/" class="md-nav__link">
+        Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Data" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/query-data-sets/" class="md-nav__link">
+        Query specific data kinds
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/insert-data-sets/" class="md-nav__link">
+        Insert data into new or existing contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/update-data-sets/" class="md-nav__link">
+        Update existing sets of data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/delete-data-sets/" class="md-nav__link">
+        Delete existing sets of data
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Custom data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Custom data" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Custom data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/query-custom-data/" class="md-nav__link">
+        Query custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/insert-custom-data/" class="md-nav__link">
+        Insert custom data into new or existing contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/update-custom-data/" class="md-nav__link">
+        Update custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/delete-custom-data/" class="md-nav__link">
+        Delete custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/integrate-custom-data/" class="md-nav__link">
+        Integrate custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/integrate-custom-data-from-other-apps/" class="md-nav__link">
+        Integrate custom data from other apps
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/integrate-googlecontacts-custom-data/" class="md-nav__link">
+        Integrate the Google Contacts custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/integrate-gender-custom-data/" class="md-nav__link">
+        Integrate the Gender custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/integrate-handlename-custom-data/" class="md-nav__link">
+        Integrate the Handle Name custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/integrate-pokemon-custom-data/" class="md-nav__link">
+        Integrate the Pokemon custom data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customdata/integrate-rpg-custom-data/" class="md-nav__link">
+        Integrate the RPG custom data
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Groups
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Groups" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Groups
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/query-groups/" class="md-nav__link">
+        Query groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/insert-groups/" class="md-nav__link">
+        Insert groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/update-groups/" class="md-nav__link">
+        Update groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../groups/delete-groups/" class="md-nav__link">
+        Delete groups
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Profile
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Profile" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Profile
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/query-profile/" class="md-nav__link">
+        Query device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/insert-profile/" class="md-nav__link">
+        Insert device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/update-profile/" class="md-nav__link">
+        Update device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profile/delete-profile/" class="md-nav__link">
+        Delete device owner Contact profile
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          Accounts
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Accounts" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Accounts
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../accounts/query-accounts/" class="md-nav__link">
+        Query for Accounts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
+        Associate a local RawContact to an Account
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Blocked numbers
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Blocked numbers" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Blocked numbers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/about-blocked-numbers/" class="md-nav__link">
+        About blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/query-blocked-numbers/" class="md-nav__link">
+        Query blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/insert-blocked-numbers/" class="md-nav__link">
+        Insert blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blockednumbers/delete-blocked-numbers/" class="md-nav__link">
+        Delete blocked numbers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11" type="checkbox" id="__nav_11" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_11">
+          Permissions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Permissions" data-md-level="1">
+        <label class="md-nav__title" for="__nav_11">
+          <span class="md-nav__icon md-icon"></span>
+          Permissions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions/permissions-handling-coroutines/" class="md-nav__link">
+        Permissions handling using coroutines
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12" type="checkbox" id="__nav_12" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_12">
+          Asynchronous work
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Asynchronous work" data-md-level="1">
+        <label class="md-nav__title" for="__nav_12">
+          <span class="md-nav__icon md-icon"></span>
+          Asynchronous work
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../async/async-execution-coroutines/" class="md-nav__link">
+        Execute work outside of the UI thread using coroutines
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_13">
+          UI
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="UI" data-md-level="1">
+        <label class="md-nav__title" for="__nav_13">
+          <span class="md-nav__icon md-icon"></span>
+          UI
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/integrate-rudimentary-contacts-integrated-ui-components/" class="md-nav__link">
+        Integrate rudimentary contacts ui components
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_14">
+          Other
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Other" data-md-level="1">
+        <label class="md-nav__title" for="__nav_14">
+          <span class="md-nav__icon md-icon"></span>
+          Other
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-set-remove-contact-raw-contact-photo/" class="md-nav__link">
+        Get set remove full-sized and thumbnail contact photos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-set-clear-contact-raw-contact-options/" class="md-nav__link">
+        Get set Contact options
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-set-clear-default-data/" class="md-nav__link">
+        Get set clear default Contact data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Link unlink Contacts
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Link unlink Contacts
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#linking" class="md-nav__link">
+    Linking
+  </a>
+  
+    <nav class="md-nav" aria-label="Linking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-the-link-result" class="md-nav__link">
+    Handling the link result
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unlinking" class="md-nav__link">
+    Unlinking
+  </a>
+  
+    <nav class="md-nav" aria-label="Unlinking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-the-unlink-result" class="md-nav__link">
+    Handling the unlink result
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changes-are-immediate-and-are-not-applied-to-the-receiver" class="md-nav__link">
+    Changes are immediate and are not applied to the receiver
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performing-linkingunlinking-asynchronously" class="md-nav__link">
+    Performing linking/unlinking asynchronously
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performing-linkingunlinking-with-permission" class="md-nav__link">
+    Performing linking/unlinking with permission
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syncing-is-done-at-the-rawcontact-level" class="md-nav__link">
+    Syncing is done at the RawContact level
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#behavior-of-linkingmergingjoining-contacts-aggregationexceptions" class="md-nav__link">
+    Behavior of linking/merging/joining contacts (AggregationExceptions)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aggregationexceptions-table" class="md-nav__link">
+    AggregationExceptions table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contact-display-name-and-default-name-rows" class="md-nav__link">
+    Contact Display Name and Default Name Rows
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#effects-of-linkingunlinking-contacts" class="md-nav__link">
+    Effects of linking/unlinking contacts
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../convenience-functions/" class="md-nav__link">
+        Convenience functions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_15" type="checkbox" id="__nav_15" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_15">
+          Logging
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Logging" data-md-level="1">
+        <label class="md-nav__title" for="__nav_15">
+          <span class="md-nav__icon md-icon"></span>
+          Logging
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../logging/log-api-input-output/" class="md-nav__link">
+        Log API input and output
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16" type="checkbox" id="__nav_16" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_16">
+          Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Testing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_16">
+          <span class="md-nav__icon md-icon"></span>
+          Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/test-contacts-api/" class="md-nav__link">
+        Contacts API Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_17">
+          Debug
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Debug" data-md-level="1">
+        <label class="md-nav__title" for="__nav_17">
+          <span class="md-nav__icon md-icon"></span>
+          Debug
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debug/debug-contacts-provider-tables/" class="md-nav__link">
+        Debug the Contacts Provider tables
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev-notes/" class="md-nav__link">
+        Developer notes
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#linking" class="md-nav__link">
+    Linking
+  </a>
+  
+    <nav class="md-nav" aria-label="Linking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-the-link-result" class="md-nav__link">
+    Handling the link result
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unlinking" class="md-nav__link">
+    Unlinking
+  </a>
+  
+    <nav class="md-nav" aria-label="Unlinking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-the-unlink-result" class="md-nav__link">
+    Handling the unlink result
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changes-are-immediate-and-are-not-applied-to-the-receiver" class="md-nav__link">
+    Changes are immediate and are not applied to the receiver
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performing-linkingunlinking-asynchronously" class="md-nav__link">
+    Performing linking/unlinking asynchronously
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performing-linkingunlinking-with-permission" class="md-nav__link">
+    Performing linking/unlinking with permission
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syncing-is-done-at-the-rawcontact-level" class="md-nav__link">
+    Syncing is done at the RawContact level
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#behavior-of-linkingmergingjoining-contacts-aggregationexceptions" class="md-nav__link">
+    Behavior of linking/merging/joining contacts (AggregationExceptions)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aggregationexceptions-table" class="md-nav__link">
+    AggregationExceptions table
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contact-display-name-and-default-name-rows" class="md-nav__link">
+    Contact Display Name and Default Name Rows
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#effects-of-linkingunlinking-contacts" class="md-nav__link">
+    Effects of linking/unlinking contacts
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+<a href="https://github.com/vestrel00/contacts-android/tree/main/docs/other/link-unlink-contacts.md" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
+
+
+
+<h1 id="link-unlink-contacts">Link unlink Contacts<a class="headerlink" href="#link-unlink-contacts" title="Permanent link">&para;</a></h1>
+<p>The Contacts Provider automatically aggregates similar RawContacts into a single Contact when it
+determines that they reference the same person. However, the Contacts Provider's aggregation
+algorithms are only as accurate as the Data belonging to these RawContacts. Sometimes, they are not
+enough to determine if they indeed are the same person. With this in mind, the Contacts Provider
+allows us to explicitly and forcefully specify whether two or more RawContacts reference the same
+person or not.</p>
+<p>Hence, this library provides extensions in <code>contacts.core.util.ContactLinks.kt</code> to allow for linking
+and unlinking two or more Contacts (and their constituent RawContacts).</p>
+<hr />
+<h2 id="linking">Linking<a class="headerlink" href="#linking" title="Permanent link">&para;</a></h2>
+<p>To link three Contacts and all of their constituent RawContacts into a single Contact,</p>
+<pre><code class="language-kotlin">val linkResult = contact1.link(contactsApi, contact2, contact3)
+</code></pre>
+<p>The above links (keep together) all RawContacts belonging to <code>contact1</code>, <code>contact2</code>, and <code>contact3</code>
+into a single Contact.</p>
+<p>Aggregation is done by the Contacts Provider. For example,</p>
+<ul>
+<li>Contact (id: 1, display name: A)<ul>
+<li>RawContact A</li>
+</ul>
+</li>
+<li>Contact (id: 2, display name: B)<ul>
+<li>RawContact B</li>
+<li>RawContact C</li>
+</ul>
+</li>
+</ul>
+<p>Linking Contact 1 with Contact 2 results in;</p>
+<ul>
+<li>Contact (id: 1, display name: A)<ul>
+<li>RawContact A</li>
+<li>RawContact B</li>
+<li>RawContact C</li>
+</ul>
+</li>
+</ul>
+<p>Contact 2 no longer exists and all of the Data belonging to RawContact B and C are now associated
+with Contact 1.</p>
+<p>If instead Contact 2 is linked with Contact 1;</p>
+<ul>
+<li>Contact (id: 1, display name: B)<ul>
+<li>RawContact A</li>
+<li>RawContact B</li>
+<li>RawContact C</li>
+</ul>
+</li>
+</ul>
+<p>The same thing occurs except the display name has been set to the display name of RawContact B.</p>
+<p>This function only instructs the Contacts Provider which RawContacts should be aggregated to a
+single Contact. Details on how RawContacts are aggregated into a single Contact are left to the
+Contacts Provider.</p>
+<blockquote>
+<p>Profile Contact/RawContacts are not supported! This operation will fail if given any profile
+Contact/RawContacts .</p>
+</blockquote>
+<h3 id="handling-the-link-result">Handling the link result<a class="headerlink" href="#handling-the-link-result" title="Permanent link">&para;</a></h3>
+<p>To check if the link succeeded,</p>
+<pre><code class="language-kotlin">val linkSuccessful = linkResult.isSuccessful
+</code></pre>
+<p>To get the ID of the parent Contact of all linked RawContacts,</p>
+<pre><code class="language-kotlin">val contactId: Long? = linkResult.contactId
+</code></pre>
+<blockquote>
+<p>Note that the <code>contactId</code> will belong to one of the linked Contacts.</p>
+</blockquote>
+<p>Once you have the Contact ID, you can retrieve the Contact via the <code>Query</code> API,</p>
+<pre><code class="language-kotlin">val contact = contactsApi
+    .query()
+    .where { Contact.Id equalTo contactId }
+    .find()
+</code></pre>
+<blockquote>
+<p>For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
+</blockquote>
+<p>Alternatively, you may use the extensions provided in <code>ContactLikResult</code>. To get the parent Contact 
+of all linked RawContacts,</p>
+<pre><code class="language-kotlin">val contact = linkResult.contact(contactsApi)
+</code></pre>
+<hr />
+<h2 id="unlinking">Unlinking<a class="headerlink" href="#unlinking" title="Permanent link">&para;</a></h2>
+<p>To unlink a Contacts with more than one RawContact into a separate Contacts,</p>
+<pre><code class="language-kotlin">val unlinkResult = contact.unlink(contactsApi)
+</code></pre>
+<p>The above unlinks (keep separate) all RawContacts belonging to the <code>contact</code> into separate
+Contacts.</p>
+<p>The above does nothing and will fail if the Contact only has one constituent RawContact.</p>
+<blockquote>
+<p>Profile Contact/RawContacts are not supported! This operation will fail if given any profile 
+Contact/RawContacts .</p>
+</blockquote>
+<h3 id="handling-the-unlink-result">Handling the unlink result<a class="headerlink" href="#handling-the-unlink-result" title="Permanent link">&para;</a></h3>
+<p>To check if the unlink succeeded,</p>
+<pre><code class="language-kotlin">val unlinkSuccessful = unlinkResult.isSuccessful
+</code></pre>
+<p>To get the IDs of the constituent RawContact of of the Contact that has been unlinked,</p>
+<pre><code class="language-kotlin">val rawContactIds = unlinkResult.rawContactIds
+</code></pre>
+<p>Once you have the RawContact IDs, you can retrieve the corresponding Contacts via the <code>Query</code> API,</p>
+<pre><code class="language-kotlin">val contacts = contactsApi
+    .query()
+    .where { RawContact.Id `in` rawContactIds }
+    .find()
+</code></pre>
+<blockquote>
+<p>For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
+</blockquote>
+<p>Alternatively, you may use the extensions provided in <code>ContactLikResult</code>. To get the Contacts
+of all unlinked RawContacts,</p>
+<pre><code class="language-kotlin">val contacts = unlinkResult.contacts(contactsApi)
+</code></pre>
+<hr />
+<h2 id="changes-are-immediate-and-are-not-applied-to-the-receiver">Changes are immediate and are not applied to the receiver<a class="headerlink" href="#changes-are-immediate-and-are-not-applied-to-the-receiver" title="Permanent link">&para;</a></h2>
+<p>These apply to set and clear functions.</p>
+<ol>
+<li>Changes are immediate.<ul>
+<li>These functions will make the changes to the Contacts Provider database immediately. You do
+  not need to use update APIs to commit the changes.</li>
+</ul>
+</li>
+<li>Changes are not applied to the receiver.<ul>
+<li>This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
+  query APIs or refresh extensions or process the result of this function call to get the most
+  up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
+  Provider database.</li>
+</ul>
+</li>
+</ol>
+<h2 id="performing-linkingunlinking-asynchronously">Performing linking/unlinking asynchronously<a class="headerlink" href="#performing-linkingunlinking-asynchronously" title="Permanent link">&para;</a></h2>
+<p>Linking or unlinking contacts is done in the same thread as the call-site. This may result in a
+choppy UI.</p>
+<p>To perform the work in a different thread, use the Kotlin coroutine extensions provided in
+the <code>async</code> module. For more info,
+read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
+<p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
+<blockquote>
+<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+</blockquote>
+<h2 id="performing-linkingunlinking-with-permission">Performing linking/unlinking with permission<a class="headerlink" href="#performing-linkingunlinking-with-permission" title="Permanent link">&para;</a></h2>
+<p>Getting and setting/clearing default data require the <code>android.permission.WRITE_CONTACTS</code>
+permission. If not granted, linking/unlinking data will fail.</p>
+<p>TODO Update this section as part of issue <a href="https://github.com/vestrel00/contacts-android/issues/138">#138</a>.</p>
+<h2 id="syncing-is-done-at-the-rawcontact-level">Syncing is done at the RawContact level<a class="headerlink" href="#syncing-is-done-at-the-rawcontact-level" title="Permanent link">&para;</a></h2>
+<p>You may link Contacts with RawContacts that belong to different Accounts. Any RawContact Data
+modifications are synced per Account sync settings.</p>
+<blockquote>
+<p>For more info, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
+</blockquote>
+<p>RawContacts that are not associated with an Account are local to the device and therefore will not
+be synced even if it is linked to a Contact with a RawContact that is associated with an Account.</p>
+<blockquote>
+<p>For more info, read about <a href="../../entities/about-local-contacts/">Local (device-only) contacts</a>.</p>
+</blockquote>
+<hr />
+<h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>The following section are note from developers of this library for other developers. It is copied
+from the <a href="../../dev-notes/">DEV_NOTES</a>. You may still read the following as a consumer of the library
+in case you need deeper insight.</p>
+</blockquote>
+<h3 id="behavior-of-linkingmergingjoining-contacts-aggregationexceptions">Behavior of linking/merging/joining contacts (AggregationExceptions)<a class="headerlink" href="#behavior-of-linkingmergingjoining-contacts-aggregationexceptions" title="Permanent link">&para;</a></h3>
+<p>The native Contacts app terminology has changed over time;</p>
+<ul>
+<li>API 22 and below; join / separate</li>
+<li>API 23; merge / unmerge</li>
+<li>API 24 and above; link / unlink</li>
+</ul>
+<p>However, the internals have not changed; <code>KEEP_TOGETHER</code> / <code>KEEP_SEPARATE</code>. These operations are
+supported by the <code>ContactsContract.AggregationExceptions</code>.</p>
+<p>For example, given the following tables,</p>
+<pre><code>### Contacts table
+Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+### RawContacts table
+RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+### Data table
+Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 1
+Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 1
+Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 1
+</code></pre>
+<p>When Contact <strong>X</strong> links/merges/joins Contact <strong>Y</strong>, the tables becomes;</p>
+<pre><code>### Contacts table
+Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+
+### RawContacts table
+RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+### Data table
+Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 0
+Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 0
+Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 0
+</code></pre>
+<p><strong>What changed?</strong></p>
+<p>Contact Y's row has been deleted and its column values have been merged into Contact X row. If the
+reverse occurred (Contact Y merged with Contact X), Contact Y's row would still be deleted. The
+difference is that Contact X's display name will be set to Contact Y's display name, which is done
+by the native Contacts app manually by setting Contact Y's Data name row to be the "default"
+(isPrimary and isSuperPrimary both set to 1).</p>
+<blockquote>
+<p>The AggregationExceptions table records the linked RawContacts's IDs in ascending order regardless
+of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.</p>
+</blockquote>
+<p>The RawContacts and Data table remains the same except the joined contactId column values have now
+been changed to the id of Contact X. All Data rows' isSuperPrimary value has been set to 0 though
+the isPrimary columns remain the same. In other words, this clears any "default" set before the
+link. These are done automatically by the Contacts Provider during the link operation.</p>
+<p>What is not done automatically by the Contacts Provider is that the name row of former Contact X is
+set as the default. The native Contacts app does this manually. The Contacts Providers automatically
+sets the Contact display name to whatever the default name row is for the Contact, if available. For
+more info on Contact display name resolution, read the <strong>Contact Display Name and Default Name
+Rows</strong> section.</p>
+<blockquote>
+<p>Note that display name resolution is different for APIs below 21 (pre-lollipop).</p>
+</blockquote>
+<p>The display name of the RawContacts remain the same.</p>
+<p>The Groups table remains unmodified.</p>
+<p><strong>Options updates</strong></p>
+<p>Changes to the options (starred, timesContacted, lastTimeContacted, customRingtone, and
+sendToVoicemail) of a RawContact may affect the options of the parent Contact. On the other hand,
+changes to the options of the parent Contact will be propagated to all child RawContact options.</p>
+<p><strong>Photo updates</strong></p>
+<p>A RawContact may have a full-sized photo saved as a file and a thumbnail version of that saved in
+the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
+references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).</p>
+<blockquote>
+<p>Note that when removing the photo in the native contacts app, the photo data row is not
+immediately deleted, though the <code>PHOTO_FILE_ID</code> is immediately set to null. This may result in
+the <code>PHOTO_URI</code> and <code>PHOTO_THUMBNAIL_URI</code> to still have a valid image uri even though the photo
+has been "removed". This library immediately deletes the photo data row, which seems to work
+perfectly.</p>
+</blockquote>
+<p><strong>Data inserts</strong></p>
+<p>In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
+first RawContact in the list sorted by the RawContact ID.</p>
+<blockquote>
+<p>This may not be the same as the RawContact referenced by <code>ContactsColumns.NAME_RAW_CONTACT_ID</code>.</p>
+</blockquote>
+<p><strong>UI changes?</strong></p>
+<p>The native Contacts App does not display the groups field when displaying / editing Contacts that
+have multiple RawContacts (linked/merged/joined) in combined mode. However, it does allow editing
+individual RawContact Data rows in which case the groups field is displayed and editable.</p>
+<p>In the native Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
+set to true. This and all other "unique" mimetypes (organization) and non-unique mimetypes (email)
+per RawContact are shown only if they are not blank.</p>
+<p><strong>Showing multiple RawContact's data in the same edit screen (combined mode)</strong></p>
+<p>In older version of the native, Android Open Source Project (AOSP) Contacts app, data from multiple
+RawContacts was being shown in the same edit screen. This caused a lot of confusion about which data
+belonged to which RawContact. Newer versions of AOSP Contacts only allow editing one RawContact at a
+time to avoid confusion. Though, several RawContacts' data are still shown (not-editable)
+in the same screen.</p>
+<h3 id="aggregationexceptions-table">AggregationExceptions table<a class="headerlink" href="#aggregationexceptions-table" title="Permanent link">&para;</a></h3>
+<p>Given the following Contacts and their RawContacts;</p>
+<ul>
+<li>Contact A<ul>
+<li>RawContact 1</li>
+</ul>
+</li>
+<li>Contact B<ul>
+<li>RawContact 2</li>
+</ul>
+</li>
+<li>Contact C<ul>
+<li>RawContact 3</li>
+</ul>
+</li>
+<li>Contact D<ul>
+<li>RawContact 4</li>
+</ul>
+</li>
+</ul>
+<p>Linking one by one in this order;</p>
+<ul>
+<li>Contact B link Contact A</li>
+<li>Contact C link Contact D</li>
+<li>Contact C link Contact B</li>
+</ul>
+<p>Results in the following AggregationExceptions rows respectively;</p>
+<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+</code></pre>
+<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+Aggregation exception id: 432, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre>
+<pre><code>Aggregation exception id: 436, type: 1, rawContactId1: 1, rawContactId2: 2
+Aggregation exception id: 439, type: 1, rawContactId1: 1, rawContactId2: 3
+Aggregation exception id: 442, type: 1, rawContactId1: 1, rawContactId2: 4
+Aggregation exception id: 440, type: 1, rawContactId1: 2, rawContactId2: 3
+Aggregation exception id: 443, type: 1, rawContactId1: 2, rawContactId2: 4
+Aggregation exception id: 444, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre>
+<p>There is a pattern here. RawContact ids are sorted in ascending order and linked from least to
+greatest exhaustively but no double links (1-2 is the same as 2-1).</p>
+<ul>
+<li>RawContact 1 has a row with RawContact 2, 3, and 4.</li>
+<li>RawContact 2 has a row with RawContact 3 and 4.</li>
+<li>RawContact 3 has a row with RawContact 4.</li>
+</ul>
+<p>Linking all in one go;</p>
+<ul>
+<li>Contact C link Contact A, B, D</li>
+</ul>
+<p>Results in the same AggregationExceptions rows.</p>
+<p>Unlinking results in the same AggregationExceptions rows <strong>except</strong> the type is 2
+(<code>TYPE_KEEP_SEPARATE</code>).</p>
+<h3 id="contact-display-name-and-default-name-rows">Contact Display Name and Default Name Rows<a class="headerlink" href="#contact-display-name-and-default-name-rows" title="Permanent link">&para;</a></h3>
+<p>If available, the "default" (isPrimary and isSuperPrimary set to 1) name row for a Contact is
+automatically set as the Contact display name by the Contacts Provider. Otherwise, the Contacts
+Provider chooses from any of the other suitable data from the aggregate Contact.</p>
+<blockquote>
+<p>The <code>ContactsColumns.NAME_RAW_CONTACT_ID</code> is automatically updated by the Contacts Provider
+along with the display name.</p>
+</blockquote>
+<p>The default status of other sources (e.g. email) does not affect the Contact display name.</p>
+<p>The native Contacts app also sets the most recently updated name as the default at every update.
+This results in the Contact display name changing to the most recently updated name from one of the
+associated RawContacts. The "most recently updated name" is the name field that was last updated by
+the user when editing in the Contacts app, which is irrelevant to its value. It does not matter if
+the user deleted the last character of the name, added the same character back, and then saved. It
+still counts as the most recently updated.</p>
+<p>All of the above only applies to API 21 and above.</p>
+<p><strong>Display name resolution is different for APIs below 21 (pre-Lollipop)!</strong></p>
+<p>The <code>ContactsColumns.NAME_RAW_CONTACT_ID</code> was added in API 21. It changed the way display names are
+resolved for Contacts with more than one constituent RawContacts, which is what has been described
+so far.</p>
+<p>Before this change (APIs 20 and below), the native Contacts app is still able to set the Contact
+display name somehow. I'm not sure how. If someone figures it out, please let me know. I tried
+updating the Contact <code>DISPLAY_NAME</code> directly but it does not work. Setting a name row as default
+also does not affect the Contact <code>DISPLAY_NAME</code>.</p>
+<h2 id="effects-of-linkingunlinking-contacts">Effects of linking/unlinking contacts<a class="headerlink" href="#effects-of-linkingunlinking-contacts" title="Permanent link">&para;</a></h2>
+<p>When two or more Contacts (along with their constituent RawContacts) are linked into a single
+Contact those Contacts will be merged into one of the existing Contact row. The Contacts that have
+been merged into the single Contact will have their entries/rows in the Contacts table deleted.</p>
+<p>Unlinking will result in the original Contacts prior to linking to have new rows in the Contacts
+table with different IDs because the previously deleted row IDs cannot be reused.</p>
+<p>Getting Contacts that have been linked into a single Contact or Contacts whose row IDs have change
+after unlinking is still possible using the Contact lookup key.</p>
+<p>For more info, read about <a href="../../entities/about-contact-lookup-key/">Contact lookup key vs ID</a>.</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../get-set-clear-default-data/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get set clear default Contact data" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Get set clear default Contact data
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../convenience-functions/" class="md-footer__link md-footer__link--next" aria-label="Next: Convenience functions" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Convenience functions
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.5413a266.min.js"></script>
+      
+    
+  </body>
+</html>
