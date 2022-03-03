@@ -100,7 +100,7 @@ Setting or clearing default data is done in the same thread as the call-site. Th
 choppy UI. 
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 

@@ -77,7 +77,7 @@ val contactOfRawContact = contactsApi.query().where { Contact.Id equalTo rawCont
 val contactOfData = contactsApi.query().where { Contact.Id equalTo data.contactId }.find().firstOrNull()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 To shorten things, you can use the extensions in `RawContactContact.kt` and `DataContact.kt`,
 
@@ -94,7 +94,7 @@ val rawContactOfData = data.rawContact(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 ## Refresh Contact, RawContact, and Data references
 
@@ -123,7 +123,7 @@ val dataFromDb = dataInMemory.refresh(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 ## Sort Contacts by data fields
 
@@ -174,7 +174,7 @@ val groups = groupMemberships.groups(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 ## Get the RawContact of a BlankRawContact
 
@@ -195,4 +195,4 @@ val rawContact = blankRawContact.toRawContact(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+> For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).

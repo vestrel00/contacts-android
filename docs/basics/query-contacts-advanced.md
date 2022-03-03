@@ -14,7 +14,7 @@ val query = Contacts(context).query()
 ```
 
 > For a broader, and more native Contacts app like query, use the `BroadQuery` API.
-> For more info, read [Query contacts (broad)](/docs/query-contacts.md).
+> For more info, read [Query contacts](/docs/basics/query-contacts.md).
 
 > If you want to query Data directly instead of Contacts, read [Query specific data kinds](/docs/data/query-data-sets.md).
 
@@ -207,7 +207,7 @@ Use `ContactsFields` to construct the orderBys.
 
 > If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
-> For more info, read [Convenience functions](/docs/util/convenience-functions.md).
+> For more info, read [Convenience functions](/docs/other/convenience-functions.md).
 
 ## Limiting and offsetting
 
@@ -270,7 +270,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -283,7 +283,7 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling.md).
+For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 

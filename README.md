@@ -59,15 +59,15 @@ The `core` module provides,
 - ✅ [**All data kinds**](/docs/entities/about-api-entities.md) in the Contacts Provider;
   _address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website_.
 - ✅ [**Custom data** integration](/docs/customdata/integrate-custom-data.md).
-- ✅ [**Broad queries**](/docs/query-contacts.md) and [**advanced queries**](/docs/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups. 
+- ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups. 
 - ✅ [Contact **lookup keys**](/docs/entities/about-contact-lookup-key.md)
 - ✅ [Include only desired fields](/docs/entities/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**. 
 - ✅ Powerful, **type-safe query DSL**.
 - ✅ **Pagination** using order by, limit, and offset database functions.
-- ✅ [**Insert**](/docs/insert-contacts.md) one or more RawContacts with an associated Account,
+- ✅ [**Insert**](/docs/basics/insert-contacts.md) one or more RawContacts with an associated Account,
   causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
-- ✅ [**Update**](/docs/update-contacts.md) one or more Contacts, RawContacts, and Data.
-- ✅ [**Delete**](/docs/delete-contacts.md) one or more Contacts, RawContacts, and Data.
+- ✅ [**Update**](/docs/basics/update-contacts.md) one or more Contacts, RawContacts, and Data.
+- ✅ [**Delete**](/docs/basics/delete-contacts.md) one or more Contacts, RawContacts, and Data.
 - ✅ [Query](/docs/profile/query-profile.md), [insert](/docs/profile/insert-profile.md),
   [update](/docs/profile/update-profile.md), and [delete](/docs/profile/delete-profile.md)
    **Profile (device owner)** Contact, RawContact, and Data.
@@ -82,15 +82,15 @@ The `core` module provides,
 - ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table.
 - ✅ [Query](/docs/accounts/query-raw-contacts.md) for just RawContacts.
 - ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md).
-- ✅ [**Link/unlink**](/docs/util/link-unlink-contacts.md) two or more Contacts.
-- ✅ [Get/set contact options](/docs/util/get-set-clear-contact-raw-contact-options.md);
+- ✅ [**Link/unlink**](/docs/other/link-unlink-contacts.md) two or more Contacts.
+- ✅ [Get/set contact options](/docs/other/get-set-clear-contact-raw-contact-options.md);
   **_starred (favorite), custom ringtone, send to voicemail_**.
-- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/docs/util/get-set-remove-contact-raw-contact-photo.md).
-- ✅ [Get/set **default (primary) Contact Data**](/docs/util/get-set-clear-default-data.md)
+- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/docs/other/get-set-remove-contact-raw-contact-photo.md).
+- ✅ [Get/set **default (primary) Contact Data**](/docs/other/get-set-clear-default-data.md)
   (e.g. default/primary phone number, email, etc).
-- ✅ [Convenience functions](/docs/util/convenience-functions.md).
+- ✅ [Convenience functions](/docs/other/convenience-functions.md).
 - ✅ [Contact data is synced automatically across devices](/docs/entities/sync-contact-data.md).
-- ✅ [Support for **logging API input and output**](/docs/log/log-api-input-output.md)
+- ✅ [Support for **logging API input and output**](/docs/logging/log-api-input-output.md)
 - ✅ [**Redactable entities** and API input and output](/docs/entities/redact-apis-and-entities.md)
   for production-safe logging that upholds user data privacy laws to meet GDPR guidelines 
   _(this is not legal advice)_.
@@ -102,8 +102,8 @@ The `core` module provides,
 
 There are also extensions that add functionality to every core function,
 
-- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/docs/async/async-execution.md).
-- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/docs/permissions/permissions-handling.md).
+- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/docs/async/async-execution-coroutines.md).
+- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/docs/permissions/permissions-handling-coroutines.md).
 - 🔜 [**Kotlin Flow** extensions](https://github.com/vestrel00/contacts-android/milestone/8)
 - 🔜 [**RxJava** extensions](https://github.com/vestrel00/contacts-android/milestone/9)
 
@@ -180,7 +180,7 @@ val contacts = Contacts(context)
     .find()
  ```
 
-> For more info, read [Query contacts (broad)](/docs/query-contacts.md).
+> For more info, read [Query contacts](/docs/basics/query-contacts.md).
 
 Something a bit more advanced...
 
@@ -224,7 +224,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> Fore more info, read [Query contacts (advanced)](/docs/query-contacts-advanced.md).
+> Fore more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 Once you have the contacts, you now have access to all of their data!
 
@@ -274,7 +274,7 @@ Log.d(
 ## Setup
 
 There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. For more info, read [Contacts API Setup](/docs/setup/setup.md).
+`contacts.core.Contacts(context)` API. For more info, read [Contacts API Setup](/docs/setup/setup-contacts-api.md).
 
 It is also useful to read about [API Entities](/docs/entities/about-api-entities.md).
 
@@ -370,7 +370,7 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-> For more info, read [Insert contacts](/docs/insert-contacts.md).
+> For more info, read [Insert contacts](/docs/basics/insert-contacts.md).
 
 If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his data,
 
@@ -389,7 +389,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Update contacts](/docs/update-contacts.md).
+> For more info, read [Update contacts](/docs/basics/update-contacts.md).
 
 If we no longer like John Doe, we can **DELETE** him from our life,
 
@@ -400,7 +400,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Delete Contacts and RawContacts](/docs/delete-contacts.md).
+> For more info, read [Delete Contacts](/docs/basics/delete-contacts.md).
 
 ## Threading and permissions
 
@@ -422,8 +422,8 @@ launch {
 }
 ```
 
-> For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling.md)
-> and [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+> For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md)
+> and [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 So, if we call the above function and we don't yet have permission. The user will be prompted to
 give the appropriate permissions before the query proceeds. Then, the work is done in the coroutine

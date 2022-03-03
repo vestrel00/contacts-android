@@ -109,7 +109,7 @@ All of the code shown in this guide are done in the same thread as the call-site
 in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -160,4 +160,4 @@ APIs can use the extension functions in `contacts.core.util.ContactOptions.kt` a
 To insert a new contact "with options", you should insert the contact first. Then, if the insert
 succeeds, proceed to set the options.
 
-> For more info about insert, read [Insert contacts](/docs/insert-contacts.md).
+> For more info about insert, read [Insert contacts](/docs/basics/insert-contacts.md).

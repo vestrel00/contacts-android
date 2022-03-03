@@ -9,7 +9,7 @@ An instance of the `DataUpdate` API is obtained by,
 val update = Contacts(context).data().update()
 ```
 
-> To update all kinds of data via Contacts/RawContacts, read [Update contacts](/docs/update-contacts.md).
+> To update all kinds of data via Contacts/RawContacts, read [Update contacts](/docs/basics/update-contacts.md).
 
 ## A basic update
 
@@ -142,7 +142,7 @@ Updates are executed when the `commit` function is invoked. The work is done in 
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -154,7 +154,7 @@ Updates require the `android.permission.WRITE_CONTACTS` permissions. If not gran
 will do nothing and return a failed result.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling.md).
+For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 

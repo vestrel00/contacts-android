@@ -3,9 +3,9 @@
 This library provides several query APIs that support custom data integration.
 
 1. `Query`
-    - [Query contacts (advanced)](/docs/query-contacts-advanced.md)
+    - [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md)
 2. `BroadQuery`
-    - [Query contacts (broad)](/docs/query-contacts.md)
+    - [Query contacts](/docs/basics/query-contacts.md)
 3. `ProfileQuery`
     - [Query device owner Contact profile](/docs/profile/query-profile.md)
 4. `DataQuery`

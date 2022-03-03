@@ -164,7 +164,7 @@ the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -176,6 +176,6 @@ Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.
 permissions. If not granted, the insert will do nothing and return a failed result.
 
 To perform the insert with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling.md).
+For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)

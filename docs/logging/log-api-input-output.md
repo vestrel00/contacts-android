@@ -11,7 +11,7 @@ val contactsApi = Contacts(
 )
 ```
 
-> For more info on `Contacts` API setup, read [Contacts API Setup](/docs/setup/setup.md).
+> For more info on `Contacts` API setup, read [Contacts API Setup](/docs/setup/setup-contacts-api.md).
 
 Invoking the `find` or `commit` functions in query, insert, update, and delete APIs will result in
 the following output in the Logcat,

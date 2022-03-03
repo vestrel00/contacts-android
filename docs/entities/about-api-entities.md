@@ -31,7 +31,7 @@ In the example given (E.G.) above,
     - 2 of these rows belong to John Doe from Gmail and the other 2 belong to John Doe from Hotmail
 
 In the background, the Contacts Provider automatically performs the RawContacts linking/aggregation
-into a single Contact. To forcefully link or unlink sets of RawContacts, read [Link unlink Contacts](/docs/util/link-unlink-contacts.md).
+into a single Contact. To forcefully link or unlink sets of RawContacts, read [Link unlink Contacts](/docs/other/link-unlink-contacts.md).
 
 In the background, the Contacts Provider syncs all data from the local database to the remote database
 and vice versa (depending on system contact sync settings). Read more in
@@ -84,7 +84,7 @@ and other mutating API functions).
 > For more info, read [Integrate custom data](/docs/customdata/integrate-custom-data.md).
 
 > Default native and custom data may be retrieved, set, or cleared.
-> For more info, read [Get set clear default Contact data](/docs/util/get-set-clear-default-data.md).
+> For more info, read [Get set clear default Contact data](/docs/other/get-set-clear-default-data.md).
 
 ## Data kinds count restrictions
 
@@ -276,7 +276,7 @@ Each Contact may have more than one of the following data if the Contact is made
 RawContacts; name, nickname, note, organization, sip address.
 
 For more info on how to easily aggregate data from all RawContacts in a Contact, read
-[Convenience functions](/docs/util/convenience-functions.md).
+[Convenience functions](/docs/other/convenience-functions.md).
 
 To look into the actual Contacts Provider tables, read [Debug the Contacts Provider tables](/docs/debug/debug-contacts-provider-tables.md).
 

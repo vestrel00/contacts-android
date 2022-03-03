@@ -43,8 +43,8 @@ To check if all of the requirements specified above are met,
 val canReadAndWriteBlockedNumbers = Contacts(context).blockedNumbers().privileges.canReadAndWrite()
 ```
 
-> Note that there updates are not supported by the Blocked Number provider. Use delete and insert
-> instead.
+> Note that update operations are not supported by the Blocked Number provider. 
+> Use delete and insert instead.
 
 Starting with Android 11 (API 30), you must include the following to your app's manifest in order to
 successfully use this function **and therefore the bocked number APIs provided in this library**.

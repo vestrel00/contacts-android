@@ -31,7 +31,7 @@ park!
 
 Instances of `Contacts` hold on to a `Logger` for logging support.
 
-For more info, read [Log API input and output](/docs/log/log-api-input-output.md).
+For more info, read [Log API input and output](/docs/logging/log-api-input-output.md).
 
 ## Custom data integration
 
@@ -52,7 +52,7 @@ It is recommended to use a single instance of the `Contacts` API throughout your
 3. Easily substitute your `Contacts` API instance with an instance of `MockContacts`
     - This is useful in [white box testing][white-box-testing] (unit & integration tests; `test/`).
     
-For more info, read [Contacts API Testing](/docs/testing/testing.md).
+For more info, read [Contacts API Testing](/docs/testing/test-contacts-api.md).
     
 > Of course, this library does not (and will not) force you to do things you don't want. If you 
 > don't care about all of the above and just want to get out a quick prototype of a feature in your 

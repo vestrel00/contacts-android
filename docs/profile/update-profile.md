@@ -1,4 +1,4 @@
-# Update the device owner Contact profile
+# Update device owner Contact profile
 
 This library provides the `ProfileUpdate` API that allows you to update the device owner Profile Contact.
 
@@ -12,7 +12,7 @@ An instance of the `ProfileUpdate` API is obtained by,
 val update = Contacts(context).profile().update()
 ```
 
-> If you want to update non-Profile Contacts, read [Update contacts](/docs/update-contacts.md).
+> If you want to update non-Profile Contacts, read [Update contacts](/docs/basics/update-contacts.md).
 
 ## A basic update
 
@@ -157,7 +157,7 @@ Updates are executed when the `commit` function is invoked. The work is done in 
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -173,7 +173,7 @@ will do nothing and return a failed result.
 > prior to installation instead of at runtime.
 
 To perform the update with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling.md).
+For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 

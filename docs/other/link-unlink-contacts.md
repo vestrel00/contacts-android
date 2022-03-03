@@ -82,7 +82,7 @@ val contact = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactLikResult`. To get the parent Contact 
 of all linked RawContacts,
@@ -132,7 +132,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactLikResult`. To get the Contacts
 of all unlinked RawContacts,
@@ -163,7 +163,7 @@ choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 

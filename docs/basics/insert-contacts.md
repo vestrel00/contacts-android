@@ -8,7 +8,7 @@ An instance of the `Insert` API is obtained by,
 val insert = Contacts(context).insert()
 ```
 
-> If you want to create/insert the device owner Contact Profile, read [Insert the device owner Contact profile](/docs/profile/insert-profile.md).
+> If you want to create/insert the device owner Contact Profile, read [Insert device owner Contact profile](/docs/profile/insert-profile.md).
 
 > If you want to insert Data into a new or existing contact, read [Insert data into new or existing contacts](/docs/data/insert-data-sets.md).
 
@@ -198,7 +198,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `InsertResult`. To get all newly created
 Contacts,
@@ -255,7 +255,7 @@ the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in
 the `async` module. For more info,
-read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -267,7 +267,7 @@ Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.
 permissions. If not granted, the insert will do nothing and return a failed result.
 
 To perform the insert with permission, use the extensions provided in the `permissions` module. For
-more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling.md).
+more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
@@ -373,4 +373,4 @@ val insertResult = Contacts(context)
 
 Full-sized photos (and by API design thumbnails) can only be inserted after inserting the contact. 
 
-For more info, read [Get set remove full-sized and thumbnail contact photos](/docs/util/get-set-remove-contact-raw-contact-photo.md).
+For more info, read [Get set remove full-sized and thumbnail contact photos](/docs/other/get-set-remove-contact-raw-contact-photo.md).

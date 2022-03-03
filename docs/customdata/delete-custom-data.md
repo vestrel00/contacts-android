@@ -5,13 +5,13 @@ This library provides several APIs that supports deleting custom data.
 1. `DataDelete`
    - [Delete existing sets of data](/docs/data/delete-data-sets.md)
 2. `Delete`
-   - [Delete Contacts and RawContacts](/docs/delete-contacts.md)
+   - [Delete Contacts](/docs/basics/delete-contacts.md)
 3. `ProfileDelete`
-   - [Delete the device owner Contact profile](/docs/profile/delete-profile.md)
+   - [Delete device owner Contact profile](/docs/profile/delete-profile.md)
 4. `Update`
-   - [Update contacts](/docs/update-contacts.md)
+   - [Update contacts](/docs/basics/update-contacts.md)
 5. `ProfileUpdate`
-   - [Update the device owner Contact profile](/docs/profile/update-profile.md)
+   - [Update device owner Contact profile](/docs/profile/update-profile.md)
 
 To help illustrate how custom data integrates with these update APIs, we'll use the `HandleName`
 and `Gender` custom data.

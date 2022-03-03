@@ -90,7 +90,7 @@ Note that if the lookup key is a reference to a linked Contact (a Contact with t
 constituent RawContacts), and the linked Contact is unlinked, then the query will return
 multiple Contacts.
 
-> For more info, read [Query contacts (advanced)](/docs/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 ## Moving RawContacts between accounts and the lookup key
 
@@ -138,7 +138,7 @@ For example, using the default AOSP Contacts app or the Google Contacts app...
 
 In both cases, the shortcut successfully opens the correct aggregate Contact.
 
-> For more info on linking/unlinking, read [Link unlink Contacts](/docs/util/link-unlink-contacts.md).
+> For more info on linking/unlinking, read [Link unlink Contacts](/docs/other/link-unlink-contacts.md).
 
 ------------------------
 

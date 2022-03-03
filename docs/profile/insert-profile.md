@@ -13,7 +13,7 @@ An instance of the `ProfileInsert` API is obtained by,
 val insert = Contacts(context).profile().insert()
 ```
 
-> If you want to create/insert non-Profile Contacts, read [Insert contacts](/docs/insert-contacts.md).
+> If you want to create/insert non-Profile Contacts, read [Insert contacts](/docs/basics/insert-contacts.md).
 
 ## A basic insert
 
@@ -210,7 +210,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](/docs/query-contacts-advanced.md).
+> For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ProfileInsertResult`. To get the newly created
 Contact,
@@ -253,7 +253,7 @@ Inserts are executed when the `commit` function is invoked. The work is done in 
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution.md).
+For more info, read [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -269,7 +269,7 @@ permissions. If not granted, the insert will do nothing and return a failed resu
 > prior to installation instead of at runtime.
 
 To perform the insert with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling.md).
+For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 

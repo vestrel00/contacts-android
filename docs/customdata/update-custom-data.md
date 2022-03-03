@@ -3,9 +3,9 @@
 This library provides several update APIs that support custom data integration.
 
 1. `Update`
-    - [Update contacts](/docs/update-contacts.md)
+    - [Update contacts](/docs/basics/update-contacts.md)
 2. `ProfileUpdate`
-    - [Update the device owner Contact profile](/docs/profile/update-profile.md)
+    - [Update device owner Contact profile](/docs/profile/update-profile.md)
 3. `DataUpdate`
     - [Update existing sets of data](/docs/data/update-data-sets.md)
 
