@@ -36,17 +36,17 @@ nav:
     - 'Update existing sets of data': data/update-data-sets.md
     - 'Delete existing sets of data': data/delete-data-sets.md
   - 'Custom data':
-    - 'Query custom data': data/query-custom-data.md
-    - 'Insert custom data into new or existing contacts': data/insert-custom-data.md
-    - 'Update custom data': data/update-custom-data.md
-    - 'Delete custom data': data/delete-custom-data.md
-    - 'Integrate custom data': data/integrate-custom-data.md
-    - 'Integrate custom data from other apps': data/integrate-custom-data-from-other-apps.md
-    - 'Integrate the Google Contacts custom data': data/integrate-googlecontacts-custom-data.md
-    - 'Integrate the Gender custom data': data/integrate-gender-custom-data.md
-    - 'Integrate the Handle Name custom data': data/integrate-handlename-custom-data.md
-    - 'Integrate the Pokemon custom data': data/integrate-pokemon-custom-data.md
-    - 'Integrate the RPG custom data': data/integrate-rpg-custom-data.md
+    - 'Query custom data': customdata/query-custom-data.md
+    - 'Insert custom data into new or existing contacts': customdata/insert-custom-data.md
+    - 'Update custom data': customdata/update-custom-data.md
+    - 'Delete custom data': customdata/delete-custom-data.md
+    - 'Integrate custom data': customdata/integrate-custom-data.md
+    - 'Integrate custom data from other apps': customdata/integrate-custom-data-from-other-apps.md
+    - 'Integrate the Google Contacts custom data': customdata/integrate-googlecontacts-custom-data.md
+    - 'Integrate the Gender custom data': customdata/integrate-gender-custom-data.md
+    - 'Integrate the Handle Name custom data': customdata/integrate-handlename-custom-data.md
+    - 'Integrate the Pokemon custom data': customdata/integrate-pokemon-custom-data.md
+    - 'Integrate the RPG custom data': customdata/integrate-rpg-custom-data.md
   - 'Groups':
     - 'Query groups': groups/query-groups.md
     - 'Insert groups': groups/insert-groups.md
@@ -91,7 +91,7 @@ nav:
 theme:
   name: 'material'
   language: 'en'
-  favicon: assets/images/favicon.png
+  favicon: images/favicon.png
   icon:
     logo: material/contacts
     repo: fontawesome/brands/github
@@ -109,4 +109,4 @@ plugins:
 # Extensions
 markdown_extensions:
   - toc:
-    permalink: true
+      permalink: true

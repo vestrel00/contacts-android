@@ -6,7 +6,7 @@ _Settings -> Accounts -> <account> -> Account sync -> "Contacts"_. Of course, in
 Contacts syncing enabled in settings, you must also have network connection to sync between the
 device and remote servers.
 
-![Account sync settings](/docs/assets/images/account-sync-settings.png)
+![Account sync settings](/docs/images/account-sync-settings.png)
 
 When you have Contacts syncing enabled, as long as the `android.accounts.Account` has active sync
 adapters and remote services and you have network connection, data belonging to that account (e.g.
