@@ -35,20 +35,20 @@ Contacts(context)
 
 To insert an email into an existing contact using the `Update` API,
  
- ```kotlin
+```kotlin
 Contacts(context)
     .update()
     .contacts(existingContact.mutableCopy {
         addEmail(email)
     })
     .commit()
- ```
+```
  
  > For more info, read [Update contacts](./../basics/update-contacts.md).
 
 To insert an email into an the existing Profile Contact using the `ProfileUpdate` API,
  
- ```kotlin
+```kotlin
 Contacts(context)
     .profile()
     .update()
@@ -56,7 +56,7 @@ Contacts(context)
         addEmail(email)
     })
     .commit()
- ```
+```
  
 > For more info, read [Update device owner Contact profile](./../profile/update-profile.md).
 

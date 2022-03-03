@@ -178,7 +178,7 @@ val contacts = Contacts(context)
     .broadQuery()
     .whereAnyContactDataPartiallyMatches(searchText)
     .find()
- ```
+```
 
 > For more info, read [Query contacts](/docs/basics/query-contacts.md).
 
@@ -228,7 +228,7 @@ val contacts = Contacts(context)
 
 Once you have the contacts, you now have access to all of their data!
 
- ```kotlin
+```kotlin
 val contact: Contact
 Log.d(
     "Contact",
@@ -267,7 +267,7 @@ Log.d(
     """.trimIndent()
     // There are also aggregate data functions that return a sequence instead of a list.
 )
- ```
+```
 
 > For more info, read about [API Entities](/docs/entities/about-api-entities.md).
 
