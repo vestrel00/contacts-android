@@ -2080,13 +2080,13 @@ with an Account and are synced).</p>
 <p>Note that I did the following investigation with a much larger data set. I simplified it here for brevity.</p>
 </blockquote>
 <p>Let's take a look at the following Contacts and RawContacts table rows,</p>
-<pre><code>#### Contacts table
-Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
-Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
-#### RawContacts table
-RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>#### Contacts table
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>#### RawContacts table
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
+</code></pre></div>
 <p>There are two Contacts each having one RawContact. </p>
 <p>Notice that the lookup keys are a bit different.</p>
 <ul>
@@ -2104,11 +2104,11 @@ the Contacts Provider probably uses these things internally. We also should not 
 an internal Contacts Provider detail we should not rely on BUT is probably relevant when implementing
 sync adapters.</p>
 <p><strong>When we link</strong> the two, we get...</p>
-<pre><code>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
-#### RawContacts table
-RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>#### RawContacts table
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+</code></pre></div>
 <p>Notice,</p>
 <ul>
 <li>Contact with ID 56 has been deleted.</li>
@@ -2123,49 +2123,49 @@ RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawCon
 </ul>
 <p>The most important part to notice is that the lookup keys get combined.</p>
 <p>The lookup uri is required to build a <code>Contacts.CONTENT_LOOKUP_URI</code>...</p>
-<pre><code class="language-java">/**
- * A content:// style URI for this table that should be used to create
- * shortcuts or otherwise create long-term links to contacts. This URI
- * should always be followed by a &quot;/&quot; and the contact's {@link #LOOKUP_KEY}.
- * It can optionally also have a &quot;/&quot; and last known contact ID appended after
- * that. This &quot;complete&quot; format is an important optimization and is highly recommended.
- * &lt;p&gt;
- * As long as the contact's row ID remains the same, this URI is
- * equivalent to {@link #CONTENT_URI}. If the contact's row ID changes
- * as a result of a sync or aggregation, this URI will look up the
- * contact using indirect information (sync IDs or constituent raw
- * contacts).
- * &lt;p&gt;
- * Lookup key should be appended unencoded - it is stored in the encoded
- * form, ready for use in a URI.
- */
-public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, &quot;lookup&quot;);
-
-/**
- * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the
- * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.
- * &lt;p&gt;
- * Returns null if unable to construct a valid lookup URI from the
- * provided parameters.
- */
-public static Uri getLookupUri(long contactId, String lookupKey) {
-    if (TextUtils.isEmpty(lookupKey)) {
-        return null;
-    }
-    return ContentUris.withAppendedId(Uri.withAppendedPath(Contacts.CONTENT_LOOKUP_URI, lookupKey), contactId);
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">/**</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cm"> * A content:// style URI for this table that should be used to create</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cm"> * shortcuts or otherwise create long-term links to contacts. This URI</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cm"> * should always be followed by a &quot;/&quot; and the contact&#39;s {@link #LOOKUP_KEY}.</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cm"> * It can optionally also have a &quot;/&quot; and last known contact ID appended after</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="cm"> * that. This &quot;complete&quot; format is an important optimization and is highly recommended.</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="cm"> * &lt;p&gt;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="cm"> * As long as the contact&#39;s row ID remains the same, this URI is</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="cm"> * equivalent to {@link #CONTENT_URI}. If the contact&#39;s row ID changes</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="cm"> * as a result of a sync or aggregation, this URI will look up the</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="cm"> * contact using indirect information (sync IDs or constituent raw</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="cm"> * contacts).</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="cm"> * &lt;p&gt;</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="cm"> * Lookup key should be appended unencoded - it is stored in the encoded</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="cm"> * form, ready for use in a URI.</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="cm"> */</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Uri</span> <span class="n">CONTENT_LOOKUP_URI</span> <span class="o">=</span> <span class="n">Uri</span><span class="p">.</span><span class="na">withAppendedPath</span><span class="p">(</span><span class="n">CONTENT_URI</span><span class="p">,</span> <span class="s">&quot;lookup&quot;</span><span class="p">);</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="cm">/**</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="cm"> * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="cm"> * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="cm"> * &lt;p&gt;</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="cm"> * Returns null if unable to construct a valid lookup URI from the</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="cm"> * provided parameters.</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="cm"> */</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="kd">public</span> <span class="kd">static</span> <span class="n">Uri</span> <span class="nf">getLookupUri</span><span class="p">(</span><span class="kt">long</span> <span class="n">contactId</span><span class="p">,</span> <span class="n">String</span> <span class="n">lookupKey</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">TextUtils</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">(</span><span class="n">lookupKey</span><span class="p">))</span> <span class="p">{</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>        <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>    <span class="p">}</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="k">return</span> <span class="n">ContentUris</span><span class="p">.</span><span class="na">withAppendedId</span><span class="p">(</span><span class="n">Uri</span><span class="p">.</span><span class="na">withAppendedPath</span><span class="p">(</span><span class="n">Contacts</span><span class="p">.</span><span class="na">CONTENT_LOOKUP_URI</span><span class="p">,</span> <span class="n">lookupKey</span><span class="p">),</span> <span class="n">contactId</span><span class="p">);</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="p">}</span>
+</code></pre></div>
 <p>From the lookup uri, we can lookup the Contact row...</p>
-<pre><code class="language-java">public static Uri lookupContact(ContentResolver resolver, Uri lookupUri) { ... }
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">public</span> <span class="kd">static</span> <span class="n">Uri</span> <span class="nf">lookupContact</span><span class="p">(</span><span class="n">ContentResolver</span> <span class="n">resolver</span><span class="p">,</span> <span class="n">Uri</span> <span class="n">lookupUri</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+</code></pre></div>
 <p>Or simply get the Contact ID...</p>
-<pre><code class="language-java">// code inside `public static Uri lookupContact`
-resolver.query(lookupUri, new String[]{Contacts._ID}, null, null, null)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// code inside `public static Uri lookupContact`</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">resolver</span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="n">lookupUri</span><span class="p">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span><span class="p">{</span><span class="n">Contacts</span><span class="p">.</span><span class="na">_ID</span><span class="p">},</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">)</span>
+</code></pre></div>
 <p>However, given that the lookup key of the deleted Contact 56 still lives on, it is possible to get 
 the linked Contact 55 using the lookup key of Contact 56 using our standard query APIs!</p>
-<pre><code class="language-kotlin">.where { Contact.LookupKey contains lookupKey }
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Contact</span><span class="p">.</span><span class="na">LookupKey</span> <span class="n">contains</span> <span class="n">lookupKey</span> <span class="p">}</span>
+</code></pre></div>
 <p>The above is correct as long as these assumptions hold true;</p>
 <ul>
 <li>the lookup key is unique </li>
@@ -2181,13 +2181,13 @@ the linked Contact 55 using the lookup key of Contact 56 using our standard quer
 <p>Until the community finds that this assumption is flawed, we'll assume that it is true! For now, we
 can <strong>avoid having to create another API or extensions just for using lookup keys</strong>. </p>
 <p><strong>When we unlink</strong>, we get...</p>
-<pre><code>#### Contacts table
-Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
-Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
-#### RawContacts table
-RawContact id: 55, contactId: 58, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>#### Contacts table
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>#### RawContacts table
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>RawContact id: 55, contactId: 58, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+</code></pre></div>
 <p>Notice,</p>
 <ul>
 <li>A new Contact row with ID of 58 is created.</li>
@@ -2288,11 +2288,11 @@ not relying on this mechanism. I'm just pointing out my observations, which coul
 <p>Another thing to check is what happens when associating a local RawContact to an Account (move from
 device to Account) and vice versa. Is the lookup key of the Contact affected?</p>
 <p>After associating the local RawContact to an Account...</p>
-<pre><code>#### Contacts table
-Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
-#### RawContacts table
-RawContact id: 55, contactId: 58
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>#### Contacts table
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>#### RawContacts table
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>RawContact id: 55, contactId: 58
+</code></pre></div>
 <p>The lookup key changed but the Contact ID remained the same! In this case, loading a reference to
 the previously local Contact will fail! I verified that this is indeed the behavior of the native
 (AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while 
@@ -2302,11 +2302,11 @@ not exist" message in the AOSP Contacts app!</p>
 <p>The RawContact and its Data also remained the same in this case.</p>
 </blockquote>
 <p>Removing the account from it results in...</p>
-<pre><code>#### Contacts table
-Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
-#### RawContacts table
-RawContact id: 58, contactId: 59
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>#### Contacts table
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>#### RawContacts table
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>RawContact id: 58, contactId: 59
+</code></pre></div>
 <p>The Contact and RawContacts row have been deleted and new rows have been created to replace them!
 I also verified that the Data rows have also been deleted and new rows have been created to 
 replace them!</p>
@@ -2325,19 +2325,19 @@ moving between accounts in the future.</p>
 section for more details.</p>
 </blockquote>
 <p>For example, creating 4 new contacts using the native Android Contacts app results in;</p>
-<pre><code>Contact id: 4, displayName: First Local Contact
-Contact id: 5, displayName: Second Local Contact
-Contact id: 6, displayName: Third Local Contact
-Contact id: 7, displayName: Third Local Contact
-RawContact id: 4, accountName: null, accountType: null
-RawContact id: 5, accountName: null, accountType: null
-RawContact id: 6, accountName: null, accountType: null
-RawContact id: 7, accountName: null, accountType: null
-Data id: 15, rawContactId: 4, contactId: 4, data: First Local Contact
-Data id: 16, rawContactId: 5, contactId: 5, data: Second Local Contact
-Data id: 17, rawContactId: 6, contactId: 6, data: Third Local Contact
-Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Contact id: 4, displayName: First Local Contact
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>Contact id: 5, displayName: Second Local Contact
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>Contact id: 6, displayName: Third Local Contact
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Contact id: 7, displayName: Third Local Contact
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>RawContact id: 4, accountName: null, accountType: null
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>RawContact id: 5, accountName: null, accountType: null
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>RawContact id: 6, accountName: null, accountType: null
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>RawContact id: 7, accountName: null, accountType: null
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>Data id: 15, rawContactId: 4, contactId: 4, data: First Local Contact
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>Data id: 16, rawContactId: 5, contactId: 5, data: Second Local Contact
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>Data id: 17, rawContactId: 6, contactId: 6, data: Third Local Contact
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
+</code></pre></div>
 <p><strong>Local Contacts / RawContacts</strong></p>
 <p>RawContacts inserted without an associated account are considered local or device-only raw contacts,
 which are not synced.</p>
@@ -2351,11 +2351,11 @@ raw contacts.</p>
 <p>When an Account is added, from a state where no accounts have yet been added to the system, the
 Contacts Provider automatically sets all of the null <code>accountName</code> and <code>accountType</code> in the
 RawContacts table to that Account's name and type;</p>
-<pre><code>RawContact id: 4, accountName: vestrel00@gmail.com, accountType: com.google
-RawContact id: 5, accountName: vestrel00@gmail.com, accountType: com.google
-RawContact id: 6, accountName: vestrel00@gmail.com, accountType: com.google
-RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>RawContact id: 4, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>RawContact id: 5, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>RawContact id: 6, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
+</code></pre></div>
 <p>RawContacts inserted without an associated account will automatically get assigned to an account if
 there are any available. This may take a few seconds, whenever the Contacts Provider decides to do
 it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
@@ -2485,42 +2485,42 @@ RawContacts table.</p>
 <p>However, the internals have not changed; <code>KEEP_TOGETHER</code> / <code>KEEP_SEPARATE</code>. These operations are 
 supported by the <code>ContactsContract.AggregationExceptions</code>.</p>
 <p>For example, given the following tables,</p>
-<pre><code>### Contacts table
-Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-
-### RawContacts table
-RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-
-### Data table
-Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
-Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
-Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
-Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 1
-Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
-Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 1
-Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
-Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 1
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>### Contacts table
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>### RawContacts table
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>### Data table
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 1
+</code></pre></div>
 <p>When Contact <strong>X</strong> links/merges/joins Contact <strong>Y</strong>, the tables becomes;</p>
-<pre><code>### Contacts table
-Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-
-### RawContacts table
-RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-
-### Data table
-Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
-Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
-Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
-Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 0
-Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
-Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 0
-Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
-Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 0
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>### Contacts table
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>### RawContacts table
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>### Data table
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 0
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 0
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 0
+</code></pre></div>
 <p><strong>What changed?</strong></p>
 <p>Contact Y's row has been deleted and its column values have been merged into Contact X row. If the 
 reverse occurred (Contact Y merged with Contact X), Contact Y's row would still be deleted. The 
@@ -2606,18 +2606,18 @@ in the same screen.</p>
 <li>Contact C link Contact B</li>
 </ul>
 <p>Results in the following AggregationExceptions rows respectively;</p>
-<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
-</code></pre>
-<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
-Aggregation exception id: 432, type: 1, rawContactId1: 3, rawContactId2: 4
-</code></pre>
-<pre><code>Aggregation exception id: 436, type: 1, rawContactId1: 1, rawContactId2: 2
-Aggregation exception id: 439, type: 1, rawContactId1: 1, rawContactId2: 3
-Aggregation exception id: 442, type: 1, rawContactId1: 1, rawContactId2: 4
-Aggregation exception id: 440, type: 1, rawContactId1: 2, rawContactId2: 3
-Aggregation exception id: 443, type: 1, rawContactId1: 2, rawContactId2: 4
-Aggregation exception id: 444, type: 1, rawContactId1: 3, rawContactId2: 4
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>Aggregation exception id: 432, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>Aggregation exception id: 436, type: 1, rawContactId1: 1, rawContactId2: 2
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>Aggregation exception id: 439, type: 1, rawContactId1: 1, rawContactId2: 3
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>Aggregation exception id: 442, type: 1, rawContactId1: 1, rawContactId2: 4
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>Aggregation exception id: 440, type: 1, rawContactId1: 2, rawContactId2: 3
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>Aggregation exception id: 443, type: 1, rawContactId1: 2, rawContactId2: 4
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>Aggregation exception id: 444, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre></div>
 <p>There is a pattern here. RawContact ids are sorted in ascending order and linked from least to 
 greatest exhaustively but no double links (1-2 is the same as 2-1).</p>
 <ul>
@@ -2983,302 +2983,302 @@ structured components; <code>STREET</code>, <code>POBOX</code>, <code>NEIGHBORHO
 </ul>
 <h3 id="groups-table-accounts">Groups Table &amp; Accounts<a class="headerlink" href="#groups-table-accounts" title="Permanent link">&para;</a></h3>
 <p>Contacts are assigned to one or more groups via the <code>GroupMembership</code>. It typically looks like this;</p>
-<pre><code>Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1, accountName: vestrel00@gmail.com, accountType: com.google
-Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-`````
-
-The actual groups are in a separate table; Groups. Each group is associated with an Account. No
-group can exist without an account. It is account-exclusive.
-
-Each account will have its own set of the above system groups. This means that there may be multiple
-groups with the same title belonging to different accounts.
-
-System ids are typically Contacts, Friends, Family, and Coworkers. These ids are typically the same
-across all copies of Android. Notes;
-- The Contacts system group is the default group in which all raw contacts of an account belongs to.
-  Therefore, it is typically hidden when showing the list of groups in the UI.
-- The starred (favorites) group is not a system group as it has null system id. However, it behaves
-  like one in that it is read only and it comes with most (if not all) copies of the native app.
-
-Removing the Account will delete all of the associated rows in the Groups table.
-
-**Groups, duplicate titles**
-
-The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
-belonging to the same account to exist. In older versions of Android, the native Contacts app 
-allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
-allowed. Therefore, this library does not allow for duplicate titles.
-
-&gt; In newer versions, the group with the duplicate title gets deleted either automatically by the 
-&gt; Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
-&gt; on insert or update. This could lead to bugs!
-
-### Groups Table &amp; GroupMemberships (Data Table)
-
-There may be multiple groups with the same title from different accounts. Therefore, the group
-membership should point to the group belonging to the same account as the raw contact. The native
-Contacts app displays only the groups belonging to the selected account.
-
-Updating group memberships of existing raw contacts seem to be almost instant. All raw contacts must
-be a part of at least the default group (system id is &quot;Contacts&quot;). Raw contacts with no group
-membership will be asynchronously added to the Account's default group by the Contacts Provider.
-
-Membership to the default group should never be deleted!
-
-### Starred in Android (Favorites)
-
-When the `ContactOptionsColumns.STARRED` column of a Contact in the Contacts table is set to true,
-the Contacts Provider automatically adds a group membership to the favorites group for all 
-RawContacts linked to the Contact. Setting `STARRED` to false removes all group memberships to the
-favorites group.
-
-The `STARRED` is interdependent with group memberships to the favorites group. Adding a group 
-membership to the favorites group results in `STARRED` being set to true. Removing the membership 
-sets it to false.
-
-Raw contacts that are not associated with an account do not have any group memberships. Even though
-these raw contacts may not have a membership to the favorites group, they may still be &quot;starred&quot;
-(favorited) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is not
-dependent on the existence of a favorites group membership.
-
-**Refresh RawContact instances after changing the starred value.** Otherwise, performing an update 
-on the RawContact with a stale set of group memberships may revert the star/unstar operation. For 
-example, query returns a starred RawContact -&gt; set starred to false -&gt; update RawContact (still 
-containing a group membership to the favorites group) -&gt; starred will be set back to true.
-
-### Group memberships &amp; Local RawContacts
-
-Local RawContacts may have a group membership to the default system group of an Account without
-being associated with the Account...
-
-The native Contacts app may not have an edit-RawContact option for newly inserted RawContacts that
-have no group membership to the default group when an Account is available. Though, edits can still
-be made in other ways. Instead, an option to &quot;Add to contacts&quot; is shown that adds a membership to
-the default group but does not associate the raw contact to the Account that owns the group. The
-edit UI does not show the group membership field.
-
-Weirdly, this only occurs when there is exactly only one Account. If there are no Accounts or there
-are two or more Accounts, then this does not occur. Also, this does not occur for a Contact with a
-RawContact that has a group membership AND a RawContact that has no group membership.
-
-### Groups; Deletion
-
-Similar to deleting RawContacts, deleting a Groups row may not immediately delete the Groups row. 
-In this case, it is marked as deleted. 
-
-&gt; A Group is marked for deletion as specified by `GroupsColumns.DELETED`.
-
-Typically, deleting Groups immediately removes the row from the Groups table. However,
-Groups row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
-One of the reasons syncs do not occur is when the system sync settings are turned off for the
-Account or there is no network connection.
-
-Such Groups should not be included in query results for Contacts. The AOSP and Google Contacts app 
-also does not show them.
-
-Note that local Groups rows (not associated with an Account) are deleted immediately as no sync
-needs to occur.
-
-### Groups; UI
-
-In newer Android versions of the native Contacts app, &quot;groups&quot; are now being referred to as
-&quot;labels&quot;. However, the underlying code still uses groups. Google is probably just trying to make it
-more user friendly by calling it label instead of group.
-
-### User Profile
-
-There exist one (profile) Contacts row that identifies the user;
-`ContactsColumns.IS_USER_PROFILE`. There is at least one RawContacts row that is associated with the
-user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts may or may
-not be associated with an Account. The RawContacts row(s) may have rows in the Data table as usual.
-These profile table rows have special IDs that differ from regular rows. See  
-`ContactsContract.isProfileId`.
-
-&gt; Note that the Contacts Provider will throw an IllegalArgument exception when attempting to include
-&gt; `ContactsColumns.IS_USER_PROFILE` and `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE` columns
-&gt; in Data table queries. I have not yet tried including these columns in the Contacts or RawContacts
-&gt; table queries.
-
-The profile Contact row may not be merged / linked with other contacts and do not belong to any
-group (favorites / starred).
-
-Profile rows in the Contacts, RawContacts, and Data table are not visible via queries in the
-respective tables. They will not be in the resulting cursor. To get the profile Contacts table rows,
-query the `Profile.CONTENT_URI`. To get profile RawContacts table rows, query the
-`Profile.CONTENT_RAW_CONTACTS_URI`. To get the profile Data table rows, query the
-`Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
-`RawContacts.Data.CONTENT_DIRECTORY`.
-
-To insert a new profile RawContact, use `Profile.CONTENT_RAW_CONTACTS_URI`. It will automatically
-be associated with the profile Contact. If the profile Contact does not yet exist, it will be  
-created automatically.
-
-To insert a new profile Data row, either;
-
-- insert to the `Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
-`RawContacts.Data.CONTENT_DIRECTORY`
-- insert to the Data table directly, referencing the RawContact id
-
-Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
-associated Contacts and Data table rows will automatically be deleted.
-
-**Profile aggregation**
-
-The RawContacts of a (Contact) Profile are linked via the indexed rows;
-`Profile.CONTENT_RAW_CONTACTS_URI`. Therefore, the AggregationsExceptions table is not used here.
-
-**Profile and users**
-
-Note that as of Android 5 Lollipop, there may exist multiple users in a device. Each user has a
-separate list of accounts and contact data. This also means that each user has a separate (local)
-profile contact.
-
-**Profile and Accounts**
-
-According to the `Profile` documentation; &quot;... each account (including data set, if applicable) on
-the device may contribute a single raw contact representing the user's personal profile data from
-that source.&quot;
-
-In other words, one account can have one profile RawContact. Whether or not profile RawContacts
-associated to an Account can be carried over and synced across devices and users is up to the
-Contacts Provider / Sync provider for that Account.
-
-&gt; From my experience, profile RawContacts associated to an Account is not carried over / synced
-&gt; across devices or users.
-
-Despite the documentation of &quot;one profile RawContact per one Account&quot;, the Contacts Provider allows
-for multiple RawContacts per Account, including multiple local RawContacts (no Account). Thus, we
-should let consumers exploit this but set defaults to be one-for-one.
-
-Creating / setting up the profile in the native Contacts app results in the creation of a local
-RawContact (not associated with an Account) even if there are available Accounts.
-
-The Contacts Provider does not associate local contacts to an account when an account is or becomes
-available (regardless of API level).
-
-Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
-Groups tables. This includes user Profile data in those tables.
-
-**Profile permissions**
-
-Profile permissions (READ_PROFILE and WRITE_PROFILE) have been removed since API 23. However, they
-are still required for API 22 and below. Reading and writing the profile is included in the Contacts
-permissions. There is no need to ask for profile permissions at runtime because prior to API 23,
-permissions in the AndroidManifest have to be accepted prior to installation.
-
-### Syncing Data / Sync Adapters
-
-First, it’s good to know the official documentation of sync adapters; 
-https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters
-
-Now, let’s ingest the official docs… Data belonging to a RawContact that is associated with a Google 
-account will be available anywhere the Google account is used; in any Android or iOS device, a web 
-browser, etc… Data is synced by Google’s sync adapters to and from their remote servers. Syncing 
-depends on the account sync settings, which can be configured in the native system settings app and 
-possibly through some remote configuration.
-
-This library does not provide any sync adapters. Instead, it relies on existing sync adapters to do 
-the syncing. Sync adapters and syncing are really out of scope of this library. Syncing is its own 
-thing that typically happens outside of an application UI. This library is focused on reading and 
-writing native and custom data to and from the local database. Syncing the local database to and 
-from a remote service is a different story altogether =)
-
-### Custom Data / MimeTypes
-
-First, it’s good to know the official documentation of custom data rows; 
-https://developer.android.com/guide/topics/providers/contacts-provider#CustomData
-
-Now, let’s ingest the official docs… Custom mimetypes do not belong to the native Contacts Provider 
-mimetype set (e.g. address, email, phone, etc). The Contacts Provider allows for the creation of 
-new / custom mimetypes. This is especially useful for other apps (Google Contacts, Facebook, 
-Twitter, WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
-
-Custom data are NOT synced, including those that belong to RawContacts that are associated with an 
-Account. Custom sync adapters are required to sync custom data. This library currently does NOT 
-provide custom sync adapters to sync custom data!
-
-Custom data from other apps such as Facebook, Twitter, WhatsApp, etc may or may not be synced. It 
-all depends on those applications and their custom sync adapters (if they have any) and sync settings.
-
-For insight on how aforementioned social media services may be syncing their data, read through the 
-official documentation; https://developer.android.com/guide/topics/providers/contacts-provider#SocialStream
-
-### Unused ContactsContract Stuff
-
-We are currently not utilizing these things because I haven't found usages of them while using the
-native Contacts app. They are probably working behind the scenes but until we find uses for these,
-let's leave it out because [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it).
-
-- `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
-    - Might be useful to add this for `SHOULD_SYNC` and `UNGROUPED_VISIBLE`.
-- `ContactsColumns.IN_VISIBLE_GROUP` + `Groups.GROUP_VISIBLE`. Flag indicating if the contacts
-   belonging to this group should be visible in any user interface.
-
-## Java Support
-
-This library is intended to be Java-friendly. The policy is that we should attempt to write 
-Java-friendly code that does not increase lines of code by much or add external dependencies to 
-cater exclusively to Java users.
-
-## Creating Entities &amp; data class
-
-First, consumers are not allowed to create immutable entities. Those must come from the API itself
-to ensure data integrity. Whether or not we will change this in the future is debatable =)
-
-Consumers are able to set read-only and private or internal variables though because all `Entity` 
-implementations are data classes. Data classes provide a `copy` function that allows for setting any
-property no matter their visibility and even if the constructor is private. As a matter of fact, 
-setting the constructor of a `data class` as `private` gives this warning by Android Studio: 
-&quot;Private data class constructor is exposed via the 'copy' method.
-
-There is currently no way to disable the `copy` function of data classes (that I know of). The only
-thing we can do is to provide documentation to consumers, insisting against the use of the `copy`
-method as it may lead to unwanted side effects when updating and deleting contacts.
-
-&gt; We could just use regular classes instead of data classes but entities should be data classes
-&gt; because it is what they are (know what I mean?!). Also, I'd hate to have to generate equals and
-&gt; hashcode functions for them, which will make the code harder to maintain. Though, we might do this
-&gt; anyways at some point if we want to make it possible for a mutable entity to equal an immutable
-&gt; entity. Time will tell =)
-&gt; FIXME? Hide / disable data class `copy` function if kotlin ever allows it. 
-&gt; https://discuss.kotlinlang.org/t/data-class-copy-visibility-modifier/19746
-
-## Immutable vs Mutable Entities
-
-This library provides **true immutability** for immutable entities.
-
-Take a look at the current (simplified) hierarchy;
-
-```kotlin
-sealed interface ContactEntity {
-    val rawContacts: List&lt;RawContactEntity&gt;
-}
-data class Contact(
-    override val rawContacts: List&lt;RawContact&gt;
-) : ContactEntity
-data class MutableContact(
-    override val rawContacts: List&lt;MutableRawContact&gt;
-) : ContactEntity
-
-sealed interface RawContactEntity
-data class RawContact(
-    val addresses: List&lt;Address&gt;
-) : RawContactEntity
-data class MutableRawContact(
-    val addresses: MutableList&lt;MutableAddress&gt;
-) : RawContactEntity
-
-data class Address(
-    val formattedAddress: String?
-)
-data class MutableAddress(
-    var formattedAddress: String?
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>`````
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>The actual groups are in a separate table; Groups. Each group is associated with an Account. No
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>group can exist without an account. It is account-exclusive.
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>Each account will have its own set of the above system groups. This means that there may be multiple
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>groups with the same title belonging to different accounts.
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>System ids are typically Contacts, Friends, Family, and Coworkers. These ids are typically the same
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>across all copies of Android. Notes;
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>- The Contacts system group is the default group in which all raw contacts of an account belongs to.
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>  Therefore, it is typically hidden when showing the list of groups in the UI.
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>- The starred (favorites) group is not a system group as it has null system id. However, it behaves
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>  like one in that it is read only and it comes with most (if not all) copies of the native app.
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>Removing the Account will delete all of the associated rows in the Groups table.
+<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>
+<a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>**Groups, duplicate titles**
+<a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>
+<a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a>The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
+<a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>belonging to the same account to exist. In older versions of Android, the native Contacts app 
+<a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
+<a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a>allowed. Therefore, this library does not allow for duplicate titles.
+<a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a>
+<a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a>&gt; In newer versions, the group with the duplicate title gets deleted either automatically by the 
+<a id="__codelineno-16-32" name="__codelineno-16-32" href="#__codelineno-16-32"></a>&gt; Contacts Provider or when viewing groups in the native Contacts app. It&#39;s not an immediate failure 
+<a id="__codelineno-16-33" name="__codelineno-16-33" href="#__codelineno-16-33"></a>&gt; on insert or update. This could lead to bugs!
+<a id="__codelineno-16-34" name="__codelineno-16-34" href="#__codelineno-16-34"></a>
+<a id="__codelineno-16-35" name="__codelineno-16-35" href="#__codelineno-16-35"></a>### Groups Table &amp; GroupMemberships (Data Table)
+<a id="__codelineno-16-36" name="__codelineno-16-36" href="#__codelineno-16-36"></a>
+<a id="__codelineno-16-37" name="__codelineno-16-37" href="#__codelineno-16-37"></a>There may be multiple groups with the same title from different accounts. Therefore, the group
+<a id="__codelineno-16-38" name="__codelineno-16-38" href="#__codelineno-16-38"></a>membership should point to the group belonging to the same account as the raw contact. The native
+<a id="__codelineno-16-39" name="__codelineno-16-39" href="#__codelineno-16-39"></a>Contacts app displays only the groups belonging to the selected account.
+<a id="__codelineno-16-40" name="__codelineno-16-40" href="#__codelineno-16-40"></a>
+<a id="__codelineno-16-41" name="__codelineno-16-41" href="#__codelineno-16-41"></a>Updating group memberships of existing raw contacts seem to be almost instant. All raw contacts must
+<a id="__codelineno-16-42" name="__codelineno-16-42" href="#__codelineno-16-42"></a>be a part of at least the default group (system id is &quot;Contacts&quot;). Raw contacts with no group
+<a id="__codelineno-16-43" name="__codelineno-16-43" href="#__codelineno-16-43"></a>membership will be asynchronously added to the Account&#39;s default group by the Contacts Provider.
+<a id="__codelineno-16-44" name="__codelineno-16-44" href="#__codelineno-16-44"></a>
+<a id="__codelineno-16-45" name="__codelineno-16-45" href="#__codelineno-16-45"></a>Membership to the default group should never be deleted!
+<a id="__codelineno-16-46" name="__codelineno-16-46" href="#__codelineno-16-46"></a>
+<a id="__codelineno-16-47" name="__codelineno-16-47" href="#__codelineno-16-47"></a>### Starred in Android (Favorites)
+<a id="__codelineno-16-48" name="__codelineno-16-48" href="#__codelineno-16-48"></a>
+<a id="__codelineno-16-49" name="__codelineno-16-49" href="#__codelineno-16-49"></a>When the `ContactOptionsColumns.STARRED` column of a Contact in the Contacts table is set to true,
+<a id="__codelineno-16-50" name="__codelineno-16-50" href="#__codelineno-16-50"></a>the Contacts Provider automatically adds a group membership to the favorites group for all 
+<a id="__codelineno-16-51" name="__codelineno-16-51" href="#__codelineno-16-51"></a>RawContacts linked to the Contact. Setting `STARRED` to false removes all group memberships to the
+<a id="__codelineno-16-52" name="__codelineno-16-52" href="#__codelineno-16-52"></a>favorites group.
+<a id="__codelineno-16-53" name="__codelineno-16-53" href="#__codelineno-16-53"></a>
+<a id="__codelineno-16-54" name="__codelineno-16-54" href="#__codelineno-16-54"></a>The `STARRED` is interdependent with group memberships to the favorites group. Adding a group 
+<a id="__codelineno-16-55" name="__codelineno-16-55" href="#__codelineno-16-55"></a>membership to the favorites group results in `STARRED` being set to true. Removing the membership 
+<a id="__codelineno-16-56" name="__codelineno-16-56" href="#__codelineno-16-56"></a>sets it to false.
+<a id="__codelineno-16-57" name="__codelineno-16-57" href="#__codelineno-16-57"></a>
+<a id="__codelineno-16-58" name="__codelineno-16-58" href="#__codelineno-16-58"></a>Raw contacts that are not associated with an account do not have any group memberships. Even though
+<a id="__codelineno-16-59" name="__codelineno-16-59" href="#__codelineno-16-59"></a>these raw contacts may not have a membership to the favorites group, they may still be &quot;starred&quot;
+<a id="__codelineno-16-60" name="__codelineno-16-60" href="#__codelineno-16-60"></a>(favorited) via the `ContactOptionsColumns.STARRED` column in the Contacts table, which is not
+<a id="__codelineno-16-61" name="__codelineno-16-61" href="#__codelineno-16-61"></a>dependent on the existence of a favorites group membership.
+<a id="__codelineno-16-62" name="__codelineno-16-62" href="#__codelineno-16-62"></a>
+<a id="__codelineno-16-63" name="__codelineno-16-63" href="#__codelineno-16-63"></a>**Refresh RawContact instances after changing the starred value.** Otherwise, performing an update 
+<a id="__codelineno-16-64" name="__codelineno-16-64" href="#__codelineno-16-64"></a>on the RawContact with a stale set of group memberships may revert the star/unstar operation. For 
+<a id="__codelineno-16-65" name="__codelineno-16-65" href="#__codelineno-16-65"></a>example, query returns a starred RawContact -&gt; set starred to false -&gt; update RawContact (still 
+<a id="__codelineno-16-66" name="__codelineno-16-66" href="#__codelineno-16-66"></a>containing a group membership to the favorites group) -&gt; starred will be set back to true.
+<a id="__codelineno-16-67" name="__codelineno-16-67" href="#__codelineno-16-67"></a>
+<a id="__codelineno-16-68" name="__codelineno-16-68" href="#__codelineno-16-68"></a>### Group memberships &amp; Local RawContacts
+<a id="__codelineno-16-69" name="__codelineno-16-69" href="#__codelineno-16-69"></a>
+<a id="__codelineno-16-70" name="__codelineno-16-70" href="#__codelineno-16-70"></a>Local RawContacts may have a group membership to the default system group of an Account without
+<a id="__codelineno-16-71" name="__codelineno-16-71" href="#__codelineno-16-71"></a>being associated with the Account...
+<a id="__codelineno-16-72" name="__codelineno-16-72" href="#__codelineno-16-72"></a>
+<a id="__codelineno-16-73" name="__codelineno-16-73" href="#__codelineno-16-73"></a>The native Contacts app may not have an edit-RawContact option for newly inserted RawContacts that
+<a id="__codelineno-16-74" name="__codelineno-16-74" href="#__codelineno-16-74"></a>have no group membership to the default group when an Account is available. Though, edits can still
+<a id="__codelineno-16-75" name="__codelineno-16-75" href="#__codelineno-16-75"></a>be made in other ways. Instead, an option to &quot;Add to contacts&quot; is shown that adds a membership to
+<a id="__codelineno-16-76" name="__codelineno-16-76" href="#__codelineno-16-76"></a>the default group but does not associate the raw contact to the Account that owns the group. The
+<a id="__codelineno-16-77" name="__codelineno-16-77" href="#__codelineno-16-77"></a>edit UI does not show the group membership field.
+<a id="__codelineno-16-78" name="__codelineno-16-78" href="#__codelineno-16-78"></a>
+<a id="__codelineno-16-79" name="__codelineno-16-79" href="#__codelineno-16-79"></a>Weirdly, this only occurs when there is exactly only one Account. If there are no Accounts or there
+<a id="__codelineno-16-80" name="__codelineno-16-80" href="#__codelineno-16-80"></a>are two or more Accounts, then this does not occur. Also, this does not occur for a Contact with a
+<a id="__codelineno-16-81" name="__codelineno-16-81" href="#__codelineno-16-81"></a>RawContact that has a group membership AND a RawContact that has no group membership.
+<a id="__codelineno-16-82" name="__codelineno-16-82" href="#__codelineno-16-82"></a>
+<a id="__codelineno-16-83" name="__codelineno-16-83" href="#__codelineno-16-83"></a>### Groups; Deletion
+<a id="__codelineno-16-84" name="__codelineno-16-84" href="#__codelineno-16-84"></a>
+<a id="__codelineno-16-85" name="__codelineno-16-85" href="#__codelineno-16-85"></a>Similar to deleting RawContacts, deleting a Groups row may not immediately delete the Groups row. 
+<a id="__codelineno-16-86" name="__codelineno-16-86" href="#__codelineno-16-86"></a>In this case, it is marked as deleted. 
+<a id="__codelineno-16-87" name="__codelineno-16-87" href="#__codelineno-16-87"></a>
+<a id="__codelineno-16-88" name="__codelineno-16-88" href="#__codelineno-16-88"></a>&gt; A Group is marked for deletion as specified by `GroupsColumns.DELETED`.
+<a id="__codelineno-16-89" name="__codelineno-16-89" href="#__codelineno-16-89"></a>
+<a id="__codelineno-16-90" name="__codelineno-16-90" href="#__codelineno-16-90"></a>Typically, deleting Groups immediately removes the row from the Groups table. However,
+<a id="__codelineno-16-91" name="__codelineno-16-91" href="#__codelineno-16-91"></a>Groups row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
+<a id="__codelineno-16-92" name="__codelineno-16-92" href="#__codelineno-16-92"></a>One of the reasons syncs do not occur is when the system sync settings are turned off for the
+<a id="__codelineno-16-93" name="__codelineno-16-93" href="#__codelineno-16-93"></a>Account or there is no network connection.
+<a id="__codelineno-16-94" name="__codelineno-16-94" href="#__codelineno-16-94"></a>
+<a id="__codelineno-16-95" name="__codelineno-16-95" href="#__codelineno-16-95"></a>Such Groups should not be included in query results for Contacts. The AOSP and Google Contacts app 
+<a id="__codelineno-16-96" name="__codelineno-16-96" href="#__codelineno-16-96"></a>also does not show them.
+<a id="__codelineno-16-97" name="__codelineno-16-97" href="#__codelineno-16-97"></a>
+<a id="__codelineno-16-98" name="__codelineno-16-98" href="#__codelineno-16-98"></a>Note that local Groups rows (not associated with an Account) are deleted immediately as no sync
+<a id="__codelineno-16-99" name="__codelineno-16-99" href="#__codelineno-16-99"></a>needs to occur.
+<a id="__codelineno-16-100" name="__codelineno-16-100" href="#__codelineno-16-100"></a>
+<a id="__codelineno-16-101" name="__codelineno-16-101" href="#__codelineno-16-101"></a>### Groups; UI
+<a id="__codelineno-16-102" name="__codelineno-16-102" href="#__codelineno-16-102"></a>
+<a id="__codelineno-16-103" name="__codelineno-16-103" href="#__codelineno-16-103"></a>In newer Android versions of the native Contacts app, &quot;groups&quot; are now being referred to as
+<a id="__codelineno-16-104" name="__codelineno-16-104" href="#__codelineno-16-104"></a>&quot;labels&quot;. However, the underlying code still uses groups. Google is probably just trying to make it
+<a id="__codelineno-16-105" name="__codelineno-16-105" href="#__codelineno-16-105"></a>more user friendly by calling it label instead of group.
+<a id="__codelineno-16-106" name="__codelineno-16-106" href="#__codelineno-16-106"></a>
+<a id="__codelineno-16-107" name="__codelineno-16-107" href="#__codelineno-16-107"></a>### User Profile
+<a id="__codelineno-16-108" name="__codelineno-16-108" href="#__codelineno-16-108"></a>
+<a id="__codelineno-16-109" name="__codelineno-16-109" href="#__codelineno-16-109"></a>There exist one (profile) Contacts row that identifies the user;
+<a id="__codelineno-16-110" name="__codelineno-16-110" href="#__codelineno-16-110"></a>`ContactsColumns.IS_USER_PROFILE`. There is at least one RawContacts row that is associated with the
+<a id="__codelineno-16-111" name="__codelineno-16-111" href="#__codelineno-16-111"></a>user profile; `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE`. Associated RawContacts may or may
+<a id="__codelineno-16-112" name="__codelineno-16-112" href="#__codelineno-16-112"></a>not be associated with an Account. The RawContacts row(s) may have rows in the Data table as usual.
+<a id="__codelineno-16-113" name="__codelineno-16-113" href="#__codelineno-16-113"></a>These profile table rows have special IDs that differ from regular rows. See  
+<a id="__codelineno-16-114" name="__codelineno-16-114" href="#__codelineno-16-114"></a>`ContactsContract.isProfileId`.
+<a id="__codelineno-16-115" name="__codelineno-16-115" href="#__codelineno-16-115"></a>
+<a id="__codelineno-16-116" name="__codelineno-16-116" href="#__codelineno-16-116"></a>&gt; Note that the Contacts Provider will throw an IllegalArgument exception when attempting to include
+<a id="__codelineno-16-117" name="__codelineno-16-117" href="#__codelineno-16-117"></a>&gt; `ContactsColumns.IS_USER_PROFILE` and `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE` columns
+<a id="__codelineno-16-118" name="__codelineno-16-118" href="#__codelineno-16-118"></a>&gt; in Data table queries. I have not yet tried including these columns in the Contacts or RawContacts
+<a id="__codelineno-16-119" name="__codelineno-16-119" href="#__codelineno-16-119"></a>&gt; table queries.
+<a id="__codelineno-16-120" name="__codelineno-16-120" href="#__codelineno-16-120"></a>
+<a id="__codelineno-16-121" name="__codelineno-16-121" href="#__codelineno-16-121"></a>The profile Contact row may not be merged / linked with other contacts and do not belong to any
+<a id="__codelineno-16-122" name="__codelineno-16-122" href="#__codelineno-16-122"></a>group (favorites / starred).
+<a id="__codelineno-16-123" name="__codelineno-16-123" href="#__codelineno-16-123"></a>
+<a id="__codelineno-16-124" name="__codelineno-16-124" href="#__codelineno-16-124"></a>Profile rows in the Contacts, RawContacts, and Data table are not visible via queries in the
+<a id="__codelineno-16-125" name="__codelineno-16-125" href="#__codelineno-16-125"></a>respective tables. They will not be in the resulting cursor. To get the profile Contacts table rows,
+<a id="__codelineno-16-126" name="__codelineno-16-126" href="#__codelineno-16-126"></a>query the `Profile.CONTENT_URI`. To get profile RawContacts table rows, query the
+<a id="__codelineno-16-127" name="__codelineno-16-127" href="#__codelineno-16-127"></a>`Profile.CONTENT_RAW_CONTACTS_URI`. To get the profile Data table rows, query the
+<a id="__codelineno-16-128" name="__codelineno-16-128" href="#__codelineno-16-128"></a>`Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
+<a id="__codelineno-16-129" name="__codelineno-16-129" href="#__codelineno-16-129"></a>`RawContacts.Data.CONTENT_DIRECTORY`.
+<a id="__codelineno-16-130" name="__codelineno-16-130" href="#__codelineno-16-130"></a>
+<a id="__codelineno-16-131" name="__codelineno-16-131" href="#__codelineno-16-131"></a>To insert a new profile RawContact, use `Profile.CONTENT_RAW_CONTACTS_URI`. It will automatically
+<a id="__codelineno-16-132" name="__codelineno-16-132" href="#__codelineno-16-132"></a>be associated with the profile Contact. If the profile Contact does not yet exist, it will be  
+<a id="__codelineno-16-133" name="__codelineno-16-133" href="#__codelineno-16-133"></a>created automatically.
+<a id="__codelineno-16-134" name="__codelineno-16-134" href="#__codelineno-16-134"></a>
+<a id="__codelineno-16-135" name="__codelineno-16-135" href="#__codelineno-16-135"></a>To insert a new profile Data row, either;
+<a id="__codelineno-16-136" name="__codelineno-16-136" href="#__codelineno-16-136"></a>
+<a id="__codelineno-16-137" name="__codelineno-16-137" href="#__codelineno-16-137"></a>- insert to the `Profile.CONTENT_RAW_CONTACTS_URI` appended with the RawContact id and
+<a id="__codelineno-16-138" name="__codelineno-16-138" href="#__codelineno-16-138"></a>`RawContacts.Data.CONTENT_DIRECTORY`
+<a id="__codelineno-16-139" name="__codelineno-16-139" href="#__codelineno-16-139"></a>- insert to the Data table directly, referencing the RawContact id
+<a id="__codelineno-16-140" name="__codelineno-16-140" href="#__codelineno-16-140"></a>
+<a id="__codelineno-16-141" name="__codelineno-16-141" href="#__codelineno-16-141"></a>Same rules apply to all table rows. If all profile RawContacts table rows have been deleted, then
+<a id="__codelineno-16-142" name="__codelineno-16-142" href="#__codelineno-16-142"></a>associated Contacts and Data table rows will automatically be deleted.
+<a id="__codelineno-16-143" name="__codelineno-16-143" href="#__codelineno-16-143"></a>
+<a id="__codelineno-16-144" name="__codelineno-16-144" href="#__codelineno-16-144"></a>**Profile aggregation**
+<a id="__codelineno-16-145" name="__codelineno-16-145" href="#__codelineno-16-145"></a>
+<a id="__codelineno-16-146" name="__codelineno-16-146" href="#__codelineno-16-146"></a>The RawContacts of a (Contact) Profile are linked via the indexed rows;
+<a id="__codelineno-16-147" name="__codelineno-16-147" href="#__codelineno-16-147"></a>`Profile.CONTENT_RAW_CONTACTS_URI`. Therefore, the AggregationsExceptions table is not used here.
+<a id="__codelineno-16-148" name="__codelineno-16-148" href="#__codelineno-16-148"></a>
+<a id="__codelineno-16-149" name="__codelineno-16-149" href="#__codelineno-16-149"></a>**Profile and users**
+<a id="__codelineno-16-150" name="__codelineno-16-150" href="#__codelineno-16-150"></a>
+<a id="__codelineno-16-151" name="__codelineno-16-151" href="#__codelineno-16-151"></a>Note that as of Android 5 Lollipop, there may exist multiple users in a device. Each user has a
+<a id="__codelineno-16-152" name="__codelineno-16-152" href="#__codelineno-16-152"></a>separate list of accounts and contact data. This also means that each user has a separate (local)
+<a id="__codelineno-16-153" name="__codelineno-16-153" href="#__codelineno-16-153"></a>profile contact.
+<a id="__codelineno-16-154" name="__codelineno-16-154" href="#__codelineno-16-154"></a>
+<a id="__codelineno-16-155" name="__codelineno-16-155" href="#__codelineno-16-155"></a>**Profile and Accounts**
+<a id="__codelineno-16-156" name="__codelineno-16-156" href="#__codelineno-16-156"></a>
+<a id="__codelineno-16-157" name="__codelineno-16-157" href="#__codelineno-16-157"></a>According to the `Profile` documentation; &quot;... each account (including data set, if applicable) on
+<a id="__codelineno-16-158" name="__codelineno-16-158" href="#__codelineno-16-158"></a>the device may contribute a single raw contact representing the user&#39;s personal profile data from
+<a id="__codelineno-16-159" name="__codelineno-16-159" href="#__codelineno-16-159"></a>that source.&quot;
+<a id="__codelineno-16-160" name="__codelineno-16-160" href="#__codelineno-16-160"></a>
+<a id="__codelineno-16-161" name="__codelineno-16-161" href="#__codelineno-16-161"></a>In other words, one account can have one profile RawContact. Whether or not profile RawContacts
+<a id="__codelineno-16-162" name="__codelineno-16-162" href="#__codelineno-16-162"></a>associated to an Account can be carried over and synced across devices and users is up to the
+<a id="__codelineno-16-163" name="__codelineno-16-163" href="#__codelineno-16-163"></a>Contacts Provider / Sync provider for that Account.
+<a id="__codelineno-16-164" name="__codelineno-16-164" href="#__codelineno-16-164"></a>
+<a id="__codelineno-16-165" name="__codelineno-16-165" href="#__codelineno-16-165"></a>&gt; From my experience, profile RawContacts associated to an Account is not carried over / synced
+<a id="__codelineno-16-166" name="__codelineno-16-166" href="#__codelineno-16-166"></a>&gt; across devices or users.
+<a id="__codelineno-16-167" name="__codelineno-16-167" href="#__codelineno-16-167"></a>
+<a id="__codelineno-16-168" name="__codelineno-16-168" href="#__codelineno-16-168"></a>Despite the documentation of &quot;one profile RawContact per one Account&quot;, the Contacts Provider allows
+<a id="__codelineno-16-169" name="__codelineno-16-169" href="#__codelineno-16-169"></a>for multiple RawContacts per Account, including multiple local RawContacts (no Account). Thus, we
+<a id="__codelineno-16-170" name="__codelineno-16-170" href="#__codelineno-16-170"></a>should let consumers exploit this but set defaults to be one-for-one.
+<a id="__codelineno-16-171" name="__codelineno-16-171" href="#__codelineno-16-171"></a>
+<a id="__codelineno-16-172" name="__codelineno-16-172" href="#__codelineno-16-172"></a>Creating / setting up the profile in the native Contacts app results in the creation of a local
+<a id="__codelineno-16-173" name="__codelineno-16-173" href="#__codelineno-16-173"></a>RawContact (not associated with an Account) even if there are available Accounts.
+<a id="__codelineno-16-174" name="__codelineno-16-174" href="#__codelineno-16-174"></a>
+<a id="__codelineno-16-175" name="__codelineno-16-175" href="#__codelineno-16-175"></a>The Contacts Provider does not associate local contacts to an account when an account is or becomes
+<a id="__codelineno-16-176" name="__codelineno-16-176" href="#__codelineno-16-176"></a>available (regardless of API level).
+<a id="__codelineno-16-177" name="__codelineno-16-177" href="#__codelineno-16-177"></a>
+<a id="__codelineno-16-178" name="__codelineno-16-178" href="#__codelineno-16-178"></a>Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
+<a id="__codelineno-16-179" name="__codelineno-16-179" href="#__codelineno-16-179"></a>Groups tables. This includes user Profile data in those tables.
+<a id="__codelineno-16-180" name="__codelineno-16-180" href="#__codelineno-16-180"></a>
+<a id="__codelineno-16-181" name="__codelineno-16-181" href="#__codelineno-16-181"></a>**Profile permissions**
+<a id="__codelineno-16-182" name="__codelineno-16-182" href="#__codelineno-16-182"></a>
+<a id="__codelineno-16-183" name="__codelineno-16-183" href="#__codelineno-16-183"></a>Profile permissions (READ_PROFILE and WRITE_PROFILE) have been removed since API 23. However, they
+<a id="__codelineno-16-184" name="__codelineno-16-184" href="#__codelineno-16-184"></a>are still required for API 22 and below. Reading and writing the profile is included in the Contacts
+<a id="__codelineno-16-185" name="__codelineno-16-185" href="#__codelineno-16-185"></a>permissions. There is no need to ask for profile permissions at runtime because prior to API 23,
+<a id="__codelineno-16-186" name="__codelineno-16-186" href="#__codelineno-16-186"></a>permissions in the AndroidManifest have to be accepted prior to installation.
+<a id="__codelineno-16-187" name="__codelineno-16-187" href="#__codelineno-16-187"></a>
+<a id="__codelineno-16-188" name="__codelineno-16-188" href="#__codelineno-16-188"></a>### Syncing Data / Sync Adapters
+<a id="__codelineno-16-189" name="__codelineno-16-189" href="#__codelineno-16-189"></a>
+<a id="__codelineno-16-190" name="__codelineno-16-190" href="#__codelineno-16-190"></a>First, it’s good to know the official documentation of sync adapters; 
+<a id="__codelineno-16-191" name="__codelineno-16-191" href="#__codelineno-16-191"></a>https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters
+<a id="__codelineno-16-192" name="__codelineno-16-192" href="#__codelineno-16-192"></a>
+<a id="__codelineno-16-193" name="__codelineno-16-193" href="#__codelineno-16-193"></a>Now, let’s ingest the official docs… Data belonging to a RawContact that is associated with a Google 
+<a id="__codelineno-16-194" name="__codelineno-16-194" href="#__codelineno-16-194"></a>account will be available anywhere the Google account is used; in any Android or iOS device, a web 
+<a id="__codelineno-16-195" name="__codelineno-16-195" href="#__codelineno-16-195"></a>browser, etc… Data is synced by Google’s sync adapters to and from their remote servers. Syncing 
+<a id="__codelineno-16-196" name="__codelineno-16-196" href="#__codelineno-16-196"></a>depends on the account sync settings, which can be configured in the native system settings app and 
+<a id="__codelineno-16-197" name="__codelineno-16-197" href="#__codelineno-16-197"></a>possibly through some remote configuration.
+<a id="__codelineno-16-198" name="__codelineno-16-198" href="#__codelineno-16-198"></a>
+<a id="__codelineno-16-199" name="__codelineno-16-199" href="#__codelineno-16-199"></a>This library does not provide any sync adapters. Instead, it relies on existing sync adapters to do 
+<a id="__codelineno-16-200" name="__codelineno-16-200" href="#__codelineno-16-200"></a>the syncing. Sync adapters and syncing are really out of scope of this library. Syncing is its own 
+<a id="__codelineno-16-201" name="__codelineno-16-201" href="#__codelineno-16-201"></a>thing that typically happens outside of an application UI. This library is focused on reading and 
+<a id="__codelineno-16-202" name="__codelineno-16-202" href="#__codelineno-16-202"></a>writing native and custom data to and from the local database. Syncing the local database to and 
+<a id="__codelineno-16-203" name="__codelineno-16-203" href="#__codelineno-16-203"></a>from a remote service is a different story altogether =)
+<a id="__codelineno-16-204" name="__codelineno-16-204" href="#__codelineno-16-204"></a>
+<a id="__codelineno-16-205" name="__codelineno-16-205" href="#__codelineno-16-205"></a>### Custom Data / MimeTypes
+<a id="__codelineno-16-206" name="__codelineno-16-206" href="#__codelineno-16-206"></a>
+<a id="__codelineno-16-207" name="__codelineno-16-207" href="#__codelineno-16-207"></a>First, it’s good to know the official documentation of custom data rows; 
+<a id="__codelineno-16-208" name="__codelineno-16-208" href="#__codelineno-16-208"></a>https://developer.android.com/guide/topics/providers/contacts-provider#CustomData
+<a id="__codelineno-16-209" name="__codelineno-16-209" href="#__codelineno-16-209"></a>
+<a id="__codelineno-16-210" name="__codelineno-16-210" href="#__codelineno-16-210"></a>Now, let’s ingest the official docs… Custom mimetypes do not belong to the native Contacts Provider 
+<a id="__codelineno-16-211" name="__codelineno-16-211" href="#__codelineno-16-211"></a>mimetype set (e.g. address, email, phone, etc). The Contacts Provider allows for the creation of 
+<a id="__codelineno-16-212" name="__codelineno-16-212" href="#__codelineno-16-212"></a>new / custom mimetypes. This is especially useful for other apps (Google Contacts, Facebook, 
+<a id="__codelineno-16-213" name="__codelineno-16-213" href="#__codelineno-16-213"></a>Twitter, WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
+<a id="__codelineno-16-214" name="__codelineno-16-214" href="#__codelineno-16-214"></a>
+<a id="__codelineno-16-215" name="__codelineno-16-215" href="#__codelineno-16-215"></a>Custom data are NOT synced, including those that belong to RawContacts that are associated with an 
+<a id="__codelineno-16-216" name="__codelineno-16-216" href="#__codelineno-16-216"></a>Account. Custom sync adapters are required to sync custom data. This library currently does NOT 
+<a id="__codelineno-16-217" name="__codelineno-16-217" href="#__codelineno-16-217"></a>provide custom sync adapters to sync custom data!
+<a id="__codelineno-16-218" name="__codelineno-16-218" href="#__codelineno-16-218"></a>
+<a id="__codelineno-16-219" name="__codelineno-16-219" href="#__codelineno-16-219"></a>Custom data from other apps such as Facebook, Twitter, WhatsApp, etc may or may not be synced. It 
+<a id="__codelineno-16-220" name="__codelineno-16-220" href="#__codelineno-16-220"></a>all depends on those applications and their custom sync adapters (if they have any) and sync settings.
+<a id="__codelineno-16-221" name="__codelineno-16-221" href="#__codelineno-16-221"></a>
+<a id="__codelineno-16-222" name="__codelineno-16-222" href="#__codelineno-16-222"></a>For insight on how aforementioned social media services may be syncing their data, read through the 
+<a id="__codelineno-16-223" name="__codelineno-16-223" href="#__codelineno-16-223"></a>official documentation; https://developer.android.com/guide/topics/providers/contacts-provider#SocialStream
+<a id="__codelineno-16-224" name="__codelineno-16-224" href="#__codelineno-16-224"></a>
+<a id="__codelineno-16-225" name="__codelineno-16-225" href="#__codelineno-16-225"></a>### Unused ContactsContract Stuff
+<a id="__codelineno-16-226" name="__codelineno-16-226" href="#__codelineno-16-226"></a>
+<a id="__codelineno-16-227" name="__codelineno-16-227" href="#__codelineno-16-227"></a>We are currently not utilizing these things because I haven&#39;t found usages of them while using the
+<a id="__codelineno-16-228" name="__codelineno-16-228" href="#__codelineno-16-228"></a>native Contacts app. They are probably working behind the scenes but until we find uses for these,
+<a id="__codelineno-16-229" name="__codelineno-16-229" href="#__codelineno-16-229"></a>let&#39;s leave it out because [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it).
+<a id="__codelineno-16-230" name="__codelineno-16-230" href="#__codelineno-16-230"></a>
+<a id="__codelineno-16-231" name="__codelineno-16-231" href="#__codelineno-16-231"></a>- `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
+<a id="__codelineno-16-232" name="__codelineno-16-232" href="#__codelineno-16-232"></a>    - Might be useful to add this for `SHOULD_SYNC` and `UNGROUPED_VISIBLE`.
+<a id="__codelineno-16-233" name="__codelineno-16-233" href="#__codelineno-16-233"></a>- `ContactsColumns.IN_VISIBLE_GROUP` + `Groups.GROUP_VISIBLE`. Flag indicating if the contacts
+<a id="__codelineno-16-234" name="__codelineno-16-234" href="#__codelineno-16-234"></a>   belonging to this group should be visible in any user interface.
+<a id="__codelineno-16-235" name="__codelineno-16-235" href="#__codelineno-16-235"></a>
+<a id="__codelineno-16-236" name="__codelineno-16-236" href="#__codelineno-16-236"></a>## Java Support
+<a id="__codelineno-16-237" name="__codelineno-16-237" href="#__codelineno-16-237"></a>
+<a id="__codelineno-16-238" name="__codelineno-16-238" href="#__codelineno-16-238"></a>This library is intended to be Java-friendly. The policy is that we should attempt to write 
+<a id="__codelineno-16-239" name="__codelineno-16-239" href="#__codelineno-16-239"></a>Java-friendly code that does not increase lines of code by much or add external dependencies to 
+<a id="__codelineno-16-240" name="__codelineno-16-240" href="#__codelineno-16-240"></a>cater exclusively to Java users.
+<a id="__codelineno-16-241" name="__codelineno-16-241" href="#__codelineno-16-241"></a>
+<a id="__codelineno-16-242" name="__codelineno-16-242" href="#__codelineno-16-242"></a>## Creating Entities &amp; data class
+<a id="__codelineno-16-243" name="__codelineno-16-243" href="#__codelineno-16-243"></a>
+<a id="__codelineno-16-244" name="__codelineno-16-244" href="#__codelineno-16-244"></a>First, consumers are not allowed to create immutable entities. Those must come from the API itself
+<a id="__codelineno-16-245" name="__codelineno-16-245" href="#__codelineno-16-245"></a>to ensure data integrity. Whether or not we will change this in the future is debatable =)
+<a id="__codelineno-16-246" name="__codelineno-16-246" href="#__codelineno-16-246"></a>
+<a id="__codelineno-16-247" name="__codelineno-16-247" href="#__codelineno-16-247"></a>Consumers are able to set read-only and private or internal variables though because all `Entity` 
+<a id="__codelineno-16-248" name="__codelineno-16-248" href="#__codelineno-16-248"></a>implementations are data classes. Data classes provide a `copy` function that allows for setting any
+<a id="__codelineno-16-249" name="__codelineno-16-249" href="#__codelineno-16-249"></a>property no matter their visibility and even if the constructor is private. As a matter of fact, 
+<a id="__codelineno-16-250" name="__codelineno-16-250" href="#__codelineno-16-250"></a>setting the constructor of a `data class` as `private` gives this warning by Android Studio: 
+<a id="__codelineno-16-251" name="__codelineno-16-251" href="#__codelineno-16-251"></a>&quot;Private data class constructor is exposed via the &#39;copy&#39; method.
+<a id="__codelineno-16-252" name="__codelineno-16-252" href="#__codelineno-16-252"></a>
+<a id="__codelineno-16-253" name="__codelineno-16-253" href="#__codelineno-16-253"></a>There is currently no way to disable the `copy` function of data classes (that I know of). The only
+<a id="__codelineno-16-254" name="__codelineno-16-254" href="#__codelineno-16-254"></a>thing we can do is to provide documentation to consumers, insisting against the use of the `copy`
+<a id="__codelineno-16-255" name="__codelineno-16-255" href="#__codelineno-16-255"></a>method as it may lead to unwanted side effects when updating and deleting contacts.
+<a id="__codelineno-16-256" name="__codelineno-16-256" href="#__codelineno-16-256"></a>
+<a id="__codelineno-16-257" name="__codelineno-16-257" href="#__codelineno-16-257"></a>&gt; We could just use regular classes instead of data classes but entities should be data classes
+<a id="__codelineno-16-258" name="__codelineno-16-258" href="#__codelineno-16-258"></a>&gt; because it is what they are (know what I mean?!). Also, I&#39;d hate to have to generate equals and
+<a id="__codelineno-16-259" name="__codelineno-16-259" href="#__codelineno-16-259"></a>&gt; hashcode functions for them, which will make the code harder to maintain. Though, we might do this
+<a id="__codelineno-16-260" name="__codelineno-16-260" href="#__codelineno-16-260"></a>&gt; anyways at some point if we want to make it possible for a mutable entity to equal an immutable
+<a id="__codelineno-16-261" name="__codelineno-16-261" href="#__codelineno-16-261"></a>&gt; entity. Time will tell =)
+<a id="__codelineno-16-262" name="__codelineno-16-262" href="#__codelineno-16-262"></a>&gt; FIXME? Hide / disable data class `copy` function if kotlin ever allows it. 
+<a id="__codelineno-16-263" name="__codelineno-16-263" href="#__codelineno-16-263"></a>&gt; https://discuss.kotlinlang.org/t/data-class-copy-visibility-modifier/19746
+<a id="__codelineno-16-264" name="__codelineno-16-264" href="#__codelineno-16-264"></a>
+<a id="__codelineno-16-265" name="__codelineno-16-265" href="#__codelineno-16-265"></a>## Immutable vs Mutable Entities
+<a id="__codelineno-16-266" name="__codelineno-16-266" href="#__codelineno-16-266"></a>
+<a id="__codelineno-16-267" name="__codelineno-16-267" href="#__codelineno-16-267"></a>This library provides **true immutability** for immutable entities.
+<a id="__codelineno-16-268" name="__codelineno-16-268" href="#__codelineno-16-268"></a>
+<a id="__codelineno-16-269" name="__codelineno-16-269" href="#__codelineno-16-269"></a>Take a look at the current (simplified) hierarchy;
+<a id="__codelineno-16-270" name="__codelineno-16-270" href="#__codelineno-16-270"></a>
+<a id="__codelineno-16-271" name="__codelineno-16-271" href="#__codelineno-16-271"></a>```kotlin
+<a id="__codelineno-16-272" name="__codelineno-16-272" href="#__codelineno-16-272"></a>sealed interface ContactEntity {
+<a id="__codelineno-16-273" name="__codelineno-16-273" href="#__codelineno-16-273"></a>    val rawContacts: List&lt;RawContactEntity&gt;
+<a id="__codelineno-16-274" name="__codelineno-16-274" href="#__codelineno-16-274"></a>}
+<a id="__codelineno-16-275" name="__codelineno-16-275" href="#__codelineno-16-275"></a>data class Contact(
+<a id="__codelineno-16-276" name="__codelineno-16-276" href="#__codelineno-16-276"></a>    override val rawContacts: List&lt;RawContact&gt;
+<a id="__codelineno-16-277" name="__codelineno-16-277" href="#__codelineno-16-277"></a>) : ContactEntity
+<a id="__codelineno-16-278" name="__codelineno-16-278" href="#__codelineno-16-278"></a>data class MutableContact(
+<a id="__codelineno-16-279" name="__codelineno-16-279" href="#__codelineno-16-279"></a>    override val rawContacts: List&lt;MutableRawContact&gt;
+<a id="__codelineno-16-280" name="__codelineno-16-280" href="#__codelineno-16-280"></a>) : ContactEntity
+<a id="__codelineno-16-281" name="__codelineno-16-281" href="#__codelineno-16-281"></a>
+<a id="__codelineno-16-282" name="__codelineno-16-282" href="#__codelineno-16-282"></a>sealed interface RawContactEntity
+<a id="__codelineno-16-283" name="__codelineno-16-283" href="#__codelineno-16-283"></a>data class RawContact(
+<a id="__codelineno-16-284" name="__codelineno-16-284" href="#__codelineno-16-284"></a>    val addresses: List&lt;Address&gt;
+<a id="__codelineno-16-285" name="__codelineno-16-285" href="#__codelineno-16-285"></a>) : RawContactEntity
+<a id="__codelineno-16-286" name="__codelineno-16-286" href="#__codelineno-16-286"></a>data class MutableRawContact(
+<a id="__codelineno-16-287" name="__codelineno-16-287" href="#__codelineno-16-287"></a>    val addresses: MutableList&lt;MutableAddress&gt;
+<a id="__codelineno-16-288" name="__codelineno-16-288" href="#__codelineno-16-288"></a>) : RawContactEntity
+<a id="__codelineno-16-289" name="__codelineno-16-289" href="#__codelineno-16-289"></a>
+<a id="__codelineno-16-290" name="__codelineno-16-290" href="#__codelineno-16-290"></a>data class Address(
+<a id="__codelineno-16-291" name="__codelineno-16-291" href="#__codelineno-16-291"></a>    val formattedAddress: String?
+<a id="__codelineno-16-292" name="__codelineno-16-292" href="#__codelineno-16-292"></a>)
+<a id="__codelineno-16-293" name="__codelineno-16-293" href="#__codelineno-16-293"></a>data class MutableAddress(
+<a id="__codelineno-16-294" name="__codelineno-16-294" href="#__codelineno-16-294"></a>    var formattedAddress: String?
+<a id="__codelineno-16-295" name="__codelineno-16-295" href="#__codelineno-16-295"></a>)
+</code></pre></div>
 <blockquote>
 <p>Note the use of <code>sealed class</code> is to prevent consumers from defining their own entities. This
 restriction may or may not change in the future.</p>
@@ -3294,11 +3294,11 @@ different threads without the need for synchronization and worries about deadloc
 they are thread-safe and faster than the mutable version.</p>
 <p>The current structure also allows consumers to be able to distinguish between immutable and mutable
 entities exhaustively. E.G.</p>
-<pre><code class="language-kotlin">fun doSomethingAndReturn(contact: ContactEntity) = when (contact) {
-    is Contact -&gt; {}
-    is MutableContact -&gt; {}
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kd">fun</span> <span class="nf">doSomethingAndReturn</span><span class="p">(</span><span class="n">contact</span><span class="p">:</span> <span class="n">ContactEntity</span><span class="p">)</span> <span class="o">=</span> <span class="k">when</span> <span class="p">(</span><span class="n">contact</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="k">is</span> <span class="n">Contact</span> <span class="o">-&gt;</span> <span class="p">{}</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    <span class="k">is</span> <span class="n">MutableContact</span> <span class="o">-&gt;</span> <span class="p">{}</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="p">}</span>
+</code></pre></div>
 <blockquote>
 <p>Note that the <strong>mutable entities provided in this library are NOT thread-safe</strong>. Consumers will
 have to perform their own synchronizations if they want to use and mutate mutable entities in
@@ -3321,27 +3321,27 @@ stdlib devs also had to write seemingly duplicate code in implementations of the
 <p>One thing that may come to mind in attempts to reduce lines of seemingly duplicate code is to have
 just a mutable implementation of an immutable declaration. For example, we can restructure the
 hierarchy to;</p>
-<pre><code class="language-kotlin">sealed interface Contact {
-    val rawContacts: List&lt;RawContact&gt;
-}
-data class MutableContact(
-    override val rawContacts: List&lt;MutableRawContact&gt;
-) : Contact
-
-sealed interface RawContact {
-    val addresses: List&lt;Address&gt;
-}
-data class MutableRawContact(
-    override var addresses: MutableList&lt;MutableAddress&gt;
-) : RawContact
-
-sealed interface Address {
-    val formattedAddress: String?
-}
-data class MutableAddress(
-    override var formattedAddress: String?
-) : Address
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kd">sealed</span> <span class="kd">interface</span> <span class="nc">Contact</span> <span class="p">{</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    <span class="kd">val</span> <span class="nv">rawContacts</span><span class="p">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">RawContact</span><span class="o">&gt;</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="p">}</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="kd">data</span> <span class="kd">class</span> <span class="nc">MutableContact</span><span class="p">(</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="kd">override</span> <span class="kd">val</span> <span class="nv">rawContacts</span><span class="p">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">MutableRawContact</span><span class="o">&gt;</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="p">)</span> <span class="p">:</span> <span class="n">Contact</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="kd">sealed</span> <span class="kd">interface</span> <span class="nc">RawContact</span> <span class="p">{</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="kd">val</span> <span class="nv">addresses</span><span class="p">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Address</span><span class="o">&gt;</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="p">}</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="kd">data</span> <span class="kd">class</span> <span class="nc">MutableRawContact</span><span class="p">(</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>    <span class="kd">override</span> <span class="kd">var</span> <span class="nv">addresses</span><span class="p">:</span> <span class="n">MutableList</span><span class="o">&lt;</span><span class="n">MutableAddress</span><span class="o">&gt;</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="p">)</span> <span class="p">:</span> <span class="n">RawContact</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="kd">sealed</span> <span class="kd">interface</span> <span class="nc">Address</span> <span class="p">{</span>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>    <span class="kd">val</span> <span class="nv">formattedAddress</span><span class="p">:</span> <span class="kt">String?</span>
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="p">}</span>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="kd">data</span> <span class="kd">class</span> <span class="nc">MutableAddress</span><span class="p">(</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>    <span class="kd">override</span> <span class="kd">var</span> <span class="nv">formattedAddress</span><span class="p">:</span> <span class="kt">String?</span>
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="p">)</span> <span class="p">:</span> <span class="n">Address</span>
+</code></pre></div>
 <p>Notice that there is a non-concrete declaration (i.e. <code>Contact</code>, <code>RawContact</code>, and <code>Address</code>) and
 just one concrete implementation (i.e. <code>MutableContact</code>, <code>MutableRawContact</code>, and <code>MutableAddress</code>).</p>
 <blockquote>
@@ -3365,11 +3365,11 @@ negatively affecting performance.</p>
 <p>Keep in mind that thread safety is only one of several reasons for immutability. Those other
 reasons will be violated too.</p>
 <p>Consumers will be shocked if they ever do the following or something similar.</p>
-<pre><code class="language-kotlin">fun x(contact: Contact) = when(contact) {
-    is MutableContact -&gt; {} // this is always true
-    is Contact -&gt; {} // this is always true
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kd">fun</span> <span class="nf">x</span><span class="p">(</span><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span><span class="p">)</span> <span class="o">=</span> <span class="k">when</span><span class="p">(</span><span class="n">contact</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>    <span class="k">is</span> <span class="n">MutableContact</span> <span class="o">-&gt;</span> <span class="p">{}</span> <span class="c1">// this is always true</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>    <span class="k">is</span> <span class="n">Contact</span> <span class="o">-&gt;</span> <span class="p">{}</span> <span class="c1">// this is always true</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="p">}</span>
+</code></pre></div>
 <p>In any case, I have to admit, it is a nice trick that would save API contributors time. But that's
 just it! It's just a trick. A shortcut. A nice little time save at the cost of integrity. It is not
 worth it (IMO).</p>

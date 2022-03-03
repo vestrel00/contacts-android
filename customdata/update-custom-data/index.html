@@ -1727,37 +1727,37 @@ as regular data kinds.</p>
 <p>For more info, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
 <p>For example, you are able to update existing handle names and the gender of an existing RawContact,</p>
-<pre><code class="language-kotlin">mutableRawContact.handleNames(contactsApi).firstOrNull()?.apply {
-   handle = &quot;gal91&quot;
-}
-mutableRawContact.gender(contactsApi)?.apply {
-   type = GenderEntity.Type.FEMALE
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">handleNames</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">).</span><span class="na">firstOrNull</span><span class="p">()</span><span class="o">?.</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   <span class="n">handle</span> <span class="o">=</span> <span class="s">&quot;gal91&quot;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">gender</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="o">?.</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>   <span class="n">type</span> <span class="o">=</span> <span class="n">GenderEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">FEMALE</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</code></pre></div>
 <p>There are also extensions that allow you to update custom data of an existing RawContact via a 
 Contact, which can be made up of one or more RawContacts,</p>
-<pre><code class="language-kotlin">mutableContact.handleNames(contactsApi).firstOrNull()?.apply {
-   handle = &quot;gal91&quot;
-}
-mutableContact.genders(contactsApi).firstOrNull()?.apply {
-   type = GenderEntity.Type.FEMALE
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">handleNames</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">).</span><span class="na">firstOrNull</span><span class="p">()</span><span class="o">?.</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   <span class="n">handle</span> <span class="o">=</span> <span class="s">&quot;gal91&quot;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">}</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">genders</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">).</span><span class="na">firstOrNull</span><span class="p">()</span><span class="o">?.</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>   <span class="n">type</span> <span class="o">=</span> <span class="n">GenderEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">FEMALE</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+</code></pre></div>
 <p>Once you have made the updates to existing custom data, you can perform the update operation on the 
 RawContact to commit your changes into the database using <code>Update</code> or <code>ProfileUpdate</code>.</p>
 <h2 id="updating-sets-of-custom-data-directly">Updating sets of custom data directly<a class="headerlink" href="#updating-sets-of-custom-data-directly" title="Permanent link">&para;</a></h2>
 <p>All custom data are compatible with the <code>DataUpdate</code> API, which allows you to update sets of 
 existing regular and custom data kinds.</p>
 <p>For example, to update a set of <code>HandleName</code>s and <code>Gender</code>s,</p>
-<pre><code class="language-kotlin">val handleNames: List&lt;MutableHandleName&gt;
-val genders: List&lt;MutableGender&gt;
-
-val updateResult = Contacts(this)
-   .data()
-   .update()
-   .data(handleNames + genders)
-   .commit()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">handleNames</span><span class="p">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">MutableHandleName</span><span class="o">&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">val</span> <span class="nv">genders</span><span class="p">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">MutableGender</span><span class="o">&gt;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kd">val</span> <span class="nv">updateResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>   <span class="p">.</span><span class="na">data</span><span class="p">()</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>   <span class="p">.</span><span class="na">update</span><span class="p">()</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>   <span class="p">.</span><span class="na">data</span><span class="p">(</span><span class="n">handleNames</span> <span class="o">+</span> <span class="n">genders</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>   <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
 <p>For more info, read <a href="../../data/update-data-sets/">Update existing sets of data</a>.</p>
 <h2 id="the-include-function-and-custom-data">The <code>include</code> function and custom data<a class="headerlink" href="#the-include-function-and-custom-data" title="Permanent link">&para;</a></h2>
 <p>All of the above mentioned APIs provide an <code>include</code> function that allows you to include only a
@@ -1765,8 +1765,8 @@ given set of fields (data) to be processed in the update operation. Custom data 
 fields that can be used in this function.</p>
 <p>By default, not calling the <code>include</code> function will include all fields, including custom data fields.</p>
 <p>For example, to specifically include only <code>HandleName</code> and <code>Gender</code> fields,</p>
-<pre><code class="language-kotlin">.include(HandleNameFields.all + GenderFields.all)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">HandleNameFields</span><span class="p">.</span><span class="na">all</span> <span class="o">+</span> <span class="n">GenderFields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
+</code></pre></div>
 <p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="blank-data-are-deleted">Blank data are deleted<a class="headerlink" href="#blank-data-are-deleted" title="Permanent link">&para;</a></h2>
 <p>Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are

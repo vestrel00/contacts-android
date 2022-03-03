@@ -1675,81 +1675,81 @@
 <p>By default the all APIs provided in this library does not log anything at all. To enable logging all
 API input/output using the <code>android.util.Log</code>, specify the <code>Logger</code> when constructing an instance
 of <code>Contacts</code>;</p>
-<pre><code class="language-kotlin">val contactsApi = Contacts(
-    context,
-    logger = AndroidLogger()
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">context</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">AndroidLogger</span><span class="p">()</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">)</span>
+</code></pre></div>
 <blockquote>
 <p>For more info on <code>Contacts</code> API setup, read <a href="../../setup/setup-contacts-api/">Contacts API Setup</a>.</p>
 </blockquote>
 <p>Invoking the <code>find</code> or <code>commit</code> functions in query, insert, update, and delete APIs will result in
 the following output in the Logcat,</p>
-<pre><code>Query {
-    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
-    where: data1 LIKE '%@gmail.com%' ESCAPE '\' AND mimetype = 'vnd.android.cursor.item/email_v2'
-    isRedacted: false
-    // the rest is omitted for brevity
-}
-Query.Result {
-    Number of contacts found: 2
-    First contact: Contact(
-        id=46, 
-        rawContacts=[
-            RawContact(
-                id=45, 
-                contactId=46, 
-                addresses=[Address(id=329, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=WORK, label=null, formattedAddress=1200 Park Ave, street=1200 Park Ave, poBox=null, neighborhood=null, city=null, region=null, postcode=null, country=null, isRedacted=false)], 
-                emails=[
-                    Email(id=318, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=WORK, label=null, address=buzz.lightyear@pixar.com, isRedacted=false), 
-                    Email(id=319, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=HOME, label=null, address=buzz@lightyear.net, isRedacted=false)
-                ], 
-                events=[
-                    Event(id=317, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=BIRTHDAY, label=null, date=EventDate(year=1995, month=10, dayOfMonth=22, isRedacted=false), isRedacted=false), 
-                    Event(id=320, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=ANNIVERSARY, label=null, date=EventDate(year=2022, month=0, dayOfMonth=1, isRedacted=false), isRedacted=false)
-                ], 
-                // the rest is omitted for brevity
-            )
-        ]
-    )
-    isRedacted: false
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Query {
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    rawContactsWhere: (account_name LIKE &#39;test@gmail.com&#39; ESCAPE &#39;\&#39;) AND (account_type LIKE &#39;com.google&#39; ESCAPE &#39;\&#39;)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    where: data1 LIKE &#39;%@gmail.com%&#39; ESCAPE &#39;\&#39; AND mimetype = &#39;vnd.android.cursor.item/email_v2&#39;
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    isRedacted: false
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    // the rest is omitted for brevity
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>}
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>Query.Result {
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    Number of contacts found: 2
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    First contact: Contact(
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        id=46, 
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        rawContacts=[
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>            RawContact(
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                id=45, 
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>                contactId=46, 
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>                addresses=[Address(id=329, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=WORK, label=null, formattedAddress=1200 Park Ave, street=1200 Park Ave, poBox=null, neighborhood=null, city=null, region=null, postcode=null, country=null, isRedacted=false)], 
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>                emails=[
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>                    Email(id=318, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=WORK, label=null, address=buzz.lightyear@pixar.com, isRedacted=false), 
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>                    Email(id=319, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=HOME, label=null, address=buzz@lightyear.net, isRedacted=false)
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>                ], 
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>                events=[
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>                    Event(id=317, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=BIRTHDAY, label=null, date=EventDate(year=1995, month=10, dayOfMonth=22, isRedacted=false), isRedacted=false), 
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>                    Event(id=320, rawContactId=45, contactId=46, isPrimary=false, isSuperPrimary=false, type=ANNIVERSARY, label=null, date=EventDate(year=2022, month=0, dayOfMonth=1, isRedacted=false), isRedacted=false)
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>                ], 
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>                // the rest is omitted for brevity
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>            )
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        ]
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>    )
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    isRedacted: false
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>}
+</code></pre></div>
 <p>This is very useful during development. If you have any issues with the library, maintainers will
 most likely ask you for these logs to help debug your issues.</p>
 <h2 id="custom-loggers">Custom loggers<a class="headerlink" href="#custom-loggers" title="Permanent link">&para;</a></h2>
 <p>The library provides the <code>AndroidLogger</code>. However, if you want to use your own logging/tracking
 functions, you may create your own logger by providing an implementation of <code>Logger</code>.</p>
 <p>For example, to use <a href="https://github.com/JakeWharton/timber"><code>Timber</code></a> instead of <code>android.util.Log</code>,</p>
-<pre><code class="language-kotlin">class TimberLogger : Logger {
-
-    override val redactMessages: Boolean = true
-
-    override fun log(message: String) {
-        Timber.d(message)
-    }
-}
-
-val contactsApi = Contacts(
-    context,
-    logger = AndroidLogger()
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">class</span> <span class="nc">TimberLogger</span> <span class="p">:</span> <span class="n">Logger</span> <span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="kd">override</span> <span class="kd">val</span> <span class="nv">redactMessages</span><span class="p">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">true</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="kd">override</span> <span class="kd">fun</span> <span class="nf">log</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="n">Timber</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">}</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">context</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">AndroidLogger</span><span class="p">()</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="p">)</span>
+</code></pre></div>
 <h2 id="redacting-log-messages">Redacting log messages<a class="headerlink" href="#redacting-log-messages" title="Permanent link">&para;</a></h2>
 <p>The messages that are logged may contain private user data (contact data). Depending on how you log
 these messages in production, you may end up violating privacy laws such as
 <a href="https://gdpr-info.eu">GDPR</a> guidelines.</p>
 <p>To ensure that you are not violating any privacy laws in your production apps when using this
 library, make sure to set <code>Logger.redactMessages</code> to <code>true</code>.</p>
-<pre><code class="language-kotlin">val contactsApi = Contacts(
-    context,
-    logger = AndroidLogger(redactMessages = true)
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">context</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">AndroidLogger</span><span class="p">(</span><span class="n">redactMessages</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">)</span>
+</code></pre></div>
 <p>Redacted messages are not as useful when debugging so you should set it to <code>false</code> during
 development. A common way to redact messages in release builds but not debug builds is to,</p>
-<pre><code class="language-kotlin">AndroidLogger(redactMessages = !BuildConfig.DEBUG)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">AndroidLogger</span><span class="p">(</span><span class="n">redactMessages</span> <span class="o">=</span> <span class="o">!</span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">)</span>
+</code></pre></div>
 <p>For more info on redaction, read <a href="../../entities/redact-apis-and-entities/">Redact entities and API input and output in production</a>.</p>
 
               

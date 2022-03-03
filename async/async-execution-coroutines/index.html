@@ -1737,35 +1737,35 @@ it, Kotlin Coroutine's <a href="https://kotlin.github.io/kotlinx.coroutines/kotl
 update, and deletes), there is a corresponding <code>xxxWithContext</code> and <code>xxxAsync</code> extension function.</p>
 <h2 id="using-withcontext-extensions">Using <code>withContext</code> extensions<a class="headerlink" href="#using-withcontext-extensions" title="Permanent link">&para;</a></h2>
 <p>To perform an query, insert, update, and delete <strong>in order (sequential)</strong> outside the main UI thread,</p>
-<pre><code class="language-kotlin">launch {
-    val queryResult = query.findWithContext()
-    val insertResult = insert.commitWithContext()
-    val updateResult = update.commitWithContext()
-    val deleteResult = delete.commitWithContext()
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">launch</span> <span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="kd">val</span> <span class="nv">queryResult</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">findWithContext</span><span class="p">()</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="kd">val</span> <span class="nv">insertResult</span> <span class="o">=</span> <span class="n">insert</span><span class="p">.</span><span class="na">commitWithContext</span><span class="p">()</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="kd">val</span> <span class="nv">updateResult</span> <span class="o">=</span> <span class="n">update</span><span class="p">.</span><span class="na">commitWithContext</span><span class="p">()</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="kd">val</span> <span class="nv">deleteResult</span> <span class="o">=</span> <span class="n">delete</span><span class="p">.</span><span class="na">commitWithContext</span><span class="p">()</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</code></pre></div>
 <p>For each invocation of <code>xxxWithContext</code>, the current coroutine suspends, performs the operation in 
 the given <code>CoroutineContext</code> (default is <code>Dispatchers.IO</code> if not specified), then returns the
 result.</p>
 <p>Computations automatically stops if the parent coroutine scope / job is cancelled.</p>
 <h2 id="using-async-extensions">Using <code>async</code> extensions<a class="headerlink" href="#using-async-extensions" title="Permanent link">&para;</a></h2>
 <p>To perform an query, insert, update, and delete <strong>in parallel</strong> outside the main UI thread,</p>
-<pre><code class="language-kotlin">launch {
-    val deferredQueryResult = query.findAsynct()
-    val deferredInsertResult = insert.commitAsync()
-    val deferredUpdateResult = update.commitAsync()
-    val deferredDeleteResult = delete.commitAsync()
-    awaitAll(deferredQueryResult, deferredInsertResult, deferredUpdateResult, deferredDeleteResult)
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">launch</span> <span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="kd">val</span> <span class="nv">deferredQueryResult</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">findAsynct</span><span class="p">()</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="kd">val</span> <span class="nv">deferredInsertResult</span> <span class="o">=</span> <span class="n">insert</span><span class="p">.</span><span class="na">commitAsync</span><span class="p">()</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="kd">val</span> <span class="nv">deferredUpdateResult</span> <span class="o">=</span> <span class="n">update</span><span class="p">.</span><span class="na">commitAsync</span><span class="p">()</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="kd">val</span> <span class="nv">deferredDeleteResult</span> <span class="o">=</span> <span class="n">delete</span><span class="p">.</span><span class="na">commitAsync</span><span class="p">()</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">awaitAll</span><span class="p">(</span><span class="n">deferredQueryResult</span><span class="p">,</span> <span class="n">deferredInsertResult</span><span class="p">,</span> <span class="n">deferredUpdateResult</span><span class="p">,</span> <span class="n">deferredDeleteResult</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+</code></pre></div>
 <p>For each invocation of <code>xxxAsync</code>, a <code>CoroutineScope</code>is created  with the given <code>CoroutineContext</code>
 (default is <code>Dispatchers.IO</code> if not specified), performs the operation in that scope, then returns 
 the <code>Deferred</code> result.</p>
 <p>Computations automatically stops if the parent coroutine scope / job is cancelled.</p>
 <h2 id="cancellations-are-supported">Cancellations are supported<a class="headerlink" href="#cancellations-are-supported" title="Permanent link">&para;</a></h2>
 <p>To cancel a query amid execution,</p>
-<pre><code class="language-kotlin">query.find { returnTrueIfQueryShouldBeCancelled() }
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">query</span><span class="p">.</span><span class="na">find</span> <span class="p">{</span> <span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span> <span class="p">}</span>
+</code></pre></div>
 <p>The find function optionally takes in a function that, if it returns true, will cancel query
 processing as soon as possible. The function is called numerous times during query processing to
 check if processing should stop or continue. This gives you the option to cancel the query.</p>
@@ -1773,17 +1773,17 @@ check if processing should stop or continue. This gives you the option to cancel
 search text. You are able to cancel the current query when the user enters new text.</p>
 <p>For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is
 cancelled,</p>
-<pre><code class="language-kotlin">launch {
-    withContext(coroutineContext) {
-        val contacts = query.find { !isActive }
-    }
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">launch</span> <span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">find</span> <span class="p">{</span> <span class="o">!</span><span class="n">isActive</span> <span class="p">}</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="p">}</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">}</span>
+</code></pre></div>
 <p>Or, using the coroutine extensions in the <code>async</code> module,</p>
-<pre><code class="language-kotlin">launch {
-    val contacts = query.findWithContext()
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">launch</span> <span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">findWithContext</span><span class="p">()</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">}</span>
+</code></pre></div>
 <blockquote>
 <p>Most core API functions support cancellations, not just queries!</p>
 </blockquote>

@@ -1708,41 +1708,41 @@ data was built, read <a href="../integrate-custom-data/">Integrate custom data</
 </blockquote>
 <h2 id="register-the-gender-custom-data-with-the-contacts-api-instance">Register the gender custom data with the Contacts API instance<a class="headerlink" href="#register-the-gender-custom-data-with-the-contacts-api-instance" title="Permanent link">&para;</a></h2>
 <p>You may register the <code>Gender</code> custom data when creating the <code>Contacts</code> API instance,</p>
-<pre><code class="language-kotlin">val contactsApi = Contacts(
-    context,
-    customDataRegistry = CustomDataRegistry().register(
-        GenderRegistration()
-    )
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">context</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">customDataRegistry</span> <span class="o">=</span> <span class="n">CustomDataRegistry</span><span class="p">().</span><span class="na">register</span><span class="p">(</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="n">GenderRegistration</span><span class="p">()</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span>
+</code></pre></div>
 <p>Or, alternatively after creating the <code>Contacts</code> API instance,</p>
-<pre><code class="language-kotlin">val contactsApi = Contacts(context)
-GenderRegistration().registerTo(contactsApi.customDataRegistry)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">GenderRegistration</span><span class="p">().</span><span class="na">registerTo</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">.</span><span class="na">customDataRegistry</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="getset-gender-custom-data">Get/set gender custom data<a class="headerlink" href="#getset-gender-custom-data" title="Permanent link">&para;</a></h2>
 <p>Just like regular data kinds, gender custom data belong to a RawContact. A RawContact may only have
 0 or 1 gender.</p>
 <p>To get the gender of a RawContact,</p>
-<pre><code class="language-kotlin">val gender = rawContact.gender(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">gender</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">gender</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To get the genders of all RawContacts belonging to a Contact,</p>
-<pre><code class="language-kotlin">val genderSequence = contact.genders(contactsApi)
-val genderList = contact.genderList(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">genderSequence</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">genders</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kd">val</span> <span class="nv">genderList</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">genderList</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To set the gender of a (mutable) RawContact,</p>
-<pre><code class="language-kotlin">mutableRawContact.setGender(contacts, mutableGender)
-// or
-mutableRawContact.setGender(contacts) {
-    type = GenderEntity.Type.MALE
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">setGender</span><span class="p">(</span><span class="n">contacts</span><span class="p">,</span> <span class="n">mutableGender</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">// or</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">setGender</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">type</span> <span class="o">=</span> <span class="n">GenderEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">MALE</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+</code></pre></div>
 <p>To set the gender of the first RawContact in a Contact,</p>
-<pre><code class="language-kotlin">mutableContact.setGender(contacts, mutableGender)
-// or
-mutableContact.setGender(contacts) {
-    type = GenderEntity.Type.MALE
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">setGender</span><span class="p">(</span><span class="n">contacts</span><span class="p">,</span> <span class="n">mutableGender</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">// or</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">setGender</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">type</span> <span class="o">=</span> <span class="n">GenderEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">MALE</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+</code></pre></div>
 <h2 id="use-the-gender-custom-data-in-queries-inserts-updates-and-deletes">Use the gender custom data in queries, inserts, updates, and deletes<a class="headerlink" href="#use-the-gender-custom-data-in-queries-inserts-updates-and-deletes" title="Permanent link">&para;</a></h2>
 <p>Once you have registered your gender custom data with the <code>Contacts</code> API instance, the API instance 
 is now able to perform read and write operations on it.</p>

@@ -1845,51 +1845,51 @@ automatically creates a downsized version of the full-sized photo.</p>
 <h2 id="getting-contact-photo">Getting contact photo<a class="headerlink" href="#getting-contact-photo" title="Permanent link">&para;</a></h2>
 <p>There are several ways to do this.</p>
 <p>Using query APIs to get a list of <code>Contact</code>s with photo uris,</p>
-<pre><code class="language-kotlin">val contacts = Contacts(context)
-    .query()
-    // if you only want to include photo data in the returned Contacts
-    .include(
-        Fields.Contact.PhotoUri,
-        Fields.Contact.PhotoThumbnailUri
-    ) 
-    .find()
-
-for (contact in contacts) {
-    Log.d(
-        &quot;Contact&quot;,
-        &quot;&quot;&quot;
-            Photo Uri: ${contact.photoUri}
-            Thumbnail Uri: ${contact.photoThumbnailUri}
-        &quot;&quot;&quot;.trimIndent()
-    )
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="c1">// if you only want to include photo data in the returned Contacts</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="p">.</span><span class="na">include</span><span class="p">(</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">PhotoUri</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">PhotoThumbnailUri</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="p">)</span> 
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">for</span> <span class="p">(</span><span class="n">contact</span> <span class="k">in</span> <span class="n">contacts</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="s">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="s">            Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="s">            Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="s">        &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="p">)</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">}</span>
+</code></pre></div>
 <blockquote>
 <p>For more info, read <a href="../../basics/query-contacts/">Query contacts</a>
 and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Using one of the extension functions in <code>contacts.core.util.ContactPhoto.kt</code> to get photo data,</p>
-<pre><code class="language-kotlin">val photoInputStream = contact.photoInputStream(contactsApi)
-val photoBytes = contact.photoBytes(contactsApi)
-val photoBitmap = contact.photoBitmap(contactsApi)
-val photoBitmapDrawable = contact.photoBitmapDrawable(contactsApi)
-
-val photoThumbnailInputStream = contact.photoThumbnailInputStream(contactsApi)
-val photoThumbnailBytes = contact.photoThumbnailBytes(contactsApi)
-val photoThumbnailBitmap = contact.photoThumbnailBitmap(contactsApi)
-val photoThumbnailBitmapDrawable = contact.photoThumbnailBitmapDrawable(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">photoInputStream</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoInputStream</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">val</span> <span class="nv">photoBytes</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoBytes</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kd">val</span> <span class="nv">photoBitmap</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoBitmap</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kd">val</span> <span class="nv">photoBitmapDrawable</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoBitmapDrawable</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="kd">val</span> <span class="nv">photoThumbnailInputStream</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailInputStream</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kd">val</span> <span class="nv">photoThumbnailBytes</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailBytes</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kd">val</span> <span class="nv">photoThumbnailBitmap</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailBitmap</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="kd">val</span> <span class="nv">photoThumbnailBitmapDrawable</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailBitmapDrawable</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To get RawContact photos directly, use one of the extension functions in <code>contacts.core.util.RawContactPhoto.kt</code>,</p>
-<pre><code class="language-kotlin">val photoInputStream = rawContact.photoInputStream(contactsApi)
-val photoBytes = rawContact.photoBytes(contactsApi)
-val photoBitmap = rawContact.photoBitmap(contactsApi)
-val photoBitmapDrawable = rawContact.photoBitmapDrawable(contactsApi)
-
-val photoThumbnailInputStream = rawContact.photoThumbnailInputStream(contactsApi)
-val photoThumbnailBytes = rawContact.photoThumbnailBytes(contactsApi)
-val photoThumbnailBitmap = rawContact.photoThumbnailBitmap(contactsApi)
-val photoThumbnailBitmapDrawable = rawContact.photoThumbnailBitmapDrawable(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">photoInputStream</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoInputStream</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">val</span> <span class="nv">photoBytes</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoBytes</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kd">val</span> <span class="nv">photoBitmap</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoBitmap</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kd">val</span> <span class="nv">photoBitmapDrawable</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoBitmapDrawable</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kd">val</span> <span class="nv">photoThumbnailInputStream</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoThumbnailInputStream</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kd">val</span> <span class="nv">photoThumbnailBytes</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoThumbnailBytes</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kd">val</span> <span class="nv">photoThumbnailBitmap</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoThumbnailBitmap</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kd">val</span> <span class="nv">photoThumbnailBitmapDrawable</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoThumbnailBitmapDrawable</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <blockquote>
 <p>Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.</p>
 </blockquote>
@@ -1897,29 +1897,29 @@ val photoThumbnailBitmapDrawable = rawContact.photoThumbnailBitmapDrawable(conta
 <p>Setting the photo can only be done after the Contact or RawContact has been inserted. In other 
 words, photo management can only be done for existing Contacts/RawContacts.</p>
 <p>To set the Contact photo, use one of the extension functions in <code>contacts.core.util.ContactPhoto.kt</code>,</p>
-<pre><code class="language-kotlin">contact.setPhoto(contactsApi, photoInputStream)
-contact.setPhoto(contactsApi, photoBytes)
-contact.setPhoto(contactsApi, photoBitmap)
-contact.setPhoto(contactsApi, photoBitmapDrawable)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoInputStream</span><span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBytes</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBitmap</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBitmapDrawable</span><span class="p">)</span>
+</code></pre></div>
 <p>Setting the full-sized photo will automatically set the thumbnail. The Contacts Provider 
 automatically creates a downsized version of the full-sized photo.</p>
 <p>To set a RawContact photo, use one of the extension functions in <code>contacts.core.util.RawContactPhoto.kt</code>,</p>
-<pre><code class="language-kotlin">rawContact.setPhoto(contactsApi, photoInputStream)
-rawContact.setPhoto(contactsApi, photoBytes)
-rawContact.setPhoto(contactsApi, photoBitmap)
-rawContact.setPhoto(contactsApi, photoBitmapDrawable)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoInputStream</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBytes</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBitmap</span><span class="p">)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBitmapDrawable</span><span class="p">)</span>
+</code></pre></div>
 <blockquote>
 <p>Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.</p>
 </blockquote>
 <h2 id="removing-contact-photo">Removing contact photo<a class="headerlink" href="#removing-contact-photo" title="Permanent link">&para;</a></h2>
 <p>To remove the Contact (and corresponding RawContact) photo (full-sized and thumbnail),</p>
-<pre><code class="language-kotlin">contact.removePhoto(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To remove a specific RawContact's photo (full-sized and thumbnail),</p>
-<pre><code class="language-kotlin">rawContact.removePhoto(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <blockquote>
 <p>Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.
 A few things to keep in mind.</p>
@@ -1940,48 +1940,48 @@ A few things to keep in mind.</p>
 <p>The <code>contacts.ui.util.PhotoPicker.kt</code> in the <code>ui</code> module` provides extension functions to make 
 selecting existing photos, taking new photos, and removing photos easier. It provides you the same
 UX as the native Contacts app. To use it,</p>
-<pre><code class="language-kotlin">Activity {
-    fun onPhotoViewClicked() {
-        showPhotoPickerDialog(
-            withRemovePhotoOption = true,
-            removePhoto = {
-                contact.removePhoto(contactsApi)
-            }
-        )
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        onPhotoPicked(requestCode, resultCode, data,
-            photoBitmapPicked = { photoBitmap -&gt;
-                contact.setPhoto(contactsApi, photoBitmap)
-            },
-            photoUriPicked = { uri -&gt;
-                // Note that bitmap decoding should be done in a non-UI thread. Threading has been
-                // left out of this example for brevity.
-                val photoBitmap = if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
-                } else {
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-                }
-
-                contact.setPhoto(contactsApi, photoBitmap)
-            }
-        )
-    }
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">Activity</span> <span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="kd">fun</span> <span class="nf">onPhotoViewClicked</span><span class="p">()</span> <span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>        <span class="n">showPhotoPickerDialog</span><span class="p">(</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>            <span class="n">withRemovePhotoOption</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>            <span class="n">removePhoto</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>                <span class="n">contact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>            <span class="p">}</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>        <span class="p">)</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="p">}</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="kd">override</span> <span class="kd">fun</span> <span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Intent?)</span> <span class="p">{</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>        <span class="n">onPhotoPicked</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>            <span class="n">photoBitmapPicked</span> <span class="o">=</span> <span class="p">{</span> <span class="n">photoBitmap</span> <span class="o">-&gt;</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>                <span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBitmap</span><span class="p">)</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>            <span class="p">},</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>            <span class="n">photoUriPicked</span> <span class="o">=</span> <span class="p">{</span> <span class="n">uri</span> <span class="o">-&gt;</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>                <span class="c1">// Note that bitmap decoding should be done in a non-UI thread. Threading has been</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>                <span class="c1">// left out of this example for brevity.</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>                <span class="kd">val</span> <span class="nv">photoBitmap</span> <span class="o">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION</span><span class="p">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="n">Build</span><span class="p">.</span><span class="na">VERSION_CODES</span><span class="p">.</span><span class="na">P</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>                    <span class="n">ImageDecoder</span><span class="p">.</span><span class="na">decodeBitmap</span><span class="p">(</span><span class="n">ImageDecoder</span><span class="p">.</span><span class="na">createSource</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">contentResolver</span><span class="p">,</span> <span class="n">uri</span><span class="p">))</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>                    <span class="n">MediaStore</span><span class="p">.</span><span class="na">Images</span><span class="p">.</span><span class="na">Media</span><span class="p">.</span><span class="na">getBitmap</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">contentResolver</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>                <span class="p">}</span>
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>                <span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBitmap</span><span class="p">)</span>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>            <span class="p">}</span>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>        <span class="p">)</span>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>    <span class="p">}</span>
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="p">}</span>
+</code></pre></div>
 <p>Starting with Android 11 (API 30), you must include the following to your manifest in order to
 successfully use the above functions.</p>
-<pre><code>&lt;queries&gt;
-   &lt;intent&gt;
-      &lt;action android:name=&quot;android.media.action.IMAGE_CAPTURE&quot; /&gt;
-   &lt;/intent&gt;
-   &lt;intent&gt;
-      &lt;action android:name=&quot;android.intent.action.PICK&quot; /&gt;
-   &lt;/intent&gt;
-&lt;/queries&gt;
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>&lt;queries&gt;
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>   &lt;intent&gt;
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>      &lt;action android:name=&quot;android.media.action.IMAGE_CAPTURE&quot; /&gt;
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>   &lt;/intent&gt;
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>   &lt;intent&gt;
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>      &lt;action android:name=&quot;android.intent.action.PICK&quot; /&gt;
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>   &lt;/intent&gt;
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>&lt;/queries&gt;
+</code></pre></div>
 <h2 id="performing-photo-management-asynchronously">Performing photo management asynchronously<a class="headerlink" href="#performing-photo-management-asynchronously" title="Permanent link">&para;</a></h2>
 <p>All of the code shown in this guide are done in the same thread as the call-site. This may result 
 in a choppy UI.</p>

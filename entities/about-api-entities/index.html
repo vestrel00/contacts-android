@@ -1942,84 +1942,84 @@ support custom data from other apps in the future... Probably, yes!</p>
 <h2 id="accessing-contact-data">Accessing contact data<a class="headerlink" href="#accessing-contact-data" title="Permanent link">&para;</a></h2>
 <p>When you have an instance of <code>Contact</code>, you have complete (and correct) access to data stored in it.</p>
 <p>To access data of a Contact with only one RawContact,</p>
-<pre><code class="language-kotlin">val contact: Contact
-val rawContact: RawContact = contact.rawContacts.first()
-Log.d(
-    &quot;Contact&quot;,
-    &quot;&quot;&quot;
-        ID: ${contact.id}
-        Lookup Key: ${contact.lookupKey}
-
-        Display name: ${contact.displayNamePrimary}
-        Display name alt: ${contact.displayNameAlt}
-
-        Photo Uri: ${contact.photoUri}
-        Thumbnail Uri: ${contact.photoThumbnailUri}
-
-        Last updated: ${contact.lastUpdatedTimestamp}
-
-        Starred?: ${contact.options?.starred}
-        Send to voicemail?: ${contact.options?.sendToVoicemail}
-        Ringtone: ${contact.options?.customRingtone}
-
-        Addresses: ${rawContact.addresses}
-        Emails: ${rawContact.emails}
-        Events: ${rawContact.events}
-        Group memberships: ${rawContact.groupMemberships}
-        IMs: ${rawContact.ims}
-        Name: ${rawContact.name}
-        Nickname: ${rawContact.nickname}
-        Note: ${rawContact.note}
-        Organization: ${rawContact.organization}
-        Phones: ${rawContact.phones}
-        Relations: ${rawContact.relations}
-        SipAddress: ${rawContact.sipAddress}
-        Websites: ${rawContact.websites}
-    &quot;&quot;&quot;.trimIndent()
-    // Photo require separate blocking function calls.
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">contact</span><span class="p">:</span> <span class="n">Contact</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">val</span> <span class="nv">rawContact</span><span class="p">:</span> <span class="n">RawContact</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">.</span><span class="na">first</span><span class="p">()</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="s">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="s">        ID: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">id</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="s">        Lookup Key: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lookupKey</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="s">        Display name: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNamePrimary</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="s">        Display name alt: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNameAlt</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="s">        Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="s">        Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="s">        Last updated: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lastUpdatedTimestamp</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="s">        Starred?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">starred</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="s">        Send to voicemail?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">sendToVoicemail</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="s">        Ringtone: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="s">        Addresses: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">addresses</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="s">        Emails: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">emails</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="s">        Events: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">events</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="s">        Group memberships: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">groupMemberships</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="s">        IMs: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">ims</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="s">        Name: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">name</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="s">        Nickname: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">nickname</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="s">        Note: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">note</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="s">        Organization: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">organization</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="s">        Phones: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">phones</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="s">        Relations: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">relations</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="s">        SipAddress: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">sipAddress</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="s">        Websites: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">websites</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="s">    &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="c1">// Photo require separate blocking function calls.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="p">)</span>
+</code></pre></div>
 <p>To access data of a Contact with possibly more than one RawContact, we can use <code>ContactData</code>
 extensions to make our life easier,</p>
-<pre><code class="language-kotlin">val contact: Contact
-Log.d(
-    &quot;Contact&quot;,
-    &quot;&quot;&quot;
-        ID: ${contact.id}
-        Lookup Key: ${contact.lookupKey}
-
-        Display name: ${contact.displayNamePrimary}
-        Display name alt: ${contact.displayNameAlt}
-
-        Photo Uri: ${contact.photoUri}
-        Thumbnail Uri: ${contact.photoThumbnailUri}
-
-        Last updated: ${contact.lastUpdatedTimestamp}
-
-        Starred?: ${contact.options?.starred}
-        Send to voicemail?: ${contact.options?.sendToVoicemail}
-        Ringtone: ${contact.options?.customRingtone}
-
-        Aggregate data from all RawContacts of the contact
-        -----------------------------------
-        Addresses: ${contact.addressList()}
-        Emails: ${contact.emailList()}
-        Events: ${contact.eventList()}
-        Group memberships: ${contact.groupMembershipList()}
-        IMs: ${contact.imList()}
-        Names: ${contact.nameList()}
-        Nicknames: ${contact.nicknameList()}
-        Notes: ${contact.noteList()}
-        Organizations: ${contact.organizationList()}
-        Phones: ${contact.phoneList()}
-        Relations: ${contact.relationList()}
-        SipAddresses: ${contact.sipAddressList()}
-        Websites: ${contact.websiteList()}
-        -----------------------------------
-    &quot;&quot;&quot;.trimIndent()
-    // There are also aggregate data functions that return a sequence instead of a list.
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">contact</span><span class="p">:</span> <span class="n">Contact</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="s">&quot;&quot;&quot;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s">        ID: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">id</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s">        Lookup Key: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lookupKey</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s">        Display name: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNamePrimary</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="s">        Display name alt: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNameAlt</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="s">        Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="s">        Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="s">        Last updated: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lastUpdatedTimestamp</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="s">        Starred?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">starred</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="s">        Send to voicemail?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">sendToVoicemail</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="s">        Ringtone: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="s">        Aggregate data from all RawContacts of the contact</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="s">        -----------------------------------</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="s">        Addresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">addressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="s">        Emails: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">emailList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="s">        Events: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">eventList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="s">        Group memberships: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">groupMembershipList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="s">        IMs: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">imList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="s">        Names: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="s">        Nicknames: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nicknameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="s">        Notes: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">noteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="s">        Organizations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">organizationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="s">        Phones: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">phoneList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="s">        Relations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">relationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="s">        SipAddresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">sipAddressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="s">        Websites: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">websiteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="s">        -----------------------------------</span>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="s">    &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>    <span class="c1">// There are also aggregate data functions that return a sequence instead of a list.</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="p">)</span>
+</code></pre></div>
 <p>Each Contact may have more than one of the following data if the Contact is made up of 2 or more
 RawContacts; name, nickname, note, organization, sip address.</p>
 <p>For more info on how to easily aggregate data from all RawContacts in a Contact, read

@@ -1803,29 +1803,29 @@ starred, send to voicemail, and ringtone.</p>
 Changes to the options of a RawContact may or may not affect the options of the parent Contact.</p>
 <h2 id="getting-contact-options">Getting contact options<a class="headerlink" href="#getting-contact-options" title="Permanent link">&para;</a></h2>
 <p>To get Contact options,</p>
-<pre><code class="language-kotlin">val options = contact.options(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">options</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To get RawContact options,</p>
-<pre><code class="language-kotlin">val options = rawContact.options(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">options</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">options</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="setting-contact-options">Setting contact options<a class="headerlink" href="#setting-contact-options" title="Permanent link">&para;</a></h2>
 <p>To set Contact options,</p>
-<pre><code class="language-kotlin">contact.setOptions(contactsApi, mutableOptions)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">mutableOptions</span><span class="p">)</span>
+</code></pre></div>
 <p>To set RawContact options,</p>
-<pre><code class="language-kotlin">rawContact.setOptions(contactsApi, mutableOptions)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">mutableOptions</span><span class="p">)</span>
+</code></pre></div>
 <p>For example, to set a contact to be starred (favorited),</p>
-<pre><code class="language-kotlin">contact.setOptions(contactsApi, mutableOptions.apply {
-    starred = true
-})
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">mutableOptions</span><span class="p">.</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">starred</span> <span class="o">=</span> <span class="kc">true</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">})</span>
+</code></pre></div>
 <p>The <code>setOption</code> function takes in an arbitrary <code>Options</code> instance. If you instead want to modify
 the options of a Contact or RawContact retrieved from the database,</p>
-<pre><code class="language-kotlin">contact.updateOptions(contactsApi) {
-    starred = true
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">updateOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">starred</span> <span class="o">=</span> <span class="kc">true</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="p">}</span>
+</code></pre></div>
 <p>This is useful if you only want to set certain properties and keep other properties the same.</p>
 <h2 id="changes-are-immediate-and-are-not-applied-to-the-receiver">Changes are immediate and are not applied to the receiver<a class="headerlink" href="#changes-are-immediate-and-are-not-applied-to-the-receiver" title="Permanent link">&para;</a></h2>
 <p>These apply to set and update functions.</p>
@@ -1847,29 +1847,29 @@ the options of a Contact or RawContact retrieved from the database,</p>
 <p>The <code>contacts.ui.util.RingtonePicker.kt</code> in the <code>ui</code> module` provides extension functions to make
 selecting existing ringtones easier. It provides you the same UX as the native Contacts app. </p>
 <p>To use it,</p>
-<pre><code class="language-kotlin">Activity {
-    fun onSelectRingtoneClicked() {
-        selectRingtone(contact.options?.customRingtone)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        onRingtoneSelected(requestCode, resultCode, data) { ringtoneUri -&gt; 
-            contact.updateOptions(contactsApi) {
-                customRingtone = ringtoneUri
-            }
-        }
-    }
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">Activity</span> <span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="kd">fun</span> <span class="nf">onSelectRingtoneClicked</span><span class="p">()</span> <span class="p">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="n">selectRingtone</span><span class="p">(</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="p">)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="p">}</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="kd">override</span> <span class="kd">fun</span> <span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Intent?)</span> <span class="p">{</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>        <span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        <span class="n">onRingtoneSelected</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span> <span class="n">ringtoneUri</span> <span class="o">-&gt;</span> 
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>            <span class="n">contact</span><span class="p">.</span><span class="na">updateOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>                <span class="n">customRingtone</span> <span class="o">=</span> <span class="n">ringtoneUri</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>            <span class="p">}</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        <span class="p">}</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="p">}</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="p">}</span>
+</code></pre></div>
 <p>Starting with Android 11 (API 30), you must include the following to your manifest in order to
 successfully use the above functions.</p>
-<pre><code>&lt;queries&gt;
-    &lt;intent&gt;
-        &lt;action android:name=&quot;android.intent.action.RINGTONE_PICKER&quot; /&gt;
-    &lt;/intent&gt;
-&lt;/queries&gt;
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>&lt;queries&gt;
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    &lt;intent&gt;
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>        &lt;action android:name=&quot;android.intent.action.RINGTONE_PICKER&quot; /&gt;
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    &lt;/intent&gt;
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>&lt;/queries&gt;
+</code></pre></div>
 <h2 id="performing-options-management-asynchronously">Performing options management asynchronously<a class="headerlink" href="#performing-options-management-asynchronously" title="Permanent link">&para;</a></h2>
 <p>All of the code shown in this guide are done in the same thread as the call-site. This may result
 in a choppy UI.</p>

@@ -1751,21 +1751,21 @@ are not discussed here.</p>
 <h2 id="contact-data-getter-and-setters">Contact data getter and setters<a class="headerlink" href="#contact-data-getter-and-setters" title="Permanent link">&para;</a></h2>
 <p>Contacts can be made up of one or more RawContacts. In the case that a Contact has two or more
 RawContacts, getting/setting RawContact data may be a bit of a hassle, requiring loops or iterators,</p>
-<pre><code class="language-kotlin">// get all emails from all RawContacts belonging to the Contact
-val contactEmails = contact.rawContacts.flatMap { it.emails }
-// add an email to the first RawContact belonging to the Contact
-contact.mutableCopy().rawContacts.first().emails.add(NewEmail())
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// get all emails from all RawContacts belonging to the Contact</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">val</span> <span class="nv">contactEmails</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">.</span><span class="na">flatMap</span> <span class="p">{</span> <span class="nb">it</span><span class="p">.</span><span class="na">emails</span> <span class="p">}</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">// add an email to the first RawContact belonging to the Contact</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">contact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="p">().</span><span class="na">rawContacts</span><span class="p">.</span><span class="na">first</span><span class="p">().</span><span class="na">emails</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">())</span>
+</code></pre></div>
 <blockquote>
 <p>For more info, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
 <p>To simplify things, getter/setter extensions are provided in the <strong><code>ContactData.kt</code></strong> file,</p>
-<pre><code class="language-kotlin">// get all emails from all RawContacts belonging to the Contact
-val contactEmailSequence = contact.emails()
-val contactEmailList = contact.emailList()
-// add an email to the first RawContact belonging to the Contact
-contact.mutableCopy().addEmail(NewEmail())
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// get all emails from all RawContacts belonging to the Contact</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">val</span> <span class="nv">contactEmailSequence</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">emails</span><span class="p">()</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kd">val</span> <span class="nv">contactEmailList</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">emailList</span><span class="p">()</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">// add an email to the first RawContact belonging to the Contact</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">contact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="p">().</span><span class="na">addEmail</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">())</span>
+</code></pre></div>
 <blockquote>
 <p>Newer versions of the Android Open Source Project Contacts app and the Google Contacts app shows
 data coming from all RawContacts in a Contact details screen. However, they only allow editing
@@ -1776,21 +1776,21 @@ setters!</p>
 <h2 id="mutable-and-new-rawcontact-data-setters">Mutable and New RawContact data setters<a class="headerlink" href="#mutable-and-new-rawcontact-data-setters" title="Permanent link">&para;</a></h2>
 <p>Getting data from RawContacts is straightforward. You have direct access to their properties. The
 same goes for setting data. </p>
-<pre><code class="language-kotlin">val rawContactEmails = rawContact.emails
-rawContact.mutableCopy().addEmail(
-    NewEmail().apply{
-        address = &quot;abc@alphabet.com&quot;
-        type = EmailEntity.Type.WORK
-    }
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">rawContactEmails</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">emails</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="p">().</span><span class="na">addEmail</span><span class="p">(</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">NewEmail</span><span class="p">().</span><span class="na">apply</span><span class="p">{</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;abc@alphabet.com&quot;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">type</span> <span class="o">=</span> <span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="p">}</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">)</span>
+</code></pre></div>
 <p>Still, there are some setter extensions provided in <code>MutableRawContactData.kt</code> and 
 <code>NewRawContactData.kt</code> that can add some sugar to your syntax.</p>
-<pre><code class="language-kotlin">rawContact.mutableCopy().addEmail {
-    address = &quot;abc@alphabet.com&quot;
-    type = EmailEntity.Type.WORK
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="p">().</span><span class="na">addEmail</span> <span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">address</span> <span class="o">=</span> <span class="s">&quot;abc@alphabet.com&quot;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">type</span> <span class="o">=</span> <span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
+</code></pre></div>
 <p>The setter functions in this section and in the "Contact data getter and setters" section also 
 uphold the redacted state of the mutable Contact/RawContact. We setting or adding a property using
 these extensions, the property being passed will be redacted if the Contact/RawContact it is being
@@ -1800,19 +1800,19 @@ added to is redacted.</p>
 </blockquote>
 <h2 id="getting-the-parent-contact-of-a-rawcontact-or-data">Getting the parent Contact of a RawContact or Data<a class="headerlink" href="#getting-the-parent-contact-of-a-rawcontact-or-data" title="Permanent link">&para;</a></h2>
 <p>Using the <code>Query</code> API, it is easy to get the parent Contact of a RawContact or Data,</p>
-<pre><code class="language-kotlin">val contactOfRawContact = contactsApi.query().where { Contact.Id equalTo rawContact.contactId }.find().firstOrNull()
-val contactOfData = contactsApi.query().where { Contact.Id equalTo data.contactId }.find().firstOrNull()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span> <span class="nv">contactOfRawContact</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">Contact</span><span class="p">.</span><span class="na">Id</span> <span class="n">equalTo</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">contactId</span> <span class="p">}.</span><span class="na">find</span><span class="p">().</span><span class="na">firstOrNull</span><span class="p">()</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kd">val</span> <span class="nv">contactOfData</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">Contact</span><span class="p">.</span><span class="na">Id</span> <span class="n">equalTo</span> <span class="n">data</span><span class="p">.</span><span class="na">contactId</span> <span class="p">}.</span><span class="na">find</span><span class="p">().</span><span class="na">firstOrNull</span><span class="p">()</span>
+</code></pre></div>
 <blockquote>
 <p>For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>To shorten things, you can use the extensions in <code>RawContactContact.kt</code> and <code>DataContact.kt</code>,</p>
-<pre><code class="language-kotlin">val contactOfRawContact = rawContact.contact(contactsApi)
-val contactOfData = data.contact(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span> <span class="nv">contactOfRawContact</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">val</span> <span class="nv">contactOfData</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>On a similar note, to get the parent RawContact of a Data using the extensions in <code>DataRawContact.kt</code>,</p>
-<pre><code class="language-kotlin">val rawContactOfData = data.rawContact(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span> <span class="nv">rawContactOfData</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
 <p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
@@ -1822,19 +1822,19 @@ val contactOfData = data.contact(contactsApi)
 could occur in your app, other apps, or by the Contacts Provider. If you need to get the most
 up-to-date reference of an entity from the database, you could do it using the <code>Query</code> and 
 <code>DataQuery</code> APIs,</p>
-<pre><code class="language-kotlin">val contactFromDb = contactsApi.query().where { Contact.Id equalTo contactInMemory.id }.find().firstOrNull()
-val rawContactFromDb = contactsApi.query().where { RawContact.Id equalTo rawContactInMemory.id }.find()
-    .firstOrNull()
-    ?.rawContacts
-    ?.find { it.id == rawContactInMemory.id }
-val dataFromDb = contactsApi.data().query().where { DataId equalTo dataInMemory.id }.find().firstOrNull()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span> <span class="nv">contactFromDb</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">Contact</span><span class="p">.</span><span class="na">Id</span> <span class="n">equalTo</span> <span class="n">contactInMemory</span><span class="p">.</span><span class="na">id</span> <span class="p">}.</span><span class="na">find</span><span class="p">().</span><span class="na">firstOrNull</span><span class="p">()</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kd">val</span> <span class="nv">rawContactFromDb</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span> <span class="n">equalTo</span> <span class="n">rawContactInMemory</span><span class="p">.</span><span class="na">id</span> <span class="p">}.</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="p">.</span><span class="na">firstOrNull</span><span class="p">()</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="o">?.</span><span class="na">rawContacts</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="o">?.</span><span class="na">find</span> <span class="p">{</span> <span class="nb">it</span><span class="p">.</span><span class="na">id</span> <span class="o">==</span> <span class="n">rawContactInMemory</span><span class="p">.</span><span class="na">id</span> <span class="p">}</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="kd">val</span> <span class="nv">dataFromDb</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">data</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">DataId</span> <span class="n">equalTo</span> <span class="n">dataInMemory</span><span class="p">.</span><span class="na">id</span> <span class="p">}.</span><span class="na">find</span><span class="p">().</span><span class="na">firstOrNull</span><span class="p">()</span>
+</code></pre></div>
 <p>To shorten things, you can use extensions in <code>ContactRefresh.kt</code>, <code>RawContactRefresh.kt</code>, and
 <code>DataRefresh.kt</code>,</p>
-<pre><code class="language-kotlin">val contactFromDb = contactInMemory.refresh(contactsApi)
-val rawContactFromDb = rawContactInMemory.refresh(contactsApi)
-val dataFromDb = dataInMemory.refresh(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span> <span class="nv">contactFromDb</span> <span class="o">=</span> <span class="n">contactInMemory</span><span class="p">.</span><span class="na">refresh</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kd">val</span> <span class="nv">rawContactFromDb</span> <span class="o">=</span> <span class="n">rawContactInMemory</span><span class="p">.</span><span class="na">refresh</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kd">val</span> <span class="nv">dataFromDb</span> <span class="o">=</span> <span class="n">dataInMemory</span><span class="p">.</span><span class="na">refresh</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
 <p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
@@ -1842,47 +1842,47 @@ val dataFromDb = dataInMemory.refresh(contactsApi)
 <h2 id="sort-contacts-by-data-fields">Sort Contacts by data fields<a class="headerlink" href="#sort-contacts-by-data-fields" title="Permanent link">&para;</a></h2>
 <p>The <code>Query</code> and <code>BroadQuery</code> APIs allows you to sort Contacts based on fields in the Contacts table
 such as <code>Id</code> and <code>DisplayNamePrimary</code>, </p>
-<pre><code class="language-kotlin">val sortedContacts = query.orderBy(ContactsFields.DisplayNamePrimary.desc(ignoreCase = true))
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kd">val</span> <span class="nv">sortedContacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">desc</span><span class="p">(</span><span class="n">ignoreCase</span> <span class="o">=</span> <span class="kc">true</span><span class="p">))</span>
+</code></pre></div>
 <p>If you want to sort Contacts based on data fields (e.g. email), you are unable to use the query 
 APIs provided in this library to do so. However, if you have a list of Contacts in memory, you can
 use the extensions in <code>ContactsComparator.kt</code> to build a <code>Comparator</code> to use for sorting,</p>
-<pre><code class="language-kotlin">val sortedContacts = unsortedContacts.sortedWith(
-    Fields.Email.Address.desc(ignoreCase = true).contactsComparator()
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kd">val</span> <span class="nv">sortedContacts</span> <span class="o">=</span> <span class="n">unsortedContacts</span><span class="p">.</span><span class="na">sortedWith</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">Address</span><span class="p">.</span><span class="na">desc</span><span class="p">(</span><span class="n">ignoreCase</span> <span class="o">=</span> <span class="kc">true</span><span class="p">).</span><span class="na">contactsComparator</span><span class="p">()</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="p">)</span>
+</code></pre></div>
 <p>You can also specify multiple fields for sorting,</p>
-<pre><code class="language-kotlin">val sortedContacts = unsortedContacts.sortedWith(
-    setOf(
-        Fields.Contact.Options.Starred.desc(),
-        Fields.Contact.DisplayNamePrimary.asc(ignoreCase = false),
-        Fields.Email.Address.asc()
-    ).contactsComparator()
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kd">val</span> <span class="nv">sortedContacts</span> <span class="o">=</span> <span class="n">unsortedContacts</span><span class="p">.</span><span class="na">sortedWith</span><span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">setOf</span><span class="p">(</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>        <span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">Starred</span><span class="p">.</span><span class="na">desc</span><span class="p">(),</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">asc</span><span class="p">(</span><span class="n">ignoreCase</span> <span class="o">=</span> <span class="kc">false</span><span class="p">),</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>        <span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">Address</span><span class="p">.</span><span class="na">asc</span><span class="p">()</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="p">).</span><span class="na">contactsComparator</span><span class="p">()</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">)</span>
+</code></pre></div>
 <h2 id="get-the-group-of-a-groupmembership">Get the Group of a GroupMembership<a class="headerlink" href="#get-the-group-of-a-groupmembership" title="Permanent link">&para;</a></h2>
 <p>The <code>GroupsQuery</code> allows you to get groups from a set of group Ids,</p>
-<pre><code class="language-kotlin">val group = contactsApi.groups().query().where { Id equalTo groupMembership.groupId }.find().firstOrNull()
-val groups = contactsApi.groups().query().where { Id `in` groupMemberships.map { it.groupId } }.find()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kd">val</span> <span class="nv">group</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">groups</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">Id</span> <span class="n">equalTo</span> <span class="n">groupMembership</span><span class="p">.</span><span class="na">groupId</span> <span class="p">}.</span><span class="na">find</span><span class="p">().</span><span class="na">firstOrNull</span><span class="p">()</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kd">val</span> <span class="nv">groups</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">groups</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">Id</span> <span class="n">`in`</span> <span class="n">groupMemberships</span><span class="p">.</span><span class="na">map</span> <span class="p">{</span> <span class="nb">it</span><span class="p">.</span><span class="na">groupId</span> <span class="p">}</span> <span class="p">}.</span><span class="na">find</span><span class="p">()</span>
+</code></pre></div>
 <p>To shorten things, you can use the extensions in <code>GroupMembershipGroup.kt</code>,</p>
-<pre><code class="language-kotlin">val group = groupMembership.group(contactsApi)
-val groups = groupMemberships.groups(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span> <span class="nv">group</span> <span class="o">=</span> <span class="n">groupMembership</span><span class="p">.</span><span class="na">group</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kd">val</span> <span class="nv">groups</span> <span class="o">=</span> <span class="n">groupMemberships</span><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
 <p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 </blockquote>
 <h2 id="get-the-rawcontact-of-a-blankrawcontact">Get the RawContact of a BlankRawContact<a class="headerlink" href="#get-the-rawcontact-of-a-blankrawcontact" title="Permanent link">&para;</a></h2>
 <p>The <code>Query</code> API allows you to get the <code>RawContact</code> version of a <code>BlankRawContact</code>,</p>
-<pre><code class="language-kotlin">val rawContact = contactsApi.query().where { RawContact.Id equalTo blankRawContact.id }.find()
-    .firstOrNull()
-    ?.rawContacts
-    ?.find { it.id == blankRawContact.id }
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">val</span> <span class="nv">rawContact</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span> <span class="n">equalTo</span> <span class="n">blankRawContact</span><span class="p">.</span><span class="na">id</span> <span class="p">}.</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="p">.</span><span class="na">firstOrNull</span><span class="p">()</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="o">?.</span><span class="na">rawContacts</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="o">?.</span><span class="na">find</span> <span class="p">{</span> <span class="nb">it</span><span class="p">.</span><span class="na">id</span> <span class="o">==</span> <span class="n">blankRawContact</span><span class="p">.</span><span class="na">id</span> <span class="p">}</span>
+</code></pre></div>
 <p>To shorten things, you can use the extensions in <code>BlankRawContactToRawContact.kt</code>,</p>
-<pre><code class="language-kotlin">val rawContact = blankRawContact.toRawContact(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kd">val</span> <span class="nv">rawContact</span> <span class="o">=</span> <span class="n">blankRawContact</span><span class="p">.</span><span class="na">toRawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
 <p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>

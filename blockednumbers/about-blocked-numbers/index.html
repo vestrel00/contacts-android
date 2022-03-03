@@ -1733,20 +1733,20 @@ provides will only work if all of the following requirements are met;</p>
 <li>the runtime OS version is at least Android 7.0 (N) (API 24)</li>
 </ul>
 <p>To check if all of the requirements specified above are met,</p>
-<pre><code class="language-kotlin">val canReadAndWriteBlockedNumbers = Contacts(context).blockedNumbers().privileges.canReadAndWrite()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">canReadAndWriteBlockedNumbers</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">blockedNumbers</span><span class="p">().</span><span class="na">privileges</span><span class="p">.</span><span class="na">canReadAndWrite</span><span class="p">()</span>
+</code></pre></div>
 <blockquote>
 <p>Note that update operations are not supported by the Blocked Number provider. 
 Use delete and insert instead.</p>
 </blockquote>
 <p>Starting with Android 11 (API 30), you must include the following to your app's manifest in order to
 successfully use this function <strong>and therefore the bocked number APIs provided in this library</strong>.</p>
-<pre><code class="language-xml">&lt;queries&gt;
-    &lt;intent&gt;
-        &lt;action android:name=&quot;android.provider.Telephony.SMS_DELIVER&quot; /&gt;
-    &lt;/intent&gt;
-&lt;/queries&gt;
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&lt;queries&gt;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="nt">&lt;intent&gt;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">&quot;android.provider.Telephony.SMS_DELIVER&quot;</span> <span class="nt">/&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="nt">&lt;/intent&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">&lt;/queries&gt;</span>
+</code></pre></div>
 <blockquote>
 <p>The above is required to be able to check if your app is the default SMS/messaging app.</p>
 </blockquote>
@@ -1755,8 +1755,8 @@ successfully use this function <strong>and therefore the bocked number APIs prov
 may instead launch the builtin system Blocked numbers activity. It provides a fully functional UI
 allowing users to see, add, and remove blocked numbers. It is the same activity used by the native (
 AOSP) Contacts app and Google Contacts app when accessing the "Blocked numbers".</p>
-<pre><code class="language-kotlin">Contacts(context).blockedNumbers().startBlockedNumbersActivity(activity)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">blockedNumbers</span><span class="p">().</span><span class="na">startBlockedNumbersActivity</span><span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+</code></pre></div>
 <p>If the <code>activity</code> is null, the builtin blocked numbers activity will be launched as a new task,
 separate from the current application instance. If it is provided, then the activity will be part of
 the current application's stack/history.</p>
@@ -1769,42 +1769,42 @@ SMS/messaging app.</p>
 <p>The <code>contacts.ui.util.DefaultDialerRequest.kt</code> in the <code>ui</code> module` provides extension functions that
 allow you to prompt the user to set your app as the default dialer/phone app.</p>
 <p>To use it,</p>
-<pre><code class="language-kotlin">Activity {
-    fun onRequestToBeTheDefaultDialerAppClicked() {
-        requestToBeTheDefaultDialerApp()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        onRequestToBeDefaultDialerAppResult(requestCode, resultCode) {
-            // You are now able to use the BlockedNumbersQuery, BlockedNumbersInsert, and 
-            // BlockedNumbersDelete APIs.
-        }
-    }
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">Activity</span> <span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="kd">fun</span> <span class="nf">onRequestToBeTheDefaultDialerAppClicked</span><span class="p">()</span> <span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="n">requestToBeTheDefaultDialerApp</span><span class="p">()</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="p">}</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="kd">override</span> <span class="kd">fun</span> <span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Intent?)</span> <span class="p">{</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="n">onRequestToBeDefaultDialerAppResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>            <span class="c1">// You are now able to use the BlockedNumbersQuery, BlockedNumbersInsert, and </span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>            <span class="c1">// BlockedNumbersDelete APIs.</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        <span class="p">}</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="p">}</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="p">}</span>
+</code></pre></div>
 <p>Your app must have an activity with following intent filters in your manifest. Otherwise, this will
 do nothing.</p>
-<pre><code>&lt;intent-filter&gt;
-     &lt;action android:name=&quot;android.intent.action.VIEW&quot; /&gt;
-     &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
-
-     &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
-     &lt;category android:name=&quot;android.intent.category.BROWSABLE&quot; /&gt;
-
-     &lt;data android:scheme=&quot;tel&quot; /&gt;
-&lt;/intent-filter&gt;
-&lt;intent-filter&gt;
-     &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
-
-     &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
-&lt;/intent-filter&gt;
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;intent-filter&gt;
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>     &lt;action android:name=&quot;android.intent.action.VIEW&quot; /&gt;
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>     &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>     &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>     &lt;category android:name=&quot;android.intent.category.BROWSABLE&quot; /&gt;
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>     &lt;data android:scheme=&quot;tel&quot; /&gt;
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>&lt;/intent-filter&gt;
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>&lt;intent-filter&gt;
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>     &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>     &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>&lt;/intent-filter&gt;
+</code></pre></div>
 <p>The above intent filters do NOT need to be added to the activity where the extension functions are
 invoked. It can be placed in any activity within the application.</p>
 <p>To check if your app is the default dialer/phone app,</p>
-<pre><code class="language-kotlin">Context.isDefaultDialerApp()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Context</span><span class="p">.</span><span class="na">isDefaultDialerApp</span><span class="p">()</span>
+</code></pre></div>
 <p><strong>If your app is not a dialer/phone app</strong>, then you should not set it as the default dialer/phone
 app. Otherwise, users of your app may get confused as to why you are prompting them for this
 privilege. If you still want to read/write blocked numbers directly, you may still use this method.

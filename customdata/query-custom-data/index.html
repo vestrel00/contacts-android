@@ -1746,29 +1746,29 @@ as regular data kinds. </p>
 <p>For more info, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
 <p>For example, you are able to get the handle names and gender of a RawContact,</p>
-<pre><code class="language-kotlin">val handleNames = rawContact.handleNames(contactsApi)
-val gender = rawContact.gender(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">handleNames</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">handleNames</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">val</span> <span class="nv">gender</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">gender</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>There are also extensions that allow you to get custom data from a Contact, which can be made up of 
 one or more RawContacts,</p>
-<pre><code class="language-kotlin">val handleNames = contact.handleNames(contactsApi)
-val genders = contact.genders(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">handleNames</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">handleNames</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">val</span> <span class="nv">genders</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">genders</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="getting-specific-custom-data-kinds-directly">Getting specific custom data kinds directly<a class="headerlink" href="#getting-specific-custom-data-kinds-directly" title="Permanent link">&para;</a></h2>
 <p>Every custom data provides an extension to the <code>DataQuery</code> that allows you to query for only that
 specific custom data kind.</p>
 <p>For example, to get all available <code>HandleName</code>s and <code>Gender</code>s from all contacts,</p>
-<pre><code class="language-kotlin">val handleNames = Contacts(context).data().query().handleNames().find()
-val genders = Contacts(context).data().query().genders().find()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">handleNames</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">data</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">handleNames</span><span class="p">().</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">val</span> <span class="nv">genders</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">data</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">genders</span><span class="p">().</span><span class="na">find</span><span class="p">()</span>
+</code></pre></div>
 <p>To get all <code>HandleName</code>s starting with the letter "h",</p>
-<pre><code class="language-kotlin">val handleNames = Contacts(context)
-    .data()
-    .query()
-    .handleNames()
-    .where { Handle startsWith &quot;h&quot; }
-    .find()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">handleNames</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="p">.</span><span class="na">data</span><span class="p">()</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="p">.</span><span class="na">handleNames</span><span class="p">()</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Handle</span> <span class="n">startsWith</span> <span class="s">&quot;h&quot;</span> <span class="p">}</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+</code></pre></div>
 <p>For more info, read <a href="../../data/query-data-sets/">Query specific data kinds</a>.</p>
 <h2 id="the-include-function-and-custom-data">The <code>include</code> function and custom data<a class="headerlink" href="#the-include-function-and-custom-data" title="Permanent link">&para;</a></h2>
 <p>All of the above mentioned APIs provide an <code>include</code> function that allows you to include only a 
@@ -1776,15 +1776,15 @@ given set of fields (data) in each of the returned entities. Custom data entries
 that can be used in this function. </p>
 <p>By default, not calling the <code>include</code> function will include all fields, including custom data fields. </p>
 <p>For example, to explicitly include all <code>HandleName</code> fields, </p>
-<pre><code class="language-kotlin">.include(HandleNameFields.all)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">HandleNameFields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
+</code></pre></div>
 <p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="the-where-function-and-custom-data">The <code>where</code> function and custom data<a class="headerlink" href="#the-where-function-and-custom-data" title="Permanent link">&para;</a></h2>
 <p>The <code>Query</code> and <code>DataQuery</code> APIs provides a <code>where</code> function that allows you to specify a matching
 criteria based on specific field values. Custom data entries provides fields that can be used in 
 this function. For example, to match <code>HandleName</code>s starting with the letter "h",</p>
-<pre><code class="language-kotlin">.where { Handle startsWith &quot;h&quot; }
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Handle</span> <span class="n">startsWith</span> <span class="s">&quot;h&quot;</span> <span class="p">}</span>
+</code></pre></div>
 <p>The <code>BroadQuery</code> API provides a <code>whereAnyContactDataPartiallyMatches</code> function that NOT support
 matching custom data. Only native data are included in the matching process.</p>
 <p>The <code>ProfileQuery</code> API does not provide a where function as there can only be one profile Contact
@@ -1792,8 +1792,8 @@ per device. </p>
 <h2 id="the-orderby-function-and-custom-data">The <code>orderBy</code> function and custom data<a class="headerlink" href="#the-orderby-function-and-custom-data" title="Permanent link">&para;</a></h2>
 <p>The <code>DataQuery</code> API provides an <code>orderBy</code> function that supports custom data. For example, to order
 <code>HandleName</code>s,</p>
-<pre><code class="language-kotlin">.orderBy(HandleNameFields.Handle.asc())
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">HandleNameFields</span><span class="p">.</span><span class="na">Handle</span><span class="p">.</span><span class="na">asc</span><span class="p">())</span>
+</code></pre></div>
 <p>The <code>Query</code> and <code>BroadQuery</code> APIs provides an <code>orderBy</code> function that only takes in fields from
 the Contacts table, not data. So there is no custom data, or native data, support for this.</p>
 <p>The <code>ProfileQuery</code> API does not provide an <code>orderBy</code> function as there can only be at most one 

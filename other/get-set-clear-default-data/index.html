@@ -1752,23 +1752,23 @@ and making a phone call to that contact will use that default email and phone re
 </blockquote>
 <h2 id="getting-default-data">Getting default data<a class="headerlink" href="#getting-default-data" title="Permanent link">&para;</a></h2>
 <p>To get the default Contact email and phone from all RawContacts,</p>
-<pre><code class="language-kotlin">val defaultContactEmail: Email? = contact.emails().default()
-val defaultContactPhone: Phone? = contact.phones().default()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">defaultContactEmail</span><span class="p">:</span> <span class="n">Email? </span><span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">emails</span><span class="p">().</span><span class="na">default</span><span class="p">()</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">val</span> <span class="nv">defaultContactPhone</span><span class="p">:</span> <span class="n">Phone? </span><span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">phones</span><span class="p">().</span><span class="na">default</span><span class="p">()</span>
+</code></pre></div>
 <p>To get the default RawContact email and phone,</p>
-<pre><code class="language-kotlin">val defaultRawContactEmail: Email? = rawContact.emails.default()
-val defaultRawContactPhone: Phone? = rawContact.phones.default()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">defaultRawContactEmail</span><span class="p">:</span> <span class="n">Email? </span><span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">emails</span><span class="p">.</span><span class="na">default</span><span class="p">()</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">val</span> <span class="nv">defaultRawContactPhone</span><span class="p">:</span> <span class="n">Phone? </span><span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">phones</span><span class="p">.</span><span class="na">default</span><span class="p">()</span>
+</code></pre></div>
 <p>To get the first default data out of a generic list of data,</p>
-<pre><code class="language-kotlin">val defaultData = dataList.default()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">defaultData</span> <span class="o">=</span> <span class="n">dataList</span><span class="p">.</span><span class="na">default</span><span class="p">()</span>
+</code></pre></div>
 <p>Note that the most common use of defaults is with Contacts, not RawContacts. You typically do not 
 need to worry about defaults at a RawContact level.</p>
 <h2 id="setting-default-data">Setting default data<a class="headerlink" href="#setting-default-data" title="Permanent link">&para;</a></h2>
 <p>To set a particular data as the default for the set of data of the same type (e.g. email) for the 
 aggregate Contact,</p>
-<pre><code class="language-kotlin">email.setAsDefault(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">email</span><span class="p">.</span><span class="na">setAsDefault</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>If a default data of the same type for the aggregate Contact already exist before this call, then 
 it will no longer be the default.</p>
 <p>For example, these emails belong to the same aggregate Contact;</p>
@@ -1787,8 +1787,8 @@ that was previously set as the default. This data will then be set as the defaul
 <h2 id="clearing-default-data">Clearing default data<a class="headerlink" href="#clearing-default-data" title="Permanent link">&para;</a></h2>
 <p>To remove the default status of any data of the same type (e.g. email), if any, for the aggregate 
 Contact,</p>
-<pre><code class="language-kotlin">email.clearDefault(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">email</span><span class="p">.</span><span class="na">clearDefault</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>For example, these emails belong to the same aggregate Contact;</p>
 <ul>
 <li>x@x.com</li>

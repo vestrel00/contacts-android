@@ -1873,8 +1873,8 @@ and unlinking two or more Contacts (and their constituent RawContacts).</p>
 <hr />
 <h2 id="linking">Linking<a class="headerlink" href="#linking" title="Permanent link">&para;</a></h2>
 <p>To link three Contacts and all of their constituent RawContacts into a single Contact,</p>
-<pre><code class="language-kotlin">val linkResult = contact1.link(contactsApi, contact2, contact3)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">linkResult</span> <span class="o">=</span> <span class="n">contact1</span><span class="p">.</span><span class="na">link</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">contact2</span><span class="p">,</span> <span class="n">contact3</span><span class="p">)</span>
+</code></pre></div>
 <p>The above links (keep together) all RawContacts belonging to <code>contact1</code>, <code>contact2</code>, and <code>contact3</code>
 into a single Contact.</p>
 <p>Aggregation is done by the Contacts Provider. For example,</p>
@@ -1919,32 +1919,32 @@ Contact/RawContacts .</p>
 </blockquote>
 <h3 id="handling-the-link-result">Handling the link result<a class="headerlink" href="#handling-the-link-result" title="Permanent link">&para;</a></h3>
 <p>To check if the link succeeded,</p>
-<pre><code class="language-kotlin">val linkSuccessful = linkResult.isSuccessful
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">linkSuccessful</span> <span class="o">=</span> <span class="n">linkResult</span><span class="p">.</span><span class="na">isSuccessful</span>
+</code></pre></div>
 <p>To get the ID of the parent Contact of all linked RawContacts,</p>
-<pre><code class="language-kotlin">val contactId: Long? = linkResult.contactId
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">contactId</span><span class="p">:</span> <span class="kt">Long?</span> <span class="o">=</span> <span class="n">linkResult</span><span class="p">.</span><span class="na">contactId</span>
+</code></pre></div>
 <blockquote>
 <p>Note that the <code>contactId</code> will belong to one of the linked Contacts.</p>
 </blockquote>
 <p>Once you have the Contact ID, you can retrieve the Contact via the <code>Query</code> API,</p>
-<pre><code class="language-kotlin">val contact = contactsApi
-    .query()
-    .where { Contact.Id equalTo contactId }
-    .find()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">contact</span> <span class="o">=</span> <span class="n">contactsApi</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Contact</span><span class="p">.</span><span class="na">Id</span> <span class="n">equalTo</span> <span class="n">contactId</span> <span class="p">}</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+</code></pre></div>
 <blockquote>
 <p>For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Alternatively, you may use the extensions provided in <code>ContactLikResult</code>. To get the parent Contact 
 of all linked RawContacts,</p>
-<pre><code class="language-kotlin">val contact = linkResult.contact(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span> <span class="nv">contact</span> <span class="o">=</span> <span class="n">linkResult</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <hr />
 <h2 id="unlinking">Unlinking<a class="headerlink" href="#unlinking" title="Permanent link">&para;</a></h2>
 <p>To unlink a Contacts with more than one RawContact into a separate Contacts,</p>
-<pre><code class="language-kotlin">val unlinkResult = contact.unlink(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span> <span class="nv">unlinkResult</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">unlink</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>The above unlinks (keep separate) all RawContacts belonging to the <code>contact</code> into separate
 Contacts.</p>
 <p>The above does nothing and will fail if the Contact only has one constituent RawContact.</p>
@@ -1954,24 +1954,24 @@ Contact/RawContacts .</p>
 </blockquote>
 <h3 id="handling-the-unlink-result">Handling the unlink result<a class="headerlink" href="#handling-the-unlink-result" title="Permanent link">&para;</a></h3>
 <p>To check if the unlink succeeded,</p>
-<pre><code class="language-kotlin">val unlinkSuccessful = unlinkResult.isSuccessful
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span> <span class="nv">unlinkSuccessful</span> <span class="o">=</span> <span class="n">unlinkResult</span><span class="p">.</span><span class="na">isSuccessful</span>
+</code></pre></div>
 <p>To get the IDs of the constituent RawContact of of the Contact that has been unlinked,</p>
-<pre><code class="language-kotlin">val rawContactIds = unlinkResult.rawContactIds
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span> <span class="nv">rawContactIds</span> <span class="o">=</span> <span class="n">unlinkResult</span><span class="p">.</span><span class="na">rawContactIds</span>
+</code></pre></div>
 <p>Once you have the RawContact IDs, you can retrieve the corresponding Contacts via the <code>Query</code> API,</p>
-<pre><code class="language-kotlin">val contacts = contactsApi
-    .query()
-    .where { RawContact.Id `in` rawContactIds }
-    .find()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">contactsApi</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="p">.</span><span class="na">query</span><span class="p">()</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span> <span class="n">`in`</span> <span class="n">rawContactIds</span> <span class="p">}</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+</code></pre></div>
 <blockquote>
 <p>For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Alternatively, you may use the extensions provided in <code>ContactLikResult</code>. To get the Contacts
 of all unlinked RawContacts,</p>
-<pre><code class="language-kotlin">val contacts = unlinkResult.contacts(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">unlinkResult</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <hr />
 <h2 id="changes-are-immediate-and-are-not-applied-to-the-receiver">Changes are immediate and are not applied to the receiver<a class="headerlink" href="#changes-are-immediate-and-are-not-applied-to-the-receiver" title="Permanent link">&para;</a></h2>
 <p>These apply to set and clear functions.</p>
@@ -2031,42 +2031,42 @@ in case you need deeper insight.</p>
 <p>However, the internals have not changed; <code>KEEP_TOGETHER</code> / <code>KEEP_SEPARATE</code>. These operations are
 supported by the <code>ContactsContract.AggregationExceptions</code>.</p>
 <p>For example, given the following tables,</p>
-<pre><code>### Contacts table
-Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-
-### RawContacts table
-RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-
-### Data table
-Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
-Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
-Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
-Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 1
-Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
-Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 1
-Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
-Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 1
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>### Contacts table
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Contact id: 32, displayName: X, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Contact id: 33, displayName: Y, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>### RawContacts table
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>### Data table
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>Data id: 63, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>Data id: 64, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>Data id: 65, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 1
+</code></pre></div>
 <p>When Contact <strong>X</strong> links/merges/joins Contact <strong>Y</strong>, the tables becomes;</p>
-<pre><code>### Contacts table
-Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-
-### RawContacts table
-RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-
-### Data table
-Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
-Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
-Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
-Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 0
-Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
-Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 0
-Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
-Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 0
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>### Contacts table
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Contact id: 32, displayName: X, starred: 1, timesContacted: 2, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>### RawContacts table
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>### Data table
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>Data id: 57, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 18
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>Data id: 58, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: X, isPrimary: 1, isSuperPrimary: 1
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>Data id: 59, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: x@x.com
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>Data id: 60, rawContactId: 30, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: xx@x.com, isPrimary: 1, isSuperPrimary: 0
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>Data id: 63, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/group_membership, data1: 6
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>Data id: 64, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/name, data1: Y, isPrimary: 1, isSuperPrimary: 0
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>Data id: 65, rawContactId: 31, contactId: 32, mimeType: vnd.android.cursor.item/email_v2, data1: y@y.com
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/email_v2, data1: yy@y.com, isPrimary: 1, isSuperPrimary: 0
+</code></pre></div>
 <p><strong>What changed?</strong></p>
 <p>Contact Y's row has been deleted and its column values have been merged into Contact X row. If the
 reverse occurred (Contact Y merged with Contact X), Contact Y's row would still be deleted. The
@@ -2152,18 +2152,18 @@ in the same screen.</p>
 <li>Contact C link Contact B</li>
 </ul>
 <p>Results in the following AggregationExceptions rows respectively;</p>
-<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
-</code></pre>
-<pre><code>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
-Aggregation exception id: 432, type: 1, rawContactId1: 3, rawContactId2: 4
-</code></pre>
-<pre><code>Aggregation exception id: 436, type: 1, rawContactId1: 1, rawContactId2: 2
-Aggregation exception id: 439, type: 1, rawContactId1: 1, rawContactId2: 3
-Aggregation exception id: 442, type: 1, rawContactId1: 1, rawContactId2: 4
-Aggregation exception id: 440, type: 1, rawContactId1: 2, rawContactId2: 3
-Aggregation exception id: 443, type: 1, rawContactId1: 2, rawContactId2: 4
-Aggregation exception id: 444, type: 1, rawContactId1: 3, rawContactId2: 4
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Aggregation exception id: 430, type: 1, rawContactId1: 1, rawContactId2: 2
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>Aggregation exception id: 432, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Aggregation exception id: 436, type: 1, rawContactId1: 1, rawContactId2: 2
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>Aggregation exception id: 439, type: 1, rawContactId1: 1, rawContactId2: 3
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>Aggregation exception id: 442, type: 1, rawContactId1: 1, rawContactId2: 4
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>Aggregation exception id: 440, type: 1, rawContactId1: 2, rawContactId2: 3
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>Aggregation exception id: 443, type: 1, rawContactId1: 2, rawContactId2: 4
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>Aggregation exception id: 444, type: 1, rawContactId1: 3, rawContactId2: 4
+</code></pre></div>
 <p>There is a pattern here. RawContact ids are sorted in ascending order and linked from least to
 greatest exhaustively but no double links (1-2 is the same as 2-1).</p>
 <ul>

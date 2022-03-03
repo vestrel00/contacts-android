@@ -1777,69 +1777,69 @@ contacts. These (optional) extensions live in the <code>customdata-googlecontact
 </blockquote>
 <h2 id="register-the-google-contacts-custom-data-with-the-contacts-api-instance">Register the Google Contacts custom data with the Contacts API instance<a class="headerlink" href="#register-the-google-contacts-custom-data-with-the-contacts-api-instance" title="Permanent link">&para;</a></h2>
 <p>You may register all Google Contacts custom data when creating the <code>Contacts</code> API instance,</p>
-<pre><code class="language-kotlin">val contactsApi = Contacts(
-    context,
-    customDataRegistry = CustomDataRegistry().register(
-        GoogleContactsRegistration()
-    )
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">context</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">customDataRegistry</span> <span class="o">=</span> <span class="n">CustomDataRegistry</span><span class="p">().</span><span class="na">register</span><span class="p">(</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="n">GoogleContactsRegistration</span><span class="p">()</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span>
+</code></pre></div>
 <p>Or, alternatively after creating the <code>Contacts</code> API instance,</p>
-<pre><code class="language-kotlin">val contactsApi = Contacts(context)
-GoogleContactsRegistration().registerTo(contactsApi.customDataRegistry)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">GoogleContactsRegistration</span><span class="p">().</span><span class="na">registerTo</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">.</span><span class="na">customDataRegistry</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="readwrite-google-contacts-custom-data">Read/write Google Contacts custom data<a class="headerlink" href="#readwrite-google-contacts-custom-data" title="Permanent link">&para;</a></h2>
 <h3 id="getset-fileas">Get/set <code>FileAs</code><a class="headerlink" href="#getset-fileas" title="Permanent link">&para;</a></h3>
 <p>Just like regular data kinds, <code>FileAs</code> custom data belong to a RawContact. A RawContact may only
 have 0 or 1 <code>FileAs</code>.</p>
 <p>To get the <code>FileAs</code> of a RawContact,</p>
-<pre><code class="language-kotlin">val fileAs = rawContact.fileAs(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">fileAs</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">fileAs</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To get the <code>FileAs</code> of all RawContacts belonging to a Contact,</p>
-<pre><code class="language-kotlin">val fileAsSequence = contact.fileAs(contactsApi)
-val fileAsList = contact.fileAsList(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">fileAsSequence</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">fileAs</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kd">val</span> <span class="nv">fileAsList</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">fileAsList</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To set the <code>FileAs</code> of a (mutable) RawContact,</p>
-<pre><code class="language-kotlin">mutableRawContact.setFileAs(contacts, mutableFileAs)
-// or
-mutableRawContact.setFileAs(contacts) {
-    name = &quot;Robot&quot;
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">setFileAs</span><span class="p">(</span><span class="n">contacts</span><span class="p">,</span> <span class="n">mutableFileAs</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">// or</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">setFileAs</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Robot&quot;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+</code></pre></div>
 <p>To set the <code>FileAs</code> of the first RawContact in a Contact,</p>
-<pre><code class="language-kotlin">mutableContact.setFileAs(contacts, mutableFileAs)
-// or
-mutableContact.setFileAs(contacts) {
-  name = &quot;Robot&quot;
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">setFileAs</span><span class="p">(</span><span class="n">contacts</span><span class="p">,</span> <span class="n">mutableFileAs</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">// or</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">setFileAs</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Robot&quot;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+</code></pre></div>
 <h3 id="getaddremove-userdefined">Get/add/remove <code>UserDefined</code><a class="headerlink" href="#getaddremove-userdefined" title="Permanent link">&para;</a></h3>
 <p>Just like regular data kinds, <code>UserDefined</code> custom data belong to a RawContact. A RawContact may 
 have 0, 1, or more <code>UserDefined</code>.</p>
 <p>To get the <code>UserDefined</code> list/sequence of a RawContact,</p>
-<pre><code class="language-kotlin">val userDefinedSequence = rawContact.userDefined(contactsApi)
-val userDefinedList = rawContact.userDefinedList(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span> <span class="nv">userDefinedSequence</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">userDefined</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kd">val</span> <span class="nv">userDefinedList</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">userDefinedList</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To get the <code>UserDefined</code> of all RawContacts belonging to a Contact,</p>
-<pre><code class="language-kotlin">val userDefinedSequence = contact.userDefined(contactsApi)
-val userDefinedList = contact.userDefinedList(contactsApi)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span> <span class="nv">userDefinedSequence</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">userDefined</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kd">val</span> <span class="nv">userDefinedList</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">userDefinedList</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
+</code></pre></div>
 <p>To add a <code>UserDefined</code> to a (mutable) RawContact,</p>
-<pre><code class="language-kotlin">mutableRawContact.addUserDefined(contacts, mutableUserDefined)
-// or
-mutableRawContact.addUserDefined(contacts) {
-    field = &quot;My Field&quot;
-    label = &quot;My Label&quot;
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">addUserDefined</span><span class="p">(</span><span class="n">contacts</span><span class="p">,</span> <span class="n">mutableUserDefined</span><span class="p">)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1">// or</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">mutableRawContact</span><span class="p">.</span><span class="na">addUserDefined</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">field</span> <span class="o">=</span> <span class="s">&quot;My Field&quot;</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;My Label&quot;</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">}</span>
+</code></pre></div>
 <p>To add a <code>UserDefined</code> to the first RawContact in a Contact,</p>
-<pre><code class="language-kotlin">mutableContact.addUserDefined(contacts, mutableUserDefined)
-// or
-mutableContact.addUserDefined(contacts) {
-  field = &quot;My Field&quot;
-  label = &quot;My Label&quot;
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">addUserDefined</span><span class="p">(</span><span class="n">contacts</span><span class="p">,</span> <span class="n">mutableUserDefined</span><span class="p">)</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1">// or</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">mutableContact</span><span class="p">.</span><span class="na">addUserDefined</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  <span class="n">field</span> <span class="o">=</span> <span class="s">&quot;My Field&quot;</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>  <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;My Label&quot;</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">}</span>
+</code></pre></div>
 <h2 id="use-the-google-contacts-custom-data-in-queries-inserts-updates-and-deletes">Use the Google Contacts custom data in queries, inserts, updates, and deletes<a class="headerlink" href="#use-the-google-contacts-custom-data-in-queries-inserts-updates-and-deletes" title="Permanent link">&para;</a></h2>
 <p>Once you have registered the Google Contacts custom data with the <code>Contacts</code> API instance, the API 
 instance is now able to perform read and write operations on it.</p>

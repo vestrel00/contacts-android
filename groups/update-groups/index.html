@@ -1810,28 +1810,28 @@
 <h1 id="update-groups">Update groups<a class="headerlink" href="#update-groups" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>GroupsUpdate</code> API that allows you to update existing Groups.</p>
 <p>An instance of the <code>GroupsUpdate</code> API is obtained by,</p>
-<pre><code class="language-kotlin">val update = Contacts(context).groups().update()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">update</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">groups</span><span class="p">().</span><span class="na">update</span><span class="p">()</span>
+</code></pre></div>
 <h2 id="a-basic-update">A basic update<a class="headerlink" href="#a-basic-update" title="Permanent link">&para;</a></h2>
 <p>To update an existing group,</p>
-<pre><code class="language-kotlin">val updateResult = Contacts(context)
-    .groups()
-    .update()
-    .groups(existingGroup?.mutableCopy {
-        title = &quot;Best Friends&quot;
-    })
-    .commit()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">updateResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="p">.</span><span class="na">groups</span><span class="p">()</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="p">.</span><span class="na">update</span><span class="p">()</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">existingGroup</span><span class="o">?.</span><span class="na">mutableCopy</span> <span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Best Friends&quot;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="p">})</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
 <p>If you need to update multiple groups,</p>
-<pre><code class="language-kotlin">val mutableGroup1 = group1.mutableCopy { ... }
-val mutableGroup2 = group2.mutableCopy { ... }
-
-val updateResult = Contacts(context)
-    .groups()
-    .update()
-    .groups(mutableGroup1, mutableGroup2)
-    .commit()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">mutableGroup1</span> <span class="o">=</span> <span class="n">group1</span><span class="p">.</span><span class="na">mutableCopy</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">val</span> <span class="nv">mutableGroup2</span> <span class="o">=</span> <span class="n">group2</span><span class="p">.</span><span class="na">mutableCopy</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kd">val</span> <span class="nv">updateResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="p">.</span><span class="na">groups</span><span class="p">()</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="p">.</span><span class="na">update</span><span class="p">()</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">mutableGroup1</span><span class="p">,</span> <span class="n">mutableGroup2</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
 <h2 id="read-only-groups">Read-only Groups<a class="headerlink" href="#read-only-groups" title="Permanent link">&para;</a></h2>
 <p>Groups created by the system are typically read-only. You cannot modify them, even if you try! The 
 Contacts Provider typically have the following system groups (for standard Google Accounts),</p>
@@ -1857,39 +1857,39 @@ allows the creation of new groups with existing titles. In newer versions, dupli
 allowed. Therefore, this library does not allow for duplicate titles.</p>
 <h2 id="executing-the-update">Executing the update<a class="headerlink" href="#executing-the-update" title="Permanent link">&para;</a></h2>
 <p>To execute the update,</p>
-<pre><code class="language-kotlin">.commit()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
 <h3 id="handling-the-update-result">Handling the update result<a class="headerlink" href="#handling-the-update-result" title="Permanent link">&para;</a></h3>
 <p>The <code>commit</code> function returns a <code>Result</code>.</p>
 <p>To check if all updates succeeded,</p>
-<pre><code class="language-kotlin">val allUpdatesSuccessful = updateResult.isSuccessful
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span> <span class="nv">allUpdatesSuccessful</span> <span class="o">=</span> <span class="n">updateResult</span><span class="p">.</span><span class="na">isSuccessful</span>
+</code></pre></div>
 <p>To check if a particular update succeeded,</p>
-<pre><code class="language-kotlin">val firstUpdateSuccessful = updateResult.isSuccessful(mutableGroup1)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span> <span class="nv">firstUpdateSuccessful</span> <span class="o">=</span> <span class="n">updateResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">mutableGroup1</span><span class="p">)</span>
+</code></pre></div>
 <h3 id="handling-update-failure">Handling update failure<a class="headerlink" href="#handling-update-failure" title="Permanent link">&para;</a></h3>
 <p>The update may fail for a particular group for various reasons,</p>
-<pre><code class="language-kotlin">updateResult.failureReason(mutableGroup1)?.let {
-    when (it) {
-        TITLE_ALREADY_EXIST -&gt; promptUserToPickDifferentTitle()
-        UNKNOWN -&gt; showGenericErrorMessage()
-    }   
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">updateResult</span><span class="p">.</span><span class="na">failureReason</span><span class="p">(</span><span class="n">mutableGroup1</span><span class="p">)</span><span class="o">?.</span><span class="na">let</span> <span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">when</span> <span class="p">(</span><span class="nb">it</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="n">TITLE_ALREADY_EXIST</span> <span class="o">-&gt;</span> <span class="n">promptUserToPickDifferentTitle</span><span class="p">()</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="n">UNKNOWN</span> <span class="o">-&gt;</span> <span class="n">showGenericErrorMessage</span><span class="p">()</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="p">}</span>   
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">}</span>
+</code></pre></div>
 <h2 id="cancelling-the-update">Cancelling the update<a class="headerlink" href="#cancelling-the-update" title="Permanent link">&para;</a></h2>
 <p>To cancel an update amid execution,</p>
-<pre><code class="language-kotlin">.commit { returnTrueIfUpdateShouldBeCancelled() }
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">commit</span> <span class="p">{</span> <span class="n">returnTrueIfUpdateShouldBeCancelled</span><span class="p">()</span> <span class="p">}</span>
+</code></pre></div>
 <p>The <code>commit</code> function optionally takes in a function that, if it returns true, will cancel update
 processing as soon as possible. The function is called numerous times during update processing to
 check if processing should stop or continue. This gives you the option to cancel the update.</p>
 <p>For example, to automatically cancel the update inside a Kotlin coroutine when the coroutine is cancelled,</p>
-<pre><code class="language-kotlin">launch {
-    withContext(coroutineContext) {
-        val updateResult = update.commit { !isActive }
-    }
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">launch</span> <span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>        <span class="kd">val</span> <span class="nv">updateResult</span> <span class="o">=</span> <span class="n">update</span><span class="p">.</span><span class="na">commit</span> <span class="p">{</span> <span class="o">!</span><span class="n">isActive</span> <span class="p">}</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="p">}</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
+</code></pre></div>
 <h2 id="performing-the-update-and-result-processing-asynchronously">Performing the update and result processing asynchronously<a class="headerlink" href="#performing-the-update-and-result-processing-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Updates are executed when the <code>commit</code> function is invoked. The work is done in the same thread as
 the call-site. This may result in a choppy UI.</p>

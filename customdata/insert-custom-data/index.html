@@ -1720,13 +1720,13 @@ as regular data kinds.</p>
 <p>For more info, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
 <p>For example, you are able to add handle names and set gender of a new RawContact,</p>
-<pre><code class="language-kotlin">newRawContact.addHandleName(contactsApi) {
-   handle = &quot;dude91&quot;
-}
-newRawContact.setGender(contactsApi) {
-   type = GenderEntity.Type.MALE
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">newRawContact</span><span class="p">.</span><span class="na">addHandleName</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   <span class="n">handle</span> <span class="o">=</span> <span class="s">&quot;dude91&quot;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">newRawContact</span><span class="p">.</span><span class="na">setGender</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>   <span class="n">type</span> <span class="o">=</span> <span class="n">GenderEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">MALE</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</code></pre></div>
 <p>Once you have created/insert the custom data into the RawContact, you can perform the insert 
 operation on the new RawContact to commit your changes into the database.</p>
 <p>For more info, read <a href="../../data/insert-data-sets/">Insert data into new or existing contacts</a>.</p>
@@ -1736,8 +1736,8 @@ given set of fields (data) to be processed in the insert operation. Custom data 
 fields that can be used in this function.</p>
 <p>By default, not calling the <code>include</code> function will include all fields, including custom data fields.</p>
 <p>For example, to specifically include only <code>HandleName</code> and <code>Gender</code> fields,</p>
-<pre><code class="language-kotlin">.include(HandleNameFields.all + GenderFields.all)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">HandleNameFields</span><span class="p">.</span><span class="na">all</span> <span class="o">+</span> <span class="n">GenderFields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
+</code></pre></div>
 <p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="blank-data-are-not-inserted">Blank data are not inserted<a class="headerlink" href="#blank-data-are-not-inserted" title="Permanent link">&para;</a></h2>
 <p>Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are

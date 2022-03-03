@@ -1756,34 +1756,34 @@
 <h1 id="delete-groups">Delete groups<a class="headerlink" href="#delete-groups" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>GroupsDelete</code> API that allows you to delete existing Groups.</p>
 <p>An instance of the <code>GroupsDelete</code> API is obtained by,</p>
-<pre><code class="language-kotlin">val delete = Contacts(context).groups().delete()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">delete</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">groups</span><span class="p">().</span><span class="na">delete</span><span class="p">()</span>
+</code></pre></div>
 <h2 id="a-basic-delete">A basic delete<a class="headerlink" href="#a-basic-delete" title="Permanent link">&para;</a></h2>
 <p>To delete a set of existing groups,</p>
-<pre><code class="language-kotlin">val deleteResult = Contacts(context)
-    .groups()
-    .delete()
-    .groups(existingGroups)
-    .commit()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">deleteResult</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="p">.</span><span class="na">groups</span><span class="p">()</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="p">.</span><span class="na">delete</span><span class="p">()</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">existingGroups</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
 <h2 id="executing-the-delete">Executing the delete<a class="headerlink" href="#executing-the-delete" title="Permanent link">&para;</a></h2>
 <p>To execute the delete,</p>
-<pre><code class="language-kotlin">.commit()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
 <p>If you want to delete all given groups in a single atomic transaction,</p>
-<pre><code class="language-kotlin">.commitInOneTransaction()
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">commitInOneTransaction</span><span class="p">()</span>
+</code></pre></div>
 <p>The call to <code>commitInOneTransaction</code> will only succeed if ALL given groups are successfully deleted.
 If one delete fails, the entire operation will fail and everything will be reverted prior to the
 delete operation. In contrast, <code>commit</code> allows for some deletes to succeed and some to fail.</p>
 <h3 id="handling-the-delete-result">Handling the delete result<a class="headerlink" href="#handling-the-delete-result" title="Permanent link">&para;</a></h3>
 <p>The <code>commit</code> and <code>commitInOneTransaction</code> functions returns a <code>Result</code>,</p>
 <p>To check if all deletes succeeded,</p>
-<pre><code class="language-kotlin">val allDeletesSuccessful = deleteResult.isSuccessful
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span> <span class="nv">allDeletesSuccessful</span> <span class="o">=</span> <span class="n">deleteResult</span><span class="p">.</span><span class="na">isSuccessful</span>
+</code></pre></div>
 <p>To check if a particular delete succeeded,</p>
-<pre><code class="language-kotlin">val firstDeleteSuccessful = deleteResult.isSuccessful(group1)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span> <span class="nv">firstDeleteSuccessful</span> <span class="o">=</span> <span class="n">deleteResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">group1</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="performing-the-delete-and-result-processing-asynchronously">Performing the delete and result processing asynchronously<a class="headerlink" href="#performing-the-delete-and-result-processing-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Deletes are executed when the <code>commit</code> or <code>commitInOneTransaction</code> function is invoked. The work is
 done in the same thread as the call-site. This may result in a choppy UI.</p>
