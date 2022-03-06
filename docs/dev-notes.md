@@ -984,7 +984,7 @@ Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoA
 Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
 Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
 Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-`````
+```
 
 The actual groups are in a separate table; Groups. Each group is associated with an Account. No
 group can exist without an account. It is account-exclusive.

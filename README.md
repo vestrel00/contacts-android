@@ -33,8 +33,7 @@ If you think that this library is helpful, please click the ⭐️. If you want 
 please click the 👁. If it has really helped you out and would recommend it, please share it with 
 other folks and developer communities 🙏
 
-Please visit this discussion thread for more info and join the conversation;
-https://github.com/vestrel00/contacts-android/discussions/189
+Please visit this [discussion thread for more info and join the conversation](https://github.com/vestrel00/contacts-android/discussions/189).
 
 ## About this repository
 

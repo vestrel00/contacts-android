@@ -8,7 +8,7 @@ import android.provider.ContactsContract
 import contacts.core.*
 
 /**
- * Defines all of the main [ContactsContract] tables, types with [Field]s =)
+ * Defines all of the database tables used by this library.
  */
 internal sealed interface Table<out T : Field> {
 

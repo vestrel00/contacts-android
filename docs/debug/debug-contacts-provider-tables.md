@@ -1,17 +1,16 @@
 # Debug the Contacts Provider tables
 
-If you want to take a look at the contents of Contacts Provider database tables that this library
-uses, then make sure that you set the `debug` module as a dependency to your project. It provides
-you functions that print relevant columns and all rows of a particular table to the Logcat.
+If you want to take a look at the contents of Contacts Provider database tables that this library 
+uses, then use the `debug` module functions to print relevant columns and all rows of a particular 
+table to the Logcat.
 
 This is useful if you are experiencing an issue and are trying to figure out if it is this library's
 fault or not. This is most useful for contributors of this library. It allows us to verify that the
 work we are doing is correct. Consumers may also use it, especially if they are building their own
 full-fledged contacts application.
 
-| **ContactsContract Table** | **Function**                              |
+| **Table**                  | **Function**                              |
 |----------------------------|-------------------------------------------|
-| `BlockedNumbers`           | `Context.logBlockedNumbersTable()`        |
 | `Groups`                   | `Context.logGroupsTable()`                |
 | `AggregationExceptions`    | `Context.logAggregationExceptionsTable()` |
 | `Profile`                  | `Context.logProfile()`                    |
@@ -58,3 +57,6 @@ exactly want to debug the core APIs using the core APIs. That's just a recipe fo
 If the read permission `android.permission.READ_CONTACTS` is not granted, the debug functions will
 not print any table rows.
 
+## Logging Blocked Number Provider tables
+
+To log Blocked Number Provider tables, read [Debug the Blocked Number Provider tables](./../debug/debug-blockednumber-provider-tables.md).
