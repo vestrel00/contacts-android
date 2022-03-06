@@ -12,14 +12,14 @@
         <meta name="author" content="Vandolf Estrellado">
       
       
-        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/ui/integrate-rudimentary-contacts-integrated-ui-components/">
+        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/debug/debug-blockednumber-provider-tables/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.4">
     
     
       
-        <title>Integrate rudimentary contacts ui components - Contacts, Reborn</title>
+        <title>Debug the BlockedNumber Provider tables - Contacts, Reborn</title>
       
     
     
@@ -69,7 +69,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#integrate-rudimentary-contacts-ui-components" class="md-skip">
+        <a href="#debug-the-blocked-number-provider-tables" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Integrate rudimentary contacts ui components
+              Debug the BlockedNumber Provider tables
             
           </span>
         </div>
@@ -1243,14 +1243,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
       
       
       
@@ -1271,21 +1269,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../ui/integrate-rudimentary-contacts-integrated-ui-components/" class="md-nav__link">
         Integrate rudimentary contacts ui components
       </a>
-      
     </li>
   
 
@@ -1503,12 +1491,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" checked>
       
       
       
@@ -1531,7 +1521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../debug/debug-contacts-provider-tables/" class="md-nav__link">
+      <a href="../debug-contacts-provider-tables/" class="md-nav__link">
         Debug the Contacts Provider tables
       </a>
     </li>
@@ -1543,11 +1533,73 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../debug/debug-blockednumber-provider-tables/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Debug the BlockedNumber Provider tables
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Debug the BlockedNumber Provider tables
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#this-is-not-meant-to-be-used-in-production-code" class="md-nav__link">
+    This is not meant to be used in production code!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-functions-do-not-depend-on-the-core-library" class="md-nav__link">
+    Debug functions do not depend on the core library
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-functions-assume-that-privileges-are-acquired" class="md-nav__link">
+    Debug functions assume that privileges are acquired
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-contacts-provider-tables" class="md-nav__link">
+    Logging Contacts Provider tables
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1609,6 +1661,42 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#this-is-not-meant-to-be-used-in-production-code" class="md-nav__link">
+    This is not meant to be used in production code!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-functions-do-not-depend-on-the-core-library" class="md-nav__link">
+    Debug functions do not depend on the core library
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-functions-assume-that-privileges-are-acquired" class="md-nav__link">
+    Debug functions assume that privileges are acquired
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-contacts-provider-tables" class="md-nav__link">
+    Logging Contacts Provider tables
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1619,14 +1707,36 @@
             <article class="md-content__inner md-typeset">
               
                 
-<a href="https://github.com/vestrel00/contacts-android/tree/main/docs/ui/integrate-rudimentary-contacts-integrated-ui-components.md" title="Edit this page" class="md-content__button md-icon">
+<a href="https://github.com/vestrel00/contacts-android/tree/main/docs/debug/debug-blockednumber-provider-tables.md" title="Edit this page" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
 </a>
 
 
 
-<h1 id="integrate-rudimentary-contacts-ui-components">Integrate rudimentary contacts ui components<a class="headerlink" href="#integrate-rudimentary-contacts-ui-components" title="Permanent link">&para;</a></h1>
-<p>TODO Coming soon</p>
+<h1 id="debug-the-blocked-number-provider-tables">Debug the Blocked Number Provider tables<a class="headerlink" href="#debug-the-blocked-number-provider-tables" title="Permanent link">&para;</a></h1>
+<p>If you want to take a look at the contents of Blocked Number Provider database tables that this
+library uses, then use the <code>debug</code> module functions to print relevant columns and all rows of a
+particular table to the Logcat.</p>
+<p>This is useful if you are experiencing an issue and are trying to figure out if it is this library's
+fault or not. This is most useful for contributors of this library. It allows us to verify that the
+work we are doing is correct. Consumers may also use it, especially if they are building their own
+full-fledged contacts application.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">Context</span><span class="p">.</span><span class="na">logBlockedNumbersTable</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="this-is-not-meant-to-be-used-in-production-code">This is not meant to be used in production code!<a class="headerlink" href="#this-is-not-meant-to-be-used-in-production-code" title="Permanent link">&para;</a></h2>
+<p>DO NOT include usages of the <code>debug</code> module in your production code! It is only meant to be used as
+a debugging tool <strong>during development</strong>!</p>
+<h2 id="debug-functions-do-not-depend-on-the-core-library">Debug functions do not depend on the core library<a class="headerlink" href="#debug-functions-do-not-depend-on-the-core-library" title="Permanent link">&para;</a></h2>
+<p>Notice that the <code>debug</code> module does not depend on the <code>core</code> module, or any other modules in this
+project. This is done to ensure that whatever is being logged is independent of the core API
+implementation! This is important for debugging the core APIs during development. We wouldn't
+exactly want to debug the core APIs using the core APIs. That's just a recipe for disaster!</p>
+<h2 id="debug-functions-assume-that-privileges-are-acquired">Debug functions assume that privileges are acquired<a class="headerlink" href="#debug-functions-assume-that-privileges-are-acquired" title="Permanent link">&para;</a></h2>
+<p>There are no permissions required for blocked numbers. However, there are privileges that must be
+acquired. For more info, read about <a href="../../blockednumbers/about-blocked-numbers/">Blocked numbers</a>.</p>
+<p>If privileges are not acquired, the debug functions will not print any table rows.</p>
+<h2 id="logging-contacts-provider-tables">Logging Contacts Provider tables<a class="headerlink" href="#logging-contacts-provider-tables" title="Permanent link">&para;</a></h2>
+<p>To log Contacts Provider tables, read <a href="../debug-contacts-provider-tables/">Debug the Contacts Provider tables</a>.</p>
 
               
             </article>
@@ -1640,7 +1750,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../../async/async-execution-coroutines/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Execute work outside of the UI thread using coroutines" rel="prev">
+        <a href="../debug-contacts-provider-tables/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Debug the Contacts Provider tables" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1649,20 +1759,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Execute work outside of the UI thread using coroutines
+              Debug the Contacts Provider tables
             </div>
           </div>
         </a>
       
       
         
-        <a href="../../other/get-set-remove-contact-raw-contact-photo/" class="md-footer__link md-footer__link--next" aria-label="Next: Get set remove full-sized and thumbnail contact photos" rel="next">
+        <a href="../../contributing/" class="md-footer__link md-footer__link--next" aria-label="Next: Contributing" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Get set remove full-sized and thumbnail contact photos
+              Contributing
             </div>
           </div>
           <div class="md-footer__button md-icon">

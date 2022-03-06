@@ -1575,10 +1575,31 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#logging-blocked-number-provider-tables" class="md-nav__link">
+    Logging Blocked Number Provider tables
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug-blockednumber-provider-tables/" class="md-nav__link">
+        Debug the BlockedNumber Provider tables
+      </a>
     </li>
   
 
@@ -1667,6 +1688,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#logging-blocked-number-provider-tables" class="md-nav__link">
+    Logging Blocked Number Provider tables
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1686,9 +1714,9 @@
 
 
 <h1 id="debug-the-contacts-provider-tables">Debug the Contacts Provider tables<a class="headerlink" href="#debug-the-contacts-provider-tables" title="Permanent link">&para;</a></h1>
-<p>If you want to take a look at the contents of Contacts Provider database tables that this library
-uses, then make sure that you set the <code>debug</code> module as a dependency to your project. It provides
-you functions that print relevant columns and all rows of a particular table to the Logcat.</p>
+<p>If you want to take a look at the contents of Contacts Provider database tables that this library 
+uses, then use the <code>debug</code> module functions to print relevant columns and all rows of a particular 
+table to the Logcat.</p>
 <p>This is useful if you are experiencing an issue and are trying to figure out if it is this library's
 fault or not. This is most useful for contributors of this library. It allows us to verify that the
 work we are doing is correct. Consumers may also use it, especially if they are building their own
@@ -1696,15 +1724,11 @@ full-fledged contacts application.</p>
 <table>
 <thead>
 <tr>
-<th><strong>ContactsContract Table</strong></th>
+<th><strong>Table</strong></th>
 <th><strong>Function</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><code>BlockedNumbers</code></td>
-<td><code>Context.logBlockedNumbersTable()</code></td>
-</tr>
 <tr>
 <td><code>Groups</code></td>
 <td><code>Context.logGroupsTable()</code></td>
@@ -1756,6 +1780,8 @@ exactly want to debug the core APIs using the core APIs. That's just a recipe fo
 <h2 id="debug-functions-assume-that-permissions-have-been-granted">Debug functions assume that permissions have been granted<a class="headerlink" href="#debug-functions-assume-that-permissions-have-been-granted" title="Permanent link">&para;</a></h2>
 <p>If the read permission <code>android.permission.READ_CONTACTS</code> is not granted, the debug functions will
 not print any table rows.</p>
+<h2 id="logging-blocked-number-provider-tables">Logging Blocked Number Provider tables<a class="headerlink" href="#logging-blocked-number-provider-tables" title="Permanent link">&para;</a></h2>
+<p>To log Blocked Number Provider tables, read <a href="../debug-blockednumber-provider-tables/">Debug the Blocked Number Provider tables</a>.</p>
 
               
             </article>
@@ -1785,13 +1811,13 @@ not print any table rows.</p>
       
       
         
-        <a href="../../contributing/" class="md-footer__link md-footer__link--next" aria-label="Next: Contributing" rel="next">
+        <a href="../debug-blockednumber-provider-tables/" class="md-footer__link md-footer__link--next" aria-label="Next: Debug the BlockedNumber Provider tables" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Contributing
+              Debug the BlockedNumber Provider tables
             </div>
           </div>
           <div class="md-footer__button md-icon">
