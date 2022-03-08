@@ -140,7 +140,7 @@ class ContactsActivity : BaseActivity() {
                     Fields.Email.Address,
                     Fields.Phone.Number
                 )
-                .whereAnyContactDataPartiallyMatches(searchText)
+                .wherePartiallyMatches(searchText)
                 .orderBy(ContactsFields.DisplayNamePrimary.asc())
                 // Not showing how to low 4xad x number of contacts at a time and then loading more when
                 // scrolled to the very bottom of the list for brevity. Consumers can figure it out.

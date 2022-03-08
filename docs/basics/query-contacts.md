@@ -2,9 +2,9 @@
 
 This library provides the `BroadQuery` API that allows you to get the exact same search results
 as the native Contacts app! This query lets the Contacts Provider perform the search using its own
-custom matching algorithm via the `whereAnyContactDataPartiallyMatches` function. This type of
-query is the basis of an app that does a broad search of the Contacts Provider. The technique is
-useful for apps that want to implement functionality similar to the People app's contact list screen.
+custom matching algorithm via the `wherePartiallyMatches` function. This type of query is the basis
+of an app that does a broad search of the Contacts Provider. The technique is useful for apps that
+want to implement functionality similar to the People app's contact list screen.
 
 An instance of the `BroadQuery` API is obtained by,
 
@@ -30,13 +30,13 @@ val contacts = Contacts(context)
     .find()
 ```
 
-To get all contacts that have any data that at least partially matches a given `searchText`,
+To get all contacts that have any data (e.g. name, email, phone, address, organization, note, etc) 
+that at least partially matches a given `searchText`,
 
 ```kotlin
 val contacts = Contacts(context)
     .broadQuery()
-    ...
-    .whereAnyContactDataPartiallyMatches(searchText)
+    .wherePartiallyMatches(searchText)
     .find()
 ```
 
@@ -237,18 +237,30 @@ You may, of course, use other permission handling libraries or just do it yourse
 The `BroadQuery` API does not include custom data in the matching process. However, you may still
 use the `include` function with custom data. For more info, read [Query custom data](./../customdata/query-custom-data.md).
 
-##  Using the `whereAnyContactDataPartiallyMatches` function to specify matching criteria
+##  Using the `match` and `wherePartiallyMatches` functions to specify matching criteria
 
 The `BroadQuery` API lets the Contacts Provider perform the search using its own custom matching
-algorithm via the `whereAnyContactDataPartiallyMatches` function.
+algorithm via the `wherePartiallyMatches` function.
 
-Most, but not all, Contact data are included in the matching process. Some are not probably
-because some data may result in unintentional matching.
+There are several different types of matching algorithms that can be used. The type is set via the
+`match` function.
 
-> See `AbstractDataFieldSet.forMatching` documentation on all the fields that are included in this match.
+Matching is **case-insensitive** (case is ignored).
 
-**Custom data are not included in the matching process!** To match custom data, 
-read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+**Custom data are not included in the matching process!** To match custom data, use `Query`.
+
+### Match.ANY
+
+Most, but not all, Contact data are included in the matching process. Some are not probably because
+some data may result in unintentional matching.
+
+Any contact data is included in the matching process. This is the default.
+
+Use this if you want to get the same results when searching contacts using the AOSP Contacts app and
+the Google Contacts app.
+
+Most, but not all, contact data are included in the matching process.
+E.G. name, email, phone, address, organization, note, etc.
 
 Data matching is more sophisticated under the hood than `Query`. The Contacts Provider matches parts
 of several types of data in segments. For example, a Contact having the email "hologram@gram.net"
@@ -287,8 +299,8 @@ But will NOT be matched with the following texts;
 - ir
 - ,
 
-Another example is a Contact having the note "Lots   of   spa        ces." will be matched with
-the following texts;
+Another example is a Contact having the note "Lots   of   spa        ces." will be
+matched with the following texts;
 
 - l
 - lots
@@ -302,7 +314,147 @@ But will NOT be matched with the following texts;
 - .
 - ots
 
-Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and
+Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and 
 phone numbers "987", "1 23", and "456" will be matched with "be bell ze 9 123 1 98 456".
 
-Matching is **case-insensitive** (case is ignored)
+### Match.PHONE
+
+Only phones or (contact display name + any phones) are included in the matching process.
+
+Use this if you want to get contacts that have a matching phone number or matching
+(`Contact.displayNamePrimary` + any phone number).
+
+If you are attempting to matching contacts with phone numbers using `Query`, then you will most
+likely find it to difficult and tricky because the normalizedNumber could be null and matching
+formatted numbers (e.g. (718) 737-1991) would require some special regular expressions. This match
+might just be what you need =)
+
+Only the `Contact.displayNamePrimary` and the phone number/normalizedNumber are included in the
+matching process.
+
+For example, a contact with `Contact.displayNamePrimary` of "Bob Dole" and phone number
+"(718) 737-1991" (regardless of the value of normalizedNumber) will be matched with the following
+texts;
+
+- 718
+- 7187371991
+- 7.1-8.7-3.7-19(91)
+- bob
+- dole
+
+Notice that "bob" and "dole" will trigger a match because the display name matches and the contact
+has a phone number.
+
+The following texts will NOT trigger a match because the comparison begins at the beginning of the
+string and not in the middle or end;
+
+- 737
+- 1991
+
+### Match.EMAIL
+
+Only emails or (contact display name + any emails) are included in the matching process.
+
+Only the `Contact.displayNamePrimary` and the email address are included in the matching process.
+
+For example, the search text "bob" will match the following contacts;
+
+- Robert Parr (bob@incredibles.com)
+- Bob Parr (incredible@android.com)
+
+Notice that the contact Bob Parr is also matched because the display name matches and an email
+exist (even though it does not match).
+
+The following search texts will NOT trigger a match because the comparison begins at the beginning
+of the string and not in the middle or end;
+
+- android
+- gmail
+- @
+- .com
+
+## Developer notes (or for advanced users)
+
+> The following is taken from [issue #197](https://github.com/vestrel00/contacts-android/issues/197)
+
+Matching only by phone number or email address is possible thanks to the following filter Uris
+defined in `ContactsContract`, which exist for this specific purpose.
+
+```kotlin
+ContactsContract {
+    Contacts { CONTENT_FILTER_URI } // Default used by BroadQuery
+    CommonDataKinds {
+        Phone { CONTENT_FILTER_URI }
+        Email { CONTENT_FILTER_URI }
+    }
+} 
+```
+
+**These special filter URIs are only available for the phone and email common data kinds.**
+
+Note that the `EMAIL` and `PHONE` additionally matches the contact display name.
+
+### Comparison table
+
+I've done some preliminary testing on the differences between the different matching/filter 
+algorithms. So, given the following contacts...
+
+1. Display name: Robert Parr
+    - Email: bob@incredibles.com
+2. Display name: Bob Parr
+    - Email: incredible@android.com
+3. Display name: Bob Dole
+    - Phone: (718) 737-1991
+4. Display name: vestrel00@gmail.com
+    - Email: vestrel00@gmail.com
+5. Display name: 646-123-4567
+    - Phone: 646-123-4567
+6. Display name: Secret agent.
+    - Address: Dole street
+    - Company: 718
+    - Note: Agent code is 646000. His skills are incredible!
+
+Here are some search terms followed by matching contacts based on the type of `Match` used.
+
+| **Search term**    | **ANY** | **PHONE** | **EMAIL** |
+|--------------------|---------|-----------|-----------|
+| bob                | 1, 2, 3 | 3         | 1, 2      |
+| incredible         | 1, 2, 6 |           | 2         |
+| android            | 2       |           |           |
+| gmail              | 4       |           |           |
+| .com               | 1, 2, 4 |           |           |
+| @                  |         |           |           |
+| 7187371991         | 3       | 3         |           |
+| 7.1-8.7-3.7-19(91) | 3       | 3         |           |
+| 646                | 5, 6    | 5         |           |
+| 646-646            | 6       |           |           |
+| 718                | 3, 6    | 3         |           |
+| 1991               |         |           |           |
+| 4567               |         |           |           |
+| 000                |         |           |           |
+| dole               | 3, 6    | 3         |           |
+
+The above table gives us some insight on how sophisticated the matching (or search / indexing) 
+algorithm is.
+
+For the search term "bob",
+
+- PHONE matches contact 3.
+    - Display name matches and contact has a phone even though it does match.
+- EMAIL matches contact 1, 2.
+    - 1 has a matching email "bob". 2 is also matched because the name matches even though the email
+      does not. On the other hand, 3 is NOT matched even though the name matches because 3 has no
+      email. Adding an email to 3 will cause 3 to be matched.
+
+For the search term "incredible",
+
+- EMAIL matches 2 (incredible@android.com) but NOT 1 (bob@incredibles.com).
+    - This means that email matching does not use `contains` but rather a form of `startsWith`.
+
+**TLDR**
+
+- ANY matches any contact data; name, email, phone, address, organization, note, etc.
+- EMAIL matches emails or (display name + any email)
+- PHONE matches phones or (display name + any phone)
+- EMAIL and PHONE matching is NOT as simple as using the `Query` API
+  with `.where { [Email|Phone] contains searchTerm }`

@@ -4,9 +4,11 @@ import android.accounts.Account
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.ContactsContract
+import contacts.core.BroadQuery.Match
 import contacts.core.entities.Contact
 import contacts.core.entities.Group
 import contacts.core.entities.cursor.contactsCursor
+import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.util.isEmpty
 import contacts.core.util.query
@@ -49,7 +51,7 @@ import contacts.core.util.unsafeLazy
  *      .accounts(account)
  *      .groups(groups)
  *      .include { Name.all + Address.all }
- *      .whereAnyContactDataPartiallyMatches("john")
+ *      .wherePartiallyMatches("john")
  *      .orderBy(ContactsFields.DisplayNamePrimary.asc())
  *      .offset(5)
  *      .limit(10)
@@ -69,7 +71,7 @@ import contacts.core.util.unsafeLazy
  *           addAll(Name.getAll());
  *           addAll(Address.getAll());
  *       }})
- *      .whereAnyContactDataPartiallyMatches("john")
+ *      .wherePartiallyMatches("john")
  *      .orderBy(asc(ContactsFields.DisplayNamePrimary))
  *      .offset(5)
  *      .limit(10)
@@ -78,72 +80,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## How does the matching process work?
  *
- * This query lets the Contacts Provider perform the search using its own custom matching algorithm.
- *
- * Most, but not all, Contact data are included in the matching process. Some are not probably
- * because some data may result in unintentional matching.
- *
- * See [AbstractDataFieldSet.forMatching] documentation on all the fields that are included in
- * this match.
- *
- * **Custom data are not included in the matching process!** To match custom data, use [Query].
- *
- * Data matching is more sophisticated under the hood than [Query]. The Contacts Provider matches
- * parts of several types of data in segments. For example, a Contact having the email
- * "hologram@gram.net" will be matched with the following texts;
- *
- * - h
- * - HOLO
- * - @g
- * - @gram.net
- * - gram@
- * - net
- * - holo.net
- * - hologram.net
- *
- * But will NOT be matched with the following texts;
- *
- * - olo
- * - @
- * - gram@gram
- * - am@gram.net
- *
- * Similarly, a Contact having the name "Zack Air" will be matched with the following texts;
- *
- * - z
- * - zack
- * - zack, air
- * - air, zack
- * - za a
- * - , z
- * - , a
- * - ,a
- *
- * But will NOT be matched with the following texts;
- *
- * - ack
- * - ir
- * - ,
- *
- * Another example is a Contact having the note "Lots   of   spa        ces." will be matched with
- * the following texts;
- *
- * - l
- * - lots
- * - lots of
- * - of lots
- * - ces spa       lots of.
- * - lo o sp ce . . . . .
- *
- * But will NOT be matched with the following texts;
- *
- * - .
- * - ots
- *
- * Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and
- * phone numbers "987", "1 23", and "456" will be matched with "be bell ze 9 123 1 98 456".
- *
- * Matching is **case-insensitive** (case is ignored).
+ * See the [Match].
  */
 interface BroadQuery : CrudApi {
 
@@ -294,12 +231,23 @@ interface BroadQuery : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): BroadQuery
 
     /**
+     * Specifies the type of contact data that should be included in the matching process. This
+     * will affect the search results when [wherePartiallyMatches] is used.
+     *
+     * The default is [Match.ANY].
+     */
+    fun match(match: Match): BroadQuery
+
+    /**
      * Filters the [Contact]s partially matching the [searchString]. If not specified or null or
      * empty, then all [Contact]s are returned.
      *
+     * Matching is **case-insensitive** (case is ignored).
+     *
      * **Custom data are not included in the matching process!** To match custom data, use [Query].
      *
-     * For more info, see [BroadQuery] **How does the matching process work?** section.
+     * Specify the type of contact data that should be included in the matching process using the
+     * [match] function.
      *
      * ## Performance
      *
@@ -307,7 +255,7 @@ interface BroadQuery : CrudApi {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun whereAnyContactDataPartiallyMatches(searchString: String?): BroadQuery
+    fun wherePartiallyMatches(searchString: String?): BroadQuery
 
     /**
      * Orders the [Contact]s using one or more [orderBy]s. If not specified, then contacts are
@@ -428,6 +376,138 @@ interface BroadQuery : CrudApi {
     override fun redactedCopy(): BroadQuery
 
     /**
+     * Specifies the type of contact data that should be included in the matching process.
+     */
+    enum class Match {
+
+        /**
+         * Any contact data is included in the matching process. This is the default.
+         *
+         * Use this if you want to get the same results when searching contacts using the
+         * AOSP Contacts app and the Google Contacts app.
+         *
+         * Most, but not all, contact data are included in the matching process.
+         * E.G. name, email, phone, address, organization, note, etc.
+         *
+         * Data matching is more sophisticated under the hood than [Query]. The Contacts Provider
+         * matches parts of several types of data in segments. For example, a Contact having the
+         * email "hologram@gram.net" will be matched with the following texts;
+         *
+         * - h
+         * - HOLO
+         * - @g
+         * - @gram.net
+         * - gram@
+         * - net
+         * - holo.net
+         * - hologram.net
+         *
+         * But will NOT be matched with the following texts;
+         *
+         * - olo
+         * - @
+         * - gram@gram
+         * - am@gram.net
+         *
+         * Similarly, a Contact having the name "Zack Air" will be matched with the following texts;
+         *
+         * - z
+         * - zack
+         * - zack, air
+         * - air, zack
+         * - za a
+         * - , z
+         * - , a
+         * - ,a
+         *
+         * But will NOT be matched with the following texts;
+         *
+         * - ack
+         * - ir
+         * - ,
+         *
+         * Another example is a Contact having the note "Lots   of   spa        ces." will be
+         * matched with the following texts;
+         *
+         * - l
+         * - lots
+         * - lots of
+         * - of lots
+         * - ces spa       lots of.
+         * - lo o sp ce . . . . .
+         *
+         * But will NOT be matched with the following texts;
+         *
+         * - .
+         * - ots
+         *
+         * Several types of data are matched in segments. E.G. A Contact with display name
+         * "Bell Zee" and phone numbers "987", "1 23", and "456" will be matched with
+         * "be bell ze 9 123 1 98 456".
+         */
+        ANY,
+
+        /**
+         * Only phones or (contact display name + any phones) are included in the matching process.
+         *
+         * Use this if you want to get contacts that have a matching phone number or matching
+         * ([Contact.displayNamePrimary] + any phone number).
+         *
+         * If you are attempting to matching contacts with phone numbers using [Query], then you
+         * will most likely find it to difficult and tricky because the normalizedNumber could be
+         * null and matching formatted numbers (e.g. (718) 737-1991) would require some special
+         * regular expressions. This match might just be what you need =)
+         *
+         * Only the [Contact.displayNamePrimary] and the phone number/normalizedNumber are included
+         * in the matching process.
+         *
+         * For example, a contact with [Contact.displayNamePrimary] of "Bob Dole" and phone number
+         * "(718) 737-1991" (regardless of the value of normalizedNumber) will be matched with the
+         * following texts;
+         *
+         * - 718
+         * - 7187371991
+         * - 7.1-8.7-3.7-19(91)
+         * - bob
+         * - dole
+         *
+         * Notice that "bob" and "dole" will trigger a match because the display name matches and
+         * the contact has a phone number.
+         *
+         * The following texts will NOT trigger a match because the comparison begins at the
+         * beginning of the string and not in the middle or end;
+         *
+         * - 737
+         * - 1991
+         */
+        PHONE,
+
+        /**
+         * Only emails or (contact display name + any emails) are included in the matching process.
+         *
+         * Only the [Contact.displayNamePrimary] and the email address are included in the matching
+         * process.
+         *
+         * For example, the search text "bob" will match the following contacts;
+         *
+         * - Robert Parr (bob@incredibles.com)
+         * - Bob Parr (incredible@android.com)
+         *
+         * Notice that the contact Bob Parr is also matched because the display name matches and an
+         * email exist (even though it does not match).
+         *
+         * The following search texts will NOT trigger a match because the comparison begins at the
+         * beginning of the string and not in the middle or end;
+         *
+         * - android
+         * - gmail
+         * - @
+         * - .com
+         */
+        EMAIL
+    }
+
+    /**
      * A list of [Contact]s.
      *
      * ## The [toString] function
@@ -461,6 +541,7 @@ private class BroadQueryImpl(
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var groupMembershipWhere: Where<GroupMembershipField>? = DEFAULT_GROUP_MEMBERSHIP_WHERE,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var match: Match = DEFAULT_MATCH,
     private var searchString: String? = DEFAULT_SEARCH_STRING,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -476,6 +557,7 @@ private class BroadQueryImpl(
                 rawContactsWhere: $rawContactsWhere
                 groupMembershipWhere: $groupMembershipWhere
                 include: $include
+                match: $match
                 searchString: $searchString
                 orderBy: $orderBy
                 limit: $limit
@@ -492,6 +574,7 @@ private class BroadQueryImpl(
         rawContactsWhere?.redactedCopy(),
         groupMembershipWhere,
         include,
+        match,
         // Redact search input.
         searchString?.redact(),
         orderBy,
@@ -541,7 +624,11 @@ private class BroadQueryImpl(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
-    override fun whereAnyContactDataPartiallyMatches(searchString: String?): BroadQuery = apply {
+    override fun match(match: Match): BroadQuery = apply {
+        this.match = match
+    }
+
+    override fun wherePartiallyMatches(searchString: String?): BroadQuery = apply {
         // Yes, I know DEFAULT_SEARCH_STRING is null. This reads better though.
         this.searchString = (searchString ?: DEFAULT_SEARCH_STRING)?.redactStringOrThis(isRedacted)
     }
@@ -588,7 +675,8 @@ private class BroadQueryImpl(
         } else {
             contentResolver.resolve(
                 customDataRegistry,
-                includeBlanks, rawContactsWhere, groupMembershipWhere, include, searchString,
+                includeBlanks, rawContactsWhere, groupMembershipWhere, include,
+                match, searchString,
                 orderBy, limit, offset, cancel
             )
         }
@@ -603,6 +691,7 @@ private class BroadQueryImpl(
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
+        val DEFAULT_MATCH: Match = Match.ANY
         val DEFAULT_SEARCH_STRING: String? = null
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
@@ -616,6 +705,7 @@ private fun ContentResolver.resolve(
     rawContactsWhere: Where<RawContactsField>?,
     groupMembershipWhere: Where<GroupMembershipField>?,
     include: Include<AbstractDataField>,
+    match: Match,
     searchString: String?,
     orderBy: CompoundOrderBy<ContactsField>,
     limit: Int,
@@ -629,7 +719,7 @@ private fun ContentResolver.resolve(
     // is null, skip.
     if (searchString != null && searchString.isNotEmpty() && !cancel()) {
         contactIds = mutableSetOf<Long>().apply {
-            addAll(findContactIdsInContactsTable(searchString, cancel))
+            addAll(findMatchingContactIds(match, searchString, cancel))
         }
 
         // If no match, return empty list.
@@ -680,6 +770,22 @@ private fun ContentResolver.resolve(
     )
 }
 
+private fun ContentResolver.findMatchingContactIds(
+    match: Match, searchString: String, cancel: () -> Boolean
+): Set<Long> = when (match) {
+    Match.ANY -> findContactIdsInContactsTable(searchString, cancel)
+    Match.PHONE -> findContactIdsInDataTable(
+        ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI,
+        searchString,
+        cancel
+    )
+    Match.EMAIL -> findContactIdsInDataTable(
+        ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI,
+        searchString,
+        cancel
+    )
+}
+
 private fun ContentResolver.findContactIdsInContactsTable(
     searchString: String, cancel: () -> Boolean
 ): Set<Long> = query(
@@ -697,6 +803,22 @@ private fun ContentResolver.findContactIdsInContactsTable(
     val contactsCursor = it.contactsCursor()
     while (!cancel() && it.moveToNext()) {
         contactIds.add(contactsCursor.contactId)
+    }
+    contactIds
+} ?: emptySet()
+
+private fun ContentResolver.findContactIdsInDataTable(
+    contentFilterUri: Uri,
+    searchString: String, cancel: () -> Boolean
+): Set<Long> = query(
+    Uri.withAppendedPath(contentFilterUri, Uri.encode(searchString)),
+    Include(Fields.Contact.Id),
+    null
+) {
+    val contactIds = mutableSetOf<Long>()
+    val dataCursor = it.dataCursor()
+    while (!cancel() && it.moveToNext()) {
+        contactIds.add(dataCursor.contactId)
     }
     contactIds
 } ?: emptySet()

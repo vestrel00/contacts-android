@@ -11,7 +11,8 @@ internal fun CursorHolder<AbstractDataField>.addressCursor() =
 internal fun CursorHolder<AbstractDataField>.dataContactsCursor() =
     DataContactsCursor(cursor, Fields.Contact.intersect(includeFields))
 
-internal fun CursorHolder<AbstractDataField>.dataCursor() = DataCursor(cursor, includeFields)
+internal fun <T : AbstractDataField> CursorHolder<T>.dataCursor() =
+    DataCursor(cursor, includeFields)
 
 internal fun CursorHolder<AbstractDataField>.emailCursor() =
     EmailCursor(cursor, Fields.Email.intersect(includeFields))
