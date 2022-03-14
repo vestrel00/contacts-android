@@ -18,4 +18,3 @@ sed -i '' 's/\/docs/\./g' docs/index.md
 
 # Build MkDocs
 mkdocs build
-

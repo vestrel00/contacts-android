@@ -96,12 +96,24 @@ theme:
   icon:
     logo: material/contacts
     repo: fontawesome/brands/github
-  palette:
-    primary: 'deep orange'
-    accent: 'red'
   font:
     text: 'Roboto'
     code: 'JetBrains Mono'
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: 'deep orange'
+      accent: 'red'
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: 'deep orange'
+      accent: 'red'
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
 
 # Plugins
 plugins:
