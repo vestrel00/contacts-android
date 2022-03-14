@@ -28,10 +28,6 @@
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
         
-          
-          
-          <meta name="theme-color" content="#ff6e42">
-        
       
     
     
@@ -56,12 +52,16 @@
   
     
     
+      
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="deep-orange" data-md-color-accent="red">
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="red">
   
     
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -108,6 +108,28 @@
         </div>
       </div>
     </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-orange" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
     
     
     
@@ -567,9 +589,56 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-whereanycontactdatapartiallymatches-function-to-specify-matching-criteria" class="md-nav__link">
-    Using the whereAnyContactDataPartiallyMatches function to specify matching criteria
+  <a href="#using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria" class="md-nav__link">
+    Using the match and wherePartiallyMatches functions to specify matching criteria
   </a>
+  
+    <nav class="md-nav" aria-label="Using the match and wherePartiallyMatches functions to specify matching criteria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matchany" class="md-nav__link">
+    Match.ANY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchphone" class="md-nav__link">
+    Match.PHONE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchemail" class="md-nav__link">
+    Match.EMAIL
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comparison-table" class="md-nav__link">
+    Comparison table
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1815,9 +1884,56 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-whereanycontactdatapartiallymatches-function-to-specify-matching-criteria" class="md-nav__link">
-    Using the whereAnyContactDataPartiallyMatches function to specify matching criteria
+  <a href="#using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria" class="md-nav__link">
+    Using the match and wherePartiallyMatches functions to specify matching criteria
   </a>
+  
+    <nav class="md-nav" aria-label="Using the match and wherePartiallyMatches functions to specify matching criteria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matchany" class="md-nav__link">
+    Match.ANY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchphone" class="md-nav__link">
+    Match.PHONE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchemail" class="md-nav__link">
+    Match.EMAIL
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comparison-table" class="md-nav__link">
+    Comparison table
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1842,9 +1958,9 @@
 <h1 id="query-contacts">Query contacts<a class="headerlink" href="#query-contacts" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>BroadQuery</code> API that allows you to get the exact same search results
 as the native Contacts app! This query lets the Contacts Provider perform the search using its own
-custom matching algorithm via the <code>whereAnyContactDataPartiallyMatches</code> function. This type of
-query is the basis of an app that does a broad search of the Contacts Provider. The technique is
-useful for apps that want to implement functionality similar to the People app's contact list screen.</p>
+custom matching algorithm via the <code>wherePartiallyMatches</code> function. This type of query is the basis
+of an app that does a broad search of the Contacts Provider. The technique is useful for apps that
+want to implement functionality similar to the People app's contact list screen.</p>
 <p>An instance of the <code>BroadQuery</code> API is obtained by,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">query</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">broadQuery</span><span class="p">()</span>
 </code></pre></div>
@@ -1861,12 +1977,12 @@ For more info, read <a href="../query-contacts-advanced/">Query contacts (advanc
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">asc</span><span class="p">())</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
 </code></pre></div>
-<p>To get all contacts that have any data that at least partially matches a given <code>searchText</code>,</p>
+<p>To get all contacts that have any data (e.g. name, email, phone, address, organization, note, etc) 
+that at least partially matches a given <code>searchText</code>,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="p">.</span><span class="na">broadQuery</span><span class="p">()</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">...</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="p">.</span><span class="na">whereAnyContactDataPartiallyMatches</span><span class="p">(</span><span class="n">searchText</span><span class="p">)</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">.</span><span class="na">wherePartiallyMatches</span><span class="p">(</span><span class="n">searchText</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="including-blank-contacts">Including blank contacts<a class="headerlink" href="#including-blank-contacts" title="Permanent link">&para;</a></h2>
 <p>The API allows you to specify if you want to include blank contacts or not,</p>
@@ -1999,16 +2115,21 @@ For more info, read <a href="../../permissions/permissions-handling-coroutines/"
 <h2 id="custom-data-support">Custom data support<a class="headerlink" href="#custom-data-support" title="Permanent link">&para;</a></h2>
 <p>The <code>BroadQuery</code> API does not include custom data in the matching process. However, you may still
 use the <code>include</code> function with custom data. For more info, read <a href="../../customdata/query-custom-data/">Query custom data</a>.</p>
-<h2 id="using-the-whereanycontactdatapartiallymatches-function-to-specify-matching-criteria">Using the <code>whereAnyContactDataPartiallyMatches</code> function to specify matching criteria<a class="headerlink" href="#using-the-whereanycontactdatapartiallymatches-function-to-specify-matching-criteria" title="Permanent link">&para;</a></h2>
+<h2 id="using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria">Using the <code>match</code> and <code>wherePartiallyMatches</code> functions to specify matching criteria<a class="headerlink" href="#using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria" title="Permanent link">&para;</a></h2>
 <p>The <code>BroadQuery</code> API lets the Contacts Provider perform the search using its own custom matching
-algorithm via the <code>whereAnyContactDataPartiallyMatches</code> function.</p>
-<p>Most, but not all, Contact data are included in the matching process. Some are not probably
-because some data may result in unintentional matching.</p>
-<blockquote>
-<p>See <code>AbstractDataFieldSet.forMatching</code> documentation on all the fields that are included in this match.</p>
-</blockquote>
-<p><strong>Custom data are not included in the matching process!</strong> To match custom data, 
-read <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
+algorithm via the <code>wherePartiallyMatches</code> function.</p>
+<p>There are several different types of matching algorithms that can be used. The type is set via the
+<code>match</code> function.</p>
+<p>Matching is <strong>case-insensitive</strong> (case is ignored).</p>
+<p><strong>Custom data are not included in the matching process!</strong> To match custom data, use <code>Query</code>.</p>
+<h3 id="matchany">Match.ANY<a class="headerlink" href="#matchany" title="Permanent link">&para;</a></h3>
+<p>Most, but not all, Contact data are included in the matching process. Some are not probably because
+some data may result in unintentional matching.</p>
+<p>Any contact data is included in the matching process. This is the default.</p>
+<p>Use this if you want to get the same results when searching contacts using the AOSP Contacts app and
+the Google Contacts app.</p>
+<p>Most, but not all, contact data are included in the matching process.
+E.G. name, email, phone, address, organization, note, etc.</p>
 <p>Data matching is more sophisticated under the hood than <code>Query</code>. The Contacts Provider matches parts
 of several types of data in segments. For example, a Contact having the email "hologram@gram.net"
 will be matched with the following texts;</p>
@@ -2046,8 +2167,8 @@ will be matched with the following texts;</p>
 <li>ir</li>
 <li>,</li>
 </ul>
-<p>Another example is a Contact having the note "Lots   of   spa        ces." will be matched with
-the following texts;</p>
+<p>Another example is a Contact having the note "Lots   of   spa        ces." will be
+matched with the following texts;</p>
 <ul>
 <li>l</li>
 <li>lots</li>
@@ -2061,9 +2182,234 @@ the following texts;</p>
 <li>.</li>
 <li>ots</li>
 </ul>
-<p>Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and
+<p>Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and 
 phone numbers "987", "1 23", and "456" will be matched with "be bell ze 9 123 1 98 456".</p>
-<p>Matching is <strong>case-insensitive</strong> (case is ignored)</p>
+<h3 id="matchphone">Match.PHONE<a class="headerlink" href="#matchphone" title="Permanent link">&para;</a></h3>
+<p>Only phones or (contact display name + any phones) are included in the matching process.</p>
+<p>Use this if you want to get contacts that have a matching phone number or matching
+(<code>Contact.displayNamePrimary</code> + any phone number).</p>
+<p>If you are attempting to matching contacts with phone numbers using <code>Query</code>, then you will most
+likely find it to difficult and tricky because the normalizedNumber could be null and matching
+formatted numbers (e.g. (718) 737-1991) would require some special regular expressions. This match
+might just be what you need =)</p>
+<p>Only the <code>Contact.displayNamePrimary</code> and the phone number/normalizedNumber are included in the
+matching process.</p>
+<p>For example, a contact with <code>Contact.displayNamePrimary</code> of "Bob Dole" and phone number
+"(718) 737-1991" (regardless of the value of normalizedNumber) will be matched with the following
+texts;</p>
+<ul>
+<li>718</li>
+<li>7187371991</li>
+<li>7.1-8.7-3.7-19(91)</li>
+<li>bob</li>
+<li>dole</li>
+</ul>
+<p>Notice that "bob" and "dole" will trigger a match because the display name matches and the contact
+has a phone number.</p>
+<p>The following texts will NOT trigger a match because the comparison begins at the beginning of the
+string and not in the middle or end;</p>
+<ul>
+<li>737</li>
+<li>1991</li>
+</ul>
+<h3 id="matchemail">Match.EMAIL<a class="headerlink" href="#matchemail" title="Permanent link">&para;</a></h3>
+<p>Only emails or (contact display name + any emails) are included in the matching process.</p>
+<p>Only the <code>Contact.displayNamePrimary</code> and the email address are included in the matching process.</p>
+<p>For example, the search text "bob" will match the following contacts;</p>
+<ul>
+<li>Robert Parr (bob@incredibles.com)</li>
+<li>Bob Parr (incredible@android.com)</li>
+</ul>
+<p>Notice that the contact Bob Parr is also matched because the display name matches and an email
+exist (even though it does not match).</p>
+<p>The following search texts will NOT trigger a match because the comparison begins at the beginning
+of the string and not in the middle or end;</p>
+<ul>
+<li>android</li>
+<li>gmail</li>
+<li>@</li>
+<li>.com</li>
+</ul>
+<h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>The following is taken from <a href="https://github.com/vestrel00/contacts-android/issues/197">issue #197</a></p>
+</blockquote>
+<p>Matching only by phone number or email address is possible thanks to the following filter Uris
+defined in <code>ContactsContract</code>, which exist for this specific purpose.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">ContactsContract</span> <span class="p">{</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="n">Contacts</span> <span class="p">{</span> <span class="n">CONTENT_FILTER_URI</span> <span class="p">}</span> <span class="c1">// Default used by BroadQuery</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    <span class="n">CommonDataKinds</span> <span class="p">{</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>        <span class="n">Phone</span> <span class="p">{</span> <span class="n">CONTENT_FILTER_URI</span> <span class="p">}</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>        <span class="n">Email</span> <span class="p">{</span> <span class="n">CONTENT_FILTER_URI</span> <span class="p">}</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="p">}</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="p">}</span> 
+</code></pre></div>
+<p><strong>These special filter URIs are only available for the phone and email common data kinds.</strong></p>
+<p>Note that the <code>EMAIL</code> and <code>PHONE</code> additionally matches the contact display name.</p>
+<h3 id="comparison-table">Comparison table<a class="headerlink" href="#comparison-table" title="Permanent link">&para;</a></h3>
+<p>I've done some preliminary testing on the differences between the different matching/filter 
+algorithms. So, given the following contacts...</p>
+<ol>
+<li>Display name: Robert Parr<ul>
+<li>Email: bob@incredibles.com</li>
+</ul>
+</li>
+<li>Display name: Bob Parr<ul>
+<li>Email: incredible@android.com</li>
+</ul>
+</li>
+<li>Display name: Bob Dole<ul>
+<li>Phone: (718) 737-1991</li>
+</ul>
+</li>
+<li>Display name: vestrel00@gmail.com<ul>
+<li>Email: vestrel00@gmail.com</li>
+</ul>
+</li>
+<li>Display name: 646-123-4567<ul>
+<li>Phone: 646-123-4567</li>
+</ul>
+</li>
+<li>Display name: Secret agent.<ul>
+<li>Address: Dole street</li>
+<li>Company: 718</li>
+<li>Note: Agent code is 646000. His skills are incredible!</li>
+</ul>
+</li>
+</ol>
+<p>Here are some search terms followed by matching contacts based on the type of <code>Match</code> used.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Search term</strong></th>
+<th><strong>ANY</strong></th>
+<th><strong>PHONE</strong></th>
+<th><strong>EMAIL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bob</td>
+<td>1, 2, 3</td>
+<td>3</td>
+<td>1, 2</td>
+</tr>
+<tr>
+<td>incredible</td>
+<td>1, 2, 6</td>
+<td></td>
+<td>2</td>
+</tr>
+<tr>
+<td>android</td>
+<td>2</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>gmail</td>
+<td>4</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>.com</td>
+<td>1, 2, 4</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>@</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>7187371991</td>
+<td>3</td>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td>7.1-8.7-3.7-19(91)</td>
+<td>3</td>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td>646</td>
+<td>5, 6</td>
+<td>5</td>
+<td></td>
+</tr>
+<tr>
+<td>646-646</td>
+<td>6</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>718</td>
+<td>3, 6</td>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td>1991</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4567</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>000</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>dole</td>
+<td>3, 6</td>
+<td>3</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The above table gives us some insight on how sophisticated the matching (or search / indexing) 
+algorithm is.</p>
+<p>For the search term "bob",</p>
+<ul>
+<li>PHONE matches contact 3.<ul>
+<li>Display name matches and contact has a phone even though it does match.</li>
+</ul>
+</li>
+<li>EMAIL matches contact 1, 2.<ul>
+<li>1 has a matching email "bob". 2 is also matched because the name matches even though the email
+  does not. On the other hand, 3 is NOT matched even though the name matches because 3 has no
+  email. Adding an email to 3 will cause 3 to be matched.</li>
+</ul>
+</li>
+</ul>
+<p>For the search term "incredible",</p>
+<ul>
+<li>EMAIL matches 2 (incredible@android.com) but NOT 1 (bob@incredibles.com).<ul>
+<li>This means that email matching does not use <code>contains</code> but rather a form of <code>startsWith</code>.</li>
+</ul>
+</li>
+</ul>
+<p><strong>TLDR</strong></p>
+<ul>
+<li>ANY matches any contact data; name, email, phone, address, organization, note, etc.</li>
+<li>EMAIL matches emails or (display name + any email)</li>
+<li>PHONE matches phones or (display name + any phone)</li>
+<li>EMAIL and PHONE matching is NOT as simple as using the <code>Query</code> API
+  with <code>.where { [Email|Phone] contains searchTerm }</code></li>
+</ul>
 
               
             </article>
