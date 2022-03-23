@@ -1362,6 +1362,16 @@ object SimContactsFields : FieldSet<SimContactsField>() {
     @JvmField
     val Id = SimContactsField("_id", required = true)
 
+    /**
+     * This is only used for populating the [Name] during insert operations. For some reason,
+     * using the [Name] when inserting into the SIM card table does not set the name but this does.
+     *
+     * I do see it in the com.android.internal.telephony.IccProvider.java
+     *
+     * Do not include this in [all]!
+     */
+    internal val Tag = SimContactsField("tag")
+
     @JvmField
     val Name = SimContactsField("name")
 

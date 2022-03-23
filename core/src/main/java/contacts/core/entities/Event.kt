@@ -433,7 +433,6 @@ fun EventDate.toWhereString(): String = toDbString()
 fun Date.toWhereString(ignoreYear: Boolean = false): String =
     EventDate.from(this, ignoreYear).toWhereString()
 
-// FIXME Are these all of the possible date formats? Or are we missing something?
 // Was this coincidence or did the Android team choose these format on purpose? Are these
 // formats influenced by device local and/or OEM modifications? Only time will tell. The
 // community should file bugs if they see any issues. Though, I should probably check this

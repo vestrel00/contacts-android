@@ -16,10 +16,10 @@ interface SimContacts {
     /**
      * Returns a new [SimContactsInsert] instance.
      */
-    // fun insert(): SimContactsInsert
+    fun insert(): SimContactsInsert
 
     /**
-     * Returns a new [SimContactsInsert] instance.
+     * Returns a new [SimContactsUpdate] instance.
      */
     // fun update(): SimContactsUpdate
 
@@ -48,7 +48,7 @@ private class SimContactsImpl(override val contactsApi: Contacts) : SimContacts 
 
     override fun query() = SimContactsQuery(contactsApi)
 
-    // override fun insert() = SimContactsInsert(contactsApi)
+    override fun insert() = SimContactsInsert(contactsApi)
 
     // override fun update() = SimContactsUpdate(contactsApi)
 

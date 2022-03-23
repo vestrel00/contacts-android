@@ -1,6 +1,7 @@
 package contacts.core.entities.operation
 
 import android.content.ContentProviderOperation
+import android.content.ContentValues
 import contacts.core.SimContactsFields
 import contacts.core.`in`
 import contacts.core.entities.NewSimContact
@@ -12,18 +13,21 @@ private val TABLE = Table.SimContacts
 /**
  * Builds [ContentProviderOperation]s for [Table.SimContacts].
  */
-// TODO Delete this if write operations are not supported!
 internal class SimContactsOperation {
 
-    fun insert(simContact: NewSimContact): ContentProviderOperation? =
+    fun insert(simContact: NewSimContact): ContentValues? =
         if (simContact.isBlank) {
             null
         } else {
-            newInsert(TABLE)
-                .withValue(SimContactsFields.Name, simContact.name)
-                .withValue(SimContactsFields.Number, simContact.number)
-                .withValue(SimContactsFields.Emails, simContact.emails)
-                .build()
+            ContentValues().apply {
+                // Populates the name
+                put(SimContactsFields.Tag.columnName, simContact.name)
+                put(SimContactsFields.Number.columnName, simContact.number)
+
+                // FIXME Inserting email does not work. I already tried string values seen in the
+                // IccProvider such as "emails", "newEmails", "anrs", "newAnrs", "newTag"
+                put(SimContactsFields.Emails.columnName, simContact.emails)
+            }
         }
 
     fun delete(simContactId: Long): ContentProviderOperation = newDelete(TABLE)
