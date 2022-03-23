@@ -111,3 +111,6 @@ internal fun CursorHolder<GroupsField>.groupMapper(): EntityMapper<Group> =
 
 internal fun CursorHolder<BlockedNumbersField>.blockedNumberMapper(): EntityMapper<BlockedNumber> =
     BlockedNumberMapper(blockedNumbersCursor())
+
+internal fun CursorHolder<SimContactField>.simContactMapper(): EntityMapper<SimContact> =
+    SimContactMapper(simContactCursor())
