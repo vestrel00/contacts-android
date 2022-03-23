@@ -1342,3 +1342,45 @@ object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
 }
 
 // endregion
+
+// region SIM Table Fields
+
+data class SimField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : Field()
+
+/**
+ * Fields for SIM table operations.
+ *
+ * ## Dev notes
+ *
+ * There are no defined accessible constants for SIM columns.
+ */
+object SimFields : FieldSet<SimField>() {
+
+    @JvmField
+    val Id = SimField("_id", required = true)
+
+    @JvmField
+    val NormalizedNumber = SimField("name")
+
+    @JvmField
+    val Number = SimField("number")
+
+    @JvmField
+    val Emails = SimField("emails")
+
+    override val all by unsafeLazy {
+        setOf(Id, Number, NormalizedNumber)
+    }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+}
+
+// endregion
