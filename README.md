@@ -36,7 +36,6 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 - 🚂 [Upcoming release - v0.2.0](https://github.com/vestrel00/contacts-android/discussions/146)
 - 🗺 [Project roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
-    - 🆚 [How does this library compare to other Contacts libraries?][compare-other-libs]
 
 ## Features
 
