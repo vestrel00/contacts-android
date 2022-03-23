@@ -4,13 +4,13 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 
-fun Context.logSimTable() {
+fun Context.logSimContactsTable() {
     if (!hasReadPermission()) {
-        log("#### SIM table - read contacts permission not granted")
+        log("#### SIM Contacts table - read contacts permission not granted")
         return
     }
 
-    log("#### SIM table")
+    log("#### SIM Contacts table")
 
     // Side note: projection, selection, and sortOrder are not supported by this Uri.
     val cursor: Cursor? = contentResolver.query(
