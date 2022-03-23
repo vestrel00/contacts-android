@@ -78,5 +78,5 @@ internal fun CursorHolder<GroupsField>.groupsCursor() = GroupsCursor(cursor, inc
 internal fun CursorHolder<BlockedNumbersField>.blockedNumbersCursor() =
     BlockedNumbersCursor(cursor, includeFields)
 
-internal fun CursorHolder<SimContactField>.simContactCursor() =
+internal fun CursorHolder<SimContactsField>.simContactCursor() =
     SimContactCursor(cursor, includeFields)
