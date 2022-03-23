@@ -22,7 +22,7 @@ internal class SimContactsOperation {
             newInsert(TABLE)
                 .withValue(SimContactsFields.Name, simContact.name)
                 .withValue(SimContactsFields.Number, simContact.number)
-                .withValue(SimContactsFields.Email, simContact.email)
+                .withValue(SimContactsFields.Emails, simContact.emails)
                 .build()
         }
 

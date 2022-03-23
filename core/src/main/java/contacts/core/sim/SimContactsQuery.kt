@@ -121,6 +121,7 @@ private class SimContactsQueryImpl(
     override fun toString(): String =
         """
             SimContactsQuery {
+                hasPermission: ${permissions.canQuery()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()

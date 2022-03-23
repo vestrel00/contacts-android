@@ -12,7 +12,7 @@ internal class SimContactMapper(private val simContactCursor: SimContactCursor) 
 
             name = simContactCursor.name,
             number = simContactCursor.number,
-            email = simContactCursor.email,
+            emails = simContactCursor.emails,
 
             isRedacted = false
         )

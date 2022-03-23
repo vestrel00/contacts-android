@@ -18,13 +18,19 @@ sealed interface SimContactEntity : Entity {
     val number: String?
 
     /**
-     * The email address.
+     * The email addresses in CSV format (comma separated values).
+     *
+     * - when there is no email, this value may be ","
+     * - when there is one email, this value is "one@gmail.com,"
+     * - when there are two emails, this value is "one@gmail.com,two@gmail.com,"
+     *
+     * There seems to always be a trailing ",". This may or may not vary between SIM cards and OEMs.
      */
-    val email: String?
+    val emails: String?
 
     // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(name, number, email)
+        get() = propertiesAreAllNullOrBlank(name, number, emails)
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): SimContactEntity
@@ -57,7 +63,7 @@ sealed interface MutableSimContactEntity : SimContactEntity, MutableEntity {
 
     override var name: String?
     override var number: String?
-    override var email: String?
+    override var emails: String?
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): MutableSimContactEntity
@@ -73,7 +79,7 @@ data class SimContact internal constructor(
 
     override val name: String?,
     override val number: String?,
-    override val email: String?,
+    override val emails: String?,
 
     override val isRedacted: Boolean
 
@@ -84,7 +90,7 @@ data class SimContact internal constructor(
 
         name = name,
         number = number,
-        email = email,
+        emails = emails,
 
         isRedacted = isRedacted
     )
@@ -94,7 +100,7 @@ data class SimContact internal constructor(
 
         name = name?.redact(),
         number = number?.redact(),
-        email = email?.redact()
+        emails = emails?.redact()
     )
 }
 
@@ -109,7 +115,7 @@ data class MutableSimContact internal constructor(
 
     override var name: String?,
     override var number: String?,
-    override var email: String?,
+    override var emails: String?,
 
     override val isRedacted: Boolean
 
@@ -120,7 +126,7 @@ data class MutableSimContact internal constructor(
 
         name = name?.redact(),
         number = number?.redact(),
-        email = email?.redact()
+        emails = emails?.redact()
     )
 }
 
@@ -133,7 +139,7 @@ data class NewSimContact @JvmOverloads constructor(
 
     override var name: String? = null,
     override var number: String? = null,
-    override var email: String? = null,
+    override var emails: String? = null,
 
     override val isRedacted: Boolean = false
 
@@ -144,6 +150,6 @@ data class NewSimContact @JvmOverloads constructor(
 
         name = name?.redact(),
         number = number?.redact(),
-        email = email?.redact()
+        emails = emails?.redact()
     )
 }

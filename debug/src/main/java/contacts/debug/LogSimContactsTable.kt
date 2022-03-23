@@ -22,6 +22,12 @@ fun Context.logSimContactsTable() {
             val id = cursor.getString(cursor.getColumnIndexOrThrow("_id"))
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
             val number = cursor.getString(cursor.getColumnIndexOrThrow("number"))
+
+            // Yes, the column name is actually "emails" with an "s" (plural). This may vary but
+            // based on my observations...
+            // - no email = ","
+            // - at least one email = "email,"
+            // there seems to be a trailing "," regardless
             val emails = cursor.getString(cursor.getColumnIndexOrThrow("emails"))
 
             log("SIM Contact id: $id, name: $name, number: $number, emails: $emails")

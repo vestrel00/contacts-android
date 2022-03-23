@@ -1368,13 +1368,16 @@ object SimContactsFields : FieldSet<SimContactsField>() {
     @JvmField
     val Number = SimContactsField("number")
 
-    // Yes, the column name is actually "emails" with an "s" (plural). Whether or not this can store
-    // more than one email might vary per SIM card and system OEM.
+    // Yes, the column name is actually "emails" with an "s" (plural). This may vary but based on
+    // my observations...
+    // - no email = ","
+    // - at least one email = "email,"
+    // there seems to be a trailing "," regardless
     @JvmField
-    val Email = SimContactsField("emails")
+    val Emails = SimContactsField("emails")
 
     override val all by unsafeLazy {
-        setOf(Id, Name, Number, Email)
+        setOf(Id, Name, Number, Emails)
     }
 
     /**
