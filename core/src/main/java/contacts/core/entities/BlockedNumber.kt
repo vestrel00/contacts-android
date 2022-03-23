@@ -79,7 +79,7 @@ data class BlockedNumber internal constructor(
 }
 
 /**
- * A new immutable [BlockedNumberEntity].
+ * A new mutable [BlockedNumberEntity].
  */
 @Parcelize
 data class NewBlockedNumber @JvmOverloads constructor(
@@ -89,7 +89,7 @@ data class NewBlockedNumber @JvmOverloads constructor(
 
     override val isRedacted: Boolean = false
 
-) : BlockedNumberEntity, NewEntity, ImmutableEntity {
+) : BlockedNumberEntity, NewEntity, MutableEntity {
 
     override fun redactedCopy() = copy(
         isRedacted = true,

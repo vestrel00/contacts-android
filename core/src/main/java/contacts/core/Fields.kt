@@ -1363,16 +1363,16 @@ object SimFields : FieldSet<SimField>() {
     val Id = SimField("_id", required = true)
 
     @JvmField
-    val NormalizedNumber = SimField("name")
+    val Name = SimField("name")
 
     @JvmField
     val Number = SimField("number")
 
     @JvmField
-    val Emails = SimField("emails")
+    val Email = SimField("emails")
 
     override val all by unsafeLazy {
-        setOf(Id, Number, NormalizedNumber)
+        setOf(Id, Name, Number, Email)
     }
 
     /**
