@@ -47,7 +47,7 @@ import contacts.core.util.unsafeLazy
  * In Kotlin,
  *
  * ```kotlin
- * val contacts : List<Contact> = broadQuery.
+ * val contacts = broadQuery
  *      .accounts(account)
  *      .groups(groups)
  *      .include { Name.all + Address.all }
@@ -64,7 +64,7 @@ import contacts.core.util.unsafeLazy
  * import static contacts.core.Fields.*;
  * import static contacts.core.OrderByKt.*;
  *
- * val contacts : List<Contact> = broadQuery.
+ * List<Contact> contacts = broadQuery
  *      .accounts(account)
  *      .groups(groups)
  *      .include(new ArrayList<>() {{

@@ -1368,6 +1368,8 @@ object SimContactsFields : FieldSet<SimContactsField>() {
     @JvmField
     val Number = SimContactsField("number")
 
+    // Yes, the column name is actually "emails" with an "s" (plural). Whether or not this can store
+    // more than one email might vary per SIM card and system OEM.
     @JvmField
     val Email = SimContactsField("emails")
 
