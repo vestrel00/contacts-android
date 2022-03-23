@@ -74,7 +74,7 @@ data class BlockedNumber internal constructor(
         isRedacted = true,
 
         number = number?.redact(),
-        normalizedNumber = normalizedNumber?.redact(),
+        normalizedNumber = normalizedNumber?.redact()
     )
 }
 
@@ -95,6 +95,6 @@ data class NewBlockedNumber @JvmOverloads constructor(
         isRedacted = true,
 
         number = number?.redact(),
-        normalizedNumber = normalizedNumber?.redact(),
+        normalizedNumber = normalizedNumber?.redact()
     )
 }

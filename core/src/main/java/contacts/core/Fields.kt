@@ -1345,7 +1345,7 @@ object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
 
 // region SIM Table Fields
 
-data class SimField internal constructor(
+data class SimContactField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
 ) : Field()
@@ -1357,19 +1357,19 @@ data class SimField internal constructor(
  *
  * There are no defined accessible constants for SIM columns.
  */
-object SimFields : FieldSet<SimField>() {
+object SimContactFields : FieldSet<SimContactField>() {
 
     @JvmField
-    val Id = SimField("_id", required = true)
+    val Id = SimContactField("_id", required = true)
 
     @JvmField
-    val Name = SimField("name")
+    val Name = SimContactField("name")
 
     @JvmField
-    val Number = SimField("number")
+    val Number = SimContactField("number")
 
     @JvmField
-    val Email = SimField("emails")
+    val Email = SimContactField("emails")
 
     override val all by unsafeLazy {
         setOf(Id, Name, Number, Email)
