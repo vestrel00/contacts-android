@@ -3,8 +3,7 @@ package contacts.core.sim
 import contacts.core.Contacts
 
 /**
- * Provides new [SimContactsQuery], [SimContactsInsert], [SimContactsUpdate], and
- * [SimContactsDelete] instances.
+ * Provides new [SimContactsQuery], [SimContactsInsert], and [SimContactsDelete] instances.
  */
 interface SimContacts {
 
@@ -18,9 +17,7 @@ interface SimContacts {
      */
     fun insert(): SimContactsInsert
 
-    /**
-     * Returns a new [SimContactsUpdate] instance.
-     */
+    // TODO We'll eventually support SimContactsUpdate when the system level APIs support it correctly and reliably.
     // fun update(): SimContactsUpdate
 
     /**

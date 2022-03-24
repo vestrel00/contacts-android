@@ -17,6 +17,7 @@ sealed interface SimContactEntity : Entity {
      */
     val number: String?
 
+    // TODO We'll eventually support emails in SIM when the system level APIs support it correctly and reliably.
     // Support for CRUD operations for emails in SIM cards was implemented in Android 12 (API 31).
     // Given that this support is very new and IMO unstable and still incomplete, this library will
     // not yet support emails in SIM cards.
@@ -38,37 +39,16 @@ sealed interface SimContactEntity : Entity {
     override fun redactedCopy(): SimContactEntity
 }
 
-// TODO Update this if SIM contacts cannot be updated!
 /* DEV NOTES: Necessary Abstractions
  *
  * We only create abstractions when they are necessary!
  *
- * Apart from SimContactEntity, there is only one interface that extends it; MutableSimContactEntity.
- *
- * The MutableSimContactEntity interface is used for library constructs that require an SimContactEntity
- * that can be mutated whether it is already inserted in the database or not. There are two
- * variants of this; MutableSimContact and NewSimContact. With this, we can create constructs that can
- * keep a reference to MutableSimContact(s) or NewSimContact(s) through the MutableSimContactEntity
- * abstraction/facade.
- *
- * This is why there are no interfaces for NewSimContactEntity, ExistingSimContactEntity, and
- * ImmutableSimContactEntity. There are currently no library functions or constructs that require them.
+ * This is why there are no interfaces for NewSimContactEntity, ExistingSimContactEntity,
+ * ImmutableSimContactEntity, and MutableNewSimContactEntity. There are currently no
+ * library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
-
-/**
- * A mutable [SimContactEntity]. `
- */
-// TODO Remove this if SIM contacts cannot be updated!
-sealed interface MutableSimContactEntity : SimContactEntity, MutableEntity {
-
-    override var name: String?
-    override var number: String?
-
-    // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): MutableSimContactEntity
-}
 
 /**
  * An existing immutable [SimContactEntity].
@@ -98,40 +78,7 @@ data class SimContact internal constructor(
 
     override val isRedacted: Boolean
 
-) : SimContactEntity, ExistingEntity, ImmutableEntityWithMutableType<MutableSimContact> {
-
-    override fun mutableCopy() = MutableSimContact(
-        id = id,
-
-        name = name,
-        number = number,
-
-        isRedacted = isRedacted
-    )
-
-    override fun redactedCopy() = copy(
-        isRedacted = true,
-
-        name = name?.redact(),
-        number = number?.redact()
-    )
-}
-
-/**
- * An existing mutable [SimContactEntity].
- */
-// TODO Remove this if SIM contacts cannot be updated!
-@Parcelize
-data class MutableSimContact internal constructor(
-
-    override val id: Long,
-
-    override var name: String?,
-    override var number: String?,
-
-    override val isRedacted: Boolean
-
-) : SimContactEntity, ExistingEntity, MutableSimContactEntity {
+) : SimContactEntity, ExistingEntity, ImmutableEntity {
 
     override fun redactedCopy() = copy(
         isRedacted = true,
@@ -152,7 +99,7 @@ data class NewSimContact @JvmOverloads constructor(
 
     override val isRedacted: Boolean = false
 
-) : SimContactEntity, NewEntity, MutableSimContactEntity {
+) : SimContactEntity, NewEntity, MutableEntity {
 
     override fun redactedCopy() = copy(
         isRedacted = true,

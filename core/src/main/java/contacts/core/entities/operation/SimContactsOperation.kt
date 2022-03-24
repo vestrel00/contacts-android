@@ -12,15 +12,14 @@ import contacts.core.entities.table.Table
  */
 internal class SimContactsOperation {
 
-    fun insert(simContact: NewSimContact): ContentValues? =
-        if (simContact.isBlank) {
-            null
-        } else {
-            ContentValues().apply {
-                put(SimContactsFields.Tag.columnName, simContact.name)
-                put(SimContactsFields.Number.columnName, simContact.number)
-            }
+    fun insert(simContact: NewSimContact): ContentValues? = if (simContact.isBlank) {
+        null
+    } else {
+        ContentValues().apply {
+            put(SimContactsFields.Tag.columnName, simContact.name)
+            put(SimContactsFields.Number.columnName, simContact.number)
         }
+    }
 
     /**
      * Returns a where clause that uses the [SimContact.name] (tag) and [SimContact.number] to
