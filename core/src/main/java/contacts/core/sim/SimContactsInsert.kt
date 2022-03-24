@@ -202,12 +202,7 @@ private fun ContentResolver.insertSimContact(simContact: NewSimContact): Boolean
     }
 
     // Successful result is always "content://icc/adn/0"
-    val newRowId = result?.let { simContactUri ->
-        val simContactId = simContactUri.lastPathSegment?.toLongOrNull()
-        simContactId
-    } ?: -1
-
-    return newRowId >= 0
+    return result != null
 }
 
 private class SimContactsInsertResult private constructor(

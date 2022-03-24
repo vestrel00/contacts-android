@@ -1352,14 +1352,12 @@ data class SimContactsField internal constructor(
 
 /**
  * Fields for SIM table operations.
- *
- * ## Dev notes
- *
- * There are no defined accessible constants for SIM columns.
  */
-object SimContactsFields : FieldSet<SimContactsField>() {
+// Given that we are not adding include, where, and orderbBy, functions in SIM queries due to
+// projection, selection, and order not being supported, there is no need to expose this to
+// consumers.
+internal object SimContactsFields : FieldSet<SimContactsField>() {
 
-    @JvmField
     val Id = SimContactsField("_id", required = true)
 
     /**
@@ -1370,24 +1368,14 @@ object SimContactsFields : FieldSet<SimContactsField>() {
      *
      * Do not include this in [all]!
      */
-    internal val Tag = SimContactsField("tag")
+    val Tag = SimContactsField("tag")
 
-    @JvmField
     val Name = SimContactsField("name")
 
-    @JvmField
     val Number = SimContactsField("number")
 
-    // Yes, the column name is actually "emails" with an "s" (plural). This may vary but based on
-    // my observations...
-    // - no email = ","
-    // - at least one email = "email,"
-    // there seems to be a trailing "," regardless
-    @JvmField
-    val Emails = SimContactsField("emails")
-
     override val all by unsafeLazy {
-        setOf(Id, Name, Number, Emails)
+        setOf(Id, Name, Number)
     }
 
     /**

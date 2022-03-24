@@ -26,7 +26,7 @@ interface SimContacts {
     /**
      * Returns a new [SimContactsDelete] instance.
      */
-    // fun delete(): SimContactsDelete
+    fun delete(): SimContactsDelete
 
     /**
      * A reference to the [Contacts] instance that constructed this. This is mostly used internally
@@ -52,5 +52,5 @@ private class SimContactsImpl(override val contactsApi: Contacts) : SimContacts 
 
     // override fun update() = SimContactsUpdate(contactsApi)
 
-    // override fun delete() = SimContactsDelete(contactsApi)
+    override fun delete() = SimContactsDelete(contactsApi)
 }

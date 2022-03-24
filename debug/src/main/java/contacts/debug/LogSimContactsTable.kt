@@ -12,7 +12,6 @@ fun Context.logSimContactsTable() {
 
     log("#### SIM Contacts table")
 
-    // Side note: projection, selection, and sortOrder are not supported by this Uri.
     val cursor: Cursor? = contentResolver.query(
         Uri.parse("content://icc/adn"), null, null, null, null
     )
@@ -23,14 +22,7 @@ fun Context.logSimContactsTable() {
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
             val number = cursor.getString(cursor.getColumnIndexOrThrow("number"))
 
-            // Yes, the column name is actually "emails" with an "s" (plural). This may vary but
-            // based on my observations...
-            // - no email = ","
-            // - at least one email = "email,"
-            // there seems to be a trailing "," regardless
-            val emails = cursor.getString(cursor.getColumnIndexOrThrow("emails"))
-
-            log("SIM Contact id: $id, name: $name, number: $number, emails: $emails")
+            log("SIM Contact id: $id, name: $name, number: $number")
         }
         cursor.close()
     }

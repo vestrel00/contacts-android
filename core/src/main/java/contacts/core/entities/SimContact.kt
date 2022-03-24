@@ -17,6 +17,9 @@ sealed interface SimContactEntity : Entity {
      */
     val number: String?
 
+    // Support for CRUD operations for emails in SIM cards was implemented in Android 12 (API 31).
+    // Given that this support is very new and IMO unstable and still incomplete, this library will
+    // not yet support emails in SIM cards.
     /**
      * The email addresses in CSV format (comma separated values).
      *
@@ -26,11 +29,10 @@ sealed interface SimContactEntity : Entity {
      *
      * There seems to always be a trailing ",". This may or may not vary between SIM cards and OEMs.
      */
-    val emails: String?
+    // val emails: String?
 
-    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
-        get() = propertiesAreAllNullOrBlank(name, number, emails)
+        get() = propertiesAreAllNullOrBlank(name, number)
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): SimContactEntity
@@ -63,7 +65,6 @@ sealed interface MutableSimContactEntity : SimContactEntity, MutableEntity {
 
     override var name: String?
     override var number: String?
-    override var emails: String?
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): MutableSimContactEntity
@@ -75,11 +76,25 @@ sealed interface MutableSimContactEntity : SimContactEntity, MutableEntity {
 @Parcelize
 data class SimContact internal constructor(
 
+    /**
+     * The "volatile" row ID in the SIM table. This in-memory value may be different than the value
+     * in the SIM table. It may change.
+     *
+     * DO NOT RELY ON THIS TO MATCH VALUES IN THE DATABASE!
+     *
+     * ## Developer notes
+     *
+     * The _id in the SIM table always starts at 0. When there are 10 contacts, there are 10 rows
+     * with IDs from 0 to 9. When deleting a contact at row 0, all remaining contacts will have
+     * their ID's shifted down by one.
+     *
+     * I guess this is due to the memory restrictions in SIM cards. Perhaps ints are supported but
+     * not longs, therefore the row IDs behave like this.
+     */
     override val id: Long,
 
     override val name: String?,
     override val number: String?,
-    override val emails: String?,
 
     override val isRedacted: Boolean
 
@@ -90,7 +105,6 @@ data class SimContact internal constructor(
 
         name = name,
         number = number,
-        emails = emails,
 
         isRedacted = isRedacted
     )
@@ -99,13 +113,12 @@ data class SimContact internal constructor(
         isRedacted = true,
 
         name = name?.redact(),
-        number = number?.redact(),
-        emails = emails?.redact()
+        number = number?.redact()
     )
 }
 
 /**
- * An existing mutable [EmailEntity].
+ * An existing mutable [SimContactEntity].
  */
 // TODO Remove this if SIM contacts cannot be updated!
 @Parcelize
@@ -115,7 +128,6 @@ data class MutableSimContact internal constructor(
 
     override var name: String?,
     override var number: String?,
-    override var emails: String?,
 
     override val isRedacted: Boolean
 
@@ -125,11 +137,9 @@ data class MutableSimContact internal constructor(
         isRedacted = true,
 
         name = name?.redact(),
-        number = number?.redact(),
-        emails = emails?.redact()
+        number = number?.redact()
     )
 }
-
 
 /**
  * A new mutable [SimContactEntity].
@@ -139,7 +149,6 @@ data class NewSimContact @JvmOverloads constructor(
 
     override var name: String? = null,
     override var number: String? = null,
-    override var emails: String? = null,
 
     override val isRedacted: Boolean = false
 
@@ -149,7 +158,6 @@ data class NewSimContact @JvmOverloads constructor(
         isRedacted = true,
 
         name = name?.redact(),
-        number = number?.redact(),
-        emails = emails?.redact()
+        number = number?.redact()
     )
 }

@@ -36,7 +36,6 @@ sealed interface BlockedNumberEntity : Entity {
      */
     val normalizedNumber: String?
 
-    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
