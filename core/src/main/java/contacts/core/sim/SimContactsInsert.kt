@@ -10,6 +10,11 @@ import contacts.core.util.unsafeLazy
 /**
  * Inserts one or more user SIM contacts into the SIM contacts table.
  *
+ * ## Blank SIM contacts are ignored
+ *
+ * Blank SimContacts (name AND number are both null or blank) will NOT be inserted. The name OR
+ * number can be null or blank but not both.
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
@@ -141,7 +146,7 @@ private class SimContactsInsertImpl(
         """
             SimContactsInsert {
                 simContacts: $simContacts
-                hasPermission: ${permissions.canInsert()}
+                hasPermission: ${permissions.canInsertSim()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -157,7 +162,6 @@ private class SimContactsInsertImpl(
 
     override fun simContact(configureSimContact: NewSimContact.() -> Unit) =
         simContacts(NewSimContact().apply(configureSimContact))
-
 
     override fun simContacts(vararg simContacts: NewSimContact) =
         simContacts(simContacts.asSequence())
@@ -175,7 +179,7 @@ private class SimContactsInsertImpl(
     override fun commit(cancel: () -> Boolean): SimContactsInsert.Result {
         onPreExecute()
 
-        return if (simContacts.isEmpty() || !permissions.canInsert() || cancel()) {
+        return if (simContacts.isEmpty() || !permissions.canInsertSim() || cancel()) {
             SimContactsInsertFailed()
         } else {
 

@@ -1360,6 +1360,8 @@ internal object SimContactsFields : FieldSet<SimContactsField>() {
 
     val Id = SimContactsField("_id", required = true)
 
+    val Name = SimContactsField("name")
+
     /**
      * This is only used for populating the [Name] during insert operations. For some reason,
      * using the [Name] when inserting into the SIM card table does not set the name but this does.
@@ -1370,11 +1372,18 @@ internal object SimContactsFields : FieldSet<SimContactsField>() {
      */
     val Tag = SimContactsField("tag")
 
-    val Name = SimContactsField("name")
+    val NewTag = SimContactsField("newTag")
 
     val Number = SimContactsField("number")
 
+    val NewNumber = SimContactsField("newNumber")
+
+    // Not supporting emails until proper application-level support for it is implemented by Android.
+    // val Emails = SimContactsField("emails")
+    // val NewEmails = SimContactsField("newEmails")
+
     override val all by unsafeLazy {
+        // Only added fields used for queries
         setOf(Id, Name, Number)
     }
 

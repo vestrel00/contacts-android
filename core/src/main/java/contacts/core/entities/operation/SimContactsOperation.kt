@@ -3,6 +3,7 @@ package contacts.core.entities.operation
 import android.content.ContentProviderOperation
 import android.content.ContentValues
 import contacts.core.SimContactsFields
+import contacts.core.entities.MutableSimContact
 import contacts.core.entities.NewSimContact
 import contacts.core.entities.SimContact
 import contacts.core.entities.table.Table
@@ -18,6 +19,20 @@ internal class SimContactsOperation {
         ContentValues().apply {
             put(SimContactsFields.Tag.columnName, simContact.name)
             put(SimContactsFields.Number.columnName, simContact.number)
+        }
+    }
+
+    fun update(
+        originalSimContact: SimContact, updatedSimContact: MutableSimContact
+    ): ContentValues? = if (updatedSimContact.isBlank) {
+        null
+    } else {
+        ContentValues().apply {
+            put(SimContactsFields.Tag.columnName, originalSimContact.name)
+            put(SimContactsFields.Number.columnName, originalSimContact.number)
+
+            put(SimContactsFields.NewTag.columnName, updatedSimContact.name)
+            put(SimContactsFields.NewNumber.columnName, updatedSimContact.number)
         }
     }
 

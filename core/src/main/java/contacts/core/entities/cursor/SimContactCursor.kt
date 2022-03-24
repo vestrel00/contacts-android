@@ -19,4 +19,6 @@ internal class SimContactCursor(cursor: Cursor, includeFields: Set<SimContactsFi
     val name: String? by string(SimContactsFields.Name)
 
     val number: String? by string(SimContactsFields.Number)
+
+    // val emails: String? by string(SimContactsFields.Emails)
 }

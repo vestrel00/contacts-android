@@ -1,11 +1,7 @@
 package contacts.permissions.sim
 
 import contacts.core.ContactsPermissions
-import contacts.core.sim.SimContacts
-import contacts.core.sim.SimContactsDelete
-import contacts.core.sim.SimContactsInsert
-import contacts.core.sim.SimContactsQuery
-import contacts.permissions.accounts.requestGetAccountsPermission
+import contacts.core.sim.*
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
 
@@ -30,12 +26,25 @@ suspend fun SimContacts.queryWithPermission(): SimContactsQuery {
  * If permissions are already granted, then immediately returns a new [SimContactsInsert] instance.
  */
 suspend fun SimContacts.insertWithPermission(): SimContactsInsert {
-    if (!contactsApi.permissions.canInsert()) {
+    if (!contactsApi.permissions.canInsertSim()) {
         contactsApi.applicationContext.requestWritePermission()
-        contactsApi.applicationContext.requestGetAccountsPermission()
     }
 
     return insert()
+}
+
+/**
+ * If [ContactsPermissions.WRITE_PERMISSION] are not yet granted, suspends the current coroutine,
+ * requests for the permissions, and then returns a new [SimContactsUpdate] instance.
+ *
+ * If permissions are already granted, then immediately returns a new [SimContactsUpdate] instance.
+ */
+suspend fun SimContacts.updateWithPermission(): SimContactsUpdate {
+    if (!contactsApi.permissions.canUpdateDelete()) {
+        contactsApi.applicationContext.requestWritePermission()
+    }
+
+    return update()
 }
 
 /**

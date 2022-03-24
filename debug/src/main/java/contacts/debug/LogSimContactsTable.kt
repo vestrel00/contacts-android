@@ -21,8 +21,11 @@ fun Context.logSimContactsTable() {
             val id = cursor.getString(cursor.getColumnIndexOrThrow("_id"))
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
             val number = cursor.getString(cursor.getColumnIndexOrThrow("number"))
+            // We should still show emails for debugging because the current API cannot delete
+            // rows with emails.
+            val emails = cursor.getString(cursor.getColumnIndexOrThrow("emails"))
 
-            log("SIM Contact id: $id, name: $name, number: $number")
+            log("SIM Contact id: $id, name: $name, number: $number, emails: $emails")
         }
         cursor.close()
     }

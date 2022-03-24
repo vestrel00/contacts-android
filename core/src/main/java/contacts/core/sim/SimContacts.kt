@@ -3,7 +3,8 @@ package contacts.core.sim
 import contacts.core.Contacts
 
 /**
- * Provides new [SimContactsQuery], [SimContactsInsert], and [SimContactsDelete] instances.
+ * Provides new [SimContactsQuery], [SimContactsInsert], [SimContactsUpdate], and
+ * [SimContactsDelete] instances.
  */
 interface SimContacts {
 
@@ -17,8 +18,10 @@ interface SimContacts {
      */
     fun insert(): SimContactsInsert
 
-    // TODO We'll eventually support SimContactsUpdate when the system level APIs support it correctly and reliably.
-    // fun update(): SimContactsUpdate
+    /**
+     * Returns a new [SimContactsInsert] instance.
+     */
+    fun update(): SimContactsUpdate
 
     /**
      * Returns a new [SimContactsDelete] instance.
@@ -47,7 +50,7 @@ private class SimContactsImpl(override val contactsApi: Contacts) : SimContacts 
 
     override fun insert() = SimContactsInsert(contactsApi)
 
-    // override fun update() = SimContactsUpdate(contactsApi)
+    override fun update() = SimContactsUpdate(contactsApi)
 
     override fun delete() = SimContactsDelete(contactsApi)
 }

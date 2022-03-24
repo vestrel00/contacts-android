@@ -12,7 +12,7 @@ sealed interface SimContactEntity : Entity {
      *
      * ## Character limit
      *
-     * This is subject to the SIM card's maximum character limit, which is typically around 14
+     * This is subject to the SIM card's maximum character limit, which is typically around 14-16
      * characters. This may vary per SIM card. When inserting, any characters over the limit
      * will automatically be truncated.
      *
@@ -30,7 +30,7 @@ sealed interface SimContactEntity : Entity {
      */
     val number: String?
 
-    // TODO We'll eventually support emails in SIM when the system level APIs support it correctly and reliably.
+    // FIXME We'll eventually support emails in SIM when the system level APIs support it reliably.
     // Support for CRUD operations for emails in SIM cards was implemented in Android 12 (API 31).
     // Given that this support is very new and IMO unstable and still incomplete, this library will
     // not yet support emails in SIM cards.
@@ -52,16 +52,37 @@ sealed interface SimContactEntity : Entity {
     override fun redactedCopy(): SimContactEntity
 }
 
+
 /* DEV NOTES: Necessary Abstractions
  *
  * We only create abstractions when they are necessary!
  *
- * This is why there are no interfaces for NewSimContactEntity, ExistingSimContactEntity,
- * ImmutableSimContactEntity, and MutableNewSimContactEntity. There are currently no
- * library functions or constructs that require them.
+ * Apart from SimContactEntity, there is only one interface that extends it; MutableSimContactEntity.
+ *
+ * The MutableSimContactEntity interface is used for library constructs that require an SimContactEntity
+ * that can be mutated whether it is already inserted in the database or not. There are two
+ * variants of this; MutableSimContact and NewSimContact. With this, we can create constructs that can
+ * keep a reference to MutableSimContact(s) or NewSimContact(s) through the MutableSimContactEntity
+ * abstraction/facade.
+ *
+ * This is why there are no interfaces for NewSimContactEntity, ExistingSimContactEntity, and
+ * ImmutableSimContactEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
+
+/**
+ * A mutable [SimContactEntity]. `
+ */
+sealed interface MutableSimContactEntity : SimContactEntity, MutableEntity {
+
+    override var name: String?
+    override var number: String?
+    // override var emails: String?
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): MutableSimContactEntity
+}
 
 /**
  * An existing immutable [SimContactEntity].
@@ -70,34 +91,65 @@ sealed interface SimContactEntity : Entity {
 data class SimContact internal constructor(
 
     /**
-     * The "volatile" row ID in the SIM table. This in-memory value may be different than the value
-     * in the SIM table. It may change.
+     * The row ID in the SIM table.
      *
-     * DO NOT RELY ON THIS TO MATCH VALUES IN THE DATABASE!
+     * The contact this is pointing to may change if this contact is deleted in the database and
+     * another contact is inserted. The inserted contact may be assigned the ID of the deleted
+     * contact.
      *
-     * ## Developer notes
-     *
-     * The _id in the SIM table always starts at 0. When there are 10 contacts, there are 10 rows
-     * with IDs from 0 to 9. When deleting a contact at row 0, all remaining contacts will have
-     * their ID's shifted down by one.
-     *
-     * I guess this is due to the memory restrictions in SIM cards. Perhaps ints are supported but
-     * not longs, therefore the row IDs behave like this.
+     * DO NOT RELY ON THIS TO MATCH VALUES IN THE DATABASE! The SIM table does not support selection
+     * by ID so you can't use this for anything anyways.
      */
     override val id: Long,
 
     override val name: String?,
     override val number: String?,
+    // override val emails: String?,
 
     override val isRedacted: Boolean
 
-) : SimContactEntity, ExistingEntity, ImmutableEntity {
+) : SimContactEntity, ExistingEntity, ImmutableEntityWithMutableType<MutableSimContact> {
+
+    override fun mutableCopy() = MutableSimContact(
+        id = id,
+
+        name = name,
+        number = number,
+
+        isRedacted = isRedacted
+    )
 
     override fun redactedCopy() = copy(
         isRedacted = true,
 
         name = name?.redact(),
         number = number?.redact()
+        // emails = emails?.redact()
+    )
+}
+
+/**
+ * An existing mutable [SimContactEntity].
+ */
+@Parcelize
+data class MutableSimContact internal constructor(
+
+    override val id: Long,
+
+    override var name: String?,
+    override var number: String?,
+    // override var emails: String?,
+
+    override val isRedacted: Boolean
+
+) : SimContactEntity, ExistingEntity, MutableSimContactEntity {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact(),
+        number = number?.redact()
+        // emails = emails?.redact()
     )
 }
 
@@ -109,15 +161,17 @@ data class NewSimContact @JvmOverloads constructor(
 
     override var name: String? = null,
     override var number: String? = null,
+    // override var emails: String? = null,
 
     override val isRedacted: Boolean = false
 
-) : SimContactEntity, NewEntity, MutableEntity {
+) : SimContactEntity, NewEntity, MutableSimContactEntity {
 
     override fun redactedCopy() = copy(
         isRedacted = true,
 
         name = name?.redact(),
         number = number?.redact()
+        // emails = emails?.redact()
     )
 }
