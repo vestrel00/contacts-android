@@ -23,7 +23,14 @@ Projections, selections, and order is not supported by the `IccProvider`. Theref
 to provide `include`, `where`, `orderBy`, `limit`, and `offset` functions in our `SimContactsQuery`
 API.
 
-Due to all of these limitations, all queries will return all contacts in the SIM card.
+Due to all of these limitations, all queries will return all contacts in the SIM card. You may 
+perform your own sorting and pagination if you wish.
+
+> Depending on memory size,
+> [SIM cards can hold 200 to 500+ contacts](https://www.quora.com/How-many-contacts-can-I-save-on-my-SIM-card).
+> The most common being around 250. Most, if not all, SIM cards have less than 1mb memory (averaging
+> 32KB to 64KB). Therefore, memory and speed should not be affected much by not being able to
+> sort/order and paginate at the query level. 
 
 For more info, read about [SIM Contacts](./about-sim-contacts.md)
 

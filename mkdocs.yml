@@ -61,6 +61,12 @@ nav:
     - 'Query for Accounts': accounts/query-accounts.md
     - 'Query RawContacts': accounts/query-raw-contacts.md
     - 'Associate a local RawContact to an Account': accounts/associate-device-local-raw-contacts-to-an-account.md
+  - 'SIM card':
+      - 'About SIM contacts': sim/about-sim-contacts.md
+      - 'Query contacts in SIM card': sim/query-sim-contacts.md
+      - 'Insert contacts into SIM card': sim/insert-sim-contacts.md
+      - 'Update contacts in SIM card': sim/update-sim-contacts.md
+      - 'Delete contacts from SIM card': sim/delete-sim-contacts.md
   - 'Blocked numbers':
     - 'About blocked numbers': blockednumbers/about-blocked-numbers.md
     - 'Query blocked numbers': blockednumbers/query-blocked-numbers.md
@@ -85,6 +91,7 @@ nav:
   - 'Debug':
       - 'Debug the Contacts Provider tables': debug/debug-contacts-provider-tables.md
       - 'Debug the BlockedNumber Provider tables': debug/debug-blockednumber-provider-tables.md
+      - 'Debug the Sim Contacts table': debug/debug-sim-contacts-tables.md
   - 'Contributing': contributing.md
   - 'Developer notes': dev-notes.md
 

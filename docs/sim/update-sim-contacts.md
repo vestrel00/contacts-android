@@ -1,4 +1,4 @@
-# Updates contacts in SIM card
+# Update contacts in SIM card
 
 This library provides the `SimContactsUpdate` API that allows you to update contacts in the SIM card.
 

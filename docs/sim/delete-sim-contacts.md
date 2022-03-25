@@ -1,4 +1,4 @@
-# Insert contacts from SIM card
+# Delete contacts from SIM card
 
 This library provides the `SimContactsDelete` API that allows you to delete existing contacts from
 the SIM card.
