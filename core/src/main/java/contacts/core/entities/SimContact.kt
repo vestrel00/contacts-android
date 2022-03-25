@@ -51,36 +51,29 @@ sealed interface SimContactEntity : Entity {
     override fun redactedCopy(): SimContactEntity
 }
 
-
 /* DEV NOTES: Necessary Abstractions
  *
  * We only create abstractions when they are necessary!
  *
- * Apart from SimContactEntity, there is only one interface that extends it; MutableSimContactEntity.
+ * Apart from SimContactEntity, there is only one interface that extends it; ExistingSimContactEntity.
+ * This interface is used for library functions that require a SimContactEntity with an ID, which means
+ * that it exists in the database. There are two variants of this; SimContact and MutableSimContact.
+ * With this, we can create functions (or extensions) that can take in (or have as the receiver)
+ * either SimContact or MutableSimContact through the ExistingSimContactEntity abstraction/facade.
  *
- * The MutableSimContactEntity interface is used for library constructs that require an SimContactEntity
- * that can be mutated whether it is already inserted in the database or not. There are two
- * variants of this; MutableSimContact and NewSimContact. With this, we can create constructs that can
- * keep a reference to MutableSimContact(s) or NewSimContact(s) through the MutableSimContactEntity
- * abstraction/facade.
- *
- * This is why there are no interfaces for NewSimContactEntity, ExistingSimContactEntity, and
- * ImmutableSimContactEntity. There are currently no library functions or constructs that require them.
+ * This is why there are no interfaces for NewSimContactEntity, ImmutableSimContactEntity, and
+ * MutableSimContactEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
  */
 
 /**
- * A mutable [SimContactEntity]. `
+ * A [SimContactEntity] that has already been inserted into the database.
  */
-sealed interface MutableSimContactEntity : SimContactEntity, MutableEntity {
-
-    override var name: String?
-    override var number: String?
-    // override var emails: String?
+sealed interface ExistingSimContactEntity : SimContactEntity, ExistingEntity {
 
     // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): MutableSimContactEntity
+    override fun redactedCopy(): ExistingSimContactEntity
 }
 
 /**
@@ -107,7 +100,7 @@ data class SimContact internal constructor(
 
     override val isRedacted: Boolean
 
-) : SimContactEntity, ExistingEntity, ImmutableEntityWithMutableType<MutableSimContact> {
+) : ExistingSimContactEntity, ImmutableEntityWithMutableType<MutableSimContact> {
 
     override fun mutableCopy() = MutableSimContact(
         id = id,
@@ -141,7 +134,19 @@ data class MutableSimContact internal constructor(
 
     override val isRedacted: Boolean
 
-) : SimContactEntity, ExistingEntity, MutableSimContactEntity {
+) : ExistingSimContactEntity, MutableEntity {
+
+    /**
+     * Returns a copy of this [MutableSimContact].
+     */
+    // In general, we discourage users of this library to use the data class copy function.
+    // Therefore, we define this function for them to use.
+    fun newCopy() = copy()
+
+    /**
+     * Returns a copy of this [MutableSimContact] with changes set in the given function.
+     */
+    fun newCopy(newCopy: MutableSimContact.() -> Unit): MutableSimContact = newCopy().apply(newCopy)
 
     override fun redactedCopy() = copy(
         isRedacted = true,
@@ -164,7 +169,7 @@ data class NewSimContact @JvmOverloads constructor(
 
     override val isRedacted: Boolean = false
 
-) : SimContactEntity, NewEntity, MutableSimContactEntity {
+) : SimContactEntity, NewEntity {
 
     override fun redactedCopy() = copy(
         isRedacted = true,

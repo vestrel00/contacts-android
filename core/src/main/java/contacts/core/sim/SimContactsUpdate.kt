@@ -2,8 +2,8 @@ package contacts.core.sim
 
 import android.content.ContentResolver
 import contacts.core.*
+import contacts.core.entities.ExistingSimContactEntity
 import contacts.core.entities.MutableSimContact
-import contacts.core.entities.SimContact
 import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.util.unsafeLazy
@@ -35,17 +35,41 @@ import contacts.core.util.unsafeLazy
  * To update a contact to the SIM card,
  *
  * ```kotlin
+ * var current: SimContact
+ * var modified: MutableSimContact = current.mutableCopy {
+ *     // change the name and/or number
+ * }
+ *
  * val result = update
- *      .simContact(simContact, simContact.mutableCopy { ... })
+ *      .simContact(current, modified)
  *      .commit()
  * ```
+ *
+ * **IMPORTANT!** The current entry in the SIM table is not updated based on the ID. Instead, the
+ * name AND number are used to lookup the entry to update. Continuing the example above, if you
+ * need to make another update, then you must use the modified copy as the current,
+ *
+ * ```kotlin
+ * current = modified
+ * modified = current.newCopy {
+ *     // change the name and/or number
+ * }
+ *
+ * val result = update
+ *      .simContact(current, modified)
+ *      .commit()
+ * ```
+ *
+ * This limitation comes from Android, not this library.
  */
 interface SimContactsUpdate : CrudApi {
 
     /**
-     * Adds an [Entry] in the update queue with the given [original] and [updated] contacts.
+     * Adds an [Entry] in the update queue with the given [current] and [modified] contacts.
      */
-    fun simContact(original: SimContact, updated: MutableSimContact): SimContactsUpdate
+    fun simContact(
+        current: ExistingSimContactEntity, modified: MutableSimContact
+    ): SimContactsUpdate
 
     /**
      * Adds the given [entries] to the update queue, which will be updated on [commit].
@@ -121,18 +145,18 @@ interface SimContactsUpdate : CrudApi {
 
     // We could use a Pair but it's too generic. We have more control this way.
     data class Entry internal constructor(
-        val original: SimContact,
-        val updated: MutableSimContact,
+        val current: ExistingSimContactEntity,
+        val modified: MutableSimContact,
 
         override val isRedacted: Boolean
     ) : Redactable {
 
-        constructor(original: SimContact, updated: MutableSimContact) :
-                this(original, updated, false)
+        constructor(current: ExistingSimContactEntity, modified: MutableSimContact) :
+                this(current, modified, false)
 
         override fun redactedCopy() = copy(
-            original = original.redactedCopy(),
-            updated = updated.redactedCopy(),
+            current = current.redactedCopy(),
+            modified = modified.redactedCopy(),
 
             isRedacted = true
         )
@@ -186,8 +210,8 @@ private class SimContactsUpdateImpl(
         isRedacted = true
     )
 
-    override fun simContact(original: SimContact, updated: MutableSimContact) =
-        simContacts(SimContactsUpdate.Entry(original, updated))
+    override fun simContact(current: ExistingSimContactEntity, modified: MutableSimContact) =
+        simContacts(SimContactsUpdate.Entry(current, modified))
 
     override fun simContacts(vararg entries: SimContactsUpdate.Entry) =
         simContacts(entries.asSequence())
@@ -216,10 +240,10 @@ private class SimContactsUpdateImpl(
                     break
                 }
 
-                results[entry.original.id] =
-                    !entry.updated.isBlank && contentResolver.updateSimContact(
-                        entry.original,
-                        entry.updated
+                results[entry.current.id] =
+                    !entry.modified.isBlank && contentResolver.updateSimContact(
+                        entry.current,
+                        entry.modified
                     )
             }
             SimContactsUpdateResult(results)
@@ -230,9 +254,9 @@ private class SimContactsUpdateImpl(
 }
 
 private fun ContentResolver.updateSimContact(
-    original: SimContact, updated: MutableSimContact
+    current: ExistingSimContactEntity, modified: MutableSimContact
 ): Boolean {
-    val result = SimContactsOperation().update(original, updated)?.let {
+    val result = SimContactsOperation().update(current, modified)?.let {
         update(Table.SimContacts.uri, it, null, null)
     }
 
