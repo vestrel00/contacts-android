@@ -19,6 +19,12 @@ import contacts.core.util.unsafeLazy
  * Blank SimContacts (name AND number are both null or blank) will NOT be inserted. The name OR
  * number can be null or blank but not both.
  *
+* ## Character limits
+ *
+ * The `name` and `number` are subject to the SIM card's maximum character limit, which is typically
+ * around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will
+ * fail if the limit is breached.
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
