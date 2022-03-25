@@ -135,12 +135,12 @@ private class SimContactsDeleteImpl(
         } else {
             val results = mutableMapOf<Long, Boolean>()
             for (simContact in simContacts) {
-                val count = contentResolver.delete(
+                val result = contentResolver.delete(
                     Table.SimContacts.uri,
                     SimContactsOperation().delete(simContact),
                     null
                 )
-                results[simContact.id] = count > 0
+                results[simContact.id] = result > 0
             }
             SimContactsDeleteResult(results)
         }

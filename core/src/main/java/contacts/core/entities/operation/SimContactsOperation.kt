@@ -42,7 +42,7 @@ internal class SimContactsOperation {
      * by _id is not supported because they are not constant.
      */
     fun delete(simContact: SimContact): String =
-    // We will not construct the where String using our own Where functions to avoid generating
+        // We will not construct the where String using our own Where functions to avoid generating
         // parenthesis, which breaks the way this where clause is processed.
         "tag='${simContact.name}' AND number='${simContact.number}'"
 }

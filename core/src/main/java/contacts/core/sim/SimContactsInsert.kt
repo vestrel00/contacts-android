@@ -1,11 +1,15 @@
 package contacts.core.sim
 
 import android.content.ContentResolver
+import android.util.Log
 import contacts.core.*
 import contacts.core.entities.NewSimContact
 import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.util.unsafeLazy
+
+// TODO Calculate max character limits for name and number. Pre-emptively fail the insert for
+// entries that breach the limit. Make sure to update documentation.
 
 /**
  * Inserts one or more user SIM contacts into the SIM contacts table.
@@ -146,7 +150,7 @@ private class SimContactsInsertImpl(
         """
             SimContactsInsert {
                 simContacts: $simContacts
-                hasPermission: ${permissions.canInsertSim()}
+                hasPermission: ${permissions.canInsertToSim()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -179,7 +183,7 @@ private class SimContactsInsertImpl(
     override fun commit(cancel: () -> Boolean): SimContactsInsert.Result {
         onPreExecute()
 
-        return if (simContacts.isEmpty() || !permissions.canInsertSim() || cancel()) {
+        return if (simContacts.isEmpty() || !permissions.canInsertToSim() || cancel()) {
             SimContactsInsertFailed()
         } else {
 
@@ -205,6 +209,8 @@ private fun ContentResolver.insertSimContact(simContact: NewSimContact): Boolean
         insert(Table.SimContacts.uri, it)
     }
 
+    // FIXME If result is not null, make sure a new row is inserted in the SIM table. In some OEMs,
+    // the result will be successful but no new row is added to the SIM table.
     // Successful result is always "content://icc/adn/0"
     return result != null
 }

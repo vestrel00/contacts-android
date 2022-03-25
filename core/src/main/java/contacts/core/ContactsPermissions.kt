@@ -26,7 +26,7 @@ interface ContactsPermissions {
     /**
      * Returns true if [WRITE_PERMISSION] is granted.
      */
-    fun canInsertSim(): Boolean
+    fun canInsertToSim(): Boolean
 
     /**
      * Returns true if [WRITE_PERMISSION] is granted.
@@ -53,7 +53,7 @@ private class ContactsPermissionsImpl(
         applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
                 && applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
 
-    override fun canInsertSim(): Boolean =
+    override fun canInsertToSim(): Boolean =
         applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
 
     override fun canUpdateDelete(): Boolean =

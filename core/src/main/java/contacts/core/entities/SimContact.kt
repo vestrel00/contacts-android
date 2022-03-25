@@ -12,11 +12,9 @@ sealed interface SimContactEntity : Entity {
      *
      * ## Character limit
      *
-     * This is subject to the SIM card's maximum character limit, which is typically around 14-16
-     * characters. This may vary per SIM card. When inserting, any characters over the limit
-     * will automatically be truncated.
-     *
-     * See https://www.google.com/search?q=sim+card+name+character+limit
+     * This is subject to the SIM card's maximum character limit, which is typically around 20-30
+     * characters (in modern times). This may vary per SIM card. Inserts or updates will fail if
+     * the limit is breached.
      */
     val name: String?
 
@@ -25,8 +23,9 @@ sealed interface SimContactEntity : Entity {
      *
      * ## Character limit
      *
-     * SIM cards typically support phone numbers of all lengths. You shouldn't need to worry about
-     * this as long as you put in a valid number.
+     * This is subject to the SIM card's maximum character limit, which is typically around 20-30
+     * characters (in modern times). This may vary per SIM card. Inserts or updates will fail if
+     * the limit is breached.
      */
     val number: String?
 

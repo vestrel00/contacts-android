@@ -57,6 +57,8 @@ exactly want to debug the core APIs using the core APIs. That's just a recipe fo
 If the read permission `android.permission.READ_CONTACTS` is not granted, the debug functions will
 not print any table rows.
 
-## Logging Blocked Number Provider tables
+## Debugging other tables
 
-To log Blocked Number Provider tables, read [Debug the Blocked Number Provider tables](./../debug/debug-blockednumber-provider-tables.md).
+To debug Blocked Number Provider tables, read [Debug the Blocked Number Provider tables](./../debug/debug-blockednumber-provider-tables.md).
+
+To debug SIM Contacts table, read [Debug the Sim Contacts table](./../debug/debug-sim-contacts-tables.md).

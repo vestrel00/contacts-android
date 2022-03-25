@@ -26,7 +26,7 @@ suspend fun SimContacts.queryWithPermission(): SimContactsQuery {
  * If permissions are already granted, then immediately returns a new [SimContactsInsert] instance.
  */
 suspend fun SimContacts.insertWithPermission(): SimContactsInsert {
-    if (!contactsApi.permissions.canInsertSim()) {
+    if (!contactsApi.permissions.canInsertToSim()) {
         contactsApi.applicationContext.requestWritePermission()
     }
 

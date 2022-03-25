@@ -8,6 +8,9 @@ import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.util.unsafeLazy
 
+// TODO Calculate max character limits for name and number. Pre-emptively fail the update for
+// entries that breach the limit. Make sure to update documentation.
+
 /**
  * Updates one or more user SIM contacts in the SIM contacts table.
  *
