@@ -2,16 +2,19 @@
 
 This library gives you APIS that allow you to read and write Contacts stored in the SIM card.
 
-Behavior of the APIs provided in this library may vary for different SIM cards, Android 
-versions/flavors, and OEM OS modifications (e.g. Samsung). The behavioral differences are documented
-but you still need to be aware of them.
+This library provides the following APIs that allow you to read/write blocked numbers;
+
+- [`SimContactsQuery`](./../sim/query-sim-contacts.md)
+- [`SimContactsInsert`](./../sim/insert-sim-contacts.md)
+- [`SimContactsUpdate`](./../sim/update-sim-contacts.md)
+- [`SimContactsDelete`](./../sim/delete-sim-contacts.md)
 
 ## SIM Contact data
 
 SIM Contact data consists of the `name` and `number`.
 
 > Support for `email` was recently added in Android 12. I don't think it is stable yet. Regardless,
-> it is too new so this library will not support it.
+> it is too new so this library will wait a bit before adding support for it.
 
 #### Character limits
 
@@ -62,6 +65,21 @@ work, at the very least the current active SIM card should be accessible.
 Please [raise an issue](https://github.com/vestrel00/contacts-android/issues/new) if you find any bugs
 or [start a discussion](https://github.com/vestrel00/contacts-android/discussions/new) and share 
 your thoughts or knowledge =)
+
+## Limitations
+
+Projections, selections, and order is not supported by the `IccProvider`. Therefore, we are unable
+to provide `include`, `where`, `orderBy`, `limit`, and `offset` functions in our `SimContactsQuery`
+API.
+
+Due to all of these limitations, all queries will return all contacts in the SIM card.
+
+Depending on memory size,
+[SIM cards can hold 200 to 500+ contacts](https://www.quora.com/How-many-contacts-can-I-save-on-my-SIM-card).
+The most common being around 250. Most, if not all, SIM cards have less than 1mb memory (averaging
+32KB to 64KB). Therefore, memory and speed should not be affected much by not being able to
+sort/order and paginate. Consumers of this library can perform their own sorting and pagination if
+they wish.
 
 ## Debugging
 
@@ -310,21 +328,6 @@ rows are able to be updated and deleted.
 
 SIM contacts with emails are shown without the email data. These rows are able to be updated and 
 deleted.
-
-#### Limitations
-
-Projections, selections, and order is not supported by the `IccProvider`. Therefore, we are unable
-to provide `include`, `where`, `orderBy`, `limit`, and `offset` functions in our `SimContactsQuery`
-API.
-
-Due to all of these limitations, all queries will return all contacts in the SIM card.
-
-Depending on memory size, 
-[SIM cards can hold 200 to 500+ contacts](https://www.quora.com/How-many-contacts-can-I-save-on-my-SIM-card). 
-The most common being around 250. Most, if not all, SIM cards have less than 1mb memory (averaging
-32KB to 64KB). Therefore, memory and speed should not be affected much by not being able to
-sort/order and paginate. Consumers of this library can perform their own sorting and pagination if 
-they wish.
 
 #### Other considerations
 

@@ -1,11 +1,14 @@
 # Blocked numbers
 
-The Android 7.0 (API 24) release introduced the Blocked Numbers content provider that stores a list
-of phone numbers the user has specified should not be able to contact them via telephony
-communications (calls, SMS, MMS). See https://source.android.com/devices/tech/connect/block-numbers
+The [Android 7.0 (API 24) release introduced the Blocked Numbers](https://source.android.com/devices/tech/connect/block-numbers)
+content provider that stores a list of phone numbers the user has specified should not be able to
+contact them via telephony communications (calls, SMS, MMS).
 
-Reading and writing directly to the Blocked Numbers database table can only be done by certain
-privileged apps.
+This library provides the following APIs that allow you to read/write blocked numbers;
+
+- [`BlockedNumbersQuery`](./../blockednumbers/query-blocked-numbers.md)
+- [`BlockedNumbersInsert`](./../blockednumbers/insert-blocked-numbers.md)
+- [`BlockedNumbersDelete`](./../blockednumbers/delete-blocked-numbers.md)
 
 ## Blocked number data
 
@@ -27,10 +30,9 @@ at `android.telephony.PhoneNumberUtils`.
 
 ## Privileges to read/write blocked numbers directly
 
-The [`BlockedNumbersQuery`](./../blockednumbers/query-blocked-numbers.md), 
-[`BlockedNumbersInsert`](./../blockednumbers/insert-blocked-numbers.md), and
-[`BlockedNumbersDelete`](./../blockednumbers/delete-blocked-numbers.md) APIs this library
-provides will only work if all of the following requirements are met;
+Reading and writing directly to the Blocked Numbers database table can only be done by certain
+privileged apps. The Blocked Number APIs this library provides will only work if all of the 
+following requirements are met;
 
 - your app must is a system app and/or the default dialer/phone app and/or the default SMS/messaging
   app
