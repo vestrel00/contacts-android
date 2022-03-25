@@ -6,6 +6,7 @@
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 [![Monthly Downloads](https://jitpack.io/v/vestrel00/contacts-android/month.svg)](https://jitpack.io/#vestrel00/contacts-android)
+[![Colosal milestone reached](https://img.shields.io/badge/Watch-Colossal%20Milestone%20Reached-ff0000.svg?style=flat&logo=youtube)](https://youtu.be/RbcBb34UdHQ)
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android%20Contacts,%20Reborn-green.svg?style=flat&logo=android)](https://android-arsenal.com/details/1/8393)
 [![Android Weekly](https://img.shields.io/badge/AndroidWeekly-Issue%20%23491-2299cc.svg?style=flat&logo=android)](https://androidweekly.net/issues/issue-491)
@@ -17,7 +18,6 @@
 [![ProAndroidDev](https://img.shields.io/badge/ProAndroidDev-Contacts,%20Reborn!-f53e28.svg?style=flat&logo=medium)](https://proandroiddev.com/android-contacts-reborn-19985c73ad43)
 [![Dev.to](https://img.shields.io/badge/Dev.to%20-3%20years%20to%20open%20source-0a0a0a.svg?style=flat&logo=devdotto)](https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp)
 [![Reddit](https://img.shields.io/badge/Reddit%20-Share%20with%20the%20community-ff4500.svg?style=flat&logo=reddit)](https://www.reddit.com/r/androiddev/comments/rz370s/i_dedicated_3_years_to_building_this_android/)
-[![YouTube](https://img.shields.io/badge/YouTube%20-Contacts%20Reborn%20+%20SAO-ff0000.svg?style=flat&logo=youtube)](https://youtu.be/NlRve_B1RA0)
 
 This library provides a complete set of APIs to do everything you need with Contacts in Android. 
 You no longer have to deal with the [Contacts Provider][contacts-provider], database operations, 
