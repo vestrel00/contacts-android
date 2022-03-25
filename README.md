@@ -32,8 +32,8 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 ## Quick links
 
 - 📜 [Documentation][github-pages]
-- 🚉 [Current release - 0.1.10](https://github.com/vestrel00/contacts-android/releases/tag/0.1.10)
-- 🚂 [Upcoming release - v0.2.0](https://github.com/vestrel00/contacts-android/discussions/146)
+- 🚉 [Current release - 0.2.0](https://github.com/vestrel00/contacts-android/releases/tag/0.2.0)
+- 🚂 [Upcoming release - v0.2.1](https://github.com/vestrel00/contacts-android/discussions/160)
 - 🗺 [Project roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
 
@@ -124,7 +124,7 @@ To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.1.10'
+     implementation 'com.github.vestrel00:contacts-android:0.2.0'
 }
 ```
 
@@ -132,7 +132,7 @@ To import specific modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.1.10'
+     implementation 'com.github.vestrel00.contacts-android:core:0.2.0'
 }
 ```
 
