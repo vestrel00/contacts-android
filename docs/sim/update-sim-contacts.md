@@ -91,7 +91,7 @@ val allUpdatesSuccessful = updateResult.isSuccessful
 To check if a particular update succeeded,
 
 ```kotlin
-val firstUpdateSuccessful = updateResult.isSuccessful(contact1.id)
+val firstUpdateSuccessful = updateResult.isSuccessful(simContact)
 ```
 
 ## Cancelling the update
@@ -138,3 +138,10 @@ To perform the update with permission, use the extensions provided in the `permi
 For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Known issues
+
+Samsung phones (and perhaps other OEMs) support emails (in addition to name and number) data ahead
+of the Android 12 release. Updating and deleting SIM contacts that have email data using the APIs
+provided in this library may fail. This issue does not occur when moving the SIM card to a different
+phone that does not support emails. 

@@ -170,10 +170,9 @@ interface SimContactsUpdate : CrudApi {
         val isSuccessful: Boolean
 
         /**
-         * True if the SIM contact with the given [simContactId] has been successfully updated.
-         * False otherwise.
+         * True if the [simContact] has been successfully updated. False otherwise.
          */
-        fun isSuccessful(simContactId: Long): Boolean
+        fun isSuccessful(simContact: ExistingSimContactEntity): Boolean
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -289,8 +288,8 @@ private class SimContactsUpdateResult private constructor(
         simContactIdsResultMap.run { isNotEmpty() && all { it.value } }
     }
 
-    override fun isSuccessful(simContactId: Long): Boolean =
-        simContactIdsResultMap.getOrElse(simContactId) { false }
+    override fun isSuccessful(simContact: ExistingSimContactEntity): Boolean =
+        simContactIdsResultMap.getOrElse(simContact.id) { false }
 }
 
 private class SimContactsUpdateFailed private constructor(override val isRedacted: Boolean) :
@@ -310,5 +309,5 @@ private class SimContactsUpdateFailed private constructor(override val isRedacte
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(simContactId: Long): Boolean = isSuccessful
+    override fun isSuccessful(simContact: ExistingSimContactEntity): Boolean = isSuccessful
 }

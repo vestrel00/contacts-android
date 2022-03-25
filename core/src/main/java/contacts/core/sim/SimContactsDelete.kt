@@ -1,7 +1,7 @@
 package contacts.core.sim
 
 import contacts.core.*
-import contacts.core.entities.SimContact
+import contacts.core.entities.ExistingSimContactEntity
 import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.util.unsafeLazy
@@ -29,20 +29,21 @@ interface SimContactsDelete : CrudApi {
     /**
      * Adds the given [simContacts] to the delete queue, which will be deleted on [commit].
      */
-    fun simContacts(vararg simContacts: SimContact): SimContactsDelete
+    fun simContacts(vararg simContacts: ExistingSimContactEntity): SimContactsDelete
 
     /**
      * See [SimContactsDelete.simContacts].
      */
-    fun simContacts(simContacts: Collection<SimContact>): SimContactsDelete
+    fun simContacts(simContacts: Collection<ExistingSimContactEntity>): SimContactsDelete
 
     /**
      * See [SimContactsDelete.simContacts].
      */
-    fun simContacts(simContacts: Sequence<SimContact>): SimContactsDelete
+    fun simContacts(simContacts: Sequence<ExistingSimContactEntity>): SimContactsDelete
 
     /**
-     * Deletes the [SimContact]s in the queue (added via [simContacts]) and returns the [Result].
+     * Deletes the [ExistingSimContactEntity]s in the queue (added via [simContacts]) and returns
+     * the [Result].
      *
      * ## Permissions
      *
@@ -79,7 +80,7 @@ interface SimContactsDelete : CrudApi {
         /**
          * True if the [simContact] has been successfully deleted. False otherwise.
          */
-        fun isSuccessful(simContact: SimContact): Boolean
+        fun isSuccessful(simContact: ExistingSimContactEntity): Boolean
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -93,7 +94,7 @@ internal fun SimContactsDelete(contacts: Contacts): SimContactsDelete =
 private class SimContactsDeleteImpl(
     override val contactsApi: Contacts,
 
-    private val simContacts: MutableSet<SimContact> = mutableSetOf(),
+    private val simContacts: MutableSet<ExistingSimContactEntity> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
 ) : SimContactsDelete {
@@ -116,13 +117,13 @@ private class SimContactsDeleteImpl(
         isRedacted = true
     )
 
-    override fun simContacts(vararg simContacts: SimContact) =
+    override fun simContacts(vararg simContacts: ExistingSimContactEntity) =
         simContacts(simContacts.asSequence())
 
-    override fun simContacts(simContacts: Collection<SimContact>) =
+    override fun simContacts(simContacts: Collection<ExistingSimContactEntity>) =
         simContacts(simContacts.asSequence())
 
-    override fun simContacts(simContacts: Sequence<SimContact>): SimContactsDelete =
+    override fun simContacts(simContacts: Sequence<ExistingSimContactEntity>): SimContactsDelete =
         apply {
             this.simContacts.addAll(simContacts.redactedCopiesOrThis(isRedacted))
         }
@@ -177,7 +178,7 @@ private class SimContactsDeleteResult private constructor(
         simContactIdsResultMap.run { isNotEmpty() && all { it.value } }
     }
 
-    override fun isSuccessful(simContact: SimContact): Boolean {
+    override fun isSuccessful(simContact: ExistingSimContactEntity): Boolean {
         return simContactIdsResultMap.getOrElse(simContact.id) { false }
     }
 }
