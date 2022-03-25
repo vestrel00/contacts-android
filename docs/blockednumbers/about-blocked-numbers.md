@@ -1,11 +1,14 @@
 # Blocked numbers
 
-The Android 7.0 (API 24) release introduced the Blocked Numbers content provider that stores a list
-of phone numbers the user has specified should not be able to contact them via telephony
-communications (calls, SMS, MMS). See https://source.android.com/devices/tech/connect/block-numbers
+The [Android 7.0 (API 24) release introduced the Blocked Numbers](https://source.android.com/devices/tech/connect/block-numbers)
+content provider that stores a list of phone numbers the user has specified should not be able to
+contact them via telephony communications (calls, SMS, MMS).
 
-Reading and writing directly to the Blocked Numbers database table can only be done by certain
-privileged apps.
+This library provides the following APIs that allow you to read/write blocked numbers;
+
+- [`BlockedNumbersQuery`](./../blockednumbers/query-blocked-numbers.md)
+- [`BlockedNumbersInsert`](./../blockednumbers/insert-blocked-numbers.md)
+- [`BlockedNumbersDelete`](./../blockednumbers/delete-blocked-numbers.md)
 
 ## Blocked number data
 
@@ -27,10 +30,9 @@ at `android.telephony.PhoneNumberUtils`.
 
 ## Privileges to read/write blocked numbers directly
 
-The [`BlockedNumbersQuery`](./../blockednumbers/query-blocked-numbers.md), 
-[`BlockedNumbersInsert`](./../blockednumbers/insert-blocked-numbers.md), and
-[`BlockedNumbersDelete`](./../blockednumbers/delete-blocked-numbers.md) APIs this library
-provides will only work if all of the following requirements are met;
+Reading and writing directly to the Blocked Numbers database table can only be done by certain
+privileged apps. The Blocked Number APIs this library provides will only work if all of the 
+following requirements are met;
 
 - your app must is a system app and/or the default dialer/phone app and/or the default SMS/messaging
   app
@@ -42,9 +44,6 @@ To check if all of the requirements specified above are met,
 ```kotlin
 val canReadAndWriteBlockedNumbers = Contacts(context).blockedNumbers().privileges.canReadAndWrite()
 ```
-
-> Note that update operations are not supported by the Blocked Number provider. 
-> Use delete and insert instead.
 
 Starting with Android 11 (API 30), you must include the following to your app's manifest in order to
 successfully use this function **and therefore the bocked number APIs provided in this library**.
@@ -138,3 +137,14 @@ app. Otherwise, users of your app may get confused as to why you are prompting t
 privilege. If you still want to read/write blocked numbers directly, you may still use this method.
 However, make it clear to your users as to why you are doing this despite your app not being a
 dialer/phone app.
+
+## Update an existing blocked number entry
+
+Update operations are not supported by the Blocked Number provider. Use delete and insert instead.
+
+## Debugging
+
+To look at all of the rows in the Blocked Numbers table, use the `Context.logBlockedNumbersTable`
+function in the `debug` module.
+
+For more info, read [Debug the Blocked Number Provider tables](../debug/debug-blockednumber-provider-tables.md).

@@ -34,7 +34,7 @@ import contacts.core.util.*
  * In Kotlin,
  *
  * ```kotlin
- * val contacts : List<Contact> = query
+ * val contacts = query
  *      .accounts(account)
  *      .include { Name.all + Address.all }
  *      .where { (Name.DisplayName startsWith "john") and (Email.Address endsWith "gmail") }

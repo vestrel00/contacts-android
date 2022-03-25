@@ -13,10 +13,11 @@ import contacts.core.log.EmptyLogger
 import contacts.core.log.Logger
 import contacts.core.log.LoggerRegistry
 import contacts.core.profile.Profile
+import contacts.core.sim.SimContacts
 
 /**
  * Provides new [Query], [BroadQuery], [Insert], [Update], [Delete], [Data], [Groups], [Profile],
- * [Accounts], and [BlockedNumbers] instances.
+ * [Accounts], [BlockedNumbers], and [SimContacts] instances.
  *
  * ## Permissions
  *
@@ -26,30 +27,10 @@ import contacts.core.profile.Profile
  *   [update], and [delete].
  *
  * Use [permissions] convenience functions to check for required permissions. The same permissions
- * apply to [Data], [Groups], and [Profile].
+ * apply to [Data], [Groups], [Profile], and [SimContacts].
  *
  * Use [accountsPermissions] convenience functions to check for required permissions to use the
  * [Accounts] API.
- *
- * ## Data
- *
- * For data-specific operations, use [data].
- *
- * ## Groups
- *
- * For group operations, use [groups].
- *
- * ## Profile
- *
- * For user profile operations, use [profile].
- *
- * ## Accounts
- *
- * For accounts operations, use [accounts].
- *
- * ## Blocked numbers
- *
- * For blocked numbers operations, use [blockedNumbers].
  */
 interface Contacts {
 
@@ -110,6 +91,11 @@ interface Contacts {
      * Returns a new [BlockedNumbers] instance.
      */
     fun blockedNumbers(): BlockedNumbers
+
+    /**
+     * Returns a new [SimContacts] instance.
+     */
+    fun sim(): SimContacts
 
     /**
      * Returns a [ContactsPermissions] instance, which provides functions for checking required
@@ -229,6 +215,8 @@ private class ContactsImpl(
     override fun accounts(isProfile: Boolean) = Accounts(this, isProfile)
 
     override fun blockedNumbers() = BlockedNumbers(this)
+
+    override fun sim() = SimContacts(this)
 }
 
 // region Shortcuts

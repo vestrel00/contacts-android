@@ -1342,3 +1342,57 @@ object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
 }
 
 // endregion
+
+// region SIM Table Fields
+
+data class SimContactsField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : Field()
+
+/**
+ * Fields for SIM table operations.
+ */
+// Given that we are not adding include, where, and orderbBy, functions in SIM queries due to
+// projection, selection, and order not being supported, there is no need to expose this to
+// consumers.
+internal object SimContactsFields : FieldSet<SimContactsField>() {
+
+    val Id = SimContactsField("_id", required = true)
+
+    val Name = SimContactsField("name")
+
+    /**
+     * This is only used for populating the [Name] during insert operations. For some reason,
+     * using the [Name] when inserting into the SIM card table does not set the name but this does.
+     *
+     * I do see it in the com.android.internal.telephony.IccProvider.java
+     *
+     * Do not include this in [all]!
+     */
+    val Tag = SimContactsField("tag")
+
+    val NewTag = SimContactsField("newTag")
+
+    val Number = SimContactsField("number")
+
+    val NewNumber = SimContactsField("newNumber")
+
+    // Not supporting emails until proper application-level support for it is implemented by Android.
+    // val Emails = SimContactsField("emails")
+    // val NewEmails = SimContactsField("newEmails")
+
+    override val all by unsafeLazy {
+        // Only added fields used for queries
+        setOf(Id, Name, Number)
+    }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+}
+
+// endregion

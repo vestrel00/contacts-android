@@ -36,7 +36,6 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 - 🚂 [Upcoming release - v0.2.0](https://github.com/vestrel00/contacts-android/discussions/146)
 - 🗺 [Project roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
-    - 🆚 [How does this library compare to other Contacts libraries?][compare-other-libs]
 
 ## Features
 
@@ -64,7 +63,9 @@ The `core` module provides,
 - ✅ [Query](/docs/customdata/query-custom-data.md), [insert](/docs/customdata/insert-custom-data.md), 
   [update](/docs/customdata/update-custom-data.md), and [delete](/docs/customdata/delete-custom-data.md) **custom data**.
 - ✅ [Query](/docs/blockednumbers/query-blocked-numbers.md), [insert](/docs/blockednumbers/insert-blocked-numbers.md),
-  and [delete](/docs/blockednumbers/delete-blocked-numbers.md) **blocked numbers**.
+  and [delete](/docs/blockednumbers/delete-blocked-numbers.md) **Blocked Numbers**.
+- ✅ [Query](/docs/sim/query-sim-contacts.md), [insert](/docs/sim/insert-sim-contacts.md),
+  [update](/docs/sim/update-sim-contacts.md), and [delete](/docs/sim/delete-sim-contacts.md) **SIM card contacts**.
 - ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table.
 - ✅ [Query](/docs/accounts/query-raw-contacts.md) for just RawContacts.
 - ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md).
@@ -105,10 +106,9 @@ Also included are some pre-baked goodies to be used as is or just for reference,
 
 There are also more features that are on the way!
 
-1. ☢️ [SIM card query, insert, update, and delete](https://github.com/vestrel00/contacts-android/issues/26).
-2. ☢️ [Work profile contacts](https://github.com/vestrel00/contacts-android/issues/186)
-3. ☢️ [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
-4. ☢️ [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
+1. ☢️ [Work profile contacts](https://github.com/vestrel00/contacts-android/issues/186)
+2. ☢️ [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
+3. ☢️ [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
 
 ## Installation
 
@@ -422,8 +422,8 @@ return no results.
 ## Full documentation, guides, and samples
 
 **The above examples barely scratches the surface of what this library provides.** For more in-depth
-documentation, visit the [docs](/docs/) or visit the [GitHub Pages][github-pages]. For a sample app 
-reference, take a look at and run the `sample` module.
+documentation, visit the [GitHub Pages][github-pages]. For a sample app reference, take a look at 
+and run the `sample` module.
 
 ## All APIs in the library are optimized!
 

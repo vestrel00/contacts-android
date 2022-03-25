@@ -35,6 +35,7 @@ internal inline fun <reified T : Field> Cursor.toEntityCursor(includeFields: Set
             includeFields as Set<AggregationExceptionsField>
         )
         BlockedNumbersField::class -> CursorHolder(this, includeFields as Set<BlockedNumbersField>)
+        SimContactsField::class -> CursorHolder(this, includeFields as Set<SimContactsField>)
         else -> throw ContactsException(
             "No entity cursor for ${T::class.java.simpleName}"
         )

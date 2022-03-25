@@ -57,4 +57,8 @@ internal sealed interface Table<out T : Field> {
     object BlockedNumbers : Table<BlockedNumbersField> {
         override val uri: Uri = BlockedNumberContract.BlockedNumbers.CONTENT_URI
     }
+
+    object SimContacts : Table<SimContactsField> {
+        override val uri: Uri = Uri.parse("content://icc/adn")
+    }
 }

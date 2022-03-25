@@ -210,7 +210,6 @@ private class BlockedNumbersInsertImpl(
     override fun blockedNumber(configureBlockedNumber: NewBlockedNumber.() -> Unit) =
         blockedNumbers(NewBlockedNumber().apply(configureBlockedNumber))
 
-
     override fun blockedNumbers(vararg blockedNumbers: NewBlockedNumber) =
         blockedNumbers(blockedNumbers.asSequence())
 

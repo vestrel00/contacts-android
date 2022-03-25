@@ -85,7 +85,7 @@ data class GroupMembership internal constructor(
  *
  * Use functions in GroupToGroupMembership to create instances of this from an existing group.
  */
-// Intentionally not exposing constructor to consumers.
+// Intentionally not exposing constructor to consumers. This is also intentionally immutable.
 @Parcelize
 data class NewGroupMembership internal constructor(
 

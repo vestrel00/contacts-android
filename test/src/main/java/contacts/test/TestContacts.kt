@@ -8,6 +8,7 @@ import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.groups.Groups
 import contacts.core.profile.Profile
+import contacts.core.sim.SimContacts
 import contacts.test.entities.TestDataRegistration
 
 @JvmOverloads
@@ -75,6 +76,10 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
     }
 
     override fun blockedNumbers(): BlockedNumbers {
+        TODO("Not yet implemented")
+    }
+
+    override fun sim(): SimContacts {
         TODO("Not yet implemented")
     }
 

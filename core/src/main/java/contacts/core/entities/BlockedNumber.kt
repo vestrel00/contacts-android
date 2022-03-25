@@ -36,7 +36,6 @@ sealed interface BlockedNumberEntity : Entity {
      */
     val normalizedNumber: String?
 
-    // type and label are intentionally excluded as per documentation
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(number, normalizedNumber)
 
@@ -74,12 +73,12 @@ data class BlockedNumber internal constructor(
         isRedacted = true,
 
         number = number?.redact(),
-        normalizedNumber = normalizedNumber?.redact(),
+        normalizedNumber = normalizedNumber?.redact()
     )
 }
 
 /**
- * A new immutable [BlockedNumberEntity].
+ * A new mutable [BlockedNumberEntity].
  */
 @Parcelize
 data class NewBlockedNumber @JvmOverloads constructor(
@@ -89,12 +88,12 @@ data class NewBlockedNumber @JvmOverloads constructor(
 
     override val isRedacted: Boolean = false
 
-) : BlockedNumberEntity, NewEntity, ImmutableEntity {
+) : BlockedNumberEntity, NewEntity, MutableEntity {
 
     override fun redactedCopy() = copy(
         isRedacted = true,
 
         number = number?.redact(),
-        normalizedNumber = normalizedNumber?.redact(),
+        normalizedNumber = normalizedNumber?.redact()
     )
 }
