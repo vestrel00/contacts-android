@@ -2,8 +2,6 @@
 
 This library gives you APIS that allow you to read and write Contacts stored in the SIM card.
 
-This library provides the following APIs that allow you to read/write blocked numbers;
-
 - [`SimContactsQuery`](./../sim/query-sim-contacts.md)
 - [`SimContactsInsert`](./../sim/insert-sim-contacts.md)
 - [`SimContactsUpdate`](./../sim/update-sim-contacts.md)
