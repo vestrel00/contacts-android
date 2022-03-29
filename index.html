@@ -2101,18 +2101,17 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:permissions:0.2.0&#39;</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:test:0.2.0&#39;</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:ui:0.2.0&#39;</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="o">}</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="c1">// Notice that when importing specific modules/subprojects, the first &quot;:&quot; comes after &quot;contacts-android&quot;.</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="o">}</span>
 </code></pre></div>
-<blockquote>
-<p>Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".</p>
-</blockquote>
+<p><strong>The <code>core</code> module is really all you need. The other modules are optional.</strong></p>
 <p>To import all modules,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dependencies</span> <span class="o">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>     <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00:contacts-android:0.2.0&#39;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="o">}</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00:contacts-android:0.2.0&#39;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="c1">// Notice that when importing all modules, the first &quot;:&quot; comes after &quot;vestrel00&quot;.</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="o">}</span>
 </code></pre></div>
 <blockquote>
-<p>Notice that when importing all modules, the first ":" comes after "vestrel00".</p>
 <p>⚠️ IMPORTANT! Importing all modules in this manner is currently not working. 
 Please, <strong>import specific modules instead</strong>. For more info about this issue, 
 <a href="https://github.com/vestrel00/contacts-android/discussions/203">join the discussion</a>.</p>
