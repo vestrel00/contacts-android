@@ -135,20 +135,21 @@ dependencies {
     implementation 'com.github.vestrel00.contacts-android:permissions:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:test:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:ui:0.2.0'
+	// Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
 }
 ```
 
-> Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
+**The `core` module is really all you need. The other modules are optional.**
+
 
 To import all modules,
 
 ```groovy
 dependencies {
-     implementation 'com.github.vestrel00:contacts-android:0.2.0'
+    implementation 'com.github.vestrel00:contacts-android:0.2.0'
+	// Notice that when importing all modules, the first ":" comes after "vestrel00".
 }
 ```
-
-> Notice that when importing all modules, the first ":" comes after "vestrel00".
 
 > ⚠️ IMPORTANT! Importing all modules in this manner is currently not working. 
 > Please, **import specific modules instead**. For more info about this issue, 
