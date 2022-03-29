@@ -148,10 +148,11 @@ dependencies {
 }
 ```
 
-⚠️ Importing all modules in this manner is currently not working. Please, **import specific modules
-instead**. For more info about this issue, [join the discussion](https://github.com/vestrel00/contacts-android/discussions/203).
+> Notice that when importing all modules, the first ":" comes after "vestrel00".
 
-> Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
+> ⚠️ IMPORTANT! Importing all modules in this manner is currently not working. 
+> Please, **import specific modules instead**. For more info about this issue, 
+> [join the discussion](https://github.com/vestrel00/contacts-android/discussions/203).
 
 > This library is a multi-module project published with JitPack
 > [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
