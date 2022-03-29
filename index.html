@@ -289,15 +289,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    Quick Start
+  <a href="#setup" class="md-nav__link">
+    Setup
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    Setup
+  <a href="#quick-start" class="md-nav__link">
+    Quick Start
   </a>
   
 </li>
@@ -393,6 +393,20 @@
           Setup
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="setup/installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -1890,15 +1904,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    Quick Start
+  <a href="#setup" class="md-nav__link">
+    Setup
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    Setup
+  <a href="#quick-start" class="md-nav__link">
+    Quick Start
   </a>
   
 </li>
@@ -2083,41 +2097,50 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 <li>☢️ <a href="https://github.com/vestrel00/contacts-android/issues/26">Read/write from/to .VCF file</a>.</li>
 </ol>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>This library is a multi-module project published with JitPack
+<a href="https://jitpack.io/#vestrel00/contacts-android"><img alt="JitPack" src="https://jitpack.io/v/vestrel00/contacts-android.svg" /></a></p>
+</blockquote>
 <p>First, include JitPack in the repositories list,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">repositories</span> <span class="o">{</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">maven</span> <span class="o">{</span> <span class="n">url</span> <span class="s2">&quot;https://jitpack.io&quot;</span> <span class="o">}</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="o">}</span>
 </code></pre></div>
-<p>To import specific modules,</p>
+<p>To install individual modules,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">dependencies</span> <span class="o">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:async:0.2.0&#39;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:core:0.2.0&#39;</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-gender:0.2.0&#39;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-googlecontacts:0.2.0&#39;</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-handlename:0.2.0&#39;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-pokemon:0.2.0&#39;</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-rpg:0.2.0&#39;</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:debug:0.2.0&#39;</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:permissions:0.2.0&#39;</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:test:0.2.0&#39;</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:ui:0.2.0&#39;</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="c1">// Notice that when importing specific modules/subprojects, the first &quot;:&quot; comes after &quot;contacts-android&quot;.</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="o">}</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:core:0.2.0&#39;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:async:0.2.0&#39;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-gender:0.2.0&#39;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-googlecontacts:0.2.0&#39;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-handlename:0.2.0&#39;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-pokemon:0.2.0&#39;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-rpg:0.2.0&#39;</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:debug:0.2.0&#39;</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:permissions:0.2.0&#39;</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:test:0.2.0&#39;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00.contacts-android:ui:0.2.0&#39;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="c1">// Notice that when importing specific modules/subprojects, the first &quot;:&quot; comes after &quot;contacts-android&quot;.</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="o">}</span>
 </code></pre></div>
-<p><strong>The <code>core</code> module is really all you need. The other modules are optional.</strong></p>
-<p>To import all modules,</p>
+<p><strong>The <code>core</code> module is really all you need. All other modules are optional.</strong></p>
+<p>To install all modules in a single line,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dependencies</span> <span class="o">{</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">implementation</span> <span class="s1">&#39;com.github.vestrel00:contacts-android:0.2.0&#39;</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="c1">// Notice that when importing all modules, the first &quot;:&quot; comes after &quot;vestrel00&quot;.</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="o">}</span>
 </code></pre></div>
 <blockquote>
-<p>⚠️ IMPORTANT! Importing all modules in this manner is currently not working. 
-Please, <strong>import specific modules instead</strong>. For more info about this issue, 
-<a href="https://github.com/vestrel00/contacts-android/discussions/203">join the discussion</a>.</p>
-<p>This library is a multi-module project published with JitPack
-<a href="https://jitpack.io/#vestrel00/contacts-android"><img alt="JitPack" src="https://jitpack.io/v/vestrel00/contacts-android.svg" /></a></p>
+<p>⚠️ IMPORTANT! Starting with version 0.2.0, installing all modules in a single line is only 
+supported when using the <a href="https://developer.android.com/studio/build/dependencies#remote-repositories"><code>dependencyResolutionManagement</code> in <code>settings.gradle</code></a>.
+You are still able to install all modules by specifying them individually. </p>
 </blockquote>
+<p>For more info about the different modules and dependency resolution management, 
+read the <a href="setup/installation/">Installation guide</a>.</p>
+<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
+<p>There is no setup required. It's up to you how you want to create and retain instances of the
+<code>contacts.core.Contacts(context)</code> API. For more info, read <a href="setup/setup-contacts-api/">Contacts API Setup</a>.</p>
+<p>It is also useful to read about <a href="entities/about-api-entities/">API Entities</a>.</p>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <p>To retrieve all contacts containing all available contact data,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">query</span><span class="p">().</span><span class="na">find</span><span class="p">()</span>
@@ -2215,10 +2238,6 @@ the results) ordered by display name in descending order, matching ALL of these 
 <blockquote>
 <p>For more info, read about <a href="entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
-<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
-<p>There is no setup required. It's up to you how you want to create and retain instances of the
-<code>contacts.core.Contacts(context)</code> API. For more info, read <a href="setup/setup-contacts-api/">Contacts API Setup</a>.</p>
-<p>It is also useful to read about <a href="entities/about-api-entities/">API Entities</a>.</p>
 <h2 id="more-than-enough-apis-that-will-allow-you-to-build-your-own-contacts-app">More than enough APIs that will allow you to build your own contacts app!<a class="headerlink" href="#more-than-enough-apis-that-will-allow-you-to-build-your-own-contacts-app" title="Permanent link">&para;</a></h2>
 <p>This library is capable of doing more than just querying contacts. Actually, you can build your own
 full-fledged contacts app with it!</p>
@@ -2440,13 +2459,13 @@ limitations under the License.
       
       
         
-        <a href="setup/setup-contacts-api/" class="md-footer__link md-footer__link--next" aria-label="Next: Contacts API Setup" rel="next">
+        <a href="setup/installation/" class="md-footer__link md-footer__link--next" aria-label="Next: Installation" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Contacts API Setup
+              Installation
             </div>
           </div>
           <div class="md-footer__button md-icon">

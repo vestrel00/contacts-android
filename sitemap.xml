@@ -286,6 +286,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://vestrel00.github.io/contacts-android/setup/installation/</loc>
+         <lastmod>2022-03-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://vestrel00.github.io/contacts-android/setup/setup-contacts-api/</loc>
          <lastmod>2022-03-29</lastmod>
          <changefreq>daily</changefreq>
