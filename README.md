@@ -112,6 +112,9 @@ There are also more features that are on the way!
 
 ## Installation
 
+> This library is a multi-module project published with JitPack
+> [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+
 First, include JitPack in the repositories list,
 
 ```groovy
@@ -120,12 +123,13 @@ repositories {
 }
 ```
 
-To import specific modules,
+To install individual modules,
 
 ```groovy
 dependencies {
-    implementation 'com.github.vestrel00.contacts-android:async:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:core:0.2.0'
+    
+    implementation 'com.github.vestrel00.contacts-android:async:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:customdata-gender:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:customdata-handlename:0.2.0'
@@ -135,28 +139,34 @@ dependencies {
     implementation 'com.github.vestrel00.contacts-android:permissions:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:test:0.2.0'
     implementation 'com.github.vestrel00.contacts-android:ui:0.2.0'
-	// Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
+    // Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
 }
 ```
 
-**The `core` module is really all you need. The other modules are optional.**
+**The `core` module is really all you need. All other modules are optional.**
 
-
-To import all modules,
+To install all modules in a single line,
 
 ```groovy
 dependencies {
     implementation 'com.github.vestrel00:contacts-android:0.2.0'
-	// Notice that when importing all modules, the first ":" comes after "vestrel00".
+    // Notice that when importing all modules, the first ":" comes after "vestrel00".
 }
 ```
 
-> ⚠️ IMPORTANT! Importing all modules in this manner is currently not working. 
-> Please, **import specific modules instead**. For more info about this issue, 
-> [join the discussion](https://github.com/vestrel00/contacts-android/discussions/203).
+> ⚠️ IMPORTANT! Starting with version 0.2.0, installing all modules in a single line is only 
+> supported when using the [`dependencyResolutionManagement` in `settings.gradle`](https://developer.android.com/studio/build/dependencies#remote-repositories).
+> You are still able to install all modules by specifying them individually. 
 
-> This library is a multi-module project published with JitPack
-> [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
+For more info about the different modules and dependency resolution management, 
+read the [Installation guide](/docs/setup/installation.md).
+
+## Setup
+
+There is no setup required. It's up to you how you want to create and retain instances of the
+`contacts.core.Contacts(context)` API. For more info, read [Contacts API Setup](/docs/setup/setup-contacts-api.md).
+
+It is also useful to read about [API Entities](/docs/entities/about-api-entities.md).
 
 ## Quick Start
 
@@ -265,13 +275,6 @@ Log.d(
 ```
 
 > For more info, read about [API Entities](/docs/entities/about-api-entities.md).
-
-## Setup
-
-There is no setup required. It's up to you how you want to create and retain instances of the
-`contacts.core.Contacts(context)` API. For more info, read [Contacts API Setup](/docs/setup/setup-contacts-api.md).
-
-It is also useful to read about [API Entities](/docs/entities/about-api-entities.md).
 
 ## More than enough APIs that will allow you to build your own contacts app!
 

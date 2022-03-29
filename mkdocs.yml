@@ -14,6 +14,7 @@ remote_branch: gh-pages
 nav:
   - 'Overview': index.md
   - 'Setup':
+    - 'Installation': setup/installation.md
     - 'Contacts API Setup': setup/setup-contacts-api.md
   - 'Entities':
       - 'API entities': entities/about-api-entities.md
