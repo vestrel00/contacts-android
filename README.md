@@ -120,6 +120,26 @@ repositories {
 }
 ```
 
+To import specific modules,
+
+```groovy
+dependencies {
+    implementation 'com.github.vestrel00.contacts-android:async:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:core:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-gender:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-handlename:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-pokemon:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-rpg:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:debug:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:permissions:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:test:0.2.0'
+    implementation 'com.github.vestrel00.contacts-android:ui:0.2.0'
+}
+```
+
+> Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
+
 To import all modules,
 
 ```groovy
@@ -128,23 +148,10 @@ dependencies {
 }
 ```
 
-To import specific modules,
-
-```groovy
-dependencies {
-     implementation 'com.github.vestrel00.contacts-android:core:0.2.0'
-}
-```
+⚠️ Importing all modules in this manner is currently not working. Please, **import specific modules
+instead**. For more info about this issue, [join the discussion](https://github.com/vestrel00/contacts-android/discussions/203).
 
 > Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
-
-SNAPSHOTs of branches are also available,
-
-```groovy
-dependencies {
-     implementation 'com.github.vestrel00:contacts-android:main-SNAPSHOT'
-}
-```
 
 > This library is a multi-module project published with JitPack
 > [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
