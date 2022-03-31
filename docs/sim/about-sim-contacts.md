@@ -1,6 +1,6 @@
 # SIM Contacts
 
-This library gives you APIS that allow you to read and write Contacts stored in the SIM card.
+This library gives you APIs that allow you to read and write Contacts stored in the SIM card.
 
 - [`SimContactsQuery`](./../sim/query-sim-contacts.md)
 - [`SimContactsInsert`](./../sim/insert-sim-contacts.md)
@@ -335,5 +335,5 @@ It seems like there are new APIs around SIM Contacts that were introduced in API
 - https://developer.android.com/reference/android/provider/SimPhonebookContract
 
 Those APIs are too new to be used by this library, which supports API levels down to 19. So, we'll 
-stick with using the `content://icc/adn` uri to read/write to SIM card. It's probably not ideal and 
-a completely correct but it should hopefully work for the most part.
+stick with using the `content://icc/adn` uri to read/write to SIM card until it becomes deprecated,
+if ever.
