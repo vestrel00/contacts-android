@@ -8,21 +8,21 @@
         android:title="@string/contacts_create" />
 
     <item
-        android:id="@+id/accounts"
-        android:icon="@android:drawable/ic_menu_my_calendar"
-        android:showAsAction="ifRoom"
-        android:title="@string/accounts" />
-
-    <item
-        android:id="@+id/blocked_numbers"
-        android:icon="@android:drawable/stat_sys_warning"
-        android:showAsAction="ifRoom"
-        android:title="@string/blocked_numbers" />
-
-    <item
         android:id="@+id/refresh"
         android:icon="@android:drawable/ic_menu_rotate"
         android:showAsAction="ifRoom"
         android:title="@string/contacts_refresh" />
+
+    <item
+        android:id="@+id/accounts"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:showAsAction="never"
+        android:title="@string/contacts_accounts" />
+
+    <item
+        android:id="@+id/blocked_numbers"
+        android:icon="@android:drawable/stat_sys_warning"
+        android:showAsAction="never"
+        android:title="@string/blocked_numbers" />
 
 </menu>

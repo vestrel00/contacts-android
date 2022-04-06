@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Contacts activity -->
+    <!-- Contacts -->
     <string name="contacts">Contacts</string>
     <string name="contacts_search_field_hint">Find contacts</string>
     <string name="contacts_refresh">Refresh</string>
-
     <string name="contacts_create">Create</string>
+    <string name="contacts_accounts">Show contacts from Accounts</string>
 
-    <!-- Contact details activity -->
+    <!-- Contact details -->
     <string name="contact_details">Edit contact</string>
 
     <string name="contact_details_fetch_error">Unable to get contact details</string>
@@ -25,8 +25,8 @@
 
     <string name="contact_details_delete">Delete</string>
 
-    <!-- Accounts activity -->
-    <string name="accounts">Accounts</string>
+    <!-- Accounts -->
+    <string name="accounts">Choose Accounts</string>
 
     <!-- ContactView -->
     <string name="contact_send_to_voicemail">Send to voicemail</string>

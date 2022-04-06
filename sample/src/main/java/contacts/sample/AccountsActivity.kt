@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
  * Shows the list of all available accounts, allowing the user to choose which account(s) to use.
  * All accounts are used if 0 or all accounts are selected.
  *
- * The chosen accounts will be included in the result of this activity.
+ * The chosen account(s) will be included in the result of this activity.
  *
  * ## Note
  *
@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.
  */
-// TODO This is ugly and may be confusing. Just do the same thing that the native Contacts app is doing!
 class AccountsActivity : BaseActivity() {
 
     // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.
