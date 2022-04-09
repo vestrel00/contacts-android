@@ -229,7 +229,13 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Note.all)
             addAll(Organization.all)
             addAll(Phone.all)
-            addAll(Photo.all)
+
+            // The PhotoThumbnail is intentionally excluded in all because it could lead to
+            // unintended inclusion of relatively large BLOB data. PhotoThumbnail must be explicitly
+            // included in queries to ensure intentionality. The PhotoFileId should be enough for
+            // queries to return photo mimetype rows.
+            addAll(Photo.all.minus(Photo.PhotoThumbnail))
+
             addAll(RawContact.all)
             addAll(Relation.all)
             addAll(SipAddress.all)
@@ -771,11 +777,7 @@ class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
     internal val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
 
     override val all by unsafeLazy {
-        // The PhotoThumbnail is intentionally not included in all because it could lead to
-        // unintended inclusion of relatively large BLOB data. PhotoThumbnail must be explicitly
-        // included in queries to ensure intentionality. The PhotoFileId should be enough for
-        // queries to return photo mimetype rows.
-        setOf(PhotoFileId)
+        setOf(PhotoFileId, PhotoThumbnail)
     }
 
     // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
