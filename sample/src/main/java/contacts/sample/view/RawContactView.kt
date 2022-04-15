@@ -125,6 +125,11 @@ class RawContactView @JvmOverloads constructor(
         photoThumbnailView.onActivityResult(requestCode, resultCode, data)
     }
 
+    fun setPhotoDrawableOnPhotoPickedWith(photoView: PhotoView) {
+        photoView.setPhotoDrawableOnPhotoPicked = photoThumbnailView
+        photoThumbnailView.setPhotoDrawableOnPhotoPicked = photoView
+    }
+
     suspend fun savePhoto(contacts: Contacts): Boolean = photoThumbnailView.savePhoto(contacts)
 
     fun setAccountRequiredViews(contacts: Contacts) {

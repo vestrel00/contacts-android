@@ -22,10 +22,15 @@ internal class ContactMapper(
             // These fields are accessible in both the Contacts and Data tables.
             displayNamePrimary = contactsCursor.displayNamePrimary,
             displayNameAlt = contactsCursor.displayNameAlt,
+
             lastUpdatedTimestamp = contactsCursor.lastUpdatedTimestamp,
+
             options = optionsMapper.value,
+
+            photoFileId = contactsCursor.photoFileId,
             photoUri = contactsCursor.photoUri,
             photoThumbnailUri = contactsCursor.photoThumbnailUri,
+
             hasPhoneNumber = contactsCursor.hasPhoneNumber,
 
             isRedacted = false

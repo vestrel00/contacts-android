@@ -375,12 +375,15 @@ class DataContactsFields internal constructor() : AbstractDataFieldSet<DataConta
     val PhotoThumbnailUri = DataContactsField(Contacts.PHOTO_THUMBNAIL_URI)
 
     @JvmField
+    val PhotoFileId = DataContactsField(Contacts.PHOTO_FILE_ID)
+
+    @JvmField
     val HasPhoneNumber = DataContactsField(Contacts.HAS_PHONE_NUMBER)
 
     override val all by unsafeLazy {
         mutableSetOf(
             Id, LookupKey, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
-            PhotoUri, PhotoThumbnailUri, HasPhoneNumber
+            PhotoUri, PhotoThumbnailUri, PhotoFileId, HasPhoneNumber
         ).apply {
             addAll(Options.all)
         }.toSet() // ensure that this is not modifiable at runtime
@@ -768,14 +771,16 @@ data class PhotoField internal constructor(override val columnName: String) :
 
 class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
 
-    // Do not expose this field to consumers to avoid confusion. It is not included in the returned
-    // Photo entities. The can include all to query for RawContacts with or without photos.
-    internal val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
+    @JvmField
+    val PhotoFileId = PhotoField(CommonDataKinds.Photo.PHOTO_FILE_ID)
 
     // Do not expose this field to consumers to avoid confusion. It is not included in the returned
     // Photo entities. The can include all to query for RawContacts with or without photos.
     internal val PhotoThumbnail = PhotoField(CommonDataKinds.Photo.PHOTO)
 
+    /**
+     * DO NOT use this property unless you intend to get the photo thumbnail binary data!
+     */
     override val all by unsafeLazy {
         setOf(PhotoFileId, PhotoThumbnail)
     }

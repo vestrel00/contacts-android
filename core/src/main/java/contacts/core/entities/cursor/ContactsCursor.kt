@@ -33,16 +33,16 @@ internal class ContactsCursor(
     // @TargetApi(Build.VERSION_CODES.LOLLIPOP) Not applicable to delegated properties
     val nameRawContactId: Long? by long(ContactsFields.NameRawContactId)
 
-    override val photoUri: Uri? by uri(ContactsFields.PhotoUri)
-
-    override val photoThumbnailUri: Uri? by uri(ContactsFields.PhotoThumbnailUri)
-
-    val photoFileId: Long?
+    override val photoFileId: Long?
         get() {
             val value = getLong(ContactsFields.PhotoFileId)
             // Sometimes the value will be zero instead of null but 0 is not a valid photo file id.
             return if (value != null && value > 0) value else null
         }
+
+    override val photoUri: Uri? by uri(ContactsFields.PhotoUri)
+
+    override val photoThumbnailUri: Uri? by uri(ContactsFields.PhotoThumbnailUri)
 
     override val hasPhoneNumber: Boolean? by boolean(ContactsFields.HasPhoneNumber)
 }

@@ -55,6 +55,13 @@ abstract class PhotoView @JvmOverloads constructor(
     private var isPickingPhoto: Boolean = false
     private var photoHasChanged: Boolean = false
 
+    /**
+     * When [onPhotoPicked] is invoked, this photo view's photo drawable will also be set. This is
+     * useful for propagating the pick event between a Contact and its primary photo holder (a
+     * RawContact).
+     */
+    var setPhotoDrawableOnPhotoPicked: PhotoView? = null
+
     protected abstract suspend fun savePhotoToDb(
         photoDrawable: BitmapDrawable, contacts: Contacts
     ): Boolean
@@ -71,7 +78,7 @@ abstract class PhotoView @JvmOverloads constructor(
                     removePhoto = {
                         photoHasChanged = true
                         isPickingPhoto = false
-                        launch { setPhotoDrawable(null) }
+                        launch { onPhotoPicked(null) }
                     },
                     onCancelled = {
                         isPickingPhoto = false
@@ -93,7 +100,7 @@ abstract class PhotoView @JvmOverloads constructor(
             photoBitmapPicked = { bitmap ->
                 photoHasChanged = true
                 isPickingPhoto = false
-                launch { setPhotoDrawable(BitmapDrawable(resources, bitmap)) }
+                launch { onPhotoPicked(BitmapDrawable(resources, bitmap)) }
             },
             photoUriPicked = { uri ->
                 photoHasChanged = true
@@ -117,7 +124,7 @@ abstract class PhotoView @JvmOverloads constructor(
                         }
                     }
 
-                    setPhotoDrawable(BitmapDrawable(resources, bitmap))
+                    onPhotoPicked(BitmapDrawable(resources, bitmap))
                 }
             }
         )
@@ -166,6 +173,11 @@ abstract class PhotoView @JvmOverloads constructor(
             }
             setImageDrawable(placeHolderImageDrawable)
         }
+    }
+
+    private suspend fun onPhotoPicked(photoDrawable: BitmapDrawable?) {
+        setPhotoDrawableOnPhotoPicked?.setPhotoDrawable(photoDrawable)
+        setPhotoDrawable(photoDrawable)
     }
 
     override fun onDetachedFromWindow() {

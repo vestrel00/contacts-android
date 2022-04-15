@@ -23,6 +23,13 @@ internal class DataContactsCursor(cursor: Cursor, includeFields: Set<DataContact
 
     override val lastUpdatedTimestamp: Date? by date(Fields.Contact.LastUpdatedTimestamp)
 
+    override val photoFileId: Long?
+        get() {
+            val value = getLong(Fields.Contact.PhotoFileId)
+            // Sometimes the value will be zero instead of null but 0 is not a valid photo file id.
+            return if (value != null && value > 0) value else null
+        }
+
     override val photoUri: Uri? by uri(Fields.Contact.PhotoUri)
 
     override val photoThumbnailUri: Uri? by uri(Fields.Contact.PhotoThumbnailUri)

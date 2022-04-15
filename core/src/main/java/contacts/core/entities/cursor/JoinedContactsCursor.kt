@@ -25,6 +25,8 @@ internal sealed interface JoinedContactsCursor : ContactIdCursor {
 
     val lastUpdatedTimestamp: Date?
 
+    val photoFileId: Long?
+
     val photoUri: Uri?
 
     val photoThumbnailUri: Uri?

@@ -258,6 +258,21 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
     val lookupKey: String?
 
     /**
+     * Photo file ID of the full-size photo.
+     *
+     * This is for advanced usage only. Used to resolve the [primaryPhotoHolder].
+     */
+    val photoFileId: Long?
+
+    /**
+     * The RawContact that owns the photo referenced by [photoUri] and [photoThumbnailUri].
+     *
+     * This is useful if you are showing the Contact photo and the primary photo holder (a
+     * RawContact) photo in the same screen.
+     */
+    val primaryPhotoHolder: ExistingRawContactEntity?
+
+    /**
      * True if this contact represents the user's personal profile entry.
      */
     override val isProfile: Boolean
@@ -289,6 +304,7 @@ data class Contact internal constructor(
 
     override val options: Options?,
 
+    override val photoFileId: Long?,
     override val photoUri: Uri?,
     override val photoThumbnailUri: Uri?,
 
@@ -298,6 +314,9 @@ data class Contact internal constructor(
 
 ) : ExistingContactEntity, ImmutableEntityWithMutableType<MutableContact> {
 
+    override val primaryPhotoHolder: RawContact?
+        get() = rawContacts.find { photoFileId == it.photo?.fileId }
+
     override fun mutableCopy() = MutableContact(
         id = id,
         lookupKey = lookupKey,
@@ -306,10 +325,15 @@ data class Contact internal constructor(
 
         displayNamePrimary = displayNamePrimary,
         displayNameAlt = displayNameAlt,
+
         lastUpdatedTimestamp = lastUpdatedTimestamp,
+
         options = options,
+
+        photoFileId = photoFileId,
         photoUri = photoUri,
         photoThumbnailUri = photoThumbnailUri,
+
         hasPhoneNumber = hasPhoneNumber,
 
         isRedacted = isRedacted
@@ -346,6 +370,7 @@ data class MutableContact internal constructor(
 
     override val options: Options?,
 
+    override val photoFileId: Long?,
     override val photoUri: Uri?,
     override val photoThumbnailUri: Uri?,
 
@@ -354,6 +379,9 @@ data class MutableContact internal constructor(
     override val isRedacted: Boolean
 
 ) : ExistingContactEntity, MutableEntity {
+
+    override val primaryPhotoHolder: MutableRawContact?
+        get() = rawContacts.find { photoFileId == it.photo?.fileId }
 
     override fun redactedCopy() = copy(
         isRedacted = true,

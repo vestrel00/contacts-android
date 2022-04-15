@@ -256,9 +256,9 @@ class ContactView @JvmOverloads constructor(
             rawContactView.savePhoto(contacts)
         }
 
-        // Update the Contact photo iff it has changed.
-        // Saving the contact photo will override the designated RawContact photo changes.
-        // This behavior is "buggy" maybe we should not allow this? I'll leave it for now.
+        // Update the Contact photo if it has changed.
+        // Saving the contact photo is actually not necessary because it is synced with the primary
+        // photo holder. We'll do it anyways just to make sure this functions correctly.
         photoView.savePhoto(contacts)
 
         // TODO Make sure that if a contact only has a photo, that it does not get deleted!
@@ -350,10 +350,23 @@ class ContactView @JvmOverloads constructor(
             newRawContactView = null
 
             contact.rawContacts.forEach { rawContact ->
-                addRawContactView(rawContact, contacts)
+                val rawContactView = addRawContactView(rawContact, contacts)
+
+                if (contact is ExistingContactEntity && rawContact is ExistingRawContactEntity) {
+                    // Make sure that this Contact view and the primary photo holder view is set to the same
+                    // photo whenever the user picks one.
+                    val photoHolderId = contact.primaryPhotoHolder?.id
+                    if (photoHolderId != null && photoHolderId == rawContact.id) {
+                        rawContactView.setPhotoDrawableOnPhotoPickedWith(photoView)
+                    }
+                }
             }
         } else {
-            newRawContactView = addRawContactView(NewRawContact(), contacts)
+            newRawContactView = addRawContactView(NewRawContact(), contacts).also {
+                // Make sure that this Contact view and the primary photo holder view is set to the same
+                // photo whenever the user picks one.
+                it.setPhotoDrawableOnPhotoPickedWith(photoView)
+            }
         }
     }
 
