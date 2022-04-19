@@ -181,6 +181,14 @@ sealed interface ContactEntity : Entity {
  * MutableContactEntity. There are currently no library functions or constructs that require them.
  *
  * Please update this documentation if new abstractions are created.
+ * 
+ * DISCLAIMER: Okay, so technically ExistingContactEntity is not necessary. The ContactEntity only
+ * has one inheritor, which is ExistingContactEntity. Currently, implementations are "exising".
+ * We'll make an exception here as it provides a standard structure that matches RawContactEntity 
+ * and ExistingRawContactEntity. Furthermore, it gives us flexibility to create other entities such 
+ * as NewContactEntity and MockContactEntity in the future if we ever need it. This may be violating 
+ * YAGNI but it also does not hurt at all to have things that we way they are currently. It just 
+ * gives us options and protects consumers from big refactors.
  */
 
 /**
