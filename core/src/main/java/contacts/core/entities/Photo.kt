@@ -31,9 +31,8 @@ sealed interface PhotoEntity : DataEntity {
     override val mimeType: MimeType
         get() = MimeType.Photo
 
-    // Flag as not blank so that the parent Contact or RawContact is also flagged as not blank.
     override val isBlank: Boolean
-        get() = false
+        get() = propertiesAreAllNullOrBlank(fileId)
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): PhotoEntity
