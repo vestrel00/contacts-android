@@ -8,8 +8,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.provider.ContactsContract.RawContacts
 import contacts.core.*
-import contacts.core.entities.MimeType
 import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.MimeType
 import contacts.core.entities.cursor.photoCursor
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris

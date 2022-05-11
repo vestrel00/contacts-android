@@ -1,7 +1,6 @@
 package contacts.core
 
 import android.content.ContentResolver
-import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.util.query
 import contacts.core.util.unsafeLazy
 

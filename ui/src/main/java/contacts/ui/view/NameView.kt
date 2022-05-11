@@ -5,7 +5,9 @@ import android.text.Editable
 import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.LinearLayout
-import contacts.core.entities.*
+import contacts.core.entities.MutableNameEntity
+import contacts.core.entities.NameEntity
+import contacts.core.entities.NewName
 import contacts.ui.R
 import contacts.ui.text.AbstractTextWatcher
 

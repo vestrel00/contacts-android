@@ -3,7 +3,6 @@ package contacts.core.entities.operation
 import android.content.ContentProviderOperation
 import android.content.ContentValues
 import contacts.core.SimContactsFields
-import contacts.core.entities.MutableSimContact
 import contacts.core.entities.NewSimContact
 import contacts.core.entities.SimContact
 import contacts.core.entities.SimContactEntity

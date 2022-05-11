@@ -3,10 +3,6 @@ package contacts.sample.view
 import android.accounts.Account
 import android.content.Context
 import android.content.Intent
-import android.graphics.ImageDecoder
-import android.graphics.drawable.BitmapDrawable
-import android.os.Build
-import android.provider.MediaStore
 import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.accounts.findWithContext
@@ -16,8 +12,6 @@ import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
 import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.AccountsActivity
-import contacts.ui.util.onPhotoPicked
-import contacts.ui.util.showPhotoPickerDialog
 import contacts.ui.view.activity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext

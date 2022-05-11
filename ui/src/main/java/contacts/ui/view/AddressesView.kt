@@ -4,12 +4,9 @@ import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import contacts.core.entities.AddressEntity
-import contacts.core.entities.EmailEntity
 import contacts.core.entities.MutableAddressEntity
-import contacts.core.entities.MutableEmailEntity
 import contacts.ui.R
 import contacts.ui.entities.AddressTypeFactory
-import contacts.ui.entities.EmailTypeFactory
 import contacts.ui.entities.NewAddressFactory
 
 /**

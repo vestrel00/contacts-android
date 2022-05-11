@@ -3,7 +3,6 @@ package contacts.async.util
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
 import contacts.core.entities.ExistingContactEntity
-import contacts.core.entities.MutableOptions
 import contacts.core.entities.MutableOptionsEntity
 import contacts.core.entities.Options
 import contacts.core.util.options

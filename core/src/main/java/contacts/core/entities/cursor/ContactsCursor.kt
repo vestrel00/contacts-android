@@ -4,7 +4,6 @@ import android.database.Cursor
 import android.net.Uri
 import contacts.core.ContactsField
 import contacts.core.ContactsFields
-import contacts.core.Fields
 import contacts.core.entities.Entity
 import java.util.*
 

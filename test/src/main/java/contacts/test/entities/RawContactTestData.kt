@@ -4,7 +4,6 @@ import contacts.core.Contacts
 import contacts.core.entities.MutableRawContact
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContact
-import contacts.core.entities.custom.CustomDataRegistry
 
 // region RawContact
 

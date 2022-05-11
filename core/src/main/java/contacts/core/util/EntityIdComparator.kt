@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import contacts.core.entities.Entity
-import java.util.*
 
 /**
  * Entities can either be new or existing entities. Only existing entities have IDs. Therefore, when

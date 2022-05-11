@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.GroupsFields
 import contacts.core.`in`
 import contacts.core.entities.Group
 import contacts.core.entities.GroupMembershipEntity

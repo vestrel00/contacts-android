@@ -1,8 +1,8 @@
 package contacts.entities.custom.rpg.profession
 
 import contacts.core.entities.custom.CustomDataFieldMapper
-import contacts.entities.custom.rpg.RpgProfessionField
 import contacts.entities.custom.rpg.RpgFields
+import contacts.entities.custom.rpg.RpgProfessionField
 
 internal class RpgProfessionFieldMapper :
     CustomDataFieldMapper<RpgProfessionField, RpgProfessionEntity> {

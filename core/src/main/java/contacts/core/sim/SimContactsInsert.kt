@@ -1,7 +1,6 @@
 package contacts.core.sim
 
 import android.content.ContentResolver
-import android.util.Log
 import contacts.core.*
 import contacts.core.entities.NewSimContact
 import contacts.core.entities.operation.SimContactsOperation

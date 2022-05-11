@@ -8,7 +8,6 @@ import contacts.async.util.photoThumbnailBitmapDrawableWithContext
 import contacts.async.util.removePhotoWithContext
 import contacts.async.util.setPhotoWithContext
 import contacts.core.Contacts
-import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.RawContactEntity
 import contacts.sample.util.runIfExist
 import kotlinx.coroutines.Job
