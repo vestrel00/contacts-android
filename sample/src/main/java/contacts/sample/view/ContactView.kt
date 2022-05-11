@@ -180,9 +180,9 @@ class ContactView @JvmOverloads constructor(
 
     override fun setEnabled(enabled: Boolean) {
         // super.setEnabled(enabled) intentionally not calling this
-        // Do not disable the contact options and details.
         photoView.isEnabled = enabled
         rawContactsView.setThisAndDescendantsEnabled(enabled)
+        // Do not disable the contact options and details.
     }
 
     /**
@@ -228,7 +228,7 @@ class ContactView @JvmOverloads constructor(
             // will be set after the contact has been inserted. This mechanism will change as part
             // of https://github.com/vestrel00/contacts-android/issues/119
             .allowBlanks(newRawContactView?.hasPhotoToSave() == true)
-            // TODO .forAccount() reuse AccountsActivity in single choice mode to choose an account
+            .forAccount(newRawContactView?.account)
             .rawContacts(rawContact)
             .commitWithContext()
             .contactWithContext(contacts, rawContact)

@@ -1,5 +1,6 @@
 package contacts.sample.view
 
+import android.accounts.Account
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
@@ -65,6 +66,12 @@ class RawContactView @JvmOverloads constructor(
         private set
 
     /**
+     * The [Account] that the [rawContact] is (or will be) associated with.
+     */
+    val account: Account?
+        get() = accountView.account
+
+    /**
      * Sets the RawContact shown and managed by this view to the given [rawContact] and uses the
      * given [contacts] API to perform operations on it.
      */
@@ -121,6 +128,7 @@ class RawContactView @JvmOverloads constructor(
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        accountView.onActivityResult(requestCode, resultCode, data)
         photoThumbnailView.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -133,6 +141,8 @@ class RawContactView @JvmOverloads constructor(
 
     suspend fun savePhoto(contacts: Contacts): Boolean = photoThumbnailView.savePhoto(contacts)
 
+    // The native (AOSP) Contacts app hides these from the UI for local raw contacts. These
+    // will no longer be hidden as part of https://github.com/vestrel00/contacts-android/issues/167
     fun setAccountRequiredViews(contacts: Contacts) {
         launch {
             val account = rawContact.runIfExist {
@@ -143,8 +153,6 @@ class RawContactView @JvmOverloads constructor(
                     .firstOrNull()
             }
 
-            // The native Contacts app hides these from the UI for local raw contacts. Let's follow
-            // in the footsteps of the native Contacts app...
             if (account != null) {
                 eventsView.dataList = rawContact.events.asMutableList()
                 relationsView.dataList = rawContact.relations.asMutableList()
