@@ -224,13 +224,19 @@ class ContactView @JvmOverloads constructor(
         }
 
         val newContact = contacts.insertWithPermission()
-            .allowBlanks(true)
+            // Make sure that if a contact only has a photo, that a blank gets inserted. The photo
+            // will be set after the contact has been inserted. This mechanism will change as part
+            // of https://github.com/vestrel00/contacts-android/issues/119
+            .allowBlanks(newRawContactView?.hasPhotoToSave() == true)
             // TODO .forAccount() reuse AccountsActivity in single choice mode to choose an account
             .rawContacts(rawContact)
             .commitWithContext()
             .contactWithContext(contacts, rawContact)
 
-        // TODO Make sure that if a contact only has a photo, that it still gets inserted!
+        // Try to insert the photo. Ignore whether it succeeds or fails. This mechanism will change
+        // as part of https://github.com/vestrel00/contacts-android/issues/119
+        photoView.setContact(newContact, contacts, loadContactPhoto = false)
+        photoView.savePhoto(contacts)
 
         return newContact?.lookupKey
     }
@@ -261,12 +267,12 @@ class ContactView @JvmOverloads constructor(
         // photo holder. We'll do it anyways just to make sure this functions correctly.
         photoView.savePhoto(contacts)
 
-        // TODO Make sure that if a contact only has a photo, that it does not get deleted!
-
         // Perform the update. Ignore if photos update succeeded or not :D
         return contacts.updateWithPermission()
-            // This is implicitly true by default. We are just being explicitly verbose here.
-            .deleteBlanks(true)
+            // Make sure that if a contact only has a photo, that that it does not get deleted on
+            // update. This mechanism will change as part of
+            // https://github.com/vestrel00/contacts-android/issues/119
+            .deleteBlanks(!photoView.hasPhoto())
             .contacts(contact)
             .commitWithContext()
             .isSuccessful

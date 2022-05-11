@@ -48,7 +48,6 @@ import kotlin.coroutines.CoroutineContext
  * Consumers may copy and paste this into their projects or if the community really wants it, we may
  * move this to a separate module (contacts-ui-async).
  */
-// TODO make this extendable for custom views after moving this to ui-async module
 class RawContactView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
@@ -129,6 +128,8 @@ class RawContactView @JvmOverloads constructor(
         photoView.setPhotoDrawableOnPhotoPicked = photoThumbnailView
         photoThumbnailView.setPhotoDrawableOnPhotoPicked = photoView
     }
+
+    fun hasPhotoToSave(): Boolean = photoThumbnailView.hasPhoto()
 
     suspend fun savePhoto(contacts: Contacts): Boolean = photoThumbnailView.savePhoto(contacts)
 

@@ -63,9 +63,13 @@ class ContactPhotoView @JvmOverloads constructor(
      *
      * The [contact] will only be mutated if it is mutable.
      */
-    fun setContact(contact: ContactEntity?, contacts: Contacts) {
+    fun setContact(
+        contact: ContactEntity?, contacts: Contacts, loadContactPhoto: Boolean = true
+    ) {
         this.contact = contact
-        setPhotoDrawableFromContact(contacts)
+        if (loadContactPhoto) {
+            setPhotoDrawableFromContact(contacts)
+        }
     }
 
     override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =

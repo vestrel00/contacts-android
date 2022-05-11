@@ -130,6 +130,8 @@ abstract class PhotoView @JvmOverloads constructor(
         )
     }
 
+    fun hasPhoto(): Boolean = photoDrawable != null
+
     /**
      * Saves the photo to the DB if it has changed. If there is no photo, then the photo is removed
      * from the DB.
