@@ -128,6 +128,7 @@ class RawContactView @JvmOverloads constructor(
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         accountView.onActivityResult(requestCode, resultCode, data)
         photoThumbnailView.onActivityResult(requestCode, resultCode, data)
+        groupMembershipsView.onActivityResult(requestCode, resultCode, data)
     }
 
     fun setPhotoDrawableOnPhotoPickedWith(photoView: PhotoView) {
@@ -156,6 +157,7 @@ class RawContactView @JvmOverloads constructor(
                 relationsView.dataList = rawContact.relations.asMutableList()
                 groupMembershipsView.setMemberships(
                     rawContact.groupMemberships.asMutableList(),
+                    account,
                     contacts
                 )
             } else {

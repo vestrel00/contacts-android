@@ -28,6 +28,9 @@
     <!-- Accounts -->
     <string name="accounts">Choose Accounts</string>
 
+    <!-- Groups -->
+    <string name="groups">Choose Groups</string>
+
     <!-- ContactView -->
     <string name="contact_send_to_voicemail">Send to voicemail</string>
 
@@ -45,6 +48,9 @@
     <string name="raw_contact_relations_label">Relations</string>
     <string name="raw_contact_note_label">Note</string>
     <string name="raw_contact_group_memberships_label">Labels (Group Memberships)</string>
+
+    <!-- GroupMembershipsView -->
+    <string name="raw_contact_group_memberships_hint">Group memberships</string>
 
     <!-- Block numbers -->
     <string name="blocked_numbers">Blocked numbers</string>

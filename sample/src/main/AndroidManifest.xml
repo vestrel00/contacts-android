@@ -96,6 +96,10 @@
             android:label="@string/accounts" />
 
         <activity
+            android:name=".GroupsActivity"
+            android:label="@string/groups" />
+
+        <activity
             android:name=".BlockedNumbersActivity"
             android:label="@string/blocked_numbers" />
     </application>

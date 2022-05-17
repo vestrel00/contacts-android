@@ -1,11 +1,18 @@
 package contacts.sample.view
 
+import android.accounts.Account
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.util.groupsWithContext
 import contacts.core.Contacts
+import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.GroupMembershipEntity
+import contacts.core.util.newMemberships
+import contacts.sample.GroupsActivity
+import contacts.sample.R
+import contacts.ui.view.activity
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -46,29 +53,69 @@ class GroupMembershipsView @JvmOverloads constructor(
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main
 
+    private var account: Account? = null
     private var memberships: MutableList<GroupMembershipEntity> = mutableListOf()
 
-    /**
-     * Sets the group memberships shown and managed by this view to the given [memberships] and uses
-     * the given [contacts] API to perform operations on it.
-     */
-    fun setMemberships(memberships: MutableList<GroupMembershipEntity>, contacts: Contacts) {
-        this.memberships = memberships
-        setMemberships(contacts)
-    }
-
     init {
-        setOnClickListener { _ ->
-            // TODO "Create GroupsPickerDialog to set group memberships"
-        }
+        setHint(R.string.raw_contact_group_memberships_hint)
     }
 
-    private fun setMemberships(contacts: Contacts) = launch {
+    /**
+     * Sets the group memberships shown and managed by this view to the given [memberships], assumed
+     * to belong to the given [account], and uses the given [contacts] API to perform operations on
+     * it.
+     */
+    fun setMemberships(
+        memberships: MutableList<GroupMembershipEntity>,
+        account: Account?,
+        contacts: Contacts
+    ) {
+        this.account = account
+        this.memberships = memberships
+        showMemberships(contacts)
+    }
+
+    private fun showMemberships(contacts: Contacts) = launch {
         val groups = memberships.groupsWithContext(contacts)
             // Hide the default group, just like in the native Contacts app.
             .filter { !it.isDefaultGroup }
 
+        showMemberships(groups)
+    }
+
+    private fun showMemberships(groups: List<ExistingGroupEntity>) {
         text = groups.joinToString { it.title }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        setOnClickListener {
+            activity?.let { activity ->
+                GroupsActivity.selectGroups(
+                    activity,
+                    true,
+                    account,
+                    memberships.mapNotNull { it.groupId }
+                )
+            }
+        }
+    }
+
+    /**
+     * Invoke this method on the host activity's onActivityResult in order to process the picked
+     * groups (if any). This will do nothing if the request did not originate from this view.
+     */
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        GroupsActivity.onSelectGroupsResult(requestCode, resultCode, data) { selectedGroups ->
+            // There is no need for consumers to keep track of the previous group membership rows.
+            // The API will internally reuse group membership rows that already exist in the DB
+            // based on groupIds instead of performing a delete-and-insert.
+            // Make sure to not replace the reference to memberships with a new one for the save
+            // operation.
+            memberships.clear()
+            memberships.addAll(selectedGroups.newMemberships())
+            showMemberships(selectedGroups)
+        }
     }
 
     override fun onDetachedFromWindow() {
