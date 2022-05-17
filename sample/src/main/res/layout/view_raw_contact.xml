@@ -197,6 +197,22 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true" />
 
+    <!-- Note -->
+    <TextView
+        android:id="@+id/noteLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/raw_contact_note_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <contacts.ui.view.NoteView
+        android:id="@+id/note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true" />
+
     <!-- Group memberships / labels -->
     <TextView
         android:id="@+id/groupMembershipsLabel"

@@ -26,6 +26,9 @@
     <!-- Nickname -->
     <string name="contacts_ui_nickname_hint">Nickname</string>
 
+    <!-- Note -->
+    <string name="contacts_ui_note_hint">Note</string>
+
     <!-- Organization -->
     <string name="contacts_ui_organization_company_hint">Company</string>
     <string name="contacts_ui_organization_title_hint">Title</string>

@@ -9,10 +9,7 @@ import android.widget.LinearLayout
 import contacts.async.accounts.findWithContext
 import contacts.core.Contacts
 import contacts.core.entities.*
-import contacts.core.util.setName
-import contacts.core.util.setNickname
-import contacts.core.util.setOrganization
-import contacts.core.util.setSipAddress
+import contacts.core.util.*
 import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.R
 import contacts.sample.util.runIfExist
@@ -94,8 +91,8 @@ class RawContactView @JvmOverloads constructor(
     private val websiteView: WebsitesView
     private val eventsView: EventsView
     private val relationsView: RelationsView
+    private val noteView: NoteView
     private val groupMembershipsView: GroupMembershipsView
-    // TODO note
 
     private val accountRequiredViews: Set<View>
 
@@ -116,6 +113,7 @@ class RawContactView @JvmOverloads constructor(
         websiteView = findViewById(R.id.websites)
         eventsView = findViewById(R.id.events)
         relationsView = findViewById(R.id.relations)
+        noteView = findViewById(R.id.note)
         groupMembershipsView = findViewById(R.id.groupMemberships)
 
         accountRequiredViews = setOf(
@@ -216,6 +214,15 @@ class RawContactView @JvmOverloads constructor(
         addressesView.dataList = rawContact.addresses.asMutableList()
         imsView.dataList = rawContact.ims.asMutableList()
         websiteView.dataList = rawContact.websites.asMutableList()
+        noteView.data = rawContact.note ?: NewNote().also { newNote ->
+            when (rawContact) {
+                is MutableRawContact -> rawContact.setNote(newNote)
+                is NewRawContact -> rawContact.setNote(newNote)
+                else -> {
+                    // do nothing
+                }
+            }
+        }
 
         setAccountRequiredViews(contacts)
     }
