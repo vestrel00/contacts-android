@@ -32,7 +32,7 @@ fun provideContactsApi(context: Context): Contacts = if (test) {
 }
 ```
 
-> The above code block is just pseudo-code for a dependency injection setup.
+> ℹ️ The above code block is just pseudo-code for a dependency injection setup.
 
 For example, if you are building a contacts app, you can add a "test" or "debug" mode such that only
 test contacts are;

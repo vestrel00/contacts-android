@@ -26,13 +26,12 @@ API.
 Due to all of these limitations, all queries will return all contacts in the SIM card. You may 
 perform your own sorting and pagination if you wish.
 
-> Depending on memory size,
-> [SIM cards can hold 200 to 500+ contacts](https://www.quora.com/How-many-contacts-can-I-save-on-my-SIM-card).
+> ℹ️ Depending on memory size, [SIM cards can hold 200 to 500+ contacts](https://www.quora.com/How-many-contacts-can-I-save-on-my-SIM-card).
 > The most common being around 250. Most, if not all, SIM cards have less than 1mb memory (averaging
 > 32KB to 64KB). Therefore, memory and speed should not be affected much by not being able to
 > sort/order and paginate at the query level. 
 
-For more info, read about [SIM Contacts](./about-sim-contacts.md)
+For more info, read about [SIM Contacts](./../sim/about-sim-contacts.md)
 
 ## Executing the query
 
@@ -78,7 +77,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the query with permission
 

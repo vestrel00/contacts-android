@@ -10,7 +10,7 @@ The Contacts Providers allows for RawContacts that have no rows in the Data tabl
 least one data row. It also deletes blanks on update. Despite seemingly not allowing blanks, the
 native Contacts app shows them. 
 
-> This library provides APIs that follows the native Contacts app behavior by default but also 
+> ℹ️ This library provides APIs that follows the native Contacts app behavior by default but also 
 > allows you to override the default behavior.
 
 There are two scenarios where blanks may exist.
@@ -23,9 +23,9 @@ There are two scenarios where blanks may exist.
 
 ## Blanks in queries
 
-A `where` clause that uses any fields from the Data table `Fields` will **exclude** blanks in the 
-result (even if they are OR'ed) There are some joined fields that can be used to match blanks 
-**as long as no other fields are in the where clause**;
+A `where` clause that uses any fields from the Data table `Fields` may exclude blanks in the result.
+There are some joined fields that can be used to match blanks as long as no other fields are in the 
+where clause...
 
 - `Fields.Contact` enables matching blank Contacts. The result will include all RawContact(s)
   belonging to the Contact(s), including blank(s). Examples;
@@ -52,7 +52,6 @@ in the Contacts table. The same applies to the `Fields.RawContact`.
 - `Fields.Contact.Id equalTo 5 OR (Fields.Email.Address.isNotNull())`
 - `Fields.RawContact.Id ... OR (Fields.Phone.Number...)
 
-
 ## Blank Contacts/RawContacts vs blank Data
 
 Blank RawContacts and blank Contacts do not have any rows in the Data table. These do not have any 
@@ -60,4 +59,4 @@ non-blank data.
 
 Blank data are data entities that have only null, empty, or blank primary value(s).
 
-> For more info, read about [Blank data](./../entities/about-blank-data.md).
+> ℹ️ For more info, read about [Blank data](./../entities/about-blank-data.md).

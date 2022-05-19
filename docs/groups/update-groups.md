@@ -51,8 +51,8 @@ The above list may vary per account.
 To prevent attempting to modify/update read-only groups, the `Group.mutableCopy()` function will
 return null if the group is read-only. 
 
-> You can try and hack your way around this limitation that this library imposes but you will still 
-> not be able to change read-only groups. This library is just trying to save you the pain and 
+> ℹ️ You can try and hack your way around this limitation that this library imposes but you will 
+> still not be able to change read-only groups. This library is just trying to save you the pain and 
 > suffering caused by trying and failing XD
 
 ## Groups and duplicate titles
@@ -132,7 +132,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the update with permission
 

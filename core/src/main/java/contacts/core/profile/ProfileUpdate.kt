@@ -7,7 +7,8 @@ import contacts.core.util.isEmpty
 import contacts.core.util.unsafeLazy
 
 /**
- * Updates one or more (Profile) raw contacts' rows in the data table.
+ * Updates the Profile contact in the Contacts Provider database to ensure that it contains the same
+ * data as the contact and raw contacts provided in [contact] and [rawContacts].
  *
  * As per documentation in []android.provider.ContactsContract.Profile],
  *
@@ -17,9 +18,9 @@ import contacts.core.util.unsafeLazy
  *
  * ## Blank data are deleted
  *
- * Blank data will be deleted. For example, if all properties of an email are all null, empty, or
- * blank, then the email is deleted. This is the same behavior as the native Contacts app. This
- * behavior cannot be modified.
+ * Blank data will be deleted, unless the corresponding fields are not provided in [include].
+ * For example, if all properties of an email are all null, empty, or blank, then the email is
+ * deleted. This is the same behavior as the native Contacts app.
  *
  * Note that in cases where blank data are deleted, existing RawContact instances (in memory) will
  * still have references to the deleted data instance. The RawContact instances (in memory) must be
@@ -96,9 +97,8 @@ interface ProfileUpdate : CrudApi {
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
      * allowing blanks, the native Contacts app shows them.
      *
-     * Note that blank data are deleted. For example, if all properties of an email are all null,
-     * empty, or blank, then the email is deleted. This is the same behavior as the native Contacts
-     * app. This is the same behavior as the native Contacts app. This behavior cannot be modified.
+     * Note that this DOES NOT refer to blank data, which are deleted regardless of the value passed
+     * to this function.
      */
     fun deleteBlanks(deleteBlanks: Boolean): ProfileUpdate
 
@@ -109,38 +109,10 @@ interface ProfileUpdate : CrudApi {
      * fields will be updating in addition to required API fields [Fields.Required] (e.g. IDs),
      * which are always included.
      *
+     * Blank data are deleted on update, unless the corresponding fields are NOT included.
+     *
      * Note that this may affect performance. It is recommended to only include fields that will be
      * used to save CPU and memory.
-     *
-     * ## Performing updates on entities with partial includes
-     *
-     * When the query include function is used, only certain data will be included in the returned
-     * entities. All other data are guaranteed to be null (except for those in [Fields.Required]).
-     * When performing updates on entities that have only partial data included, make sure to use
-     * the same included fields in the update operation as the included fields used in the query.
-     * This will ensure that the set of data queried and updated are the same. For example, in order
-     * to get and set only email addresses and leave everything the same in the database...
-     *
-     * ```kotlin
-     * val profile = query.include(Fields.Email.Address).find()
-     * val mutableProfile = setEmailAddresses(profile)
-     * update.contact(mutableProfile).include(Fields.Email.Address).commit()
-     * ```
-     *
-     * On the other hand, you may intentionally include only some data and perform updates without
-     * on all data (not just the included ones) to effectively delete all non-included data. This
-     * is, currently, a feature- not a bug! For example, in order to get and set only email
-     * addresses and set all other data to null (such as phone numbers, name, etc) in the database..
-     *
-     * ```kotlin
-     * val profile = query.include(Fields.Email.Address).find()
-     * val mutableProfile = setEmailAddresses(profile)
-     * update.contact(mutableProfile).include(Fields.all).commit()
-     * ```
-     *
-     * This gives you the most flexibility when it comes to specifying what fields to
-     * include/exclude in queries, inserts, and update, which will allow you to do things beyond
-     * your wildest imagination!
      */
     fun include(vararg fields: AbstractDataField): ProfileUpdate
 

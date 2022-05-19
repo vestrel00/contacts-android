@@ -4,7 +4,7 @@ This provides extensions for `RpgStats` and `RpgProfession` custom data that all
 write rpg data for all of your contacts. These (optional) extensions live in the 
 `customdata-rpg` module.
 
-> If you are looking to create your own custom data or get more insight on how the `RpgStats` and 
+> ℹ️ If you are looking to create your own custom data or get more insight on how the `RpgStats` and 
 > `RpgProfession` custom data was built, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 ## Register the RPG custom data with the Contacts API instance

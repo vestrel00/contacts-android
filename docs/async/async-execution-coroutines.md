@@ -83,7 +83,7 @@ launch {
 }
 ```
 
-> Most core API functions support cancellations, not just queries!
+> ℹ️ Most core API functions support cancellations, not just queries!
 
 ## Not compatible with Java
 

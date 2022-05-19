@@ -105,46 +105,21 @@ interface ProfileQuery : CrudApi {
     /**
      * Includes only the given set of [fields] (data) in each of the matching contacts.
      *
-     * The matching contacts **may** have non-null data for each of the included fields. Fields
-     * that are included will not guarantee non-null data in the returned contact instances because
-     * some data may actually be null in the database.
-     *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
      * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
      * which are always included.
      *
+     * When all fields are included in a query operation, all properties of Contacts, RawContacts,
+     * and Data are populated with values from the database. Properties of fields that are included
+     * are not guaranteed to be non-null because the database may actually have no data for the
+     * corresponding field.
+     *
+     * When only some fields are included, only those included properties of Contacts, RawContacts,
+     * and Data are populated with values from the database. Properties of fields that are not
+     * included are guaranteed to be null.
+     *
      * Note that this may affect performance. It is recommended to only include fields that will be
      * used to save CPU and memory.
-     *
-     * ## Performing updates on entities with partial includes
-     *
-     * When the query [include] function is used, only certain data will be included in the returned
-     * entities. All other data are guaranteed to be null (except for those in [Fields.Required]).
-     * When performing updates on entities that have only partial data included, make sure to use
-     * the same included fields in the update operation as the included fields used in the query.
-     * This will ensure that the set of data queried and updated are the same. For example, in order
-     * to get and set only email addresses and leave everything the same in the database...
-     *
-     * ```kotlin
-     * val contacts = query.include(Fields.Email.Address).find()
-     * val mutableContacts = setEmailAddresses(contacts)
-     * update.contacts(mutableContacts).include(Fields.Email.Address).commit()
-     * ```
-     *
-     * On the other hand, you may intentionally include only some data and perform updates without
-     * on all data (not just the included ones) to effectively delete all non-included data. This
-     * is, currently, a feature- not a bug! For example, in order to get and set only email
-     * addresses and set all other data to null (such as phone numbers, name, etc) in the database..
-     *
-     * ```kotlin
-     * val contacts = query.include(Fields.Email.Address).find()
-     * val mutableContacts = setEmailAddresses(contacts)
-     * update.contacts(mutableContacts).include(Fields.all).commit()
-     * ```
-     *
-     * This gives you the most flexibility when it comes to specifying what fields to
-     * include/exclude in queries, inserts, and update, which will allow you to do things beyond
-     * your wildest imagination!
      */
     fun include(vararg fields: AbstractDataField): ProfileQuery
 

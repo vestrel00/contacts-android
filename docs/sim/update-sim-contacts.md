@@ -25,7 +25,7 @@ val updateResult = Contacts(context)
     .commit()
 ```
 
-#### Making further updates
+### Making further updates
 
 The current entry in the SIM table is not updated based on the ID. Instead, the name AND number are 
 used to lookup the entry to update. Continuing the example above, if you need to make another 
@@ -42,9 +42,9 @@ val result = update
      .commit()
 ```
 
-> This limitation comes from Android, not this library.
+> ℹ️ This limitation comes from Android, not this library.
 
-#### Updating multiple contacts
+### Updating multiple contacts
 
 If you need to update multiple contacts,
 
@@ -127,7 +127,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the update with permission
 

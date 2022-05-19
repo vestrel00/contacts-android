@@ -3,8 +3,8 @@
 This library provides some nice-to-have extensions in the `contacts.core.utils` package. I will be 
 going over some of them in this page.
 
-> Note that functions in the util package that are used directly by other APIs such as result APIs
-> are not discussed here.
+> ℹ️ Functions in the util package that are used directly by other APIs such as result APIs are not 
+> discussed here.
 
 ## Contact data getter and setters
 
@@ -18,7 +18,7 @@ val contactEmails = contact.rawContacts.flatMap { it.emails }
 contact.mutableCopy().rawContacts.first().emails.add(NewEmail())
 ```
 
-> For more info, read about [API Entities](./../entities/about-api-entities.md).
+> ℹ️ For more info, read about [API Entities](./../entities/about-api-entities.md).
 
 To simplify things, getter/setter extensions are provided in the **`ContactData.kt`** file,
 
@@ -30,9 +30,9 @@ val contactEmailList = contact.emailList()
 contact.mutableCopy().addEmail(NewEmail())
 ```
 
-> Newer versions of the Android Open Source Project Contacts app and the Google Contacts app shows
-> data coming from all RawContacts in a Contact details screen. However, they only allow editing
-> a single RawContact and not the aggregate Contact in a single screen to avoid confusion. 
+> ℹ️ Newer versions of the Android Open Source Project Contacts app and the Google Contacts app 
+> shows data coming from all RawContacts in a Contact details screen. However, they only allow 
+> editing a single RawContact and not the aggregate Contact in a single screen to avoid confusion. 
 > With this in mind, feel free to use the getter extensions but be very careful with using the
 > setters!
 
@@ -66,7 +66,7 @@ uphold the redacted state of the mutable Contact/RawContact. We setting or addin
 these extensions, the property being passed will be redacted if the Contact/RawContact it is being
 added to is redacted.
 
-> For more info, read [Redact entities and API input and output in production](./../entities/redact-apis-and-entities.md).
+> ℹ️ For more info, read [Redact entities and API input and output in production](./../entities/redact-apis-and-entities.md).
 
 ## Getting the parent Contact of a RawContact or Data
 
@@ -77,7 +77,7 @@ val contactOfRawContact = contactsApi.query().where { Contact.Id equalTo rawCont
 val contactOfData = contactsApi.query().where { Contact.Id equalTo data.contactId }.find().firstOrNull()
 ```
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 To shorten things, you can use the extensions in `RawContactContact.kt` and `DataContact.kt`,
 
@@ -94,7 +94,7 @@ val rawContactOfData = data.rawContact(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
+> ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 ## Refresh Contact, RawContact, and Data references
 
@@ -123,7 +123,7 @@ val dataFromDb = dataInMemory.refresh(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
+> ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 ## Sort Contacts by data fields
 
@@ -174,7 +174,7 @@ val groups = groupMemberships.groups(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
+> ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
 ## Get the RawContact of a BlankRawContact
 
@@ -195,4 +195,4 @@ val rawContact = blankRawContact.toRawContact(contactsApi)
 
 These are blocking calls so you might want to do them outside the UI thread.
 
-> For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
+> ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).

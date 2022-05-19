@@ -1,6 +1,6 @@
 # Installation guide
 
-> This library is a multi-module project published with JitPack
+> ℹ️ This library is a multi-module project published with JitPack
 > [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 First, include JitPack in the repositories list,

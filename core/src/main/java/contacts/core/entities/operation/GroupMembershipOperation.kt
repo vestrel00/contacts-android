@@ -33,10 +33,15 @@ internal class GroupMembershipOperation(
     /**
      * Inserts all of the [groupMemberships] that belong to the given [account].
      */
-    fun insert(
+    fun insertForNewRawContact(
         groupMemberships: Collection<GroupMembershipEntity>,
         account: Account
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+        if (includeFields.isEmpty()) {
+            // No-op when entity is blank or no fields are included.
+            return@apply
+        }
+
 
         val accountGroups = groups.query().accounts(account).find()
             .associateBy { it.id }
@@ -48,7 +53,7 @@ internal class GroupMembershipOperation(
             .asSequence()
             .distinctBy { it.groupId }
             .filter { accountGroups[it.groupId] != null }
-            .forEach { insert(it)?.let(::add) }
+            .forEach { insertForNewRawContact(it)?.let(::add) }
     }
 
     /**
@@ -69,6 +74,10 @@ internal class GroupMembershipOperation(
         rawContactId: Long,
         context: Context
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+        if (includeFields.isEmpty()) {
+            // No-op when no fields are included.
+            return@apply
+        }
 
         // Groups must always be associated with an account. No account, no group operation.
         val account = context.contentResolver
@@ -98,7 +107,7 @@ internal class GroupMembershipOperation(
                 // be deleted later down this function.
                 if (groupMembershipsInDB.remove(groupMembership.groupId) == null) {
                     // If the groupMembership is not in the DB, insert it.
-                    insertDataRow(groupMembership, rawContactId)?.let(::add)
+                    insertDataRowForRawContact(groupMembership, rawContactId)?.let(::add)
                 }
                 // Else if the groupMembership is in the DB, do nothing.
             }
@@ -117,7 +126,7 @@ internal class GroupMembershipOperation(
     }
 
     private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long):
-            List<GroupMembership> = query(contentUri, INCLUDE, selection(rawContactId)) {
+            List<GroupMembership> = query(contentUri, INCLUDE, selectionWithMimeTypeForRawContact(rawContactId)) {
 
         mutableListOf<GroupMembership>().apply {
             val groupMembershipMapper = it.groupMembershipMapper()

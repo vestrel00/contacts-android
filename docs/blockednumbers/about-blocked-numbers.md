@@ -17,7 +17,7 @@ Blocked number data consists of the `number` and `normalizedNumber`.
 The `BlockedNumber.number` is the phone number to block as the user entered it. It may or may not be
 formatted (e.g. (012) 345-6789).
 
-> Other than regular phone numbers, the blocked number provider can also store addresses (such
+> ℹ️ Other than regular phone numbers, the blocked number provider can also store addresses (such
 > as email) from which a user can receive messages, and calls.
 
 The `BlockedNumber.normalizedNumber` is the `number`'s E164 representation (e.g. +10123456789). This
@@ -26,7 +26,7 @@ null if the provider fails to infer.) If present, `number` has to be set as well
 otherwise). If you want to set this value yourself, you may want to look
 at `android.telephony.PhoneNumberUtils`.
 
-> This may contain an email if `number` is an email.
+> ℹ️ This may contain an email if `number` is an email.
 
 ## Privileges to read/write blocked numbers directly
 
@@ -56,7 +56,7 @@ successfully use this function **and therefore the bocked number APIs provided i
 </queries>
 ```
 
-> The above is required to be able to check if your app is the default SMS/messaging app.
+> ℹ️ The above is required to be able to check if your app is the default SMS/messaging app.
 
 ## Use the builtin Blocked Numbers activity
 

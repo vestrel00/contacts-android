@@ -3,8 +3,8 @@
 This library provides the `ProfileDelete` API, which allows you to delete the device owner Profile 
 Contact or only some of its constituent RawContacts.
 
-> Note that there can be only one device owner Contact, which is either set (not null) or not yet 
-> set (null). However, like other regular Contacts, the Profile Contact may have one or more
+> ℹ️ There can be only one device owner Contact, which is either set (not null) or not yet set 
+> (null). However, like other regular Contacts, the Profile Contact may have one or more 
 > RawContacts.
 
 An instance of the `ProfileDelete` API is obtained by,
@@ -13,7 +13,7 @@ An instance of the `ProfileDelete` API is obtained by,
 val delete = Contacts(context).profile().delete()
 ```
 
-> If you want to delete non-Profile Contacts, read [Delete Contacts](./../basics/delete-contacts.md)
+> ℹ️ If you want to delete non-Profile Contacts, read [Delete Contacts](./../basics/delete-contacts.md)
 
 ## A basic delete
 
@@ -64,14 +64,14 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the delete with permission
 
 Deletes require the `android.permission.WRITE_CONTACTS` permissions. If not granted, the delete
 will do nothing and return a failed result.
 
-> For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+> ℹ️ For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
 > only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
 > prior to installation instead of at runtime.
 

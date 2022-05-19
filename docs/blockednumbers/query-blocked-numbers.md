@@ -60,8 +60,8 @@ For example, to only get a maximum 20 blocked numbers, skipping the first 20,
 
 This is useful for pagination =)
 
-> Note that it is recommended to limit the number of blocked numbers when querying to increase 
-> performance and decrease memory cost.
+> ℹ️ It is recommended to limit the number of blocked numbers when querying to increase performance 
+> and decrease memory cost.
 
 ## Executing the query
 
@@ -107,7 +107,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the query with permission
 
@@ -119,8 +119,8 @@ acquired. For more info, read about [Blocked numbers](./../blockednumbers/about-
 Use the `contacts.core.BlockedNumbersFields` combined with the extensions from `contacts.core.Where` to form
 WHERE clauses. 
 
-> This docs page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
-> If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
+> ℹ️ This docs page will not provide a tutorial on database where clauses. It assumes that you know 
+> the basics.  If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
 For example, to find blocked numbers that contains "555",
 

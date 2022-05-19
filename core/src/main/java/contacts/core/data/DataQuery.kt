@@ -244,42 +244,19 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
      * Includes the given set of [fields] of type [F] in the resulting data objects of type [E].
      *
      * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to [Fields.Required], which are always included.
+     * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
+     * which are always included.
      *
-     * Fields that are included will not guarantee non-null attributes in the returned entity
-     * instances.
+     * When all fields are included in a query operation, all properties of Contacts, RawContacts,
+     * and Data are populated with values from the database. Properties of fields that are included
+     * are not guaranteed to be non-null because the database may actually have no data for the
+     * corresponding field.
+     *
+     * When only some fields are included, only those included properties of Contacts, RawContacts,
+     * and Data are populated with values from the database. Properties of fields that are not
+     * included are guaranteed to be null.
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
-     *
-     * ## Performing updates on entities with partial includes
-     *
-     * When the query [include] function is used, only certain data will be included in the returned
-     * entities. All other data are guaranteed to be null (except for those in [Fields.Required]).
-     * When performing updates on entities that have only partial data included, make sure to use
-     * the same included fields in the update operation as the included fields used in the query.
-     * This will ensure that the set of data queried and updated are the same. For example, in order
-     * to get and set only email addresses and leave everything the same in the database...
-     *
-     * ```kotlin
-     * val emails = emailsQuery.include(Fields.Email.Address).find()
-     * val mutableEmails = setEmailAddresses(emails)
-     * dataUpdate.data(mutableEmails).include(Fields.Email.Address).commit()
-     * ```
-     *
-     * On the other hand, you may intentionally include only some data and perform updates without
-     * on all data (not just the included ones) to effectively delete all non-included data. This
-     * is, currently, a feature- not a bug! For example, in order to get and set only given name
-     * and set all other data to null (such as given name, middle name, prefix) in the database..
-     *
-     * ```kotlin
-     * val names = namesQuery.include(Fields.Name.GivenName).find()
-     * val mutableNames = setGivenNames(names)
-     * dataUpdate.data(mutableNames).include(Fields.Name.all).commit()
-     * ```
-     *
-     * This gives you the most flexibility when it comes to specifying what fields to
-     * include/exclude in queries, inserts, and update, which will allow you to do things beyond
-     * your wildest imagination!
      */
     fun include(vararg fields: F): DataQuery<F, S, E>
 

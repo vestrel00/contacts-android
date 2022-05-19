@@ -17,7 +17,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Insert contacts](./../basics/insert-contacts.md).
+> ℹ️ For more info, read [Insert contacts](./../basics/insert-contacts.md).
 
 To insert an email into a new Profile contact using the `ProfileInsert` API,
 
@@ -31,7 +31,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Insert device owner Contact profile](./../profile/insert-profile.md).
+> ℹ️ For more info, read [Insert device owner Contact profile](./../profile/insert-profile.md).
 
 To insert an email into an existing contact using the `Update` API,
  
@@ -44,7 +44,7 @@ Contacts(context)
     .commit()
 ```
  
- > For more info, read [Update contacts](./../basics/update-contacts.md).
+ > ℹ️ For more info, read [Update contacts](./../basics/update-contacts.md).
 
 To insert an email into an the existing Profile Contact using the `ProfileUpdate` API,
  
@@ -58,7 +58,7 @@ Contacts(context)
     .commit()
 ```
  
-> For more info, read [Update device owner Contact profile](./../profile/update-profile.md).
+> ℹ️ For more info, read [Update device owner Contact profile](./../profile/update-profile.md).
 
 ## Blank data are not inserted
 

@@ -1,7 +1,8 @@
 # Update existing sets of data
 
-This library provides the `DataUpdate` API that allows you to update a list of any data kinds 
-directly without having to update them via Contacts/RawContacts.
+This library provides the `DataUpdate` API that allows you to update a list of any data kinds
+in the Contacts Provider database directly without having to update them via Contacts/RawContacts.
+This ensures that the Contacts Provider database contains the same data you have in memory.
 
 An instance of the `DataUpdate` API is obtained by,
 
@@ -9,7 +10,7 @@ An instance of the `DataUpdate` API is obtained by,
 val update = Contacts(context).data().update()
 ```
 
-> To update all kinds of data via Contacts/RawContacts, read [Update contacts](./../basics/update-contacts.md).
+> ℹ️ To update all kinds of data via Contacts/RawContacts, read [Update contacts](./../basics/update-contacts.md).
 
 ## A basic update
 
@@ -36,19 +37,19 @@ val updateResult = Contacts(context)
 ## Blank data are deleted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
-deleted by update APIs.
+deleted by update APIs, unless the corresponding fields are not included in the operation.
 
 For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 ## Including only specific data
 
-To include only the given set of fields (data) in each of the update operation,
+To perform update operations only the given set of fields (data),
 
 ```kotlin
 .include(fields)
 ```
 
-For example, to only include email and name fields,
+For example, to perform updates on only email and name fields,
 
 ```kotlin
 .include { Email.all + Name.all }
@@ -104,7 +105,7 @@ val updatedEmail = contactsApi
     .find()
 ```
 
-> For more info, read [Query specific data kinds](./../data/query-data-sets.md).
+> ℹ️ For more info, read [Query specific data kinds](./../data/query-data-sets.md).
 
 Alternatively, you may use the extensions provided in `DataRefresh`.
 
@@ -146,7 +147,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the update with permission
 

@@ -44,8 +44,8 @@ val accounts = Contacts(context).accounts().query()
     .find()
 ```
 
-> RawContacts that are not associated with an Account are local to the device. For more info, read
-> about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+> ℹ️ RawContacts that are not associated with an Account are local to the device. For more info, 
+> read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Account for each specified RawContact
 
@@ -96,7 +96,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the query with permission
 

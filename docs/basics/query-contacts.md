@@ -12,12 +12,11 @@ An instance of the `BroadQuery` API is obtained by,
 val query = Contacts(context).broadQuery()
 ```
 
-> For a more granular, advanced queries, use the `Query` API.
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For a more granular, advanced queries, use the `Query` API; [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
-> If you want to query Data directly instead of Contacts, read [Query specific data kinds](./../data/query-data-sets.md).
+> ℹ️ If you want to query Data directly instead of Contacts, read [Query specific data kinds](./../data/query-data-sets.md).
 
-> If you want to get the device owner Contact Profile, read [Query device owner Contact profile](./../profile/query-profile.md).
+> ℹ️ If you want to get the device owner Contact Profile, read [Query device owner Contact profile](./../profile/query-profile.md).
 
 ## A basic query
 
@@ -64,7 +63,7 @@ For example, to limit the search to contacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
@@ -79,7 +78,7 @@ device-only contacts, which are not synced.
 
 For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
-> Note that this may affect performance. This may require one or more additional queries, internally
+> ℹ️ This may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
@@ -97,7 +96,7 @@ For example, to limit the search to only favorites,
 .groups(favoritesGroup)
 ```
 
-> For more info, read [Query groups](./../groups/query-groups.md).
+> ℹ️ For more info, read [Query groups](./../groups/query-groups.md).
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
@@ -106,7 +105,7 @@ This is the same behavior as the native Contacts app.
 If no groups are specified (this function is not called or called with no Groups), then all
 RawContacts of Contacts are included in the search.
 
-> Note that this may affect performance. This may require one or more additional queries, internally
+> ℹ️ This may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
@@ -150,7 +149,7 @@ parameter.
 
 Use `ContactsFields` to construct the orderBys.
 
-> If you need to sort a collection of Contacts outside of a database query using any field (in
+> ℹ️ If you need to sort a collection of Contacts outside of a database query using any field (in
 > addition to `ContactsFields`), use `contacts.core.util.ContactsComparator`.
 > For more info, read [Convenience functions](./../other/convenience-functions.md).
 
@@ -172,8 +171,8 @@ For example, to only get a maximum 20 contacts, skipping the first 20,
 
 This is useful for pagination =)
 
-> Note that it is recommended to limit the number of contacts when querying to increase performance
-> and decrease memory cost.
+> ℹ️ It is recommended to limit the number of contacts when querying to increase performance and 
+> decrease memory cost.
 
 ## Executing the query
 
@@ -219,7 +218,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 > listening to Contacts database changes.
 
 ## Performing the query with permission
@@ -373,9 +372,9 @@ of the string and not in the middle or end;
 - @
 - .com
 
-## Developer notes (or for advanced users)
+------------------------
 
-> The following is taken from [issue #197](https://github.com/vestrel00/contacts-android/issues/197)
+## Developer notes (or for advanced users)
 
 Matching only by phone number or email address is possible thanks to the following filter Uris
 defined in `ContactsContract`, which exist for this specific purpose.

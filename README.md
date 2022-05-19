@@ -1,6 +1,6 @@
 # Android Contacts, Reborn
 
-> Written with ♥️ and 🔥 since December 2018. Open sourced since October 2021. 
+> ℹ️ Written with ♥️ and 🔥 since December 2018. Open sourced since October 2021. 
 
 ![Android Contacts, Reborn banner](/docs/assets/images/banner.gif)
 
@@ -34,7 +34,7 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 
 - 📜 [Documentation][github-pages]
 - 🚉 [Current release - 0.2.0](https://github.com/vestrel00/contacts-android/releases/tag/0.2.0)
-- 🚂 [Upcoming release - v0.2.1](https://github.com/vestrel00/contacts-android/discussions/160)
+- 🚂 [Upcoming release - v0.3.0](https://github.com/vestrel00/contacts-android/discussions/160)
 - 🗺 [Project roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
 
@@ -113,7 +113,7 @@ There are also more features that are on the way!
 
 ## Installation
 
-> This library is a multi-module project published with JitPack
+> ℹ️ This library is a multi-module project published with JitPack
 > [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 First, include JitPack in the repositories list,
@@ -155,8 +155,8 @@ dependencies {
 }
 ```
 
-> ⚠️ IMPORTANT! Starting with version 0.2.0, installing all modules in a single line is only 
-> supported when using the [`dependencyResolutionManagement` in `settings.gradle`](https://developer.android.com/studio/build/dependencies#remote-repositories).
+> ⚠️ Starting with version 0.2.0, installing all modules in a single line is only supported when 
+> using the [`dependencyResolutionManagement` in `settings.gradle`](https://developer.android.com/studio/build/dependencies#remote-repositories).
 > You are still able to install all modules by specifying them individually. 
 
 For more info about the different modules and dependency resolution management, 
@@ -186,7 +186,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> For more info, read [Query contacts](/docs/basics/query-contacts.md).
+> ℹ️ For more info, read [Query contacts](/docs/basics/query-contacts.md).
 
 Something a bit more advanced...
 
@@ -230,7 +230,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> Fore more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](/docs/basics/query-contacts-advanced.md).
 
 Once you have the contacts, you now have access to all of their data!
 
@@ -275,7 +275,7 @@ Log.d(
 )
 ```
 
-> For more info, read about [API Entities](/docs/entities/about-api-entities.md).
+> ℹ️ For more info, read about [API Entities](/docs/entities/about-api-entities.md).
 
 ## More than enough APIs that will allow you to build your own contacts app!
 
@@ -300,7 +300,7 @@ val emails = Contacts(context)
 
 It's not just for emails. It's for all data kinds (including custom data).
 
-> For more info, read [Query specific data kinds](/docs/data/query-data-sets.md).
+> ℹ️ For more info, read [Query specific data kinds](/docs/data/query-data-sets.md).
 
 To **CREATE/INSERT** a contact with a name of "John Doe" who works at Amazon with a work email of
 "john.doe@amazon.com" (in Kotlin),
@@ -369,7 +369,7 @@ val insertResult = Contacts(context)
     .commit()
 ```
 
-> For more info, read [Insert contacts](/docs/basics/insert-contacts.md).
+> ℹ️ For more info, read [Insert contacts](/docs/basics/insert-contacts.md).
 
 If John Doe switches jobs and heads over to Microsoft, we can **UPDATE** his data,
 
@@ -388,7 +388,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Update contacts](/docs/basics/update-contacts.md).
+> ℹ️ For more info, read [Update contacts](/docs/basics/update-contacts.md).
 
 If we no longer like John Doe, we can **DELETE** him from our life,
 
@@ -399,7 +399,7 @@ Contacts(context)
     .commit()
 ```
 
-> For more info, read [Delete Contacts](/docs/basics/delete-contacts.md).
+> ℹ️ For more info, read [Delete Contacts](/docs/basics/delete-contacts.md).
 
 ## Threading and permissions
 
@@ -421,7 +421,7 @@ launch {
 }
 ```
 
-> For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md)
+> ℹ️ For more info, read [Permissions handling using coroutines](/docs/permissions/permissions-handling-coroutines.md)
 > and [Execute work outside of the UI thread using coroutines](/docs/async/async-execution-coroutines.md).
 
 So, if we call the above function and we don't yet have permission. The user will be prompted to
@@ -429,8 +429,8 @@ give the appropriate permissions before the query proceeds. Then, the work is do
 context of choice (default is Dispatchers.IO). If the user does not give permission, the query will
 return no results.
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for listening
-> to Contacts database changes.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for 
+> listening to Contacts database changes.
 
 ## Full documentation, guides, and samples
 
@@ -499,7 +499,7 @@ default values, that is why. I’ve also made some other intentional decisions a
 ensure the best possible experience for both Kotlin and Java consumers without sacrificing Kotlin 
 language standards. It is Kotlin-first, Java-second (with love and care).
 
-> Modules other than the core module are not guaranteed to be compatible with Java.
+> ⚠️ Modules other than the core module are not guaranteed to be compatible with Java.
 
 ## Requirements
 

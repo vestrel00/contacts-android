@@ -159,18 +159,6 @@ interface ProfileInsert : CrudApi {
      *
      * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
      * fields will be inserted.
-     *
-     * ## Note
-     *
-     * The use case for this function is probably rare. You can simply not set a particular
-     * data instead of using this function. For example, if you want to create a new RawContact
-     * with only name and email data, just set only name and email...
-     *
-     * There may be some cases where this function may come in handy. For example, if you have a
-     * mutable RawContact that has all data filled in but you only want some of those data to be
-     * inserted (in the database), then this function is exactly what you need =) This can also come
-     * in handy if you are trying to make copies of an existing RawContact but only want some data
-     * to be copied.
      */
     fun include(vararg fields: AbstractDataField): ProfileInsert
 

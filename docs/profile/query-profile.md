@@ -2,8 +2,8 @@
 
 This library provides the `ProfileQuery` API that allows you to get the device owner Profile Contact.
 
-> Note that there can be only one device owner Contact, which is either set (not null) or not yet
-> set (null). However, like other regular Contacts, the Profile Contact may have one or more
+> ℹ️ There can be only one device owner Contact, which is either set (not null) or not yet set 
+> (null). However, like other regular Contacts, the Profile Contact may have one or more
 > RawContacts.
 
 An instance of the `ProfileQuery` API is obtained by,
@@ -12,7 +12,7 @@ An instance of the `ProfileQuery` API is obtained by,
 val query = Contacts(context).profile().query()
 ```
 
-> If you want to get non-Profile Contacts, read 
+> ℹ️ If you want to get non-Profile Contacts, read 
 > [Query contacts](./../basics/query-contacts.md) and
 > [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
@@ -48,7 +48,7 @@ For example, to include only RawContacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 The RawContacts returned will only belong to the specified accounts.
 
@@ -61,7 +61,7 @@ contacts, which are not synced.
 
 For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
-> Note that this may affect performance. This may require one or more additional queries, internally
+> ℹ️ This may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
@@ -113,7 +113,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 > listening to Contacts database changes.
 
 ## Performing the query with permission
@@ -121,7 +121,7 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 Queries require the `android.permission.READ_CONTACTS` permission. If not granted, the query will 
 do nothing and return null.
 
-> For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but
+> ℹ️ For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but
 > only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
 > prior to installation instead of at runtime.
 

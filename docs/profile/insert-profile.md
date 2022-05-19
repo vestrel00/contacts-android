@@ -3,8 +3,8 @@
 This library provides the `ProfileInsert` API that allows you to insert one or more RawContacts and 
 Data. 
 
-> Note that there can be only one device owner Contact, which is either set (not null) or not yet
-> set (null). However, like other regular Contacts, the Profile Contact may have one or more
+> ℹ️ There can be only one device owner Contact, which is either set (not null) or not yet set 
+> (null). However, like other regular Contacts, the Profile Contact may have one or more
 > RawContacts.
 
 An instance of the `ProfileInsert` API is obtained by,
@@ -13,7 +13,7 @@ An instance of the `ProfileInsert` API is obtained by,
 val insert = Contacts(context).profile().insert()
 ```
 
-> If you want to create/insert non-Profile Contacts, read [Insert contacts](./../basics/insert-contacts.md).
+> ℹ️ If you want to create/insert non-Profile Contacts, read [Insert contacts](./../basics/insert-contacts.md).
 
 ## A basic insert
 
@@ -136,7 +136,7 @@ For example, to associated the new RawContact to an account,
 .forAccount(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 ### Local RawContacts
 
@@ -144,11 +144,11 @@ If no Account is provided, or null is provided, or if an incorrect account is pr
 RawContacts inserted will not be associated with an Account. RawContacts inserted without an
 associated account are considered local or device-only contacts, which are not synced.
 
-> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 There are also certain data kinds that are ignored on insert or update if the RawContact is local.
 
-> For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Including only specific data
 
@@ -210,7 +210,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ProfileInsertResult`. To get the newly created
 Contact,
@@ -257,14 +257,14 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the insert with permission
 
 Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS` 
 permissions. If not granted, the insert will do nothing and return a failed result.
 
-> For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+> ℹ️ For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
 > only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
 > prior to installation instead of at runtime.
 

@@ -1,7 +1,8 @@
 # Update contacts
 
-This library provides the `Update` API that allows you to update one or more Contacts, RawContacts, 
-and Data.
+This library provides the `Update` API that allows you to updates one or more contacts in the 
+Contacts Provider database to ensure that it contains the same data as the contacts and raw contacts
+provided in memory.
 
 An instance of the `Update` API is obtained by,
 
@@ -9,9 +10,9 @@ An instance of the `Update` API is obtained by,
 val update = Contacts(context).update()
 ```
 
-> If you want to update the device owner Contact Profile, read [Update device owner Contact profile](./../profile/update-profile.md).
+> ℹ️ If you want to update the device owner Contact Profile, read [Update device owner Contact profile](./../profile/update-profile.md).
 
-> If you want to update a set of Data, read [Update existing sets of data](./../data/update-data-sets.md).
+> ℹ️ If you want to update a set of Data, read [Update existing sets of data](./../data/update-data-sets.md).
 
 ## A basic update
 
@@ -62,19 +63,19 @@ For more info, read about [Blank contacts](./../entities/about-blank-contacts.md
 ## Blank data are deleted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
-deleted by update APIs.
+deleted by update APIs, unless the corresponding fields are not included in the operation.
 
 For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 ## Including only specific data
 
-To include only the given set of fields (data) in each of the update operation,
+To perform update operations only the given set of fields (data),
 
 ```kotlin
 .include(fields)
 ```
 
-For example, to only include email and name fields,
+For example, to perform updates on only email and name fields,
 
 ```kotlin
 .include { Email.all + Name.all }
@@ -126,7 +127,7 @@ val updatedContacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactRefresh` and `RawContactRefresh`.
 
@@ -174,7 +175,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the update with permission
 
@@ -194,7 +195,7 @@ The `Update` API supports custom data. For more info, read [Update custom data](
 
 As per documentation in `android.provider.ContactsContract.Contacts`,
 
-> Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
+> ℹ️ Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
 > Changing any of these columns on the Contact also changes them on all constituent raw contacts.
 
 The rest of the APIs provided in this library allow you to modify Data fields (e.g. Email, Phone, 
@@ -210,8 +211,8 @@ For more info, read [Get set remove full-sized and thumbnail contact photos](./.
 
 Updates to local RawContacts are not synced!
 
-> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 There are also certain data kinds that are ignored on insert or update if the RawContact is local.
 
-> For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).

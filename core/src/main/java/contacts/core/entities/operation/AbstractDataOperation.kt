@@ -20,8 +20,7 @@ import contacts.core.util.query
  *
  * ## IMPORTANT!
  *
- * Insert and update functions will do nothing for data that is not specified in [includeFields],
- * except for data that are required.
+ * Insert and update functions will do nothing for data that is not specified in [includeFields].
  */
 abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     isProfile: Boolean,
@@ -38,20 +37,21 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     protected abstract fun setValuesFromData(data: E, setValue: (field: F, value: Any?) -> Unit)
 
     /**
-     * There [Where] clause used as the selection for queries, updates, and deletes.
+     * There [Where] clause used as the selection for queries and deletes.
      */
-    internal fun selection(rawContactId: Long): Where<AbstractDataField> =
+    internal fun selectionWithMimeTypeForRawContact(rawContactId: Long): Where<AbstractDataField> =
         (Fields.MimeType equalTo mimeType) and (Fields.RawContact.Id equalTo rawContactId)
 
     /**
      * Returns a [ContentProviderOperation] for adding the [entity] properties to the insert
-     * operation.  This assumes that this will be used in a batch of operations where the first
+     * operation. This assumes that this will be used in a batch of operations where the first
      * operation is the insertion of a new RawContact.
      *
      * Returns null if [entity] is blank or no values have been set due to not being included.
      */
-    internal fun insert(entity: E): ContentProviderOperation? {
-        if (entity.isBlank) {
+    internal fun insertForNewRawContact(entity: E): ContentProviderOperation? {
+        if (entity.isBlank || includeFields.isEmpty()) {
+            // No-op when entity is blank or no fields are included.
             return null
         }
 
@@ -60,8 +60,8 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         var hasValueSet = false
 
         setValuesFromData(entity) { field, dataValue ->
-            if ((includeFields.contains(field) || field.required) && dataValue.isNotNullOrBlank()) {
-                // Only add the operation if the field should be included or is required.
+            if (includeFields.contains(field) && dataValue.isNotNullOrBlank()) {
+                // Only add the operation if the field should be included.
                 // No need to insert null values. Empty values are treated the same as null, same as
                 // the native Android Contacts app.
                 operation.withValue(field, dataValue)
@@ -70,8 +70,8 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         }
 
         if (!hasValueSet) {
-            // If there is actually no data set due to not being included or required, then do not
-            // construct an actual operation.
+            // If there is actually no data set due to not being included, then do not construct an
+            // actual operation.
             return null
         }
 
@@ -93,10 +93,10 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      *
      * Blank entities are excluded.
      */
-    internal fun insert(entities: List<E>): List<ContentProviderOperation> =
+    internal fun insertForNewRawContact(entities: List<E>): List<ContentProviderOperation> =
         mutableListOf<ContentProviderOperation>().apply {
             for (entity in entities) {
-                insert(entity)?.let(::add)
+                insertForNewRawContact(entity)?.let(::add)
             }
         }
 
@@ -107,9 +107,14 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      * Use this function for data rows of a contact with [mimeType] that may occur more than once.
      * For example, a contact may have more than 1 data row for address, email, phone, etc.
      */
-    internal fun updateInsertOrDelete(
+    internal fun updateInsertOrDeleteDataForRawContact(
         entities: Collection<E>, rawContactId: Long, contentResolver: ContentResolver
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+        if (includeFields.isEmpty()) {
+            // No-op when no fields are included.
+            return@apply
+        }
+
         if (!propertiesAreAllNullOrBlank(entities)) {
             // Get all entities with a valid Id, which means they are (or have been) in the DB.
             val validEntitiesMap = mutableMapOf<Long, E>().apply {
@@ -121,8 +126,8 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
                 }
             }
 
-            // Query for all rows in the database.
-            contentResolver.dataRowIdsFor(rawContactId) {
+            // Query for all rows of the RawContact with this operation's mimetype in the database.
+            contentResolver.dataRowIdsWithMimeTypeForRawContact(rawContactId) {
                 val dataCursor = it.dataCursor()
                 while (it.moveToNext()) {
                     val dataRowId = dataCursor.dataId
@@ -149,7 +154,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
                 validEntitiesMap.values.asSequence().filter { !it.isBlank }
 
             for (entity in nonBlankValidEntities) {
-                insertDataRow(entity, rawContactId)?.let(::add)
+                insertDataRowForRawContact(entity, rawContactId)?.let(::add)
             }
 
             // Insert all invalid entities.
@@ -159,11 +164,11 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
                 entities.asSequence().filter { it.idOrNull == null && !it.isBlank }
 
             for (entity in nonBlankInvalidEntities) {
-                insertDataRow(entity, rawContactId)?.let(::add)
+                insertDataRowForRawContact(entity, rawContactId)?.let(::add)
             }
         } else {
             // Entities' empty or contains no data. Delete all data rows of this type.
-            add(deleteDataRows(rawContactId))
+            add(deleteDataRowsWithMimeTypeOfRawContact(rawContactId))
         }
     }
 
@@ -174,26 +179,29 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      * Use this function for data rows of a contact with [mimeType] that may only occur once.
      * For example, a contact may only have 1 data row for company, name, note, etc.
      */
-    internal fun updateInsertOrDelete(
+    internal fun updateInsertOrDeleteDataForRawContact(
         entity: E?, rawContactId: Long, contentResolver: ContentResolver
-    ): ContentProviderOperation? =
-        if (entity != null && !entity.isBlank) {
-            // Entity contains some data. Query for the (first) row.
-            val dataRowId: Long? = contentResolver.dataRowIdsFor(rawContactId) {
+    ): ContentProviderOperation? = if (includeFields.isEmpty()) {
+        // No-op when no fields are included.
+        null
+    } else if (entity != null && !entity.isBlank) {
+        // Entity contains some data. Query for the (first) row.
+        val dataRowId: Long? =
+            contentResolver.dataRowIdsWithMimeTypeForRawContact(rawContactId) {
                 it.getNextOrNull { it.dataCursor().dataId }
             }
 
-            if (dataRowId != null) {
-                // Row exists. Update.
-                updateDataRow(entity, dataRowId)
-            } else {
-                // Row does not exist. Insert.
-                insertDataRow(entity, rawContactId)
-            }
+        if (dataRowId != null) {
+            // Row exists. Update.
+            updateDataRow(entity, dataRowId)
         } else {
-            // Entity contains no data. Delete.
-            deleteDataRows(rawContactId)
+            // Row does not exist. Insert.
+            insertDataRowForRawContact(entity, rawContactId)
         }
+    } else {
+        // Entity contains no data. Delete.
+        deleteDataRowsWithMimeTypeOfRawContact(rawContactId)
+    }
 
     /**
      * Provides the [ContentProviderOperation] for inserting the data row (represented by the
@@ -201,7 +209,10 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      *
      * Returns null if no values have been set due to not being included.
      */
-    internal fun insertDataRow(entity: E, rawContactId: Long): ContentProviderOperation? {
+    internal fun insertDataRowForRawContact(
+        entity: E,
+        rawContactId: Long
+    ): ContentProviderOperation? {
         val operation = ContentProviderOperation.newInsert(contentUri)
             .withValue(Fields.RawContact.Id, rawContactId)
             .withValue(Fields.MimeType, mimeType.value)
@@ -209,8 +220,8 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         var hasValueSet = false
 
         setValuesFromData(entity) { field, dataValue ->
-            if ((includeFields.contains(field) || field.required) && dataValue.isNotNullOrBlank()) {
-                // Only add the operation if the field should be included or is required.
+            if (includeFields.contains(field) && dataValue.isNotNullOrBlank()) {
+                // Only add the operation if the field should be included.
                 // No need to insert null values. Empty values are treated the same as null, same as
                 // the native Android Contacts app.
                 operation.withValue(field, dataValue)
@@ -219,9 +230,9 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         }
 
         if (!hasValueSet) {
-            // If there is actually no data set due to not being included or required, then do not
-            // construct an actual operation. This is not just an optimization but also to prevent
-            // an exception from being thrown by the operation builder.
+            // If there is actually no data set due to not being included, then do not construct an
+            // actual operation. This is not just an optimization but also to prevent an exception
+            // from being thrown by the operation builder;
             // java.lang.IllegalArgumentException: Empty values
             return null
         }
@@ -231,15 +242,17 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
 
     /**
      * Provides the [ContentProviderOperation] for updating the data row (represented by the
-     * [entity]). If the [entity] is blank, it will be deleted instead.  Returns null if the
-     * [entity] has a null ID.
+     * [entity]). If the [entity] is blank, it will be deleted instead. Returns null if the
+     * [entity] has a null ID or there are no included fields.
      *
      * Use this function for updating an existing data row. If the data row no longer exists in the
      * DB, the operation will fail.
      */
     internal fun updateDataRowOrDeleteIfBlank(entity: E): ContentProviderOperation? =
         entity.idOrNull?.let { dataRowId ->
-            if (entity.isBlank) {
+            if (includeFields.isEmpty()) {
+                null
+            } else if (entity.isBlank) {
                 deleteDataRowWithId(dataRowId)
             } else {
                 updateDataRow(entity, dataRowId)
@@ -262,8 +275,8 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         var hasValueSet = false
 
         setValuesFromData(entity) { field, dataValue ->
-            if (includeFields.contains(field) || field.required) {
-                // Only add the operation if the field should be included or is required.
+            if (includeFields.contains(field)) {
+                // Only add the operation if the field should be included.
                 // Intentionally allow to update values to null. Checking for blanks should be done at
                 // the call-site.
                 operation.withValue(field, dataValue)
@@ -272,9 +285,9 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         }
 
         if (!hasValueSet) {
-            // If there is actually no data set due to not being included or required, then do not
-            // construct an actual operation. This is not just an optimization but also to prevent
-            // an exception from being thrown by the operation builder.
+            // If there is actually no data set due to not being included, then do not construct an
+            // actual operation. This is not just an optimization but also to prevent an exception
+            // from being thrown by the operation builder;
             // java.lang.IllegalArgumentException: Empty values
             return null
         }
@@ -286,9 +299,9 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      * Provides the [ContentProviderOperation] for deleting the data rows of type [E] of the
      * RawContact with [rawContactId].
      */
-    private fun deleteDataRows(rawContactId: Long): ContentProviderOperation =
+    private fun deleteDataRowsWithMimeTypeOfRawContact(rawContactId: Long): ContentProviderOperation =
         ContentProviderOperation.newDelete(contentUri)
-            .withSelection(selection(rawContactId))
+            .withSelection(selectionWithMimeTypeForRawContact(rawContactId))
             .build()
 
     /**
@@ -302,12 +315,12 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     /**
      * Provides the [Cursor] to the data rows of type [T] of the RawContact with [rawContactId].
      */
-    private fun <T> ContentResolver.dataRowIdsFor(
+    private fun <T> ContentResolver.dataRowIdsWithMimeTypeForRawContact(
         rawContactId: Long, processCursor: (CursorHolder<AbstractDataField>) -> T
     ) = query(
         contentUri,
         Include(Fields.DataId),
-        selection(rawContactId),
+        selectionWithMimeTypeForRawContact(rawContactId),
         processCursor = processCursor
     )
 }

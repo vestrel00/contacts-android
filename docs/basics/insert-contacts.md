@@ -8,9 +8,9 @@ An instance of the `Insert` API is obtained by,
 val insert = Contacts(context).insert()
 ```
 
-> If you want to create/insert the device owner Contact Profile, read [Insert device owner Contact profile](./../profile/insert-profile.md).
+> ℹ️ If you want to create/insert the device owner Contact Profile, read [Insert device owner Contact profile](./../profile/insert-profile.md).
 
-> If you want to insert Data into a new or existing contact, read [Insert data into new or existing contacts](./../data/insert-data-sets.md).
+> ℹ️ If you want to insert Data into a new or existing contact, read [Insert data into new or existing contacts](./../data/insert-data-sets.md).
 
 ## A basic insert
 
@@ -112,7 +112,7 @@ For example, to associated the new RawContact to an account,
 .forAccount(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 ### Local RawContacts
 
@@ -120,11 +120,11 @@ If no Account is provided, or null is provided, or if an incorrect account is pr
 RawContacts inserted will not be associated with an Account. RawContacts inserted without an
 associated account are considered local or device-only contacts, which are not synced.
 
-> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 There are also certain data kinds that are ignored on insert or update if the RawContact is local.
 
-> For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Including only specific data
 
@@ -198,7 +198,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `InsertResult`. To get all newly created
 Contacts,
@@ -259,7 +259,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the insert with permission
 

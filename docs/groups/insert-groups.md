@@ -51,7 +51,7 @@ if any, and does the following;
   insertion fails for that group
 - if there are no accounts in the system, [commit] does nothing and fails immediately
 
-> For more info on the relationship of Groups and Accounts, read [Query groups](./../groups/query-groups.md).
+> ℹ️ For more info on the relationship of Groups and Accounts, read [Query groups](./../groups/query-groups.md).
 
 ## Groups and duplicate titles
 
@@ -106,7 +106,7 @@ val groups = contactsApi
     .find()
 ```
 
-> For more info, read [Query groups](./../groups/query-groups.md).
+> ℹ️ For more info, read [Query groups](./../groups/query-groups.md).
 
 Alternatively, you may use the extensions provided in `GroupsInsertResult`. To get all newly created
 Groups,
@@ -168,7 +168,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the insert with permission
 

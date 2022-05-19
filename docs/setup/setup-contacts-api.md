@@ -17,9 +17,9 @@ in Java,
 ContactsFactory.create(context);
 ```
 
-> The `context` parameter can come from anywhere; Application, Activity, Fragment, or View. It does
-> not matter what context you pass in. The API will only use and store the Application context, to
-> avoid leaks :D
+> ℹ️ The `context` parameter can come from anywhere; Application, Activity, Fragment, or View. It 
+> does not matter what context you pass in. The API will only use and store the Application context,
+> to avoid leaks.
 
 It's up to you if you just want to create instances on demand. Or, hold on to instances as a 
 [singleton][singleton] that is injected to your dependency graph (via something like 
@@ -54,9 +54,9 @@ It is recommended to use a single instance of the `Contacts` API throughout your
     
 For more info, read [Contacts API Testing](./../testing/test-contacts-api.md).
     
-> Of course, this library does not (and will not) force you to do things you don't want. If you 
-> don't care about all of the above and just want to get out a quick prototype of a feature in your 
-> app or an entire app, then go right ahead! 
+> ℹ️ This library does not (and will not) force you to do things you don't want. If you don't care 
+> about all of the above and just want to get out a quick prototype of a feature in your app or an 
+> entire app, then go for it! 
 
 [singleton]: https://en.wikipedia.org/wiki/Singleton_pattern
 [dagger]: https://developer.android.com/training/dependency-injection/dagger-android

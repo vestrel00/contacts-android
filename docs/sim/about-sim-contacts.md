@@ -11,16 +11,16 @@ This library gives you APIs that allow you to read and write Contacts stored in 
 
 SIM Contact data consists of the `name` and `number`.
 
-> Support for `email` was recently added in Android 12. I don't think it is stable yet. Regardless,
-> it is too new so this library will wait a bit before adding support for it.
+> ℹ️ Support for `email` was recently added in Android 12. I don't think it is stable yet. 
+> Regardless, it is too new so this library will wait a bit before adding support for it.
 
-#### Character limits
+### Character limits
 
 The `name` and `number` are subject to the SIM card's maximum character limit, which is typically 
 around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will fail 
 if the limit is breached.
 
-#### SIM Contact row ID
+### SIM Contact row ID
 
 The SIM contact that an ID is pointing to may change if the contact is deleted in the database and
 another contact is inserted. The inserted contact may be assigned the ID of the deleted
@@ -112,7 +112,7 @@ For software, I used the following apps.
 | [SIM Card Info v1.1.6](https://play.google.com/store/apps/details?id=com.midi.siminfo)         | Nexus 6P                     |
 | [Samsung Contacts v12.7.10.12](https://samsung-contacts.en.uptodown.com/android)               | Samsung Galaxy A71           |
 
-> Note that the AOSP Contacts app and [Google Contacts app](https://play.google.com/store/apps/details?id=com.google.android.contacts)
+> ℹ️ The AOSP Contacts app and [Google Contacts app](https://play.google.com/store/apps/details?id=com.google.android.contacts)
 > can only import contacts from SIM card so they are not very helpful for us with this investigation.
 
 For Android code references, I used the internal `IccProvider.java` as reference to what the Android
@@ -124,11 +124,11 @@ OS might be doing when 3rd party applications perform CRUD operations on SIM con
 
 I'm using the `content://icc/adn` URI to read/write from/to SIM card.
 
-> **All of the investigation that I have done here may not apply for all SIM cards and phone OEMs!** 
+> ℹ️ **All of the investigation that I have done here may not apply for all SIM cards and phone OEMs!** 
 > There is just way too many different SIM cards and phones out there for a single person (me) to 
 > test. However, I think that my findings should apply to most cases.
 
-#### Figuring out how to perform CRUD operations
+### Figuring out how to perform CRUD operations
 
 First, I added 20 contacts (name and number) to the SIM contacts using the _BLU Z5_. The first
 contact is named "a" with number "1", the second is named "ab" with number "12", and so on. The last
@@ -136,8 +136,8 @@ contact is named "abcdefghijklmnopqrst" with number "12345678901234567890". I di
 _BLU Z5_ has determined that the maximum character limit for the name and number for my 
 _Mint Mobile_ SIM card is 20.
 
-> Note that the character limits are most likely set by the SIM card and/or calculated by the OS
-> managing it based on how much total memory is available.
+> ℹ️ The character limits are most likely set by the SIM card and/or calculated by the OS managing 
+> it based on how much total memory is available.
 
 I also added a contact named "bro" with no number and a nameless contact with with number
 "5555555555". For a total of 22 contacts in the SIM card.
@@ -176,7 +176,7 @@ I am able to see all of the contacts in the _SIM Info_ app **except** for the na
 number "5555555555". I attempted to add a nameless contact using the _SIM Info_ app but it does not
 allow reading/writing nameless contacts. 
 
-> This is probably a bug in the _SIM Info_ app or a limitation that is intentionally imposed for 
+> ℹ️ This is probably a bug in the _SIM Info_ app or a limitation that is intentionally imposed for 
 > some reason. I wish I could see the source code of the app!
 
 Deleting the first contact with ID of 0 using the _SIM Info_ app works just fine. Deleting the contact
@@ -227,7 +227,7 @@ The ID remains 4. We get the same result using our `SimContactsUpdate` API =)
 
 Thus, we have implemented CRUD APIs!!!
 
-#### Figuring out character limits
+### Figuring out character limits
 
 The _BLU Z5_ non-smartphone has determined that the maximum character limit for the name and number 
 for my _Mint Mobile_ SIM card is 20. 
@@ -286,7 +286,7 @@ not null in the Samsung.
 - Furthermore, we cannot rely on the result of the insert operation alone. If the result Uri is not
   null, we must perform a query to sanity check that the actual name and number was inserted!
 
-#### Emails
+### Emails
 
 There is an "emails" column in the SIM table. CRUD operations for it was not officially supported 
 until recently in Android 12.
@@ -315,7 +315,7 @@ probably means that we don't have access to the internal APIs that the Samsung C
 Keep in mind that my Samsung is running Android 11 and support for email was not added until 
 Android 12. 
 
-> TLDR; Classic Samsung to add features farther ahead of time than vanilla Android =)
+> ℹ️ Classic Samsung to add features farther ahead of time than vanilla Android =)
 
 **On my Nexus 6P running Android 8...**
 
@@ -327,7 +327,7 @@ rows are able to be updated and deleted.
 SIM contacts with emails are shown without the email data. These rows are able to be updated and 
 deleted.
 
-#### Other considerations
+### Other considerations
 
 It seems like there are new APIs around SIM Contacts that were introduced in API 31;
 

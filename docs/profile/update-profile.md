@@ -1,9 +1,11 @@
 # Update device owner Contact profile
 
-This library provides the `ProfileUpdate` API that allows you to update the device owner Profile Contact.
+This library provides the `ProfileUpdate` API that allows you to update the Profile contact in the 
+Contacts Provider database to ensure that it contains the same data as the contact and raw contacts
+you have in memory.
 
-> Note that there can be only one device owner Contact, which is either set (not null) or not yet
-> set (null). However, like other regular Contacts, the Profile Contact may have one or more
+> ℹ️ There can be only one device owner Contact, which is either set (not null) or not yet set 
+> (null). However, like other regular Contacts, the Profile Contact may have one or more
 > RawContacts.
 
 An instance of the `ProfileUpdate` API is obtained by,
@@ -52,19 +54,19 @@ For more info, read about [Blank contacts](./../entities/about-blank-contacts.md
 ## Blank data are deleted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
-deleted by update APIs.
+deleted by update APIs, unless the corresponding fields are not included in the operation.
 
 For more info, read about [Blank data](./../entities/about-blank-data.md).
 
 ## Including only specific data
 
-To include only the given set of fields (data) in each of the update operation,
+To perform update operations only the given set of fields (data),
 
 ```kotlin
 .include(fields)
 ```
 
-For example, to only include email and name fields,
+For example, to perform updates on only email and name fields,
 
 ```kotlin
 .include { Email.all + Name.all }
@@ -113,7 +115,7 @@ Once you have performed the updates, you can retrieve the updated profile Contac
 val updatedProfile = Contacts(context).profile().query().find()
 ```
 
-> For more info, read [Query device owner Contact profile](./../profile/query-profile.md).
+> ℹ️ For more info, read [Query device owner Contact profile](./../profile/query-profile.md).
 
 Alternatively, you may use the extensions provided in `ContactRefresh` and `RawContactRefresh`.
 
@@ -161,14 +163,14 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the update with permission
 
 Updates require the `android.permission.WRITE_CONTACTS` permissions. If not granted, the update 
 will do nothing and return a failed result.
 
-> For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
+> ℹ️ For API 22 and below, the permission "android.permission.WRITE_PROFILE" is also required but
 > only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
 > prior to installation instead of at runtime.
 

@@ -9,9 +9,8 @@ An instance of the `DataDelete` API is obtained by,
 val delete = Contacts(context).data().delete()
 ```
 
-> To delete all kinds of data via Contacts/RawContacts, you may remove them from the 
-> Contact/RawContact and then perform an update.
-> For more info, read [Update contacts](./../basics/update-contacts.md).
+> ℹ️ To delete all kinds of data via Contacts/RawContacts, you may remove them from the 
+> Contact/RawContact and then perform an update. For more info, read [Update contacts](./../basics/update-contacts.md).
 
 ## A basic delete
 
@@ -79,7 +78,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the delete with permission
 

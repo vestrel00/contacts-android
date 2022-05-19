@@ -7,7 +7,7 @@ More specifically, this query returns `BlankRawContact`s, which are RawContacts 
 data (e.g. email, phone). It only contains critical information required for performing RawContact 
 operations such as associating local RawContacts to an Account.
 
-> For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
+> ℹ️ For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
 
 An instance of the `AccountsRawContactsQuery` API is obtained by,
 
@@ -37,7 +37,7 @@ For example, to limit the search to contacts belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.
@@ -48,8 +48,8 @@ device-only contacts, which are not synced.
 
 For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
-> Note that this may affect performance. This may require one or more additional queries, internally
-> performed in this function, which increases the time required for the search. Therefore, you
+> ℹ️ This may affect performance. This may require one or more additional queries, internally 
+> performed in this function, which increases the time required for the search. Therefore, you 
 > should only specify this if you actually need it.
 
 ## Ordering
@@ -89,7 +89,7 @@ For example, to only get a maximum 20 RawContacts, skipping the first 20,
 
 This is useful for pagination =)
 
-> Note that it is recommended to limit the number of RawContacts when querying to increase performance
+> ℹ️ It is recommended to limit the number of RawContacts when querying to increase performance
 > and decrease memory cost.
 
 ## Executing the query
@@ -136,7 +136,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 > listening to Contacts database changes.
 
 ## Performing the query with permission
@@ -171,7 +171,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 If you need a more convenient way to convert the `BlankRawContact`s to `RawContacts`, use 
 `BlankRawContactToRawContact` extensions. For more info, read [Convenience functions](./../other/convenience-functions.md).
@@ -192,8 +192,8 @@ All queries will be limited to the Profile, whether it exists or not.
 Use the `contacts.core.RawContactsField` combined with the extensions from `contacts.core.Where` to 
 form WHERE clauses. 
 
-> This docs page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
-> If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
+> ℹ️ This docs page will not provide a tutorial on database where clauses. It assumes that you know 
+> the basics. If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
 For example, to get a list of RawContacts with the given IDs,
 

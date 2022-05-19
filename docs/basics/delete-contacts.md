@@ -9,9 +9,9 @@ An instance of the `Delete` API is obtained by,
 val delete = Contacts(context).delete()
 ```
 
-> If you want to delete the device owner Contact Profile, read [Delete device owner Contact profile](./../profile/delete-profile.md).
+> ℹ️ If you want to delete the device owner Contact Profile, read [Delete device owner Contact profile](./../profile/delete-profile.md).
 
-> If you want to delete a set of Data, read [Delete existing sets of data](./../data/delete-data-sets.md).
+> ℹ️ If you want to delete a set of Data, read [Delete existing sets of data](./../data/delete-data-sets.md).
 
 ## A basic delete
 
@@ -80,7 +80,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the delete with permission
 

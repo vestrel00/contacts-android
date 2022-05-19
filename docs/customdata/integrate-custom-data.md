@@ -36,13 +36,13 @@ Here are the steps, in chronological order, on how to define and use your own cu
 15. Register your custom data with the Contacts API instance
 16. Use your custom data in queries, inserts, updates, and deletes
 
-> Maybe someday someone with code generation experience (or I'll learn how to do it), will create
+> ℹ️ Maybe someday someone with code generation experience (or I'll learn how to do it), will create
 > annotations and annotation processors to eliminate having to manually write this stuff =)
 
 To help illustrate the above steps, we'll use the `HandleName` and `Gender` custom data provided in
 this library's `customdata-handlename` and `customdata-gender` respectively as an example.
 
-> For more specifics on these custom data, read
+> ℹ️ For more specifics on these custom data, read
 > [Integrate the gender custom data](./../customdata/integrate-gender-custom-data.md) and
 > [Integrate the handle name custom data](./../customdata/integrate-handlename-custom-data.md).
 
@@ -53,7 +53,7 @@ At the bottom of this page, we'll also discuss,
 - Displaying your custom data in other Contacts apps
 - Summary of limitations
 
-> Some of the code used in these examples are in Kotlin. If you would like a Java version of this
+> ℹ️ Some of the code used in these examples are in Kotlin. If you would like a Java version of this
 > page, create an issue in GitHub. You are also free to file a pull request with your own page. In
 > the event that a Java version of this page is created, this quote block should be replaced with
 > a link to that page.
@@ -555,7 +555,7 @@ internal class HandleNameEntry : Entry<HandleNameField, HandleNameDataCursor, Ha
 
 The entry registration provides a way for you to keep your Entry `internal` to your library module.
 
-> In Java, the closes thing to this is package-private.
+> ℹ️ In Java, the closest thing to this is package-private.
 
 This is not necessary to implement. Feel free to make your `Entry` public so that it can be handed
 off to the custom data registry. 
@@ -607,8 +607,8 @@ HandleNameRegistration().registerTo(contactsApi.customDataRegistry)
 
 Using `Gender` and `HandleName` entry,
 
-> Note that this is not possible with `Gender` and `HandleName` as their entries are internal.
-> This is for demonstration purposes only.
+> ℹ️ This is not possible with `Gender` and `HandleName` as their entries are internal. This is for 
+> demonstration purposes only.
 
 ```kotlin
 val contactsApi = Contacts(
@@ -658,9 +658,9 @@ If you want your custom data to be visible in the Android Open Source Project (A
 your custom data to be visible in your application, then you should NOT do the things described in
 this part of the guide.
 
-> Note that the [Google Contacts app][google-contacts] keeps its "File as" custom data invisible
-> to other Contacts apps such as the AOSP Contacts app. However, it exposes the "Custom field+label"
-> custom data by doing the things described in this section.
+> ℹ️ The [Google Contacts app][google-contacts] keeps its "File as" custom data invisible to other 
+> Contacts apps such as the AOSP Contacts app. However, it exposes the "Custom field+label" custom 
+> data by doing the things described in this section.
 
 **Important!** The first criteria for being able to show your custom data in the Contacts app is to
 define and implement your own sync adapter. If you do not have a sync adapter implementation, your
@@ -782,7 +782,7 @@ Also provided are CRUD API integration with custom data from other apps that do 
 
 - [`customdata-googlecontacts`](./../customdata/integrate-googlecontacts-custom-data.md)
 
-> Please update the above list whenever adding new custom data modules.
+> ℹ️ Please update the above list whenever adding new custom data modules.
 
 [google-contacts]: https://play.google.com/store/apps/details?id=com.google.android.contacts
 [contacts-xml]: https://developer.android.com/guide/topics/providers/contacts-provider#ContactsFile

@@ -133,18 +133,6 @@ interface Insert : CrudApi {
      *
      * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
      * fields will be inserted.
-     *
-     * ## Note
-     *
-     * The use case for this function is probably rare. You can simply not set a particular
-     * data instead of using this function. For example, if you want to create a new RawContact
-     * with only name and email data, just set only name and email...
-     *
-     * There may be some cases where this function may come in handy. For example, if you have a
-     * mutable RawContact that has all data filled in but you only want some of those data to be
-     * inserted (in the database), then this function is exactly what you need =) This can also come
-     * in handy if you are trying to make copies of an existing RawContact but only want some data
-     * to be copied.
      */
     fun include(vararg fields: AbstractDataField): Insert
 
@@ -414,13 +402,13 @@ internal fun Contacts.insertRawContactForAccount(
     operations.add(RawContactsOperation(isProfile).insert(account))
 
     operations.addAll(
-        AddressOperation(isProfile, Fields.Address.intersect(includeFields)).insert(
+        AddressOperation(isProfile, Fields.Address.intersect(includeFields)).insertForNewRawContact(
             rawContact.addresses
         )
     )
 
     operations.addAll(
-        EmailOperation(isProfile, Fields.Email.intersect(includeFields)).insert(
+        EmailOperation(isProfile, Fields.Email.intersect(includeFields)).insertForNewRawContact(
             rawContact.emails
         )
     )
@@ -430,7 +418,7 @@ internal fun Contacts.insertRawContactForAccount(
         // The Contacts Provider does support having events for local raw contacts. Anyways, let's
         // follow in the footsteps of the native Contacts app...
         operations.addAll(
-            EventOperation(isProfile, Fields.Event.intersect(includeFields)).insert(
+            EventOperation(isProfile, Fields.Event.intersect(includeFields)).insertForNewRawContact(
                 rawContact.events
             )
         )
@@ -445,36 +433,36 @@ internal fun Contacts.insertRawContactForAccount(
                 isProfile,
                 Fields.GroupMembership.intersect(includeFields),
                 groups()
-            ).insert(rawContact.groupMemberships, account)
+            ).insertForNewRawContact(rawContact.groupMemberships, account)
         )
     }
 
     operations.addAll(
-        ImOperation(isProfile, Fields.Im.intersect(includeFields)).insert(rawContact.ims)
+        ImOperation(isProfile, Fields.Im.intersect(includeFields)).insertForNewRawContact(rawContact.ims)
     )
 
     rawContact.name?.let {
-        NameOperation(isProfile, Fields.Name.intersect(includeFields)).insert(it)
+        NameOperation(isProfile, Fields.Name.intersect(includeFields)).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     rawContact.nickname?.let {
-        NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields)).insert(it)
+        NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields)).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     rawContact.note?.let {
-        NoteOperation(isProfile, Fields.Note.intersect(includeFields)).insert(it)
+        NoteOperation(isProfile, Fields.Note.intersect(includeFields)).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     rawContact.organization?.let {
-        OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields)).insert(it)
+        OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields)).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     operations.addAll(
-        PhoneOperation(isProfile, Fields.Phone.intersect(includeFields)).insert(
+        PhoneOperation(isProfile, Fields.Phone.intersect(includeFields)).insertForNewRawContact(
             rawContact.phones
         )
     )
@@ -489,17 +477,17 @@ internal fun Contacts.insertRawContactForAccount(
         operations.addAll(
             RelationOperation(
                 isProfile, Fields.Relation.intersect(includeFields)
-            ).insert(rawContact.relations)
+            ).insertForNewRawContact(rawContact.relations)
         )
     }
 
     rawContact.sipAddress?.let {
-        SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields)).insert(it)
+        SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields)).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     operations.addAll(
-        WebsiteOperation(isProfile, Fields.Website.intersect(includeFields)).insert(
+        WebsiteOperation(isProfile, Fields.Website.intersect(includeFields)).insertForNewRawContact(
             rawContact.websites
         )
     )
@@ -549,11 +537,11 @@ private fun NewRawContact.customDataInsertOperations(
         when (countRestriction) {
             CustomDataCountRestriction.AT_MOST_ONE -> {
                 customDataEntityHolder.entities.firstOrNull()?.let {
-                    customDataOperation.insert(it)?.let(::add)
+                    customDataOperation.insertForNewRawContact(it)?.let(::add)
                 }
             }
             CustomDataCountRestriction.NO_LIMIT -> {
-                customDataOperation.insert(customDataEntityHolder.entities).let(::addAll)
+                customDataOperation.insertForNewRawContact(customDataEntityHolder.entities).let(::addAll)
             }
         }
     }

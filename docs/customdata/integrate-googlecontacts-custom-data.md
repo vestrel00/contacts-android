@@ -4,7 +4,7 @@ This library provides extensions for custom data from the [Google Contacts][goog
 `FileAs` and `UserDefined`, which allows you to read and write Google Contacts data for all of your 
 contacts. These (optional) extensions live in the `customdata-googlecontacts` module.
 
-> If you are looking to create your own custom data or get more insight on how the `FileAs` and 
+> ℹ️ If you are looking to create your own custom data or get more insight on how the `FileAs` and 
 > `UserDefined` custom data was built, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 ## Register the Google Contacts custom data with the Contacts API instance
@@ -140,7 +140,7 @@ In the [Google Contacts app][google-contacts], the `FileAs` and `UserDefined` cu
 shown for RawContacts that are associated with a Google Account. Local (device-only) RawContacts do 
 not have these custom data!
 
-> For more info on local contacts, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+> ℹ️ For more info on local contacts, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ## Syncing Google Contacts custom data
 
@@ -148,7 +148,7 @@ The [Google Contacts app][google-contacts] comes with sync adapters that is resp
 `FileAs` and `UserDefined` custom data. As long as you have the Google Contacts app installed, 
 these custom data should remain synced depending on account sync settings.
 
-> This library does not provide sync adapters for Google Contacts custom data.
+> ℹ️ This library does not provide sync adapters for Google Contacts custom data.
 
 For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 

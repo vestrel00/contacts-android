@@ -10,7 +10,7 @@ For example; `2059i4a27289d88a0a4e7`, `0r62-2A2C2E`, ...
 
 The official documentation for the Contact lookup key is,
 
-> An opaque value that contains hints on how to find the contact if its row id changed as a result
+> ℹ️ An opaque value that contains hints on how to find the contact if its row id changed as a result
 > of a sync or aggregation.
 
 Let's dissect the documentation,
@@ -31,7 +31,7 @@ with an Account and are synced). The lookup key points to a person entity rather
 in a table. It is the unique identifier used by local and remote sync adapters to identify an 
 aggregate contact.
 
-> Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
+> ℹ️ Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
 > constituent RawContacts). RawContacts have a reference to the parent Contact via the Contact ID. 
 > Similarly, the parent Contact has a reference to all of its constituent RawContacts via the 
 > lookup key.
@@ -90,7 +90,7 @@ Note that if the lookup key is a reference to a linked Contact (a Contact with t
 constituent RawContacts), and the linked Contact is unlinked, then the query will return
 multiple Contacts.
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 ## Moving RawContacts between accounts and the lookup key
 
@@ -99,7 +99,7 @@ general, set a RawContact's Account to something else will change the lookup key
 the changes to the lookup key will only be applied after the Contacts Provider and sync adapters
 sync the changes. This means that the local changes are not immediately applied.
 
-> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 Changing a RawContact's Account will result in a failed lookup using lookup keys prior to the 
 Account change.
@@ -115,7 +115,7 @@ For example, using the default AOSP Contacts app or the Google Contacts app...
 Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
 It is expected behavior due to the way the Contacts Provider works.
 
-> For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
+> ℹ️ For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
 
 ## Linking/unlinking contacts and the lookup key
 
@@ -138,13 +138,13 @@ For example, using the default AOSP Contacts app or the Google Contacts app...
 
 In both cases, the shortcut successfully opens the correct aggregate Contact.
 
-> For more info on linking/unlinking, read [Link unlink Contacts](./../other/link-unlink-contacts.md).
+> ℹ️ For more info on linking/unlinking, read [Link unlink Contacts](./../other/link-unlink-contacts.md).
 
 ------------------------
 
 ## Developer notes (or for advanced users)
 
-> The following section are note from developers of this library for other developers. It is copied
+> ℹ️ The following section are note from developers of this library for other developers. It is copied
 > from the [DEV_NOTES](./../dev-notes.md). You may still read the following as a consumer of the library
 > in case you need deeper insight.
 
@@ -156,7 +156,8 @@ still be used to find the aggregate contact.
 Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated 
 with an Account and are synced).
 
-> Note that I did the following investigation with a much larger data set. I simplified it here for brevity.
+> ℹ️ The following investigation was done with a much larger data set. I has been simplified here 
+> for brevity.
 
 Let's take a look at the following Contacts and RawContacts table rows,
 
@@ -319,9 +320,9 @@ using the lookup key as the constant...
 Notice that the indirect relationship between the lookup key and RawContacts remains the same
 before and after the link-unlink even though the Contact IDs changed.
 
-> As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the RawContact ID.
-> In other words, since local RawContacts are not synced or tracked in a remote database where
-> Contacts -> RawContacts mappings exist, the Contacts Provider most likely uses this
+> ℹ️ As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the 
+> RawContact ID. In other words, since local RawContacts are not synced or tracked in a remote 
+> database where Contacts -> RawContacts mappings exist, the Contacts Provider most likely uses this
 > "0r<RawContact ID>-" pattern to make the connection. This is not really relevant for us as we are
 > not relying on this mechanism. I'm just pointing out my observations, which could be incorrect.
 
@@ -363,7 +364,7 @@ the previously local Contact will fail! I verified that this is indeed the behav
 having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
 not exist" message in the AOSP Contacts app!
 
-> The RawContact and its Data also remained the same in this case.
+> ℹ️ The RawContact and its Data also remained the same in this case.
 
 Removing the account from it results in...
 

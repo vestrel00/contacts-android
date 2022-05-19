@@ -83,7 +83,7 @@ val blockedNumbers = contactsApi
     .find()
 ```
 
-> For more info, read [Query blocked numbers](./../blockednumbers/query-blocked-numbers.md).
+> ℹ️ For more info, read [Query blocked numbers](./../blockednumbers/query-blocked-numbers.md).
 
 Alternatively, you may use the extensions provided in `BlockedNumbersInsertResult`. To get all 
 newly created BlockedNumbers,
@@ -145,7 +145,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the insert with permission
 

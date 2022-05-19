@@ -113,7 +113,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing options management with permission
 
@@ -148,16 +148,19 @@ operation. For example,
 
 ## FAQs
 
-### Can contacts be inserted with options
+### Can contacts be inserted with options?
 
-> Related issues; #120
-
-You cannot get/set/update options for Contacts/RawContacts that have not yet been inserted in the
-Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or result
-APIs can use the extension functions in `contacts.core.util.ContactOptions.kt` and
+No, you cannot get/set/update options for Contacts/RawContacts that have not yet been inserted in 
+the Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or 
+result APIs can use the extension functions in `contacts.core.util.ContactOptions.kt` and
 `contacts.core.util.RawContactOptions.kt`.
+
+> ℹ️ Issue [#120](https://github.com/vestrel00/contacts-android/issues/120) will change the answer 
+> to "yes". THe underlying mechanism will not change but the outward public facing API will change.
+> Internally, the insert operation will insert a new row in the Contacts/RawContacts table and then 
+> attempt to set the options immediately after.
 
 To insert a new contact "with options", you should insert the contact first. Then, if the insert
 succeeds, proceed to set the options.
 
-> For more info about insert, read [Insert contacts](./../basics/insert-contacts.md).
+> ℹ️ For more info about insert, read [Insert contacts](./../basics/insert-contacts.md).

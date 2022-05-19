@@ -31,7 +31,7 @@ suspending the coroutine and prompting the user for permission.
 If permission(s) are not granted, then the operation will immediately fail and the result you get 
 is incorrect (usually null or empty when it should not be).
 
-> Prior to Android 6.0 Marshmallow (API level 23), users are NOT prompted for permission at runtime
+> ℹ️ Prior to Android 6.0 Marshmallow (API level 23), users are NOT prompted for permission at runtime
 > because users must already grant all permissions prior to app install.
 
 ## Not compatible with Java

@@ -6,7 +6,7 @@ Contacts, or more specifically RawContacts, that are not associated with an
 This means that any RawContacts you create, update, or delete will NOT be synced on any device or
 remote service as it is not associated with any account.
 
-> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 ## Associating a local RawContact to an Account
 
@@ -40,14 +40,14 @@ becomes available. Local contacts remain local.
 Removing the Account will remove all of the associated rows in the RawContact, Data, and Groups 
 tables **locally**. This includes user Profile data in those tables.
 
-> Note that when all RawContacts of a Contact is removed, the Contact is also automatically removed
-> by the Contacts Provider.
+> ℹ️ When all RawContacts of a Contact is removed, the Contact is also automatically removed by the 
+> Contacts Provider.
 
 ## Data kinds Account restrictions
 
 Entries of some data kinds should not be allowed to exist for local RawContacts.
 
-> The native Contacts app hides the following UI fields when inserting or updating local 
+> ℹ️ The native Contacts app hides the following UI fields when inserting or updating local 
 > RawContacts. To enforce this behavior, this library ignores all of the above during inserts and 
 > updates for local raw contacts.
 

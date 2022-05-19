@@ -21,7 +21,7 @@ There are 3 main database tables used in dealing with contacts. These tables are
     - Rows containing data (e.g. name, email) for a RawContacts row.
     - E.G. John Doe from Gmail's name and email, John Doe from Hotmail's phone and address
 
-> There are more tables but it won't be covered in this docs for brevity. 
+> ℹ️ There are more tables but it won't be covered in this docs for brevity. 
 
 In the example given (E.G.) above,
 
@@ -80,11 +80,47 @@ Each entity has an immutable version (typically returned by queries) and a mutab
 `mutableCopy` function that returns a mutable copy (typically to be used for inserts and updates 
 and other mutating API functions).
 
-> Custom data kinds may also be integrated into the contacts database (though not synced across devices).
-> For more info, read [Integrate custom data](./../customdata/integrate-custom-data.md).
+> ℹ️ Custom data kinds may also be integrated into the contacts database (though not synced across 
+> devices). For more info, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
-> Default native and custom data may be retrieved, set, or cleared.
-> For more info, read [Get set clear default Contact data](./../other/get-set-clear-default-data.md).
+> ℹ️ Default native and custom data may be retrieved, set, or cleared. For more info, read 
+> [Get set clear default Contact data](./../other/get-set-clear-default-data.md).
+
+### Contacts API Fields
+
+The fields defined in `contacts.core.Fields.kt` specify what properties of entities to include in
+read and write operations. For example, to include only the contact display name, organization 
+company, and all phone number fields in a query/insert/update operation,
+
+```kotlin
+queryInsertUpdate.include(mutableSetOf<AbstractDataField>().apply {
+    add(Fields.Contact.DisplayNamePrimary)
+    add(Fields.Organization.Company)
+    addAll(Fields.Phone.all)
+})
+```
+
+The following entity properties are are used in the read/write operation,
+
+```kotlin
+Contact {
+    displayNamePrimary
+    
+    RawContact {
+        organization {
+            company
+        }
+        phones {
+            number
+            normalizedNumber
+            type
+            label
+        }
+    }
+}
+```
+
+> ℹ️ For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
 ## Data kinds count restrictions
 
@@ -124,30 +160,6 @@ associated with an Account).
 
 For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
-## Automatic data kinds creation
-
-An entry of each of the following data kinds are automatically created for all contacts, if not
-provided;
-
-- `GroupMembership`, underlying value defaults to the account's default system group
-- `Name`, underlying value defaults to null
-- `Nickname`, underlying value defaults to null
-- `Note`, underlying value defaults to null
-
-This automatic creation occur automatically in the background (typically after creation) only for
-RawContacts that are associated with an Account. If a valid account is provided, membership to the
-(auto add) system group is automatically created immediately by the Contacts Provider at the time of
-creation. The name, nickname, and note are automatically created at a later time.
-
-> Note that the query APIs in this library do not return blanks in results. In this case, the `Name`, 
-> `Nickname`, and `Note` will not be included in the RawContact because their primary values are all
-> null. Blanks are also ignored on insert and deleted on update. 
-> For more info, read about [Blank data](./../entities/about-blank-data.md).
-
-If a valid account is not provided, no entries of the above are automatically created.
-
-To determine if a RawContact is associated with an Account or not, read [Query for Accounts](./../accounts/query-accounts.md).
-
 ## Data integrity
 
 There is a section in the official Contacts Provider documentation about "Data Integrity";
@@ -185,7 +197,7 @@ For more info, read [Integrate custom data from other apps](./../customdata/inte
 
 ## Accessing contact data
 
-When you have an instance of `Contact`, you have complete (and correct) access to data stored in it.
+When you have an instance of `Contact`, you have complete access to data stored in it.
 
 To access data of a Contact with only one RawContact,
 
@@ -228,7 +240,7 @@ Log.d(
 )
 ```
 
-To access data of a Contact with possibly more than one RawContact, we can use `ContactData`
+To access data of a Contact with possibly more than one RawContact, we can use `ContactData.kt`
 extensions to make our life easier,
 
 ```kotlin
@@ -275,12 +287,12 @@ Log.d(
 Each Contact may have more than one of the following data if the Contact is made up of 2 or more
 RawContacts; name, nickname, note, organization, sip address.
 
-For more info on how to easily aggregate data from all RawContacts in a Contact, read
+> ℹ️ For more info on how to easily aggregate data from all RawContacts in a Contact, read
 [Convenience functions](./../other/convenience-functions.md).
 
-To look into the actual Contacts Provider tables, read [Debug the Contacts Provider tables](./../debug/debug-contacts-provider-tables.md).
+> ℹ️ To learn more about the Contact lookup key, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
 
-To learn more about the Contact lookup key, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
+> ℹ️ To look into the actual Contacts Provider tables, read [Debug the Contacts Provider tables](./../debug/debug-contacts-provider-tables.md).
 
 ## Redacting entities
 
@@ -297,3 +309,29 @@ Syncing contact data, including groups, are done automatically by the Contacts P
 the account sync settings.
 
 For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+
+------------------------
+
+## Developer notes (or for advanced users)
+
+### Automatic data kinds creation
+
+An entry of each of the following data kinds are automatically created for all contacts, if not
+provided;
+
+- `GroupMembership`, underlying value defaults to the account's default system group
+- `Name`, underlying value defaults to null
+- `Nickname`, underlying value defaults to null
+- `Note`, underlying value defaults to null
+
+This automatic creation occur automatically in the background (typically after creation) only for
+RawContacts that are associated with an Account. If a valid account is provided, membership to the
+(auto add) system group is automatically created immediately by the Contacts Provider at the time of
+creation. The name, nickname, and note are automatically created at a later time.
+
+> ℹ️ Query APIs in this library do not return blanks in results. In this case, the `Name`,
+> `Nickname`, and `Note` will not be included in the RawContact because their primary values are all
+> null. Blanks are also ignored on insert and deleted on update. For more info, read about
+> [Blank data](./../entities/about-blank-data.md).
+
+If a valid account is not provided, no entries of the above are automatically created.

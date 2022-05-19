@@ -17,7 +17,7 @@ This library provides several insert and update APIs that support custom data in
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
 and `Gender` custom data.
 
-> For more info, read [Integrate the gender custom data](./../customdata/integrate-gender-custom-data.md)
+> ℹ️ For more info, read [Integrate the gender custom data](./../customdata/integrate-gender-custom-data.md)
 > and [Integrate the handle name custom data](./../customdata/integrate-handlename-custom-data.md).
 
 ## Creating/inserting custom data into a RawContact
@@ -25,7 +25,7 @@ and `Gender` custom data.
 Custom data, just like regular data kinds, are attached to a RawContact. They follow the same rules
 as regular data kinds.
 
-> For more info, read about [API Entities](./../entities/about-api-entities.md).
+> ℹ️ For more info, read about [API Entities](./../entities/about-api-entities.md).
 
 For example, you are able to add handle names and set gender of a new RawContact,
 

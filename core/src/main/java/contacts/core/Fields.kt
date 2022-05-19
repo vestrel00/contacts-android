@@ -54,8 +54,9 @@ sealed class Field {
     internal abstract val columnName: String
 
     /**
-     * True if this field is required for create, read, update, and delete (CRUD) operations. For
-     * example, fields that return true cannot be excluded from query results.
+     * True if this field is required for queries.
+     *
+     * This is not (yet) used for inserts, updates, or deletes.
      */
     internal open val required: Boolean = false
 

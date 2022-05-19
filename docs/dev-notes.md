@@ -10,8 +10,6 @@ This is only meant to be read by contributors of this library, not consumers!
 It is important to know about the ins and outs of Android's Contacts Provider. After all, this API 
 is just a wrapper around it. 
 
-> A very sweet, sugary wrapper! Sugar. Spice. And everything nice. :D
-
 It is important to get familiar with the [official documentation of the Contact's Provider][1].
 
 Here is a summary;
@@ -22,7 +20,7 @@ There are 3 main database tables used in dealing with contacts;
 2. RawContacts
 3. Data
 
-> There are more but that is covered later.
+> ℹ️ There are more but that is covered later.
 
 All of these tables and their fields are enumerated and documented in
 `android.provider.ContactsContract`. 
@@ -67,7 +65,7 @@ structured name in the Data table is not provided, then other kinds of data will
 display name will be the email. When a structured name is inserted, the Contacts Provider 
 automatically updates the Contacts row display name.
 
-> In the case of `StructuredName`, the `Contacts.DISPLAY_NAME` is made up of the prefix, given,
+> ℹ️ In the case of `StructuredName`, the `Contacts.DISPLAY_NAME` is made up of the prefix, given,
 > middle, family name, and suffix and not the unstructured display name.
 
 If no data rows suitable to be a display name are available, then the Contacts row display name will
@@ -116,7 +114,7 @@ If available, the "default" (isPrimary and isSuperPrimary set to 1) name row for
 automatically set as the Contact display name by the Contacts Provider. Otherwise, the Contacts
 Provider chooses from any of the other suitable data from the aggregate Contact.
 
-> The `ContactsColumns.NAME_RAW_CONTACT_ID` is automatically updated by the Contacts Provider
+> ℹ️ The `ContactsColumns.NAME_RAW_CONTACT_ID` is automatically updated by the Contacts Provider
 > along with the display name.
 
 The default status of other sources (e.g. email) does not affect the Contact display name.
@@ -151,7 +149,7 @@ still be used to find the aggregate contact.
 Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
 with an Account and are synced).
 
-> Note that I did the following investigation with a much larger data set. I simplified it here for brevity.
+> ℹ️ I did the following investigation with a much larger data set. I simplified it here for brevity.
 
 Let's take a look at the following Contacts and RawContacts table rows,
 
@@ -314,9 +312,9 @@ using the lookup key as the constant...
 Notice that the indirect relationship between the lookup key and RawContacts remains the same 
 before and after the link-unlink even though the Contact IDs changed.
 
-> As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the RawContact ID.
-> In other words, since local RawContacts are not synced or tracked in a remote database where
-> Contacts -> RawContacts mappings exist, the Contacts Provider most likely uses this 
+> ℹ️ As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the 
+> RawContact ID. In other words, since local RawContacts are not synced or tracked in a remote 
+> database where Contacts -> RawContacts mappings exist, the Contacts Provider most likely uses this 
 > "0r<RawContact ID>-" pattern to make the connection. This is not really relevant for us as we are
 > not relying on this mechanism. I'm just pointing out my observations, which could be incorrect.
 
@@ -358,7 +356,7 @@ the previously local Contact will fail! I verified that this is indeed the behav
 having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
 not exist" message in the AOSP Contacts app!
 
-> The RawContact and its Data also remained the same in this case.
+> ℹ️ The RawContact and its Data also remained the same in this case.
 
 Removing the account from it results in...
 
@@ -386,8 +384,8 @@ Each new RawContacts row created results in;
 - a new row in the RawContacts with account name and type set to null
 - 0 or more rows in the Data table with a reference to the new Contacts and RawContacts Ids
 
-> It is possible to create RawContacts without any rows in the Data table. See the **Data required**
-> section for more details.
+> ℹ️ It is possible to create RawContacts without any rows in the Data table. See the 
+> **Data required** section for more details.
 
 For example, creating 4 new contacts using the native Android Contacts app results in;
 
@@ -543,7 +541,7 @@ Note that deleting a RawContacts row may not immediately delete the RawContacts 
 it is marked as deleted and its reference to a contact id is nulled. The Contact may still exist if 
 it still has at least one constituent RawContact that is not marked for deletion.
 
-> A RawContact is marked for deletion as specified by `RawContactsColumns.DELETED`.
+> ℹ️ A RawContact is marked for deletion as specified by `RawContactsColumns.DELETED`.
 
 Typically, deleting RawContacts immediately removes the row from the RawContacts table. However, 
 RawContacts row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
@@ -628,8 +626,8 @@ difference is that Contact X's display name will be set to Contact Y's display n
 done by the native Contacts app manually by setting Contact Y's Data name row to be the "default" 
 (isPrimary and isSuperPrimary both set to 1).
 
-> The AggregationExceptions table records the linked RawContacts's IDs in ascending order regardless
-> of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.
+> ℹ️ The AggregationExceptions table records the linked RawContacts' IDs in ascending order 
+> regardless of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.
 
 The RawContacts and Data table remains the same except the joined contactId column values have now
 been changed to the id of Contact X. All Data rows' isSuperPrimary value has been set to 0 though 
@@ -642,7 +640,7 @@ sets the Contact display name to whatever the default name row is for the Contac
 For more info on Contact display name resolution, read the **Contact Display Name and Default Name
 Rows** section.
 
-> Note that display name resolution is different for APIs below 21 (pre-lollipop).
+> ℹ️ Display name resolution is different for APIs below 21 (pre-lollipop).
 
 The display name of the RawContacts remain the same.
 
@@ -660,18 +658,17 @@ A RawContact may have a full-sized photo saved as a file and a thumbnail version
 the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
 references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).
 
-> Note that when removing the photo in the native contacts app, the photo data row is not 
-> immediately deleted, though the `PHOTO_FILE_ID` is immediately set to null. This may result in 
-> the `PHOTO_URI` and `PHOTO_THUMBNAIL_URI` to still have a valid image uri even though the photo
-> has been "removed". This library immediately deletes the photo data row, which seems to work
-> perfectly.
+> ℹ️ When removing the photo in the native contacts app, the photo data row is not immediately 
+> deleted, though the `PHOTO_FILE_ID` is immediately set to null. This may result in the `PHOTO_URI`
+> and `PHOTO_THUMBNAIL_URI` to still have a valid image uri even though the photo has been 
+> "removed". This library immediately deletes the photo data row, which seems to work perfectly.
 
 **Data inserts**
 
 In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
 first RawContact in the list sorted by the RawContact ID. 
 
-> This may not be the same as the RawContact referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
+> ℹ️ This may not be the same as the RawContact referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
 
 **UI changes?**
 
@@ -869,7 +866,7 @@ remains a primary but not a super primary.
 The above behavior is observed from the native Contacts app. The "super primary" data of an 
 aggregate Contact is referred to as the "default".
 
-> At this point, the native Contacts app still shows email B as the first email in the list even
+> ℹ️ At this point, the native Contacts app still shows email B as the first email in the list even
 > though it isn't the "default" (super primary) because it is still a primary. This adds a bit of
 > confusion in my opinion, especially when more than 2, 3, or 4 RawContacts are linked. A "fix" 
 > would be to only order the list of emails using "super primary" instead of "super primary" and 
@@ -918,7 +915,7 @@ Data rows are automatically created for all contacts, if not provided;
 - Nickname, underlying value defaults to null
 - Note, underlying value defaults to null
 
-> Note that all of the above rows are only automatically created for RawContacts that are associated
+> ℹ️ All of the above rows are only automatically created for RawContacts that are associated
 > with an Account.
 
 If a valid account is provided, the default (auto add) system group membership row is automatically
@@ -1008,7 +1005,7 @@ belonging to the same account to exist. In older versions of Android, the native
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 
-> In newer versions, the group with the duplicate title gets deleted either automatically by the 
+> ℹ️ In newer versions, the group with the duplicate title gets deleted either automatically by the 
 > Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
 > on insert or update. This could lead to bugs!
 
@@ -1065,7 +1062,7 @@ RawContact that has a group membership AND a RawContact that has no group member
 Similar to deleting RawContacts, deleting a Groups row may not immediately delete the Groups row. 
 In this case, it is marked as deleted. 
 
-> A Group is marked for deletion as specified by `GroupsColumns.DELETED`.
+> ℹ️ A Group is marked for deletion as specified by `GroupsColumns.DELETED`.
 
 Typically, deleting Groups immediately removes the row from the Groups table. However,
 Groups row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
@@ -1093,7 +1090,7 @@ not be associated with an Account. The RawContacts row(s) may have rows in the D
 These profile table rows have special IDs that differ from regular rows. See  
 `ContactsContract.isProfileId`.
 
-> Note that the Contacts Provider will throw an IllegalArgument exception when attempting to include
+> ℹ️ The Contacts Provider will throw an IllegalArgument exception when attempting to include
 > `ContactsColumns.IS_USER_PROFILE` and `RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE` columns
 > in Data table queries. I have not yet tried including these columns in the Contacts or RawContacts
 > table queries.
@@ -1142,7 +1139,7 @@ In other words, one account can have one profile RawContact. Whether or not prof
 associated to an Account can be carried over and synced across devices and users is up to the
 Contacts Provider / Sync provider for that Account.
 
-> From my experience, profile RawContacts associated to an Account is not carried over / synced
+> ℹ️ From my experience, profile RawContacts associated to an Account is not carried over / synced
 > across devices or users.
 
 Despite the documentation of "one profile RawContact per one Account", the Contacts Provider allows
@@ -1234,7 +1231,7 @@ There is currently no way to disable the `copy` function of data classes (that I
 thing we can do is to provide documentation to consumers, insisting against the use of the `copy`
 method as it may lead to unwanted side effects when updating and deleting contacts.
 
-> We could just use regular classes instead of data classes but entities should be data classes
+> ℹ️ We could just use regular classes instead of data classes but entities should be data classes
 > because it is what they are (know what I mean?!). Also, I'd hate to have to generate equals and
 > hashcode functions for them, which will make the code harder to maintain. Though, we might do this
 > anyways at some point if we want to make it possible for a mutable entity to equal an immutable
@@ -1275,7 +1272,7 @@ data class MutableAddress(
 )
 ```
 
-> Note the use of `sealed class` is to prevent consumers from defining their own entities. This
+> ℹ️ The use of `sealed class` is to prevent consumers from defining their own entities. This
 > restriction may or may not change in the future.
 
 Notice that there is nothing mutable in the immutable `Contact`. Everything are `val`s and the data
@@ -1299,8 +1296,8 @@ fun doSomethingAndReturn(contact: ContactEntity) = when (contact) {
 }
 ```
 
-> Note that the **mutable entities provided in this library are NOT thread-safe**. Consumers will
-> have to perform their own synchronizations if they want to use and mutate mutable entities in
+> ℹ️ The **mutable entities provided in this library are NOT thread-safe**. Consumers will have to 
+> perform their own synchronizations if they want to use and mutate mutable entities in
 > multi-threaded scenarios.
 
 ### The cost of the current immutability implementation
@@ -1352,10 +1349,10 @@ data class MutableAddress(
 Notice that there is a non-concrete declaration (i.e. `Contact`, `RawContact`, and `Address`) and
 just one concrete implementation (i.e. `MutableContact`, `MutableRawContact`, and `MutableAddress`).
 
-> Note that a `val` declaration can be overridden by a `var`. Keep in mind that `val` only requires
-> getters whereas `var` requires both getters and setters. Therefore, a `var` cannot be overridden
-> by a `val`. Or maybe there is a different reason Kotlin imposes this restriction =)
-> On a similar note, the `List` interface can be overridden to a `MutableList`.
+> ℹ️ A `val` declaration can be overridden by a `var`. Keep in mind that `val` only requires getters
+> whereas `var` requires both getters and setters. Therefore, a `var` cannot be overridden by a 
+> `val`. Or maybe there is a different reason Kotlin imposes this restriction. On a similar note, 
+> the `List` interface can be overridden to a `MutableList`.
 
 We, as API contributors, can avoid having to write seemingly duplicate functions and extensions!
 

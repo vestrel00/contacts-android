@@ -9,8 +9,7 @@ An instance of the `DataQueryFactory` API is obtained by,
 val query = Contacts(context).data().query()
 ```
 
-> To retrieve all kinds of data via Contacts/RawContacts, read 
-> [Query contacts](./../basics/query-contacts.md)
+> ℹ️ To retrieve all kinds of data via Contacts/RawContacts, read [Query contacts](./../basics/query-contacts.md)
 > and [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 ## Data queries
@@ -72,7 +71,7 @@ For example, to limit the search to data belonging to only one account,
 .accounts(Account("john.doe@gmail.com", "com.google"))
 ```
 
-> For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 data are included in the search.
@@ -83,7 +82,7 @@ device-only contacts, which are not synced.
 
 For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
-> Note that this may affect performance. This may require one or more additional queries, internally
+> ℹ️ This may affect performance. This may require one or more additional queries, internally
 > performed in this function, which increases the time required for the search. Therefore, you
 > should only specify this if you actually need it.
 
@@ -140,8 +139,8 @@ For example, to only get a maximum 20 data, skipping the first 20,
 
 This is useful for pagination =)
 
-> Note that it is recommended to limit the number of data when querying to increase performance
-> and decrease memory cost.
+> ℹ️ It is recommended to limit the number of data when querying to increase performance and 
+> decrease memory cost.
 
 ## Executing the query
 
@@ -187,7 +186,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 > listening to Contacts database changes.
 
 ## Performing the query with permission
@@ -221,8 +220,8 @@ read [Query custom data](./../customdata/query-custom-data.md).
 Use the corresponding `contacts.core.Fields` combined with the extensions from `contacts.core.Where` 
 to form WHERE clauses. 
 
-> This docs page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
-> If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
+> ℹ️ This docs page will not provide a tutorial on database where clauses. It assumes that you know 
+> the basics. If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
 
 For example, to get all nicknames from all contacts,
 

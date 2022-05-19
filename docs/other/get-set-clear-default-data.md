@@ -7,7 +7,7 @@ Contacts app Contact details activity, long pressing an email or phone shows a p
 option to set it as default. When a particular email or phone is set as default, sending an email
 and making a phone call to that contact will use that default email and phone respectively.
 
-> For more info on the common data kinds, read about [API Entities](./../entities/about-api-entities.md).
+> ℹ️ For more info on the common data kinds, read about [API Entities](./../entities/about-api-entities.md).
 
 ## Getting default data
 
@@ -104,7 +104,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing default data management with permission
 
@@ -115,10 +115,6 @@ setting/clearing default data will fail.
 ------------------------
 
 ## Developer notes (or for advanced users)
-
-> The following section are note from developers of this library for other developers. It is copied
-> from the [DEV_NOTES](./../dev-notes.md). You may still read the following as a consumer of the library
-> in case you need deeper insight.
 
 As per documentation, for a set of data rows with the same mimetype (e.g. a set of emails), there
 should only be one primary data row (e.g. email) per RawContact and one super primary data row per

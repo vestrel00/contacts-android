@@ -10,9 +10,9 @@ An instance of the `AccountsLocalRawContactsUpdate` API is obtained by,
 val accountsLocalRawContactsUpdate = Contacts(context).accounts().updateLocalRawContactsAccount()
 ```
 
-> For more info on local RawContacts, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+> ℹ️ For more info on local RawContacts, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
-> For more info on syncing, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+> ℹ️ For more info on syncing, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 ## Basic usage
 
@@ -96,7 +96,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the update with permission
 
@@ -122,10 +122,6 @@ All updates will be limited to the Profile RawContacts, whether it exists or not
 ------------------------
 
 ## Developer notes (or for advanced users)
-
-> The following section are note from developers of this library for other developers. It is copied
-> from the [DEV_NOTES](./../dev-notes.md). You may still read the following as a consumer of the library
-> in case you need deeper insight.
 
 Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
 provides an API to support;

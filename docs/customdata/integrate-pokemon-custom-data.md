@@ -4,7 +4,7 @@ This library provides extensions for `Pokemon` custom data that allows you to re
 pokemon data for all of your contacts. These (optional) extensions live in the 
 `customdata-pokemon` module. 
 
-> If you are looking to create your own custom data or get more insight on how the `Pokemon` 
+> ℹ️ If you are looking to create your own custom data or get more insight on how the `Pokemon` 
 > custom data was built, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 
 ## Register the pokemon custom data with the Contacts API instance

@@ -10,8 +10,6 @@ person or not.
 Hence, this library provides extensions in `contacts.core.util.ContactLinks.kt` to allow for linking
 and unlinking two or more Contacts (and their constituent RawContacts).
 
--------------------
-
 ## Linking
 
 To link three Contacts and all of their constituent RawContacts into a single Contact,
@@ -54,7 +52,7 @@ This function only instructs the Contacts Provider which RawContacts should be a
 single Contact. Details on how RawContacts are aggregated into a single Contact are left to the
 Contacts Provider.
 
-> Profile Contact/RawContacts are not supported! This operation will fail if given any profile
+> ℹ️ Profile Contact/RawContacts are not supported! This operation will fail if given any profile
 > Contact/RawContacts .
 
 ### Handling the link result
@@ -71,7 +69,7 @@ To get the ID of the parent Contact of all linked RawContacts,
 val contactId: Long? = linkResult.contactId
 ```
 
-> Note that the `contactId` will belong to one of the linked Contacts.
+> ℹ️ The `contactId` will belong to one of the linked Contacts.
 
 Once you have the Contact ID, you can retrieve the Contact via the `Query` API,
 
@@ -82,7 +80,7 @@ val contact = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactLikResult`. To get the parent Contact 
 of all linked RawContacts,
@@ -90,8 +88,6 @@ of all linked RawContacts,
 ```kotlin
 val contact = linkResult.contact(contactsApi)
 ```
-
--------------------
 
 ## Unlinking
 
@@ -106,7 +102,7 @@ Contacts.
 
 The above does nothing and will fail if the Contact only has one constituent RawContact.
 
-> Profile Contact/RawContacts are not supported! This operation will fail if given any profile 
+> ℹ️ Profile Contact/RawContacts are not supported! This operation will fail if given any profile 
 > Contact/RawContacts .
 
 ### Handling the unlink result
@@ -132,7 +128,7 @@ val contacts = contactsApi
     .find()
 ```
 
-> For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
 Alternatively, you may use the extensions provided in `ContactLikResult`. To get the Contacts
 of all unlinked RawContacts,
@@ -140,8 +136,6 @@ of all unlinked RawContacts,
 ```kotlin
 val contacts = unlinkResult.contacts(contactsApi)
 ```
-
-------------------
 
 ## Changes are immediate and are not applied to the receiver
 
@@ -167,7 +161,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing linking/unlinking with permission
 
@@ -181,20 +175,16 @@ TODO Update this section as part of issue [#138](https://github.com/vestrel00/co
 You may link Contacts with RawContacts that belong to different Accounts. Any RawContact Data
 modifications are synced per Account sync settings.
 
-> For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
 RawContacts that are not associated with an Account are local to the device and therefore will not
 be synced even if it is linked to a Contact with a RawContact that is associated with an Account.
 
-> For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
 
 ------------------------
 
 ## Developer notes (or for advanced users)
-
-> The following section are note from developers of this library for other developers. It is copied
-> from the [DEV_NOTES](./../dev-notes.md). You may still read the following as a consumer of the library
-> in case you need deeper insight.
 
 ### Behavior of linking/merging/joining contacts (AggregationExceptions)
 
@@ -258,8 +248,8 @@ difference is that Contact X's display name will be set to Contact Y's display n
 by the native Contacts app manually by setting Contact Y's Data name row to be the "default"
 (isPrimary and isSuperPrimary both set to 1).
 
-> The AggregationExceptions table records the linked RawContacts's IDs in ascending order regardless
-> of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.
+> ℹ️ The AggregationExceptions table records the linked RawContacts IDs in ascending order 
+> regardless of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.
 
 The RawContacts and Data table remains the same except the joined contactId column values have now
 been changed to the id of Contact X. All Data rows' isSuperPrimary value has been set to 0 though
@@ -272,7 +262,7 @@ sets the Contact display name to whatever the default name row is for the Contac
 more info on Contact display name resolution, read the **Contact Display Name and Default Name
 Rows** section.
 
-> Note that display name resolution is different for APIs below 21 (pre-lollipop).
+> ℹ️ Display name resolution is different for APIs below 21 (pre-lollipop).
 
 The display name of the RawContacts remain the same.
 
@@ -290,18 +280,17 @@ A RawContact may have a full-sized photo saved as a file and a thumbnail version
 the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
 references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).
 
-> Note that when removing the photo in the native contacts app, the photo data row is not
-> immediately deleted, though the `PHOTO_FILE_ID` is immediately set to null. This may result in
-> the `PHOTO_URI` and `PHOTO_THUMBNAIL_URI` to still have a valid image uri even though the photo
-> has been "removed". This library immediately deletes the photo data row, which seems to work
-> perfectly.
+> ℹ️ When removing the photo in the native contacts app, the photo data row is not immediately 
+> deleted, though the `PHOTO_FILE_ID` is immediately set to null. This may result in the `PHOTO_URI`
+> and `PHOTO_THUMBNAIL_URI` to still have a valid image uri even though the photo has been 
+> "removed". This library immediately deletes the photo data row, which seems to work perfectly.
 
 **Data inserts**
 
 In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
 first RawContact in the list sorted by the RawContact ID.
 
-> This may not be the same as the RawContact referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
+> ℹ️ This may not be the same as the RawContact referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
 
 **UI changes?**
 
@@ -382,7 +371,7 @@ If available, the "default" (isPrimary and isSuperPrimary set to 1) name row for
 automatically set as the Contact display name by the Contacts Provider. Otherwise, the Contacts
 Provider chooses from any of the other suitable data from the aggregate Contact.
 
-> The `ContactsColumns.NAME_RAW_CONTACT_ID` is automatically updated by the Contacts Provider
+> ℹ️ The `ContactsColumns.NAME_RAW_CONTACT_ID` is automatically updated by the Contacts Provider
 > along with the display name.
 
 The default status of other sources (e.g. email) does not affect the Contact display name.
@@ -407,7 +396,7 @@ display name somehow. I'm not sure how. If someone figures it out, please let me
 updating the Contact `DISPLAY_NAME` directly but it does not work. Setting a name row as default
 also does not affect the Contact `DISPLAY_NAME`.
 
-## Effects of linking/unlinking contacts
+### Effects of linking/unlinking contacts
 
 When two or more Contacts (along with their constituent RawContacts) are linked into a single
 Contact those Contacts will be merged into one of the existing Contact row. The Contacts that have

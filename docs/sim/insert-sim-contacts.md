@@ -69,7 +69,7 @@ To check if a particular insert succeeded,
 val firstInsertSuccessful = insertResult.isSuccessful(newContact1)
 ```
 
-> The `IccProvider` does not yet return the row ID os newly inserted contacts. Look at the "TODO"
+> ℹ️ The `IccProvider` does not yet return the row ID os newly inserted contacts. Look at the "TODO"
 > at line 259 of Android's [IccProvider](https://android.googlesource.com/platform/frameworks/opt/telephony/+/51302ef/src/java/com/android/internal/telephony/IccProvider.java#259).
 > Therefore, this library's insert API is does not yet support getting the new rows from the result.
 
@@ -106,7 +106,7 @@ read [Execute work outside of the UI thread using coroutines](./../async/async-e
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
 
 ## Performing the insert with permission
 

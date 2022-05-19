@@ -9,7 +9,7 @@ legal purposes such as upholding [GDPR](https://gdpr-info.eu) guidelines. If you
 contact data in production to remote data centers for analytics or crash reporting, then it is 
 important to redact certain parts of every contact's data.
 
-> For more info on logging, read [Log API input and output](./../logging/log-api-input-output.md).
+> ℹ️ For more info on logging, read [Log API input and output](./../logging/log-api-input-output.md).
 
 ## DISCLAIMER: This is NOT legal advice!
 
@@ -48,7 +48,7 @@ contain sensitive information.
 The `redactedCopy` function will return an actual copy of the entity, except with sensitive data
 redacted. In addition to logging, this will allow consumers to do cool things like implementing a
 redacted contact view! Imagine a button that the user can press to redact everything in their
-contact form. Cool? Yes! Useful? Maybe? :grin:
+contact form. Cool? Yes! Useful? Maybe?
 
 Redacted copies have `isRedacted` set to true to indicate that data has already been redacted.
 
@@ -138,10 +138,11 @@ execution to get visibility on input and output. All log outputs are also redact
 
 For more info on logging, read [Log API input and output](./../logging/log-api-input-output.md).
 
-## Developer notes
+------------------------
 
-I know that we cannot prevent consumers of this API from violating privacy laws if they really
-want to. BUT, the library should provide consumers an easy way to be GDPR-compliant! This is not
-necessary for all libraries to implement but this library deals with sensitive, private user data.
-Therefore, we need to be extra careful and provide consumers a GDPR-compliant way to log everything 
-in this library!
+## Developer notes (or for advanced users)
+
+We cannot prevent users of this API from violating privacy laws if they really want to. BUT, the 
+library should provide consumers an easy way to be GDPR-compliant! This is not necessary for all 
+libraries to implement but this library deals with sensitive, private user data. Therefore, we need 
+to be extra careful and provide consumers a GDPR-compliant way to log everything in this library!
