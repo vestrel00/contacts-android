@@ -1916,7 +1916,7 @@ Contacts app Contact details activity, long pressing an email or phone shows a p
 option to set it as default. When a particular email or phone is set as default, sending an email
 and making a phone call to that contact will use that default email and phone respectively.</p>
 <blockquote>
-<p>For more info on the common data kinds, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
+<p>ℹ️ For more info on the common data kinds, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
 <h2 id="getting-default-data">Getting default data<a class="headerlink" href="#getting-default-data" title="Permanent link">&para;</a></h2>
 <p>To get the default Contact email and phone from all RawContacts,</p>
@@ -1993,7 +1993,7 @@ choppy UI. </p>
 For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
 </blockquote>
 <h2 id="performing-default-data-management-with-permission">Performing default data management with permission<a class="headerlink" href="#performing-default-data-management-with-permission" title="Permanent link">&para;</a></h2>
 <p>Getting and setting/clearing default data require the <code>android.permission.READ_CONTACTS</code> and
@@ -2001,11 +2001,6 @@ For more info, read <a href="../../async/async-execution-coroutines/">Execute wo
 setting/clearing default data will fail.</p>
 <hr />
 <h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>The following section are note from developers of this library for other developers. It is copied
-from the <a href="../../dev-notes/">DEV_NOTES</a>. You may still read the following as a consumer of the library
-in case you need deeper insight.</p>
-</blockquote>
 <p>As per documentation, for a set of data rows with the same mimetype (e.g. a set of emails), there
 should only be one primary data row (e.g. email) per RawContact and one super primary data row per
 Contact. Furthermore, a data row that is super primary must also be primary.</p>

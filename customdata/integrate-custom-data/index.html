@@ -2125,13 +2125,13 @@ boilerplate code that needs to be written. Thankfully none of this stuff is diff
 <li>Use your custom data in queries, inserts, updates, and deletes</li>
 </ol>
 <blockquote>
-<p>Maybe someday someone with code generation experience (or I'll learn how to do it), will create
+<p>ℹ️ Maybe someday someone with code generation experience (or I'll learn how to do it), will create
 annotations and annotation processors to eliminate having to manually write this stuff =)</p>
 </blockquote>
 <p>To help illustrate the above steps, we'll use the <code>HandleName</code> and <code>Gender</code> custom data provided in
 this library's <code>customdata-handlename</code> and <code>customdata-gender</code> respectively as an example.</p>
 <blockquote>
-<p>For more specifics on these custom data, read
+<p>ℹ️ For more specifics on these custom data, read
 <a href="../integrate-gender-custom-data/">Integrate the gender custom data</a> and
 <a href="../integrate-handlename-custom-data/">Integrate the handle name custom data</a>.</p>
 </blockquote>
@@ -2143,7 +2143,7 @@ this library's <code>customdata-handlename</code> and <code>customdata-gender</c
 <li>Summary of limitations</li>
 </ul>
 <blockquote>
-<p>Some of the code used in these examples are in Kotlin. If you would like a Java version of this
+<p>ℹ️ Some of the code used in these examples are in Kotlin. If you would like a Java version of this
 page, create an issue in GitHub. You are also free to file a pull request with your own page. In
 the event that a Java version of this page is created, this quote block should be replaced with
 a link to that page.</p>
@@ -2633,7 +2633,7 @@ integrate your custom data with all of the APIs provided in the library.</p>
 <h2 id="14-define-the-custom-data-entry-registration">14. Define the custom data entry registration<a class="headerlink" href="#14-define-the-custom-data-entry-registration" title="Permanent link">&para;</a></h2>
 <p>The entry registration provides a way for you to keep your Entry <code>internal</code> to your library module.</p>
 <blockquote>
-<p>In Java, the closes thing to this is package-private.</p>
+<p>ℹ️ In Java, the closest thing to this is package-private.</p>
 </blockquote>
 <p>This is not necessary to implement. Feel free to make your <code>Entry</code> public so that it can be handed
 off to the custom data registry. </p>
@@ -2670,8 +2670,8 @@ previous step or the entry itself defined in the step prior.</p>
 </code></pre></div>
 <p>Using <code>Gender</code> and <code>HandleName</code> entry,</p>
 <blockquote>
-<p>Note that this is not possible with <code>Gender</code> and <code>HandleName</code> as their entries are internal.
-This is for demonstration purposes only.</p>
+<p>ℹ️ This is not possible with <code>Gender</code> and <code>HandleName</code> as their entries are internal. This is for 
+demonstration purposes only.</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kd">val</span> <span class="nv">contactsApi</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span>
 <a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>    <span class="n">context</span><span class="p">,</span>
@@ -2711,9 +2711,9 @@ you to implement your own sync adapters for your own custom data. </p>
 your custom data to be visible in your application, then you should NOT do the things described in
 this part of the guide.</p>
 <blockquote>
-<p>Note that the <a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts app</a> keeps its "File as" custom data invisible
-to other Contacts apps such as the AOSP Contacts app. However, it exposes the "Custom field+label"
-custom data by doing the things described in this section.</p>
+<p>ℹ️ The <a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts app</a> keeps its "File as" custom data invisible to other 
+Contacts apps such as the AOSP Contacts app. However, it exposes the "Custom field+label" custom 
+data by doing the things described in this section.</p>
 </blockquote>
 <p><strong>Important!</strong> The first criteria for being able to show your custom data in the Contacts app is to
 define and implement your own sync adapter. If you do not have a sync adapter implementation, your
@@ -2824,7 +2824,7 @@ these limitations.</p>
 <li><a href="../integrate-googlecontacts-custom-data/"><code>customdata-googlecontacts</code></a></li>
 </ul>
 <blockquote>
-<p>Please update the above list whenever adding new custom data modules.</p>
+<p>ℹ️ Please update the above list whenever adding new custom data modules.</p>
 </blockquote>
 
               

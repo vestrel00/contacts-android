@@ -506,8 +506,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#developer-notes" class="md-nav__link">
-    Developer notes
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
   </a>
   
 </li>
@@ -1871,8 +1871,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#developer-notes" class="md-nav__link">
-    Developer notes
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
   </a>
   
 </li>
@@ -1904,7 +1904,7 @@ legal purposes such as upholding <a href="https://gdpr-info.eu">GDPR</a> guideli
 contact data in production to remote data centers for analytics or crash reporting, then it is 
 important to redact certain parts of every contact's data.</p>
 <blockquote>
-<p>For more info on logging, read <a href="../../logging/log-api-input-output/">Log API input and output</a>.</p>
+<p>ℹ️ For more info on logging, read <a href="../../logging/log-api-input-output/">Log API input and output</a>.</p>
 </blockquote>
 <h2 id="disclaimer-this-is-not-legal-advice">DISCLAIMER: This is NOT legal advice!<a class="headerlink" href="#disclaimer-this-is-not-legal-advice" title="Permanent link">&para;</a></h2>
 <p>This library is written and maintained purely by software developers with no official education or
@@ -1931,7 +1931,7 @@ contain sensitive information.</p>
 <p>The <code>redactedCopy</code> function will return an actual copy of the entity, except with sensitive data
 redacted. In addition to logging, this will allow consumers to do cool things like implementing a
 redacted contact view! Imagine a button that the user can press to redact everything in their
-contact form. Cool? Yes! Useful? Maybe? :grin:</p>
+contact form. Cool? Yes! Useful? Maybe?</p>
 <p>Redacted copies have <code>isRedacted</code> set to true to indicate that data has already been redacted.</p>
 <h2 id="redactable-apis">Redactable APIs<a class="headerlink" href="#redactable-apis" title="Permanent link">&para;</a></h2>
 <p>All Create (Query), Read (Query), Update, and Delete APIs
@@ -2006,12 +2006,12 @@ build some cool stuff using it. I'll let your imagination take over from here =)
 <p>All terminal API functions such as <code>find</code> and <code>commit</code> can be automatically logged prior and post 
 execution to get visibility on input and output. All log outputs are also redactable!</p>
 <p>For more info on logging, read <a href="../../logging/log-api-input-output/">Log API input and output</a>.</p>
-<h2 id="developer-notes">Developer notes<a class="headerlink" href="#developer-notes" title="Permanent link">&para;</a></h2>
-<p>I know that we cannot prevent consumers of this API from violating privacy laws if they really
-want to. BUT, the library should provide consumers an easy way to be GDPR-compliant! This is not
-necessary for all libraries to implement but this library deals with sensitive, private user data.
-Therefore, we need to be extra careful and provide consumers a GDPR-compliant way to log everything 
-in this library!</p>
+<hr />
+<h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
+<p>We cannot prevent users of this API from violating privacy laws if they really want to. BUT, the 
+library should provide consumers an easy way to be GDPR-compliant! This is not necessary for all 
+libraries to implement but this library deals with sensitive, private user data. Therefore, we need 
+to be extra careful and provide consumers a GDPR-compliant way to log everything in this library!</p>
 
               
             </article>

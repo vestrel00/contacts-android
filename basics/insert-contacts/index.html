@@ -2051,8 +2051,8 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">insert</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">insert</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
-<p>If you want to create/insert the device owner Contact Profile, read <a href="../../profile/insert-profile/">Insert device owner Contact profile</a>.</p>
-<p>If you want to insert Data into a new or existing contact, read <a href="../../data/insert-data-sets/">Insert data into new or existing contacts</a>.</p>
+<p>ℹ️ If you want to create/insert the device owner Contact Profile, read <a href="../../profile/insert-profile/">Insert device owner Contact profile</a>.</p>
+<p>ℹ️ If you want to insert Data into a new or existing contact, read <a href="../../data/insert-data-sets/">Insert data into new or existing contacts</a>.</p>
 </blockquote>
 <h2 id="a-basic-insert">A basic insert<a class="headerlink" href="#a-basic-insert" title="Permanent link">&para;</a></h2>
 <p>To create/insert a contact with a name of "John Doe" who works at Amazon with a work email of
@@ -2130,18 +2130,18 @@ ignored and are not inserted by insert APIs.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">forAccount</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.google&quot;</span><span class="p">))</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
+<p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 </blockquote>
 <h3 id="local-rawcontacts">Local RawContacts<a class="headerlink" href="#local-rawcontacts" title="Permanent link">&para;</a></h3>
 <p>If no Account is provided, or null is provided, or if an incorrect account is provided, the
 RawContacts inserted will not be associated with an Account. RawContacts inserted without an
 associated account are considered local or device-only contacts, which are not synced.</p>
 <blockquote>
-<p>For more info, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
+<p>ℹ️ For more info, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
 </blockquote>
 <p>There are also certain data kinds that are ignored on insert or update if the RawContact is local.</p>
 <blockquote>
-<p>For more info, read about <a href="../../entities/about-local-contacts/">Local (device-only) contacts</a>.</p>
+<p>ℹ️ For more info, read about <a href="../../entities/about-local-contacts/">Local (device-only) contacts</a>.</p>
 </blockquote>
 <h2 id="including-only-specific-data">Including only specific data<a class="headerlink" href="#including-only-specific-data" title="Permanent link">&para;</a></h2>
 <p>To include only the given set of fields (data) in each of the insert operation,</p>
@@ -2185,7 +2185,7 @@ associated account are considered local or device-only contacts, which are not s
 <a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
+<p>ℹ️ For more info, read <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Alternatively, you may use the extensions provided in <code>InsertResult</code>. To get all newly created
 Contacts,</p>
@@ -2223,7 +2223,7 @@ the <code>async</code> module. For more info,
 read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
 </blockquote>
 <h2 id="performing-the-insert-with-permission">Performing the insert with permission<a class="headerlink" href="#performing-the-insert-with-permission" title="Permanent link">&para;</a></h2>
 <p>Inserts require the <code>android.permission.WRITE_CONTACTS</code> and <code>android.permission.GET_ACCOUNTS</code>

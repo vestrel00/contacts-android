@@ -1910,7 +1910,7 @@ contact them via telephony communications (calls, SMS, MMS).</p>
 <p>The <code>BlockedNumber.number</code> is the phone number to block as the user entered it. It may or may not be
 formatted (e.g. (012) 345-6789).</p>
 <blockquote>
-<p>Other than regular phone numbers, the blocked number provider can also store addresses (such
+<p>ℹ️ Other than regular phone numbers, the blocked number provider can also store addresses (such
 as email) from which a user can receive messages, and calls.</p>
 </blockquote>
 <p>The <code>BlockedNumber.normalizedNumber</code> is the <code>number</code>'s E164 representation (e.g. +10123456789). This
@@ -1919,7 +1919,7 @@ null if the provider fails to infer.) If present, <code>number</code> has to be 
 otherwise). If you want to set this value yourself, you may want to look
 at <code>android.telephony.PhoneNumberUtils</code>.</p>
 <blockquote>
-<p>This may contain an email if <code>number</code> is an email.</p>
+<p>ℹ️ This may contain an email if <code>number</code> is an email.</p>
 </blockquote>
 <h2 id="privileges-to-readwrite-blocked-numbers-directly">Privileges to read/write blocked numbers directly<a class="headerlink" href="#privileges-to-readwrite-blocked-numbers-directly" title="Permanent link">&para;</a></h2>
 <p>Reading and writing directly to the Blocked Numbers database table can only be done by certain
@@ -1943,7 +1943,7 @@ successfully use this function <strong>and therefore the bocked number APIs prov
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">&lt;/queries&gt;</span>
 </code></pre></div>
 <blockquote>
-<p>The above is required to be able to check if your app is the default SMS/messaging app.</p>
+<p>ℹ️ The above is required to be able to check if your app is the default SMS/messaging app.</p>
 </blockquote>
 <h2 id="use-the-builtin-blocked-numbers-activity">Use the builtin Blocked Numbers activity<a class="headerlink" href="#use-the-builtin-blocked-numbers-activity" title="Permanent link">&para;</a></h2>
 <p>If your app does not have the privilege to read/write directly to the blocked number provider, you

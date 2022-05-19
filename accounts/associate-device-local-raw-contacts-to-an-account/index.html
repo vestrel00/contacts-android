@@ -1983,8 +1983,8 @@ enable syncing.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">accountsLocalRawContactsUpdate</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">accounts</span><span class="p">().</span><span class="na">updateLocalRawContactsAccount</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
-<p>For more info on local RawContacts, read about <a href="../../entities/about-local-contacts/">Local (device-only) contacts</a>.</p>
-<p>For more info on syncing, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
+<p>ℹ️ For more info on local RawContacts, read about <a href="../../entities/about-local-contacts/">Local (device-only) contacts</a>.</p>
+<p>ℹ️ For more info on syncing, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
 </blockquote>
 <h2 id="basic-usage">Basic usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>To associate/add the given local RawContacts to the given account,</p>
@@ -2037,7 +2037,7 @@ the <code>async</code> module. For more info,
 read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
 </blockquote>
 <h2 id="performing-the-update-with-permission">Performing the update with permission<a class="headerlink" href="#performing-the-update-with-permission" title="Permanent link">&para;</a></h2>
 <p>These updates require the <code>android.permission.GET_ACCOUNTS</code> and <code>android.permission.WRITE_CONTACTS</code>. 
@@ -2053,11 +2053,6 @@ RawContacts. To get an instance of this API for Profile data updates,</p>
 <p>All updates will be limited to the Profile RawContacts, whether it exists or not.</p>
 <hr />
 <h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>The following section are note from developers of this library for other developers. It is copied
-from the <a href="../../dev-notes/">DEV_NOTES</a>. You may still read the following as a consumer of the library
-in case you need deeper insight.</p>
-</blockquote>
 <p>Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
 provides an API to support;</p>
 <ul>

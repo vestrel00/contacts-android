@@ -1979,7 +1979,7 @@
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
-<p>Note that it is recommended to get sets of groups for a single account at a time to avoid confusion.</p>
+<p>ℹ️ It is recommended to get sets of groups for a single account at a time to avoid confusion.</p>
 </blockquote>
 <h2 id="specifying-accounts">Specifying Accounts<a class="headerlink" href="#specifying-accounts" title="Permanent link">&para;</a></h2>
 <p>To limit the search to only those Groups associated with one of the given accounts,</p>
@@ -1989,7 +1989,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.google&quot;</span><span class="p">))</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
+<p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 </blockquote>
 <p>If no accounts are specified (this function is not called or called with no Accounts), then all
 Groups of all accounts are included in the search.</p>
@@ -2016,8 +2016,8 @@ parameter.</p>
 </code></pre></div>
 <p>This is useful for pagination =)</p>
 <blockquote>
-<p>Note that it is recommended to limit the number of groups when querying to increase performance
-and decrease memory cost.</p>
+<p>ℹ️ It is recommended to limit the number of groups when querying to increase performance and 
+decrease memory cost.</p>
 </blockquote>
 <h2 id="executing-the-query">Executing the query<a class="headerlink" href="#executing-the-query" title="Permanent link">&para;</a></h2>
 <p>To execute the query,</p>
@@ -2047,7 +2047,7 @@ the call-site. This may result in a choppy UI.</p>
 For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
 </blockquote>
 <h2 id="performing-the-query-with-permission">Performing the query with permission<a class="headerlink" href="#performing-the-query-with-permission" title="Permanent link">&para;</a></h2>
 <p>Queries require the <code>android.permission.READ_CONTACTS</code> permission. If not granted, the query will 
@@ -2059,8 +2059,8 @@ For more info, read <a href="../../permissions/permissions-handling-coroutines/"
 <p>Use the <code>contacts.core.GroupsFields</code> combined with the extensions from <code>contacts.core.Where</code> to form
 WHERE clauses. </p>
 <blockquote>
-<p>This docs page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
-If you don't know the basics, then search for <a href="https://www.google.com/search?q=sqlite+where+clause">sqlite where clause</a>. </p>
+<p>ℹ️ This docs page will not provide a tutorial on database where clauses. It assumes that you know 
+the basics. If you don't know the basics, then search for <a href="https://www.google.com/search?q=sqlite+where+clause">sqlite where clause</a>. </p>
 </blockquote>
 <p>For example, to find groups with a specific title,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Title</span> <span class="n">equalToIgnoreCase</span> <span class="s">&quot;friends&quot;</span> <span class="p">}</span>

@@ -2002,7 +2002,7 @@ used by the Contact. </p>
 Contact photo is just a reference to the RawContact photo. The inverse is also true.</p>
 <p>RawContact photos are retained when linking and unlinking.</p>
 <blockquote>
-<p>For more info, read <a href="../link-unlink-contacts/">Link unlink Contacts</a>.</p>
+<p>ℹ️ For more info, read <a href="../link-unlink-contacts/">Link unlink Contacts</a>.</p>
 </blockquote>
 <h2 id="full-sized-photos-and-thumbnails">Full-sized photos and thumbnails<a class="headerlink" href="#full-sized-photos-and-thumbnails" title="Permanent link">&para;</a></h2>
 <p>Each RawContact may be assigned one photo. The thumbnail is just a downsized version of the 
@@ -2033,7 +2033,7 @@ automatically creates a downsized version of the full-sized photo.</p>
 <a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">}</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read <a href="../../basics/query-contacts/">Query contacts</a>
+<p>ℹ️ For more info, read <a href="../../basics/query-contacts/">Query contacts</a>
 and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Using one of the extension functions in <code>contacts.core.util.ContactPhoto.kt</code> to get photo data,</p>
@@ -2059,7 +2059,7 @@ and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kd">val</span> <span class="nv">photoThumbnailBitmapDrawable</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">photoThumbnailBitmapDrawable</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
 </code></pre></div>
 <blockquote>
-<p>Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.</p>
+<p>ℹ️ The Contact photo is just a reference to one of its RawContact's photo.</p>
 </blockquote>
 <h2 id="setting-contact-photo">Setting contact photo<a class="headerlink" href="#setting-contact-photo" title="Permanent link">&para;</a></h2>
 <p>Setting the photo can only be done after the Contact or RawContact has been inserted. In other 
@@ -2079,7 +2079,7 @@ automatically creates a downsized version of the full-sized photo.</p>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span> <span class="n">photoBitmapDrawable</span><span class="p">)</span>
 </code></pre></div>
 <blockquote>
-<p>Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.</p>
+<p>ℹ️ The Contact photo is just a reference to one of its RawContact's photo.</p>
 </blockquote>
 <h2 id="removing-contact-photo">Removing contact photo<a class="headerlink" href="#removing-contact-photo" title="Permanent link">&para;</a></h2>
 <p>To remove the Contact (and corresponding RawContact) photo (full-sized and thumbnail),</p>
@@ -2089,8 +2089,7 @@ automatically creates a downsized version of the full-sized photo.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
 </code></pre></div>
 <blockquote>
-<p>Keep in mind that the Contact photo is just a reference to one of its RawContact's photo.
-A few things to keep in mind.</p>
+<p>ℹ️ The Contact photo is just a reference to one of its RawContact's photo.</p>
 </blockquote>
 <h2 id="changes-are-immediate-and-are-not-applied-to-the-receiver">Changes are immediate and are not applied to the receiver<a class="headerlink" href="#changes-are-immediate-and-are-not-applied-to-the-receiver" title="Permanent link">&para;</a></h2>
 <p>These apply to set and remove functions.</p>
@@ -2157,7 +2156,7 @@ in a choppy UI.</p>
 For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
 </blockquote>
 <h2 id="performing-photo-management-with-permission">Performing photo management with permission<a class="headerlink" href="#performing-photo-management-with-permission" title="Permanent link">&para;</a></h2>
 <p>Getting and setting photos require the <code>android.permission.READ_CONTACTS</code> and 
@@ -2167,27 +2166,32 @@ will fail.</p>
 <h2 id="faqs">FAQs<a class="headerlink" href="#faqs" title="Permanent link">&para;</a></h2>
 <h3 id="can-contacts-be-insert-with-photo">Can contacts be insert with photo?<a class="headerlink" href="#can-contacts-be-insert-with-photo" title="Permanent link">&para;</a></h3>
 <blockquote>
-<p>Related issues; <a href="https://github.com/vestrel00/contacts-android/issues/116">#116</a> 
-and <a href="https://github.com/vestrel00/contacts-android/issues/119">#119</a></p>
+<p>ℹ️ Asked in issue <a href="https://github.com/vestrel00/contacts-android/issues/116">#116</a></p>
 </blockquote>
-<p>You cannot get/set/remove photos for Contacts/RawContacts that have not yet been inserted in the
+<p>No, you cannot get/set/remove photos for Contacts/RawContacts that have not yet been inserted in the
 Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or result
 APIs can use the extension functions in <code>contacts.core.util.ContactPhoto.kt</code> and
 <code>contacts.core.util.RawContactPhoto.kt</code>.</p>
+<blockquote>
+<p>ℹ️ Issue <a href="https://github.com/vestrel00/contacts-android/issues/119">#119</a> will change the answer
+to yes". THe underlying mechanism will not change but the outward public facing API will change.
+Internally, the insert operation will insert a new row in the Contacts/RawContacts table and then
+attempt to set the photo immediately after.</p>
+</blockquote>
 <p>To insert a new contact "with photo", you should insert the contact first. Then, if the insert
 succeeds, proceed to set the photo.</p>
 <blockquote>
-<p>For more info about insert, read <a href="../../basics/insert-contacts/">Insert contacts</a>.</p>
-<p>Note for contributors; It is possible to include photo <strong>thumbnail</strong> data as part of the insertion
-of a new RawContact using <code>ContactsContract.CommonDataKinds.Photo.PHOTO</code>. The Contacts Provider
-will use the thumbnail as the full-sized photo as well. However, this is not good practice as the
-full-sized photo will have a really low resolution. Showing the full-sized photo in a big view
-will not look good. Therefore, this library does not allow this. Consumers must first insert their
-new RawContact so that they can set the full-sized photo.</p>
+<p>ℹ️ For more info about insert, read <a href="../../basics/insert-contacts/">Insert contacts</a>.</p>
+<p>🗒 Note for contributors; It is possible to include photo <strong>thumbnail</strong> data as part of the 
+insertion of a new RawContact using <code>ContactsContract.CommonDataKinds.Photo.PHOTO</code>. The Contacts 
+Provider will use the thumbnail as the full-sized photo as well. However, this is not good 
+practice as the full-sized photo will have a really low resolution. Showing the full-sized photo 
+in a big view will not look good. Therefore, this library does not allow this. Consumers must 
+first insert their new RawContact so that they can set the full-sized photo.</p>
 </blockquote>
 <h3 id="can-photo-be-set-using-a-uri-instead-of-bytes-and-bitmaps">Can photo be set using a uri instead of bytes and bitmaps?<a class="headerlink" href="#can-photo-be-set-using-a-uri-instead-of-bytes-and-bitmaps" title="Permanent link">&para;</a></h3>
 <blockquote>
-<p>Related issues; <a href="https://github.com/vestrel00/contacts-android/issues/110">#109</a></p>
+<p>ℹ️ Asked in discussion <a href="https://github.com/vestrel00/contacts-android/discussions/195">#195</a></p>
 </blockquote>
 <p>No and yes. The core APIs provided in this library only provides functions that the Contacts 
 Provider natively supports. This means setting Contact or RawContact photo only using bytes (and 

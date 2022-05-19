@@ -384,6 +384,19 @@
     Contacts API Entities
   </a>
   
+    <nav class="md-nav" aria-label="Contacts API Entities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contacts-api-fields" class="md-nav__link">
+    Contacts API Fields
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -396,13 +409,6 @@
         <li class="md-nav__item">
   <a href="#data-kinds-account-restrictions" class="md-nav__link">
     Data kinds Account restrictions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#automatic-data-kinds-creation" class="md-nav__link">
-    Automatic data kinds creation
   </a>
   
 </li>
@@ -432,6 +438,26 @@
   <a href="#syncing-contact-data" class="md-nav__link">
     Syncing contact data
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-data-kinds-creation" class="md-nav__link">
+    Automatic data kinds creation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1868,6 +1894,19 @@
     Contacts API Entities
   </a>
   
+    <nav class="md-nav" aria-label="Contacts API Entities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contacts-api-fields" class="md-nav__link">
+    Contacts API Fields
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1880,13 +1919,6 @@
         <li class="md-nav__item">
   <a href="#data-kinds-account-restrictions" class="md-nav__link">
     Data kinds Account restrictions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#automatic-data-kinds-creation" class="md-nav__link">
-    Automatic data kinds creation
   </a>
   
 </li>
@@ -1916,6 +1948,26 @@
   <a href="#syncing-contact-data" class="md-nav__link">
     Syncing contact data
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
+    Developer notes (or for advanced users)
+  </a>
+  
+    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-data-kinds-creation" class="md-nav__link">
+    Automatic data kinds creation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1963,7 +2015,7 @@ the details so you don't have to!</p>
 </li>
 </ol>
 <blockquote>
-<p>There are more tables but it won't be covered in this docs for brevity. </p>
+<p>ℹ️ There are more tables but it won't be covered in this docs for brevity. </p>
 </blockquote>
 <p>In the example given (E.G.) above,</p>
 <ul>
@@ -2023,10 +2075,40 @@ entities that are not mentioned in this docs for brevity.</p>
 <code>mutableCopy</code> function that returns a mutable copy (typically to be used for inserts and updates 
 and other mutating API functions).</p>
 <blockquote>
-<p>Custom data kinds may also be integrated into the contacts database (though not synced across devices).
-For more info, read <a href="../../customdata/integrate-custom-data/">Integrate custom data</a>.</p>
-<p>Default native and custom data may be retrieved, set, or cleared.
-For more info, read <a href="../../other/get-set-clear-default-data/">Get set clear default Contact data</a>.</p>
+<p>ℹ️ Custom data kinds may also be integrated into the contacts database (though not synced across 
+devices). For more info, read <a href="../../customdata/integrate-custom-data/">Integrate custom data</a>.</p>
+<p>ℹ️ Default native and custom data may be retrieved, set, or cleared. For more info, read 
+<a href="../../other/get-set-clear-default-data/">Get set clear default Contact data</a>.</p>
+</blockquote>
+<h3 id="contacts-api-fields">Contacts API Fields<a class="headerlink" href="#contacts-api-fields" title="Permanent link">&para;</a></h3>
+<p>The fields defined in <code>contacts.core.Fields.kt</code> specify what properties of entities to include in
+read and write operations. For example, to include only the contact display name, organization 
+company, and all phone number fields in a query/insert/update operation,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">queryInsertUpdate</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">mutableSetOf</span><span class="o">&lt;</span><span class="n">AbstractDataField</span><span class="o">&gt;</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">add</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">)</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">add</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Organization</span><span class="p">.</span><span class="na">Company</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">addAll</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Phone</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">})</span>
+</code></pre></div>
+<p>The following entity properties are are used in the read/write operation,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Contact</span> <span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">displayNamePrimary</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">RawContact</span> <span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="n">organization</span> <span class="p">{</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>            <span class="n">company</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="p">}</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="n">phones</span> <span class="p">{</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>            <span class="n">number</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>            <span class="n">normalizedNumber</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>            <span class="n">type</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>            <span class="n">label</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        <span class="p">}</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="p">}</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ For more info, read <a href="../include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 </blockquote>
 <h2 id="data-kinds-count-restrictions">Data kinds count restrictions<a class="headerlink" href="#data-kinds-count-restrictions" title="Permanent link">&para;</a></h2>
 <p>A <code>RawContact</code> may have at most one OR no limits of certain kinds of data.</p>
@@ -2059,27 +2141,6 @@ when integrating custom data via the <code>CustomDataCountRestriction</code>.</p
 <p>Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
 associated with an Account). </p>
 <p>For more info, read about <a href="../about-local-contacts/">Local (device-only) contacts</a>.</p>
-<h2 id="automatic-data-kinds-creation">Automatic data kinds creation<a class="headerlink" href="#automatic-data-kinds-creation" title="Permanent link">&para;</a></h2>
-<p>An entry of each of the following data kinds are automatically created for all contacts, if not
-provided;</p>
-<ul>
-<li><code>GroupMembership</code>, underlying value defaults to the account's default system group</li>
-<li><code>Name</code>, underlying value defaults to null</li>
-<li><code>Nickname</code>, underlying value defaults to null</li>
-<li><code>Note</code>, underlying value defaults to null</li>
-</ul>
-<p>This automatic creation occur automatically in the background (typically after creation) only for
-RawContacts that are associated with an Account. If a valid account is provided, membership to the
-(auto add) system group is automatically created immediately by the Contacts Provider at the time of
-creation. The name, nickname, and note are automatically created at a later time.</p>
-<blockquote>
-<p>Note that the query APIs in this library do not return blanks in results. In this case, the <code>Name</code>, 
-<code>Nickname</code>, and <code>Note</code> will not be included in the RawContact because their primary values are all
-null. Blanks are also ignored on insert and deleted on update. 
-For more info, read about <a href="../about-blank-data/">Blank data</a>.</p>
-</blockquote>
-<p>If a valid account is not provided, no entries of the above are automatically created.</p>
-<p>To determine if a RawContact is associated with an Account or not, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 <h2 id="data-integrity">Data integrity<a class="headerlink" href="#data-integrity" title="Permanent link">&para;</a></h2>
 <p>There is a section in the official Contacts Provider documentation about "Data Integrity";
 https://developer.android.com/guide/topics/providers/contacts-provider#DataIntegrity</p>
@@ -2108,92 +2169,94 @@ to us in the first place. The question is, should this library provide functions
 support custom data from other apps in the future... Probably, yes!</p>
 <p>For more info, read <a href="../../customdata/integrate-custom-data-from-other-apps/">Integrate custom data from other apps</a>.</p>
 <h2 id="accessing-contact-data">Accessing contact data<a class="headerlink" href="#accessing-contact-data" title="Permanent link">&para;</a></h2>
-<p>When you have an instance of <code>Contact</code>, you have complete (and correct) access to data stored in it.</p>
+<p>When you have an instance of <code>Contact</code>, you have complete access to data stored in it.</p>
 <p>To access data of a Contact with only one RawContact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">contact</span><span class="p">:</span> <span class="n">Contact</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">val</span> <span class="nv">rawContact</span><span class="p">:</span> <span class="n">RawContact</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">.</span><span class="na">first</span><span class="p">()</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="s">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="s">        ID: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">id</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="s">        Lookup Key: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lookupKey</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="s">        Display name: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNamePrimary</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="s">        Display name alt: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNameAlt</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="s">        Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="s">        Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="s">        Last updated: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lastUpdatedTimestamp</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="s">        Starred?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">starred</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="s">        Send to voicemail?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">sendToVoicemail</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="s">        Ringtone: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="s">        Addresses: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">addresses</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="s">        Emails: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">emails</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="s">        Events: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">events</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="s">        Group memberships: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">groupMemberships</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="s">        IMs: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">ims</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="s">        Name: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">name</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="s">        Nickname: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">nickname</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="s">        Note: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">note</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="s">        Organization: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">organization</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="s">        Phones: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">phones</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="s">        Relations: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">relations</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="s">        SipAddress: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">sipAddress</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="s">        Websites: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">websites</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="s">    &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="c1">// Photo require separate blocking function calls.</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span> <span class="nv">contact</span><span class="p">:</span> <span class="n">Contact</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">val</span> <span class="nv">rawContact</span><span class="p">:</span> <span class="n">RawContact</span> <span class="o">=</span> <span class="n">contact</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">.</span><span class="na">first</span><span class="p">()</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="s">&quot;&quot;&quot;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s">        ID: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">id</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s">        Lookup Key: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lookupKey</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s">        Display name: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNamePrimary</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s">        Display name alt: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNameAlt</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s">        Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s">        Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="s">        Last updated: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lastUpdatedTimestamp</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="s">        Starred?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">starred</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="s">        Send to voicemail?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">sendToVoicemail</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="s">        Ringtone: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="s">        Addresses: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">addresses</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="s">        Emails: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">emails</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="s">        Events: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">events</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="s">        Group memberships: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">groupMemberships</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="s">        IMs: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">ims</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="s">        Name: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">name</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="s">        Nickname: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">nickname</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="s">        Note: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">note</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="s">        Organization: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">organization</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="s">        Phones: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">phones</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="s">        Relations: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">relations</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="s">        SipAddress: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">sipAddress</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="s">        Websites: </span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">websites</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="s">    &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>    <span class="c1">// Photo require separate blocking function calls.</span>
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="p">)</span>
 </code></pre></div>
-<p>To access data of a Contact with possibly more than one RawContact, we can use <code>ContactData</code>
+<p>To access data of a Contact with possibly more than one RawContact, we can use <code>ContactData.kt</code>
 extensions to make our life easier,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span> <span class="nv">contact</span><span class="p">:</span> <span class="n">Contact</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="s">&quot;&quot;&quot;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s">        ID: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">id</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s">        Lookup Key: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lookupKey</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s">        Display name: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNamePrimary</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="s">        Display name alt: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNameAlt</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="s">        Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="s">        Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="s">        Last updated: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lastUpdatedTimestamp</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="s">        Starred?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">starred</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="s">        Send to voicemail?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">sendToVoicemail</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="s">        Ringtone: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="s">        Aggregate data from all RawContacts of the contact</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="s">        -----------------------------------</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="s">        Addresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">addressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="s">        Emails: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">emailList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="s">        Events: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">eventList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="s">        Group memberships: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">groupMembershipList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="s">        IMs: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">imList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="s">        Names: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="s">        Nicknames: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nicknameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="s">        Notes: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">noteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="s">        Organizations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">organizationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="s">        Phones: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">phoneList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="s">        Relations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">relationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="s">        SipAddresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">sipAddressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="s">        Websites: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">websiteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="s">        -----------------------------------</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="s">    &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>    <span class="c1">// There are also aggregate data functions that return a sequence instead of a list.</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">contact</span><span class="p">:</span> <span class="n">Contact</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="s">&quot;Contact&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="s">&quot;&quot;&quot;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s">        ID: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">id</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s">        Lookup Key: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lookupKey</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s">        Display name: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNamePrimary</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="s">        Display name alt: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">displayNameAlt</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="s">        Photo Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="s">        Thumbnail Uri: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">photoThumbnailUri</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="s">        Last updated: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">lastUpdatedTimestamp</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="s">        Starred?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">starred</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="s">        Send to voicemail?: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">sendToVoicemail</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="s">        Ringtone: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="s">        Aggregate data from all RawContacts of the contact</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="s">        -----------------------------------</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="s">        Addresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">addressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="s">        Emails: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">emailList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="s">        Events: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">eventList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="s">        Group memberships: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">groupMembershipList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="s">        IMs: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">imList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="s">        Names: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="s">        Nicknames: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">nicknameList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="s">        Notes: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">noteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="s">        Organizations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">organizationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="s">        Phones: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">phoneList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="s">        Relations: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">relationList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="s">        SipAddresses: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">sipAddressList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="s">        Websites: </span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">websiteList</span><span class="p">()</span><span class="si">}</span><span class="s"></span>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="s">        -----------------------------------</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="s">    &quot;&quot;&quot;</span><span class="p">.</span><span class="na">trimIndent</span><span class="p">()</span>
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>    <span class="c1">// There are also aggregate data functions that return a sequence instead of a list.</span>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="p">)</span>
 </code></pre></div>
 <p>Each Contact may have more than one of the following data if the Contact is made up of 2 or more
 RawContacts; name, nickname, note, organization, sip address.</p>
-<p>For more info on how to easily aggregate data from all RawContacts in a Contact, read
+<blockquote>
+<p>ℹ️ For more info on how to easily aggregate data from all RawContacts in a Contact, read
 <a href="../../other/convenience-functions/">Convenience functions</a>.</p>
-<p>To look into the actual Contacts Provider tables, read <a href="../../debug/debug-contacts-provider-tables/">Debug the Contacts Provider tables</a>.</p>
-<p>To learn more about the Contact lookup key, read about <a href="../about-contact-lookup-key/">Contact lookup key vs ID</a>.</p>
+<p>ℹ️ To learn more about the Contact lookup key, read about <a href="../about-contact-lookup-key/">Contact lookup key vs ID</a>.</p>
+<p>ℹ️ To look into the actual Contacts Provider tables, read <a href="../../debug/debug-contacts-provider-tables/">Debug the Contacts Provider tables</a>.</p>
+</blockquote>
 <h2 id="redacting-entities">Redacting entities<a class="headerlink" href="#redacting-entities" title="Permanent link">&para;</a></h2>
 <p>All <code>Entity</code> in this library are <code>Redactable</code>, which indicates that there could be sensitive private 
 user data that could be redacted, for legal purposes. If you are logging contact data in production 
@@ -2204,6 +2267,28 @@ parts of every contact's data.</p>
 <p>Syncing contact data, including groups, are done automatically by the Contacts Provider depending on
 the account sync settings.</p>
 <p>For more info, read <a href="../sync-contact-data/">Sync contact data across devices</a>.</p>
+<hr />
+<h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
+<h3 id="automatic-data-kinds-creation">Automatic data kinds creation<a class="headerlink" href="#automatic-data-kinds-creation" title="Permanent link">&para;</a></h3>
+<p>An entry of each of the following data kinds are automatically created for all contacts, if not
+provided;</p>
+<ul>
+<li><code>GroupMembership</code>, underlying value defaults to the account's default system group</li>
+<li><code>Name</code>, underlying value defaults to null</li>
+<li><code>Nickname</code>, underlying value defaults to null</li>
+<li><code>Note</code>, underlying value defaults to null</li>
+</ul>
+<p>This automatic creation occur automatically in the background (typically after creation) only for
+RawContacts that are associated with an Account. If a valid account is provided, membership to the
+(auto add) system group is automatically created immediately by the Contacts Provider at the time of
+creation. The name, nickname, and note are automatically created at a later time.</p>
+<blockquote>
+<p>ℹ️ Query APIs in this library do not return blanks in results. In this case, the <code>Name</code>,
+<code>Nickname</code>, and <code>Note</code> will not be included in the RawContact because their primary values are all
+null. Blanks are also ignored on insert and deleted on update. For more info, read about
+<a href="../about-blank-data/">Blank data</a>.</p>
+</blockquote>
+<p>If a valid account is not provided, no entries of the above are automatically created.</p>
 
               
             </article>

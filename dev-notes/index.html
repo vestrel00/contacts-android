@@ -2288,9 +2288,6 @@ serves as a memory of all the quirks and gotcha's of things like Android's <code
 <h2 id="contacts-provider-contactscontract">Contacts Provider / ContactsContract<a class="headerlink" href="#contacts-provider-contactscontract" title="Permanent link">&para;</a></h2>
 <p>It is important to know about the ins and outs of Android's Contacts Provider. After all, this API 
 is just a wrapper around it. </p>
-<blockquote>
-<p>A very sweet, sugary wrapper! Sugar. Spice. And everything nice. :D</p>
-</blockquote>
 <p>It is important to get familiar with the <a href="https://developer.android.com/guide/topics/providers/contacts-provider">official documentation of the Contact's Provider</a>.</p>
 <p>Here is a summary;</p>
 <p>There are 3 main database tables used in dealing with contacts;</p>
@@ -2300,7 +2297,7 @@ is just a wrapper around it. </p>
 <li>Data</li>
 </ol>
 <blockquote>
-<p>There are more but that is covered later.</p>
+<p>ℹ️ There are more but that is covered later.</p>
 </blockquote>
 <p>All of these tables and their fields are enumerated and documented in
 <code>android.provider.ContactsContract</code>. </p>
@@ -2355,7 +2352,7 @@ structured name in the Data table is not provided, then other kinds of data will
 display name will be the email. When a structured name is inserted, the Contacts Provider 
 automatically updates the Contacts row display name.</p>
 <blockquote>
-<p>In the case of <code>StructuredName</code>, the <code>Contacts.DISPLAY_NAME</code> is made up of the prefix, given,
+<p>ℹ️ In the case of <code>StructuredName</code>, the <code>Contacts.DISPLAY_NAME</code> is made up of the prefix, given,
 middle, family name, and suffix and not the unstructured display name.</p>
 </blockquote>
 <p>If no data rows suitable to be a display name are available, then the Contacts row display name will
@@ -2398,7 +2395,7 @@ Contact called "Hot Fire"!</p>
 automatically set as the Contact display name by the Contacts Provider. Otherwise, the Contacts
 Provider chooses from any of the other suitable data from the aggregate Contact.</p>
 <blockquote>
-<p>The <code>ContactsColumns.NAME_RAW_CONTACT_ID</code> is automatically updated by the Contacts Provider
+<p>ℹ️ The <code>ContactsColumns.NAME_RAW_CONTACT_ID</code> is automatically updated by the Contacts Provider
 along with the display name.</p>
 </blockquote>
 <p>The default status of other sources (e.g. email) does not affect the Contact display name.</p>
@@ -2425,7 +2422,7 @@ still be used to find the aggregate contact.</p>
 <p>Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
 with an Account and are synced).</p>
 <blockquote>
-<p>Note that I did the following investigation with a much larger data set. I simplified it here for brevity.</p>
+<p>ℹ️ I did the following investigation with a much larger data set. I simplified it here for brevity.</p>
 </blockquote>
 <p>Let's take a look at the following Contacts and RawContacts table rows,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>#### Contacts table
@@ -2599,9 +2596,9 @@ using the lookup key as the constant...</p>
 <p>Notice that the indirect relationship between the lookup key and RawContacts remains the same 
 before and after the link-unlink even though the Contact IDs changed.</p>
 <blockquote>
-<p>As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the RawContact ID.
-In other words, since local RawContacts are not synced or tracked in a remote database where
-Contacts -&gt; RawContacts mappings exist, the Contacts Provider most likely uses this 
+<p>ℹ️ As mentioned earlier in this section, the "55" in "0r55-" seems to be referencing the 
+RawContact ID. In other words, since local RawContacts are not synced or tracked in a remote 
+database where Contacts -&gt; RawContacts mappings exist, the Contacts Provider most likely uses this 
 "0r<RawContact ID>-" pattern to make the connection. This is not really relevant for us as we are
 not relying on this mechanism. I'm just pointing out my observations, which could be incorrect.</p>
 </blockquote>
@@ -2647,7 +2644,7 @@ the previously local Contact will fail! I verified that this is indeed the behav
 having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
 not exist" message in the AOSP Contacts app!</p>
 <blockquote>
-<p>The RawContact and its Data also remained the same in this case.</p>
+<p>ℹ️ The RawContact and its Data also remained the same in this case.</p>
 </blockquote>
 <p>Removing the account from it results in...</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>#### Contacts table
@@ -2669,8 +2666,8 @@ moving between accounts in the future.</p>
 <li>0 or more rows in the Data table with a reference to the new Contacts and RawContacts Ids</li>
 </ul>
 <blockquote>
-<p>It is possible to create RawContacts without any rows in the Data table. See the <strong>Data required</strong>
-section for more details.</p>
+<p>ℹ️ It is possible to create RawContacts without any rows in the Data table. See the 
+<strong>Data required</strong> section for more details.</p>
 </blockquote>
 <p>For example, creating 4 new contacts using the native Android Contacts app results in;</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Contact id: 4, displayName: First Local Contact
@@ -2806,7 +2803,7 @@ the Contacts Provider.</p>
 it is marked as deleted and its reference to a contact id is nulled. The Contact may still exist if 
 it still has at least one constituent RawContact that is not marked for deletion.</p>
 <blockquote>
-<p>A RawContact is marked for deletion as specified by <code>RawContactsColumns.DELETED</code>.</p>
+<p>ℹ️ A RawContact is marked for deletion as specified by <code>RawContactsColumns.DELETED</code>.</p>
 </blockquote>
 <p>Typically, deleting RawContacts immediately removes the row from the RawContacts table. However, 
 RawContacts row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
@@ -2876,8 +2873,8 @@ difference is that Contact X's display name will be set to Contact Y's display n
 done by the native Contacts app manually by setting Contact Y's Data name row to be the "default" 
 (isPrimary and isSuperPrimary both set to 1).</p>
 <blockquote>
-<p>The AggregationExceptions table records the linked RawContacts's IDs in ascending order regardless
-of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.</p>
+<p>ℹ️ The AggregationExceptions table records the linked RawContacts' IDs in ascending order 
+regardless of the order used in RAW_CONTACT_ID1 and RAW_CONTACT_ID2 at the time of merging.</p>
 </blockquote>
 <p>The RawContacts and Data table remains the same except the joined contactId column values have now
 been changed to the id of Contact X. All Data rows' isSuperPrimary value has been set to 0 though 
@@ -2889,7 +2886,7 @@ sets the Contact display name to whatever the default name row is for the Contac
 For more info on Contact display name resolution, read the <strong>Contact Display Name and Default Name
 Rows</strong> section.</p>
 <blockquote>
-<p>Note that display name resolution is different for APIs below 21 (pre-lollipop).</p>
+<p>ℹ️ Display name resolution is different for APIs below 21 (pre-lollipop).</p>
 </blockquote>
 <p>The display name of the RawContacts remain the same.</p>
 <p>The Groups table remains unmodified.</p>
@@ -2902,17 +2899,16 @@ changes to the options of the parent Contact will be propagated to all child Raw
 the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
 references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).</p>
 <blockquote>
-<p>Note that when removing the photo in the native contacts app, the photo data row is not 
-immediately deleted, though the <code>PHOTO_FILE_ID</code> is immediately set to null. This may result in 
-the <code>PHOTO_URI</code> and <code>PHOTO_THUMBNAIL_URI</code> to still have a valid image uri even though the photo
-has been "removed". This library immediately deletes the photo data row, which seems to work
-perfectly.</p>
+<p>ℹ️ When removing the photo in the native contacts app, the photo data row is not immediately 
+deleted, though the <code>PHOTO_FILE_ID</code> is immediately set to null. This may result in the <code>PHOTO_URI</code>
+and <code>PHOTO_THUMBNAIL_URI</code> to still have a valid image uri even though the photo has been 
+"removed". This library immediately deletes the photo data row, which seems to work perfectly.</p>
 </blockquote>
 <p><strong>Data inserts</strong></p>
 <p>In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
 first RawContact in the list sorted by the RawContact ID. </p>
 <blockquote>
-<p>This may not be the same as the RawContact referenced by <code>ContactsColumns.NAME_RAW_CONTACT_ID</code>.</p>
+<p>ℹ️ This may not be the same as the RawContact referenced by <code>ContactsColumns.NAME_RAW_CONTACT_ID</code>.</p>
 </blockquote>
 <p><strong>UI changes?</strong></p>
 <p>The native Contacts App does not display the groups field when displaying / editing Contacts that
@@ -3238,7 +3234,7 @@ remains a primary but not a super primary.</p>
 <p>The above behavior is observed from the native Contacts app. The "super primary" data of an 
 aggregate Contact is referred to as the "default".</p>
 <blockquote>
-<p>At this point, the native Contacts app still shows email B as the first email in the list even
+<p>ℹ️ At this point, the native Contacts app still shows email B as the first email in the list even
 though it isn't the "default" (super primary) because it is still a primary. This adds a bit of
 confusion in my opinion, especially when more than 2, 3, or 4 RawContacts are linked. A "fix" 
 would be to only order the list of emails using "super primary" instead of "super primary" and 
@@ -3278,7 +3274,7 @@ Data rows are automatically created for all contacts, if not provided;</p>
 <li>Note, underlying value defaults to null</li>
 </ul>
 <blockquote>
-<p>Note that all of the above rows are only automatically created for RawContacts that are associated
+<p>ℹ️ All of the above rows are only automatically created for RawContacts that are associated
 with an Account.</p>
 </blockquote>
 <p>If a valid account is provided, the default (auto add) system group membership row is automatically
@@ -3355,7 +3351,7 @@ belonging to the same account to exist. In older versions of Android, the native
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.</p>
 <blockquote>
-<p>In newer versions, the group with the duplicate title gets deleted either automatically by the 
+<p>ℹ️ In newer versions, the group with the duplicate title gets deleted either automatically by the 
 Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
 on insert or update. This could lead to bugs!</p>
 </blockquote>
@@ -3398,7 +3394,7 @@ RawContact that has a group membership AND a RawContact that has no group member
 <p>Similar to deleting RawContacts, deleting a Groups row may not immediately delete the Groups row. 
 In this case, it is marked as deleted. </p>
 <blockquote>
-<p>A Group is marked for deletion as specified by <code>GroupsColumns.DELETED</code>.</p>
+<p>ℹ️ A Group is marked for deletion as specified by <code>GroupsColumns.DELETED</code>.</p>
 </blockquote>
 <p>Typically, deleting Groups immediately removes the row from the Groups table. However,
 Groups row remains and is simply marked for deletion UNTIL the sync adapters syncs the changes.
@@ -3420,7 +3416,7 @@ not be associated with an Account. The RawContacts row(s) may have rows in the D
 These profile table rows have special IDs that differ from regular rows. See<br />
 <code>ContactsContract.isProfileId</code>.</p>
 <blockquote>
-<p>Note that the Contacts Provider will throw an IllegalArgument exception when attempting to include
+<p>ℹ️ The Contacts Provider will throw an IllegalArgument exception when attempting to include
 <code>ContactsColumns.IS_USER_PROFILE</code> and <code>RawContactsColumns.RAW_CONTACT_IS_USER_PROFILE</code> columns
 in Data table queries. I have not yet tried including these columns in the Contacts or RawContacts
 table queries.</p>
@@ -3459,7 +3455,7 @@ that source."</p>
 associated to an Account can be carried over and synced across devices and users is up to the
 Contacts Provider / Sync provider for that Account.</p>
 <blockquote>
-<p>From my experience, profile RawContacts associated to an Account is not carried over / synced
+<p>ℹ️ From my experience, profile RawContacts associated to an Account is not carried over / synced
 across devices or users.</p>
 </blockquote>
 <p>Despite the documentation of "one profile RawContact per one Account", the Contacts Provider allows
@@ -3531,7 +3527,7 @@ setting the constructor of a <code>data class</code> as <code>private</code> giv
 thing we can do is to provide documentation to consumers, insisting against the use of the <code>copy</code>
 method as it may lead to unwanted side effects when updating and deleting contacts.</p>
 <blockquote>
-<p>We could just use regular classes instead of data classes but entities should be data classes
+<p>ℹ️ We could just use regular classes instead of data classes but entities should be data classes
 because it is what they are (know what I mean?!). Also, I'd hate to have to generate equals and
 hashcode functions for them, which will make the code harder to maintain. Though, we might do this
 anyways at some point if we want to make it possible for a mutable entity to equal an immutable
@@ -3568,7 +3564,7 @@ https://discuss.kotlinlang.org/t/data-class-copy-visibility-modifier/19746</p>
 <a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="p">)</span>
 </code></pre></div>
 <blockquote>
-<p>Note the use of <code>sealed class</code> is to prevent consumers from defining their own entities. This
+<p>ℹ️ The use of <code>sealed class</code> is to prevent consumers from defining their own entities. This
 restriction may or may not change in the future.</p>
 </blockquote>
 <p>Notice that there is nothing mutable in the immutable <code>Contact</code>. Everything are <code>val</code>s and the data
@@ -3588,8 +3584,8 @@ entities exhaustively. E.G.</p>
 <a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="p">}</span>
 </code></pre></div>
 <blockquote>
-<p>Note that the <strong>mutable entities provided in this library are NOT thread-safe</strong>. Consumers will
-have to perform their own synchronizations if they want to use and mutate mutable entities in
+<p>ℹ️ The <strong>mutable entities provided in this library are NOT thread-safe</strong>. Consumers will have to 
+perform their own synchronizations if they want to use and mutate mutable entities in
 multi-threaded scenarios.</p>
 </blockquote>
 <h3 id="the-cost-of-the-current-immutability-implementation">The cost of the current immutability implementation<a class="headerlink" href="#the-cost-of-the-current-immutability-implementation" title="Permanent link">&para;</a></h3>
@@ -3633,10 +3629,10 @@ hierarchy to;</p>
 <p>Notice that there is a non-concrete declaration (i.e. <code>Contact</code>, <code>RawContact</code>, and <code>Address</code>) and
 just one concrete implementation (i.e. <code>MutableContact</code>, <code>MutableRawContact</code>, and <code>MutableAddress</code>).</p>
 <blockquote>
-<p>Note that a <code>val</code> declaration can be overridden by a <code>var</code>. Keep in mind that <code>val</code> only requires
-getters whereas <code>var</code> requires both getters and setters. Therefore, a <code>var</code> cannot be overridden
-by a <code>val</code>. Or maybe there is a different reason Kotlin imposes this restriction =)
-On a similar note, the <code>List</code> interface can be overridden to a <code>MutableList</code>.</p>
+<p>ℹ️ A <code>val</code> declaration can be overridden by a <code>var</code>. Keep in mind that <code>val</code> only requires getters
+whereas <code>var</code> requires both getters and setters. Therefore, a <code>var</code> cannot be overridden by a 
+<code>val</code>. Or maybe there is a different reason Kotlin imposes this restriction. On a similar note, 
+the <code>List</code> interface can be overridden to a <code>MutableList</code>.</p>
 </blockquote>
 <p>We, as API contributors, can avoid having to write seemingly duplicate functions and extensions!</p>
 <p>However! Can you see what's wrong with this setup? If we do this, we would either be deceiving

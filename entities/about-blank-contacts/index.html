@@ -1848,7 +1848,7 @@ non-blank data.</p>
 least one data row. It also deletes blanks on update. Despite seemingly not allowing blanks, the
 native Contacts app shows them. </p>
 <blockquote>
-<p>This library provides APIs that follows the native Contacts app behavior by default but also 
+<p>ℹ️ This library provides APIs that follows the native Contacts app behavior by default but also 
 allows you to override the default behavior.</p>
 </blockquote>
 <p>There are two scenarios where blanks may exist.</p>
@@ -1864,9 +1864,9 @@ with no Data row is blank.</li>
 </li>
 </ol>
 <h2 id="blanks-in-queries">Blanks in queries<a class="headerlink" href="#blanks-in-queries" title="Permanent link">&para;</a></h2>
-<p>A <code>where</code> clause that uses any fields from the Data table <code>Fields</code> will <strong>exclude</strong> blanks in the 
-result (even if they are OR'ed) There are some joined fields that can be used to match blanks 
-<strong>as long as no other fields are in the where clause</strong>;</p>
+<p>A <code>where</code> clause that uses any fields from the Data table <code>Fields</code> may exclude blanks in the result.
+There are some joined fields that can be used to match blanks as long as no other fields are in the 
+where clause...</p>
 <ul>
 <li>
 <p><code>Fields.Contact</code> enables matching blank Contacts. The result will include all RawContact(s)
@@ -1905,7 +1905,7 @@ in the Contacts table. The same applies to the <code>Fields.RawContact</code>.</
 non-blank data.</p>
 <p>Blank data are data entities that have only null, empty, or blank primary value(s).</p>
 <blockquote>
-<p>For more info, read about <a href="../about-blank-data/">Blank data</a>.</p>
+<p>ℹ️ For more info, read about <a href="../about-blank-data/">Blank data</a>.</p>
 </blockquote>
 
               

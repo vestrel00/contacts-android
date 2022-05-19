@@ -1959,8 +1959,8 @@ blocked numbers,</p>
 </code></pre></div>
 <p>This is useful for pagination =)</p>
 <blockquote>
-<p>Note that it is recommended to limit the number of blocked numbers when querying to increase 
-performance and decrease memory cost.</p>
+<p>ℹ️ It is recommended to limit the number of blocked numbers when querying to increase performance 
+and decrease memory cost.</p>
 </blockquote>
 <h2 id="executing-the-query">Executing the query<a class="headerlink" href="#executing-the-query" title="Permanent link">&para;</a></h2>
 <p>To execute the query,</p>
@@ -1990,7 +1990,7 @@ the call-site. This may result in a choppy UI.</p>
 For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
 </blockquote>
 <h2 id="performing-the-query-with-permission">Performing the query with permission<a class="headerlink" href="#performing-the-query-with-permission" title="Permanent link">&para;</a></h2>
 <p>There are no permissions required for blocked numbers. However, there are privileges that must be 
@@ -1999,8 +1999,8 @@ acquired. For more info, read about <a href="../about-blocked-numbers/">Blocked 
 <p>Use the <code>contacts.core.BlockedNumbersFields</code> combined with the extensions from <code>contacts.core.Where</code> to form
 WHERE clauses. </p>
 <blockquote>
-<p>This docs page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
-If you don't know the basics, then search for <a href="https://www.google.com/search?q=sqlite+where+clause">sqlite where clause</a>. </p>
+<p>ℹ️ This docs page will not provide a tutorial on database where clauses. It assumes that you know 
+the basics.  If you don't know the basics, then search for <a href="https://www.google.com/search?q=sqlite+where+clause">sqlite where clause</a>. </p>
 </blockquote>
 <p>For example, to find blocked numbers that contains "555",</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">where</span> <span class="p">{</span> <span class="n">Number</span> <span class="n">contains</span> <span class="s">&quot;555&quot;</span> <span class="p">}</span>

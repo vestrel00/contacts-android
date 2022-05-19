@@ -1913,8 +1913,8 @@
 <p>This library provides some nice-to-have extensions in the <code>contacts.core.utils</code> package. I will be 
 going over some of them in this page.</p>
 <blockquote>
-<p>Note that functions in the util package that are used directly by other APIs such as result APIs
-are not discussed here.</p>
+<p>ℹ️ Functions in the util package that are used directly by other APIs such as result APIs are not 
+discussed here.</p>
 </blockquote>
 <h2 id="contact-data-getter-and-setters">Contact data getter and setters<a class="headerlink" href="#contact-data-getter-and-setters" title="Permanent link">&para;</a></h2>
 <p>Contacts can be made up of one or more RawContacts. In the case that a Contact has two or more
@@ -1925,7 +1925,7 @@ RawContacts, getting/setting RawContact data may be a bit of a hassle, requiring
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">contact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="p">().</span><span class="na">rawContacts</span><span class="p">.</span><span class="na">first</span><span class="p">().</span><span class="na">emails</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">())</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
+<p>ℹ️ For more info, read about <a href="../../entities/about-api-entities/">API Entities</a>.</p>
 </blockquote>
 <p>To simplify things, getter/setter extensions are provided in the <strong><code>ContactData.kt</code></strong> file,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// get all emails from all RawContacts belonging to the Contact</span>
@@ -1935,9 +1935,9 @@ RawContacts, getting/setting RawContact data may be a bit of a hassle, requiring
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">contact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="p">().</span><span class="na">addEmail</span><span class="p">(</span><span class="n">NewEmail</span><span class="p">())</span>
 </code></pre></div>
 <blockquote>
-<p>Newer versions of the Android Open Source Project Contacts app and the Google Contacts app shows
-data coming from all RawContacts in a Contact details screen. However, they only allow editing
-a single RawContact and not the aggregate Contact in a single screen to avoid confusion. 
+<p>ℹ️ Newer versions of the Android Open Source Project Contacts app and the Google Contacts app 
+shows data coming from all RawContacts in a Contact details screen. However, they only allow 
+editing a single RawContact and not the aggregate Contact in a single screen to avoid confusion. 
 With this in mind, feel free to use the getter extensions but be very careful with using the
 setters!</p>
 </blockquote>
@@ -1964,7 +1964,7 @@ uphold the redacted state of the mutable Contact/RawContact. We setting or addin
 these extensions, the property being passed will be redacted if the Contact/RawContact it is being
 added to is redacted.</p>
 <blockquote>
-<p>For more info, read <a href="../../entities/redact-apis-and-entities/">Redact entities and API input and output in production</a>.</p>
+<p>ℹ️ For more info, read <a href="../../entities/redact-apis-and-entities/">Redact entities and API input and output in production</a>.</p>
 </blockquote>
 <h2 id="getting-the-parent-contact-of-a-rawcontact-or-data">Getting the parent Contact of a RawContact or Data<a class="headerlink" href="#getting-the-parent-contact-of-a-rawcontact-or-data" title="Permanent link">&para;</a></h2>
 <p>Using the <code>Query</code> API, it is easy to get the parent Contact of a RawContact or Data,</p>
@@ -1972,7 +1972,7 @@ added to is redacted.</p>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kd">val</span> <span class="nv">contactOfData</span> <span class="o">=</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">query</span><span class="p">().</span><span class="na">where</span> <span class="p">{</span> <span class="n">Contact</span><span class="p">.</span><span class="na">Id</span> <span class="n">equalTo</span> <span class="n">data</span><span class="p">.</span><span class="na">contactId</span> <span class="p">}.</span><span class="na">find</span><span class="p">().</span><span class="na">firstOrNull</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
+<p>ℹ️ For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>To shorten things, you can use the extensions in <code>RawContactContact.kt</code> and <code>DataContact.kt</code>,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span> <span class="nv">contactOfRawContact</span> <span class="o">=</span> <span class="n">rawContact</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span>
@@ -1983,7 +1983,7 @@ added to is redacted.</p>
 </code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
-<p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
+<p>ℹ️ For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 </blockquote>
 <h2 id="refresh-contact-rawcontact-and-data-references">Refresh Contact, RawContact, and Data references<a class="headerlink" href="#refresh-contact-rawcontact-and-data-references" title="Permanent link">&para;</a></h2>
 <p>In-memory references to these entities could become inaccurate due to changes in the database that
@@ -2005,7 +2005,7 @@ up-to-date reference of an entity from the database, you could do it using the <
 </code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
-<p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
+<p>ℹ️ For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 </blockquote>
 <h2 id="sort-contacts-by-data-fields">Sort Contacts by data fields<a class="headerlink" href="#sort-contacts-by-data-fields" title="Permanent link">&para;</a></h2>
 <p>The <code>Query</code> and <code>BroadQuery</code> APIs allows you to sort Contacts based on fields in the Contacts table
@@ -2039,7 +2039,7 @@ use the extensions in <code>ContactsComparator.kt</code> to build a <code>Compar
 </code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
-<p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
+<p>ℹ️ For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 </blockquote>
 <h2 id="get-the-rawcontact-of-a-blankrawcontact">Get the RawContact of a BlankRawContact<a class="headerlink" href="#get-the-rawcontact-of-a-blankrawcontact" title="Permanent link">&para;</a></h2>
 <p>The <code>Query</code> API allows you to get the <code>RawContact</code> version of a <code>BlankRawContact</code>,</p>
@@ -2053,7 +2053,7 @@ use the extensions in <code>ContactsComparator.kt</code> to build a <code>Compar
 </code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>
-<p>For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
+<p>ℹ️ For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 </blockquote>
 
               

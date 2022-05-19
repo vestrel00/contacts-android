@@ -2012,8 +2012,7 @@ directly without having to get them from Contacts/RawContacts.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">query</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">data</span><span class="p">().</span><span class="na">query</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
-<p>To retrieve all kinds of data via Contacts/RawContacts, read 
-<a href="../../basics/query-contacts/">Query contacts</a>
+<p>ℹ️ To retrieve all kinds of data via Contacts/RawContacts, read <a href="../../basics/query-contacts/">Query contacts</a>
 and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <h2 id="data-queries">Data queries<a class="headerlink" href="#data-queries" title="Permanent link">&para;</a></h2>
@@ -2057,7 +2056,7 @@ and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.google&quot;</span><span class="p">))</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
+<p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 </blockquote>
 <p>If no accounts are specified (this function is not called or called with no Accounts), then all
 data are included in the search.</p>
@@ -2066,7 +2065,7 @@ included in the search. RawContacts without an associated account are considered
 device-only contacts, which are not synced.</p>
 <p>For more info, read about <a href="../../entities/about-local-contacts/">Local (device-only) contacts</a>.</p>
 <blockquote>
-<p>Note that this may affect performance. This may require one or more additional queries, internally
+<p>ℹ️ This may affect performance. This may require one or more additional queries, internally
 performed in this function, which increases the time required for the search. Therefore, you
 should only specify this if you actually need it.</p>
 </blockquote>
@@ -2099,8 +2098,8 @@ parameter.</p>
 </code></pre></div>
 <p>This is useful for pagination =)</p>
 <blockquote>
-<p>Note that it is recommended to limit the number of data when querying to increase performance
-and decrease memory cost.</p>
+<p>ℹ️ It is recommended to limit the number of data when querying to increase performance and 
+decrease memory cost.</p>
 </blockquote>
 <h2 id="executing-the-query">Executing the query<a class="headerlink" href="#executing-the-query" title="Permanent link">&para;</a></h2>
 <p>To execute the query,</p>
@@ -2130,7 +2129,7 @@ the call-site. This may result in a choppy UI.</p>
 For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 listening to Contacts database changes.</p>
 </blockquote>
 <h2 id="performing-the-query-with-permission">Performing the query with permission<a class="headerlink" href="#performing-the-query-with-permission" title="Permanent link">&para;</a></h2>
@@ -2152,8 +2151,8 @@ read <a href="../../customdata/query-custom-data/">Query custom data</a>.</p>
 <p>Use the corresponding <code>contacts.core.Fields</code> combined with the extensions from <code>contacts.core.Where</code> 
 to form WHERE clauses. </p>
 <blockquote>
-<p>This docs page will not provide a tutorial on database where clauses. It assumes that you know the basics. 
-If you don't know the basics, then search for <a href="https://www.google.com/search?q=sqlite+where+clause">sqlite where clause</a>. </p>
+<p>ℹ️ This docs page will not provide a tutorial on database where clauses. It assumes that you know 
+the basics. If you don't know the basics, then search for <a href="https://www.google.com/search?q=sqlite+where+clause">sqlite where clause</a>. </p>
 </blockquote>
 <p>For example, to get all nicknames from all contacts,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kd">val</span> <span class="nv">nicknames</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">data</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">nicknames</span><span class="p">().</span><span class="na">find</span><span class="p">()</span>

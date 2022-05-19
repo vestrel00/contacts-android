@@ -2028,14 +2028,14 @@
 <h2 id="sim-contact-data">SIM Contact data<a class="headerlink" href="#sim-contact-data" title="Permanent link">&para;</a></h2>
 <p>SIM Contact data consists of the <code>name</code> and <code>number</code>.</p>
 <blockquote>
-<p>Support for <code>email</code> was recently added in Android 12. I don't think it is stable yet. Regardless,
-it is too new so this library will wait a bit before adding support for it.</p>
+<p>ℹ️ Support for <code>email</code> was recently added in Android 12. I don't think it is stable yet. 
+Regardless, it is too new so this library will wait a bit before adding support for it.</p>
 </blockquote>
-<h4 id="character-limits">Character limits<a class="headerlink" href="#character-limits" title="Permanent link">&para;</a></h4>
+<h3 id="character-limits">Character limits<a class="headerlink" href="#character-limits" title="Permanent link">&para;</a></h3>
 <p>The <code>name</code> and <code>number</code> are subject to the SIM card's maximum character limit, which is typically 
 around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will fail 
 if the limit is breached.</p>
-<h4 id="sim-contact-row-id">SIM Contact row ID<a class="headerlink" href="#sim-contact-row-id" title="Permanent link">&para;</a></h4>
+<h3 id="sim-contact-row-id">SIM Contact row ID<a class="headerlink" href="#sim-contact-row-id" title="Permanent link">&para;</a></h3>
 <p>The SIM contact that an ID is pointing to may change if the contact is deleted in the database and
 another contact is inserted. The inserted contact may be assigned the ID of the deleted
 contact.</p>
@@ -2130,7 +2130,7 @@ observe the behavior of reading/writing to the SIM card.</p>
 </tbody>
 </table>
 <blockquote>
-<p>Note that the AOSP Contacts app and <a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts app</a>
+<p>ℹ️ The AOSP Contacts app and <a href="https://play.google.com/store/apps/details?id=com.google.android.contacts">Google Contacts app</a>
 can only import contacts from SIM card so they are not very helpful for us with this investigation.</p>
 </blockquote>
 <p>For Android code references, I used the internal <code>IccProvider.java</code> as reference to what the Android
@@ -2142,19 +2142,19 @@ OS might be doing when 3rd party applications perform CRUD operations on SIM con
 </ul>
 <p>I'm using the <code>content://icc/adn</code> URI to read/write from/to SIM card.</p>
 <blockquote>
-<p><strong>All of the investigation that I have done here may not apply for all SIM cards and phone OEMs!</strong> 
+<p>ℹ️ <strong>All of the investigation that I have done here may not apply for all SIM cards and phone OEMs!</strong> 
 There is just way too many different SIM cards and phones out there for a single person (me) to 
 test. However, I think that my findings should apply to most cases.</p>
 </blockquote>
-<h4 id="figuring-out-how-to-perform-crud-operations">Figuring out how to perform CRUD operations<a class="headerlink" href="#figuring-out-how-to-perform-crud-operations" title="Permanent link">&para;</a></h4>
+<h3 id="figuring-out-how-to-perform-crud-operations">Figuring out how to perform CRUD operations<a class="headerlink" href="#figuring-out-how-to-perform-crud-operations" title="Permanent link">&para;</a></h3>
 <p>First, I added 20 contacts (name and number) to the SIM contacts using the <em>BLU Z5</em>. The first
 contact is named "a" with number "1", the second is named "ab" with number "12", and so on. The last
 contact is named "abcdefghijklmnopqrst" with number "12345678901234567890". I did this because the
 <em>BLU Z5</em> has determined that the maximum character limit for the name and number for my 
 <em>Mint Mobile</em> SIM card is 20.</p>
 <blockquote>
-<p>Note that the character limits are most likely set by the SIM card and/or calculated by the OS
-managing it based on how much total memory is available.</p>
+<p>ℹ️ The character limits are most likely set by the SIM card and/or calculated by the OS managing 
+it based on how much total memory is available.</p>
 </blockquote>
 <p>I also added a contact named "bro" with no number and a nameless contact with with number
 "5555555555". For a total of 22 contacts in the SIM card.</p>
@@ -2188,7 +2188,7 @@ the <code>Context.logSimContactsTable</code> debug function I wrote up in the <c
 number "5555555555". I attempted to add a nameless contact using the <em>SIM Info</em> app but it does not
 allow reading/writing nameless contacts. </p>
 <blockquote>
-<p>This is probably a bug in the <em>SIM Info</em> app or a limitation that is intentionally imposed for 
+<p>ℹ️ This is probably a bug in the <em>SIM Info</em> app or a limitation that is intentionally imposed for 
 some reason. I wish I could see the source code of the app!</p>
 </blockquote>
 <p>Deleting the first contact with ID of 0 using the <em>SIM Info</em> app works just fine. Deleting the contact
@@ -2224,7 +2224,7 @@ with ID 4, we get...</p>
 </code></pre></div>
 <p>The ID remains 4. We get the same result using our <code>SimContactsUpdate</code> API =)</p>
 <p>Thus, we have implemented CRUD APIs!!!</p>
-<h4 id="figuring-out-character-limits">Figuring out character limits<a class="headerlink" href="#figuring-out-character-limits" title="Permanent link">&para;</a></h4>
+<h3 id="figuring-out-character-limits">Figuring out character limits<a class="headerlink" href="#figuring-out-character-limits" title="Permanent link">&para;</a></h3>
 <p>The <em>BLU Z5</em> non-smartphone has determined that the maximum character limit for the name and number 
 for my <em>Mint Mobile</em> SIM card is 20. </p>
 <p>I inserted a contact with a name with 26 characters and another contact with a number with 21 
@@ -2292,7 +2292,7 @@ not null in the Samsung.</p>
 <li>Furthermore, we cannot rely on the result of the insert operation alone. If the result Uri is not
   null, we must perform a query to sanity check that the actual name and number was inserted!</li>
 </ul>
-<h4 id="emails">Emails<a class="headerlink" href="#emails" title="Permanent link">&para;</a></h4>
+<h3 id="emails">Emails<a class="headerlink" href="#emails" title="Permanent link">&para;</a></h3>
 <p>There is an "emails" column in the SIM table. CRUD operations for it was not officially supported 
 until recently in Android 12.</p>
 <ul>
@@ -2316,7 +2316,7 @@ probably means that we don't have access to the internal APIs that the Samsung C
 Keep in mind that my Samsung is running Android 11 and support for email was not added until 
 Android 12. </p>
 <blockquote>
-<p>TLDR; Classic Samsung to add features farther ahead of time than vanilla Android =)</p>
+<p>ℹ️ Classic Samsung to add features farther ahead of time than vanilla Android =)</p>
 </blockquote>
 <p><strong>On my Nexus 6P running Android 8...</strong></p>
 <p>The contacts with emails are shown without email data (emails are null in the SIM table). These
@@ -2324,7 +2324,7 @@ rows are able to be updated and deleted.</p>
 <p><strong>On my BLU Z5...</strong></p>
 <p>SIM contacts with emails are shown without the email data. These rows are able to be updated and 
 deleted.</p>
-<h4 id="other-considerations">Other considerations<a class="headerlink" href="#other-considerations" title="Permanent link">&para;</a></h4>
+<h3 id="other-considerations">Other considerations<a class="headerlink" href="#other-considerations" title="Permanent link">&para;</a></h3>
 <p>It seems like there are new APIs around SIM Contacts that were introduced in API 31;</p>
 <ul>
 <li>https://developer.android.com/reference/android/provider/ContactsContract.SimContacts</li>

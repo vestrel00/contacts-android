@@ -1926,15 +1926,15 @@
 <h1 id="query-device-owner-contact-profile">Query device owner Contact profile<a class="headerlink" href="#query-device-owner-contact-profile" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>ProfileQuery</code> API that allows you to get the device owner Profile Contact.</p>
 <blockquote>
-<p>Note that there can be only one device owner Contact, which is either set (not null) or not yet
-set (null). However, like other regular Contacts, the Profile Contact may have one or more
+<p>ℹ️ There can be only one device owner Contact, which is either set (not null) or not yet set 
+(null). However, like other regular Contacts, the Profile Contact may have one or more
 RawContacts.</p>
 </blockquote>
 <p>An instance of the <code>ProfileQuery</code> API is obtained by,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span> <span class="nv">query</span> <span class="o">=</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">profile</span><span class="p">().</span><span class="na">query</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
-<p>If you want to get non-Profile Contacts, read 
+<p>ℹ️ If you want to get non-Profile Contacts, read 
 <a href="../../basics/query-contacts/">Query contacts</a> and
 <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
@@ -1955,7 +1955,7 @@ RawContacts.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span> <span class="s">&quot;com.google&quot;</span><span class="p">))</span>
 </code></pre></div>
 <blockquote>
-<p>For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
+<p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 </blockquote>
 <p>The RawContacts returned will only belong to the specified accounts.</p>
 <p>If no accounts are specified (this function is not called or called with no Accounts), then all
@@ -1965,7 +1965,7 @@ included. RawContacts without an associated account are considered local contact
 contacts, which are not synced.</p>
 <p>For more info, read about <a href="../../entities/about-local-contacts/">Local (device-only) contacts</a>.</p>
 <blockquote>
-<p>Note that this may affect performance. This may require one or more additional queries, internally
+<p>ℹ️ This may affect performance. This may require one or more additional queries, internally
 performed in this function, which increases the time required for the search. Therefore, you
 should only specify this if you actually need it.</p>
 </blockquote>
@@ -1998,14 +1998,14 @@ the call-site. This may result in a choppy UI.</p>
 For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
 listening to Contacts database changes.</p>
 </blockquote>
 <h2 id="performing-the-query-with-permission">Performing the query with permission<a class="headerlink" href="#performing-the-query-with-permission" title="Permanent link">&para;</a></h2>
 <p>Queries require the <code>android.permission.READ_CONTACTS</code> permission. If not granted, the query will 
 do nothing and return null.</p>
 <blockquote>
-<p>For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but
+<p>ℹ️ For API 22 and below, the permission "android.permission.READ_PROFILE" is also required but
 only at the manifest level. Prior to API 23 (Marshmallow), permissions needed to be granted
 prior to installation instead of at runtime.</p>
 </blockquote>

@@ -415,15 +415,63 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#custom-data-support" class="md-nav__link">
-    Custom data support
+  <a href="#using-include-in-query-apis" class="md-nav__link">
+    Using include in query APIs
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#performing-updates-on-entities-with-partial-includes" class="md-nav__link">
-    Performing updates on entities with partial includes
+  <a href="#using-include-in-insert-apis" class="md-nav__link">
+    Using include in insert APIs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-include-in-update-apis" class="md-nav__link">
+    Using include in update APIs
+  </a>
+  
+    <nav class="md-nav" aria-label="Using include in update APIs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-update-operation-consists-of-insertion-updates-and-deletions" class="md-nav__link">
+    An "update" operation consists of insertion, updates, and deletions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blank-data-are-deleted" class="md-nav__link">
+    Blank data are deleted
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#including-complete-field-sets-for-update" class="md-nav__link">
+    Including complete field sets for "update"
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#including-a-subset-of-field-sets-for-update" class="md-nav__link">
+    Including a subset of field sets for "update"
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-data-support" class="md-nav__link">
+    Custom data support
   </a>
   
 </li>
@@ -1808,15 +1856,63 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#custom-data-support" class="md-nav__link">
-    Custom data support
+  <a href="#using-include-in-query-apis" class="md-nav__link">
+    Using include in query APIs
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#performing-updates-on-entities-with-partial-includes" class="md-nav__link">
-    Performing updates on entities with partial includes
+  <a href="#using-include-in-insert-apis" class="md-nav__link">
+    Using include in insert APIs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-include-in-update-apis" class="md-nav__link">
+    Using include in update APIs
+  </a>
+  
+    <nav class="md-nav" aria-label="Using include in update APIs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-update-operation-consists-of-insertion-updates-and-deletions" class="md-nav__link">
+    An "update" operation consists of insertion, updates, and deletions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blank-data-are-deleted" class="md-nav__link">
+    Blank data are deleted
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#including-complete-field-sets-for-update" class="md-nav__link">
+    Including complete field sets for "update"
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#including-a-subset-of-field-sets-for-update" class="md-nav__link">
+    Including a subset of field sets for "update"
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-data-support" class="md-nav__link">
+    Custom data support
   </a>
   
 </li>
@@ -1840,21 +1936,19 @@
 
 
 <h1 id="include-only-certain-fields-for-read-and-write-operations">Include only certain fields for read and write operations<a class="headerlink" href="#include-only-certain-fields-for-read-and-write-operations" title="Permanent link">&para;</a></h1>
-<p>When using query APIs such as <code>Query</code>, <code>BroadQuery</code>, <code>ProfileQuery</code>, <code>DataQuery</code>, you are able to 
-specify all or only some kinds of data that you want to be included in the returned results.</p>
-<p>When using insert APIs such as <code>Insert</code> and <code>ProfileInsert</code>, you are able to specify all or only 
-some kinds of data that you want to be included in the insert operation.</p>
-<p>When using update APIs such as <code>Update</code>, <code>ProfileUpdate</code>, and <code>DataUpdate</code>, you are able to specify 
-all or only some kinds of data that you want to be included in the update operation.</p>
-<p>Each field corresponds with an Entity property. For example, to include only the contact 
-display name, organization company, and all phone number fields,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">query</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">mutableSetOf</span><span class="o">&lt;</span><span class="n">AbstractDataField</span><span class="o">&gt;</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
+<p>The read (query) and write (insert, update) APIs in this library provides an <code>include</code> function that
+allows you to specify all (default) or some fields to read or write in the Contacts Provider 
+database.</p>
+<p>The fields defined in <code>contacts.core.Fields.kt</code> specify what properties of entities to include in
+read and write operations. For example, to include only the contact display name, organization
+company, and all phone number fields in a query/insert/update operation,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">queryInsertUpdate</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">mutableSetOf</span><span class="o">&lt;</span><span class="n">AbstractDataField</span><span class="o">&gt;</span><span class="p">().</span><span class="na">apply</span> <span class="p">{</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">add</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">)</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">add</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Organization</span><span class="p">.</span><span class="na">Company</span><span class="p">)</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">addAll</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Phone</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">})</span>
 </code></pre></div>
-<p>The following properties are populated with non-blank data (or null if no data is found),</p>
+<p>The following entity properties are are used in the read/write operation,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Contact</span> <span class="p">{</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">displayNamePrimary</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
@@ -1871,54 +1965,164 @@ display name, organization company, and all phone number fields,</p>
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="p">}</span>
 <a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">}</span>
 </code></pre></div>
+<blockquote>
+<p>ℹ️ For more info, read about <a href="../about-api-entities/">API Entities</a>.</p>
+</blockquote>
 <p>To explicitly include everything,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">query</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
 </code></pre></div>
 <blockquote>
-<p>Not invoking the <code>include</code> function will default to including everything, including custom data.
+<p>ℹ️ Not invoking the <code>include</code> function will default to including everything, including custom data.
 The above code will <strong>exclude</strong> custom data. Read the <strong>Custom data support</strong> section for more info.</p>
 </blockquote>
-<p>The matching contacts <strong>may</strong> have non-null data for each of the included fields. Fields that are
-included will not guarantee non-null data in the returned contact instances because some data may
-actually be null in the database.</p>
+<p>The matching contacts <strong>may</strong> have non-null data corresponding to each of the included fields.
+Fields that are included will not guarantee non-null data in the returned contact instances because
+some data may actually be null in the database.</p>
 <p>If no fields are specified, then all fields are included. Otherwise, only the specified fields will
 be included in addition to required API fields (e.g. IDs), which are always included.</p>
 <blockquote>
-<p>Note that this may affect performance. It is recommended to only include fields that will be used
-to save CPU and memory.</p>
+<p>ℹ️ This may affect performance. It is recommended to only include fields that will be used to save
+CPU and memory.</p>
 </blockquote>
+<h2 id="using-include-in-query-apis">Using <code>include</code> in query APIs<a class="headerlink" href="#using-include-in-query-apis" title="Permanent link">&para;</a></h2>
+<p>When using query APIs such as <code>Query</code>, <code>BroadQuery</code>, <code>ProfileQuery</code>, and <code>DataQuery</code>, you are able
+to specify all or only some kinds of data that you want to be included in the returned results.</p>
+<p>When all fields are included in a query operation, all properties of Contacts, RawContacts, and Data
+are populated with values from the database. Properties of fields that are included are not 
+guaranteed to be non-null because the database may actually have no data for the corresponding 
+field.</p>
+<p>When only some fields are included, only those included properties of Contacts, RawContacts, and 
+Data are populated with values from the database. Properties of fields that are not included are 
+guaranteed to be null.</p>
+<h2 id="using-include-in-insert-apis">Using <code>include</code> in insert APIs<a class="headerlink" href="#using-include-in-insert-apis" title="Permanent link">&para;</a></h2>
+<p>When using insert APIs such as <code>Insert</code> and <code>ProfileInsert</code>, you are able to specify all or only 
+some kinds of data that you want to be included in the insert operation.</p>
+<p>When all fields are included in an insert operation, all properties of Contacts, RawContacts, and 
+Data are inserted into the database. </p>
+<p>When only some fields are included, only those included properties of Contacts, RawContacts, and
+Data are inserted into the database. Properties of fields that are not included are NOT inserted 
+into the database.</p>
+<h2 id="using-include-in-update-apis">Using <code>include</code> in update APIs<a class="headerlink" href="#using-include-in-update-apis" title="Permanent link">&para;</a></h2>
+<p>When using update APIs such as <code>Update</code>, <code>ProfileUpdate</code>, and <code>DataUpdate</code>, you are able to specify 
+all or only some kinds of data that you want to be included in the update operation.</p>
+<h3 id="an-update-operation-consists-of-insertion-updates-and-deletions">An "update" operation consists of insertion, updates, and deletions<a class="headerlink" href="#an-update-operation-consists-of-insertion-updates-and-deletions" title="Permanent link">&para;</a></h3>
+<p>To ensure that the database matches the data contained in the entities being passed into the update 
+operation, a combination of insert, update, or delete operations are performed internally by the 
+update API. The following is what constitutes an <em>"updated"</em> event;</p>
+<ul>
+<li>A RawContact can have 0 or 1 name. <ul>
+<li>If it is null or blank, then the update operation will...<ul>
+<li>delete the name row of the RawContact from the database, if it exist</li>
+</ul>
+</li>
+<li>If it is not null, then the update operation will do one of the following...<ul>
+<li>update an existing name row, if it exist</li>
+<li>or insert a new name row, if one does not exist</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>A RawContact can have 0, 1 or more emails.<ul>
+<li>If the list of emails is empty (or contains only blanks), then the update operation will...<ul>
+<li>delete all email rows of the RawContact from the database, if any exist</li>
+</ul>
+</li>
+<li>If the list of emails is not empty, then the update operation will do all of the following...<ul>
+<li>update email rows for emails that already exist in the database</li>
+<li>insert new email rows for emails that do not yet exist in the database</li>
+<li>delete email rows for emails that exist in the database but not in the (in-memory) entity</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="blank-data-are-deleted">Blank data are deleted<a class="headerlink" href="#blank-data-are-deleted" title="Permanent link">&para;</a></h3>
+<p>Blank data are deleted from the database, unless the the complete set of corresponding fields are 
+not included in the update operation.</p>
+<blockquote>
+<p>⚠️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/160">version 0.3.0</a> where 
+<a href="https://github.com/vestrel00/contacts-android/issues/209"><code>include</code> in update APIs have been overhauled</a>, 
+blank data are deleted from the database even if the corresponding fields are not included.</p>
+<p>ℹ️ For more info on blank data, read about <a href="../about-blank-data/">Blank data</a>.</p>
+</blockquote>
+<h3 id="including-complete-field-sets-for-update">Including complete field sets for "update"<a class="headerlink" href="#including-complete-field-sets-for-update" title="Permanent link">&para;</a></h3>
+<p>When all fields are included in an update operation, all properties of Contacts, RawContacts, and
+Data are <em>"updated"</em> in the database.</p>
+<p>When only some fields are included, only those included properties of Contacts, RawContacts, and
+Data are <em>"updated"</em> in the database. Properties of fields that are not included are NOT 
+<em>"updated"</em>.</p>
+<p>To get all contacts including all fields, then modify the emails, phones, and addresses and perform 
+an update operation on all fields,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="p">()</span> 
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kd">val</span> <span class="nv">contactsWithModifiedEmailPhoneAddress</span> <span class="o">=</span> <span class="n">modifyEmailPhoneAddressIn</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithModifiedEmailPhoneAddress</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
+<p>To modify all emails of all contacts without updating anything else into the database,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span> <span class="nv">contactsWithOnlyEmailData</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kd">val</span> <span class="nv">contactsWithModifiedEmailData</span> <span class="o">=</span> <span class="n">modifyEmailsIn</span><span class="p">(</span><span class="n">contactsWithOnlyEmailData</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithModifiedEmailData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
+<p>To remove all emails from all contacts without updating anything else in the database,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span> <span class="nv">contactsWithAllData</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">val</span> <span class="nv">contactsWithNoEmailData</span> <span class="o">=</span> <span class="n">removeEmailsFrom</span><span class="p">(</span><span class="n">contactsWithAllData</span><span class="p">)</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithNoEmailData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
+<p>Or alternatively,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span> <span class="nv">contactsWithNoData</span> <span class="o">=</span> <span class="n">query</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Required</span><span class="p">.</span><span class="na">all</span><span class="p">)</span> <span class="c1">// does not have to be Fields.Required.</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="p">.</span><span class="na">find</span><span class="p">()</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithNoData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="including-a-subset-of-field-sets-for-update">Including a subset of field sets for "update"<a class="headerlink" href="#including-a-subset-of-field-sets-for-update" title="Permanent link">&para;</a></h3>
+<p>Including only a subset of a set of fields results in,</p>
+<ul>
+<li>deletion of blanks (same as if the complete set of fields are included)</li>
+<li>update of properties corresponding to included fields</li>
+<li>no-op on properties corresponding to excluded fields</li>
+</ul>
+<p>For example, the following set the given name and family name to the non-null values but does not
+set all others (i.e. display name, middle name, prefix, suffix, phonetic given middle family name).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">contacts</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="p">.</span><span class="na">update</span><span class="p">()</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="p">.</span><span class="na">include</span><span class="p">(</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>        <span class="n">Fields</span><span class="p">.</span><span class="na">Name</span><span class="p">.</span><span class="na">GivenName</span><span class="p">,</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="n">Fields</span><span class="p">.</span><span class="na">Name</span><span class="p">.</span><span class="na">FamilyName</span><span class="p">,</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="p">)</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>        <span class="n">existingRawContact</span><span class="p">.</span><span class="na">mutableCopy</span> <span class="p">{</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="n">setName</span> <span class="p">{</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>                <span class="n">displayName</span> <span class="o">=</span> <span class="s">&quot;Mr. &quot;</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>                <span class="n">prefix</span> <span class="o">=</span> <span class="s">&quot;Mr.&quot;</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>                <span class="n">givenName</span> <span class="o">=</span> <span class="s">&quot;First&quot;</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>                <span class="n">middleName</span> <span class="o">=</span> <span class="s">&quot;Middle&quot;</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>                <span class="n">familyName</span> <span class="o">=</span> <span class="s">&quot;Last&quot;</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>                <span class="n">suffix</span> <span class="o">=</span> <span class="s">&quot;Jr.&quot;</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>                <span class="n">phoneticGivenName</span> <span class="o">=</span> <span class="s">&quot;fUHRst&quot;</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>                <span class="n">phoneticMiddleName</span> <span class="o">=</span> <span class="s">&quot;mIdl&quot;</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>                <span class="n">phoneticFamilyName</span> <span class="o">=</span> <span class="s">&quot;lAHst&quot;</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>            <span class="p">}</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>        <span class="p">}</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>    <span class="p">)</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>    <span class="p">.</span><span class="na">commit</span><span class="p">()</span>
+</code></pre></div>
+<p>If the name row for the RawContact did not exist before the update operation, then a new name row
+will be inserted into the database for the RawContact. The given name and family name columns will
+be set to the specified values. All other columns will be set to null.</p>
+<p>If the name row for the RawContact already exists before the update operation, then the name row
+will be updated. The given name and family name columns will be set to the specified values. All 
+other columns will remain unchanged (the null or non-null values will remain null and non-null
+respectively).</p>
 <h2 id="custom-data-support">Custom data support<a class="headerlink" href="#custom-data-support" title="Permanent link">&para;</a></h2>
 <p>The <code>include</code> function supports registered custom data fields, which my be combined with native
 (non-custom) data fields.</p>
-<p>By default, not calling the <code>include</code> function will include all fields, including custom data. 
+<p>By default, not calling the <code>include</code> function will include all fields, including custom data.
 However, the below code will include all native fields but exclude custom data;</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span>
 </code></pre></div>
-<p>If you want to include everything, including custom data, and for some reason you must invoke the 
+<p>If you want to include everything, including custom data, and for some reason you must invoke the
 <code>include</code> function,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span> <span class="o">+</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">customDataRegistry</span><span class="p">.</span><span class="na">allFields</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span> <span class="o">+</span> <span class="n">contactsApi</span><span class="p">.</span><span class="na">customDataRegistry</span><span class="p">.</span><span class="na">allFields</span><span class="p">())</span>
 </code></pre></div>
-<h2 id="performing-updates-on-entities-with-partial-includes">Performing updates on entities with partial includes<a class="headerlink" href="#performing-updates-on-entities-with-partial-includes" title="Permanent link">&para;</a></h2>
-<p>When the query <code>include</code> function is used, only certain data will be included in the returned 
-entities. All other data are guaranteed to be null (except for those in <code>Fields.Required</code>).</p>
-<p>When performing updates on entities that have only partial data included, make sure to use the same 
-included fields in the update operation as the included fields used in the query. This will ensure 
-that the set of data queried and updated are the same. For example, in order to get and set only 
-email addresses and leave everything the same in the database...</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">Address</span><span class="p">).</span><span class="na">find</span><span class="p">()</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">val</span> <span class="nv">mutableContacts</span> <span class="o">=</span> <span class="n">setEmailAddresses</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">mutableContacts</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">Address</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span>
-</code></pre></div>
-<p>On the other hand, you may intentionally include only some data and perform updates on all data 
-(not just the included ones) to effectively delete all non-included data. This is, currently, 
-a feature- not a bug! For example, in order to get and set only email addresses and set all other 
-data to null (such as phone numbers, name, etc) in the database...</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span> <span class="nv">contacts</span> <span class="o">=</span> <span class="n">query</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">Address</span><span class="p">).</span><span class="na">find</span><span class="p">()</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kd">val</span> <span class="nv">mutableContacts</span> <span class="o">=</span> <span class="n">setEmailAddresses</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">mutableContacts</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span>
-</code></pre></div>
-<p>This gives you the most flexibility when it comes to specifying what fields to include/exclude in 
-queries, inserts, and updates, which will allow you to do things beyond your wildest imagination!</p>
 
               
             </article>
