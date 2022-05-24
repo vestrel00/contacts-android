@@ -1,6 +1,6 @@
 # Android Contacts, Reborn
 
-> ℹ️ Written with ♥️ and 🔥 since December 2018. Open sourced since October 2021. 
+> Written with ♥️ and 🔥 since December 2018. Open sourced since October 2021. 
 
 ![Android Contacts, Reborn banner](/docs/assets/images/banner.gif)
 
@@ -34,7 +34,7 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 
 - 📜 [Documentation][github-pages]
 - 🚉 [Current release - 0.2.0](https://github.com/vestrel00/contacts-android/releases/tag/0.2.0)
-- 🚂 [Upcoming release - v0.3.0](https://github.com/vestrel00/contacts-android/discussions/160)
+- 🚂 [Upcoming release - 0.3.0](https://github.com/vestrel00/contacts-android/discussions/160)
 - 🗺 [Project roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
 
@@ -44,72 +44,73 @@ The `core` module provides,
 
 - ✅ [**All data kinds**](/docs/entities/about-api-entities.md) in the Contacts Provider;
   _address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website_.
-- ✅ [**Custom data** integration](/docs/customdata/integrate-custom-data.md).
-- ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups. 
+- ✅ [**Custom data** integration](/docs/customdata/integrate-custom-data.md)
+- ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups
 - ✅ [Contact **lookup keys**](/docs/entities/about-contact-lookup-key.md)
-- ✅ [Include only desired fields](/docs/entities/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**. 
-- ✅ Powerful, **type-safe query DSL**.
+- ✅ [Include only desired fields](/docs/entities/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**
+- ✅ Powerful, **type-safe query DSL**
 - ✅ **Pagination** using order by, limit, and offset database functions.
 - ✅ [**Insert**](/docs/basics/insert-contacts.md) one or more RawContacts with an associated Account,
-  causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider.
-- ✅ [**Update**](/docs/basics/update-contacts.md) one or more Contacts, RawContacts, and Data.
-- ✅ [**Delete**](/docs/basics/delete-contacts.md) one or more Contacts, RawContacts, and Data.
+  causing automatic insertion of a new Contact subject to automatic aggregation by the Contacts Provider
+- ✅ [**Update**](/docs/basics/update-contacts.md) one or more Contacts, RawContacts, and Data
+- ✅ [**Delete**](/docs/basics/delete-contacts.md) one or more Contacts, RawContacts, and Data
 - ✅ [Query](/docs/profile/query-profile.md), [insert](/docs/profile/insert-profile.md),
   [update](/docs/profile/update-profile.md), and [delete](/docs/profile/delete-profile.md)
-   **Profile (device owner)** Contact, RawContact, and Data.
+   **Profile (device owner)** Contact, RawContact, and Data
 - ✅ [Query](/docs/groups/query-groups.md), [insert](/docs/groups/insert-groups.md),
-  [update](/docs/groups/update-groups.md), and [delete](/docs/groups/delete-groups.md) **Groups**.
+  [update](/docs/groups/update-groups.md), and [delete](/docs/groups/delete-groups.md) **Groups**
 - ✅ [Query](/docs/data/query-data-sets.md), [insert](/docs/data/insert-data-sets.md)
-  [update](/docs/data/update-data-sets.md ), and [delete](/docs/data/delete-data-sets.md) **specific kinds of data**.
+  [update](/docs/data/update-data-sets.md ), and [delete](/docs/data/delete-data-sets.md) **specific kinds of data**
 - ✅ [Query](/docs/customdata/query-custom-data.md), [insert](/docs/customdata/insert-custom-data.md), 
-  [update](/docs/customdata/update-custom-data.md), and [delete](/docs/customdata/delete-custom-data.md) **custom data**.
+  [update](/docs/customdata/update-custom-data.md), and [delete](/docs/customdata/delete-custom-data.md) **custom data**
 - ✅ [Query](/docs/blockednumbers/query-blocked-numbers.md), [insert](/docs/blockednumbers/insert-blocked-numbers.md),
-  and [delete](/docs/blockednumbers/delete-blocked-numbers.md) **Blocked Numbers**.
+  and [delete](/docs/blockednumbers/delete-blocked-numbers.md) **Blocked Numbers**
 - ✅ [Query](/docs/sim/query-sim-contacts.md), [insert](/docs/sim/insert-sim-contacts.md),
-  [update](/docs/sim/update-sim-contacts.md), and [delete](/docs/sim/delete-sim-contacts.md) **SIM card contacts**.
-- ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table.
-- ✅ [Query](/docs/accounts/query-raw-contacts.md) for just RawContacts.
-- ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md).
-- ✅ [**Link/unlink**](/docs/other/link-unlink-contacts.md) two or more Contacts.
+  [update](/docs/sim/update-sim-contacts.md), and [delete](/docs/sim/delete-sim-contacts.md) **SIM card contacts**
+- ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table
+- ✅ [Query](/docs/accounts/query-raw-contacts.md) for just RawContacts
+- ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md)
+- ✅ [**Link/unlink**](/docs/other/link-unlink-contacts.md) two or more Contacts
 - ✅ [Get/set contact options](/docs/other/get-set-clear-contact-raw-contact-options.md);
-  **_starred (favorite), custom ringtone, send to voicemail_**.
-- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/docs/other/get-set-remove-contact-raw-contact-photo.md).
+  **_starred (favorite), custom ringtone, send to voicemail_**
+- ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/docs/other/get-set-remove-contact-raw-contact-photo.md)
 - ✅ [Get/set **default (primary) Contact Data**](/docs/other/get-set-clear-default-data.md)
-  (e.g. default/primary phone number, email, etc).
-- ✅ [Convenience functions](/docs/other/convenience-functions.md).
-- ✅ [Contact data is synced automatically across devices](/docs/entities/sync-contact-data.md).
+  (e.g. default/primary phone number, email, etc)
+- ✅ [Convenience functions](/docs/other/convenience-functions.md)
+- ✅ [Contact data is synced automatically across devices](/docs/entities/sync-contact-data.md)
 - ✅ [Support for **logging API input and output**](/docs/logging/log-api-input-output.md)
 - ✅ [**Redactable entities** and API input and output](/docs/entities/redact-apis-and-entities.md)
   for production-safe logging that upholds user data privacy laws to meet GDPR guidelines 
-  _(this is not legal advice)_.
+  _(this is not legal advice)_
 - ✅ [Full **in-depth documentation/guides**][github-pages].
-- ✅ Full **Java interoptibilty**.
-- ✅ Core APIs have **zero dependency**.
-- ✅ Clean separation between **Contacts vs RawContacts**.
-- ✅ Clear distinction between truly deeply immutable, mutable, new, and existing entities allowing for **thread safety and JetPack compose optimizations**.
+- ✅ Full **Java interoptibilty**
+- ✅ Core APIs have **zero dependency**
+- ✅ Clean separation between **Contacts vs RawContacts**
+- ✅ Clear distinction between truly deeply immutable, mutable, new, and existing entities allowing for **thread safety and JetPack compose optimizations**
 
 There are also extensions that add functionality to every core function,
 
-- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/docs/async/async-execution-coroutines.md).
-- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/docs/permissions/permissions-handling-coroutines.md).
+- 🧰 [**Asynchronous** work using **Kotlin Coroutines**](/docs/async/async-execution-coroutines.md)
+- 🧰 [**Permissions** request/handling using **Kotlin Coroutines**](/docs/permissions/permissions-handling-coroutines.md)
 - 🔜 [**Kotlin Flow** extensions](https://github.com/vestrel00/contacts-android/milestone/8)
 - 🔜 [**RxJava** extensions](https://github.com/vestrel00/contacts-android/milestone/9)
 
 Also included are some pre-baked goodies to be used as is or just for reference,
 
-- 🍬 [Gender custom data](/docs/customdata/integrate-gender-custom-data.md).
-- 🍬 [Google Contacts custom data](/docs/customdata/integrate-googlecontacts-custom-data.md).
-- 🍬 [Handle name custom data](/docs/customdata/integrate-handlename-custom-data.md).
+- 🍬 [Gender custom data](/docs/customdata/integrate-gender-custom-data.md)
+- 🍬 [Google Contacts custom data](/docs/customdata/integrate-googlecontacts-custom-data.md)
+- 🍬 [Handle name custom data](/docs/customdata/integrate-handlename-custom-data.md)
 - 🍬 [Pokemon custom data](/docs/customdata/integrate-pokemon-custom-data.md)
-- 🍬 [Role Playing Game (RPG) custom data](/docs/customdata/integrate-rpg-custom-data.md).
-- 🍬 [Rudimentary contacts-integrated UI components](/docs/ui/integrate-rudimentary-contacts-integrated-ui-components.md).
+- 🍬 [Role Playing Game (RPG) custom data](/docs/customdata/integrate-rpg-custom-data.md)
+- 🍬 [Rudimentary contacts-integrated UI components](/docs/ui/integrate-rudimentary-contacts-integrated-ui-components.md)
 - 🍬 [Debug functions to aid in development](/docs/debug/debug-contacts-provider-tables.md)
 
 There are also more features that are on the way!
 
 1. ☢️ [Work profile contacts](https://github.com/vestrel00/contacts-android/issues/186)
 2. ☢️ [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
-3. ☢️ [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26).
+3. ☢️ [Auto-generated custom data using annotations](https://github.com/vestrel00/contacts-android/issues/210)
+4. ☢️ [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26)
 
 ## Installation
 
