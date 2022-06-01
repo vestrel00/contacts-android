@@ -35,6 +35,11 @@ import kotlinx.coroutines.launch
  *     - In edit mode, refreshes the existing contact data to make sure up-to-date data is shown.
  *       Unsaved changes will be discarded.
  *     - In create mode, resets the new contact form to a blank state.
+ * - Share:
+ *     - In view mode, sends an intent to share the **existing** contact
+ *     - In create and edit mode, sends an intent to share the new contact or the existing contact
+ *       with unsaved changes.
+ *       - This will be supported in https://github.com/vestrel00/contacts-android/issues/26
  *
  * ## Note
  *
@@ -82,15 +87,19 @@ class ContactDetailsActivity : BaseActivity() {
         if (menu != null) {
             val editMenuItem = menu.findItem(R.id.edit)
             val saveMenuItem = menu.findItem(R.id.save)
+            val shareMenuItem = menu.findItem(R.id.share)
 
             when (mode) {
                 Mode.VIEW -> {
                     editMenuItem.isVisible = true
                     saveMenuItem.isVisible = false
+                    shareMenuItem.isVisible = true
                 }
                 Mode.EDIT, Mode.CREATE -> {
                     editMenuItem.isVisible = false
                     saveMenuItem.isVisible = true
+                    // Sharing new or existing (with unsaved changes) not supported yet!
+                    shareMenuItem.isVisible = false
                 }
             }
         }
@@ -110,6 +119,7 @@ class ContactDetailsActivity : BaseActivity() {
                 Mode.CREATE -> finish()
             }
             R.id.refresh -> mode = mode
+            R.id.share -> contactView.shareContact()
         }
 
         return super.onOptionsItemSelected(menuItem)

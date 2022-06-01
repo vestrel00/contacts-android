@@ -22,6 +22,7 @@ import contacts.core.Fields
 import contacts.core.entities.*
 import contacts.core.equalTo
 import contacts.core.util.lookupKeyIn
+import contacts.core.util.shareVCardIntent
 import contacts.permissions.deleteWithPermission
 import contacts.permissions.insertWithPermission
 import contacts.permissions.queryWithPermission
@@ -295,6 +296,16 @@ class ContactView @JvmOverloads constructor(
             .contacts(contact)
             .commitWithContext()
             .isSuccessful
+    }
+
+    fun shareContact() {
+        val contact = contact
+        if (contact is ExistingContactEntity) {
+            val shareIntent = contact.shareVCardIntent()
+            if (shareIntent != null) {
+                activity?.startActivity(Intent.createChooser(shareIntent, null))
+            }
+        }
     }
 
     private fun setOptionsView(contacts: Contacts) {
