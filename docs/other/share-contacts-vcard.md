@@ -27,8 +27,8 @@ addition of the contact contained in the vCard.
 To share multiple existing contacts, use the extensions in `contacts.core.util.ContactShare`,
 
 ```kotlin
-val contact: Collection<ExistingContactEntity>
-val shareIntent = contact.shareMultiVCardIntent()
+val contacts: Collection<ExistingContactEntity>
+val shareIntent = contacts.shareMultiVCardIntent()
 if (shareIntent != null) {
     activity.startActivity(Intent.createChooser(shareIntent, null))
 }
@@ -48,7 +48,7 @@ file size, set the `includePhoto` parameter to false,
 
 ```kotlin
 contact.shareVCardIntent(includePhoto = false)
-contact.shareMultiVCardIntent(includePhoto = false)
+contacts.shareMultiVCardIntent(includePhoto = false)
 ```
 
 > ⚠️ This optional parameter is only supported for API 23 and above. It does nothing for lower 
