@@ -45,13 +45,9 @@ tables **locally**. This includes user Profile data in those tables.
 
 ## Data kinds Account restrictions
 
-Entries of some data kinds should not be allowed to exist for local RawContacts.
-
-> ℹ️ The native Contacts app hides the following UI fields when inserting or updating local 
-> RawContacts. To enforce this behavior, this library ignores all of the above during inserts and 
-> updates for local raw contacts.
-
-These data kinds are;
+The native Contacts app hides the following UI fields when inserting or updating local raw contacts. 
+To enforce this behavior, this library ignores the following fields during inserts and updates for 
+local raw contacts.
 
 - `GroupMembership`
     - Groups can only exist if it is associated with an Account. Therefore, memberships to groups is
@@ -65,3 +61,7 @@ These data kinds are;
 The Contacts Provider may or may not enforce these Account restrictions. However, the native
 Contacts app imposes these restrictions. Therefore, this library also imposes these restrictions and
 disables consumers from violating them.
+
+> ⚠️ As of [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/160), these
+> [restrictions will be removed](https://github.com/vestrel00/contacts-android/issues/167). You 
+> will be able insert or update all of the above fields for local raw contacts.

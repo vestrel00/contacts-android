@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# To run this, the following must be installed on the machine;
+# MkDocs: https://www.mkdocs.org/user-guide/installation/
+# Material for MkDocs: https://squidfunk.github.io/mkdocs-material/getting-started/
+
 # Fail on any error
 set -ex
 
@@ -18,3 +22,4 @@ sed -i '' 's/\/docs/\./g' docs/index.md
 
 # Build MkDocs
 mkdocs build
+

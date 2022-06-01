@@ -113,7 +113,7 @@ update API. The following is what constitutes an _"updated"_ event;
 Blank data are deleted from the database, unless the the complete set of corresponding fields are 
 not included in the update operation.
 
-> ⚠️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/160) where 
+> ⚠️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/160), before 
 > [`include` in update APIs have been overhauled](https://github.com/vestrel00/contacts-android/issues/209), 
 > blank data are deleted from the database even if the corresponding fields are not included.
 

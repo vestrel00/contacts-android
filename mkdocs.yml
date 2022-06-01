@@ -84,6 +84,7 @@ nav:
     - 'Get set Contact options': other/get-set-clear-contact-raw-contact-options.md
     - 'Get set clear default Contact data': other/get-set-clear-default-data.md
     - 'Link unlink Contacts': other/link-unlink-contacts.md
+    - 'Share Contacts vCard (.VCF)': other/share-contacts-vcard.md
     - 'Convenience functions': other/convenience-functions.md
   - 'Logging':
     - 'Log API input and output': logging/log-api-input-output.md

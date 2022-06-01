@@ -76,6 +76,7 @@ The `core` module provides,
 - ✅ [Get/set Contacts/RawContact **photo and thumbnail**](/docs/other/get-set-remove-contact-raw-contact-photo.md)
 - ✅ [Get/set **default (primary) Contact Data**](/docs/other/get-set-clear-default-data.md)
   (e.g. default/primary phone number, email, etc)
+- ✅ [Share contacts via vCard (.VCF)](/docs/other/share-contacts-vcard.md)
 - ✅ [Convenience functions](/docs/other/convenience-functions.md)
 - ✅ [Contact data is synced automatically across devices](/docs/entities/sync-contact-data.md)
 - ✅ [Support for **logging API input and output**](/docs/logging/log-api-input-output.md)
