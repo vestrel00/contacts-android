@@ -651,13 +651,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#blank-contacts-and-the-where-function" class="md-nav__link">
-    Blank Contacts and the where function
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2057,13 +2050,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#blank-contacts-and-the-where-function" class="md-nav__link">
-    Blank Contacts and the where function
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2364,17 +2350,6 @@ queries. For example,</p>
 <a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">HasPhoneNumber</span><span class="w"> </span><span class="n">notEqualTo</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 <a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
-<h3 id="blank-contacts-and-the-where-function">Blank Contacts and the <code>where</code> function<a class="headerlink" href="#blank-contacts-and-the-where-function" title="Permanent link">&para;</a></h3>
-<p>The <code>where</code> function is only used to query the Data table. Some contacts do not have any Data table 
-rows. However, this library exposes some fields that belong to other tables, accessible via the 
-Data table with joins;</p>
-<ul>
-<li><code>Fields.Contact</code></li>
-<li><code>Fields.RawContact</code></li>
-</ul>
-<p>Using these fields in the where clause does not have any effect in matching blank Contacts or 
-blank RawContacts simply because they have no Data rows containing these joined fields.</p>
-<p>For more info, read about <a href="../../entities/about-blank-contacts/">Blank contacts</a>.</p>
 
               
             </article>
