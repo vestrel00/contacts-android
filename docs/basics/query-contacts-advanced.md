@@ -382,17 +382,3 @@ val contactsWithNoPhoneNumbers = query
     .where { Contact.HasPhoneNumber notEqualTo true }
     .find()
 ```
-     
-### Blank Contacts and the `where` function
-
-The `where` function is only used to query the Data table. Some contacts do not have any Data table 
-rows. However, this library exposes some fields that belong to other tables, accessible via the 
-Data table with joins;
-
-- `Fields.Contact`
-- `Fields.RawContact`
-
-Using these fields in the where clause does not have any effect in matching blank Contacts or 
-blank RawContacts simply because they have no Data rows containing these joined fields.
-
-For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
