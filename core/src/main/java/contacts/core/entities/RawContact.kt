@@ -87,8 +87,7 @@ sealed interface RawContactEntity : Entity {
      * Consumers may use the ContactPhoto and RawContactPhoto extension functions to get/set/remove
      * photos.
      */
-    // This should actually be internal... if interfaces allowed for internal property declarations.
-    /* internal */ val photo: PhotoEntity?
+    val photo: PhotoEntity?
 
     /**
      * A list [RelationEntity].

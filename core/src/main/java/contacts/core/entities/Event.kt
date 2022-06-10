@@ -325,6 +325,7 @@ data class EventDate internal constructor(
          * Note that the given [month] should be zero-based. The first month of the year, January,
          * is 0.
          */
+        @JvmStatic
         fun from(year: Int?, month: Int, dayOfMonth: Int): EventDate {
             // Note that we should not just construct an instance of EventDate directly from the
             // given values. EventDate values should only be created from valid dates to ensure
@@ -342,6 +343,7 @@ data class EventDate internal constructor(
         /**
          * Returns an [EventDate] from the given [date].
          */
+        @JvmStatic
         fun from(date: Date, noYear: Boolean = false): EventDate {
             val calendar = Calendar.getInstance()
             calendar.time = date
