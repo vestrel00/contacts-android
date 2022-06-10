@@ -251,7 +251,7 @@ private class DataUpdateImpl(
             DataUpdateResult(results)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

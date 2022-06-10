@@ -658,7 +658,7 @@ private class BroadQueryImpl(
 
         return BroadQueryResult(contacts)
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     private companion object {

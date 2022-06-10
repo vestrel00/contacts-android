@@ -536,7 +536,7 @@ private class QueryImpl(
 
         return QueryResult(contacts)
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     private companion object {

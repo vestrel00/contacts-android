@@ -54,7 +54,7 @@ interface CrudApi : Redactable {
          * This is invoked on the same thread as the thread the core function is invoked, which is
          * determined by the consumer.
          */
-        fun onPostExecute(result: Result)
+        fun onPostExecute(api: CrudApi, result: Result)
     }
 }
 
@@ -105,8 +105,8 @@ class CrudApiListenerRegistry {
         listeners.forEach { it.onPreExecute(api) }
     }
 
-    internal fun onPostExecute(result: CrudApi.Result) {
-        listeners.forEach { it.onPostExecute(result) }
+    internal fun onPostExecute(api: CrudApi, result: CrudApi.Result) {
+        listeners.forEach { it.onPostExecute(api, result) }
     }
 }
 
@@ -116,8 +116,8 @@ internal fun CrudApi.onPreExecute() {
     contactsApi.apiListenerRegistry.onPreExecute(this)
 }
 
-internal fun CrudApi.Result.onPostExecute(contactsApi: Contacts) {
-    contactsApi.apiListenerRegistry.onPostExecute(this)
+internal fun CrudApi.onPostExecute(contactsApi: Contacts, result: CrudApi.Result) {
+    contactsApi.apiListenerRegistry.onPostExecute(this, result)
 }
 
 internal val CrudApi.permissions: ContactsPermissions

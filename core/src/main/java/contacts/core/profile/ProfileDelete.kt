@@ -237,7 +237,7 @@ private class ProfileDeleteImpl(
             )
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     override fun commitInOneTransaction(): ProfileDelete.Result {
@@ -262,7 +262,7 @@ private class ProfileDeleteImpl(
             }
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

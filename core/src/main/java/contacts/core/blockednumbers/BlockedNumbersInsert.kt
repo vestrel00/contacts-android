@@ -263,7 +263,7 @@ private class BlockedNumbersInsertImpl(
             BlockedNumbersInsertResult(results, failureReasons)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

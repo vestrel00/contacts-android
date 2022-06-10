@@ -270,7 +270,7 @@ private class BlockedNumbersQueryImpl(
             contentResolver.resolve(INCLUDE, where, orderBy, limit, offset, cancel)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     companion object {

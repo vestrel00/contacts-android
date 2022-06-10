@@ -538,7 +538,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
 
         return DataQueryResult(data)
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     private companion object {

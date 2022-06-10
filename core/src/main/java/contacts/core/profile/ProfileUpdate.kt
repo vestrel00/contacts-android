@@ -329,7 +329,7 @@ private class ProfileUpdateImpl(
             ProfileUpdateResult(results)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

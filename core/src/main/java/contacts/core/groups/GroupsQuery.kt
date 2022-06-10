@@ -323,7 +323,7 @@ private class GroupsQueryImpl(
             )
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     companion object {
