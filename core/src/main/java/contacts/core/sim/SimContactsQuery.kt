@@ -142,7 +142,7 @@ private class SimContactsQueryImpl(
             contentResolver.resolve(cancel)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

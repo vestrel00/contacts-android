@@ -240,7 +240,7 @@ private class DeleteImpl(
             DeleteResult(rawContactsResult, contactsResults)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     override fun commitInOneTransaction(): Delete.Result {
@@ -276,7 +276,7 @@ private class DeleteImpl(
             }
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

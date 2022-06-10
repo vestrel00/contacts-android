@@ -349,7 +349,7 @@ private class UpdateImpl(
             UpdateResult(results)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

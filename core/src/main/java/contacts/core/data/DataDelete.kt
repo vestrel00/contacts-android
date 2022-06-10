@@ -180,7 +180,7 @@ private class DataDeleteImpl(
             DataDeleteResult(dataIdsResultMap)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     override fun commitInOneTransaction(): DataDelete.Result {
@@ -203,7 +203,7 @@ private class DataDeleteImpl(
 
         return DataDeleteAllResult(isSuccessful)
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

@@ -192,7 +192,7 @@ private class GroupsDeleteImpl(
             GroupsDeleteResult(results)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     override fun commitInOneTransaction(): GroupsDelete.Result {
@@ -206,7 +206,7 @@ private class GroupsDeleteImpl(
 
         return GroupsDeleteAllResult(isSuccessful)
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

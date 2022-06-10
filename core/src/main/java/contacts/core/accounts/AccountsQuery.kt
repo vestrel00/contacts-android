@@ -282,7 +282,7 @@ private class AccountsQueryImpl(
             AccountsQueryResult(accounts, rawContactIdsAccountsMap)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

@@ -314,7 +314,7 @@ private class AccountsRawContactsQueryImpl(
             )
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     private companion object {

@@ -160,7 +160,7 @@ private class BlockedNumbersDeleteImpl(
             BlockedNumbersDeleteResult(results)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 
     override fun commitInOneTransaction(): BlockedNumbersDelete.Result {
@@ -175,7 +175,7 @@ private class BlockedNumbersDeleteImpl(
 
         return BlockedNumbersDeleteAllResult(isSuccessful)
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

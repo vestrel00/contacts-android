@@ -292,7 +292,7 @@ private class GroupsUpdateImpl(
             GroupsUpdateResult(failureReasons)
         }
             .redactedCopyOrThis(isRedacted)
-            .apply { onPostExecute(contactsApi) }
+            .also { onPostExecute(contactsApi, it) }
     }
 }
 

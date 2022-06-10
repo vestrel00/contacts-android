@@ -10,18 +10,22 @@ class LoggerRegistry(logger: Logger) {
 
     // Prevent consumers from invoking the listener functions by not having the registry implement
     // it directly.
-    private class Listener(private val logger: Logger) : CrudApi.Listener {
+    private class Listener(private val logger: Logger, private val apiExecutionStartTimeMillis: MutableMap<CrudApi, Long> = mutableMapOf()) : CrudApi.Listener {
 
         override fun onPreExecute(api: CrudApi) {
-            logRedactable(api)
+            apiExecutionStartTimeMillis[api] = System.currentTimeMillis()
+            logger.log(api.redactedCopyOrThis(logger.redactMessages).toString())
         }
 
-        override fun onPostExecute(result: CrudApi.Result) {
-            logRedactable(result)
-        }
+        override fun onPostExecute(api: CrudApi, result: CrudApi.Result) {
+            val executionTime = apiExecutionStartTimeMillis.remove(api)
 
-        private fun logRedactable(redactable: Redactable) {
-            logger.log(redactable.redactedCopyOrThis(logger.redactMessages).toString())
+            logger.log(
+                """
+                   ${api.redactedCopyOrThis(logger.redactMessages)}
+                   execution time: $executionTime
+                """.trimIndent()
+            )
         }
     }
 }
