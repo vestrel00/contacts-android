@@ -13,6 +13,7 @@ remote_branch: gh-pages
 # Navigation
 nav:
   - 'Overview': index.md
+  - 'Cheatsheet': cheatsheet.md
   - 'Setup':
     - 'Installation': setup/installation.md
     - 'Contacts API Setup': setup/setup-contacts-api.md
@@ -138,4 +139,7 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
+  # https://squidfunk.github.io/mkdocs-material/reference/content-tabs
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
