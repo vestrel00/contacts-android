@@ -3,7 +3,7 @@
 This library provides several functions to create `Intent`s that allow you to share contacts from 
 the Contacts Provider database.
 
-> ℹ️ These APIs are available since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/160)
+> ℹ️ These APIs are available since [version 0.2.1](https://github.com/vestrel00/contacts-android/discussions/160)
 > upon implementing [issue #211](https://github.com/vestrel00/contacts-android/issues/211).
 
 ## Share an existing contact

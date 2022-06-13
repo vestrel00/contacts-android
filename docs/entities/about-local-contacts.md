@@ -62,6 +62,6 @@ The Contacts Provider may or may not enforce these Account restrictions. However
 Contacts app imposes these restrictions. Therefore, this library also imposes these restrictions and
 disables consumers from violating them.
 
-> ⚠️ As of [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/160), these
+> ⚠️ As of [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
 > [restrictions will be removed](https://github.com/vestrel00/contacts-android/issues/167). You 
 > will be able insert or update all of the above fields for local raw contacts.
