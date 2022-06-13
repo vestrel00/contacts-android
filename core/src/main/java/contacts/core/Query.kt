@@ -626,6 +626,8 @@ internal fun ContentResolver.resolve(
         return emptyList()
     }
 
+    var offsetAndLimitedContactIds: Collection<Long>? = contactIds
+
     // Collect Contacts, RawContacts, and Data with this mapper.
     val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
@@ -636,17 +638,23 @@ internal fun ContentResolver.resolve(
             ContactsFields.Id `in` it
         },
         sortOrder = "$orderBy LIMIT $limit OFFSET $offset",
-        processCursor = contactsMapper::processContactsCursor
+        processCursor = {
+            contactsMapper.processContactsCursor(it)
+            // We need to make sure we only use the contact ids after this call, which have been
+            // trimmed by the offset and limit.
+            offsetAndLimitedContactIds = contactsMapper.contactIds
+        }
     )
 
     if (cancel()) {
         return emptyList()
     }
 
-    // Collect Data for non-blank RawContact and Contact in the given contactIds.
-    // If contactIds is null, then all Data and non-blank RawContacts and Contacts are collected.
+    // Collect Data for non-blank RawContact and Contact in the given offsetAndLimitedContactIds.
+    // If offsetAndLimitedContactIds is null, then all Data and non-blank RawContacts and Contacts
+    // are collected.
     query(
-        Table.Data, include, contactIds?.let {
+        Table.Data, include, offsetAndLimitedContactIds?.let {
             Fields.Contact.Id `in` it
         },
         processCursor = contactsMapper::processDataCursor
@@ -658,13 +666,17 @@ internal fun ContentResolver.resolve(
 
     // Collect blank RawContacts.
     if (includeBlanks) {
+        // This redeclaration is just here to get rid of compiler not being able to smart cast
+        // offsetAndLimitedContactIds as non-null because it is a var.
+        val contactIdsThatMayIncludeBlanks = offsetAndLimitedContactIds
+
         query(
             Table.RawContacts, include.onlyRawContactsFields(),
             (RawContactsFields.Deleted notEqualTo true) and
-                    if (contactIds != null) {
+                    if (contactIdsThatMayIncludeBlanks != null) {
                         // Note that we do not need to check for the DELETED flag here because RawContacts
                         // that are marked for deletion also have a null Contact ID reference.
-                        RawContactsFields.ContactId `in` contactIds
+                        RawContactsFields.ContactId `in` contactIdsThatMayIncludeBlanks
                     } else {
                         // There may be RawContacts that are marked for deletion that have not yet been deleted.
                         RawContactsFields.Deleted notEqualTo true
