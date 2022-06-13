@@ -27,7 +27,7 @@ class LoggerRegistry(logger: Logger) {
 
             logger.log(
                 """
-                   ${api.redactedCopyOrThis(logger.redactMessages)} ($execTimeMillis milliseconds)
+                   ${result.redactedCopyOrThis(logger.redactMessages)} ($execTimeMillis milliseconds)
                 """.trimIndent()
             )
         }
