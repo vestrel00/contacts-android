@@ -43,9 +43,10 @@ interface Delete : CrudApi {
      *
      * ## IMPORTANT
      *
-     * Deleting all [ExistingRawContactEntityWithContactId]s of a [ExistingContactEntity] will result in the
-     * deletion of the associated [ExistingContactEntity]! However, the [ExistingContactEntity]
-     * will remain as long as it has at least has one associated [ExistingRawContactEntityWithContactId].
+     * Deleting all [ExistingRawContactEntityWithContactId]s of a [ExistingContactEntity] will
+     * result in the deletion of the associated [ExistingContactEntity]! However, the
+     * [ExistingContactEntity] will remain as long as it has at least has one associated
+     * [ExistingRawContactEntityWithContactId].
      */
     fun rawContacts(vararg rawContacts: ExistingRawContactEntityWithContactId): Delete
 
@@ -81,8 +82,8 @@ interface Delete : CrudApi {
     fun contacts(contacts: Sequence<ExistingContactEntity>): Delete
 
     /**
-     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the queue (added via
-     * [contacts] and [rawContacts]) and returns the [Result].
+     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the
+     * queue (added via [contacts] and [rawContacts]) and returns the [Result].
      *
      * ## Permissions
      *
@@ -96,8 +97,9 @@ interface Delete : CrudApi {
     fun commit(): Result
 
     /**
-     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the queue (added via
-     * [contacts] and [rawContacts]) in one transaction. Either ALL deletes succeed or ALL fail.
+     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the
+     * queue (added via [contacts] and [rawContacts]) in one transaction. Either ALL deletes
+     * succeed or ALL fail.
      *
      * ## Permissions
      *
@@ -141,12 +143,13 @@ interface Delete : CrudApi {
         fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean
 
         /**
-         * True the [ExistingContactEntity] (and all of its associated [ExistingRawContactEntityWithContactId]s
-         * has been successfully deleted). False otherwise.
+         * True the [ExistingContactEntity] (and all of its associated
+         * [ExistingRawContactEntityWithContactId]s has been successfully deleted). False otherwise.
          *
-         * This does not indicate whether the chile [ExistingRawContactEntityWithContactId]s has been deleted or
-         * not. This may return false even if all associated [ExistingRawContactEntityWithContactId]s have been
-         * deleted. This is used in conjunction with [Delete.contacts].
+         * This does not indicate whether the chile [ExistingRawContactEntityWithContactId]s has
+         * been deleted or not. This may return false even if all associated
+         * [ExistingRawContactEntityWithContactId]s have been deleted. This is used in conjunction
+         * with [Delete.contacts].
          */
         fun isSuccessful(contact: ExistingContactEntity): Boolean
 
@@ -193,9 +196,10 @@ private class DeleteImpl(
     override fun rawContacts(rawContacts: Collection<ExistingRawContactEntityWithContactId>) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntityWithContactId>): Delete = apply {
-        this.rawContactIds.addAll(rawContacts.map { it.id })
-    }
+    override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntityWithContactId>): Delete =
+        apply {
+            this.rawContactIds.addAll(rawContacts.map { it.id })
+        }
 
     override fun contacts(vararg contacts: ExistingContactEntity) = contacts(contacts.asSequence())
 
@@ -209,7 +213,9 @@ private class DeleteImpl(
     override fun commit(): Delete.Result {
         onPreExecute()
 
-        return if ((contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()) {
+        return if (
+            (contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()
+        ) {
             DeleteAllResult(isSuccessful = false)
         } else {
             val rawContactsResult = mutableMapOf<Long, Boolean>()
@@ -217,8 +223,8 @@ private class DeleteImpl(
                 rawContactsResult[rawContactId] =
                     if (rawContactId.isProfileId) {
                         // Intentionally fail the operation to ensure that this is only used for
-                        // non-profile updates. Otherwise, operation can succeed. This is only done to
-                        // enforce API design.
+                        // non-profile updates. Otherwise, operation can succeed. This is only done
+                        // to enforce API design.
                         false
                     } else {
                         contentResolver.deleteRawContactWithId(rawContactId)
@@ -246,7 +252,9 @@ private class DeleteImpl(
     override fun commitInOneTransaction(): Delete.Result {
         onPreExecute()
 
-        return if ((rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete()) {
+        return if (
+            (rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete()
+        ) {
             DeleteAllResult(isSuccessful = false)
         } else {
             val nonProfileRawContactIds = rawContactIds.filter { !it.isProfileId }
@@ -255,7 +263,7 @@ private class DeleteImpl(
             if (rawContactIds.size != nonProfileRawContactIds.size ||
                 contactIds.size != nonProfileContactIds.size
             ) {
-                // There are some invalid ids or profile RawContacts, fail without performing operation.
+                // There are some invalid ids or profile RawContacts, fail no-op.
                 DeleteAllResult(isSuccessful = false)
             } else {
                 val operations = arrayListOf<ContentProviderOperation>()
@@ -351,7 +359,8 @@ private class DeleteAllResult private constructor(
         isRedacted = true
     )
 
-    override fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean = isSuccessful
+    override fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean =
+        isSuccessful
 
     override fun isSuccessful(contact: ExistingContactEntity): Boolean = isSuccessful
 }
