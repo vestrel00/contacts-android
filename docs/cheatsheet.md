@@ -162,9 +162,21 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.app.Activity
     import contacts.core.*
     import contacts.core.entities.Contact
+    import contacts.core.util.lookupKeyIn
     
     class QueryContactsAdvanced : Activity() {
-
+    
+        fun getContactById(contactId: Long): Contact? = Contacts(this)
+            .query()
+            .where { Contact.Id equalTo contactId }
+            .find()
+            .firstOrNull()
+    
+        fun getContactByLookupKey(lookupKey: String): List<Contact> = Contacts(this)
+            .query()
+            .where { Contact.lookupKeyIn(lookupKey) }
+            .find()
+    
         fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)
             .query()
             .accounts(Account("email@gmail.com", "com.google"))
@@ -213,18 +225,38 @@ heading explore each API in full detail. You may also find these samples in the 
 
     ```java
     import static contacts.core.WhereKt.*;
-
+    import static contacts.core.util.ContactLookupKeyKt.lookupKeyIn;
+    
     import android.accounts.Account;
     import android.app.Activity;
-
+    
     import java.util.List;
     
     import contacts.core.ContactsFactory;
     import contacts.core.Fields;
     import contacts.core.entities.Contact;
-
+    
     public class QueryContactsAdvanced extends Activity {
-
+    
+        Contact getContactById(Long contactId) {
+            return ContactsFactory.create(this)
+                    .query()
+                    .where(
+                            equalTo(Fields.Contact.Id, contactId)
+                    )
+                    .find()
+                    .get(0);
+        }
+    
+        List<Contact> getContactByLookupKey(String lookupKey) {
+            return ContactsFactory.create(this)
+                    .query()
+                    .where(
+                            lookupKeyIn(Fields.Contact, lookupKey)
+                    )
+                    .find();
+        }
+    
         List<Contact> getAllContactsForAGoogleAccount() {
             return ContactsFactory.create(this)
                     .query()

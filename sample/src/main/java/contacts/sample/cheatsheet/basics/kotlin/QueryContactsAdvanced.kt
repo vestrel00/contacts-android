@@ -4,8 +4,20 @@ import android.accounts.Account
 import android.app.Activity
 import contacts.core.*
 import contacts.core.entities.Contact
+import contacts.core.util.lookupKeyIn
 
 class QueryContactsAdvanced : Activity() {
+
+    fun getContactById(contactId: Long): Contact? = Contacts(this)
+        .query()
+        .where { Contact.Id equalTo contactId }
+        .find()
+        .firstOrNull()
+
+    fun getContactByLookupKey(lookupKey: String): List<Contact> = Contacts(this)
+        .query()
+        .where { Contact.lookupKeyIn(lookupKey) }
+        .find()
 
     fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)
         .query()
