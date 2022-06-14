@@ -31,7 +31,8 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
             // ContactsContract.RawContacts.LAST_TIME_CONTACTED,
             ContactsContract.RawContacts.CUSTOM_RINGTONE,
             ContactsContract.RawContacts.SEND_TO_VOICEMAIL,
-            ContactsContract.RawContacts.DELETED
+            ContactsContract.RawContacts.DELETED,
+            ContactsContract.RawContacts.RAW_CONTACT_IS_READ_ONLY
         ),
         null,
         null,
@@ -55,13 +56,14 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
         val customRingtone = cursor.getString(7)
         val sendToVoicemail = cursor.getString(8)
         val deleted = cursor.getString(9)
+        val readOnly = cursor.getString(10)
 
         log(
             """
                 RawContact id: $id, contactId: $contactId, displayNamePrimary: $displayNamePrimary,
                  displayNameAlt: $displayNameAlt,  accountName: $name, accountType: $type,
                  starred: $starred, customRingtone: $customRingtone,
-                 sendToVoicemail: $sendToVoicemail, deleted: $deleted
+                 sendToVoicemail: $sendToVoicemail, deleted: $deleted, readOnly: $readOnly
             """.trimIndent().replace("\n", "")
         )
     }
