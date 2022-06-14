@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,16 +13,24 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
 import contacts.async.findWithContext
-import contacts.core.ContactsFields
-import contacts.core.Fields
-import contacts.core.asc
+import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.util.emails
 import contacts.core.util.phones
+import contacts.core.util.toRawContact
+import contacts.debug.logContactsTable
+import contacts.debug.logDataTable
+import contacts.debug.logProfile
+import contacts.debug.logRawContactsTable
 import contacts.permissions.broadQueryWithPermission
+import contacts.permissions.data.deleteWithPermission
+import contacts.permissions.deleteWithPermission
+import contacts.permissions.profile.deleteWithPermission
+import contacts.permissions.profile.queryWithPermission
 import contacts.ui.text.AbstractTextWatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 
 /**
@@ -147,6 +156,18 @@ class ContactsActivity : BaseActivity() {
                 // .offset(...)
                 // .limit(...)
                 .findWithContext()
+
+            Log.d("ContactsDebug","BEFORE ------------------------------------")
+            logContactsTable()
+            logRawContactsTable()
+            val isSuccessful = contacts.deleteWithPermission()
+                .contactsWithId(613)
+                .rawContactsWithId(613)
+                .commitInOneTransaction()
+                .isSuccessful
+            Log.d("ContactsDebug","AFTER - isSuccessful: $isSuccessful ------------------------------------")
+            logContactsTable()
+            logRawContactsTable()
 
             setContactsAdapterItems()
         }

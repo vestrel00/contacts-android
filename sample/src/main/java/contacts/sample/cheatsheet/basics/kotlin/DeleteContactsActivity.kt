@@ -13,8 +13,18 @@ class DeleteContactsActivity : Activity() {
         .contacts(contact)
         .commit()
 
+    fun deleteContactWithId(contactId: Long): Delete.Result = Contacts(this)
+        .delete()
+        .contactsWithId(contactId)
+        .commit()
+
     fun deleteRawContact(rawContact: RawContact): Delete.Result = Contacts(this)
         .delete()
         .rawContacts(rawContact)
+        .commit()
+
+    fun deleteRawContactWithId(rawContactId: Long): Delete.Result = Contacts(this)
+        .delete()
+        .rawContactsWithId(rawContactId)
         .commit()
 }

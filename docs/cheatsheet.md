@@ -716,9 +716,19 @@ heading explore each API in full detail. You may also find these samples in the 
             .contacts(contact)
             .commit()
     
+        fun deleteContactWithId(contactId: Long): Delete.Result = Contacts(this)
+            .delete()
+            .contactsWithId(contactId)
+            .commit()
+    
         fun deleteRawContact(rawContact: RawContact): Delete.Result = Contacts(this)
             .delete()
             .rawContacts(rawContact)
+            .commit()
+    
+        fun deleteRawContactWithId(rawContactId: Long): Delete.Result = Contacts(this)
+            .delete()
+            .rawContactsWithId(rawContactId)
             .commit()
     }
     ```
@@ -742,10 +752,24 @@ heading explore each API in full detail. You may also find these samples in the 
                     .commit();
         }
     
+        Delete.Result deleteContactWithId(Long contactId) {
+            return ContactsFactory.create(this)
+                    .delete()
+                    .contactsWithId(contactId)
+                    .commit();
+        }
+    
         Delete.Result deleteRawContact(RawContact rawContact) {
             return ContactsFactory.create(this)
                     .delete()
                     .rawContacts(rawContact)
+                    .commit();
+        }
+    
+        Delete.Result deleteRawContactWithId(Long rawContactId) {
+            return ContactsFactory.create(this)
+                    .delete()
+                    .rawContactsWithId(rawContactId)
                     .commit();
         }
     }

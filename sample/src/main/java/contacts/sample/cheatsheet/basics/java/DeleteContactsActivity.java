@@ -16,10 +16,24 @@ public class DeleteContactsActivity extends Activity {
                 .commit();
     }
 
+    Delete.Result deleteContactWithId(Long contactId) {
+        return ContactsFactory.create(this)
+                .delete()
+                .contactsWithId(contactId)
+                .commit();
+    }
+
     Delete.Result deleteRawContact(RawContact rawContact) {
         return ContactsFactory.create(this)
                 .delete()
                 .rawContacts(rawContact)
+                .commit();
+    }
+
+    Delete.Result deleteRawContactWithId(Long rawContactId) {
+        return ContactsFactory.create(this)
+                .delete()
+                .rawContactsWithId(rawContactId)
                 .commit();
     }
 }

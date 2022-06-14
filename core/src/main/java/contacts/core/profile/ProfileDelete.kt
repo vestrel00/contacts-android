@@ -51,7 +51,7 @@ interface ProfileDelete : CrudApi {
      *
      * If [contact] is called, then any [ExistingRawContactEntity]s provided here will be ignored.
      *
-     * ## IMPORTANT
+     * ## Note
      *
      * Deleting all profile [ExistingRawContactEntity]s of a profile [ExistingContactEntity] will
      * result in the deletion of the associated profile [ExistingContactEntity]! However, the
@@ -77,7 +77,7 @@ interface ProfileDelete : CrudApi {
      * If this is called, then any [ExistingRawContactEntity]s provided via [rawContacts] will be
      * ignored.
      *
-     * ## IMPORTANT
+     * ## Note
      *
      * Deleting the profile [ExistingContactEntity] will result in the deletion of all associated
      * profile [ExistingRawContactEntity]s!

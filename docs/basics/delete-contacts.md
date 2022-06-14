@@ -1,6 +1,6 @@
 # Delete Contacts
 
-This library provides the `Delete` API, which allows you to delete one or more Contacts or 
+This library provides the `Delete` API, which allows you to delete one or more Contacts or
 RawContacts.
 
 An instance of the `Delete` API is obtained by,
@@ -19,21 +19,32 @@ To delete a set of Contact and all of its RawContacts,
 
 ```kotlin
 val deleteResult = delete
-     .contacts(contactToDelete)
-     .commit()
+    .contacts(contactToDelete)
+    .commit()
 ```
 
-If you want to delete a set of RawContacts, 
+If you want to delete a set of RawContacts,
 
 ```kotlin
 val deleteResult = delete
-     .rawContacts(contactToDelete)
-     .commit()
+    .rawContacts(contactToDelete)
+    .commit()
 ```
 
 You may specify `contacts` and `rawContacts` in the same delete operation.
 
-Note that **Contacts are deleted automatically when all constituent RawContacts are deleted.**
+You may also use IDs instead of entity references;
+
+```kotlin
+val deleteResult = delete
+    .contacts(1, 2, 3)
+    .rawContacts(4, 5, 6)
+    .commit()
+```
+
+> ℹ️ Contacts are deleted automatically when all constituent RawContacts are deleted.
+
+> ℹ️ RawContacts are deleted automatically when the parent Contact is deleted.
 
 ## Executing the delete
 
@@ -51,8 +62,8 @@ If you want to delete all given Contacts and RawContacts in a single atomic tran
 
 The call to `commitInOneTransaction` will only succeed if ALL given Contacts and RawContacts are
 successfully deleted. If one delete fails, the entire operation will fail and everything will be
-reverted prior to the delete operation. In contrast, `commit` allows for some deletes to succeed
-and some to fail.
+reverted prior to the delete operation. In contrast, `commit` allows for some deletes to succeed and
+some to fail.
 
 ### Handling the delete result
 
@@ -64,10 +75,18 @@ To check if all deletes succeeded,
 val allDeletesSuccessful = deleteResult.isSuccessful
 ```
 
-To check if a particular delete succeeded,
+To check if a particular Contact has been deleted successfully,
 
 ```kotlin
-val firstDeleteSuccessful = deleteResult.isSuccessful(mutableContact1)
+val contactDeleteSuccessful = deleteResult.isSuccessful(mutableContact)
+val contactDeleteSuccessful = deleteResult.isContactDeleteSuccessful(mutableContact.id)
+```
+
+To check if a particular RawContact has been deleted successfully,
+
+```kotlin
+val rawContactDeleteSuccessful = deleteResult.isSuccessful(mutableRawContact)
+val rawContactDeleteSuccessful = deleteResult.isRawContactDeleteSuccessful(mutableRawContact.id)
 ```
 
 ## Performing the delete and result processing asynchronously
@@ -75,8 +94,10 @@ val firstDeleteSuccessful = deleteResult.isSuccessful(mutableContact1)
 Deletes are executed when the `commit` or `commitInOneTransaction` function is invoked. The work is
 done in the same thread as the call-site. This may result in a choppy UI.
 
-To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
+To perform the work in a different thread, use the Kotlin coroutine extensions provided in
+the `async` module. For more info,
+read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md)
+.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -84,17 +105,19 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 
 ## Performing the delete with permission
 
-Deletes require the `android.permission.WRITE_CONTACTS` permissions. If not granted, the delete
-will do nothing and return a failed result.
+Deletes require the `android.permission.WRITE_CONTACTS` permissions. If not granted, the delete will
+do nothing and return a failed result.
 
-To perform the delete with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
+To perform the delete with permission, use the extensions provided in the `permissions` module. For
+more info,
+read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Custom data support
 
-The `Delete` API supports custom data. For more info, read [Delete custom data](./../customdata/delete-custom-data.md).
+The `Delete` API supports custom data. For more info,
+read [Delete custom data](./../customdata/delete-custom-data.md).
 
 ## Data belonging to RawContacts/Contact are deleted
 
