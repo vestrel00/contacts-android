@@ -119,3 +119,6 @@ internal fun ContentResolver.applyBlockedNumberBatch(
 }
 
 // endregion
+
+internal val Array<ContentProviderResult>?.deleteSuccess: Boolean
+    get() = this?.firstOrNull()?.count?.let { it > 0 } == true

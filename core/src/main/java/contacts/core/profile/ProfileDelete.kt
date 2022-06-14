@@ -8,6 +8,7 @@ import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.operation.RawContactsOperation
 import contacts.core.entities.table.ProfileUris
 import contacts.core.util.applyBatch
+import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
 import contacts.core.util.unsafeLazy
 
@@ -257,7 +258,7 @@ private class ProfileDeleteImpl(
                 ProfileDeleteAllResult(
                     isSuccessful = contentResolver.applyBatch(
                         RawContactsOperation(true).deleteRawContacts(profileRawContactIds)
-                    ) != null
+                    ).deleteSuccess
                 )
             }
         }
@@ -267,7 +268,7 @@ private class ProfileDeleteImpl(
 }
 
 private fun ContentResolver.deleteProfileContact(): Boolean =
-    applyBatch(newDelete(ProfileUris.RAW_CONTACTS.uri).build()) != null
+    applyBatch(newDelete(ProfileUris.RAW_CONTACTS.uri).build()).deleteSuccess
 
 private class ProfileDeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,

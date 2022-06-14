@@ -484,6 +484,9 @@ internal fun Contacts.updateRawContact(
     /*
      * Atomically update all of the associated Data rows. All of the above operations will
      * either succeed or fail.
+     *
+     * Note that the returned result on success is ContentProviderResult(count=0). Therefore, we
+     * cannot use the count to determine if the operation succeeded or not.
      */
     return contentResolver.applyBatch(operations) != null
 }

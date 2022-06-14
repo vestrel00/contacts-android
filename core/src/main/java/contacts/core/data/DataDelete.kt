@@ -8,6 +8,7 @@ import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.util.applyBatch
+import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
 import contacts.core.util.unsafeLazy
 
@@ -211,7 +212,7 @@ private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean = applyBatch
     newDelete(if (dataId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(Fields.DataId equalTo dataId)
         .build()
-) != null
+).deleteSuccess
 
 private fun ContentResolver.deleteDataRowsWithIds(
     dataIds: Collection<Long>, isProfile: Boolean
@@ -219,7 +220,7 @@ private fun ContentResolver.deleteDataRowsWithIds(
     newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
         .withSelection(Fields.DataId `in` dataIds)
         .build()
-) != null
+).deleteSuccess
 
 private class DataDeleteResult private constructor(
     private val dataIdsResultMap: Map<Long, Boolean>,

@@ -6,6 +6,7 @@ import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.operation.RawContactsOperation
 import contacts.core.util.applyBatch
+import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
 import contacts.core.util.unsafeLazy
 
@@ -280,7 +281,7 @@ private class DeleteImpl(
                         .let(operations::add)
                 }
 
-                DeleteAllResult(isSuccessful = contentResolver.applyBatch(operations) != null)
+                DeleteAllResult(isSuccessful = contentResolver.applyBatch(operations).deleteSuccess)
             }
         }
             .redactedCopyOrThis(isRedacted)
@@ -290,12 +291,12 @@ private class DeleteImpl(
 
 internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean = applyBatch(
     RawContactsOperation(rawContactId.isProfileId).deleteRawContact(rawContactId)
-) != null
+).deleteSuccess
 
 private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
     applyBatch(
         RawContactsOperation(contactId.isProfileId).deleteRawContactsWithContactId(contactId)
-    ) != null
+    ).deleteSuccess
 
 private class DeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,
