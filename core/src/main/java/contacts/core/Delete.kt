@@ -5,10 +5,7 @@ import android.content.ContentResolver
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.operation.RawContactsOperation
-import contacts.core.util.applyBatch
-import contacts.core.util.deleteSuccess
-import contacts.core.util.isProfileId
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * Deletes one or more raw contacts or contacts from the raw contacts and contacts tables
@@ -83,6 +80,28 @@ interface Delete : CrudApi {
     fun rawContactsWithId(rawContactsIds: Sequence<Long>): Delete
 
     /**
+     * Deletes all of the RawContacts that match the given [where].
+     */
+    fun rawContactsWhere(where: Where<RawContactsField>): Delete
+
+    /**
+     * Same as [Delete.rawContactsWhere] except you have direct access to all properties of
+     * [RawContactsFields] in the function parameter. Use this to shorten your code.
+     */
+    fun rawContactsWhere(where: RawContactsFields.() -> Where<RawContactsField>): Delete
+
+    /**
+     * Deletes all of the RawContacts that have data that match the given [where].
+     */
+    fun rawContactsWhereData(where: Where<AbstractDataField>): Delete
+
+    /**
+     * Same as [Delete.rawContactsWhereData] except you have direct access to all properties of
+     * [Fields] in the function parameter. Use this to shorten your code.
+     */
+    fun rawContactsWhereData(where: Fields.() -> Where<AbstractDataField>): Delete
+
+    /**
      * Adds the given [contacts] to the delete queue, which will be deleted on [commit].
      *
      * ## Note
@@ -123,8 +142,44 @@ interface Delete : CrudApi {
     fun contactsWithId(contactsIds: Sequence<Long>): Delete
 
     /**
+     * Deletes all of the Contacts that match the given [where].
+     *
+     * Note that this will make an internal query when [commit] or [commitInOneTransaction] is
+     * invoked, which may affect performance slightly.
+     */
+    fun contactsWhere(where: Where<ContactsField>): Delete
+
+    /**
+     * Same as [Delete.contactsWhere] except you have direct access to all properties of
+     * [ContactsFields] in the function parameter. Use this to shorten your code.
+     */
+    fun contactsWhere(where: ContactsFields.() -> Where<ContactsField>): Delete
+
+    /**
+     * Deletes all of the Contacts that have data that match the given [where].
+     */
+    fun contactsWhereData(where: Where<AbstractDataField>): Delete
+
+    /**
+     * Same as [Delete.contactsWhereData] except you have direct access to all properties of
+     * [Fields] in the function parameter. Use this to shorten your code.
+     */
+    fun contactsWhereData(where: Fields.() -> Where<AbstractDataField>): Delete
+
+    /**
      * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the
-     * queue (added via [contacts] and [rawContacts]) and returns the [Result].
+     * queue specified via;
+     *
+     * - [rawContacts]
+     * - [rawContactsWithId]
+     * - [rawContactsWhere]
+     * - [rawContactsWhereData]
+     * - [contacts]
+     * - [contactsWithId]
+     * - [contactsWhere]
+     * - [contactsWhereData]
+     *
+     * and returns the [Result].
      *
      * ## Permissions
      *
@@ -139,8 +194,8 @@ interface Delete : CrudApi {
 
     /**
      * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the
-     * queue (added via [contacts] and [rawContacts]) in one transaction. Either ALL deletes
-     * succeed or ALL fail.
+     * queue (added via [contacts]/[contactsWithId] and [rawContacts]/[rawContactsWithId]) in one
+     * transaction. Either ALL deletes succeed or ALL fail.
      *
      * ## Permissions
      *
@@ -169,15 +224,27 @@ interface Delete : CrudApi {
     interface Result : CrudApi.Result {
 
         /**
-         * True if all Contacts and RawContacts have successfully been deleted. False if even one
-         * delete failed.
+         * True if all specified or matching Contacts and RawContacts have successfully been
+         * deleted. False if even one delete failed.
          *
-         * ## Limitation
+         * ## [commit] vs [commitInOneTransaction]
          *
-         * If you specified RawContacts in [rawContacts] or [rawContactsWithId] that belong to a
-         * Contact that you also passed in [contacts] or [contactsWithId], then this may be false
-         * even if the Contact and RawContacts were actually deleted IF you used [commit].
-         * Using [commitInOneTransaction] does not have this limitation.
+         * If you specified RawContacts in any of;
+         *
+         * - [rawContacts]
+         * - [rawContactsWithId]
+         * - [rawContactsWhere]
+         * - [rawContactsWhereData]
+         *
+         * that belong to a Contact that you also specified in any of;
+         *
+         * - [contacts]
+         * - [contactsWithId]
+         * - [contactsWhere]
+         * - [contactsWhereData]
+         *
+         * then this may return false even if the Contact and RawContacts were actually deleted IF
+         * you used [commit]. Using [commitInOneTransaction] does not have this limitation.
          */
         val isSuccessful: Boolean
 
@@ -225,6 +292,14 @@ interface Delete : CrudApi {
          */
         fun isContactDeleteSuccessful(contactId: Long): Boolean
 
+        /**
+         * True if the delete operation using the given [where] was successful.
+         *
+         * This is used in conjunction with [Delete.rawContactsWhere],
+         * [Delete.rawContactsWhereData], [Delete.contactsWhere], and [Delete.contactsWhereData].
+         */
+        fun isSuccessful(where: Where<*>): Boolean
+
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
     }
@@ -239,14 +314,32 @@ private class DeleteImpl(
     private val rawContactIds: MutableSet<Long> = mutableSetOf(),
     private val contactIds: MutableSet<Long> = mutableSetOf(),
 
+    private var rawContactsWhere: Where<RawContactsField>? = null,
+    private var rawContactsWhereData: Where<AbstractDataField>? = null,
+
+    private var contactsWhere: Where<ContactsField>? = null,
+    private var contactsWhereData: Where<AbstractDataField>? = null,
+
     override val isRedacted: Boolean = false
 ) : Delete {
+
+    private val hasNothingToCommit: Boolean
+        get() = rawContactIds.isEmpty()
+                && contactIds.isEmpty()
+                && rawContactsWhere == null
+                && rawContactsWhereData == null
+                && contactsWhere == null
+                && contactsWhereData == null
 
     override fun toString(): String =
         """
             Delete {
                 rawContactIds: $rawContactIds
                 contactIds: $contactIds
+                rawContactsWhere: $rawContactsWhere
+                rawContactsWhereData: $rawContactsWhereData
+                contactsWhere: $contactsWhere
+                contactsWhereData: $contactsWhereData
                 hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
@@ -256,8 +349,14 @@ private class DeleteImpl(
     override fun redactedCopy(): Delete = DeleteImpl(
         contactsApi,
 
-        rawContactIds,
-        contactIds,
+        rawContactIds = rawContactIds,
+        contactIds = contactIds,
+
+        rawContactsWhere = rawContactsWhere?.redactedCopy(),
+        rawContactsWhereData = rawContactsWhereData?.redactedCopy(),
+
+        contactsWhere = contactsWhere?.redactedCopy(),
+        contactsWhereData = contactsWhereData?.redactedCopy(),
 
         isRedacted = true
     )
@@ -281,6 +380,20 @@ private class DeleteImpl(
         this.rawContactIds.addAll(rawContactsIds)
     }
 
+    override fun rawContactsWhere(where: Where<RawContactsField>): Delete = apply {
+        rawContactsWhere = where.redactedCopyOrThis(isRedacted)
+    }
+
+    override fun rawContactsWhere(where: RawContactsFields.() -> Where<RawContactsField>) =
+        rawContactsWhere(where(RawContactsFields))
+
+    override fun rawContactsWhereData(where: Where<AbstractDataField>): Delete = apply {
+        rawContactsWhereData = where.redactedCopyOrThis(isRedacted)
+    }
+
+    override fun rawContactsWhereData(where: Fields.() -> Where<AbstractDataField>) =
+        rawContactsWhereData(where(Fields))
+
     override fun contacts(vararg contacts: ExistingContactEntity) = contacts(contacts.asSequence())
 
     override fun contacts(contacts: Collection<ExistingContactEntity>) =
@@ -298,12 +411,24 @@ private class DeleteImpl(
         this.contactIds.addAll(contactsIds)
     }
 
+    override fun contactsWhere(where: Where<ContactsField>): Delete = apply {
+        contactsWhere = where.redactedCopyOrThis(isRedacted)
+    }
+
+    override fun contactsWhere(where: ContactsFields.() -> Where<ContactsField>) =
+        contactsWhere(where(ContactsFields))
+
+    override fun contactsWhereData(where: Where<AbstractDataField>): Delete = apply {
+        contactsWhereData = where.redactedCopyOrThis(isRedacted)
+    }
+
+    override fun contactsWhereData(where: Fields.() -> Where<AbstractDataField>) =
+        contactsWhereData(where(Fields))
+
     override fun commit(): Delete.Result {
         onPreExecute()
 
-        return if (
-            (contactIds.isEmpty() && rawContactIds.isEmpty()) || !permissions.canUpdateDelete()
-        ) {
+        return if (!permissions.canUpdateDelete() || hasNothingToCommit) {
             DeleteAllResult(isSuccessful = false)
         } else {
             val rawContactsResult = mutableMapOf<Long, Boolean>()
@@ -315,7 +440,9 @@ private class DeleteImpl(
                         // to enforce API design.
                         false
                     } else {
-                        contentResolver.deleteRawContactWithId(rawContactId)
+                        contentResolver.deleteRawContactsWhere(
+                            RawContactsFields.Id equalTo rawContactId
+                        )
                     }
             }
 
@@ -327,11 +454,36 @@ private class DeleteImpl(
                     // enforce API design.
                     false
                 } else {
-                    contentResolver.deleteContactWithId(contactId)
+                    contentResolver.deleteRawContactsWhere(RawContactsFields.ContactId equalTo contactId)
                 }
             }
 
-            DeleteResult(rawContactsResult, contactsResults)
+            val whereResultMap = mutableMapOf<String, Boolean>()
+            rawContactsWhere?.let {
+                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(it)
+            }
+            rawContactsWhereData?.let {
+                val reducedWhere = contentResolver.reduce(it)
+                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
+                    RawContactsFields.Id
+                            `in` contentResolver.findRawContactIdsInDataTable(reducedWhere)
+                )
+            }
+            contactsWhere?.let {
+                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
+                    RawContactsFields.ContactId
+                            `in` contentResolver.findContactIdsInContactsTable(it)
+                )
+            }
+            contactsWhereData?.let {
+                val reducedWhere = contentResolver.reduce(it)
+                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
+                    RawContactsFields.ContactId
+                            `in` contentResolver.findContactIdsInDataTable(reducedWhere)
+                )
+            }
+
+            DeleteResult(rawContactsResult, contactsResults, whereResultMap)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
@@ -340,9 +492,7 @@ private class DeleteImpl(
     override fun commitInOneTransaction(): Delete.Result {
         onPreExecute()
 
-        return if (
-            (rawContactIds.isEmpty() && contactIds.isEmpty()) || !permissions.canUpdateDelete()
-        ) {
+        return if (!permissions.canUpdateDelete() || hasNothingToCommit) {
             DeleteAllResult(isSuccessful = false)
         } else {
             val nonProfileRawContactIds = rawContactIds.filter { !it.isProfileId }
@@ -357,15 +507,37 @@ private class DeleteImpl(
                 val operations = arrayListOf<ContentProviderOperation>()
 
                 if (nonProfileRawContactIds.isNotEmpty()) {
-                    RawContactsOperation(false)
-                        .deleteRawContacts(nonProfileRawContactIds)
+                    deleteOperationFor(RawContactsFields.Id `in` nonProfileRawContactIds)
                         .let(operations::add)
                 }
 
                 if (nonProfileContactIds.isNotEmpty()) {
-                    RawContactsOperation(false)
-                        .deleteRawContactsWithContactIds(nonProfileContactIds)
+                    deleteOperationFor(RawContactsFields.ContactId `in` nonProfileContactIds)
                         .let(operations::add)
+                }
+
+                rawContactsWhere?.let {
+                    deleteOperationFor(it).let(operations::add)
+                }
+                rawContactsWhereData?.let {
+                    val reducedWhere = contentResolver.reduce(it)
+                    deleteOperationFor(
+                        RawContactsFields.Id
+                                `in` contentResolver.findRawContactIdsInDataTable(reducedWhere)
+                    ).let(operations::add)
+                }
+                contactsWhere?.let {
+                    deleteOperationFor(
+                        RawContactsFields.ContactId
+                                `in` contentResolver.findContactIdsInContactsTable(it)
+                    ).let(operations::add)
+                }
+                contactsWhereData?.let {
+                    val reducedWhere = contentResolver.reduce(it)
+                    deleteOperationFor(
+                        RawContactsFields.ContactId
+                                `in` contentResolver.findContactIdsInDataTable(reducedWhere)
+                    ).let(operations::add)
                 }
 
                 DeleteAllResult(isSuccessful = contentResolver.applyBatch(operations).deleteSuccess)
@@ -376,25 +548,24 @@ private class DeleteImpl(
     }
 }
 
-internal fun ContentResolver.deleteRawContactWithId(rawContactId: Long): Boolean = applyBatch(
-    RawContactsOperation(rawContactId.isProfileId).deleteRawContact(rawContactId)
-).deleteSuccess
+internal fun ContentResolver.deleteRawContactsWhere(where: Where<RawContactsField>): Boolean =
+    applyBatch(deleteOperationFor(where)).deleteSuccess
 
-private fun ContentResolver.deleteContactWithId(contactId: Long): Boolean =
-    applyBatch(
-        RawContactsOperation(contactId.isProfileId).deleteRawContactsWithContactId(contactId)
-    ).deleteSuccess
+private fun deleteOperationFor(where: Where<RawContactsField>): ContentProviderOperation =
+    RawContactsOperation(false).deleteRawContactsWhere(where)
 
 private class DeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,
     private val contactIdsResultMap: Map<Long, Boolean>,
+    private var whereResultMap: Map<String, Boolean>,
     override val isRedacted: Boolean
 ) : Delete.Result {
 
     constructor(
         rawContactIdsResultMap: Map<Long, Boolean>,
-        contactIdsResultMap: Map<Long, Boolean>
-    ) : this(rawContactIdsResultMap, contactIdsResultMap, false)
+        contactIdsResultMap: Map<Long, Boolean>,
+        whereResultMap: Map<String, Boolean>
+    ) : this(rawContactIdsResultMap, contactIdsResultMap, whereResultMap, false)
 
     override fun toString(): String =
         """
@@ -402,19 +573,32 @@ private class DeleteResult private constructor(
                 isSuccessful: $isSuccessful
                 rawContactIdsResultMap: $rawContactIdsResultMap
                 contactIdsResultMap: $contactIdsResultMap
+                whereResultMap: $whereResultMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): Delete.Result = DeleteResult(
-        rawContactIdsResultMap, contactIdsResultMap,
+        rawContactIdsResultMap = rawContactIdsResultMap,
+        contactIdsResultMap = contactIdsResultMap,
+        whereResultMap = whereResultMap.redactedStringKeys(),
         isRedacted = true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        // By default, all returns true when the collection is empty. So, we override that.
-        rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
-                && contactIdsResultMap.run { isNotEmpty() && all { it.value } }
+        // Deleting nothing is NOT successful.
+        if (rawContactIdsResultMap.isEmpty()
+            && contactIdsResultMap.isEmpty()
+            && whereResultMap.isEmpty()
+        ) {
+            false
+        } else {
+            // A set has failure if it is NOT empty and one of its entries is false.
+            val hasRawContactFailure = rawContactIdsResultMap.any { !it.value }
+            val hasContactFailure = contactIdsResultMap.any { !it.value }
+            val hasWhereFailure = whereResultMap.any { !it.value }
+            !hasRawContactFailure && !hasContactFailure && !hasWhereFailure
+        }
     }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean =
@@ -428,6 +612,9 @@ private class DeleteResult private constructor(
 
     override fun isContactDeleteSuccessful(contactId: Long): Boolean =
         contactIdsResultMap.getOrElse(contactId) { false }
+
+    override fun isSuccessful(where: Where<*>): Boolean =
+        whereResultMap.getOrElse(where.toString()) { false }
 }
 
 private class DeleteAllResult private constructor(
@@ -461,4 +648,6 @@ private class DeleteAllResult private constructor(
     override fun isSuccessful(contact: ExistingContactEntity): Boolean = isSuccessful
 
     override fun isContactDeleteSuccessful(contactId: Long): Boolean = isSuccessful
+
+    override fun isSuccessful(where: Where<*>): Boolean = isSuccessful
 }

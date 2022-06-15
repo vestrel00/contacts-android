@@ -10,10 +10,7 @@ import contacts.core.entities.Group
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.util.isEmpty
-import contacts.core.util.query
-import contacts.core.util.toRawContactsWhere
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * A generalized version of [Query], that lets the Contacts Provider perform the search using its
@@ -731,7 +728,7 @@ private fun ContentResolver.resolve(
 
         // Intentionally replace the contactsIds instead of adding to it.
         contactIds = mutableSetOf<Long>().apply {
-            addAll(findContactIdsInRawContactsTable(rawContactsTableWhere, cancel, false))
+            addAll(findContactIdsInRawContactsTable(rawContactsTableWhere, false, cancel))
         }
 
         // If no match, return empty list.

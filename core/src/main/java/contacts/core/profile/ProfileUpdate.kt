@@ -320,7 +320,7 @@ private class ProfileUpdateImpl(
                     // design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    contentResolver.deleteRawContactWithId(rawContact.id)
+                    contentResolver.deleteRawContactsWhere(RawContactsFields.Id equalTo rawContact.id)
                 } else {
                     contactsApi.updateRawContact(include.fields, rawContact)
                 }

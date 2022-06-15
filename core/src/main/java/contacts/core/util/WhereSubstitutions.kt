@@ -158,7 +158,7 @@ internal fun <T : Field, R : Field> Where<T>.copyWithFieldValueSubstitutions(
  */
 internal fun ContentResolver.reduce(
     where: Where<AbstractDataField>,
-    cancel: () -> Boolean
+    cancel: () -> Boolean = { false }
 ): Where<AbstractDataField> = if (cancel()) {
     where
 } else {

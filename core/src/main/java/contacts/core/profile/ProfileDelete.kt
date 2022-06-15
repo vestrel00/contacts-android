@@ -229,7 +229,9 @@ private class ProfileDeleteImpl(
                         // design.
                         false
                     } else {
-                        contentResolver.deleteRawContactWithId(rawContactId)
+                        contentResolver.deleteRawContactsWhere(
+                            RawContactsFields.Id equalTo rawContactId
+                        )
                     }
             }
             ProfileDeleteResult(
@@ -257,7 +259,8 @@ private class ProfileDeleteImpl(
             } else {
                 ProfileDeleteAllResult(
                     isSuccessful = contentResolver.applyBatch(
-                        RawContactsOperation(true).deleteRawContacts(profileRawContactIds)
+                        RawContactsOperation(true)
+                            .deleteRawContactsWhere(RawContactsFields.Id `in` profileRawContactIds)
                     ).deleteSuccess
                 )
             }

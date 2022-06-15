@@ -33,18 +33,31 @@ val deleteResult = delete
 
 You may specify `contacts` and `rawContacts` in the same delete operation.
 
-You may also use IDs instead of entity references;
+You may also use IDs instead of entity references,
 
 ```kotlin
 val deleteResult = delete
-    .contacts(1, 2, 3)
-    .rawContacts(4, 5, 6)
+    .contactsWithId(1, 2, 3)
+    .rawContactsWithId(4, 5, 6)
     .commit()
 ```
 
-> ℹ️ Contacts are deleted automatically when all constituent RawContacts are deleted.
+> ℹ️ Contacts are deleted automatically when all constituent RawContacts are deleted. RawContacts 
+> are deleted automatically when the parent Contact is deleted.
 
-> ℹ️ RawContacts are deleted automatically when the parent Contact is deleted.
+## An advanced delete
+
+You may specify a matching criteria, like in queries, that will delete all matching contacts and
+RawContacts,
+
+```kotlin
+val deleteResult = delete
+    .rawContactsWhere { Options.SendToVoicemail equalTo true }
+    .rawContactsWhereData { Email.Address.isNotNullOrEmpty() and Phone.Number.contains("9") }
+    .contactsWhere { Options.SendToVoicemail equalTo true }
+    .contactsWhereData { Email.Address.isNotNullOrEmpty() and Phone.Number.contains("9") }
+    .commit()
+```
 
 ## Executing the delete
 
@@ -87,6 +100,14 @@ To check if a particular RawContact has been deleted successfully,
 ```kotlin
 val rawContactDeleteSuccessful = deleteResult.isSuccessful(mutableRawContact)
 val rawContactDeleteSuccessful = deleteResult.isRawContactDeleteSuccessful(mutableRawContact.id)
+```
+
+To check if a particular advanced delete managed to delete at least one matching Contact/RawContact,
+
+```kotlin
+val where = RawContactsFields.Options.SendToVoicemail equalTo true
+val deleteResult = delete.rawContactsWhere(where).commit()
+val advancedDeleteSuccessful = deleteResult.isSuccessful(where)
 ```
 
 ## Performing the delete and result processing asynchronously

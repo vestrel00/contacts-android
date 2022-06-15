@@ -3,9 +3,6 @@ package contacts.core
 import android.accounts.Account
 import android.content.ContentResolver
 import contacts.core.entities.Contact
-import contacts.core.entities.cursor.contactsCursor
-import contacts.core.entities.cursor.dataContactsCursor
-import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.mapper.ContactsMapper
 import contacts.core.entities.table.Table
@@ -575,10 +572,10 @@ private fun ContentResolver.resolve(
         // clause may contain fields (columns) that are not in the respective tables.
         if (includeBlanks) {
             contactIds.addAll(
-                findContactIdsInRawContactsTable(where.inRawContactsTable(), cancel, true)
+                findContactIdsInRawContactsTable(where.inRawContactsTable(), true, cancel)
             )
             contactIds.addAll(
-                findContactIdsInContactsTable(where.inContactsTable(), cancel, true)
+                findContactIdsInContactsTable(where.inContactsTable(), true, cancel)
             )
         }
 
@@ -597,7 +594,7 @@ private fun ContentResolver.resolve(
 
         // Intentionally replace the contactsIds instead of adding to it.
         contactIds = mutableSetOf<Long>().apply {
-            addAll(findContactIdsInRawContactsTable(rawContactsTableWhere, cancel, false))
+            addAll(findContactIdsInRawContactsTable(rawContactsTableWhere, false, cancel))
         }
 
         // If no match, return empty list.
@@ -687,54 +684,6 @@ internal fun ContentResolver.resolve(
 
     // Output all collected Contacts, RawContacts, and Data.
     return if (cancel()) emptyList() else contactsMapper.map()
-}
-
-private fun ContentResolver.findContactIdsInContactsTable(
-    contactsWhere: Where<ContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
-): Set<Long> = if (cancel()) emptySet() else {
-    query(
-        Table.Contacts, Include(ContactsFields.Id), contactsWhere,
-        suppressDbExceptions = suppressDbExceptions
-    ) {
-        mutableSetOf<Long>().apply {
-            val contactsCursor = it.contactsCursor()
-            while (!cancel() && it.moveToNext()) {
-                add(contactsCursor.contactId)
-            }
-        }
-    } ?: emptySet()
-}
-
-internal fun ContentResolver.findContactIdsInRawContactsTable(
-    rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean, suppressDbExceptions: Boolean
-): Set<Long> = if (cancel()) emptySet() else {
-    query(
-        Table.RawContacts,
-        Include(RawContactsFields.ContactId),
-        // There may be RawContacts that are marked for deletion that have not yet been deleted.
-        (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere,
-        suppressDbExceptions = suppressDbExceptions
-    ) {
-        mutableSetOf<Long>().apply {
-            val rawContactsCursor = it.rawContactsCursor()
-            while (!cancel() && it.moveToNext()) {
-                add(rawContactsCursor.contactId)
-            }
-        }
-    } ?: emptySet()
-}
-
-internal fun ContentResolver.findContactIdsInDataTable(
-    where: Where<AbstractDataField>?, cancel: () -> Boolean
-): Set<Long> = if (cancel()) emptySet() else {
-    query(Table.Data, Include(Fields.Contact.Id), where) {
-        val contactIds = mutableSetOf<Long>()
-        val contactsCursor = it.dataContactsCursor()
-        while (!cancel() && it.moveToNext()) {
-            contactIds.add(contactsCursor.contactId)
-        }
-        contactIds
-    } ?: emptySet()
 }
 
 private class QueryResult private constructor(

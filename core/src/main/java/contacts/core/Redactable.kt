@@ -156,6 +156,14 @@ fun <T : Redactable> Sequence<T>.redactedCopies(): Sequence<T> = map { it.redact
 fun <T : Redactable> Sequence<T>.redactedCopiesOrThis(redact: Boolean): Sequence<T> =
     map { it.redactedCopyOrThis(redact) }
 
+
+/**
+ * Returns a redacted copy of every String key in this map.
+ */
+internal fun <V> Map<String, V>.redactedStringKeys(): Map<String, V> = entries.associate {
+    (it.key.redactString()) to it.value
+}
+
 /**
  * Returns a redacted copy of every key in this map.
  */

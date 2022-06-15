@@ -704,8 +704,7 @@ heading explore each API in full detail. You may also find these samples in the 
 
     ```kotlin
     import android.app.Activity
-    import contacts.core.Contacts
-    import contacts.core.Delete
+    import contacts.core.*
     import contacts.core.entities.Contact
     import contacts.core.entities.RawContact
     
@@ -721,6 +720,13 @@ heading explore each API in full detail. You may also find these samples in the 
             .contactsWithId(contactId)
             .commit()
     
+        fun deleteNonFavoriteContactsThatHaveANote(): Delete.Result = Contacts(this)
+            .delete()
+            .contactsWhereData {
+                (Contact.Options.Starred equalTo false) and Note.Note.isNotNullOrEmpty()
+            }
+            .commit()
+    
         fun deleteRawContact(rawContact: RawContact): Delete.Result = Contacts(this)
             .delete()
             .rawContacts(rawContact)
@@ -730,16 +736,29 @@ heading explore each API in full detail. You may also find these samples in the 
             .delete()
             .rawContactsWithId(rawContactId)
             .commit()
+    
+        fun deleteRawContactsInTheSetThatHaveANote(rawContactIds: Set<Long>): Delete.Result =
+            Contacts(this)
+                .delete()
+                .rawContactsWhereData {
+                    (RawContact.Id `in` rawContactIds) and Note.Note.isNotNullOrEmpty()
+                }
+                .commit()
     }
     ```
 
 === "Java"
 
     ```java
+    import static contacts.core.WhereKt.*;
+    
     import android.app.Activity;
+    
+    import java.util.Set;
     
     import contacts.core.ContactsFactory;
     import contacts.core.Delete;
+    import contacts.core.Fields;
     import contacts.core.entities.Contact;
     import contacts.core.entities.RawContact;
     
@@ -759,6 +778,18 @@ heading explore each API in full detail. You may also find these samples in the 
                     .commit();
         }
     
+        Delete.Result deleteNonFavoriteContactsThatHaveANote() {
+            return ContactsFactory.create(this)
+                    .delete()
+                    .contactsWhereData(
+                            and(
+                                    equalTo(Fields.Contact.Options.Starred, false),
+                                    isNotNullOrEmpty(Fields.Note.Note)
+                            )
+                    )
+                    .commit();
+        }
+    
         Delete.Result deleteRawContact(RawContact rawContact) {
             return ContactsFactory.create(this)
                     .delete()
@@ -770,6 +801,18 @@ heading explore each API in full detail. You may also find these samples in the 
             return ContactsFactory.create(this)
                     .delete()
                     .rawContactsWithId(rawContactId)
+                    .commit();
+        }
+    
+        Delete.Result deleteRawContactsInTheSetThatHaveANote(Set<Long> rawContactIds) {
+            return ContactsFactory.create(this)
+                    .delete()
+                    .rawContactsWhereData(
+                            and(
+                                    in(Fields.RawContact.Id, rawContactIds),
+                                    isNotNullOrEmpty(Fields.Note.Note)
+                            )
+                    )
                     .commit();
         }
     }
