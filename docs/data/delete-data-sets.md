@@ -34,6 +34,16 @@ val deleteResult = Contacts(context)
     .commit()
 ```
 
+If you want to delete a set of data using data IDs,
+
+```kotlin
+val deleteResult = Contacts(context)
+    .data()
+    .delete()
+    .dataWithId(1, 2, 3)
+    .commit()
+```
+
 ## Executing the delete
 
 To execute the delete,

@@ -63,6 +63,21 @@ interface DataDelete : CrudApi {
     fun data(data: Sequence<ExistingDataEntity>): DataDelete
 
     /**
+     * Adds the given [dataIds] to the delete queue, which will be deleted on [commit].
+     */
+    fun dataWithId(vararg dataIds: Long): DataDelete
+
+    /**
+     * See [DataDelete.dataWithId].
+     */
+    fun dataWithId(dataIds: Collection<Long>): DataDelete
+
+    /**
+     * See [DataDelete.dataWithId].
+     */
+    fun dataWithId(dataIds: Sequence<Long>): DataDelete
+
+    /**
      * Deletes the [ExistingDataEntity]s in the queue (added via [data]) and returns the [Result].
      *
      * ## Permissions
@@ -107,7 +122,8 @@ interface DataDelete : CrudApi {
     interface Result : CrudApi.Result {
 
         /**
-         * True if all data have successfully been deleted. False if even one delete failed.
+         * True if all specified or matching data have successfully been deleted. False if even one
+         * delete failed.
          */
         val isSuccessful: Boolean
 
@@ -115,6 +131,11 @@ interface DataDelete : CrudApi {
          * True if the [data] has been successfully deleted. False otherwise.
          */
         fun isSuccessful(data: ExistingDataEntity): Boolean
+
+        /**
+         * True if the data with the given [dataId] has been successfully deleted. False otherwise.
+         */
+        fun isSuccessful(dataId: Long): Boolean
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -155,8 +176,14 @@ private class DataDeleteImpl(
 
     override fun data(data: Collection<ExistingDataEntity>) = data(data.asSequence())
 
-    override fun data(data: Sequence<ExistingDataEntity>): DataDelete = apply {
-        dataIds.addAll(data.map { it.id })
+    override fun data(data: Sequence<ExistingDataEntity>) = dataWithId(data.map { it.id })
+
+    override fun dataWithId(vararg dataIds: Long) = dataWithId(dataIds.asSequence())
+
+    override fun dataWithId(dataIds: Collection<Long>) = dataWithId(dataIds.asSequence())
+
+    override fun dataWithId(dataIds: Sequence<Long>): DataDelete = apply {
+        this.dataIds.addAll(dataIds)
     }
 
     override fun commit(): DataDelete.Result {
@@ -248,8 +275,9 @@ private class DataDeleteResult private constructor(
         dataIdsResultMap.run { isNotEmpty() && all { it.value } }
     }
 
-    override fun isSuccessful(data: ExistingDataEntity): Boolean =
-        dataIdsResultMap.getOrElse(data.id) { false }
+    override fun isSuccessful(data: ExistingDataEntity): Boolean = isSuccessful(data.id)
+
+    override fun isSuccessful(dataId: Long): Boolean = dataIdsResultMap.getOrElse(dataId) { false }
 }
 
 private class DataDeleteAllResult private constructor(
@@ -276,4 +304,6 @@ private class DataDeleteAllResult private constructor(
     )
 
     override fun isSuccessful(data: ExistingDataEntity): Boolean = isSuccessful
+
+    override fun isSuccessful(dataId: Long): Boolean = isSuccessful
 }
