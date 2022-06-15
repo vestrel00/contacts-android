@@ -564,7 +564,8 @@ private fun ContentResolver.resolve(
     // Get Contact Ids matching where from the Data table. If where is null, skip.
     if (where != null && !cancel()) {
         contactIds = mutableSetOf<Long>().apply {
-            addAll(findContactIdsInDataTable(reduce(where, cancel), cancel))
+            val reducedWhere = reduceDataTableWhereForMatchingContactIds(where, cancel)
+            addAll(findContactIdsInDataTable(reducedWhere, cancel))
         }
 
         // Get the Contacts Ids of blank RawContacts and blank Contacts matching the where from the

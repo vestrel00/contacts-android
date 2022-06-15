@@ -463,7 +463,7 @@ private class DeleteImpl(
                 whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(it)
             }
             rawContactsWhereData?.let {
-                val reducedWhere = contentResolver.reduce(it)
+                val reducedWhere = contentResolver.reduceDataTableWhereForMatchingRawContactIds(it)
                 whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
                     RawContactsFields.Id
                             `in` contentResolver.findRawContactIdsInDataTable(reducedWhere)
@@ -476,7 +476,7 @@ private class DeleteImpl(
                 )
             }
             contactsWhereData?.let {
-                val reducedWhere = contentResolver.reduce(it)
+                val reducedWhere = contentResolver.reduceDataTableWhereForMatchingContactIds(it)
                 whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
                     RawContactsFields.ContactId
                             `in` contentResolver.findContactIdsInDataTable(reducedWhere)
@@ -520,7 +520,8 @@ private class DeleteImpl(
                     deleteOperationFor(it).let(operations::add)
                 }
                 rawContactsWhereData?.let {
-                    val reducedWhere = contentResolver.reduce(it)
+                    val reducedWhere =
+                        contentResolver.reduceDataTableWhereForMatchingRawContactIds(it)
                     deleteOperationFor(
                         RawContactsFields.Id
                                 `in` contentResolver.findRawContactIdsInDataTable(reducedWhere)
@@ -533,7 +534,7 @@ private class DeleteImpl(
                     ).let(operations::add)
                 }
                 contactsWhereData?.let {
-                    val reducedWhere = contentResolver.reduce(it)
+                    val reducedWhere = contentResolver.reduceDataTableWhereForMatchingContactIds(it)
                     deleteOperationFor(
                         RawContactsFields.ContactId
                                 `in` contentResolver.findContactIdsInDataTable(reducedWhere)

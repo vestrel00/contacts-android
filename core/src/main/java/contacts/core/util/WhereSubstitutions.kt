@@ -107,9 +107,27 @@ internal fun <T : Field, R : Field> Where<T>.copyWithFieldValueSubstitutions(
         throw InvalidWhereFormException(this)
     }
 
+internal fun ContentResolver.reduceDataTableWhereForMatchingContactIds(
+    where: Where<AbstractDataField>,
+    cancel: () -> Boolean = { false }
+): Where<AbstractDataField> = reduceDataTableWhereForMatchingIds(
+    where, Fields.Contact.Id, cancel
+) {
+    findContactIdsInDataTable(it, cancel)
+}
+
+internal fun ContentResolver.reduceDataTableWhereForMatchingRawContactIds(
+    where: Where<AbstractDataField>,
+    cancel: () -> Boolean = { false }
+): Where<AbstractDataField> = reduceDataTableWhereForMatchingIds(
+    where, Fields.RawContact.Id, cancel
+) {
+    findRawContactIdsInDataTable(it, cancel)
+}
+
 /**
- * Returns a "reduced" copy of the given [where] clause to ensure that it is able match rows in the
- * Data table.
+ * Returns a "reduced" copy of the given [where] clause to ensure that it is able match rows for
+ * Contact or RawContact IDs in the Data table.
  *
  * The following will always match 0 rows in the Data table,
  *
@@ -152,13 +170,18 @@ internal fun <T : Field, R : Field> Where<T>.copyWithFieldValueSubstitutions(
  * reduce -> (ContactIDs) and (Organization or Website)
  *
  * The idea is to reduce the amount of mimetype-aware matches such that there is 0 mimetype-aware
- * match in one side of the AND.
+ * match in one side of the AND. This will allow us to collect all matching Contact or RawContact
+ * IDs in the Data table for queries which should otherwise be impossible =)
  *
  * More context in https://github.com/vestrel00/contacts-android/issues/142#issuecomment-1000948529
  */
-internal fun ContentResolver.reduce(
+// To reduce confusion and potential for bugs within the function body due to overlapping scope.
+// Do NOT declare this as Where<AbstractDataField>.reduceDataTableWhereForMatchingIds
+private fun reduceDataTableWhereForMatchingIds(
     where: Where<AbstractDataField>,
-    cancel: () -> Boolean = { false }
+    idField: AbstractDataField,
+    cancel: () -> Boolean,
+    findIdsInDataTable: (where: Where<AbstractDataField>) -> Set<Long>,
 ): Where<AbstractDataField> = if (cancel()) {
     where
 } else {
@@ -174,18 +197,17 @@ internal fun ContentResolver.reduce(
         ) {
             // Reduce the side that has the lesser amount of unique mime types.
             val lhsHasLessMimeTypes = lhs.mimeTypes.size < rhs.mimeTypes.size
-            val lhsHasContactIdAccumulator = lhs.hasContactIdAccumulator
-            val rhsHasContactIdAccumulator = rhs.hasContactIdAccumulator
+            val lhsHasIdAccumulator = hasIdAccumulator(idField, lhs)
+            val rhsHasIdAccumulator = hasIdAccumulator(idField, rhs)
 
-            // Whichever side has the ContactId accumulator gets priority. Otherwise, priority is
-            // determined based on mime type count (lower mimetype count, higher priority).
-            val reduceLhs = lhsHasContactIdAccumulator ||
-                    (lhsHasLessMimeTypes && !rhsHasContactIdAccumulator)
+            // Whichever side has the Contact or RawContact Id accumulator gets priority. Otherwise,
+            // priority is determined based on mime type count (lower mimetype count, higher priority).
+            val reduceLhs = lhsHasIdAccumulator || (lhsHasLessMimeTypes && !rhsHasIdAccumulator)
 
             Where(
                 WhereHolder(
                     if (reduceLhs) {
-                        Fields.Contact.Id `in` findContactIdsInDataTable(lhs, cancel)
+                        idField `in` findIdsInDataTable(lhs)
                     } else {
                         lhs
                     }
@@ -195,7 +217,7 @@ internal fun ContentResolver.reduce(
                     if (reduceLhs) {
                         rhs
                     } else {
-                        Fields.Contact.Id `in` findContactIdsInDataTable(rhs, cancel)
+                        idField `in` findIdsInDataTable(rhs)
                     }
                 ),
                 options,
@@ -203,7 +225,7 @@ internal fun ContentResolver.reduce(
             )
         } else {
             // No need to reduce. Just return this.
-            // E.G. Email OR Phone, ContactIDs and Phone, ContactIDs, Email AND Email
+            // E.G. Email OR Phone, Raw/ContactIDs and Phone, Raw/ContactIDs, Email AND Email
             Where(WhereHolder(lhs), operator, WhereHolder(rhs), options, isRedacted)
         }
     }
@@ -247,13 +269,14 @@ private fun <T : Field> Where<T>.copyWithSubstitutions(
     throw InvalidWhereFormException(this)
 }
 
-private val Where<*>.hasContactIdAccumulator: Boolean
-    get() = if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
+private fun hasIdAccumulator(idField: AbstractDataField, where: Where<*>): Boolean = where.run {
+    if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
         // Base case.
-        lhs.field == Fields.Contact.Id && operator == Operator.Match.In
+        lhs.field == idField && operator == Operator.Match.In
     } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
         // Recursive case.
-        lhs.where.hasContactIdAccumulator || rhs.where.hasContactIdAccumulator
+        hasIdAccumulator(idField, lhs.where) || hasIdAccumulator(idField, rhs.where)
     } else {
         throw InvalidWhereFormException(this)
     }
+}
