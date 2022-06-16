@@ -250,16 +250,11 @@ Matching is **case-insensitive** (case is ignored).
 
 ### Match.ANY
 
-Most, but not all, Contact data are included in the matching process. Some are not probably because
-some data may result in unintentional matching.
-
-Any contact data is included in the matching process. This is the default.
-
-Use this if you want to get the same results when searching contacts using the AOSP Contacts app and
-the Google Contacts app.
-
-Most, but not all, contact data are included in the matching process.
+Most, but not all, Contact data are included in the matching process.
 E.G. name, email, phone, address, organization, note, etc.
+
+Use this if you want to get the same results when searching contacts using the AOSP Contacts app 
+and the Google Contacts app.
 
 Data matching is more sophisticated under the hood than `Query`. The Contacts Provider matches parts
 of several types of data in segments. For example, a Contact having the email "hologram@gram.net"

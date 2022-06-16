@@ -67,7 +67,7 @@ To execute the delete,
 .commit()
 ```
 
-If you want to delete all given Contacts and RawContacts in a single atomic transaction,
+If you want to delete all specified Contacts and RawContacts in a single atomic transaction,
 
 ```kotlin
 .commitInOneTransaction()
