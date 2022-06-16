@@ -17,7 +17,7 @@ val delete = Contacts(context).data().delete()
 To delete a set of data,
 
 ```kotlin
-val deleteResult = Contacts(context)
+val deleteResult = delete
     .data()
     .delete()
     .data(data)
@@ -27,7 +27,7 @@ val deleteResult = Contacts(context)
 If you want to delete a list of emails and phones,
 
 ```kotlin
-val deleteResult = Contacts(context)
+val deleteResult = delete
     .data()
     .delete()
     .data(emails + phones)
@@ -37,10 +37,20 @@ val deleteResult = Contacts(context)
 If you want to delete a set of data using data IDs,
 
 ```kotlin
-val deleteResult = Contacts(context)
+val deleteResult = delete
     .data()
     .delete()
     .dataWithId(1, 2, 3)
+    .commit()
+```
+
+## An advanced delete
+
+You may specify a matching criteria, like in queries, that will delete all matching data,
+
+```kotlin
+val deleteResult = delete
+    .dataWhere { Email.Address endsWith "@yahoo.com" }
     .commit()
 ```
 
@@ -52,7 +62,7 @@ To execute the delete,
 .commit()
 ```
 
-If you want to delete all given data in a single atomic transaction,
+If you want to delete all specified data in a single atomic transaction,
 
 ```kotlin
 .commitInOneTransaction()
@@ -75,7 +85,16 @@ val allDeletesSuccessful = deleteResult.isSuccessful
 To check if a particular delete succeeded,
 
 ```kotlin
-val firstDeleteSuccessful = deleteResult.isSuccessful(data1)
+val dataDeleteSuccessful = deleteResult.isSuccessful(data)
+val dataDeleteSuccessful = deleteResult.isSuccessful(data.id)
+```
+
+To check if a particular advanced delete managed to delete at least one matching data,
+
+```kotlin
+val where = Fields.Email.Address endsWith "@yahoo.com"
+val deleteResult = delete.dataWhere(where).commit()
+val advancedDeleteSuccessful = deleteResult.isSuccessful(where)
 ```
 
 ## Performing the delete and result processing asynchronously

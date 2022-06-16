@@ -229,22 +229,19 @@ interface Delete : CrudApi {
          *
          * ## [commit] vs [commitInOneTransaction]
          *
-         * If you specified RawContacts in any of;
+         * If you used several of the following in one call,
          *
          * - [rawContacts]
          * - [rawContactsWithId]
          * - [rawContactsWhere]
          * - [rawContactsWhereData]
-         *
-         * that belong to a Contact that you also specified in any of;
-         *
          * - [contacts]
          * - [contactsWithId]
          * - [contactsWhere]
          * - [contactsWhereData]
          *
-         * then this may return false even if the Contact and RawContacts were actually deleted IF
-         * you used [commit]. Using [commitInOneTransaction] does not have this limitation.
+         * then this value may be false even if the Contact and RawContacts were actually deleted if
+         * you used [commit]. Using [commitInOneTransaction] does not have this "issue".
          */
         val isSuccessful: Boolean
 

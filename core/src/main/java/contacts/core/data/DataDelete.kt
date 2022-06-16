@@ -1,5 +1,6 @@
 package contacts.core.data
 
+import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentResolver
 import contacts.core.*
@@ -7,6 +8,7 @@ import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
+import contacts.core.util.*
 import contacts.core.util.applyBatch
 import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
@@ -78,6 +80,17 @@ interface DataDelete : CrudApi {
     fun dataWithId(dataIds: Sequence<Long>): DataDelete
 
     /**
+     * Deletes all of the data that match the given [where].
+     */
+    fun dataWhere(where: Where<AbstractDataField>?): DataDelete
+
+    /**
+     * Same as [DataDelete.dataWhere] except you have direct access to all properties of [Fields]
+     * in the function parameter. Use this to shorten your code.
+     */
+    fun dataWhere(where: Fields.() -> Where<AbstractDataField>?): DataDelete
+
+    /**
      * Deletes the [ExistingDataEntity]s in the queue (added via [data]) and returns the [Result].
      *
      * ## Permissions
@@ -124,18 +137,40 @@ interface DataDelete : CrudApi {
         /**
          * True if all specified or matching data have successfully been deleted. False if even one
          * delete failed.
+         *
+         * ## [commit] vs [commitInOneTransaction]
+         *
+         * If you used several of the following in one call,
+         *
+         * - [data]
+         * - [dataWithId]
+         * - [dataWhere]
+         *
+         * then this value may be false even if the data were actually deleted if you used [commit].
+         * Using [commitInOneTransaction] does not have this "issue".
          */
         val isSuccessful: Boolean
 
         /**
          * True if the [data] has been successfully deleted. False otherwise.
+         *
+         * This is used in conjunction with [DataDelete.data].
          */
         fun isSuccessful(data: ExistingDataEntity): Boolean
 
         /**
          * True if the data with the given [dataId] has been successfully deleted. False otherwise.
+         *
+         * This is used in conjunction with [DataDelete.dataWithId].
          */
         fun isSuccessful(dataId: Long): Boolean
+
+        /**
+         * True if the delete operation using the given [where] was successful.
+         *
+         * This is used in conjunction with [DataDelete.dataWhere].
+         */
+        fun isSuccessful(where: Where<AbstractDataField>): Boolean
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -152,23 +187,30 @@ private class DataDeleteImpl(
     private val isProfile: Boolean,
 
     private val dataIds: MutableSet<Long> = mutableSetOf(),
+    private var dataWhere: Where<AbstractDataField>? = null,
 
     override val isRedacted: Boolean = false
 ) : DataDelete {
+
+    private val hasNothingToCommit: Boolean
+        get() = dataIds.isEmpty() && dataWhere == null
 
     override fun toString(): String =
         """
             DataDelete {
                 isProfile: $isProfile
                 dataIds: $dataIds
+                dataWhere: $dataWhere
                 hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): DataDelete = DataDeleteImpl(
-        contactsApi, isProfile,
-        dataIds,
+        contactsApi,
+        isProfile = isProfile,
+        dataIds = dataIds,
+        dataWhere = dataWhere?.redactedCopy(),
         isRedacted = true
     )
 
@@ -186,26 +228,37 @@ private class DataDeleteImpl(
         this.dataIds.addAll(dataIds)
     }
 
+    override fun dataWhere(where: Where<AbstractDataField>?): DataDelete = apply {
+        dataWhere = where?.redactedCopyOrThis(isRedacted)
+    }
+
+    override fun dataWhere(where: Fields.() -> Where<AbstractDataField>?) = dataWhere(where(Fields))
+
     override fun commit(): DataDelete.Result {
         onPreExecute()
 
-        return if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
-            DataDeleteResult(emptyMap())
+        return if (!permissions.canUpdateDelete() || hasNothingToCommit) {
+            DataDeleteAllResult(isSuccessful = false)
         } else {
             val dataIdsResultMap = mutableMapOf<Long, Boolean>()
             for (dataId in dataIds) {
                 dataIdsResultMap[dataId] =
                     if (dataId.isProfileId != isProfile) {
-                        // Intentionally fail the operation to ensure that this is only used for profile
-                        // or non-profile deletes. Otherwise, operation can succeed. This is only done
-                        // to enforce API design.
+                        // Intentionally fail the operation to ensure that this is only used for
+                        // profile or non-profile deletes. Otherwise, operation can succeed. This
+                        // is only done to enforce API design.
                         false
                     } else {
-                        contentResolver.deleteDataWithId(dataId)
+                        contentResolver.deleteDataWhere(Fields.DataId equalTo dataId, isProfile)
                     }
             }
 
-            DataDeleteResult(dataIdsResultMap)
+            val whereResultMap = mutableMapOf<String, Boolean>()
+            dataWhere?.let {
+                whereResultMap[it.toString()] = contentResolver.deleteDataWhere(it, isProfile)
+            }
+
+            DataDeleteResult(dataIdsResultMap, whereResultMap)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
@@ -214,70 +267,91 @@ private class DataDeleteImpl(
     override fun commitInOneTransaction(): DataDelete.Result {
         onPreExecute()
 
-        // I know this if-else can be folded. But this is way more readable IMO =)
-        val isSuccessful = if (dataIds.isEmpty() || !permissions.canUpdateDelete()) {
-            false
+        return if (!permissions.canUpdateDelete() || hasNothingToCommit) {
+            DataDeleteAllResult(isSuccessful = false)
         } else {
             val validDataIds = dataIds.filter { it.isProfileId == isProfile }
 
             if (dataIds.size != validDataIds.size) {
                 // There are some invalid ids or profile or non-profile data ids, fail without
                 // performing operation.
-                false
+                DataDeleteAllResult(isSuccessful = false)
             } else {
-                contentResolver.deleteDataRowsWithIds(dataIds, isProfile)
+                val operations = arrayListOf<ContentProviderOperation>()
+
+                if (validDataIds.isNotEmpty()) {
+                    deleteOperationFor(Fields.DataId `in` validDataIds, isProfile)
+                        .let(operations::add)
+                }
+
+                dataWhere?.let {
+                    deleteOperationFor(it, isProfile).let(operations::add)
+                }
+
+                DataDeleteAllResult(isSuccessful = contentResolver.applyBatch(operations).deleteSuccess)
             }
         }
-
-        return DataDeleteAllResult(isSuccessful)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
 
-private fun ContentResolver.deleteDataWithId(dataId: Long): Boolean = applyBatch(
-    newDelete(if (dataId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri)
-        .withSelection(Fields.DataId equalTo dataId)
-        .build()
-).deleteSuccess
+private fun ContentResolver.deleteDataWhere(
+    where: Where<AbstractDataField>, isProfile: Boolean
+): Boolean = applyBatch(deleteOperationFor(where, isProfile)).deleteSuccess
 
-private fun ContentResolver.deleteDataRowsWithIds(
-    dataIds: Collection<Long>, isProfile: Boolean
-): Boolean = applyBatch(
-    newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
-        .withSelection(Fields.DataId `in` dataIds)
-        .build()
-).deleteSuccess
+private fun deleteOperationFor(
+    where: Where<AbstractDataField>, isProfile: Boolean
+): ContentProviderOperation = newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
+    .withSelection(where)
+    .build()
 
 private class DataDeleteResult private constructor(
     private val dataIdsResultMap: Map<Long, Boolean>,
+    private var whereResultMap: Map<String, Boolean>,
     override val isRedacted: Boolean
 ) : DataDelete.Result {
 
-    constructor(dataIdsResultMap: Map<Long, Boolean>) : this(dataIdsResultMap, false)
+    constructor(
+        dataIdsResultMap: Map<Long, Boolean>,
+        whereResultMap: Map<String, Boolean>
+    ) : this(dataIdsResultMap, whereResultMap, false)
 
     override fun toString(): String =
         """
             DataDelete.Result {
                 isSuccessful: $isSuccessful
                 dataIdsResultMap: $dataIdsResultMap
+                whereResultMap: $whereResultMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): DataDelete.Result = DataDeleteResult(
-        dataIdsResultMap,
+        dataIdsResultMap = dataIdsResultMap,
+        whereResultMap = whereResultMap.redactedStringKeys(),
         isRedacted = true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        // By default, all returns true when the collection is empty. So, we override that.
-        dataIdsResultMap.run { isNotEmpty() && all { it.value } }
+        if (dataIdsResultMap.isEmpty() && whereResultMap.isEmpty()
+        ) {
+            // Deleting nothing is NOT successful.
+            false
+        } else {
+            // A set has failure if it is NOT empty and one of its entries is false.
+            val hasDataFailure = dataIdsResultMap.any { !it.value }
+            val hasWhereFailure = whereResultMap.any { !it.value }
+            !hasDataFailure && !hasWhereFailure
+        }
     }
 
     override fun isSuccessful(data: ExistingDataEntity): Boolean = isSuccessful(data.id)
 
     override fun isSuccessful(dataId: Long): Boolean = dataIdsResultMap.getOrElse(dataId) { false }
+
+    override fun isSuccessful(where: Where<AbstractDataField>): Boolean =
+        whereResultMap.getOrElse(where.toString()) { false }
 }
 
 private class DataDeleteAllResult private constructor(
@@ -306,4 +380,6 @@ private class DataDeleteAllResult private constructor(
     override fun isSuccessful(data: ExistingDataEntity): Boolean = isSuccessful
 
     override fun isSuccessful(dataId: Long): Boolean = isSuccessful
+
+    override fun isSuccessful(where: Where<AbstractDataField>): Boolean = isSuccessful
 }
