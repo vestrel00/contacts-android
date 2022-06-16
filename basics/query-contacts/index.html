@@ -2284,13 +2284,10 @@ algorithm via the <code>wherePartiallyMatches</code> function.</p>
 <p>Matching is <strong>case-insensitive</strong> (case is ignored).</p>
 <p><strong>Custom data are not included in the matching process!</strong> To match custom data, use <code>Query</code>.</p>
 <h3 id="matchany">Match.ANY<a class="headerlink" href="#matchany" title="Permanent link">&para;</a></h3>
-<p>Most, but not all, Contact data are included in the matching process. Some are not probably because
-some data may result in unintentional matching.</p>
-<p>Any contact data is included in the matching process. This is the default.</p>
-<p>Use this if you want to get the same results when searching contacts using the AOSP Contacts app and
-the Google Contacts app.</p>
-<p>Most, but not all, contact data are included in the matching process.
+<p>Most, but not all, Contact data are included in the matching process.
 E.G. name, email, phone, address, organization, note, etc.</p>
+<p>Use this if you want to get the same results when searching contacts using the AOSP Contacts app 
+and the Google Contacts app.</p>
 <p>Data matching is more sophisticated under the hood than <code>Query</code>. The Contacts Provider matches parts
 of several types of data in segments. For example, a Contact having the email "hologram@gram.net"
 will be matched with the following texts;</p>
