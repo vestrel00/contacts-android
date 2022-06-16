@@ -90,8 +90,8 @@ this function. For example, to match `HandleName`s starting with the letter "h",
 .where { Handle startsWith "h" }
 ```
 
-The `BroadQuery` API provides a `whereAnyContactDataPartiallyMatches` function that NOT support
-matching custom data. Only native data are included in the matching process.
+The `BroadQuery` API provides a `wherePartiallyMatches` function that NOT support matching custom
+data. Only native data are included in the matching process.
 
 The `ProfileQuery` API does not provide a where function as there can only be one profile Contact
 per device. 

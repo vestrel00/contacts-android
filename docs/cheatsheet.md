@@ -827,13 +827,120 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.accounts.Account
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.entities.*
+    
+    class QueryDataActivity : Activity() {
+    
+        fun getAllEmails(): List<Email> = Contacts(this).data().query().emails().find()
+    
+        fun getEmailsForAccount(account: Account): List<Email> =
+            Contacts(this).data().query().emails().accounts(account).find()
+    
+        fun getGmailEmailsInDescendingOrder(): List<Email> = Contacts(this)
+            .data()
+            .query()
+            .emails()
+            .where { Email.Address endsWith "@gmail.com" }
+            .orderBy(Fields.Email.Address.desc(ignoreCase = true))
+            .find()
+    
+        fun getWorkPhones(): List<Phone> = Contacts(this)
+            .data()
+            .query()
+            .phones()
+            .where { Phone.Type equalTo PhoneEntity.Type.WORK }
+            .find()
+    
+        fun getUpTo10Mothers(): List<Relation> = Contacts(this)
+            .data()
+            .query()
+            .relations()
+            .where { Relation.Type equalTo RelationEntity.Type.MOTHER }
+            .limit(10)
+            .find()
+    
+        fun getContactBirthday(contactId: Long): Event? = Contacts(this)
+            .data()
+            .query()
+            .events()
+            .where { (Contact.Id equalTo contactId) and (Event.Type equalTo EventEntity.Type.BIRTHDAY) }
+            .find()
+            .firstOrNull()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.OrderByKt.desc;
+    import static contacts.core.WhereKt.*;
+    
+    import android.accounts.Account;
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.Fields;
+    import contacts.core.entities.*;
+    
+    public class QueryDataActivity extends Activity {
+    
+        List<Email> getAllEmails() {
+            return ContactsFactory.create(this).data().query().emails().find();
+        }
+    
+        List<Email> getEmailsForAccount(Account account) {
+            return ContactsFactory.create(this).data().query().emails().accounts(account).find();
+        }
+    
+        List<Email> getGmailEmailsInDescendingOrder() {
+            return ContactsFactory.create(this)
+                    .data()
+                    .query()
+                    .emails()
+                    .where(endsWith(Fields.Email.Address, "@gmail.com"))
+                    .orderBy(desc(Fields.Email.Address, true))
+                    .find();
+        }
+    
+        List<Phone> getWorkPhones() {
+            return ContactsFactory.create(this)
+                    .data()
+                    .query()
+                    .phones()
+                    .where(equalTo(Fields.Phone.Type, PhoneEntity.Type.WORK))
+                    .find();
+        }
+    
+        List<Relation> getUpTo10Mothers() {
+            return ContactsFactory.create(this)
+                    .data()
+                    .query()
+                    .relations()
+                    .where(equalTo(Fields.Relation.Type, RelationEntity.Type.MOTHER))
+                    .limit(10)
+                    .find();
+        }
+    
+        Event getContactBirthday(Long contactId) {
+            return ContactsFactory.create(this)
+                    .data()
+                    .query()
+                    .events()
+                    .where(
+                            and(
+                                    equalTo(Fields.Contact.Id, contactId),
+                                    equalTo(Fields.Event.Type, EventEntity.Type.BIRTHDAY)
+                            )
+                    )
+                    .find()
+                    .get(0);
+        }
+    }
     ```
 
 ### [Insert data into new or existing contacts](./data/insert-data-sets.md)

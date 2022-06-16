@@ -184,7 +184,7 @@ To simply search for Contacts, yielding the exact same results as the native Con
 ```kotlin
 val contacts = Contacts(context)
     .broadQuery()
-    .whereAnyContactDataPartiallyMatches(searchText)
+    .wherePartiallyMatches(searchText)
     .find()
 ```
 
