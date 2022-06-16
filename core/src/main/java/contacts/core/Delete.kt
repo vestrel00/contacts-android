@@ -82,24 +82,24 @@ interface Delete : CrudApi {
     /**
      * Deletes all of the RawContacts that match the given [where].
      */
-    fun rawContactsWhere(where: Where<RawContactsField>): Delete
+    fun rawContactsWhere(where: Where<RawContactsField>?): Delete
 
     /**
      * Same as [Delete.rawContactsWhere] except you have direct access to all properties of
      * [RawContactsFields] in the function parameter. Use this to shorten your code.
      */
-    fun rawContactsWhere(where: RawContactsFields.() -> Where<RawContactsField>): Delete
+    fun rawContactsWhere(where: RawContactsFields.() -> Where<RawContactsField>?): Delete
 
     /**
      * Deletes all of the RawContacts that have data that match the given [where].
      */
-    fun rawContactsWhereData(where: Where<AbstractDataField>): Delete
+    fun rawContactsWhereData(where: Where<AbstractDataField>?): Delete
 
     /**
      * Same as [Delete.rawContactsWhereData] except you have direct access to all properties of
      * [Fields] in the function parameter. Use this to shorten your code.
      */
-    fun rawContactsWhereData(where: Fields.() -> Where<AbstractDataField>): Delete
+    fun rawContactsWhereData(where: Fields.() -> Where<AbstractDataField>?): Delete
 
     /**
      * Adds the given [contacts] to the delete queue, which will be deleted on [commit].
@@ -147,24 +147,24 @@ interface Delete : CrudApi {
      * Note that this will make an internal query when [commit] or [commitInOneTransaction] is
      * invoked, which may affect performance slightly.
      */
-    fun contactsWhere(where: Where<ContactsField>): Delete
+    fun contactsWhere(where: Where<ContactsField>?): Delete
 
     /**
      * Same as [Delete.contactsWhere] except you have direct access to all properties of
      * [ContactsFields] in the function parameter. Use this to shorten your code.
      */
-    fun contactsWhere(where: ContactsFields.() -> Where<ContactsField>): Delete
+    fun contactsWhere(where: ContactsFields.() -> Where<ContactsField>?): Delete
 
     /**
      * Deletes all of the Contacts that have data that match the given [where].
      */
-    fun contactsWhereData(where: Where<AbstractDataField>): Delete
+    fun contactsWhereData(where: Where<AbstractDataField>?): Delete
 
     /**
      * Same as [Delete.contactsWhereData] except you have direct access to all properties of
      * [Fields] in the function parameter. Use this to shorten your code.
      */
-    fun contactsWhereData(where: Fields.() -> Where<AbstractDataField>): Delete
+    fun contactsWhereData(where: Fields.() -> Where<AbstractDataField>?): Delete
 
     /**
      * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the
@@ -380,18 +380,18 @@ private class DeleteImpl(
         this.rawContactIds.addAll(rawContactsIds)
     }
 
-    override fun rawContactsWhere(where: Where<RawContactsField>): Delete = apply {
-        rawContactsWhere = where.redactedCopyOrThis(isRedacted)
+    override fun rawContactsWhere(where: Where<RawContactsField>?): Delete = apply {
+        rawContactsWhere = where?.redactedCopyOrThis(isRedacted)
     }
 
-    override fun rawContactsWhere(where: RawContactsFields.() -> Where<RawContactsField>) =
+    override fun rawContactsWhere(where: RawContactsFields.() -> Where<RawContactsField>?) =
         rawContactsWhere(where(RawContactsFields))
 
-    override fun rawContactsWhereData(where: Where<AbstractDataField>): Delete = apply {
-        rawContactsWhereData = where.redactedCopyOrThis(isRedacted)
+    override fun rawContactsWhereData(where: Where<AbstractDataField>?): Delete = apply {
+        rawContactsWhereData = where?.redactedCopyOrThis(isRedacted)
     }
 
-    override fun rawContactsWhereData(where: Fields.() -> Where<AbstractDataField>) =
+    override fun rawContactsWhereData(where: Fields.() -> Where<AbstractDataField>?) =
         rawContactsWhereData(where(Fields))
 
     override fun contacts(vararg contacts: ExistingContactEntity) = contacts(contacts.asSequence())
@@ -411,18 +411,18 @@ private class DeleteImpl(
         this.contactIds.addAll(contactsIds)
     }
 
-    override fun contactsWhere(where: Where<ContactsField>): Delete = apply {
-        contactsWhere = where.redactedCopyOrThis(isRedacted)
+    override fun contactsWhere(where: Where<ContactsField>?): Delete = apply {
+        contactsWhere = where?.redactedCopyOrThis(isRedacted)
     }
 
-    override fun contactsWhere(where: ContactsFields.() -> Where<ContactsField>) =
+    override fun contactsWhere(where: ContactsFields.() -> Where<ContactsField>?) =
         contactsWhere(where(ContactsFields))
 
-    override fun contactsWhereData(where: Where<AbstractDataField>): Delete = apply {
-        contactsWhereData = where.redactedCopyOrThis(isRedacted)
+    override fun contactsWhereData(where: Where<AbstractDataField>?): Delete = apply {
+        contactsWhereData = where?.redactedCopyOrThis(isRedacted)
     }
 
-    override fun contactsWhereData(where: Fields.() -> Where<AbstractDataField>) =
+    override fun contactsWhereData(where: Fields.() -> Where<AbstractDataField>?) =
         contactsWhereData(where(Fields))
 
     override fun commit(): Delete.Result {
@@ -587,11 +587,11 @@ private class DeleteResult private constructor(
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        // Deleting nothing is NOT successful.
         if (rawContactIdsResultMap.isEmpty()
             && contactIdsResultMap.isEmpty()
             && whereResultMap.isEmpty()
         ) {
+            // Deleting nothing is NOT successful.
             false
         } else {
             // A set has failure if it is NOT empty and one of its entries is false.
