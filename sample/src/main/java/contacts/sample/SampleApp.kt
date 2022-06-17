@@ -17,14 +17,14 @@ class SampleApp : Application() {
     val contacts: Contacts by lazy(LazyThreadSafetyMode.NONE) {
         Contacts(
             this,
-            logger = AndroidLogger(redactMessages = !BuildConfig.DEBUG),
             customDataRegistry = CustomDataRegistry().register(
                 GenderRegistration(),
                 GoogleContactsRegistration(),
                 HandleNameRegistration(),
                 PokemonRegistration(),
                 RpgRegistration()
-            )
+            ),
+            logger = AndroidLogger(redactMessages = !BuildConfig.DEBUG)
         )
     }
 }

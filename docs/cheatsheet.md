@@ -1117,13 +1117,173 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.data.*
+    import contacts.core.entities.*
+    import contacts.core.entities.custom.CustomDataRegistry
+    import contacts.entities.custom.googlecontacts.*
+    import contacts.entities.custom.googlecontacts.fileas.*
+    import contacts.entities.custom.googlecontacts.userdefined.*
+    
+    class IntegrateGoogleContactsCustomDataActivity : Activity() {
+    
+        val contacts = Contacts(this, CustomDataRegistry().register(GoogleContactsRegistration()))
+    
+        fun getContactsWithGoogleContactsCustomData(): List<Contact> = contacts
+            .query()
+            .where {
+                GoogleContactsFields.FileAs.Name.isNotNull()
+                    .or(GoogleContactsFields.UserDefined.Field.isNotNull())
+            }
+            .find()
+    
+        fun insertRawContactWithGoogleContactsCustomData(): Insert.Result = contacts
+            .insert()
+            .rawContact {
+                setFileAs(contacts) {
+                    name = "Lucky"
+                }
+                addUserDefined(contacts) {
+                    field = "Lucky Field"
+                    label = "Lucky Label"
+                }
+            }
+            .commit()
+    
+        fun updateRawContactGoogleContactsCustomData(rawContact: RawContact): Update.Result = contacts
+            .update()
+            .rawContacts(
+                rawContact.mutableCopy {
+                    setFileAs(contacts) {
+                        name = "Unfortunate"
+                    }
+                    addUserDefined(contacts) {
+                        field = "Unfortunate Field"
+                        label = "Unfortunate Label"
+                    }
+                }
+            )
+            .commit()
+    
+        fun deleteGoogleContactsCustomDataFromRawContact(rawContact: RawContact): Update.Result =
+            contacts
+                .update()
+                .rawContacts(
+                    rawContact.mutableCopy {
+                        setFileAs(contacts, null)
+                        removeAllUserDefined(contacts)
+                    }
+                )
+                .commit()
+    
+        fun getAllFileAs(): List<FileAs> = contacts.data().query().fileAs().find()
+    
+        fun getAllUserDefined(): List<UserDefined> = contacts.data().query().userDefined().find()
+    
+        fun updateFileAsAndUserDefined(
+            fileAs: MutableFileAs, userDefined: MutableUserDefined
+        ): DataUpdate.Result = contacts.data().update().data(fileAs, userDefined).commit()
+    
+        fun deleteFileAsAndUserDefined(fileAs: FileAs, userDefined: UserDefined): DataDelete.Result =
+            contacts.data().delete().data(fileAs, userDefined).commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.*;
+    
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.data.*;
+    import contacts.core.entities.*;
+    import contacts.core.entities.custom.CustomDataRegistry;
+    import contacts.entities.custom.googlecontacts.*;
+    import contacts.entities.custom.googlecontacts.fileas.*;
+    import contacts.entities.custom.googlecontacts.userdefined.*;
+    
+    public class IntegrateGoogleContactsCustomDataActivity extends Activity {
+    
+        Contacts contacts = ContactsFactory.create(
+                this, new CustomDataRegistry().register(new GoogleContactsRegistration())
+        );
+    
+        List<Contact> getContactsWithGoogleContactsCustomData() {
+            return contacts
+                    .query()
+                    .where(
+                            or(
+                                    isNotNull(GoogleContactsFields.FileAs.Name),
+                                    isNotNull(GoogleContactsFields.UserDefined.Field)
+                            )
+                    )
+                    .find();
+        }
+    
+        Insert.Result insertRawContactWithGoogleContactsCustomData() {
+            NewFileAs newFileAs = new NewFileAs("Lucky");
+            NewUserDefined newUserDefined = new NewUserDefined("Lucky Field", "Lucky Label");
+    
+            NewRawContact newRawContact = new NewRawContact();
+            RawContactFileAsKt.setFileAs(newRawContact, contacts, newFileAs);
+            RawContactUserDefinedKt.addUserDefined(newRawContact, contacts, newUserDefined);
+    
+            return contacts
+                    .insert()
+                    .rawContacts(newRawContact)
+                    .commit();
+        }
+    
+        Update.Result updateRawContactGoogleContactsCustomData(RawContact rawContact) {
+            NewFileAs fileAs = new NewFileAs("Unfortunate");
+            NewUserDefined userDefined = new NewUserDefined("Unfortunate Field", "Unfortunate Label");
+    
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactFileAsKt.setFileAs(mutableRawContact, contacts, fileAs);
+            RawContactUserDefinedKt.addUserDefined(mutableRawContact, contacts, userDefined);
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        Update.Result deleteGoogleContactsCustomDataFromRawContact(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactFileAsKt.setFileAs(mutableRawContact, contacts, (MutableFileAsEntity) null);
+            RawContactUserDefinedKt.removeAllUserDefined(mutableRawContact, contacts);
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        List<FileAs> getAllFileAs() {
+            return FileAsDataQueryKt.fileAs(contacts.data().query()).find();
+        }
+    
+        List<UserDefined> getAllUserDefined() {
+            return UserDefinedDataQueryKt.userDefined(contacts.data().query()).find();
+        }
+    
+        DataUpdate.Result updateFileAsAndUserDefined(
+                MutableFileAs fileAs, MutableUserDefined userDefined
+        ) {
+            return contacts.data().update().data(fileAs, userDefined).commit();
+        }
+    
+        DataDelete.Result updateFileAsAndUserDefined(
+                FileAs fileAs, UserDefined userDefined
+        ) {
+            return contacts.data().delete().data(fileAs, userDefined).commit();
+        }
+    }
     ```
 
 ### [Integrate the Gender custom data](./customdata/integrate-gender-custom-data.md)

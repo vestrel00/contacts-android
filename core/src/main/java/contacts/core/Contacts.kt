@@ -153,8 +153,8 @@ interface Contacts {
 @Suppress("FunctionName")
 fun Contacts(
     context: Context,
-    logger: Logger = EmptyLogger(),
-    customDataRegistry: CustomDataRegistry = CustomDataRegistry()
+    customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
+    logger: Logger = EmptyLogger()
 ): Contacts {
     val apiListenerRegistry = CrudApiListenerRegistry()
     val loggerRegistry = LoggerRegistry(logger)
@@ -180,9 +180,9 @@ object ContactsFactory {
     @JvmOverloads
     fun create(
         context: Context,
-        logger: Logger = EmptyLogger(),
-        customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-    ): Contacts = Contacts(context, logger, customDataRegistry)
+        customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
+        logger: Logger = EmptyLogger()
+    ): Contacts = Contacts(context, customDataRegistry, logger)
 }
 
 private class ContactsImpl(
