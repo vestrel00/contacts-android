@@ -956,8 +956,8 @@ heading explore each API in full detail. You may also find these samples in the 
     
     class UpdateDataActivity : Activity() {
     
-        fun updateDataSet(dataSet: Set<ExistingDataEntity>): DataUpdate.Result =
-            Contacts(this).data().update().data(dataSet).commit()
+        fun updateData(data: ExistingDataEntity): DataUpdate.Result =
+            Contacts(this).data().update().data(data).commit()
     
         fun updateEmailAndPhone(email: Email, phone: Phone): DataUpdate.Result = Contacts(this)
             .data()
@@ -986,8 +986,6 @@ heading explore each API in full detail. You may also find these samples in the 
     ```java
     import android.app.Activity;
     
-    import java.util.Set;
-    
     import contacts.core.ContactsFactory;
     import contacts.core.Fields;
     import contacts.core.data.DataUpdate;
@@ -995,8 +993,8 @@ heading explore each API in full detail. You may also find these samples in the 
     
     public class UpdateDataActivity extends Activity {
     
-        DataUpdate.Result updateDataSet(Set<ExistingDataEntity> dataSet) {
-            return ContactsFactory.create(this).data().update().data(dataSet).commit();
+        DataUpdate.Result updateData(ExistingDataEntity data) {
+            return ContactsFactory.create(this).data().update().data(data).commit();
         }
     
         DataUpdate.Result updateEmailAndPhone(Email email, Phone phone) {
@@ -1029,74 +1027,90 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.data.DataDelete
+    import contacts.core.entities.*
+    import contacts.core.equalTo
+    
+    class DeleteDataActivity : Activity() {
+    
+        fun deleteData(data: ExistingDataEntity): DataDelete.Result =
+            Contacts(this).data().delete().data(data).commit()
+    
+        fun deleteEmailsAndPhones(emails: Set<Email>, phones: Set<Phone>): DataDelete.Result =
+            Contacts(this)
+                .data()
+                .delete()
+                .data(emails + phones)
+                .commit()
+    
+        fun deleteDataWithId(dataId: Long): DataDelete.Result =
+            Contacts(this).data().delete().dataWithId(dataId).commit()
+    
+        fun deleteAllWorkEmails(): DataDelete.Result =
+            Contacts(this)
+                .data()
+                .delete()
+                .dataWhere {
+                    Email.Type equalTo EmailEntity.Type.WORK
+                }
+                .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.equalTo;
+    
+    import android.app.Activity;
+    
+    import java.util.ArrayList;
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.Fields;
+    import contacts.core.data.DataDelete;
+    import contacts.core.entities.*;
+    
+    public class DeleteActivity extends Activity {
+    
+        DataDelete.Result deleteData(ExistingDataEntity data) {
+            return ContactsFactory.create(this).data().delete().data(data).commit();
+        }
+    
+        DataDelete.Result deleteEmailsAndPhones(List<Email> emails, List<Phone> phones) {
+            List<ExistingDataEntity> dataSet = new ArrayList<>();
+            dataSet.addAll(emails);
+            dataSet.addAll(phones);
+    
+            return ContactsFactory.create(this)
+                    .data()
+                    .delete()
+                    .data(dataSet)
+                    .commit();
+        }
+    
+        DataDelete.Result deleteDataWithId(Long dataId) {
+            return ContactsFactory.create(this).data().delete().dataWithId(dataId).commit();
+        }
+    
+        DataDelete.Result deleteAllWorkEmails() {
+            return ContactsFactory.create(this)
+                    .data()
+                    .delete()
+                    .dataWhere(
+                            equalTo(Fields.Email.Type, EmailEntity.Type.WORK)
+                    )
+                    .commit();
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------
 
 ## Custom data
-
-### [Query custom data](./customdata/query-custom-data.md)
-
-=== "Kotlin"
-
-    ```kotlin
-    TODO
-    ```
-
-=== "Java"
-
-    ```java
-    TODO
-    ```
-
-### [Insert custom data into new or existing contacts](./customdata/insert-custom-data.md)
-
-=== "Kotlin"
-
-    ```kotlin
-    TODO
-    ```
-
-=== "Java"
-
-    ```java
-    TODO
-    ```
-
-### [Update custom data](./customdata/update-custom-data.md)
-
-=== "Kotlin"
-
-    ```kotlin
-    TODO
-    ```
-
-=== "Java"
-
-    ```java
-    TODO
-    ```
-
-### [Delete custom data](./customdata/delete-custom-data.md)
-
-=== "Kotlin"
-
-    ```kotlin
-    TODO
-    ```
-
-=== "Java"
-
-    ```java
-    TODO
-    ```
 
 ### [Integrate the Google Contacts custom data](./customdata/integrate-googlecontacts-custom-data.md)
 

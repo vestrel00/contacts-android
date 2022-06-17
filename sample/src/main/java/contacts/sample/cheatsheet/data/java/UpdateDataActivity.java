@@ -2,8 +2,6 @@ package contacts.sample.cheatsheet.data.java;
 
 import android.app.Activity;
 
-import java.util.Set;
-
 import contacts.core.ContactsFactory;
 import contacts.core.Fields;
 import contacts.core.data.DataUpdate;
@@ -11,8 +9,8 @@ import contacts.core.entities.*;
 
 public class UpdateDataActivity extends Activity {
 
-    DataUpdate.Result updateDataSet(Set<ExistingDataEntity> dataSet) {
-        return ContactsFactory.create(this).data().update().data(dataSet).commit();
+    DataUpdate.Result updateData(ExistingDataEntity data) {
+        return ContactsFactory.create(this).data().update().data(data).commit();
     }
 
     DataUpdate.Result updateEmailAndPhone(Email email, Phone phone) {

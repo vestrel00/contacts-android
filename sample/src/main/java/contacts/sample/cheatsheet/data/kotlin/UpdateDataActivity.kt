@@ -8,8 +8,8 @@ import contacts.core.entities.*
 
 class UpdateDataActivity : Activity() {
 
-    fun updateDataSet(dataSet: Set<ExistingDataEntity>): DataUpdate.Result =
-        Contacts(this).data().update().data(dataSet).commit()
+    fun updateData(data: ExistingDataEntity): DataUpdate.Result =
+        Contacts(this).data().update().data(data).commit()
 
     fun updateEmailAndPhone(email: Email, phone: Phone): DataUpdate.Result = Contacts(this)
         .data()
