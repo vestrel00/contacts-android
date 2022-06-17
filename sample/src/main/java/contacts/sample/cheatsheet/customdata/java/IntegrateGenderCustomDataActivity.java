@@ -38,10 +38,11 @@ public class IntegrateGenderCustomDataActivity extends Activity {
     }
 
     Update.Result updateRawContactGenderCustomData(RawContact rawContact) {
-        NewGender gender = new NewGender(GenderEntity.Type.FEMALE);
-
         MutableRawContact mutableRawContact = rawContact.mutableCopy();
-        RawContactGenderKt.setGender(mutableRawContact, contacts, gender);
+        MutableGenderEntity mutableGender = RawContactGenderKt.gender(mutableRawContact, contacts);
+        if (mutableGender != null) {
+            mutableGender.setType(GenderEntity.Type.FEMALE);
+        }
 
         return contacts
                 .update()

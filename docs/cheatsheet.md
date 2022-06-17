@@ -1155,10 +1155,8 @@ heading explore each API in full detail. You may also find these samples in the 
             .update()
             .rawContacts(
                 rawContact.mutableCopy {
-                    setFileAs(contacts) {
-                        name = "Unfortunate"
-                    }
-                    addUserDefined(contacts) {
+                    fileAs(contacts)?.name = "Unfortunate"
+                    userDefined(contacts).firstOrNull()?.apply {
                         field = "Unfortunate Field"
                         label = "Unfortunate Label"
                     }
@@ -1240,12 +1238,18 @@ heading explore each API in full detail. You may also find these samples in the 
         }
     
         Update.Result updateRawContactGoogleContactsCustomData(RawContact rawContact) {
-            NewFileAs fileAs = new NewFileAs("Unfortunate");
-            NewUserDefined userDefined = new NewUserDefined("Unfortunate Field", "Unfortunate Label");
-    
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
-            RawContactFileAsKt.setFileAs(mutableRawContact, contacts, fileAs);
-            RawContactUserDefinedKt.addUserDefined(mutableRawContact, contacts, userDefined);
+            MutableFileAsEntity mutableFileAs = RawContactFileAsKt.fileAs(mutableRawContact, contacts);
+            MutableUserDefinedEntity mutableUserDefined = 
+                    RawContactUserDefinedKt.userDefinedList(mutableRawContact, contacts).get(0);
+    
+            if (mutableFileAs != null) {
+                mutableFileAs.setName("Unfortunate");
+            }
+            if (mutableUserDefined != null) {
+                mutableUserDefined.setField("Unfortunate Field");
+                mutableUserDefined.setLabel("Unfortunate Label");
+            }
     
             return contacts
                     .update()
@@ -1320,9 +1324,7 @@ heading explore each API in full detail. You may also find these samples in the 
             .update()
             .rawContacts(
                 rawContact.mutableCopy {
-                    setGender(contacts) {
-                        type = GenderEntity.Type.FEMALE
-                    }
+                    gender(contacts)?.type = GenderEntity.Type.FEMALE
                 }
             )
             .commit()
@@ -1388,10 +1390,11 @@ heading explore each API in full detail. You may also find these samples in the 
         }
     
         Update.Result updateRawContactGenderCustomData(RawContact rawContact) {
-            NewGender gender = new NewGender(GenderEntity.Type.FEMALE);
-    
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
-            RawContactGenderKt.setGender(mutableRawContact, contacts, gender);
+            MutableGenderEntity mutableGender = RawContactGenderKt.gender(mutableRawContact, contacts);
+            if (mutableGender != null) {
+                mutableGender.setType(GenderEntity.Type.FEMALE);
+            }
     
             return contacts
                     .update()
@@ -1457,9 +1460,7 @@ heading explore each API in full detail. You may also find these samples in the 
             .update()
             .rawContacts(
                 rawContact.mutableCopy {
-                    addHandleName(contacts) {
-                        handle = "The Beast"
-                    }
+                    handleNames(contacts).firstOrNull()?.handle = "The Beast"
                 }
             )
             .commit()
@@ -1525,10 +1526,12 @@ heading explore each API in full detail. You may also find these samples in the 
         }
     
         Update.Result updateRawContactHandleNameCustomData(RawContact rawContact) {
-            NewHandleName handleName = new NewHandleName("The Beast");
-    
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
-            RawContactHandleNameKt.addHandleName(mutableRawContact, contacts, handleName);
+            MutableHandleNameEntity mutableHandleName =
+                    RawContactHandleNameKt.handleNameList(mutableRawContact, contacts).get(0);
+            if (mutableHandleName != null) {
+                mutableHandleName.setHandle("The Beast");
+            }
     
             return contacts
                     .update()
@@ -1538,7 +1541,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
         Update.Result deleteHandleNameCustomDataFromRawContact(RawContact rawContact) {
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
-            RawContactHandleNameKt.addHandleName(mutableRawContact, contacts, (MutableHandleNameEntity) null);
+            RawContactHandleNameKt.removeAllHandleNames(mutableRawContact, contacts);
     
             return contacts
                     .update()
@@ -1565,13 +1568,147 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.data.*
+    import contacts.core.entities.*
+    import contacts.core.entities.custom.CustomDataRegistry
+    import contacts.entities.custom.pokemon.*
+    
+    class IntegratePokemonCustomDataActivity : Activity() {
+    
+        val contacts = Contacts(this, CustomDataRegistry().register(PokemonRegistration()))
+    
+        fun getContactsWithPokemonCustomData(): List<Contact> = contacts
+            .query()
+            .where { PokemonFields.Name.isNotNull() or PokemonFields.PokeApiId.isNotNull() }
+            .find()
+    
+        fun insertRawContactWithPokemonCustomData(): Insert.Result = contacts
+            .insert()
+            .rawContact {
+                addPokemon(contacts) {
+                    name = "ditto"
+                    nickname = "copy-cat"
+                    level = 24
+                    pokeApiId = 132
+                }
+            }
+            .commit()
+    
+        fun updateRawContactPokemonCustomData(rawContact: RawContact): Update.Result = contacts
+            .update()
+            .rawContacts(
+                rawContact.mutableCopy {
+                    pokemons(contacts).firstOrNull()?.apply {
+                        nickname = "OP"
+                        level = 99
+                    }
+                }
+            )
+            .commit()
+    
+        fun deletePokemonCustomDataFromRawContact(rawContact: RawContact): Update.Result =
+            contacts
+                .update()
+                .rawContacts(
+                    rawContact.mutableCopy {
+                        removeAllPokemons(contacts)
+                    }
+                )
+                .commit()
+    
+        fun getAllPokemon(): List<Pokemon> = contacts.data().query().pokemons().find()
+    
+        fun updatePokemon(pokemon: MutablePokemon): DataUpdate.Result =
+            contacts.data().update().data(pokemon).commit()
+    
+        fun deletePokemon(pokemon: Pokemon): DataDelete.Result =
+            contacts.data().delete().data(pokemon).commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.*;
+    
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.data.*;
+    import contacts.core.entities.*;
+    import contacts.core.entities.custom.CustomDataRegistry;
+    import contacts.entities.custom.pokemon.*;
+    
+    public class IntegratePokemonCustomDataActivity extends Activity {
+    
+        Contacts contacts = ContactsFactory.create(
+                this, new CustomDataRegistry().register(new PokemonRegistration())
+        );
+    
+        List<Contact> getContactsWithPokemonCustomData() {
+            return contacts
+                    .query()
+                    .where(or(isNotNull(PokemonFields.Name), isNotNull(PokemonFields.PokeApiId)))
+                    .find();
+        }
+    
+        Insert.Result insertRawContactWithPokemonCustomData() {
+            NewPokemon newPokemon = new NewPokemon();
+            newPokemon.setName("ditto");
+            newPokemon.setNickname("copy-cat");
+            newPokemon.setLevel(24);
+            newPokemon.setPokeApiId(132);
+    
+            NewRawContact newRawContact = new NewRawContact();
+            RawContactPokemonKt.addPokemon(newRawContact, contacts, newPokemon);
+    
+            return contacts
+                    .insert()
+                    .rawContacts(newRawContact)
+                    .commit();
+        }
+    
+        Update.Result updateRawContactPokemonCustomData(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            MutablePokemonEntity mutablePokemon =
+                    RawContactPokemonKt.pokemonList(mutableRawContact, contacts).get(0);
+            if (mutablePokemon != null) {
+                mutablePokemon.setNickname("OP");
+                mutablePokemon.setLevel(99);
+            }
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        Update.Result deletePokemonCustomDataFromRawContact(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactPokemonKt.removeAllPokemons(mutableRawContact, contacts);
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        List<Pokemon> getAllPokemons() {
+            return PokemonDataQueryKt.pokemons(contacts.data().query()).find();
+        }
+    
+        DataUpdate.Result updatePokemon(MutablePokemon pokemon) {
+            return contacts.data().update().data(pokemon).commit();
+        }
+    
+        DataDelete.Result deletePokemon(Pokemon pokemon) {
+            return contacts.data().delete().data(pokemon).commit();
+        }
+    }
     ```
 
 ### [Integrate the RPG custom data](./customdata/integrate-rpg-custom-data.md)

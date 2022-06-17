@@ -47,12 +47,18 @@ public class IntegrateGoogleContactsCustomDataActivity extends Activity {
     }
 
     Update.Result updateRawContactGoogleContactsCustomData(RawContact rawContact) {
-        NewFileAs fileAs = new NewFileAs("Unfortunate");
-        NewUserDefined userDefined = new NewUserDefined("Unfortunate Field", "Unfortunate Label");
-
         MutableRawContact mutableRawContact = rawContact.mutableCopy();
-        RawContactFileAsKt.setFileAs(mutableRawContact, contacts, fileAs);
-        RawContactUserDefinedKt.addUserDefined(mutableRawContact, contacts, userDefined);
+        MutableFileAsEntity mutableFileAs = RawContactFileAsKt.fileAs(mutableRawContact, contacts);
+        MutableUserDefinedEntity mutableUserDefined =
+                RawContactUserDefinedKt.userDefinedList(mutableRawContact, contacts).get(0);
+
+        if (mutableFileAs != null) {
+            mutableFileAs.setName("Unfortunate");
+        }
+        if (mutableUserDefined != null) {
+            mutableUserDefined.setField("Unfortunate Field");
+            mutableUserDefined.setLabel("Unfortunate Label");
+        }
 
         return contacts
                 .update()

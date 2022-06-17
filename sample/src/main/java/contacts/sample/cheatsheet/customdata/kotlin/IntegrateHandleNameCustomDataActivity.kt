@@ -29,9 +29,7 @@ class IntegrateHandleNameCustomDataActivity : Activity() {
         .update()
         .rawContacts(
             rawContact.mutableCopy {
-                addHandleName(contacts) {
-                    handle = "The Beast"
-                }
+                handleNames(contacts).firstOrNull()?.handle = "The Beast"
             }
         )
         .commit()

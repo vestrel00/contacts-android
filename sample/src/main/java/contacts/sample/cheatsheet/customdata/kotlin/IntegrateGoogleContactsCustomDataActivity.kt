@@ -38,10 +38,8 @@ class IntegrateGoogleContactsCustomDataActivity : Activity() {
         .update()
         .rawContacts(
             rawContact.mutableCopy {
-                setFileAs(contacts) {
-                    name = "Unfortunate"
-                }
-                addUserDefined(contacts) {
+                fileAs(contacts)?.name = "Unfortunate"
+                userDefined(contacts).firstOrNull()?.apply {
                     field = "Unfortunate Field"
                     label = "Unfortunate Label"
                 }

@@ -29,9 +29,7 @@ class IntegrateGenderCustomDataActivity : Activity() {
         .update()
         .rawContacts(
             rawContact.mutableCopy {
-                setGender(contacts) {
-                    type = GenderEntity.Type.FEMALE
-                }
+                gender(contacts)?.type = GenderEntity.Type.FEMALE
             }
         )
         .commit()
