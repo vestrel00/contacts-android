@@ -1278,7 +1278,7 @@ heading explore each API in full detail. You may also find these samples in the 
             return contacts.data().update().data(fileAs, userDefined).commit();
         }
     
-        DataDelete.Result updateFileAsAndUserDefined(
+        DataDelete.Result deleteFileAsAndUserDefined(
                 FileAs fileAs, UserDefined userDefined
         ) {
             return contacts.data().delete().data(fileAs, userDefined).commit();
@@ -1291,13 +1291,136 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.data.*
+    import contacts.core.entities.*
+    import contacts.core.entities.custom.CustomDataRegistry
+    import contacts.entities.custom.gender.*
+    
+    class IntegrateGenderCustomDataActivity : Activity() {
+    
+        val contacts = Contacts(this, CustomDataRegistry().register(GenderRegistration()))
+    
+        fun getContactsWithGenderCustomData(): List<Contact> = contacts
+            .query()
+            .where { GenderFields.Type.isNotNull() }
+            .find()
+    
+        fun insertRawContactWithGenderCustomData(): Insert.Result = contacts
+            .insert()
+            .rawContact {
+                setGender(contacts) {
+                    type = GenderEntity.Type.MALE
+                }
+            }
+            .commit()
+    
+        fun updateRawContactGenderCustomData(rawContact: RawContact): Update.Result = contacts
+            .update()
+            .rawContacts(
+                rawContact.mutableCopy {
+                    setGender(contacts) {
+                        type = GenderEntity.Type.FEMALE
+                    }
+                }
+            )
+            .commit()
+    
+        fun deleteGenderCustomDataFromRawContact(rawContact: RawContact): Update.Result =
+            contacts
+                .update()
+                .rawContacts(
+                    rawContact.mutableCopy {
+                        setGender(contacts, null)
+                    }
+                )
+                .commit()
+    
+        fun getAllGender(): List<Gender> = contacts.data().query().genders().find()
+    
+        fun updateGender(gender: MutableGender): DataUpdate.Result =
+            contacts.data().update().data(gender).commit()
+    
+        fun deleteGender(gender: Gender): DataDelete.Result =
+            contacts.data().delete().data(gender).commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.isNotNull;
+    
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.data.*;
+    import contacts.core.entities.*;
+    import contacts.core.entities.custom.CustomDataRegistry;
+    import contacts.entities.custom.gender.*;
+    
+    public class IntegrateGenderCustomDataActivity extends Activity {
+    
+        Contacts contacts = ContactsFactory.create(
+                this, new CustomDataRegistry().register(new GenderRegistration())
+        );
+    
+        List<Contact> getContactsWithGenderCustomData() {
+            return contacts
+                    .query()
+                    .where(isNotNull(GenderFields.Type))
+                    .find();
+        }
+    
+        Insert.Result insertRawContactWithGenderCustomData() {
+            NewGender newGender = new NewGender(GenderEntity.Type.MALE);
+    
+            NewRawContact newRawContact = new NewRawContact();
+            RawContactGenderKt.setGender(newRawContact, contacts, newGender);
+    
+            return contacts
+                    .insert()
+                    .rawContacts(newRawContact)
+                    .commit();
+        }
+    
+        Update.Result updateRawContactGenderCustomData(RawContact rawContact) {
+            NewGender gender = new NewGender(GenderEntity.Type.FEMALE);
+    
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactGenderKt.setGender(mutableRawContact, contacts, gender);
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        Update.Result deleteGenderCustomDataFromRawContact(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactGenderKt.setGender(mutableRawContact, contacts, (MutableGenderEntity) null);
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        List<Gender> getAllGenders() {
+            return GenderDataQueryKt.genders(contacts.data().query()).find();
+        }
+    
+        DataUpdate.Result updateGender(MutableGender gender) {
+            return contacts.data().update().data(gender).commit();
+        }
+    
+        DataDelete.Result deleteGender(Gender gender) {
+            return contacts.data().delete().data(gender).commit();
+        }
+    }
     ```
 
 ### [Integrate the Handle Name custom data](./customdata/integrate-handlename-custom-data.md)

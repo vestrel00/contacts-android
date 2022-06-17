@@ -85,7 +85,7 @@ public class IntegrateGoogleContactsCustomDataActivity extends Activity {
         return contacts.data().update().data(fileAs, userDefined).commit();
     }
 
-    DataDelete.Result updateFileAsAndUserDefined(
+    DataDelete.Result deleteFileAsAndUserDefined(
             FileAs fileAs, UserDefined userDefined
     ) {
         return contacts.data().delete().data(fileAs, userDefined).commit();
