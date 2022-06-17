@@ -1716,13 +1716,183 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.data.*
+    import contacts.core.entities.*
+    import contacts.core.entities.custom.CustomDataRegistry
+    import contacts.entities.custom.rpg.*
+    import contacts.entities.custom.rpg.profession.*
+    import contacts.entities.custom.rpg.stats.*
+    
+    class IntegrateRpgCustomDataActivity : Activity() {
+    
+        val contacts = Contacts(this, CustomDataRegistry().register(RpgRegistration()))
+    
+        fun getContactsWithRpgCustomData(): List<Contact> = contacts
+            .query()
+            .where {
+                RpgFields.Profession.Title.isNotNull() or RpgFields.Stats.Level.isNotNull()
+            }
+            .find()
+    
+        fun insertRawContactWithRpgCustomData(): Insert.Result = contacts
+            .insert()
+            .rawContact {
+                setRpgProfession(contacts) {
+                    title = "Berserker"
+                }
+                setRpgStats(contacts) {
+                    level = 78
+                    speed = 500
+                    strength = 789
+                    intelligence = 123
+                    luck = 369
+                }
+            }
+            .commit()
+    
+        fun updateRawContactRpgCustomData(rawContact: RawContact): Update.Result = contacts
+            .update()
+            .rawContacts(
+                rawContact.mutableCopy {
+                    rpgProfession(contacts)?.title = "Mage"
+                    rpgStats(contacts)?.apply {
+                        speed = 250
+                        strength = 69
+                        intelligence = 863
+                    }
+                }
+            )
+            .commit()
+    
+        fun deleteRpgCustomDataFromRawContact(rawContact: RawContact): Update.Result =
+            contacts
+                .update()
+                .rawContacts(
+                    rawContact.mutableCopy {
+                        setRpgProfession(contacts, null)
+                        setRpgStats(contacts, null)
+                    }
+                )
+                .commit()
+    
+        fun getAllRpgProfessions(): List<RpgProfession> = contacts.data().query().rpgProfession().find()
+    
+        fun getAllRpgStats(): List<RpgStats> = contacts.data().query().rpgStats().find()
+    
+        fun updateRpgProfessionAndStats(
+            profession: RpgProfession, rpgStats: RpgStats
+        ): DataUpdate.Result = contacts.data().update().data(profession, rpgStats).commit()
+    
+        fun deleteFileAsAndUserDefined(
+            profession: RpgProfession, rpgStats: RpgStats
+        ): DataDelete.Result = contacts.data().delete().data(profession, rpgStats).commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.*;
+    
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.data.*;
+    import contacts.core.entities.*;
+    import contacts.core.entities.custom.CustomDataRegistry;
+    import contacts.entities.custom.rpg.*;
+    import contacts.entities.custom.rpg.profession.*;
+    import contacts.entities.custom.rpg.stats.*;
+    
+    public class IntegrateRpgCustomDataActivity extends Activity {
+    
+        Contacts contacts = ContactsFactory.create(
+                this, new CustomDataRegistry().register(new RpgRegistration())
+        );
+    
+        List<Contact> getContactsWithRpgCustomData() {
+            return contacts
+                    .query()
+                    .where(or(isNotNull(RpgFields.Profession.Title), isNotNull(RpgFields.Stats.Level)))
+                    .find();
+        }
+    
+        Insert.Result insertRawContactWithRpgCustomData() {
+            NewRpgProfession newRpgProfession = new NewRpgProfession("Berserker");
+            NewRpgStats newRpgStats = new NewRpgStats();
+            newRpgStats.setLevel(78);
+            newRpgStats.setSpeed(500);
+            newRpgStats.setStrength(789);
+            newRpgStats.setIntelligence(123);
+            newRpgStats.setLuck(369);
+    
+            NewRawContact newRawContact = new NewRawContact();
+            RawContactRpgProfessionKt.setRpgProfession(newRawContact, contacts, newRpgProfession);
+            RawContactRpgStatsKt.setRpgStats(newRawContact, contacts, newRpgStats);
+    
+            return contacts
+                    .insert()
+                    .rawContacts(newRawContact)
+                    .commit();
+        }
+    
+        Update.Result updateRawContactRpgCustomData(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            MutableRpgProfessionEntity mutableRpgProfession =
+                    RawContactRpgProfessionKt.rpgProfession(mutableRawContact, contacts);
+            MutableRpgStatsEntity mutableRpgStats =
+                    RawContactRpgStatsKt.rpgStats(mutableRawContact, contacts);
+    
+            if (mutableRpgProfession != null) {
+                mutableRpgProfession.setTitle("Mage");
+            }
+            if (mutableRpgStats != null) {
+                mutableRpgStats.setSpeed(250);
+                mutableRpgStats.setStrength(69);
+                mutableRpgStats.setIntelligence(863);
+            }
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        Update.Result deleteRpgCustomDataFromRawContact(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactRpgProfessionKt.setRpgProfession(mutableRawContact, contacts, (MutableRpgProfession) null);
+            RawContactRpgStatsKt.setRpgStats(mutableRawContact, contacts, (MutableRpgStats) null);
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        List<RpgProfession> getAllRpgProfessions() {
+            return RpgProfessionDataQueryKt.rpgProfession(contacts.data().query()).find();
+        }
+    
+        List<RpgStats> getAllRpgStats() {
+            return RpgStatsDataQueryKt.rpgStats(contacts.data().query()).find();
+        }
+    
+        DataUpdate.Result updateRpgProfessionAndRpgStats(
+                MutableRpgProfession rpgProfession, MutableRpgStats rpgStats
+        ) {
+            return contacts.data().update().data(rpgProfession, rpgStats).commit();
+        }
+    
+        DataDelete.Result deleteRpgProfessionAndRpgStats(
+                RpgProfession rpgProfession, RpgStats rpgStats
+        ) {
+            return contacts.data().delete().data(rpgProfession, rpgStats).commit();
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------
