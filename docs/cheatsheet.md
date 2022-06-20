@@ -2041,13 +2041,39 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.accounts.Account
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.NewGroup
+    import contacts.core.groups.GroupsInsert
+    
+    class InsertGroupsActivity : Activity() {
+    
+        fun insertGroup(title: String, account: Account): GroupsInsert.Result =
+            Contacts(this).groups().insert().group(title, account).commit()
+    
+        fun insertGroups(groups: List<NewGroup>): GroupsInsert.Result =
+            Contacts(this).groups().insert().groups(groups).commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.NewGroup;
+    import contacts.core.groups.GroupsInsert;
+    
+    public class InsertGroupsActivity extends Activity {
+    
+        GroupsInsert.Result insertGroup(String title, Account account) {
+            return ContactsFactory.create(this).groups().insert().group(title, account).commit();
+        }
+    
+        GroupsInsert.Result insertGroups(List<NewGroup> groups) {
+            return ContactsFactory.create(this).groups().insert().groups(groups).commit();
+        }
+    }
     ```
 
 ### [Update groups](./groups/update-groups.md)
