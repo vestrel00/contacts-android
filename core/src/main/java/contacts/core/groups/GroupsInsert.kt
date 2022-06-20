@@ -37,10 +37,16 @@ import contacts.core.util.unsafeLazy
  *
  * To insert a group with the title "Best Friends" for the given account,
  *
+ * In Kotlin,
+ *
  * ```kotlin
- * val result = groupsInsert
- *      .groups(NewGroup("Best Friends", account))
- *      .commit()
+ * val result = groupsInsert.group("Best Friends", account).commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```kotlin
+ * GroupsInsert.Result result = groupsInsert.groups("Best Friends", account).commit();
  * ```
  */
 interface GroupsInsert : CrudApi {

@@ -33,10 +33,20 @@ import contacts.core.util.unsafeLazy
  *
  * To insert a contact to the SIM card,
  *
+ * In Kotlin,
+ *
  * ```kotlin
  * val result = insert
  *      .simContact(NewSimContact(name = "Dude", number = "5555555555"))
  *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * SimContactsInsert.Result result = insert
+ *      .simContact(new NewSimContact("Dude", "5555555555"))
+ *      .commit();
  * ```
  */
 interface SimContactsInsert : CrudApi {

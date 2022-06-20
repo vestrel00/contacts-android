@@ -45,7 +45,7 @@ import contacts.core.util.unsafeLazy
  * ```java
  * import static contacts.core.Fields.*;
  *
- * List<Contact> contacts = profileQuery
+ * List<Contact> profileContact = profileQuery
  *      .accounts(account)
  *      .include(new ArrayList<>() {{
  *           addAll(Name.getAll());

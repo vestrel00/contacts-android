@@ -50,15 +50,8 @@ import contacts.core.util.unsafeLazy
  *      .orderBy(asc(GroupsFields.Title))
  *      .limit(5)
  *      .offset(2)
- *      .find()
+ *      .find();
  * ```
- *
- * ## Developer notes
- *
- * Groups are inextricably linked to Accounts. A group must be assigned to an account, if an account
- * is available. The native Contacts app only shows groups that belong to the selected account. When
- * there are no available accounts, the native Contacts app does not show the groups field because
- * there are no rows in the groups table.
  */
 interface GroupsQuery : CrudApi {
 

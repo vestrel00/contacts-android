@@ -34,17 +34,13 @@ import contacts.core.util.unsafeLazy
  * To delete a set of [ExistingDataEntity];
  *
  * ```kotlin
- * val result = dataDelete
- *      .data(existingDataEntities)
- *      .commit()
+ * val result = dataDelete.data(existingDataEntities).commit()
  * ```
  *
  * In Java,
  *
  * ```java
- * DataDelete.Result result = dataDelete
- *      .data(existingDataEntities)
- *      .commit()
+ * DataDelete.Result result = dataDelete.data(existingDataEntities).commit();
  * ```
  */
 interface DataDelete : CrudApi {

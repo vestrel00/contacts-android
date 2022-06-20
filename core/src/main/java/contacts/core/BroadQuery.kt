@@ -72,7 +72,7 @@ import contacts.core.util.*
  *      .orderBy(asc(ContactsFields.DisplayNamePrimary))
  *      .offset(5)
  *      .limit(10)
- *      .find()
+ *      .find();
  * ```
  *
  * ## How does the matching process work?

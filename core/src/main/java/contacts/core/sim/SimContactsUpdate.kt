@@ -8,7 +8,7 @@ import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.util.unsafeLazy
 
-// TODO Calculate max character limits for name and number. Pre-emptively fail the update for
+// TODO Issue #Calculate max character limits for name and number. Pre-emptively fail the update for
 // entries that breach the limit. Make sure to update documentation.
 
 /**
@@ -34,6 +34,8 @@ import contacts.core.util.unsafeLazy
  *
  * To update a contact to the SIM card,
  *
+ * In Kotlin,
+ *
  * ```kotlin
  * var current: SimContact
  * var modified: MutableSimContact = current.mutableCopy {
@@ -45,9 +47,23 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  *
+ * In Java,
+ *
+ * ```java
+ * SimContact current;
+ * MutableSimContact modified = current.mutableCopy();
+ * // change the name and/or number
+ *
+ * SimContactsUpdate.Result result = update
+ *      .simContact(current, modified)
+ *      .commit();
+ * ```
+ *
  * **IMPORTANT!** The current entry in the SIM table is not updated based on the ID. Instead, the
  * name AND number are used to lookup the entry to update. Continuing the example above, if you
  * need to make another update, then you must use the modified copy as the current,
+ *
+ * In Kotlin,
  *
  * ```kotlin
  * current = modified
@@ -58,6 +74,17 @@ import contacts.core.util.unsafeLazy
  * val result = update
  *      .simContact(current, modified)
  *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * current = modified
+ * modified = current.newCopy();
+ *
+ * SimContactsUpdate.Result result = update
+ *      .simContact(current, modified)
+ *      .commit();
  * ```
  *
  * This limitation comes from Android, not this library.

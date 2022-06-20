@@ -19,10 +19,16 @@ import contacts.core.util.query
  *
  * Here is an example query that returns all of the contacts in the SIM card.
  *
- * In Kotlin/Java,
+ * In Kotlin,
  *
  * ```kotlin
  * val simContacts = query.find()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * List<SimContact> simContacts = query.find();
  * ```
  *
  * ## Limitations

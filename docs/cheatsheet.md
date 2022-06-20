@@ -1,9 +1,9 @@
 # Android Contacts, Reborn (CHEATSHEET)
 
-This page gives you basic sample copy-paste code showcasing how to use all of the **core APIs** 
+This page gives you basic sample copy-paste code showcasing how to use all of the **core APIs**
 provided in this library in both **Kotlin** and **Java**!
 
-The examples provided here show the most basic usage of each **`core` API**. Click on the section 
+The examples provided here show the most basic usage of each **`core` API**. Click on the section
 heading explore each API in full detail. You may also find these samples in the `sample` module's
 `contacts.sample.cheatsheet` package.
 
@@ -2131,13 +2131,35 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.Group
+    import contacts.core.groups.GroupsDelete
+    
+    class DeleteGroupsActivity : Activity() {
+    
+        fun deleteGroups(groups: List<Group>): GroupsDelete.Result =
+            Contacts(this).groups().delete().groups(groups).commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.Group;
+    import contacts.core.groups.GroupsDelete;
+    
+    public class DeleteGroupsActivity extends Activity {
+    
+        GroupsDelete.Result deleteGroups(List<Group> groups) {
+            return ContactsFactory.create(this).groups().delete().groups(groups).commit();
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------

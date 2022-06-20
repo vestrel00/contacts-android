@@ -38,17 +38,13 @@ import contacts.core.util.unsafeLazy
  * In Kotlin,
  *
  * ```kotlin
- * val result = dataUpdate
- *      .data(existingDataEntities)
- *      .commit()
+ * val result = dataUpdate.data(existingDataEntities).commit()
  * ```
  *
  * In Java,
  *
  * ```java
- * Result result = dataUpdate
- *      .data(existingDataEntities)
- *      .commit()
+ * Result result = dataUpdate.data(existingDataEntities).commit();
  * ```
  */
 interface DataUpdate : CrudApi {

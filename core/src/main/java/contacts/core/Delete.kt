@@ -21,17 +21,13 @@ import contacts.core.util.*
  * To delete a [ExistingContactEntity] and all associated [ExistingRawContactEntityWithContactId]s;
  *
  * ```kotlin
- * val result = delete
- *      .contacts(contact)
- *      .commit()
+ * val result = delete.contacts(contact).commit()
  * ```
  *
  * In Java,
  *
  * ```java
- * Delete.Result result = delete
- *      .contacts(contact)
- *      .commit()
+ * Delete.Result result = delete.contacts(contact).commit();
  * ```
  */
 interface Delete : CrudApi {

@@ -23,10 +23,20 @@ import contacts.core.util.unsafeLazy
  *
  * To insert a number to block (i.e. (555) 555-5555),
  *
- * ```kotlin
+ * In Kotlin,
+ *
+ * ```java
  * val result = blockedNumbersInsert
  *      .blockedNumbers(NewBlockedNumber(number = "(555) 555-5555"))
  *      .commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * BlockedNumbersInsert.Result result = blockedNumbersInsert
+ *      .blockedNumbers(new NewBlockedNumber("(555) 555-5555"))
+ *      .commit();
  * ```
  */
 interface BlockedNumbersInsert : CrudApi {

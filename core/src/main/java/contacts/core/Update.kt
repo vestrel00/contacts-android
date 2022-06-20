@@ -62,7 +62,7 @@ import contacts.core.util.unsafeLazy
  *      .commit()
  * ```
  *
- * Java,
+ * In Java,
  *
  * ```java
  * NewName name = new NewName();

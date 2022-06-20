@@ -30,17 +30,13 @@ import contacts.core.util.unsafeLazy
  * To delete the profile [ExistingContactEntity] and all associated [ExistingRawContactEntity]s;
  *
  * ```kotlin
- * val result = profileDelete
- *      .contact()
- *      .commit()
+ * val result = profileDelete.contact().commit()
  * ```
  *
  * In Java,
  *
  * ```java
- * ProfileDelete.Result result = profileDelete
- *      .contact()
- *      .commit()
+ * ProfileDelete.Result result = profileDelete.contact().commit();
  * ```
  */
 interface ProfileDelete : CrudApi {

@@ -18,10 +18,16 @@ import contacts.core.util.unsafeLazy
  *
  * To delete the given blockedNumbers,
  *
+ * In Kotlin,
+ *
  * ```kotlin
- * blockedNumbersDelete
- *      .blockedNumbers(blockedNumbers)
- *      .commit()
+ * val result = blockedNumbersDelete.blockedNumbers(blockedNumbers).commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * BlockedNumbersDelete.Result result = blockedNumbersDelete.blockedNumbers(blockedNumbers).commit();
  * ```
  */
 interface BlockedNumbersDelete : CrudApi {

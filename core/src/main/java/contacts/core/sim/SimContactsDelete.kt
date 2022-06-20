@@ -18,10 +18,16 @@ import contacts.core.util.unsafeLazy
  *
  * To delete the given simContacts,
  *
+ * In Kotlin,
+ *
  * ```kotlin
- * simContactsDelete
- *      .simContacts(simContacts)
- *      .commit()
+ * val result = simContactsDelete.simContacts(simContacts).commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * SimContactsDelete.Result result = simContactsDelete.simContacts(simContacts).commit();
  * ```
  */
 interface SimContactsDelete : CrudApi {

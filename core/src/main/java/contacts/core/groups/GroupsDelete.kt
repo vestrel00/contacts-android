@@ -53,10 +53,16 @@ import contacts.core.util.unsafeLazy
  *
  * To delete the given groups,
  *
+ * In Kotlin,
+ *
  * ```kotlin
- * groupsDelete
- *      .groups(groups)
- *      .commit()
+ * val result = groupsDelete.groups(groups).commit()
+ * ```
+ *
+ * In Java,
+ *
+ * ```java
+ * GroupsDelete.Result result = groupsDelete.groups(groups).commit();
  * ```
  */
 interface GroupsDelete : CrudApi {
