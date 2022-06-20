@@ -1904,13 +1904,136 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.accounts.Account
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.entities.*
+    
+    class QueryGroupsActivity : Activity() {
+    
+        fun getAllGroupsFromAllAccounts(): List<Group> = Contacts(this).groups().query().find()
+    
+        fun getGroupsFromAccount(account: Account): List<Group> =
+            Contacts(this).groups().query().accounts(account).find()
+    
+        fun getGroupsById(groupsIds: List<Long>): List<Group> = Contacts(this)
+            .groups()
+            .query()
+            .where { Id `in` groupsIds }
+            .find()
+    
+        fun getGroupsOfGroupMemberships(groupMemberships: List<GroupMembership>): List<Group> =
+            Contacts(this)
+                .groups()
+                .query()
+                .where { Id `in` groupMemberships.mapNotNull { it.groupId } }
+                .find()
+    
+        fun getFavoritesGroups(account: Account): List<Group> = Contacts(this)
+            .groups()
+            .query()
+            .accounts(account)
+            .where { Favorites equalTo true }
+            .find()
+    
+        fun getSystemGroups(account: Account): List<Group> = Contacts(this)
+            .groups()
+            .query()
+            .accounts(account)
+            .where { SystemId.isNotNull() }
+            .find()
+    
+        fun getUserCreatedGroups(account: Account): List<Group> = Contacts(this)
+            .groups()
+            .query()
+            .accounts(account)
+            .find()
+            .filter { !it.isSystemGroup }
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.*;
+    
+    import android.accounts.Account;
+    import android.app.Activity;
+    
+    import java.util.ArrayList;
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.entities.*;
+    
+    public class QueryGroupsActivity extends Activity {
+    
+        List<Group> getAllGroupsFromAllAccounts() {
+            return ContactsFactory.create(this).groups().query().find();
+        }
+    
+        List<Group> getGroupsFromAccount(Account account) {
+            return ContactsFactory.create(this).groups().query().accounts(account).find();
+        }
+    
+        List<Group> getGroupsById(List<Long> groupsIds) {
+            return ContactsFactory.create(this)
+                    .groups()
+                    .query()
+                    .where(in(GroupsFields.Id, groupsIds))
+                    .find();
+        }
+    
+        List<Group> getGroupsByGroupMembership(List<GroupMembership> groupMemberships) {
+            List<Long> groupsIds = new ArrayList<>();
+            for (GroupMembership groupMembership : groupMemberships) {
+                if (groupMembership.getGroupId() != null) {
+                    groupsIds.add(groupMembership.getGroupId());
+                }
+            }
+    
+            return ContactsFactory.create(this)
+                    .groups()
+                    .query()
+                    .where(in(GroupsFields.Id, groupsIds))
+                    .find();
+        }
+    
+        List<Group> getFavoritesGroups(Account account) {
+            return ContactsFactory.create(this)
+                    .groups()
+                    .query()
+                    .accounts(account)
+                    .where(equalTo(GroupsFields.Favorites, true))
+                    .find();
+        }
+    
+        List<Group> getSystemGroups(Account account) {
+            return ContactsFactory.create(this)
+                    .groups()
+                    .query()
+                    .accounts(account)
+                    .where(isNotNull(GroupsFields.SystemId))
+                    .find();
+        }
+    
+        List<Group> getUserCreatedGroups(Account account) {
+            List<Group> groups = ContactsFactory.create(this)
+                    .groups()
+                    .query()
+                    .accounts(account)
+                    .find();
+    
+            List<Group> userCreatedGroups = new ArrayList<>();
+            for (Group group : groups) {
+                if (!group.isSystemGroup()) {
+                    userCreatedGroups.add(group);
+                }
+            }
+    
+            return userCreatedGroups;
+        }
+    }
     ```
 
 ### [Insert groups](./groups/insert-groups.md)
