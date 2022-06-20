@@ -2081,13 +2081,49 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.Group
+    import contacts.core.groups.GroupsUpdate
+    
+    class UpdateGroupsActivity : Activity() {
+    
+        fun updateGroup(group: Group): GroupsUpdate.Result = Contacts(this)
+            .groups()
+            .update()
+            .groups(
+                group.mutableCopy {
+                    title = "Bad love"
+                }
+            )
+            .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.*;
+    import contacts.core.groups.GroupsUpdate;
+    
+    public class UpdateGroupsActivity extends Activity {
+    
+        GroupsUpdate.Result updateGroup(Group group) {
+            MutableGroup mutableGroup = group.mutableCopy();
+            if (mutableGroup != null) {
+                mutableGroup.setTitle("Bad love");
+            }
+    
+            return ContactsFactory.create(this)
+                    .groups()
+                    .update()
+                    .groups(mutableGroup)
+                    .commit();
+        }
+    }
     ```
 
 ### [Delete groups](./groups/delete-groups.md)
