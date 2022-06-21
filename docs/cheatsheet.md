@@ -2437,13 +2437,30 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.profile.ProfileDelete
+    
+    class DeleteProfileActivity : Activity() {
+    
+        fun deleteProfile(): ProfileDelete.Result = Contacts(this).profile().delete().contact().commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.profile.ProfileDelete;
+    
+    public class DeleteProfileActivity extends Activity {
+    
+        ProfileDelete.Result deleteProfile() {
+            return ContactsFactory.create(this).profile().delete().contact().commit();
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------
