@@ -2373,13 +2373,63 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.*
+    import contacts.core.profile.ProfileUpdate
+    import contacts.core.util.*
+    
+    class UpdateProfileActivity : Activity() {
+    
+        fun updateProfile(profile: Contact): ProfileUpdate.Result = Contacts(this)
+            .profile()
+            .update()
+            .contact(profile.mutableCopy {
+                setName {
+                    displayName = "I am the phone owner"
+                }
+                addEmail {
+                    type = EmailEntity.Type.CUSTOM
+                    label = "Profile Email"
+                    address = "phone@owner.com"
+                }
+                removeAllPhones()
+                setOrganization(null)
+            })
+            .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.*;
+    import contacts.core.profile.ProfileUpdate;
+    import contacts.core.util.ContactDataKt;
+    
+    public class UpdateProfileActivity extends Activity {
+    
+        ProfileUpdate.Result updateProfile(Contact profile) {
+            MutableContact mutableProfile = profile.mutableCopy();
+            ContactDataKt.setName(mutableProfile, new NewName("I am the phone owner"));
+            ContactDataKt.addEmail(mutableProfile, new NewEmail(
+                    EmailEntity.Type.CUSTOM,
+                    "Profile Email",
+                    "phone@owner.com"
+            ));
+            ContactDataKt.removeAllPhones(mutableProfile);
+            ContactDataKt.setOrganization(mutableProfile, (MutableOrganizationEntity) null);
+    
+            return ContactsFactory.create(this)
+                    .profile()
+                    .update()
+                    .contact(mutableProfile)
+                    .commit();
+        }
+    }
     ```
 
 ### [Delete device owner Contact profile](./profile/delete-profile.md)
