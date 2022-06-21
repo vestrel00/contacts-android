@@ -11,6 +11,10 @@ heading explore each API in full detail. You may also find these samples in the 
 > should be invoked in background threads instead.
 > For more info, read [Execute work outside of the UI thread using coroutines](./async/async-execution-coroutines.md).
 
+> ℹ️ This is the only documentation page that contains Java samples. I want to keep the rest of the
+> documentation Kotlin-only in order to keep the markdown files clean and free of non-markdown 
+> markups from MkDocs. Also, most of the code is the same so it would just add clutter.
+
 ----------------------------------------------------------------------------------------------------
 
 ## Basics
@@ -2171,13 +2175,30 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.Contact
+    
+    class QueryProfileActivity : Activity() {
+    
+        fun getProfile(): Contact? = Contacts(this).profile().query().find().contact
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.Contact;
+    
+    public class QueryProfileActivity extends Activity {
+    
+        Contact getProfile() {
+            return ContactsFactory.create(this).profile().query().find().getContact();
+        }
+    }
     ```
 
 ### [Insert device owner Contact profile](./profile/insert-profile.md)
