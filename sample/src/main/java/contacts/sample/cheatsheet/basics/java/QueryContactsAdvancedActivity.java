@@ -12,7 +12,7 @@ import contacts.core.ContactsFactory;
 import contacts.core.Fields;
 import contacts.core.entities.Contact;
 
-public class QueryContactsAdvanced extends Activity {
+public class QueryContactsAdvancedActivity extends Activity {
 
     Contact getContactById(Long contactId) {
         return ContactsFactory.create(this)

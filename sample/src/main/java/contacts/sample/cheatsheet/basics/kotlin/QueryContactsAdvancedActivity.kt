@@ -6,7 +6,7 @@ import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.util.lookupKeyIn
 
-class QueryContactsAdvanced : Activity() {
+class QueryContactsAdvancedActivity : Activity() {
 
     fun getContactById(contactId: Long): Contact? = Contacts(this)
         .query()

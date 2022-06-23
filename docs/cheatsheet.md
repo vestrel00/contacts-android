@@ -168,7 +168,7 @@ heading explore each API in full detail. You may also find these samples in the 
     import contacts.core.entities.Contact
     import contacts.core.util.lookupKeyIn
     
-    class QueryContactsAdvanced : Activity() {
+    class QueryContactsAdvancedActivity : Activity() {
     
         fun getContactById(contactId: Long): Contact? = Contacts(this)
             .query()
@@ -240,7 +240,7 @@ heading explore each API in full detail. You may also find these samples in the 
     import contacts.core.Fields;
     import contacts.core.entities.Contact;
     
-    public class QueryContactsAdvanced extends Activity {
+    public class QueryContactsAdvancedActivity extends Activity {
     
         Contact getContactById(Long contactId) {
             return ContactsFactory.create(this)
@@ -2472,13 +2472,64 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.accounts.Account
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.RawContact
+    
+    class QueryAccountsActivity : Activity() {
+    
+        fun getAllAccounts(): List<Account> = Contacts(this).accounts().query().find()
+    
+        fun getAllGoogleAccounts(): List<Account> = Contacts(this)
+            .accounts()
+            .query()
+            .withTypes("com.google")
+            .find()
+    
+        fun getRawContactAccount(rawContact: RawContact): Account? = Contacts(this)
+            .accounts()
+            .query()
+            .associatedWith(rawContact)
+            .find()
+            .firstOrNull()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.accounts.Account;
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.RawContact;
+    
+    public class QueryAccountsActivity extends Activity {
+    
+        List<Account> getAllAccounts() {
+            return ContactsFactory.create(this).accounts().query().find();
+        }
+    
+        List<Account> getAllGoogleAccounts() {
+            return ContactsFactory.create(this)
+                    .accounts()
+                    .query()
+                    .withTypes("com.google")
+                    .find();
+        }
+    
+        Account getRawContactAccount(RawContact rawContact) {
+            return ContactsFactory.create(this)
+                    .accounts()
+                    .query()
+                    .associatedWith(rawContact)
+                    .find()
+                    .get(0);
+        }
+    }
     ```
 
 ### [Query for RawContacts](./accounts/query-raw-contacts.md)
