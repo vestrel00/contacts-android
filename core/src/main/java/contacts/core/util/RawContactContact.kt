@@ -2,13 +2,13 @@ package contacts.core.util
 
 import contacts.core.*
 import contacts.core.entities.Contact
-import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 
 /**
- * Returns the [Contact] with the [ExistingRawContactEntity.contactId].
+ * Returns the [Contact] with the [ExistingRawContactEntityWithContactId.contactId].
  *
  * This may return null if the Contact or RawContact no longer exists or if permissions are not
  * granted.
@@ -31,7 +31,7 @@ import contacts.core.entities.table.Table
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun ExistingRawContactEntity.contact(
+fun ExistingRawContactEntityWithContactId.contact(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): Contact? = contacts.getContactIdFromRawContactsTable(id)?.let { contactIdFromDb ->

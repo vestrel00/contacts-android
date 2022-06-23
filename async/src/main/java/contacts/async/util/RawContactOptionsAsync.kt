@@ -2,7 +2,7 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.MutableOptionsEntity
 import contacts.core.entities.Options
 import contacts.core.util.options
@@ -20,9 +20,9 @@ import kotlin.coroutines.CoroutineContext
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ExistingRawContactEntity.options].
+ * See [ExistingRawContactEntityWithContactId.options].
  */
-suspend fun ExistingRawContactEntity.optionsWithContext(
+suspend fun ExistingRawContactEntityWithContactId.optionsWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Options? = withContext(coroutineContext) { options(contacts) }
@@ -31,9 +31,9 @@ suspend fun ExistingRawContactEntity.optionsWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ExistingRawContactEntity.setOptions].
+ * See [ExistingRawContactEntityWithContactId.setOptions].
  */
-suspend fun ExistingRawContactEntity.setOptionsWithContext(
+suspend fun ExistingRawContactEntityWithContactId.setOptionsWithContext(
     contacts: Contacts,
     options: MutableOptionsEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
@@ -43,9 +43,9 @@ suspend fun ExistingRawContactEntity.setOptionsWithContext(
  * Suspends the current coroutine, performs the operation in background, then returns the control
  * flow to the calling coroutine scope.
  *
- * See [ExistingRawContactEntity.updateOptions].
+ * See [ExistingRawContactEntityWithContactId.updateOptions].
  */
-suspend fun ExistingRawContactEntity.updateOptionsWithContext(
+suspend fun ExistingRawContactEntityWithContactId.updateOptionsWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
     update: MutableOptionsEntity.() -> Unit
@@ -59,9 +59,9 @@ suspend fun ExistingRawContactEntity.updateOptionsWithContext(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ExistingRawContactEntity.options].
+ * See [ExistingRawContactEntityWithContactId.options].
  */
-fun ExistingRawContactEntity.optionsAsync(
+fun ExistingRawContactEntityWithContactId.optionsAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Options?> = CoroutineScope(coroutineContext).async { options(contacts) }
@@ -70,9 +70,9 @@ fun ExistingRawContactEntity.optionsAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ExistingRawContactEntity.setOptions].
+ * See [ExistingRawContactEntityWithContactId.setOptions].
  */
-fun ExistingRawContactEntity.setOptionsAsync(
+fun ExistingRawContactEntityWithContactId.setOptionsAsync(
     contacts: Contacts,
     options: MutableOptionsEntity,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
@@ -82,9 +82,9 @@ fun ExistingRawContactEntity.setOptionsAsync(
  * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
  * scope, then returns the [Deferred] result.
  *
- * See [ExistingRawContactEntity.updateOptions].
+ * See [ExistingRawContactEntityWithContactId.updateOptions].
  */
-fun ExistingRawContactEntity.updateOptionsAsync(
+fun ExistingRawContactEntityWithContactId.updateOptionsAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER,
     update: MutableOptionsEntity.() -> Unit

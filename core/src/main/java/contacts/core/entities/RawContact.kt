@@ -162,6 +162,8 @@ sealed interface ExistingRawContactEntity : RawContactEntity,
 
 /**
  * An existing RawContact entity that holds a reference to it's parent [Contact.id].
+ *
+ * This does NOT inherit from [RawContactEntity].
  */
 sealed interface ExistingRawContactEntityWithContactId : ExistingEntity {
     /**
@@ -178,6 +180,9 @@ sealed interface ExistingRawContactEntityWithContactId : ExistingEntity {
      * The value of RawContacts.CONTACT_ID / Data.CONTACT_ID.
      */
     val contactId: Long
+
+    val isProfile: Boolean
+        get() = id.isProfileId
 
     // The Data table contains the display name for Contacts, not for RawContacts.
 
@@ -408,6 +413,9 @@ data class BlankRawContact internal constructor(
 
     override val isBlank: Boolean
         get() = true
+
+    override val isProfile: Boolean
+        get() = id.isProfileId
 
     override val addresses: List<AddressEntity>
         get() = emptyList()

@@ -3,7 +3,7 @@ package contacts.async.util
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
 import contacts.core.entities.Contact
-import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.util.contact
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -14,9 +14,9 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [ExistingRawContactEntity.contact].
+ * See [ExistingRawContactEntityWithContactId.contact].
  */
-suspend fun ExistingRawContactEntity.contactWithContext(
+suspend fun ExistingRawContactEntityWithContactId.contactWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Contact? = withContext(coroutineContext) {
@@ -29,9 +29,9 @@ suspend fun ExistingRawContactEntity.contactWithContext(
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [ExistingRawContactEntity.contact].
+ * See [ExistingRawContactEntityWithContactId.contact].
  */
-fun ExistingRawContactEntity.contactAsync(
+fun ExistingRawContactEntityWithContactId.contactAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Contact?> = CoroutineScope(coroutineContext).async {

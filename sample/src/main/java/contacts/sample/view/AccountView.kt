@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import contacts.async.accounts.findWithContext
 import contacts.core.Contacts
-import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
 import contacts.permissions.accounts.queryWithPermission
@@ -68,7 +68,7 @@ class AccountView @JvmOverloads constructor(
 
     private fun loadAccount(contacts: Contacts) = launch {
         val account = rawContact?.let {
-            if (it is ExistingRawContactEntity) {
+            if (it is ExistingRawContactEntityWithContactId) {
                 contacts.accounts(it.isProfile)
                     .queryWithPermission()
                     .associatedWith(it)

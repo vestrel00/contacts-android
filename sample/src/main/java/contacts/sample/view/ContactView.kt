@@ -369,9 +369,11 @@ class ContactView @JvmOverloads constructor(
             contact.rawContacts.forEach { rawContact ->
                 val rawContactView = addRawContactView(rawContact, contacts)
 
-                if (contact is ExistingContactEntity && rawContact is ExistingRawContactEntity) {
-                    // Make sure that this Contact view and the primary photo holder view is set to the same
-                    // photo whenever the user picks one.
+                if (contact is ExistingContactEntity
+                    && rawContact is ExistingRawContactEntityWithContactId
+                ) {
+                    // Make sure that this Contact view and the primary photo holder view is set to
+                    // the same photo whenever the user picks one.
                     val photoHolderId = contact.primaryPhotoHolder?.id
                     if (photoHolderId != null && photoHolderId == rawContact.id) {
                         rawContactView.setPhotoDrawableOnPhotoPickedWith(photoView)
@@ -380,8 +382,8 @@ class ContactView @JvmOverloads constructor(
             }
         } else {
             newRawContactView = addRawContactView(NewRawContact(), contacts).also {
-                // Make sure that this Contact view and the primary photo holder view is set to the same
-                // photo whenever the user picks one.
+                // Make sure that this Contact view and the primary photo holder view is set to the
+                // same photo whenever the user picks one.
                 it.setPhotoDrawableOnPhotoPickedWith(photoView)
             }
         }

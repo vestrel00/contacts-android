@@ -1,7 +1,7 @@
 package contacts.core.util
 
 import contacts.core.*
-import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.MutableOptionsEntity
 import contacts.core.entities.NewOptions
 import contacts.core.entities.Options
@@ -11,7 +11,7 @@ import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 
 /**
- * Returns the [Options] of this [ExistingRawContactEntity].
+ * Returns the [Options] of this [ExistingRawContactEntityWithContactId].
  *
  * Note that changes to the options of the parent Contact will be propagated to all child
  * RawContact options.Changes to the options of a RawContact may or may not affect the options of
@@ -30,7 +30,7 @@ import contacts.core.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntity.options(contacts: Contacts): Options? {
+fun ExistingRawContactEntityWithContactId.options(contacts: Contacts): Options? {
     if (!contacts.permissions.canQuery()) {
         return null
     }
@@ -45,7 +45,7 @@ fun ExistingRawContactEntity.options(contacts: Contacts): Options? {
 }
 
 /**
- * Updates this [ExistingRawContactEntity.options] with the given [options].
+ * Updates this [ExistingRawContactEntityWithContactId.options] with the given [options].
  *
  * Note that changes to the options of the parent Contact will be propagated to all child
  * RawContact options.Changes to the options of a RawContact may or may not affect the options of
@@ -96,7 +96,7 @@ fun ExistingRawContactEntity.options(contacts: Contacts): Options? {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntity.setOptions(
+fun ExistingRawContactEntityWithContactId.setOptions(
     contacts: Contacts,
     options: MutableOptionsEntity
 ): Boolean {
@@ -110,7 +110,7 @@ fun ExistingRawContactEntity.setOptions(
 }
 
 /**
- * Updates this [ExistingRawContactEntity.options] in [update]. If this contact has null options, a new
+ * Updates this [ExistingRawContactEntityWithContactId.options] in [update]. If this contact has null options, a new
  * blank options will be used in [update].
  *
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
@@ -162,7 +162,7 @@ fun ExistingRawContactEntity.setOptions(
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntity.updateOptions(
+fun ExistingRawContactEntityWithContactId.updateOptions(
     contacts: Contacts,
     update: MutableOptionsEntity.() -> Unit
 ): Boolean {

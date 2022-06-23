@@ -4,7 +4,7 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.ContentResolver
 import contacts.core.*
-import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.cursor.account
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.table.ProfileUris
@@ -26,13 +26,22 @@ import contacts.core.util.*
  * Here is an example of how to get all accounts with type "com.google" that is associated with
  * any of the given rawContacts.
  *
- * In Kotlin and Java,
+ * In Kotlin,
  *
  * ```kotlin
  * val accounts = accountsQuery
  *     .withType("com.google")
  *     .associatedWith(rawContacts)
  *     .find()
+ * ```
+ *
+ * In Java,
+ *
+ * ```kotlin
+ * List<Account> accounts = accountsQuery
+ *     .withType("com.google")
+ *     .associatedWith(rawContacts)
+ *     .find();
  * ```
  *
  * If [withTypes] and [associatedWith] are not used, then all accounts in the system are returned.
@@ -78,17 +87,17 @@ interface AccountsQuery : CrudApi {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun associatedWith(vararg rawContacts: ExistingRawContactEntity): AccountsQuery
+    fun associatedWith(vararg rawContacts: ExistingRawContactEntityWithContactId): AccountsQuery
 
     /**
      * See [AccountsQuery.associatedWith].
      */
-    fun associatedWith(rawContacts: Collection<ExistingRawContactEntity>): AccountsQuery
+    fun associatedWith(rawContacts: Collection<ExistingRawContactEntityWithContactId>): AccountsQuery
 
     /**
      * See [AccountsQuery.associatedWith].
      */
-    fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>): AccountsQuery
+    fun associatedWith(rawContacts: Sequence<ExistingRawContactEntityWithContactId>): AccountsQuery
 
     /**
      * Returns a list of [Accounts]s matching the preceding query options.
@@ -165,7 +174,7 @@ interface AccountsQuery : CrudApi {
          * [withTypes], then this will return null even if the [rawContact] actually has an account
          * in the database.
          */
-        fun accountFor(rawContact: ExistingRawContactEntity): Account?
+        fun accountFor(rawContact: ExistingRawContactEntityWithContactId): Account?
 
         /**
          * See [Result.accountFor]
@@ -225,16 +234,17 @@ private class AccountsQueryImpl(
         this.accountTypes.addAll(accountTypes.redactStringsOrThis(isRedacted))
     }
 
-    override fun associatedWith(vararg rawContacts: ExistingRawContactEntity) =
+    override fun associatedWith(vararg rawContacts: ExistingRawContactEntityWithContactId) =
         associatedWith(rawContacts.asSequence())
 
-    override fun associatedWith(rawContacts: Collection<ExistingRawContactEntity>) =
+    override fun associatedWith(rawContacts: Collection<ExistingRawContactEntityWithContactId>) =
         associatedWith(rawContacts.asSequence())
 
-    override fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>): AccountsQuery =
-        apply {
-            rawContactIds.addAll(rawContacts.map { it.id })
-        }
+    override fun associatedWith(
+        rawContacts: Sequence<ExistingRawContactEntityWithContactId>
+    ): AccountsQuery = apply {
+        rawContactIds.addAll(rawContacts.map { it.id })
+    }
 
     override fun find(): AccountsQuery.Result = find { false }
 
@@ -364,7 +374,7 @@ private class AccountsQueryResult private constructor(
         isRedacted = true
     )
 
-    override fun accountFor(rawContact: ExistingRawContactEntity): Account? =
+    override fun accountFor(rawContact: ExistingRawContactEntityWithContactId): Account? =
         accountFor(rawContact.id)
 
     override fun accountFor(rawContactId: Long): Account? = rawContactIdsAccountsMap[rawContactId]
