@@ -2953,13 +2953,41 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.blockednumbers.BlockedNumbersDelete
+    import contacts.core.entities.BlockedNumber
+    
+    class DeleteBlockedNumbersActivity : Activity() {
+    
+        fun deleteBlockedNumber(blockedNumber: BlockedNumber): BlockedNumbersDelete.Result =
+            Contacts(this)
+                .blockedNumbers()
+                .delete()
+                .blockedNumbers(blockedNumber)
+                .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.blockednumbers.BlockedNumbersDelete;
+    import contacts.core.entities.BlockedNumber;
+    
+    public class DeleteBlockedNumbersActivity extends Activity {
+    
+        BlockedNumbersDelete.Result deleteBlockedNumber(BlockedNumber blockedNumber) {
+            return ContactsFactory.create(this)
+                    .blockedNumbers()
+                    .delete()
+                    .blockedNumbers(blockedNumber)
+                    .commit();
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------
