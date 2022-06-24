@@ -82,7 +82,7 @@ nav:
     - 'Integrate rudimentary contacts ui components': ui/integrate-rudimentary-contacts-integrated-ui-components.md
   - 'Other':
     - 'Get set remove full-sized and thumbnail contact photos': other/get-set-remove-contact-raw-contact-photo.md
-    - 'Get set Contact options': other/get-set-clear-contact-raw-contact-options.md
+    - 'Get set contact options': other/get-set-clear-contact-raw-contact-options.md
     - 'Get set clear default Contact data': other/get-set-clear-default-data.md
     - 'Link unlink Contacts': other/link-unlink-contacts.md
     - 'Share Contacts vCard (.VCF)': other/share-contacts-vcard.md

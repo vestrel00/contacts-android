@@ -3090,18 +3090,64 @@ heading explore each API in full detail. You may also find these samples in the 
     }
     ```
 
-### [Get set Contact options](./other/get-set-clear-contact-raw-contact-options.md)
+### [Get set contact options](./other/get-set-clear-contact-raw-contact-options.md)
 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.*
+    import contacts.core.util.*
+    
+    class ContactAndRawContactOptionsActivity : Activity() {
+    
+        fun getContactOptions(contact: Contact): Options? = contact.options
+    
+        fun getContactOptionsFromDb(contact: Contact): Options? = contact.options(Contacts(this))
+    
+        fun getRawContactOptionsFromDb(rawContact: RawContact): Options? =
+            rawContact.options(Contacts(this))
+    
+        fun setContactOptions(contact: Contact, options: MutableOptions): Boolean =
+            contact.setOptions(Contacts(this), options)
+    
+        fun setRawContactOptions(rawContact: RawContact, options: MutableOptions): Boolean =
+            rawContact.setOptions(Contacts(this), options)
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.*;
+    import contacts.core.util.*;
+    
+    public class ContactAndRawContactOptionsActivity extends Activity {
+    
+        Options getContactOptions(Contact contact) {
+            return contact.getOptions();
+        }
+    
+        Options getContactOptionsFromDb(Contact contact) {
+            return ContactOptionsKt.options(contact, ContactsFactory.create(this));
+        }
+    
+        Options getRawContactOptionsFromDb(RawContact rawContact) {
+            return RawContactOptionsKt.options(rawContact, ContactsFactory.create(this));
+        }
+    
+        Boolean setContactOptions(Contact contact, MutableOptions options) {
+            return ContactOptionsKt.setOptions(contact, ContactsFactory.create(this), options);
+        }
+    
+        Boolean setRawContactOptions(RawContact rawContact, MutableOptions options) {
+            return RawContactOptionsKt.setOptions(rawContact, ContactsFactory.create(this), options);
+        }
+    }
     ```
 
 ### [Get set clear default Contact data](./other/get-set-clear-default-data.md)

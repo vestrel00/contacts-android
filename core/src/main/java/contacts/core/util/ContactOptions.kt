@@ -15,7 +15,7 @@ import contacts.core.entities.table.Table
  * from this instance's options immutable member variable as it may be stale.
  *
  * Note that changes to the options of the parent Contact will be propagated to all child
- * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * RawContact options. Changes to the options of a RawContact may or may not affect the options of
  * the parent Contact.
  *
  * This will return null if the contact no longer exist or permissions have not been granted.
@@ -49,7 +49,7 @@ fun ExistingContactEntity.options(contacts: Contacts): Options? {
  * Updates this [ExistingContactEntity.options] with the given [options].
  *
  * Note that changes to the options of the parent Contact will be propagated to all child
- * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * RawContact options. Changes to the options of a RawContact may or may not affect the options of
  * the parent Contact.
  *
  * Supports profile and non-profile Contacts.
@@ -110,7 +110,7 @@ fun ExistingContactEntity.setOptions(contacts: Contacts, options: MutableOptions
  * new blank options will be used in [update].
  *
  * Note that changes to the options of the parent Contact will be propagated to all child
- * RawContact options.Changes to the options of a RawContact may or may not affect the options of
+ * RawContact options. Changes to the options of a RawContact may or may not affect the options of
  * the parent Contact.
  *
  * ## Changes are immediate

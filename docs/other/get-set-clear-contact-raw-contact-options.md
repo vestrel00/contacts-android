@@ -1,4 +1,4 @@
-# Get set Contact options
+# Get set contact options
 
 This library provides several functions to interact with Contact and RawContact options;
 starred, send to voicemail, and ringtone.
