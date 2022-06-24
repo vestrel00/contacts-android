@@ -2676,13 +2676,50 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.SimContact
+    
+    class QuerySimContactsActivity : Activity() {
+    
+        fun getAllSimContacts(): List<SimContact> = Contacts(this).sim().query().find()
+    
+        fun getAllSimContactsWithPhoneNumber(): List<SimContact> = Contacts(this)
+            .sim()
+            .query()
+            .find()
+            .filter { !it.number.isNullOrEmpty() }
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import java.util.ArrayList;
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.SimContact;
+    
+    public class QuerySimContactsActivity extends Activity {
+    
+        List<SimContact> getAllSimContacts() {
+            return ContactsFactory.create(this).sim().query().find();
+        }
+    
+        List<SimContact> getAllSimContactsWithPhoneNumber() {
+            List<SimContact> simContacts = ContactsFactory.create(this).sim().query().find();
+            List<SimContact> simContactsWithPhoneNumber = new ArrayList<>();
+            for (SimContact simContact : simContacts) {
+                if (simContact.getNumber() != null && !simContact.getNumber().isEmpty()) {
+                    simContactsWithPhoneNumber.add(simContact);
+                }
+            }
+            return simContactsWithPhoneNumber;
+        }
+    }
     ```
 
 ### [Insert contacts into SIM card](./sim/insert-sim-contacts.md)
