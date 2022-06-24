@@ -2770,13 +2770,47 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.SimContact
+    import contacts.core.sim.SimContactsUpdate
+    
+    class UpdateSimContactsActivity : Activity() {
+    
+        fun updateSimContact(simContact: SimContact): SimContactsUpdate.Result = Contacts(this)
+            .sim()
+            .update()
+            .simContact(simContact, simContact.mutableCopy {
+                name = "Vandolf"
+                number = "1234567890"
+            })
+            .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.*;
+    import contacts.core.sim.SimContactsUpdate;
+    
+    public class UpdateSimContactsActivity extends Activity {
+    
+        SimContactsUpdate.Result updateSimContact(SimContact simContact) {
+            MutableSimContact mutableSimContact = simContact.mutableCopy();
+            mutableSimContact.setName("Vandolf");
+            mutableSimContact.setNumber("1234567890");
+    
+            return ContactsFactory.create(this)
+                    .sim()
+                    .update()
+                    .simContact(simContact, mutableSimContact)
+                    .commit();
+        }
+    }
     ```
 
 ### [Delete contacts from SIM card](./sim/delete-sim-contacts.md)
