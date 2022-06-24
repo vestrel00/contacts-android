@@ -2727,13 +2727,42 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.sim.SimContactsInsert
+    
+    class InsertSimContactsActivity : Activity() {
+    
+        fun insertSimContact(): SimContactsInsert.Result = Contacts(this)
+            .sim()
+            .insert()
+            .simContact {
+                name = "Mr. Joe"
+                number = "5555555555"
+            }
+            .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.NewSimContact;
+    import contacts.core.sim.SimContactsInsert;
+    
+    public class InsertSimContactsActivity extends Activity {
+    
+        SimContactsInsert.Result insertSimContact() {
+            return ContactsFactory.create(this)
+                    .sim()
+                    .insert()
+                    .simContacts(new NewSimContact("Mr. Joe", "5555555555"))
+                    .commit();
+        }
+    }
     ```
 
 ### [Update contacts in SIM card](./sim/update-sim-contacts.md)
