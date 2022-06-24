@@ -2818,13 +2818,33 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.SimContact
+    import contacts.core.sim.SimContactsDelete
+    
+    class DeleteSimContactsActivity : Activity() {
+    
+        fun deleteSimContact(simContact: SimContact): SimContactsDelete.Result =
+            Contacts(this).sim().delete().simContacts(simContact).commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.SimContact;
+    import contacts.core.sim.SimContactsDelete;
+    
+    public class DeleteSimContactsActivity extends Activity {
+    
+        SimContactsDelete.Result deleteSimContact(SimContact simContact) {
+            return ContactsFactory.create(this).sim().delete().simContacts(simContact).commit();
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------
