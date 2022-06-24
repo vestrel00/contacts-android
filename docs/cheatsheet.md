@@ -2911,13 +2911,41 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.blockednumbers.BlockedNumbersInsert
+    
+    class InsertBlockedNumbersActivity : Activity() {
+    
+        fun insertBlockedNumber(): BlockedNumbersInsert.Result = Contacts(this)
+            .blockedNumbers()
+            .insert()
+            .blockedNumber {
+                number = "555-555-5555"
+            }
+            .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.blockednumbers.BlockedNumbersInsert;
+    import contacts.core.entities.NewBlockedNumber;
+    
+    public class InsertBlockedNumbersActivity extends Activity {
+    
+        BlockedNumbersInsert.Result insertBlockedNumber() {
+            return ContactsFactory.create(this)
+                    .blockedNumbers()
+                    .insert()
+                    .blockedNumbers(new NewBlockedNumber("555-555-5555"))
+                    .commit();
+        }
+    }
     ```
 
 ### [Delete blocked numbers](./blockednumbers/delete-blocked-numbers.md)
