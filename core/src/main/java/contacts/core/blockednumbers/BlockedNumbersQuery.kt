@@ -40,7 +40,7 @@ import contacts.core.util.unsafeLazy
  * import static contacts.core.WhereKt.*;
  * import static contacts.core.OrderByKt.*;
  *
- * val blockedNumbers = blockedNumbersQuery
+ * List<BlockedNumber> blockedNumbers = blockedNumbersQuery
  *      .where(contains(Number, "555"))
  *      .orderBy(asc(Number))
  *      .limit(5)

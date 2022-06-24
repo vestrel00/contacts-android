@@ -2856,13 +2856,54 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.entities.BlockedNumber
+    
+    class QueryBlockedNumbersActivity : Activity() {
+    
+        fun getAllBlockedNumbers(): List<BlockedNumber> =
+            Contacts(this).blockedNumbers().query().find()
+    
+        fun getBlockedNumbersContainingNumber(number: String): List<BlockedNumber> = Contacts(this)
+            .blockedNumbers()
+            .query()
+            .where { (Number contains number) or (NormalizedNumber contains number) }
+            .find()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.*;
+    
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.entities.BlockedNumber;
+    
+    public class QueryBlockedNumbersActivity extends Activity {
+    
+        List<BlockedNumber> getAllBlockedNumbers() {
+            return ContactsFactory.create(this).blockedNumbers().query().find();
+        }
+    
+        List<BlockedNumber> getBlockedNumbersContainingNumber(String number) {
+            return ContactsFactory.create(this)
+                    .blockedNumbers()
+                    .query()
+                    .where(
+                            or(
+                                    contains(BlockedNumbersFields.Number, number),
+                                    contains(BlockedNumbersFields.NormalizedNumber, number)
+                            )
+                    )
+                    .find();
+        }
+    }
     ```
 
 ### [Insert blocked numbers](./blockednumbers/insert-blocked-numbers.md)
