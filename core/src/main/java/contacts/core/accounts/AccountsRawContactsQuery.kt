@@ -29,6 +29,8 @@ import contacts.core.util.*
  * first 2, where the RawContact's display name starts with "a", ordered by the display name in
  * ascending order (ignoring case).
  *
+ * In Kotlin,
+ *
  * ```kotlin
  * val blankRawContacts = accountsRawContactsQuery
  *      .accounts(account)
@@ -38,6 +40,18 @@ import contacts.core.util.*
  *      .offset(2)
  *      .find()
  * ```
+ *
+ * In Java,
+ *
+ * ``java
+ * List<BlankRawContact> blankRawContacts = accountsRawContactsQuery
+ *      .accounts(account)
+ *      .where(startsWith(DisplayNamePrimary, "a"))
+ *      .orderBy(asc(RawContactsFields.DisplayName))
+ *      .limit(5)
+ *      .offset(2)
+ *      .find();
+ * ``
  */
 interface AccountsRawContactsQuery : CrudApi {
 

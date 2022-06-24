@@ -2537,13 +2537,85 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.accounts.Account
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.BlankRawContact
+    import contacts.core.equalTo
+    
+    class QueryAccountsRawContactsActivity : Activity() {
+    
+        fun getAllRawContacts(): List<BlankRawContact> =
+            Contacts(this).accounts().queryRawContacts().find()
+    
+        fun getRawContactsForAccount(account: Account): List<BlankRawContact> =
+            Contacts(this)
+                .accounts()
+                .queryRawContacts()
+                .accounts(account)
+                .find()
+    
+        fun getRawContactsForAllGoogleAccounts(): List<BlankRawContact> =
+            Contacts(this)
+                .accounts()
+                .queryRawContacts()
+                .where { AccountType equalTo "com.google" }
+                .find()
+    
+        fun getRawContactById(rawContactId: Long): BlankRawContact? =
+            Contacts(this)
+                .accounts()
+                .queryRawContacts()
+                .where { Id equalTo rawContactId }
+                .find()
+                .firstOrNull()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import static contacts.core.WhereKt.equalTo;
+    
+    import android.accounts.Account;
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.entities.BlankRawContact;
+    
+    public class QueryAccountsRawContactsActivity extends Activity {
+    
+        List<BlankRawContact> getAllRawContacts() {
+            return ContactsFactory.create(this).accounts().queryRawContacts().find();
+        }
+    
+        List<BlankRawContact> getRawContactsForAccount(Account account) {
+            return ContactsFactory.create(this)
+                    .accounts()
+                    .queryRawContacts()
+                    .accounts(account)
+                    .find();
+        }
+    
+        List<BlankRawContact> getRawContactsForAllGoogleAccounts() {
+            return ContactsFactory.create(this)
+                    .accounts()
+                    .queryRawContacts()
+                    .where(equalTo(RawContactsFields.AccountType, "com.google"))
+                    .find();
+        }
+    
+        BlankRawContact getRawContactById(Long rawContactId) {
+            return ContactsFactory.create(this)
+                    .accounts()
+                    .queryRawContacts()
+                    .where(equalTo(RawContactsFields.Id, rawContactId))
+                    .find()
+                    .get(0);
+        }
+    }
     ```
 
 ### [Associate a local RawContact to an Account](./accounts/associate-device-local-raw-contacts-to-an-account.md)

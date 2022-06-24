@@ -72,16 +72,6 @@ sealed interface SimContactEntity : Entity {
  */
 sealed interface ExistingSimContactEntity : SimContactEntity, ExistingEntity {
 
-    // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): ExistingSimContactEntity
-}
-
-/**
- * An existing immutable [SimContactEntity].
- */
-@Parcelize
-data class SimContact internal constructor(
-
     /**
      * The row ID in the SIM table.
      *
@@ -92,6 +82,19 @@ data class SimContact internal constructor(
      * DO NOT RELY ON THIS TO MATCH VALUES IN THE DATABASE! The SIM table does not support selection
      * by ID so you can't use this for anything anyways.
      */
+    // Override for documentation purposes
+    override val id: Long
+
+    // We have to cast the return type because we are not using recursive generic types.
+    override fun redactedCopy(): ExistingSimContactEntity
+}
+
+/**
+ * An existing immutable [SimContactEntity].
+ */
+@Parcelize
+data class SimContact internal constructor(
+
     override val id: Long,
 
     override val name: String?,
