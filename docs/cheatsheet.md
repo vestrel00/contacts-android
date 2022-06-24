@@ -2999,13 +2999,95 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import android.graphics.Bitmap
+    import android.net.Uri
+    import contacts.core.Contacts
+    import contacts.core.entities.*
+    import contacts.core.util.*
+    
+    class ContactAndRawContactPhotosActivity : Activity() {
+    
+        fun getContactPhotoUri(contact: Contact): Uri? = contact.photoUri
+    
+        fun getContactThumbnailPhotoUri(contact: Contact): Uri? = contact.photoThumbnailUri
+    
+        fun getContactPhoto(contact: Contact): Bitmap? = contact.photoBitmap(Contacts(this))
+    
+        fun getContactPhotoThumbnail(contact: Contact): Bitmap? =
+            contact.photoThumbnailBitmap(Contacts(this))
+    
+        fun getRawContactPhoto(rawContact: RawContact): Bitmap? = rawContact.photoBitmap(Contacts(this))
+    
+        fun getRawContactPhotoThumbnail(rawContact: RawContact): Bitmap? =
+            rawContact.photoThumbnailBitmap(Contacts(this))
+    
+        fun setContactPhoto(contact: Contact, photo: Bitmap): Boolean =
+            contact.setPhoto(Contacts(this), photo)
+    
+        fun setRawContactPhoto(rawContact: RawContact, photo: Bitmap): Boolean =
+            rawContact.setPhoto(Contacts(this), photo)
+    
+        fun removeContactPhoto(contact: Contact): Boolean = contact.removePhoto(Contacts(this))
+    
+        fun removeRawContactPhoto(rawContact: RawContact): Boolean =
+            rawContact.removePhoto(Contacts(this))
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    import android.graphics.Bitmap;
+    import android.net.Uri;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.*;
+    import contacts.core.util.*;
+    
+    public class ContactAndRawContactPhotosActivity extends Activity {
+    
+        Uri getContactPhotoUri(Contact contact) {
+            return contact.getPhotoUri();
+        }
+    
+        Uri getContactThumbnailPhotoUri(Contact contact) {
+            return contact.getPhotoThumbnailUri();
+        }
+    
+        Bitmap getContactPhoto(Contact contact) {
+            return ContactPhotoKt.photoBitmap(contact, ContactsFactory.create(this));
+        }
+    
+        Bitmap getContactPhotoThumbnail(Contact contact) {
+            return ContactPhotoKt.photoThumbnailBitmap(contact, ContactsFactory.create(this));
+        }
+    
+        Bitmap getRawContactPhoto(RawContact rawContact) {
+            return RawContactPhotoKt.photoBitmap(rawContact, ContactsFactory.create(this));
+        }
+    
+        Bitmap getRawContactPhotoThumbnail(RawContact rawContact) {
+            return RawContactPhotoKt.photoThumbnailBitmap(rawContact, ContactsFactory.create(this));
+        }
+    
+        Boolean setContactPhoto(Contact contact, Bitmap photo) {
+            return ContactPhotoKt.setPhoto(contact, ContactsFactory.create(this), photo);
+        }
+    
+        Boolean setRawContactPhoto(RawContact rawContact, Bitmap photo) {
+            return RawContactPhotoKt.setPhoto(rawContact, ContactsFactory.create(this), photo);
+        }
+    
+        Boolean removeContactPhoto(Contact contact) {
+            return ContactPhotoKt.removePhoto(contact, ContactsFactory.create(this));
+        }
+    
+        Boolean removeRawContactPhoto(RawContact rawContact) {
+            return RawContactPhotoKt.removePhoto(rawContact, ContactsFactory.create(this));
+        }
+    }
     ```
 
 ### [Get set Contact options](./other/get-set-clear-contact-raw-contact-options.md)
