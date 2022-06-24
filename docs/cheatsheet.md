@@ -2623,13 +2623,48 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.accounts.Account
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.accounts.AccountsLocalRawContactsUpdate
+    import contacts.core.entities.RawContact
+    
+    class UpdateLocalRawContactsAccountsActivity : Activity() {
+    
+        fun associateLocalRawContactToAccount(
+            localRawContact: RawContact, account: Account
+        ): AccountsLocalRawContactsUpdate.Result = Contacts(this)
+            .accounts()
+            .updateLocalRawContactsAccount()
+            .addToAccount(account)
+            .localRawContacts(localRawContact)
+            .commit()
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.accounts.Account;
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.accounts.AccountsLocalRawContactsUpdate;
+    import contacts.core.entities.RawContact;
+    
+    public class UpdateLocalRawContactsAccountsActivity extends Activity {
+    
+        AccountsLocalRawContactsUpdate.Result associateLocalRawContactToAccount(
+                RawContact localRawContact, Account account
+        ) {
+            return ContactsFactory.create(this)
+                    .accounts()
+                    .updateLocalRawContactsAccount()
+                    .addToAccount(account)
+                    .localRawContacts(localRawContact)
+                    .commit();
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------

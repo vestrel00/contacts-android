@@ -30,6 +30,8 @@ import contacts.core.util.*
  *
  * Here is an example that associate/add the given localRawContacts to the given account.
  *
+ * In Kotlin,
+ *
  * ```kotlin
  * val result = accountsLocalRawContactsUpdate
  *      .addToAccount(account)
@@ -37,22 +39,14 @@ import contacts.core.util.*
  *      .commit()
  * ```
  *
- * ## Developer notes
+ * In Java,
  *
- * Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
- * provides an API to support;
- *
- * - Associate local RawContacts (those that are not associated with an Account) to an Account,
- *   allowing syncing between devices.
- *
- * The library does not provide an API that supports;
- *
- * - Dissociate RawContacts from their Account such that they remain local to the device and not
- *   synced between devices.
- * - Transfer RawContacts from one Account to another.
- *
- * Read the **SyncColumns modifications** section of the DEV_NOTES for more details.
- *
+ * ```java
+ * AccountsLocalRawContactsUpdate.Result result = accountsLocalRawContactsUpdate
+ *      .addToAccount(account)
+ *      .localRawContacts(rawContacts)
+ *      .commit();
+ * ```
  */
 interface AccountsLocalRawContactsUpdate : CrudApi {
 
