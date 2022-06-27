@@ -3200,13 +3200,40 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.Contact
+    import contacts.core.util.*
+    
+    class ContactLinksActivity : Activity() {
+    
+        fun linkContacts(contacts: List<Contact>): ContactLinkResult = contacts.link(Contacts(this))
+    
+        fun unlinkContact(contact: Contact): ContactUnlinkResult = contact.unlink(Contacts(this))
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.Contact;
+    import contacts.core.util.*;
+    
+    public class ContactLinksActivity extends Activity {
+    
+        ContactLinkResult linkContacts(List<Contact> contacts) {
+            return ContactLinksKt.link(contacts, ContactsFactory.create(this));
+        }
+    
+        ContactUnlinkResult unlinkContact(Contact contact) {
+            return ContactLinksKt.unlink(contact, ContactsFactory.create(this));
+        }
+    }
     ```
 
 ### [Share Contacts vCard (.VCF)](./other/share-contacts-vcard.md)
