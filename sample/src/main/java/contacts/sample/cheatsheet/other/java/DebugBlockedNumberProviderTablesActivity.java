@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import contacts.debug.LogBlockedNumbersKt;
 
-public class DebugBlockedNumberProviderActivity extends Activity {
+public class DebugBlockedNumberProviderTablesActivity extends Activity {
 
     void debugBlockedNumberProviderTables() {
         LogBlockedNumbersKt.logBlockedNumbersTable(this);

@@ -3526,7 +3526,7 @@ Coming "soon"!
     import android.app.Activity
     import contacts.debug.logBlockedNumbersTable
     
-    class DebugBlockedNumberProviderActivity : Activity() {
+    class DebugBlockedNumberProviderTablesActivity : Activity() {
     
         fun debugBlockedNumberProviderTables() {
             logBlockedNumbersTable()
@@ -3541,7 +3541,7 @@ Coming "soon"!
     
     import contacts.debug.LogBlockedNumbersKt;
     
-    public class DebugBlockedNumberProviderActivity extends Activity {
+    public class DebugBlockedNumberProviderTablesActivity extends Activity {
     
         void debugBlockedNumberProviderTables() {
             LogBlockedNumbersKt.logBlockedNumbersTable(this);
@@ -3554,11 +3554,28 @@ Coming "soon"!
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.debug.logSimContactsTable
+    
+    class DebugSimContactsTablesActivity : Activity() {
+    
+        fun debugSimContactsTables() {
+            logSimContactsTable()
+        }
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.debug.LogSimContactsTableKt;
+    
+    public class DebugSimContactsTablesActivity extends Activity {
+    
+        void debugSimContactsTables() {
+            LogSimContactsTableKt.logSimContactsTable(this);
+        }
+    }
     ```
