@@ -3523,13 +3523,30 @@ Coming "soon"!
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.debug.logBlockedNumbersTable
+    
+    class DebugBlockedNumberProviderActivity : Activity() {
+    
+        fun debugBlockedNumberProviderTables() {
+            logBlockedNumbersTable()
+        }
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.debug.LogBlockedNumbersKt;
+    
+    public class DebugBlockedNumberProviderActivity extends Activity {
+    
+        void debugBlockedNumberProviderTables() {
+            LogBlockedNumbersKt.logBlockedNumbersTable(this);
+        }
+    }
     ```
 
 ### [Debug the Sim Contacts table](./debug/debug-sim-contacts-tables.md)
