@@ -3241,27 +3241,56 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import android.content.Intent
+    import contacts.core.entities.Contact
+    import contacts.core.util.*
+    
+    class ContactShareActivity : Activity() {
+    
+        fun shareContact(contact: Contact) {
+            val shareIntent = contact.shareVCardIntent()
+            if (shareIntent != null) {
+                startActivity(Intent.createChooser(shareIntent, null))
+            }
+        }
+    
+        fun shareContacts(contacts: List<Contact>) {
+            val shareIntent = contacts.shareMultiVCardIntent()
+            if (shareIntent != null) {
+                startActivity(Intent.createChooser(shareIntent, null))
+            }
+        }
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
-    ```
-
-### [Convenience functions](./other/convenience-functions.md)
-
-=== "Kotlin"
-
-    ```kotlin
-    TODO
-    ```
-
-=== "Java"
-
-    ```java
-    TODO
+    import android.app.Activity;
+    import android.content.Intent;
+    
+    import java.util.List;
+    
+    import contacts.core.entities.Contact;
+    import contacts.core.util.ContactShareKt;
+    
+    public class ContactShareActivity extends Activity {
+    
+        void shareContact(Contact contact) {
+            Intent shareIntent = ContactShareKt.shareVCardIntent(contact);
+            if (shareIntent != null) {
+                startActivity(Intent.createChooser(shareIntent, null));
+            }
+        }
+    
+        void shareContacts(List<Contact> contacts) {
+            Intent shareIntent = ContactShareKt.shareMultiVCardIntent(contacts);
+            if (shareIntent != null) {
+                startActivity(Intent.createChooser(shareIntent, null));
+            }
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------
