@@ -183,6 +183,10 @@ object ContactsFactory {
         customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
         logger: Logger = EmptyLogger()
     ): Contacts = Contacts(context, customDataRegistry, logger)
+
+    @JvmStatic
+    fun create(context: Context, logger: Logger): Contacts =
+        create(context, CustomDataRegistry(), logger)
 }
 
 private class ContactsImpl(

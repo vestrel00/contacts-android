@@ -3434,13 +3434,32 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.log.AndroidLogger
+    
+    class LogContactsApiActivity : Activity() {
+    
+        fun createContactsApiWithLoggingEnabled(redactLogMessages: Boolean): Contacts = Contacts(
+            this, logger = AndroidLogger(redactMessages = redactLogMessages)
+        )
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.*;
+    import contacts.core.log.AndroidLogger;
+    
+    public class LogContactsApiActivity extends Activity {
+    
+        Contacts createContactsApiWithLoggingEnabled(Boolean redactLogMessages) {
+            return ContactsFactory.create(this, new AndroidLogger(redactLogMessages));
+        }
+    }
     ```
 
 ----------------------------------------------------------------------------------------------------

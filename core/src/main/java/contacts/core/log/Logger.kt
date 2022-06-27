@@ -32,9 +32,9 @@ class EmptyLogger : Logger {
 /**
  * A [Logger] that uses [android.util.Log.d] using the given [tag].
  */
-class AndroidLogger(
-    private val tag: String = TAG,
-    override val redactMessages: Boolean = true
+class AndroidLogger @JvmOverloads constructor(
+    override val redactMessages: Boolean = true,
+    private val tag: String = TAG
 ) : Logger {
 
     override fun log(message: String) {
