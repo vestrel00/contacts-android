@@ -3155,13 +3155,44 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.entities.Phone
+    import contacts.core.util.*
+    
+    class ContactDefaultDataActivity : Activity() {
+    
+        fun isPhoneTheDefaultPhone(phone: Phone): Boolean = phone.isDefault
+    
+        fun setPhoneAsDefault(phone: Phone): Boolean = phone.setAsDefault(Contacts(this))
+    
+        fun clearDefaultPhone(phone: Phone): Boolean = phone.clearDefault(Contacts(this))
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.entities.Phone;
+    import contacts.core.util.DefaultContactDataKt;
+    
+    public class ContactDefaultDataActivity extends Activity {
+    
+        Boolean isPhoneTheDefaultPhone(Phone phone) {
+            return phone.isDefault();
+        }
+    
+        Boolean setPhoneAsDefault(Phone phone) {
+            return DefaultContactDataKt.setAsDefault(phone, ContactsFactory.create(this));
+        }
+    
+        Boolean clearDefaultPhone(Phone phone) {
+            return DefaultContactDataKt.clearDefault(phone, ContactsFactory.create(this));
+        }
+    }
     ```
 
 ### [Link unlink Contacts](./other/link-unlink-contacts.md)
