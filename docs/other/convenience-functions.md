@@ -27,7 +27,9 @@ To simplify things, getter/setter extensions are provided in the **`ContactData.
 val contactEmailSequence = contact.emails()
 val contactEmailList = contact.emailList()
 // add an email to the first RawContact belonging to the Contact
-contact.mutableCopy().addEmail(NewEmail())
+contact.mutableCopy().addEmail {
+    address = "test@email.com"
+}
 ```
 
 > ℹ️ Newer versions of the Android Open Source Project Contacts app and the Google Contacts app 
@@ -134,7 +136,7 @@ such as `Id` and `DisplayNamePrimary`,
 val sortedContacts = query.orderBy(ContactsFields.DisplayNamePrimary.desc(ignoreCase = true))
 ```
 
-If you want to sort Contacts based on data fields (e.g. email), you are unable to use the query 
+If you want to sort Contacts based on Data fields (e.g. email), you are unable to use the query 
 APIs provided in this library to do so. However, if you have a list of Contacts in memory, you can
 use the extensions in `ContactsComparator.kt` to build a `Comparator` to use for sorting,
 
