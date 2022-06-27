@@ -3468,17 +3468,10 @@ heading explore each API in full detail. You may also find these samples in the 
 
 ### [Contacts API Testing](./testing/test-contacts-api.md)
 
-=== "Kotlin"
+Coming "soon"!
 
-    ```kotlin
-    TODO
-    ```
-
-=== "Java"
-
-    ```java
-    TODO
-    ```
+- https://github.com/vestrel00/contacts-android/issues/46
+- https://github.com/vestrel00/contacts-android/issues/47
 
 ----------------------------------------------------------------------------------------------------
 
@@ -3489,13 +3482,40 @@ heading explore each API in full detail. You may also find these samples in the 
 === "Kotlin"
 
     ```kotlin
-    TODO
+    import android.app.Activity
+    import contacts.debug.*
+    
+    class DebugContactsProviderTablesActivity : Activity() {
+    
+        fun debugContactsProviderTables() {
+            logGroupsTable()
+            logAggregationExceptionsTable()
+            logProfile()
+            logContactsTable()
+            logRawContactsTable()
+            logDataTable()
+        }
+    }
     ```
 
 === "Java"
 
     ```java
-    TODO
+    import android.app.Activity;
+    
+    import contacts.debug.*;
+    
+    public class DebugContactsProviderTablesActivity extends Activity {
+    
+        void debugContactsProviderTables() {
+            LogGroupsTableKt.logGroupsTable(this);
+            LogAggregationExceptionsTableKt.logAggregationExceptionsTable(this);
+            LogProfileKt.logProfile(this);
+            LogContactsTableKt.logContactsTable(this);
+            LogRawContactsTableKt.logRawContactsTable(this);
+            LogDataTableKt.logDataTable(this);
+        }
+    }
     ```
 
 ### [Debug the BlockedNumber Provider tables](./debug/debug-blockednumber-provider-tables.md)

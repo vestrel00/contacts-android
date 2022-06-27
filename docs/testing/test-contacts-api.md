@@ -1,7 +1,6 @@
 # Contacts API Testing
 
-TODO Complete this docs when implementation is complete
-TODO Add a reference to this docs in the README and the blog
+TODO Complete this doc in https://github.com/vestrel00/contacts-android/issues/45
 
 This library provides the `TestContacts` and `MockContacts`, which you can use as a substitute to 
 your `Contacts` API instance in;
@@ -13,9 +12,13 @@ your `Contacts` API instance in;
 
 TODO Show usage of `TestContacts`
 
+https://github.com/vestrel00/contacts-android/issues/46
+
 ## Unit & integration tests
 
 TODO Show usage of `MockContacts`
+
+https://github.com/vestrel00/contacts-android/issues/47
 
 ## Production test mode
 
