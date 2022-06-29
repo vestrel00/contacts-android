@@ -71,6 +71,22 @@ When only some fields are included, only those included properties of Contacts, 
 Data are populated with values from the database. Properties of fields that are not included are 
 guaranteed to be null.
 
+### Optimizing queries
+
+When you are showing a list of Contacts using the `Query` and `BroadQuery` APIs, you typically only 
+display their thumbnail photo and display name. In such cases, you should only include those fields 
+in order to increase speed and lessen memory usage.
+
+```kotlin
+.include(Fields.Contact.PhotoThumbnailUri, Fields.Contact.DisplayNamePrimary)
+```
+
+Getting 10,000 contacts (without using the `where`, `offset`, and `limit` functions), can be done 
+in less than 1-2 seconds in mid-range devices.
+
+In general, including only fields from `Fields.Contact` in `Query` and `BroadQuery` API calls will
+result in the fastest and memory-efficient queries.
+
 ## Using `include` in insert APIs
 
 When using insert APIs such as `Insert` and `ProfileInsert`, you are able to specify all or only 

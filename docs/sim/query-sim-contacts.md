@@ -19,7 +19,7 @@ val simContacts = Contacts(context).sim().query().find()
 
 ## Limitations
 
-Projections, selections, and order is not supported by the `IccProvider`. Therefore, we are unable
+Projections, selections, and order are not supported by the `IccProvider`. Therefore, we are unable
 to provide `include`, `where`, `orderBy`, `limit`, and `offset` functions in our `SimContactsQuery`
 API.
 
