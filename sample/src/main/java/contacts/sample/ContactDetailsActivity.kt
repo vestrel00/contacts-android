@@ -1,12 +1,15 @@
 package contacts.sample
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import contacts.core.entities.ExistingContactEntity
+import contacts.sample.util.createPinnedShortcut
 import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
 
@@ -88,18 +91,20 @@ class ContactDetailsActivity : BaseActivity() {
             val editMenuItem = menu.findItem(R.id.edit)
             val saveMenuItem = menu.findItem(R.id.save)
             val shareMenuItem = menu.findItem(R.id.share)
+            val createShortcutMenuItem = menu.findItem(R.id.create_shortcut)
 
             when (mode) {
                 Mode.VIEW -> {
                     editMenuItem.isVisible = true
                     saveMenuItem.isVisible = false
                     shareMenuItem.isVisible = true
+                    createShortcutMenuItem.isVisible = true
                 }
                 Mode.EDIT, Mode.CREATE -> {
                     editMenuItem.isVisible = false
                     saveMenuItem.isVisible = true
-                    // Sharing new or existing (with unsaved changes) not supported yet!
                     shareMenuItem.isVisible = false
+                    createShortcutMenuItem.isVisible = false
                 }
             }
         }
@@ -120,6 +125,12 @@ class ContactDetailsActivity : BaseActivity() {
             }
             R.id.refresh -> mode = mode
             R.id.share -> contactView.shareContact()
+            R.id.create_shortcut -> {
+                val contact = contactView.contact
+                if (contact != null && contact is ExistingContactEntity) {
+                    contact.createPinnedShortcut(this)
+                }
+            }
         }
 
         return super.onOptionsItemSelected(menuItem)
@@ -230,11 +241,14 @@ class ContactDetailsActivity : BaseActivity() {
     companion object {
 
         // region VIEW
-        fun viewContactDetails(activity: Activity, contactLookupKey: String) {
-            val intent = Intent(activity, ContactDetailsActivity::class.java).apply {
+        fun viewContactDetailsIntent(context: Context, contactLookupKey: String): Intent =
+            Intent(context, ContactDetailsActivity::class.java).apply {
                 putExtra(REQUEST_CODE, REQUEST_VIEW)
                 putExtra(CONTACT_LOOKUP_KEY, contactLookupKey)
             }
+
+        fun viewContactDetails(activity: Activity, contactLookupKey: String) {
+            val intent = viewContactDetailsIntent(activity, contactLookupKey)
 
             activity.startActivityForResult(intent, REQUEST_VIEW)
         }

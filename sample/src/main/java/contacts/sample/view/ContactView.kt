@@ -105,7 +105,8 @@ class ContactView @JvmOverloads constructor(
      * The Contact that is shown in this view. Setting this will automatically update the views. Any
      * modifications in the views will also be made to the this (only if it is mutable).
      */
-    private var contact: ContactEntity? = null
+    var contact: ContactEntity? = null
+        private set
 
     /**
      * Set the Contact shown and managed by this view to the given [contact] and uses the given

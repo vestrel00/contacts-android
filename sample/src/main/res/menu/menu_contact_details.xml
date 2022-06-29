@@ -27,7 +27,11 @@
 
     <item
         android:id="@+id/share"
-        android:icon="@android:drawable/ic_menu_share"
         android:showAsAction="never"
         android:title="@string/contact_details_share" />
+
+    <item
+        android:id="@+id/create_shortcut"
+        android:showAsAction="never"
+        android:title="@string/contact_details_create_shortcut" />
 </menu>
