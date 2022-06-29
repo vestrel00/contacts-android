@@ -1936,7 +1936,7 @@ card.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">simContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">sim</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
-<p>Projections, selections, and order is not supported by the <code>IccProvider</code>. Therefore, we are unable
+<p>Projections, selections, and order are not supported by the <code>IccProvider</code>. Therefore, we are unable
 to provide <code>include</code>, <code>where</code>, <code>orderBy</code>, <code>limit</code>, and <code>offset</code> functions in our <code>SimContactsQuery</code>
 API.</p>
 <p>Due to all of these limitations, all queries will return all contacts in the SIM card. You may 

@@ -435,6 +435,19 @@
     Using include in query APIs
   </a>
   
+    <nav class="md-nav" aria-label="Using include in query APIs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimizing-queries" class="md-nav__link">
+    Optimizing queries
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1890,6 +1903,19 @@
     Using include in query APIs
   </a>
   
+    <nav class="md-nav" aria-label="Using include in query APIs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimizing-queries" class="md-nav__link">
+    Optimizing queries
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2024,6 +2050,16 @@ field.</p>
 <p>When only some fields are included, only those included properties of Contacts, RawContacts, and 
 Data are populated with values from the database. Properties of fields that are not included are 
 guaranteed to be null.</p>
+<h3 id="optimizing-queries">Optimizing queries<a class="headerlink" href="#optimizing-queries" title="Permanent link">&para;</a></h3>
+<p>When you are showing a list of Contacts using the <code>Query</code> and <code>BroadQuery</code> APIs, you typically only 
+display their thumbnail photo and display name. In such cases, you should only include those fields 
+in order to increase speed and lessen memory usage.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">PhotoThumbnailUri</span><span class="p">,</span><span class="w"> </span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<p>Getting 10,000 contacts (without using the <code>where</code>, <code>offset</code>, and <code>limit</code> functions), can be done 
+in less than 1-2 seconds in mid-range devices.</p>
+<p>In general, including only fields from <code>Fields.Contact</code> in <code>Query</code> and <code>BroadQuery</code> API calls will
+result in the fastest and memory-efficient queries.</p>
 <h2 id="using-include-in-insert-apis">Using <code>include</code> in insert APIs<a class="headerlink" href="#using-include-in-insert-apis" title="Permanent link">&para;</a></h2>
 <p>When using insert APIs such as <code>Insert</code> and <code>ProfileInsert</code>, you are able to specify all or only 
 some kinds of data that you want to be included in the insert operation.</p>
@@ -2083,25 +2119,25 @@ Data are <em>"updated"</em> in the database. Properties of fields that are not i
 <em>"updated"</em>.</p>
 <p>To get all contacts including all fields, then modify the emails, phones, and addresses and perform 
 an update operation on all fields,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"> </span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithModifiedEmailPhoneAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modifyEmailPhoneAddressIn</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithModifiedEmailPhoneAddress</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"> </span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithModifiedEmailPhoneAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modifyEmailPhoneAddressIn</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithModifiedEmailPhoneAddress</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p>To modify all emails of all contacts without updating anything else into the database,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithOnlyEmailData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithModifiedEmailData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modifyEmailsIn</span><span class="p">(</span><span class="n">contactsWithOnlyEmailData</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithModifiedEmailData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithOnlyEmailData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithModifiedEmailData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modifyEmailsIn</span><span class="p">(</span><span class="n">contactsWithOnlyEmailData</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithModifiedEmailData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p>To remove all emails from all contacts without updating anything else in the database,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithAllData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithNoEmailData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">removeEmailsFrom</span><span class="p">(</span><span class="n">contactsWithAllData</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithNoEmailData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithAllData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithNoEmailData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">removeEmailsFrom</span><span class="p">(</span><span class="n">contactsWithAllData</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithNoEmailData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p>Or alternatively,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithNoData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="w"></span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Required</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"> </span><span class="c1">// does not have to be Fields.Required.</span><span class="w"></span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithNoData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsWithNoData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="w"></span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Required</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"> </span><span class="c1">// does not have to be Fields.Required.</span><span class="w"></span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">update</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsWithNoData</span><span class="p">).</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Email</span><span class="p">.</span><span class="na">all</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h3 id="including-a-subset-of-field-sets-for-update">Including a subset of field sets for "update"<a class="headerlink" href="#including-a-subset-of-field-sets-for-update" title="Permanent link">&para;</a></h3>
 <p>Including only a subset of a set of fields results in,</p>
@@ -2112,28 +2148,28 @@ an update operation on all fields,</p>
 </ul>
 <p>For example, the following set the given name and family name to the non-null values but does not
 set all others (i.e. display name, middle name, prefix, suffix, phonetic given middle family name).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">contacts</span><span class="w"></span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="w"></span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">        </span><span class="n">Fields</span><span class="p">.</span><span class="na">Name</span><span class="p">.</span><span class="na">GivenName</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">        </span><span class="n">Fields</span><span class="p">.</span><span class="na">Name</span><span class="p">.</span><span class="na">FamilyName</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="w"></span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">        </span><span class="n">existingRawContact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">            </span><span class="n">setName</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">                </span><span class="n">displayName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mr. &quot;</span><span class="w"></span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">                </span><span class="n">prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mr.&quot;</span><span class="w"></span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">                </span><span class="n">givenName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;First&quot;</span><span class="w"></span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">                </span><span class="n">middleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Middle&quot;</span><span class="w"></span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">                </span><span class="n">familyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Last&quot;</span><span class="w"></span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">                </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Jr.&quot;</span><span class="w"></span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">                </span><span class="n">phoneticGivenName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fUHRst&quot;</span><span class="w"></span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">                </span><span class="n">phoneticMiddleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mIdl&quot;</span><span class="w"></span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">                </span><span class="n">phoneticFamilyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lAHst&quot;</span><span class="w"></span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">contacts</span><span class="w"></span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">        </span><span class="n">Fields</span><span class="p">.</span><span class="na">Name</span><span class="p">.</span><span class="na">GivenName</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">        </span><span class="n">Fields</span><span class="p">.</span><span class="na">Name</span><span class="p">.</span><span class="na">FamilyName</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">        </span><span class="n">existingRawContact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">            </span><span class="n">setName</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">                </span><span class="n">displayName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mr. &quot;</span><span class="w"></span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">                </span><span class="n">prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mr.&quot;</span><span class="w"></span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">                </span><span class="n">givenName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;First&quot;</span><span class="w"></span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">                </span><span class="n">middleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Middle&quot;</span><span class="w"></span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">                </span><span class="n">familyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Last&quot;</span><span class="w"></span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">                </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Jr.&quot;</span><span class="w"></span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">                </span><span class="n">phoneticGivenName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fUHRst&quot;</span><span class="w"></span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="w">                </span><span class="n">phoneticMiddleName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mIdl&quot;</span><span class="w"></span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="w">                </span><span class="n">phoneticFamilyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lAHst&quot;</span><span class="w"></span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p>If the name row for the RawContact did not exist before the update operation, then a new name row
 will be inserted into the database for the RawContact. The given name and family name columns will
@@ -2147,11 +2183,11 @@ respectively).</p>
 (non-custom) data fields.</p>
 <p>By default, not calling the <code>include</code> function will include all fields, including custom data.
 However, the below code will include all native fields but exclude custom data;</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>If you want to include everything, including custom data, and for some reason you must invoke the
 <code>include</code> function,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">contactsApi</span><span class="p">.</span><span class="na">customDataRegistry</span><span class="p">.</span><span class="na">allFields</span><span class="p">())</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">contactsApi</span><span class="p">.</span><span class="na">customDataRegistry</span><span class="p">.</span><span class="na">allFields</span><span class="p">())</span><span class="w"></span>
 </code></pre></div>
 
               
