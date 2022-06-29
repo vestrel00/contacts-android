@@ -4,13 +4,12 @@ import android.accounts.Account
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.ListView
+import android.widget.*
+import contacts.async.commitInOneTransactionWithContext
 import contacts.async.findWithContext
 import contacts.core.ContactsFields
 import contacts.core.Fields
@@ -19,6 +18,8 @@ import contacts.core.entities.Contact
 import contacts.core.util.emails
 import contacts.core.util.phones
 import contacts.permissions.broadQueryWithPermission
+import contacts.permissions.deleteWithPermission
+import contacts.sample.util.AbstractMultiChoiceModeListener
 import contacts.ui.text.AbstractTextWatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -34,6 +35,12 @@ import kotlinx.coroutines.launch
  * - Create: Opens an activity to create a new contact.
  * - Accounts: Opens the accounts activity to select which accounts to include in the search.
  * - Refresh: Performs the search query again to refresh the contacts list.
+ *
+ * #### Contextual options menu
+ *
+ * When multiple contacts are selected...
+ *
+ * - Delete: Deletes all selected contacts.
  *
  * ## Note
  *
@@ -121,10 +128,14 @@ class ContactsActivity : BaseActivity() {
     private fun setupContactsListView() {
         // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
         // Ahh, my good ol' friend ListView. You serve me once again =)
+        contactsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice)
+
         contactsListView = findViewById(R.id.contactsListView)
-        contactsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
         contactsListView.adapter = contactsAdapter
         contactsListView.onItemClickListener = OnContactClickListener()
+        // CHOICE_MODE_MULTIPLE_(MODAL) means that initial selection will only occur on long press.
+        contactsListView.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
+        contactsListView.setMultiChoiceModeListener(OnMultipleContactsChosenListener())
     }
 
     private fun showContacts() {
@@ -189,11 +200,50 @@ class ContactsActivity : BaseActivity() {
         }
     }
 
+    private fun deleteSelectedContacts(mode: ActionMode) = launch {
+        val contactIdsToDelete = searchResults
+            .filterIndexed { index, _ ->
+                contactsListView.isItemChecked(index)
+            }.map {
+                it.id
+            }
+
+        val delete = contacts.deleteWithPermission()
+            .contactsWithId(contactIdsToDelete)
+            .commitInOneTransactionWithContext()
+
+        if (delete.isSuccessful) {
+            contactsListView.clearChoices()
+            mode.finish()
+            showContacts()
+        } else {
+            Toast
+                .makeText(this@ContactsActivity, "Unable to delete contacts", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
     private inner class OnContactClickListener : AdapterView.OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             searchResults[position].lookupKey?.let {
                 ContactDetailsActivity.viewContactDetails(this@ContactsActivity, it)
             }
         }
+    }
+
+    private inner class OnMultipleContactsChosenListener : AbstractMultiChoiceModeListener {
+        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+            menuInflater.inflate(R.menu.menu_contacts_multiple_choice, menu)
+            return true
+        }
+
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
+            when (item.itemId) {
+                R.id.delete -> {
+                    deleteSelectedContacts(mode)
+                    true
+                }
+                else -> false
+            }
     }
 }

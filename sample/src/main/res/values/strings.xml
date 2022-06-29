@@ -8,6 +8,8 @@
     <string name="contacts_create">Create</string>
     <string name="contacts_accounts">Show contacts from Accounts</string>
 
+    <string name="contacts_delete">Delete</string>
+
     <!-- Contact details -->
     <string name="contact_details">Edit contact</string>
 
