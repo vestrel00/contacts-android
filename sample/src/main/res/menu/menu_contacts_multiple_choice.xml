@@ -6,4 +6,10 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:showAsAction="ifRoom"
         android:title="@string/contacts_delete" />
+
+    <item
+        android:id="@+id/link"
+        android:icon="@android:drawable/ic_menu_crop"
+        android:showAsAction="ifRoom"
+        android:title="@string/contacts_link" />
 </menu>

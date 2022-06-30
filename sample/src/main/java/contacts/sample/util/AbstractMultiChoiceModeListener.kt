@@ -16,7 +16,7 @@ interface AbstractMultiChoiceModeListener : AbsListView.MultiChoiceModeListener 
     override fun onDestroyActionMode(mode: ActionMode) {}
 
     override fun onItemCheckedStateChanged(
-        mode: ActionMode?,
+        mode: ActionMode,
         position: Int,
         id: Long,
         checked: Boolean

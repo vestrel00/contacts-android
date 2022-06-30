@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.*
 import contacts.async.commitInOneTransactionWithContext
 import contacts.async.findWithContext
+import contacts.async.util.linkWithContext
 import contacts.core.ContactsFields
 import contacts.core.Fields
 import contacts.core.asc
@@ -223,6 +224,28 @@ class ContactsActivity : BaseActivity() {
         }
     }
 
+    private fun linkSelectedContacts(mode: ActionMode) = launch {
+        val contactsToLink = searchResults
+            .filterIndexed { index, _ ->
+                contactsListView.isItemChecked(index)
+            }
+
+        val link = contactsToLink.linkWithContext(contacts)
+
+        if (link.isSuccessful) {
+            contactsListView.clearChoices()
+            mode.finish()
+            showContacts()
+            Toast
+                .makeText(this@ContactsActivity, "Successfully linked contacts", Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            Toast
+                .makeText(this@ContactsActivity, "Unable to link contacts", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
     private inner class OnContactClickListener : AdapterView.OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             searchResults[position].lookupKey?.let {
@@ -237,10 +260,24 @@ class ContactsActivity : BaseActivity() {
             return true
         }
 
+        override fun onItemCheckedStateChanged(
+            mode: ActionMode,
+            position: Int,
+            id: Long,
+            checked: Boolean
+        ) {
+            val linkMenuItem = mode.menu.findItem(R.id.link)
+            linkMenuItem.isVisible = contactsListView.checkedItemCount > 1
+        }
+
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
             when (item.itemId) {
                 R.id.delete -> {
                     deleteSelectedContacts(mode)
+                    true
+                }
+                R.id.link -> {
+                    linkSelectedContacts(mode)
                     true
                 }
                 else -> false
