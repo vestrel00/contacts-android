@@ -8,7 +8,10 @@ import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ListView
 import contacts.async.commitInOneTransactionWithContext
 import contacts.async.findWithContext
 import contacts.async.util.linkWithContext
@@ -214,13 +217,13 @@ class ContactsActivity : BaseActivity() {
             .commitInOneTransactionWithContext()
 
         if (delete.isSuccessful) {
+            showToast(R.string.contacts_delete_success)
+
             contactsListView.clearChoices()
             mode.finish()
             showContacts()
         } else {
-            Toast
-                .makeText(this@ContactsActivity, "Unable to delete contacts", Toast.LENGTH_SHORT)
-                .show()
+            showToast(R.string.contacts_delete_error)
         }
     }
 
@@ -233,16 +236,13 @@ class ContactsActivity : BaseActivity() {
         val link = contactsToLink.linkWithContext(contacts)
 
         if (link.isSuccessful) {
+            showToast(R.string.contacts_link_success)
+
             contactsListView.clearChoices()
             mode.finish()
             showContacts()
-            Toast
-                .makeText(this@ContactsActivity, "Successfully linked contacts", Toast.LENGTH_SHORT)
-                .show()
         } else {
-            Toast
-                .makeText(this@ContactsActivity, "Unable to link contacts", Toast.LENGTH_SHORT)
-                .show()
+            showToast(R.string.contacts_link_error)
         }
     }
 

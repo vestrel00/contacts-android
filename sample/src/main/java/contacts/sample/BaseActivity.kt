@@ -3,6 +3,7 @@ package contacts.sample
 import android.app.Activity
 import android.app.AlertDialog
 import android.widget.ProgressBar
+import android.widget.Toast
 import contacts.core.Contacts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -46,5 +47,9 @@ abstract class BaseActivity : Activity(), CoroutineScope by MainScope() {
 
     protected fun dismissProgressDialog() {
         progressDialog?.dismiss()
+    }
+
+    protected fun showToast(stringResId: Int) {
+        Toast.makeText(this, stringResId, Toast.LENGTH_SHORT).show()
     }
 }

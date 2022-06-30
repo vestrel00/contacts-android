@@ -9,7 +9,12 @@
     <string name="contacts_accounts">Show contacts from Accounts</string>
 
     <string name="contacts_delete">Delete</string>
+    <string name="contacts_delete_success">Link</string>
+    <string name="contacts_delete_error">Unable to delete contacts</string>
+
     <string name="contacts_link">Link</string>
+    <string name="contacts_link_success">Successfully linked contacts</string>
+    <string name="contacts_link_error">Unable to link contacts</string>
 
     <!-- Contact details -->
     <string name="contact_details">Edit contact</string>
@@ -27,10 +32,12 @@
     <string name="contact_details_delete_error">Unable to delete contact</string>
 
     <string name="contact_details_delete">Delete</string>
-
     <string name="contact_details_share">Share</string>
-
     <string name="contact_details_create_shortcut">Add to Home screen</string>
+
+    <string name="contact_details_unlink">Unlink/separate</string>
+    <string name="contact_details_unlink_success">Unlinked/separated Contact\'s RawContacts</string>
+    <string name="contact_details_unlink_error">Unable to unlink/separate Contact\'s RawContacts</string>
 
     <!-- Accounts -->
     <string name="accounts">Choose Accounts</string>

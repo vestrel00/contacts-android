@@ -6,8 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
+import contacts.async.util.unlinkWithContext
 import contacts.core.entities.ExistingContactEntity
 import contacts.sample.util.createPinnedShortcut
 import contacts.sample.view.ContactView
@@ -26,10 +25,13 @@ import kotlinx.coroutines.launch
  *
  * #### Options Menu
  *
- * - Edit: Allow contact details to be edited.
+ * - Edit:
+ *     - In view mode, allows contact details to be edited.
+ *     - In edit or create mode, this option is not visible.
  * - Save:
  *     - In edit mode, save changes to the existing contact.
  *     - In create mode, creates a new contact.
+ *     - In view mode, this option is not visible.
  * - Delete:
  *     - In view and edit mode, deletes the existing contact.
  *     - In create mode, aborts creation of a new contact.
@@ -43,6 +45,13 @@ import kotlinx.coroutines.launch
  *     - In create and edit mode, sends an intent to share the new contact or the existing contact
  *       with unsaved changes.
  *       - This will be supported in https://github.com/vestrel00/contacts-android/issues/26
+ * - Add to Home screen:
+ *     - In view mode, creates a pinned shortcut to the contact's details activity.
+ *     - In edit or create mode, this option is not visible.
+ * - Unlink/separate:
+ *     - In view mode, unlinks/separates the Contact's RawContacts.
+ *       - This is visible only if the Contact has more than one RawContact.
+ *     - In edit or create mode, this option is not visible.
  *
  * ## Note
  *
@@ -92,6 +101,7 @@ class ContactDetailsActivity : BaseActivity() {
             val saveMenuItem = menu.findItem(R.id.save)
             val shareMenuItem = menu.findItem(R.id.share)
             val createShortcutMenuItem = menu.findItem(R.id.create_shortcut)
+            val unlinkMenuItem = menu.findItem(R.id.unlink)
 
             when (mode) {
                 Mode.VIEW -> {
@@ -99,12 +109,16 @@ class ContactDetailsActivity : BaseActivity() {
                     saveMenuItem.isVisible = false
                     shareMenuItem.isVisible = true
                     createShortcutMenuItem.isVisible = true
+                    unlinkMenuItem.isVisible = contactView.contact?.rawContacts?.size?.let {
+                        it > 1
+                    } == true
                 }
                 Mode.EDIT, Mode.CREATE -> {
                     editMenuItem.isVisible = false
                     saveMenuItem.isVisible = true
                     shareMenuItem.isVisible = false
                     createShortcutMenuItem.isVisible = false
+                    unlinkMenuItem.isVisible = false
                 }
             }
         }
@@ -129,6 +143,20 @@ class ContactDetailsActivity : BaseActivity() {
                 val contact = contactView.contact
                 if (contact != null && contact is ExistingContactEntity) {
                     contact.createPinnedShortcut(this)
+                }
+            }
+            R.id.unlink -> {
+                val contact = contactView.contact
+                if (contact != null && contact is ExistingContactEntity) {
+                    launch {
+                        val unlink = contact.unlinkWithContext(contacts)
+                        if (unlink.isSuccessful) {
+                            showToast(R.string.contact_details_unlink_success)
+                            finish()
+                        } else {
+                            showToast(R.string.contact_details_unlink_error)
+                        }
+                    }
                 }
             }
         }
@@ -169,13 +197,11 @@ class ContactDetailsActivity : BaseActivity() {
             contactView.loadContactWithLookupKey(it, contacts)
         } == true
 
-        if (!loadSuccess) {
-            Toast
-                .makeText(
-                    this@ContactDetailsActivity, R.string.contact_details_fetch_error, LENGTH_SHORT
-                )
-                .show()
-
+        if (loadSuccess) {
+            // Show/hide the Unlink menu item depending on RawContact count.
+            invalidateOptionsMenu()
+        } else {
+            showToast(R.string.contact_details_fetch_error)
             finish()
         }
     }
@@ -191,7 +217,7 @@ class ContactDetailsActivity : BaseActivity() {
         } else {
             R.string.contact_details_create_error
         }
-        Toast.makeText(this@ContactDetailsActivity, resultMessageRes, LENGTH_SHORT).show()
+        showToast(resultMessageRes)
 
         dismissProgressDialog()
 
@@ -210,7 +236,7 @@ class ContactDetailsActivity : BaseActivity() {
         } else {
             R.string.contact_details_update_error
         }
-        Toast.makeText(this@ContactDetailsActivity, resultMessageRes, LENGTH_SHORT).show()
+        showToast(resultMessageRes)
 
         dismissProgressDialog()
 
@@ -229,7 +255,7 @@ class ContactDetailsActivity : BaseActivity() {
         } else {
             R.string.contact_details_delete_error
         }
-        Toast.makeText(this@ContactDetailsActivity, resultMessageRes, LENGTH_SHORT).show()
+        showToast(resultMessageRes)
 
         if (deleteSuccess) {
             finish()

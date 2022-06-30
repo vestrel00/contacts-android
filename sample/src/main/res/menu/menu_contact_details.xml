@@ -34,4 +34,9 @@
         android:id="@+id/create_shortcut"
         android:showAsAction="never"
         android:title="@string/contact_details_create_shortcut" />
+
+    <item
+        android:id="@+id/unlink"
+        android:showAsAction="never"
+        android:title="@string/contact_details_unlink" />
 </menu>
