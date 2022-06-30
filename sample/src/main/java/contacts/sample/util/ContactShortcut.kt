@@ -60,6 +60,11 @@ fun ExistingContactEntity.createPinnedShortcut(context: Context) {
 
         // Requires API 26+. Could be reduced to 25+ if using ShortcutManagerCompat
         if (!shortcutManager.isRequestPinShortcutSupported) {
+            Toast.makeText(
+                context,
+                "Launcher does not support pinned shortcuts",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
