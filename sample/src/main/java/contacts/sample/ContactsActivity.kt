@@ -24,6 +24,7 @@ import contacts.core.util.phones
 import contacts.permissions.broadQueryWithPermission
 import contacts.permissions.deleteWithPermission
 import contacts.sample.util.AbstractMultiChoiceModeListener
+import contacts.sample.util.trueKeys
 import contacts.ui.text.AbstractTextWatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -205,12 +206,10 @@ class ContactsActivity : BaseActivity() {
     }
 
     private fun deleteSelectedContacts(mode: ActionMode) = launch {
-        val contactIdsToDelete = searchResults
-            .filterIndexed { index, _ ->
-                contactsListView.isItemChecked(index)
-            }.map {
-                it.id
-            }
+        val contactIdsToDelete = contactsListView
+            .checkedItemPositions
+            .trueKeys
+            .map { searchResults[it].id }
 
         val delete = contacts.deleteWithPermission()
             .contactsWithId(contactIdsToDelete)
@@ -228,10 +227,10 @@ class ContactsActivity : BaseActivity() {
     }
 
     private fun linkSelectedContacts(mode: ActionMode) = launch {
-        val contactsToLink = searchResults
-            .filterIndexed { index, _ ->
-                contactsListView.isItemChecked(index)
-            }
+        val contactsToLink = contactsListView
+            .checkedItemPositions
+            .trueKeys
+            .map { searchResults[it] }
 
         val link = contactsToLink.linkWithContext(contacts)
 

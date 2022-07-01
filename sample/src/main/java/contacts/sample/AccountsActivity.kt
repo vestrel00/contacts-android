@@ -9,6 +9,7 @@ import android.widget.ListView
 import android.widget.ListView.*
 import contacts.async.accounts.findWithContext
 import contacts.permissions.accounts.queryWithPermission
+import contacts.sample.util.trueKeys
 import kotlinx.coroutines.launch
 
 /**
@@ -34,20 +35,10 @@ class AccountsActivity : BaseActivity() {
     private val selectableAccounts = mutableListOf<Account?>()
 
     private val selectedAccounts: List<Account?>
-        get() = mutableListOf<Account?>().apply {
-
-            val checkedItemPositions = accountsListView.checkedItemPositions
-            for (i in 0 until checkedItemPositions.size()) {
-                val position = checkedItemPositions.keyAt(i)
-                val isChecked = checkedItemPositions.valueAt(i)
-
-                if (isChecked) {
-                    // The ListView, ArrayAdapter, and selectableAccounts all have the same list of
-                    // accounts in the same indices.
-                    add(selectableAccounts[position])
-                }
-            }
-        }
+        get() = accountsListView
+            .checkedItemPositions
+            .trueKeys
+            .map { selectableAccounts[it] }
 
     // Not using any view binding libraries or plugins just for this.
     private lateinit var accountsListView: ListView

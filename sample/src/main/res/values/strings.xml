@@ -9,7 +9,7 @@
     <string name="contacts_accounts">Show contacts from Accounts</string>
 
     <string name="contacts_delete">Delete</string>
-    <string name="contacts_delete_success">Link</string>
+    <string name="contacts_delete_success">Deleted contacts</string>
     <string name="contacts_delete_error">Unable to delete contacts</string>
 
     <string name="contacts_link">Link</string>
