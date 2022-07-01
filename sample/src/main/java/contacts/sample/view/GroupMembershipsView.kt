@@ -106,7 +106,9 @@ class GroupMembershipsView @JvmOverloads constructor(
      * groups (if any). This will do nothing if the request did not originate from this view.
      */
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        GroupsActivity.onSelectGroupsResult(requestCode, resultCode, data) { selectedGroups ->
+        GroupsActivity.onSelectGroupsResult(
+            requestCode, resultCode, data
+        ) { _, selectedGroups ->
             // There is no need for consumers to keep track of the previous group membership rows.
             // The API will internally reuse group membership rows that already exist in the DB
             // based on groupIds instead of performing a delete-and-insert.

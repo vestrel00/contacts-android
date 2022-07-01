@@ -19,8 +19,7 @@ import contacts.core.ContactsFields
 import contacts.core.Fields
 import contacts.core.asc
 import contacts.core.entities.Contact
-import contacts.core.util.emails
-import contacts.core.util.phones
+import contacts.core.entities.Group
 import contacts.permissions.broadQueryWithPermission
 import contacts.permissions.deleteWithPermission
 import contacts.sample.util.AbstractMultiChoiceModeListener
@@ -38,8 +37,10 @@ import kotlinx.coroutines.launch
  * #### Options Menu
  *
  * - Create: Opens an activity to create a new contact.
- * - Accounts: Opens the accounts activity to select which accounts to include in the search.
  * - Refresh: Performs the search query again to refresh the contacts list.
+ * - Accounts: Opens an activity to select which accounts to include in the search.
+ * - Groups: Opens an activity to select which groups of selected accounts to include in the search.
+ * - Blocked numbers: Opens an activity that allows users to add/remove blocked numbers.
  *
  * #### Contextual options menu
  *
@@ -57,9 +58,10 @@ import kotlinx.coroutines.launch
  */
 class ContactsActivity : BaseActivity() {
 
-    // The null Account is the "Local Account".
-    private var selectedAccounts = emptyList<Account?>()
     private var queryJob: Job? = null
+
+    private var selectedAccounts = emptyList<Account?>()
+    private var selectedGroups = emptyList<Group>()
 
     private val searchText: String
         get() = searchField.text.toString()
@@ -90,14 +92,17 @@ class ContactsActivity : BaseActivity() {
             R.id.create -> {
                 ContactDetailsActivity.createContact(this)
             }
+            R.id.refresh -> {
+                showContacts()
+            }
             R.id.accounts -> {
                 AccountsActivity.selectAccounts(this, true, ArrayList(selectedAccounts))
             }
+            R.id.groups -> {
+                AccountsActivity.selectGroups(this, ArrayList(selectedGroups))
+            }
             R.id.blocked_numbers -> {
                 BlockedNumbersActivity.showBlockedNumbers(this)
-            }
-            R.id.refresh -> {
-                showContacts()
             }
         }
 
@@ -115,6 +120,11 @@ class ContactsActivity : BaseActivity() {
 
         AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) { selectedAccounts ->
             this.selectedAccounts = selectedAccounts
+            showContacts()
+        }
+
+        AccountsActivity.onSelectGroupsResult(requestCode, resultCode, data) { selectedGroups ->
+            this.selectedGroups = selectedGroups
             showContacts()
         }
 
@@ -150,11 +160,10 @@ class ContactsActivity : BaseActivity() {
             // results. Consumers should try out Query too because it gives the most control.
             searchResults = contacts.broadQueryWithPermission()
                 .accounts(selectedAccounts)
+                .groups(selectedGroups)
                 .include(
                     Fields.Contact.LookupKey,
                     Fields.Contact.DisplayNamePrimary,
-                    Fields.Email.Address,
-                    Fields.Phone.Number
                 )
                 .wherePartiallyMatches(searchText)
                 .orderBy(ContactsFields.DisplayNamePrimary.asc())
@@ -169,38 +178,10 @@ class ContactsActivity : BaseActivity() {
     }
 
     private fun setContactsAdapterItems() {
-        val listOfContactNameAndEmails = searchResults.map { contact ->
-            val displayNamePrimary = contact.displayNamePrimary
-
-            val emails = contact
-                .emails()
-                // Order by super primary first and then primary. This is the same behavior as the
-                // native Contacts app.
-                .sortedByDescending { it.isSuperPrimary }
-                .sortedByDescending { it.isPrimary }
-                .map { it.address }
-                .joinToString(", ")
-
-            val phoneNumbers = contact
-                .phones()
-                // Order by super primary first and then primary. This is the same behavior as the
-                // native Contacts app.
-                .sortedByDescending { it.isSuperPrimary }
-                .sortedByDescending { it.isPrimary }
-                .map { it.number }
-                .joinToString(", ")
-
-            """
-                |$displayNamePrimary
-                |$emails
-                |$phoneNumbers
-            """.trimMargin()
-        }
-
         contactsAdapter.apply {
             setNotifyOnChange(false)
             clear()
-            addAll(listOfContactNameAndEmails)
+            addAll(searchResults.map { it.displayNamePrimary })
             notifyDataSetChanged()
         }
     }

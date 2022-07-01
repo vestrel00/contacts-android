@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.ListView.*
 import contacts.async.groups.findWithContext
-import contacts.core.entities.ExistingGroupEntity
+import contacts.core.entities.Group
 import contacts.permissions.groups.queryWithPermission
 import kotlinx.coroutines.launch
 
@@ -29,10 +29,10 @@ import kotlinx.coroutines.launch
 class GroupsActivity : BaseActivity() {
 
     private lateinit var groupsAdapter: ArrayAdapter<String>
-    private val selectableGroups = mutableListOf<ExistingGroupEntity>()
+    private val selectableGroups = mutableListOf<Group>()
 
-    private val selectedGroups: List<ExistingGroupEntity>
-        get() = mutableListOf<ExistingGroupEntity>().apply {
+    private val selectedGroups: List<Group>
+        get() = mutableListOf<Group>().apply {
 
             val checkedItemPositions = groupsListView.checkedItemPositions
             for (i in 0 until checkedItemPositions.size()) {
@@ -52,12 +52,25 @@ class GroupsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // TODO Issue #167 Remove this check as account restrictions for groups will be removed
+        if (intent.account() == null) {
+            showToast(R.string.groups_local_account_not_yet_supported)
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_groups)
         setupGroupsListView()
+
+        launch {
+            addAllGroupsForAccount()
+            checkSelectedGroups()
+        }
     }
 
     override fun finish() {
         setResult(RESULT_OK, Intent().apply {
+            putExtra(ACCOUNT, intent.account())
             putParcelableArrayListExtra(SELECTED_GROUPS, ArrayList(selectedGroups))
         })
         super.finish()
@@ -73,11 +86,6 @@ class GroupsActivity : BaseActivity() {
         groupsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice)
         groupsListView.adapter = groupsAdapter
         groupsListView.choiceMode = intent.choiceMode()
-
-        launch {
-            addAllGroupsForAccount()
-            checkSelectedGroups()
-        }
     }
 
     private suspend fun addAllGroupsForAccount() {
@@ -140,15 +148,13 @@ class GroupsActivity : BaseActivity() {
 
         fun onSelectGroupsResult(
             requestCode: Int, resultCode: Int, data: Intent?,
-            processSelectedGroups: (selectedGroups: List<ExistingGroupEntity>) -> Unit
+            processSelectedGroups: (account: Account?, selectedGroups: List<Group>) -> Unit
         ) {
-            if (requestCode != REQUEST_SELECT_GROUPS || resultCode != RESULT_OK ||
-                data == null
-            ) {
+            if (requestCode != REQUEST_SELECT_GROUPS || resultCode != RESULT_OK || data == null) {
                 return
             }
 
-            processSelectedGroups(data.selectedGroups())
+            processSelectedGroups(data.account(), data.selectedGroups())
         }
 
         private fun Intent.choiceMode(): Int = getIntExtra(CHOICE_MODE, CHOICE_MODE_NONE)
@@ -158,7 +164,7 @@ class GroupsActivity : BaseActivity() {
         private fun Intent.selectedGroupIds(): List<Long> =
             getLongArrayExtra(SELECTED_GROUP_IDS)?.asList() ?: emptyList()
 
-        private fun Intent.selectedGroups(): List<ExistingGroupEntity> =
+        private fun Intent.selectedGroups(): List<Group> =
             getParcelableArrayListExtra(SELECTED_GROUPS) ?: emptyList()
 
         private const val REQUEST_SELECT_GROUPS = 112

@@ -6,7 +6,8 @@
     <string name="contacts_search_field_hint">Find contacts</string>
     <string name="contacts_refresh">Refresh</string>
     <string name="contacts_create">Create</string>
-    <string name="contacts_accounts">Show contacts from Accounts</string>
+    <string name="contacts_accounts">Filter contacts by account</string>
+    <string name="contacts_groups">Filter contacts by group</string>
 
     <string name="contacts_delete">Delete</string>
     <string name="contacts_delete_success">Deleted contacts</string>
@@ -44,6 +45,7 @@
 
     <!-- Groups -->
     <string name="groups">Choose Groups</string>
+    <string name="groups_local_account_not_yet_supported">Support for null (local) Account is coming in issue #167</string>
 
     <!-- ContactView -->
     <string name="contact_send_to_voicemail">Send to voicemail</string>

@@ -16,8 +16,8 @@ import contacts.ui.util.requestToBeTheDefaultDialerApp
 import kotlinx.coroutines.launch
 
 /**
- * Shows a brief explanation of how blocked phone numbers work in Android 7.0+ (N/API 24). Several functions
- * are provided;
+ * Shows a brief explanation of how blocked phone numbers work in Android 7.0+ (N/API 24). Several
+ * functions are provided;
  *
  * 1. Launch the default blocked numbers activity, which is also used by the AOSP Contacts app and
  *    Google Contacts app.
