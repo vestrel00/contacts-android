@@ -2966,6 +2966,13 @@ heading explore each API in full detail. You may also find these samples in the 
                 .delete()
                 .blockedNumbers(blockedNumber)
                 .commit()
+
+        fun deleteBlockedNumberWithId(blockedNumberId: Long): BlockedNumbersDelete.Result =
+            Contacts(this)
+                .blockedNumbers()
+                .delete()
+                .blockedNumbersWithId(blockedNumberId)
+                .commit()
     }
     ```
 
@@ -2985,6 +2992,14 @@ heading explore each API in full detail. You may also find these samples in the 
                     .blockedNumbers()
                     .delete()
                     .blockedNumbers(blockedNumber)
+                    .commit();
+        }
+
+        BlockedNumbersDelete.Result deleteBlockedNumberWithId(Long blockedNumberId) {
+            return ContactsFactory.create(this)
+                    .blockedNumbers()
+                    .delete()
+                    .blockedNumbersWithId(blockedNumberId)
                     .commit();
         }
     }

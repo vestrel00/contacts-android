@@ -13,4 +13,11 @@ class DeleteBlockedNumbersActivity : Activity() {
             .delete()
             .blockedNumbers(blockedNumber)
             .commit()
+
+    fun deleteBlockedNumberWithId(blockedNumberId: Long): BlockedNumbersDelete.Result =
+        Contacts(this)
+            .blockedNumbers()
+            .delete()
+            .blockedNumbersWithId(blockedNumberId)
+            .commit()
 }

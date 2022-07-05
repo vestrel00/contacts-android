@@ -15,4 +15,12 @@ public class DeleteBlockedNumbersActivity extends Activity {
                 .blockedNumbers(blockedNumber)
                 .commit();
     }
+
+    BlockedNumbersDelete.Result deleteBlockedNumberWithId(Long blockedNumberId) {
+        return ContactsFactory.create(this)
+                .blockedNumbers()
+                .delete()
+                .blockedNumbersWithId(blockedNumberId)
+                .commit();
+    }
 }

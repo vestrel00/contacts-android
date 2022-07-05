@@ -8,7 +8,6 @@ import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
-import contacts.core.util.*
 import contacts.core.util.applyBatch
 import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
@@ -46,7 +45,8 @@ import contacts.core.util.unsafeLazy
 interface DataDelete : CrudApi {
 
     /**
-     * Adds the given [data] to the delete queue, which will be deleted on [commit].
+     * Adds the given [data] to the delete queue, which will be deleted on [commit] or
+     * [commitInOneTransaction].
      */
     fun data(vararg data: ExistingDataEntity): DataDelete
 
@@ -61,7 +61,8 @@ interface DataDelete : CrudApi {
     fun data(data: Sequence<ExistingDataEntity>): DataDelete
 
     /**
-     * Adds the given [dataIds] to the delete queue, which will be deleted on [commit].
+     * Adds the given [dataIds] to the delete queue, which will be deleted on [commit] or
+     * [commitInOneTransaction].
      */
     fun dataWithId(vararg dataIds: Long): DataDelete
 

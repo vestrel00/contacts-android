@@ -1,9 +1,13 @@
 package contacts.core.blockednumbers
 
+import android.content.ContentProviderOperation
+import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.BlockedNumber
-import contacts.core.entities.operation.BlockedNumbersOperation
+import contacts.core.entities.operation.withSelection
+import contacts.core.entities.table.Table
 import contacts.core.util.applyBlockedNumberBatch
+import contacts.core.util.deleteSuccess
 import contacts.core.util.unsafeLazy
 
 /**
@@ -33,7 +37,8 @@ import contacts.core.util.unsafeLazy
 interface BlockedNumbersDelete : CrudApi {
 
     /**
-     * Adds the given [blockedNumbers] to the delete queue, which will be deleted on [commit].
+     * Adds the given [blockedNumbers] to the delete queue, which will be deleted on [commit] or
+     * [commitInOneTransaction].
      */
     fun blockedNumbers(vararg blockedNumbers: BlockedNumber): BlockedNumbersDelete
 
@@ -46,6 +51,22 @@ interface BlockedNumbersDelete : CrudApi {
      * See [BlockedNumbersDelete.blockedNumbers].
      */
     fun blockedNumbers(blockedNumbers: Sequence<BlockedNumber>): BlockedNumbersDelete
+
+    /**
+     * Adds the given [blockedNumbersIds] to the delete queue, which will be deleted on [commit]
+     * or [commitInOneTransaction].
+     */
+    fun blockedNumbersWithId(vararg blockedNumbersIds: Long): BlockedNumbersDelete
+
+    /**
+     * See [BlockedNumbersDelete.blockedNumbersWithId].
+     */
+    fun blockedNumbersWithId(blockedNumbersIds: Collection<Long>): BlockedNumbersDelete
+
+    /**
+     * See [BlockedNumbersDelete.blockedNumbersWithId].
+     */
+    fun blockedNumbersWithId(blockedNumbersIds: Sequence<Long>): BlockedNumbersDelete
 
     /**
      * Deletes the [BlockedNumber]s in the queue (added via [blockedNumbers]) and returns the
@@ -116,7 +137,7 @@ private class BlockedNumbersDeleteImpl(
     override val contactsApi: Contacts,
     private val privileges: BlockedNumbersPrivileges,
 
-    private val blockedNumbers: MutableSet<BlockedNumber> = mutableSetOf(),
+    private val blockedNumbersIds: MutableSet<Long> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
 ) : BlockedNumbersDelete {
@@ -124,7 +145,7 @@ private class BlockedNumbersDeleteImpl(
     override fun toString(): String =
         """
             BlockedNumbersDelete {
-                blockedNumbers: $blockedNumbers
+                blockedNumbersIds: $blockedNumbersIds
                 hasPrivileges: ${privileges.canReadAndWrite()}
                 isRedacted: $isRedacted
             }
@@ -134,8 +155,7 @@ private class BlockedNumbersDeleteImpl(
         contactsApi,
         privileges,
 
-        // Redact blockedNumber data.
-        blockedNumbers.asSequence().redactedCopies().toMutableSet(),
+        blockedNumbersIds,
 
         isRedacted = true
     )
@@ -148,20 +168,31 @@ private class BlockedNumbersDeleteImpl(
 
     override fun blockedNumbers(blockedNumbers: Sequence<BlockedNumber>): BlockedNumbersDelete =
         apply {
-            this.blockedNumbers.addAll(blockedNumbers.redactedCopiesOrThis(isRedacted))
+            this.blockedNumbersIds.addAll(blockedNumbers.map { it.id })
+        }
+
+    override fun blockedNumbersWithId(vararg blockedNumbersIds: Long) =
+        blockedNumbersWithId(blockedNumbersIds.asSequence())
+
+    override fun blockedNumbersWithId(blockedNumbersIds: Collection<Long>) =
+        blockedNumbersWithId(blockedNumbersIds.asSequence())
+
+    override fun blockedNumbersWithId(blockedNumbersIds: Sequence<Long>): BlockedNumbersDelete =
+        apply {
+            this.blockedNumbersIds.addAll(blockedNumbersIds)
         }
 
     override fun commit(): BlockedNumbersDelete.Result {
         onPreExecute()
 
-        return if (blockedNumbers.isEmpty() || !privileges.canReadAndWrite()) {
+        return if (blockedNumbersIds.isEmpty() || !privileges.canReadAndWrite()) {
             BlockedNumbersDeleteResult(emptyMap())
         } else {
             val results = mutableMapOf<Long, Boolean>()
-            for (blockedNumber in blockedNumbers) {
-                results[blockedNumber.id] = contentResolver.applyBlockedNumberBatch(
-                    BlockedNumbersOperation().delete(blockedNumber.id)
-                ) != null
+            for (blockedNumberId in blockedNumbersIds) {
+                results[blockedNumberId] = contentResolver.deleteBlockedNumbersWhere(
+                    BlockedNumbersFields.Id equalTo blockedNumberId
+                )
             }
             BlockedNumbersDeleteResult(results)
         }
@@ -173,17 +204,24 @@ private class BlockedNumbersDeleteImpl(
         onPreExecute()
 
         val isSuccessful = privileges.canReadAndWrite()
-                && blockedNumbers.isNotEmpty()
-                && contentResolver.applyBlockedNumberBatch(
-            BlockedNumbersOperation().delete(
-                blockedNumbers.map { it.id })
-        ) != null
+                && blockedNumbersIds.isNotEmpty()
+                && contentResolver.deleteBlockedNumbersWhere(
+            BlockedNumbersFields.Id `in` blockedNumbersIds
+        )
 
         return BlockedNumbersDeleteAllResult(isSuccessful)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
+
+private fun ContentResolver.deleteBlockedNumbersWhere(where: Where<BlockedNumbersField>): Boolean =
+    applyBlockedNumberBatch(deleteOperationFor(where)).deleteSuccess
+
+private fun deleteOperationFor(where: Where<BlockedNumbersField>): ContentProviderOperation =
+    ContentProviderOperation.newDelete(Table.BlockedNumbers.uri)
+        .withSelection(where)
+        .build()
 
 private class BlockedNumbersDeleteResult private constructor(
     private val blockedNumberIdsResultMap: Map<Long, Boolean>,
