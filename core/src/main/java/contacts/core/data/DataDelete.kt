@@ -337,9 +337,9 @@ private class DataDeleteResult private constructor(
             false
         } else {
             // A set has failure if it is NOT empty and one of its entries is false.
-            val hasDataFailure = dataIdsResultMap.any { !it.value }
+            val hasIdFailure = dataIdsResultMap.any { !it.value }
             val hasWhereFailure = whereResultMap.any { !it.value }
-            !hasDataFailure && !hasWhereFailure
+            !hasIdFailure && !hasWhereFailure
         }
     }
 

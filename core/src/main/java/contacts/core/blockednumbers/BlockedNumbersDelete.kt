@@ -7,6 +7,7 @@ import contacts.core.entities.BlockedNumber
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.Table
 import contacts.core.util.applyBlockedNumberBatch
+import contacts.core.util.blockedNumbers
 import contacts.core.util.deleteSuccess
 import contacts.core.util.unsafeLazy
 
@@ -69,6 +70,19 @@ interface BlockedNumbersDelete : CrudApi {
     fun blockedNumbersWithId(blockedNumbersIds: Sequence<Long>): BlockedNumbersDelete
 
     /**
+     * Deletes all of the blocked numbers that match the given [where].
+     */
+    fun blockedNumbersWhere(where: Where<BlockedNumbersField>?): BlockedNumbersDelete
+
+    /**
+     * Same as [BlockedNumbersDelete.blockedNumbersWhere] except you have direct access to all
+     * properties of [BlockedNumbersFields] in the function parameter. Use this to shorten your code.
+     */
+    fun blockedNumbersWhere(
+        where: BlockedNumbersFields.() -> Where<BlockedNumbersField>?
+    ): BlockedNumbersDelete
+
+    /**
      * Deletes the [BlockedNumber]s in the queue (added via [blockedNumbers]) and returns the
      * [Result].
      *
@@ -116,6 +130,17 @@ interface BlockedNumbersDelete : CrudApi {
         /**
          * True if all BlockedNumbers have successfully been deleted. False if even one delete
          * failed.
+         *
+         * ## [commit] vs [commitInOneTransaction]
+         *
+         * If you used several of the following in one call,
+         *
+         * - [blockedNumbers]
+         * - [blockedNumbersWithId]
+         * - [blockedNumbersWhere]
+         *
+         * then this value may be false even if the blocked numbers were actually deleted if you
+         * used [commit]. Using [commitInOneTransaction] does not have this "issue".
          */
         val isSuccessful: Boolean
 
@@ -123,6 +148,21 @@ interface BlockedNumbersDelete : CrudApi {
          * True if the [blockedNumber] has been successfully deleted. False otherwise.
          */
         fun isSuccessful(blockedNumber: BlockedNumber): Boolean
+
+        /**
+         * True if the blocked number with the given [blockedNumberId] has been successfully
+         * deleted. False otherwise.
+         *
+         * This is used in conjunction with [BlockedNumbersDelete.blockedNumbersWithId].
+         */
+        fun isSuccessful(blockedNumberId: Long): Boolean
+
+        /**
+         * True if the delete operation using the given [where] was successful.
+         *
+         * This is used in conjunction with [BlockedNumbersDelete.blockedNumbersWhere].
+         */
+        fun isSuccessful(where: Where<BlockedNumbersField>): Boolean
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -138,14 +178,19 @@ private class BlockedNumbersDeleteImpl(
     private val privileges: BlockedNumbersPrivileges,
 
     private val blockedNumbersIds: MutableSet<Long> = mutableSetOf(),
+    private var blockedNumbersWhere: Where<BlockedNumbersField>? = null,
 
     override val isRedacted: Boolean = false
 ) : BlockedNumbersDelete {
+
+    private val hasNothingToCommit: Boolean
+        get() = blockedNumbersIds.isEmpty() && blockedNumbersWhere == null
 
     override fun toString(): String =
         """
             BlockedNumbersDelete {
                 blockedNumbersIds: $blockedNumbersIds
+                blockedNumbersWhere: $blockedNumbersWhere
                 hasPrivileges: ${privileges.canReadAndWrite()}
                 isRedacted: $isRedacted
             }
@@ -156,6 +201,7 @@ private class BlockedNumbersDeleteImpl(
         privileges,
 
         blockedNumbersIds,
+        blockedNumbersWhere?.redactedCopy(),
 
         isRedacted = true
     )
@@ -182,11 +228,20 @@ private class BlockedNumbersDeleteImpl(
             this.blockedNumbersIds.addAll(blockedNumbersIds)
         }
 
+    override fun blockedNumbersWhere(where: Where<BlockedNumbersField>?): BlockedNumbersDelete =
+        apply {
+            blockedNumbersWhere = where?.redactedCopyOrThis(isRedacted)
+        }
+
+    override fun blockedNumbersWhere(
+        where: BlockedNumbersFields.() -> Where<BlockedNumbersField>?
+    ) = blockedNumbersWhere(where(BlockedNumbersFields))
+
     override fun commit(): BlockedNumbersDelete.Result {
         onPreExecute()
 
-        return if (blockedNumbersIds.isEmpty() || !privileges.canReadAndWrite()) {
-            BlockedNumbersDeleteResult(emptyMap())
+        return if (!privileges.canReadAndWrite() || hasNothingToCommit) {
+            BlockedNumbersDeleteAllResult(isSuccessful = false)
         } else {
             val results = mutableMapOf<Long, Boolean>()
             for (blockedNumberId in blockedNumbersIds) {
@@ -194,7 +249,13 @@ private class BlockedNumbersDeleteImpl(
                     BlockedNumbersFields.Id equalTo blockedNumberId
                 )
             }
-            BlockedNumbersDeleteResult(results)
+
+            val whereResultMap = mutableMapOf<String, Boolean>()
+            blockedNumbersWhere?.let {
+                whereResultMap[it.toString()] = contentResolver.deleteBlockedNumbersWhere(it)
+            }
+
+            BlockedNumbersDeleteResult(results, whereResultMap)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
@@ -203,13 +264,26 @@ private class BlockedNumbersDeleteImpl(
     override fun commitInOneTransaction(): BlockedNumbersDelete.Result {
         onPreExecute()
 
-        val isSuccessful = privileges.canReadAndWrite()
-                && blockedNumbersIds.isNotEmpty()
-                && contentResolver.deleteBlockedNumbersWhere(
-            BlockedNumbersFields.Id `in` blockedNumbersIds
-        )
+        return if (!privileges.canReadAndWrite() || hasNothingToCommit) {
+            BlockedNumbersDeleteAllResult(isSuccessful = false)
+        } else {
+            val operations = arrayListOf<ContentProviderOperation>()
 
-        return BlockedNumbersDeleteAllResult(isSuccessful)
+            if (blockedNumbersIds.isNotEmpty()) {
+                deleteOperationFor(BlockedNumbersFields.Id `in` blockedNumbersIds)
+                    .let(operations::add)
+            }
+
+            blockedNumbersWhere?.let {
+                deleteOperationFor(it).let(operations::add)
+            }
+
+            BlockedNumbersDeleteAllResult(
+                isSuccessful = contentResolver.applyBlockedNumberBatch(
+                    operations
+                ).deleteSuccess
+            )
+        }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -225,35 +299,53 @@ private fun deleteOperationFor(where: Where<BlockedNumbersField>): ContentProvid
 
 private class BlockedNumbersDeleteResult private constructor(
     private val blockedNumberIdsResultMap: Map<Long, Boolean>,
+    private var whereResultMap: Map<String, Boolean>,
     override val isRedacted: Boolean
 ) : BlockedNumbersDelete.Result {
 
-    constructor(blockedNumberIdsResultMap: Map<Long, Boolean>) : this(
-        blockedNumberIdsResultMap,
-        false
-    )
+    constructor(
+        blockedNumberIdsResultMap: Map<Long, Boolean>,
+        whereResultMap: Map<String, Boolean>
+    ) : this(blockedNumberIdsResultMap, whereResultMap, false)
 
     override fun toString(): String =
         """
             BlockedNumbersDelete.Result {
                 isSuccessful: $isSuccessful
-                blockedNumberIdsResultMap: $blockedNumberIdsResultMap
+                blockedNumberIdsResultMap: $blockedNumberIdsResultMap,
+                whereResultMap: $whereResultMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): BlockedNumbersDelete.Result = BlockedNumbersDeleteResult(
-        blockedNumberIdsResultMap, true
+        blockedNumberIdsResultMap = blockedNumberIdsResultMap,
+        whereResultMap = whereResultMap.redactedStringKeys(),
+        isRedacted = true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        // By default, all returns true when the collection is empty. So, we override that.
-        blockedNumberIdsResultMap.run { isNotEmpty() && all { it.value } }
+        if (blockedNumberIdsResultMap.isEmpty() && whereResultMap.isEmpty()
+        ) {
+            // Deleting nothing is NOT successful.
+            false
+        } else {
+            // A set has failure if it is NOT empty and one of its entries is false.
+            val hasIdFailure = blockedNumberIdsResultMap.any { !it.value }
+            val hasWhereFailure = whereResultMap.any { !it.value }
+            !hasIdFailure && !hasWhereFailure
+        }
     }
 
     override fun isSuccessful(blockedNumber: BlockedNumber): Boolean {
         return blockedNumberIdsResultMap.getOrElse(blockedNumber.id) { false }
     }
+
+    override fun isSuccessful(blockedNumberId: Long): Boolean =
+        blockedNumberIdsResultMap.getOrElse(blockedNumberId) { false }
+
+    override fun isSuccessful(where: Where<BlockedNumbersField>): Boolean =
+        whereResultMap.getOrElse(where.toString()) { false }
 }
 
 private class BlockedNumbersDeleteAllResult private constructor(
@@ -280,4 +372,8 @@ private class BlockedNumbersDeleteAllResult private constructor(
     )
 
     override fun isSuccessful(blockedNumber: BlockedNumber): Boolean = isSuccessful
+
+    override fun isSuccessful(blockedNumberId: Long): Boolean = isSuccessful
+
+    override fun isSuccessful(where: Where<BlockedNumbersField>): Boolean = isSuccessful
 }

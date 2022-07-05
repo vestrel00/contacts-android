@@ -17,7 +17,7 @@ Note that blocked number deletions will only work for privileged apps. For more 
 To delete a set of existing blocked numbers,
 
 ```kotlin
-val deleteResult = Contacts(context)
+val deleteResult = delete
     .blockedNumbers()
     .delete()
     .blockedNumbers(existingBlockedNumbers)
@@ -26,10 +26,20 @@ val deleteResult = Contacts(context)
 To delete a set of existing blocked numbers using IDs,
 
 ```kotlin
-val deleteResult = Contacts(context)
+val deleteResult = delete
     .blockedNumbers()
     .delete()
     .blockedNumbersWithId(1, 2, 3)
+    .commit()
+```
+
+## An advanced delete
+
+You may specify a matching criteria, like in queries, that will delete all matching blocked numbers,
+
+```kotlin
+val deleteResult = delete
+    .dataWhere { Number contains "555" }
     .commit()
 ```
 

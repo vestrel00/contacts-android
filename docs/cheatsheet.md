@@ -2966,12 +2966,19 @@ heading explore each API in full detail. You may also find these samples in the 
                 .delete()
                 .blockedNumbers(blockedNumber)
                 .commit()
-
+        
         fun deleteBlockedNumberWithId(blockedNumberId: Long): BlockedNumbersDelete.Result =
             Contacts(this)
                 .blockedNumbers()
                 .delete()
                 .blockedNumbersWithId(blockedNumberId)
+                .commit()
+    
+        fun deleteBlockedNumbersContaining555(): BlockedNumbersDelete.Result =
+            Contacts(this)
+                .blockedNumbers()
+                .delete()
+                .blockedNumbersWhere { Number contains "555" }
                 .commit()
     }
     ```
@@ -2994,12 +3001,20 @@ heading explore each API in full detail. You may also find these samples in the 
                     .blockedNumbers(blockedNumber)
                     .commit();
         }
-
+        
         BlockedNumbersDelete.Result deleteBlockedNumberWithId(Long blockedNumberId) {
             return ContactsFactory.create(this)
                     .blockedNumbers()
                     .delete()
                     .blockedNumbersWithId(blockedNumberId)
+                    .commit();
+        }
+    
+        BlockedNumbersDelete.Result deleteBlockedNumbersContaining555() {
+            return ContactsFactory.create(this)
+                    .blockedNumbers()
+                    .delete()
+                    .blockedNumbersWhere(contains(BlockedNumbersFields.Number, "555"))
                     .commit();
         }
     }
