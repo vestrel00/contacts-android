@@ -23,7 +23,7 @@ val deleteResult = delete
     .commit()
 ```
 
-If you want to delete a set of RawContacts,
+To delete a set of RawContacts,
 
 ```kotlin
 val deleteResult = delete

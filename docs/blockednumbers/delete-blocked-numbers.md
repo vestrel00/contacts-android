@@ -23,6 +23,15 @@ val deleteResult = Contacts(context)
     .blockedNumbers(existingBlockedNumbers)
     .commit()
 ```
+To delete a set of existing blocked numbers using IDs,
+
+```kotlin
+val deleteResult = Contacts(context)
+    .blockedNumbers()
+    .delete()
+    .blockedNumbersWithId(1, 2, 3)
+    .commit()
+```
 
 ## Executing the delete
 

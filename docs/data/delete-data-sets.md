@@ -24,7 +24,7 @@ val deleteResult = delete
     .commit()
 ```
 
-If you want to delete a list of emails and phones,
+To delete a list of emails and phones,
 
 ```kotlin
 val deleteResult = delete
@@ -34,7 +34,7 @@ val deleteResult = delete
     .commit()
 ```
 
-If you want to delete a set of data using data IDs,
+To delete a set of data using data IDs,
 
 ```kotlin
 val deleteResult = delete
