@@ -30,6 +30,16 @@ val deleteResult = Contacts(context)
     .commit()
 ```
 
+## An advanced delete
+
+You may specify a matching criteria, like in queries, that will delete all matching groups,
+
+```kotlin
+val deleteResult = delete
+    .groupsWhere { AccountType equalTo "com.google" }
+    .commit()
+```
+
 ## Executing the delete
 
 To execute the delete,

@@ -108,6 +108,17 @@ interface GroupsDelete : CrudApi {
     fun groupsWithId(groupsIds: Sequence<Long>): GroupsDelete
 
     /**
+     * Deletes all of the groups that match the given [where].
+     */
+    fun groupsWhere(where: Where<GroupsField>?): GroupsDelete
+
+    /**
+     * Same as [GroupsDelete.groupsWhere] except you have direct access to all properties of
+     * [GroupsFields] in the function parameter. Use this to shorten your code.
+     */
+    fun groupsWhere(where: GroupsFields.() -> Where<GroupsField>?): GroupsDelete
+
+    /**
      * Deletes the [ExistingGroupEntity]s in the queue (added via [groups]) and returns the [Result].
      *
      * ## Permissions
@@ -160,6 +171,7 @@ interface GroupsDelete : CrudApi {
          *
          * - [groups]
          * - [groupsWithId]
+         * - [groupsWhere]
          *
          * then this value may be false even if the groups were actually deleted if you used
          * [commit]. Using [commitInOneTransaction] does not have this "issue".
@@ -178,6 +190,12 @@ interface GroupsDelete : CrudApi {
          */
         fun isSuccessful(groupId: Long): Boolean
 
+        /**
+         * True if the delete operation using the given [where] was successful.
+         *
+         * This is used in conjunction with [GroupsDelete.groupsWhere].
+         */
+        fun isSuccessful(where: Where<GroupsField>): Boolean
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -191,24 +209,26 @@ private class GroupsDeleteImpl(
     override val contactsApi: Contacts,
 
     private val groupsIds: MutableSet<Long> = mutableSetOf(),
+    private var groupsWhere: Where<GroupsField>? = null,
 
     override val isRedacted: Boolean = false
 ) : GroupsDelete {
 
     private val hasNothingToCommit: Boolean
-        get() = groupsIds.isEmpty()
+        get() = groupsIds.isEmpty() && groupsWhere == null
 
     override fun toString(): String =
         """
             GroupsDelete {
                 groupsIds: $groupsIds
+                groupsWhere: $groupsWhere
                 hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): GroupsDelete = GroupsDeleteImpl(
-        contactsApi, groupsIds, isRedacted = true
+        contactsApi, groupsIds, groupsWhere, isRedacted = true
     )
 
     override fun groups(vararg groups: ExistingGroupEntity) = groups(groups.asSequence())
@@ -224,6 +244,13 @@ private class GroupsDeleteImpl(
     override fun groupsWithId(groupsIds: Sequence<Long>): GroupsDelete = apply {
         this.groupsIds.addAll(groupsIds)
     }
+
+    override fun groupsWhere(where: Where<GroupsField>?): GroupsDelete = apply {
+        groupsWhere = where?.redactedCopyOrThis(isRedacted)
+    }
+
+    override fun groupsWhere(where: GroupsFields.() -> Where<GroupsField>?) =
+        groupsWhere(where(GroupsFields))
 
     override fun commit(): GroupsDelete.Result {
         onPreExecute()
@@ -241,9 +268,17 @@ private class GroupsDeleteImpl(
                 )
             }
 
-            // TODO #237 manually add the check to match only non-read-only groups.
+            val whereResultMap = mutableMapOf<String, Boolean>()
+            groupsWhere?.let {
+                whereResultMap[it.toString()] = contentResolver.deleteGroupsWhere(
+                    // Attempting to delete a read-only group will result in a "successful" result
+                    // even though the group was not actually deleted. Therefore, we need to
+                    // manually add the check to match only non-read-only groups.
+                    it and (GroupsFields.ReadOnly equalTo false)
+                )
+            }
 
-            GroupsDeleteResult(results)
+            GroupsDeleteResult(results, whereResultMap)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
@@ -259,11 +294,21 @@ private class GroupsDeleteImpl(
 
             if (groupsIds.isNotEmpty()) {
                 deleteOperationFor(
+                    // Attempting to delete a read-only group will result in a "successful" result
+                    // even though the group was not actually deleted. Therefore, we need to
+                    // manually add the check to match only non-read-only groups.
                     (GroupsFields.Id `in` groupsIds) and (GroupsFields.ReadOnly equalTo false)
                 ).let(operations::add)
             }
 
-            // TODO #237 manually add the check to match only non-read-only groups.
+            groupsWhere?.let {
+                deleteOperationFor(
+                    // Attempting to delete a read-only group will result in a "successful" result
+                    // even though the group was not actually deleted. Therefore, we need to
+                    // manually add the check to match only non-read-only groups.
+                    it and (GroupsFields.ReadOnly equalTo false)
+                ).let(operations::add)
+            }
 
             GroupsDeleteAllResult(
                 isSuccessful = contentResolver.applyBatch(operations).deleteSuccess
@@ -284,35 +329,51 @@ private fun deleteOperationFor(where: Where<GroupsField>): ContentProviderOperat
 
 private class GroupsDeleteResult private constructor(
     private val groupIdsResultMap: Map<Long, Boolean>,
+    private var whereResultMap: Map<String, Boolean>,
     override val isRedacted: Boolean
 ) : GroupsDelete.Result {
 
-    constructor(groupIdsResultMap: Map<Long, Boolean>) : this(groupIdsResultMap, false)
+    constructor(
+        groupIdsResultMap: Map<Long, Boolean>,
+        whereResultMap: Map<String, Boolean>
+    ) : this(groupIdsResultMap, whereResultMap, false)
 
     override fun toString(): String =
         """
             GroupsDelete.Result {
                 isSuccessful: $isSuccessful
                 groupIdsResultMap: $groupIdsResultMap
+                whereResultMap: $whereResultMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): GroupsDelete.Result = GroupsDeleteResult(
-        groupIdsResultMap, true
+        groupIdsResultMap = groupIdsResultMap,
+        whereResultMap = whereResultMap.redactedStringKeys(),
+        isRedacted = true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        // By default, all returns true when the collection is empty. So, we override that.
-        groupIdsResultMap.run { isNotEmpty() && all { it.value } }
+        if (groupIdsResultMap.isEmpty() && whereResultMap.isEmpty()
+        ) {
+            // Deleting nothing is NOT successful.
+            false
+        } else {
+            // A set has failure if it is NOT empty and one of its entries is false.
+            val hasIdFailure = groupIdsResultMap.any { !it.value }
+            val hasWhereFailure = whereResultMap.any { !it.value }
+            !hasIdFailure && !hasWhereFailure
+        }
     }
 
-    override fun isSuccessful(group: ExistingGroupEntity): Boolean {
-        return groupIdsResultMap.getOrElse(group.id) { false }
-    }
+    override fun isSuccessful(group: ExistingGroupEntity): Boolean = isSuccessful(group.id)
 
     override fun isSuccessful(groupId: Long): Boolean =
         groupIdsResultMap.getOrElse(groupId) { false }
+
+    override fun isSuccessful(where: Where<GroupsField>): Boolean =
+        whereResultMap.getOrElse(where.toString()) { false }
 }
 
 private class GroupsDeleteAllResult private constructor(
@@ -341,4 +402,6 @@ private class GroupsDeleteAllResult private constructor(
     override fun isSuccessful(group: ExistingGroupEntity): Boolean = isSuccessful
 
     override fun isSuccessful(groupId: Long): Boolean = isSuccessful
+
+    override fun isSuccessful(where: Where<GroupsField>): Boolean = isSuccessful
 }

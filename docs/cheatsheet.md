@@ -2136,7 +2136,7 @@ heading explore each API in full detail. You may also find these samples in the 
 
     ```kotlin
     import android.app.Activity
-    import contacts.core.Contacts
+    import contacts.core.*
     import contacts.core.entities.Group
     import contacts.core.groups.GroupsDelete
     
@@ -2144,20 +2144,29 @@ heading explore each API in full detail. You may also find these samples in the 
     
         fun deleteGroups(groups: List<Group>): GroupsDelete.Result =
             Contacts(this).groups().delete().groups(groups).commit()
-        
+    
         fun deleteGroupWithId(groupId: Long): GroupsDelete.Result =
             Contacts(this).groups().delete().groupsWithId(groupId).commit()
+    
+        fun deleteUserCreatedGroupFromAllGoogleAccounts(): GroupsDelete.Result = Contacts(this)
+            .groups()
+            .delete()
+            .groupsWhere { AccountType equalTo "com.google" }
+            .commit()
     }
     ```
 
 === "Java"
 
     ```java
+    import static contacts.core.WhereKt.equalTo;
+    
     import android.app.Activity;
     
     import java.util.List;
     
     import contacts.core.ContactsFactory;
+    import contacts.core.GroupsFields;
     import contacts.core.entities.Group;
     import contacts.core.groups.GroupsDelete;
     
@@ -2166,9 +2175,17 @@ heading explore each API in full detail. You may also find these samples in the 
         GroupsDelete.Result deleteGroups(List<Group> groups) {
             return ContactsFactory.create(this).groups().delete().groups(groups).commit();
         }
-        
+    
         GroupsDelete.Result deleteGroupWithId(long groupId) {
             return ContactsFactory.create(this).groups().delete().groupsWithId(groupId).commit();
+        }
+    
+        GroupsDelete.Result deleteUserCreatedGroupFromAllGoogleAccounts() {
+            return ContactsFactory.create(this)
+                    .groups()
+                    .delete()
+                    .groupsWhere(equalTo(GroupsFields.AccountType, "com.google"))
+                    .commit();
         }
     }
     ```
