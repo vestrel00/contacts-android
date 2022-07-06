@@ -2,7 +2,6 @@ package contacts.core.sim
 
 import contacts.core.*
 import contacts.core.entities.ExistingSimContactEntity
-import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.util.unsafeLazy
 
@@ -31,6 +30,12 @@ import contacts.core.util.unsafeLazy
  * ```
  */
 interface SimContactsDelete : CrudApi {
+
+    /**
+     * Adds the SIM contact with the given [name] and [number] to the delete queue, which will be
+     * deleted on [commit].
+     */
+    fun simContact(name: String?, number: String?): SimContactsDelete
 
     /**
      * Adds the given [simContacts] to the delete queue, which will be deleted on [commit].
@@ -88,6 +93,12 @@ interface SimContactsDelete : CrudApi {
          */
         fun isSuccessful(simContact: ExistingSimContactEntity): Boolean
 
+        /**
+         * True if the SIM contact with the given [name] and [number] has been successfully deleted.
+         * False otherwise.
+         */
+        fun isSuccessful(name: String?, number: String?): Boolean
+
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
     }
@@ -100,7 +111,7 @@ internal fun SimContactsDelete(contacts: Contacts): SimContactsDelete =
 private class SimContactsDeleteImpl(
     override val contactsApi: Contacts,
 
-    private val simContacts: MutableSet<ExistingSimContactEntity> = mutableSetOf(),
+    private val simContactsToDelete: MutableSet<SimContactToDelete> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
 ) : SimContactsDelete {
@@ -108,7 +119,7 @@ private class SimContactsDeleteImpl(
     override fun toString(): String =
         """
             SimContactsDelete {
-                simContacts: $simContacts
+                simContactsToDelete: $simContactsToDelete
                 hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
@@ -118,10 +129,19 @@ private class SimContactsDeleteImpl(
         contactsApi,
 
         // Redact SIM contact data.
-        simContacts.asSequence().redactedCopies().toMutableSet(),
+        simContactsToDelete.asSequence().redactedCopies().toMutableSet(),
 
         isRedacted = true
     )
+
+    override fun simContact(name: String?, number: String?): SimContactsDelete = apply {
+        simContactsToDelete.add(
+            SimContactToDelete(
+                name = name,
+                number = number
+            ).redactedCopyOrThis(isRedacted)
+        )
+    }
 
     override fun simContacts(vararg simContacts: ExistingSimContactEntity) =
         simContacts(simContacts.asSequence())
@@ -131,23 +151,27 @@ private class SimContactsDeleteImpl(
 
     override fun simContacts(simContacts: Sequence<ExistingSimContactEntity>): SimContactsDelete =
         apply {
-            this.simContacts.addAll(simContacts.redactedCopiesOrThis(isRedacted))
+            this.simContactsToDelete.addAll(
+                simContacts
+                    .map { it.toSimContactToDelete() }
+                    .redactedCopiesOrThis(isRedacted)
+            )
         }
 
     override fun commit(): SimContactsDelete.Result {
         onPreExecute()
 
-        return if (simContacts.isEmpty() || !permissions.canUpdateDelete()) {
+        return if (simContactsToDelete.isEmpty() || !permissions.canUpdateDelete()) {
             SimContactsDeleteResult(emptyMap())
         } else {
-            val results = mutableMapOf<Long, Boolean>()
-            for (simContact in simContacts) {
+            val results = mutableMapOf<SimContactToDelete, Boolean>()
+            for (simContactToDelete in simContactsToDelete) {
                 val result = contentResolver.delete(
                     Table.SimContacts.uri,
-                    SimContactsOperation().delete(simContact),
+                    simContactToDelete.deleteWhere,
                     null
                 )
-                results[simContact.id] = result > 0
+                results[simContactToDelete] = result > 0
             }
             SimContactsDeleteResult(results)
         }
@@ -157,11 +181,11 @@ private class SimContactsDeleteImpl(
 }
 
 private class SimContactsDeleteResult private constructor(
-    private val simContactIdsResultMap: Map<Long, Boolean>,
+    private val simContactsToDeleteResultMap: Map<SimContactToDelete, Boolean>,
     override val isRedacted: Boolean
 ) : SimContactsDelete.Result {
 
-    constructor(simContactIdsResultMap: Map<Long, Boolean>) : this(
+    constructor(simContactIdsResultMap: Map<SimContactToDelete, Boolean>) : this(
         simContactIdsResultMap,
         false
     )
@@ -170,21 +194,64 @@ private class SimContactsDeleteResult private constructor(
         """
             SimContactsDelete.Result {
                 isSuccessful: $isSuccessful
-                simContactIdsResultMap: $simContactIdsResultMap
+                simContactsToDeleteResultMap: $simContactsToDeleteResultMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsDelete.Result = SimContactsDeleteResult(
-        simContactIdsResultMap, true
+        simContactsToDeleteResultMap.redactedKeys(), true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
         // By default, all returns true when the collection is empty. So, we override that.
-        simContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+        simContactsToDeleteResultMap.run { isNotEmpty() && all { it.value } }
     }
 
-    override fun isSuccessful(simContact: ExistingSimContactEntity): Boolean {
-        return simContactIdsResultMap.getOrElse(simContact.id) { false }
-    }
+    override fun isSuccessful(simContact: ExistingSimContactEntity): Boolean =
+        simContactsToDeleteResultMap.getOrElse(simContact.toSimContactToDelete()) { false }
+
+    override fun isSuccessful(name: String?, number: String?): Boolean =
+        simContactsToDeleteResultMap.getOrElse(
+            SimContactToDelete(
+                name = name,
+                number = number
+            )
+        ) { false }
 }
+
+// Allows users to pass in name and number instead of an entity.
+// We could also use a Pair but this is more verbose and less prone to error.
+// This is pretty much a NewSimContact except the name is different. Maybe we'll just use
+// NewSimContact??? IDK. We'll stick to this for now!
+private data class SimContactToDelete(
+    val name: String?,
+    val number: String?,
+    override val isRedacted: Boolean = false
+) : Redactable {
+
+    override fun redactedCopy() = copy(
+        isRedacted = true,
+
+        name = name?.redact(),
+        number = number?.redact()
+    )
+}
+
+private fun ExistingSimContactEntity.toSimContactToDelete() = SimContactToDelete(
+    name = name,
+    number = number,
+    isRedacted = isRedacted
+)
+
+/**
+ * Returns a where clause that uses the [SimContactToDelete.name] (tag) and
+ * [SimContactToDelete.number] to select the contact to delete. This is the only form of selection
+ * that is supported. Selecting by _id is not supported because they are not constant.
+ *
+ * The ID is not used here at all.
+ */
+private val SimContactToDelete.deleteWhere: String
+    // We will not construct the where String using our own Where functions to avoid generating
+    // parenthesis, which breaks the way this where clause is processed.
+    get() = "tag='${name}' AND number='${number}'"

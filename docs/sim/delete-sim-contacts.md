@@ -21,6 +21,16 @@ val deleteResult = Contacts(context)
     .commit()
 ```
 
+To delete using name and number,
+
+```kotlin
+val deleteResult = Contacts(context)
+    .sim()
+    .delete()
+    .simContact(name, number)
+    .commit()
+```
+
 ## Executing the delete
 
 To execute the delete,

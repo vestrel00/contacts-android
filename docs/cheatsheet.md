@@ -2851,6 +2851,9 @@ heading explore each API in full detail. You may also find these samples in the 
     
         fun deleteSimContact(simContact: SimContact): SimContactsDelete.Result =
             Contacts(this).sim().delete().simContacts(simContact).commit()
+    
+        fun deleteSimContactWithNameAndNumber(name: String?, number: String?): SimContactsDelete.Result =
+            Contacts(this).sim().delete().simContact(name, number).commit()
     }
     ```
 
@@ -2867,6 +2870,10 @@ heading explore each API in full detail. You may also find these samples in the 
     
         SimContactsDelete.Result deleteSimContact(SimContact simContact) {
             return ContactsFactory.create(this).sim().delete().simContacts(simContact).commit();
+        }
+    
+        SimContactsDelete.Result deleteSimContactWithNameAndNumber(String name, String number) {
+            return ContactsFactory.create(this).sim().delete().simContact(name, number).commit();
         }
     }
     ```

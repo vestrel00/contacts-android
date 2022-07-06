@@ -11,4 +11,8 @@ public class DeleteSimContactsActivity extends Activity {
     SimContactsDelete.Result deleteSimContact(SimContact simContact) {
         return ContactsFactory.create(this).sim().delete().simContacts(simContact).commit();
     }
+
+    SimContactsDelete.Result deleteSimContactWithNameAndNumber(String name, String number) {
+        return ContactsFactory.create(this).sim().delete().simContact(name, number).commit();
+    }
 }
