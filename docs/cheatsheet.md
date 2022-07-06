@@ -2144,6 +2144,9 @@ heading explore each API in full detail. You may also find these samples in the 
     
         fun deleteGroups(groups: List<Group>): GroupsDelete.Result =
             Contacts(this).groups().delete().groups(groups).commit()
+        
+        fun deleteGroupWithId(groupId: Long): GroupsDelete.Result =
+            Contacts(this).groups().delete().groupsWithId(groupId).commit()
     }
     ```
 
@@ -2162,6 +2165,10 @@ heading explore each API in full detail. You may also find these samples in the 
     
         GroupsDelete.Result deleteGroups(List<Group> groups) {
             return ContactsFactory.create(this).groups().delete().groups(groups).commit();
+        }
+        
+        GroupsDelete.Result deleteGroupWithId(long groupId) {
+            return ContactsFactory.create(this).groups().delete().groupsWithId(groupId).commit();
         }
     }
     ```

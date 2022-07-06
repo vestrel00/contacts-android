@@ -13,4 +13,8 @@ public class DeleteGroupsActivity extends Activity {
     GroupsDelete.Result deleteGroups(List<Group> groups) {
         return ContactsFactory.create(this).groups().delete().groups(groups).commit();
     }
+
+    GroupsDelete.Result deleteGroupWithId(long groupId) {
+        return ContactsFactory.create(this).groups().delete().groupsWithId(groupId).commit();
+    }
 }

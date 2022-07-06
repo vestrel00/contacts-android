@@ -2,7 +2,6 @@ package contacts.core.entities.operation
 
 import android.content.ContentProviderOperation
 import contacts.core.GroupsFields
-import contacts.core.`in`
 import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.NewGroup
 import contacts.core.entities.table.Table
@@ -28,13 +27,5 @@ internal class GroupsOperation {
     fun update(group: ExistingGroupEntity): ContentProviderOperation = newUpdate(TABLE)
         .withSelection(GroupsFields.Id equalTo group.id)
         .withValue(GroupsFields.Title, group.title)
-        .build()
-
-    fun delete(groupId: Long): ContentProviderOperation = newDelete(TABLE)
-        .withSelection(GroupsFields.Id equalTo groupId)
-        .build()
-
-    fun delete(groupIds: Collection<Long>): ContentProviderOperation = newDelete(TABLE)
-        .withSelection(GroupsFields.Id `in` groupIds)
         .build()
 }

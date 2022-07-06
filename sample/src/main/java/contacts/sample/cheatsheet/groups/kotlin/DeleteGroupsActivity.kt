@@ -9,4 +9,7 @@ class DeleteGroupsActivity : Activity() {
 
     fun deleteGroups(groups: List<Group>): GroupsDelete.Result =
         Contacts(this).groups().delete().groups(groups).commit()
+
+    fun deleteGroupWithId(groupId: Long): GroupsDelete.Result =
+        Contacts(this).groups().delete().groupsWithId(groupId).commit()
 }

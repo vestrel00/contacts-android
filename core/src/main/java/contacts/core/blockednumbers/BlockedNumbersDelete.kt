@@ -212,10 +212,8 @@ private class BlockedNumbersDeleteImpl(
     override fun blockedNumbers(blockedNumbers: Collection<BlockedNumber>) =
         blockedNumbers(blockedNumbers.asSequence())
 
-    override fun blockedNumbers(blockedNumbers: Sequence<BlockedNumber>): BlockedNumbersDelete =
-        apply {
-            this.blockedNumbersIds.addAll(blockedNumbers.map { it.id })
-        }
+    override fun blockedNumbers(blockedNumbers: Sequence<BlockedNumber>) =
+        blockedNumbersWithId(blockedNumbers.map { it.id })
 
     override fun blockedNumbersWithId(vararg blockedNumbersIds: Long) =
         blockedNumbersWithId(blockedNumbersIds.asSequence())

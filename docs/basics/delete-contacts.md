@@ -144,6 +144,15 @@ read [Delete custom data](./../customdata/delete-custom-data.md).
 
 When a RawContact is deleted, all of its data are also deleted.
 
+## RawContact deletion is not guaranteed to be immediate
+
+**RawContacts may not immediately be deleted**. They are marked for deletion and get deleted in the 
+background by the Contacts Provider depending on sync settings and network availability.
+
+Contacts of RawContacts that are marked for deletion are immediately deleted!
+
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+
 ## Contacts are deleted automatically when all constituent RawContacts are deleted
 
 Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained

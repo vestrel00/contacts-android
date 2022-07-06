@@ -11,6 +11,13 @@ import contacts.core.util.*
  * Deletes one or more raw contacts or contacts from the raw contacts and contacts tables
  * respectively. All associated data rows are also deleted.
  *
+ * ## RawContact deletion is not guaranteed to be immediate
+ *
+ * **RawContacts may not immediately be deleted**. They are marked for deletion and get deleted in
+ * the background by the Contacts Provider depending on sync settings and network availability.
+ *
+ * Contacts of RawContacts that are marked for deletion are immediately deleted!
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these

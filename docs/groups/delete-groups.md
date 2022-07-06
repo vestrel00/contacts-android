@@ -20,6 +20,16 @@ val deleteResult = Contacts(context)
     .commit()
 ```
 
+To delete a set of existing groups using IDs,
+
+```kotlin
+val deleteResult = Contacts(context)
+    .groups()
+    .delete()
+    .groupsWithId(1, 2, 3)
+    .commit()
+```
+
 ## Executing the delete
 
 To execute the delete,
@@ -28,7 +38,7 @@ To execute the delete,
 .commit()
 ```
 
-If you want to delete all given groups in a single atomic transaction,
+To delete all given groups in a single atomic transaction,
 
 ```kotlin
 .commitInOneTransaction()
@@ -94,5 +104,14 @@ failure.
 
 ## Group memberships are automatically deleted
 
-When a group is deleted, any membership to that group is deleted automatically by the
+When a group is deleted, any memberships to that group are deleted automatically by the
 Contacts Provider.
+
+## Deletion is not guaranteed to be immediate
+
+**Groups may not immediately be deleted**. They are marked for deletion and get deleted in the 
+background by the Contacts Provider depending on sync settings and network availability.
+
+Group **memberships** to those groups marked for deletion are immediately deleted!
+
+> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).

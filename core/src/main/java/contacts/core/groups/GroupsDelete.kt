@@ -1,9 +1,13 @@
 package contacts.core.groups
 
+import android.content.ContentProviderOperation
+import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingGroupEntity
-import contacts.core.entities.operation.GroupsOperation
+import contacts.core.entities.operation.withSelection
+import contacts.core.entities.table.Table
 import contacts.core.util.applyBatch
+import contacts.core.util.deleteSuccess
 import contacts.core.util.unsafeLazy
 
 /**
@@ -11,15 +15,15 @@ import contacts.core.util.unsafeLazy
  *
  * ## Group memberships are automatically deleted
  *
- * When a group is deleted, any membership to that group is deleted automatically by the
+ * When a group is deleted, any memberships to that group are deleted automatically by the
  * Contacts Provider.
  *
- * ## Deletion is not immediate
+ * ## Deletion is not guaranteed to be immediate
  *
- * **Groups are not immediately deleted**. However, they are marked for deletion and they do get
- * deleted in the background by the Contacts Provider depending on sync settings.
+ * **Groups may not immediately be deleted**. They are marked for deletion and get deleted  in the
+ * background by the Contacts Provider depending on sync settings and network availability.
  *
- * However, group memberships to those groups marked for deletion are immediately deleted!
+ * Group **memberships** to those groups marked for deletion are immediately deleted!
  *
  * ### Starred in Android (Favorites)
  *
@@ -68,9 +72,10 @@ import contacts.core.util.unsafeLazy
 interface GroupsDelete : CrudApi {
 
     /**
-     * Adds the given [groups] to the delete queue, which will be deleted on [commit].
+     * Adds the given [groups] to the delete queue, which will be deleted on [commit] or
+     * [commitInOneTransaction].
      *
-     * Read-only groups will be ignored and result in a failed operation.
+     * Attempting to delete a read-only group will result in a failed operation.
      */
     fun groups(vararg groups: ExistingGroupEntity): GroupsDelete
 
@@ -83,6 +88,24 @@ interface GroupsDelete : CrudApi {
      * See [GroupsDelete.groups].
      */
     fun groups(groups: Sequence<ExistingGroupEntity>): GroupsDelete
+
+    /**
+     * Adds the given [groupsIds] to the delete queue, which will be deleted on [commit] or
+     * [commitInOneTransaction].
+     *
+     * Attempting to delete a read-only group will result in a failed operation.
+     */
+    fun groupsWithId(vararg groupsIds: Long): GroupsDelete
+
+    /**
+     * See [GroupsDelete.groupsWithId].
+     */
+    fun groupsWithId(groupsIds: Collection<Long>): GroupsDelete
+
+    /**
+     * See [GroupsDelete.groupsWithId].
+     */
+    fun groupsWithId(groupsIds: Sequence<Long>): GroupsDelete
 
     /**
      * Deletes the [ExistingGroupEntity]s in the queue (added via [groups]) and returns the [Result].
@@ -130,6 +153,16 @@ interface GroupsDelete : CrudApi {
 
         /**
          * True if all Groups have successfully been deleted. False if even one delete failed.
+         *
+         * ## [commit] vs [commitInOneTransaction]
+         *
+         * If you used several of the following in one call,
+         *
+         * - [groups]
+         * - [groupsWithId]
+         *
+         * then this value may be false even if the groups were actually deleted if you used
+         * [commit]. Using [commitInOneTransaction] does not have this "issue".
          */
         val isSuccessful: Boolean
 
@@ -137,6 +170,14 @@ interface GroupsDelete : CrudApi {
          * True if the [group] has been successfully deleted. False otherwise.
          */
         fun isSuccessful(group: ExistingGroupEntity): Boolean
+
+        /**
+         * True if the group with the given [groupId] has been successfully deleted. False otherwise.
+         *
+         * This is used in conjunction with [GroupsDelete.groupsWithId].
+         */
+        fun isSuccessful(groupId: Long): Boolean
+
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -149,52 +190,59 @@ internal fun GroupsDelete(contacts: Contacts): GroupsDelete = GroupsDeleteImpl(c
 private class GroupsDeleteImpl(
     override val contactsApi: Contacts,
 
-    private val groups: MutableSet<ExistingGroupEntity> = mutableSetOf(),
+    private val groupsIds: MutableSet<Long> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
 ) : GroupsDelete {
 
+    private val hasNothingToCommit: Boolean
+        get() = groupsIds.isEmpty()
+
     override fun toString(): String =
         """
             GroupsDelete {
-                groups: $groups
+                groupsIds: $groupsIds
                 hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): GroupsDelete = GroupsDeleteImpl(
-        contactsApi,
-
-        // Redact group data.
-        groups.asSequence().redactedCopies().toMutableSet(),
-
-        isRedacted = true
+        contactsApi, groupsIds, isRedacted = true
     )
 
     override fun groups(vararg groups: ExistingGroupEntity) = groups(groups.asSequence())
 
     override fun groups(groups: Collection<ExistingGroupEntity>) = groups(groups.asSequence())
 
-    override fun groups(groups: Sequence<ExistingGroupEntity>): GroupsDelete = apply {
-        this.groups.addAll(groups.redactedCopiesOrThis(isRedacted))
+    override fun groups(groups: Sequence<ExistingGroupEntity>) = groupsWithId(groups.map { it.id })
+
+    override fun groupsWithId(vararg groupsIds: Long) = groupsWithId(groupsIds.asSequence())
+
+    override fun groupsWithId(groupsIds: Collection<Long>) = groupsWithId(groupsIds.asSequence())
+
+    override fun groupsWithId(groupsIds: Sequence<Long>): GroupsDelete = apply {
+        this.groupsIds.addAll(groupsIds)
     }
 
     override fun commit(): GroupsDelete.Result {
         onPreExecute()
 
-        return if (groups.isEmpty() || !permissions.canUpdateDelete()) {
-            GroupsDeleteResult(emptyMap())
+        return if (!permissions.canUpdateDelete() || hasNothingToCommit) {
+            GroupsDeleteAllResult(isSuccessful = false)
         } else {
             val results = mutableMapOf<Long, Boolean>()
-            for (group in groups) {
-                results[group.id] = if (group.readOnly) {
-                    // Do not attempt to delete read-only groups.
-                    false
-                } else {
-                    contentResolver.applyBatch(GroupsOperation().delete(group.id)) != null
-                }
+            for (groupId in groupsIds) {
+                results[groupId] = contentResolver.deleteGroupsWhere(
+                    // Attempting to delete a read-only group will result in a "successful" result
+                    // even though the group was not actually deleted. Therefore, we need to
+                    // manually add the check to match only non-read-only groups.
+                    (GroupsFields.Id equalTo groupId) and (GroupsFields.ReadOnly equalTo false)
+                )
             }
+
+            // TODO #237 manually add the check to match only non-read-only groups.
+
             GroupsDeleteResult(results)
         }
             .redactedCopyOrThis(isRedacted)
@@ -204,17 +252,35 @@ private class GroupsDeleteImpl(
     override fun commitInOneTransaction(): GroupsDelete.Result {
         onPreExecute()
 
-        val isSuccessful = permissions.canUpdateDelete()
-                && groups.isNotEmpty()
-                // Fail immediately if the set contains a read-only group.
-                && groups.find { it.readOnly } == null
-                && contentResolver.applyBatch(GroupsOperation().delete(groups.map { it.id })) != null
+        return if (!permissions.canUpdateDelete() || hasNothingToCommit) {
+            GroupsDeleteAllResult(isSuccessful = false)
+        } else {
+            val operations = arrayListOf<ContentProviderOperation>()
 
-        return GroupsDeleteAllResult(isSuccessful)
+            if (groupsIds.isNotEmpty()) {
+                deleteOperationFor(
+                    (GroupsFields.Id `in` groupsIds) and (GroupsFields.ReadOnly equalTo false)
+                ).let(operations::add)
+            }
+
+            // TODO #237 manually add the check to match only non-read-only groups.
+
+            GroupsDeleteAllResult(
+                isSuccessful = contentResolver.applyBatch(operations).deleteSuccess
+            )
+        }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
+
+private fun ContentResolver.deleteGroupsWhere(where: Where<GroupsField>): Boolean =
+    applyBatch(deleteOperationFor(where)).deleteSuccess
+
+private fun deleteOperationFor(where: Where<GroupsField>): ContentProviderOperation =
+    ContentProviderOperation.newDelete(Table.Groups.uri)
+        .withSelection(where)
+        .build()
 
 private class GroupsDeleteResult private constructor(
     private val groupIdsResultMap: Map<Long, Boolean>,
@@ -244,6 +310,9 @@ private class GroupsDeleteResult private constructor(
     override fun isSuccessful(group: ExistingGroupEntity): Boolean {
         return groupIdsResultMap.getOrElse(group.id) { false }
     }
+
+    override fun isSuccessful(groupId: Long): Boolean =
+        groupIdsResultMap.getOrElse(groupId) { false }
 }
 
 private class GroupsDeleteAllResult private constructor(
@@ -270,4 +339,6 @@ private class GroupsDeleteAllResult private constructor(
     )
 
     override fun isSuccessful(group: ExistingGroupEntity): Boolean = isSuccessful
+
+    override fun isSuccessful(groupId: Long): Boolean = isSuccessful
 }
