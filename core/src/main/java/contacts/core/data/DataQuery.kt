@@ -400,7 +400,7 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
      *
      * You may print individual data in this list by iterating through it.
      */
-    interface Result<E : ExistingDataEntity> : List<E>, CrudApi.Result {
+    interface Result<E : ExistingDataEntity> : List<E>, CrudApi.QueryResultWithLimit {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result<E>
@@ -536,7 +536,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
             )
         }
 
-        return DataQueryResult(data)
+        return DataQueryResult(data, isLimitBreached = data.size > limit)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -624,22 +624,29 @@ private fun ContentResolver.findRawContactIdsInRawContactsTable(
 
 private class DataQueryResult<E : ExistingDataEntity> private constructor(
     data: List<E>,
+    override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
 ) : ArrayList<E>(data), DataQuery.Result<E> {
 
-    constructor(data: List<E>) : this(data, false)
+    constructor(data: List<E>, isLimitBreached: Boolean) : this(
+        data = data,
+        isLimitBreached = isLimitBreached,
+        isRedacted = false
+    )
 
     override fun toString(): String =
         """
             DataQuery.Result {
                 Number of data found: $size
                 First data: ${firstOrNull()}
+                isLimitBreached: $isLimitBreached
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): DataQuery.Result<E> = DataQueryResult(
-        redactedCopies(),
+        data = redactedCopies(),
+        isLimitBreached = isLimitBreached,
         isRedacted = true
     )
 }
