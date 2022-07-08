@@ -199,7 +199,7 @@ interface GroupsQuery : CrudApi {
      *
      * You may print individual groups in this list by iterating through it.
      */
-    interface Result : List<Group>, CrudApi.Result {
+    interface Result : List<Group>, CrudApi.QueryResultWithLimit {
 
         /**
          * The list of [Group]s from the specified [account] ordered by [orderBy].
@@ -308,13 +308,15 @@ private class GroupsQueryImpl(
     override fun find(cancel: () -> Boolean): GroupsQuery.Result {
         onPreExecute()
 
-        return if (!permissions.canQuery()) {
-            GroupsQueryResult(emptyList())
+        val groups = if (!permissions.canQuery() || cancel()) {
+            emptyList()
         } else {
             contentResolver.resolve(
                 rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
             )
         }
+
+        return GroupsQueryResult(groups, isLimitBreached = groups.size > limit)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -337,7 +339,7 @@ private fun ContentResolver.resolve(
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
-): GroupsQuery.Result = query(
+): List<Group> = query(
     Table.Groups,
     include,
     // There may be Groups that are marked for deletion that have not yet been deleted.
@@ -367,28 +369,35 @@ private fun ContentResolver.resolve(
         groupsList.clear()
     }
 
-    GroupsQueryResult(groupsList)
+    groupsList
 
-} ?: GroupsQueryResult(emptyList())
+} ?: emptyList()
 
 private class GroupsQueryResult private constructor(
     groups: List<Group>,
+    override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
 ) : ArrayList<Group>(groups), GroupsQuery.Result {
 
-    constructor(groups: List<Group>) : this(groups, false)
+    constructor(groups: List<Group>, isLimitBreached: Boolean) : this(
+        groups = groups,
+        isLimitBreached = isLimitBreached,
+        isRedacted = false
+    )
 
     override fun toString(): String =
         """
             GroupsQuery.Result {
                 Number of groups found: $size
                 First group: ${firstOrNull()}
+                isLimitBreached: $isLimitBreached
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): GroupsQuery.Result = GroupsQueryResult(
-        redactedCopies(),
+        groups = redactedCopies(),
+        isLimitBreached = isLimitBreached,
         isRedacted = true
     )
 
