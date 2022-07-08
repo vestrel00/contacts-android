@@ -206,7 +206,7 @@ interface AccountsRawContactsQuery : CrudApi {
      *
      * You may print individual RawContacts in this list by iterating through it.
      */
-    interface Result : List<BlankRawContact>, CrudApi.Result {
+    interface Result : List<BlankRawContact>, CrudApi.QueryResultWithLimit {
 
         /**
          * The list of [BlankRawContact]s from the specified [account] ordered by [orderBy].
@@ -321,7 +321,7 @@ private class AccountsRawContactsQueryImpl(
         onPreExecute()
 
         return if (!accountsPermissions.canQueryRawContacts()) {
-            AccountsRawContactsQueryResult(emptyList(), emptyMap())
+            AccountsRawContactsQueryResult(emptyList(), emptyMap(), isLimitBreached = false)
         } else {
             contentResolver.resolve(
                 isProfile, rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
@@ -380,36 +380,49 @@ private fun ContentResolver.resolve(
         accountRawContactsMap.clear()
     }
 
-    AccountsRawContactsQueryResult(rawContactsList, accountRawContactsMap)
+    AccountsRawContactsQueryResult(
+        rawContactsList,
+        accountRawContactsMap,
+        isLimitBreached = rawContactsList.size > limit
+    )
 
-} ?: AccountsRawContactsQueryResult(emptyList(), emptyMap())
+} ?: AccountsRawContactsQueryResult(emptyList(), emptyMap(), isLimitBreached = false)
 
 private class AccountsRawContactsQueryResult private constructor(
     rawContacts: List<BlankRawContact>,
     private val accountRawContactsMap: Map<Account?, List<BlankRawContact>>,
+    override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
 ) : ArrayList<BlankRawContact>(rawContacts), AccountsRawContactsQuery.Result {
 
     constructor(
         rawContacts: List<BlankRawContact>,
-        accountRawContactsMap: Map<Account?, List<BlankRawContact>>
-    ) : this(rawContacts, accountRawContactsMap, false)
+        accountRawContactsMap: Map<Account?, List<BlankRawContact>>,
+        isLimitBreached: Boolean
+    ) : this(
+        rawContacts = rawContacts,
+        accountRawContactsMap = accountRawContactsMap,
+        isLimitBreached = isLimitBreached,
+        false
+    )
 
     override fun toString(): String =
         """
             AccountsRawContactsQuery.Result {
                 Number of raw contacts found: $size
                 First raw contact: ${firstOrNull()}
+                isLimitBreached: $isLimitBreached
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): AccountsRawContactsQuery.Result =
         AccountsRawContactsQueryResult(
-            redactedCopies(),
-            accountRawContactsMap.entries.associate {
+            rawContacts = redactedCopies(),
+            accountRawContactsMap = accountRawContactsMap.entries.associate {
                 it.key?.redactedCopy() to it.value.redactedCopies()
             },
+            isLimitBreached = isLimitBreached,
             isRedacted = true
         )
 
