@@ -509,7 +509,7 @@ language standards. It is Kotlin-first, Java-second (with love and care).
 
 ## Proguard
 
-If you use Proguard and the `async` and/or `permissions`, you may need to add rules for
+If you use Proguard and the `async` and/or `permissions` modules, then you may need to add rules for
 [Coroutines][coroutines-proguard].
 
 ## License

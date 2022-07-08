@@ -391,6 +391,16 @@ interface Query : CrudApi {
     // only pair of APIs in the library that have the same name for its results interface.
     interface Result : List<Contact>, CrudApi.Result {
 
+        /**
+         * This is true if the number of entities found is exceeds the specified [limit]. This
+         * occurs when the device does not support LIMITs in queries. In such cases, pagination is
+         * not supported because all table rows have been returned.
+         *
+         * For a list of devices found not to support limits, visit this discussion page;
+         * https://github.com/vestrel00/contacts-android/discussions/242
+         */
+        val isLimitBreached: Boolean
+
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
     }
@@ -531,7 +541,7 @@ private class QueryImpl(
             )
         }
 
-        return QueryResult(contacts)
+        return QueryResult(contacts, isLimitBreached = contacts.size > limit)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -689,22 +699,29 @@ internal fun ContentResolver.resolve(
 
 private class QueryResult private constructor(
     contacts: List<Contact>,
+    override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
 ) : ArrayList<Contact>(contacts), Query.Result {
 
-    constructor(contacts: List<Contact>) : this(contacts, false)
+    constructor(contacts: List<Contact>, isLimitBreached: Boolean) : this(
+        contacts = contacts,
+        isLimitBreached = isLimitBreached,
+        isRedacted = false
+    )
 
     override fun toString(): String =
         """
             Query.Result {
                 Number of contacts found: $size
                 First contact: ${firstOrNull()}
+                isLimitBreached: $isLimitBreached
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): Query.Result = QueryResult(
-        redactedCopies(),
+        contacts = redactedCopies(),
+        isLimitBreached = isLimitBreached,
         isRedacted = true
     )
 }

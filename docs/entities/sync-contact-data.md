@@ -52,9 +52,9 @@ sync events as long as Contacts sync is enabled for the Account in the system se
 You can manually trigger a sync through the system sync settings. Some events that will probably 
 trigger a sync are;
 
-- Getting network connection from a state where there was not network connection (offline -> online).
+- Getting network connection from a state where there was no network connection (offline -> online).
 - Adding an Account.
-- Removing an Account
+- Removing an Account.
 
 Until changes are synced, local changes will not take effect. Some examples are;
 
