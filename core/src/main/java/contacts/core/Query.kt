@@ -389,17 +389,7 @@ interface Query : CrudApi {
     // I know that this interface also exist in BroadQuery but I want each API to have its own
     // interface for the results in case we need to deviate implementation. Besides, this is the
     // only pair of APIs in the library that have the same name for its results interface.
-    interface Result : List<Contact>, CrudApi.Result {
-
-        /**
-         * This is true if the number of entities found is exceeds the specified [limit]. This
-         * occurs when the device does not support LIMITs in queries. In such cases, pagination is
-         * not supported because all table rows have been returned.
-         *
-         * For a list of devices found not to support limits, visit this discussion page;
-         * https://github.com/vestrel00/contacts-android/discussions/242
-         */
-        val isLimitBreached: Boolean
+    interface Result : List<Contact>, CrudApi.QueryResultWithLimit {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result

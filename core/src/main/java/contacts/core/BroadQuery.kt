@@ -496,7 +496,7 @@ interface BroadQuery : CrudApi {
     // I know that this interface also exist in Query but I want each API to have its own
     // interface for the results in case we need to deviate implementation. Besides, this is the
     // only pair of APIs in the library that have the same name for its results interface.
-    interface Result : List<Contact>, CrudApi.Result {
+    interface Result : List<Contact>, CrudApi.QueryResultWithLimit {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -653,7 +653,7 @@ private class BroadQueryImpl(
             )
         }
 
-        return BroadQueryResult(contacts)
+        return BroadQueryResult(contacts, isLimitBreached = contacts.size > limit)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -797,22 +797,29 @@ private fun ContentResolver.findContactIdsInDataTable(
 
 private class BroadQueryResult private constructor(
     contacts: List<Contact>,
+    override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
 ) : ArrayList<Contact>(contacts), BroadQuery.Result {
 
-    constructor(contacts: List<Contact>) : this(contacts, false)
+    constructor(contacts: List<Contact>, isLimitBreached: Boolean) : this(
+        contacts = contacts,
+        isLimitBreached = isLimitBreached,
+        isRedacted = false
+    )
 
     override fun toString(): String =
         """
             BroadQuery.Result {
                 Number of contacts found: $size
                 First contact: ${firstOrNull()}
+                isLimitBreached: $isLimitBreached
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): BroadQuery.Result = BroadQueryResult(
-        redactedCopies(),
+        contacts = redactedCopies(),
+        isLimitBreached = isLimitBreached,
         isRedacted = true
     )
 }

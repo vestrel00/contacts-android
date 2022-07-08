@@ -32,6 +32,21 @@ interface CrudApi : Redactable {
     interface Result : Redactable
 
     /**
+     * The API core function result.
+     */
+    interface QueryResultWithLimit : Result {
+        /**
+         * This is true if the number of entities found is exceeds the specified limit. This occurs
+         * when the device does not support limits in queries. In such cases, pagination is  not
+         * supported because all table rows have been returned.
+         *
+         * For a list of devices found not to support limits, visit this discussion page;
+         * https://github.com/vestrel00/contacts-android/discussions/242
+         */
+        val isLimitBreached: Boolean
+    }
+
+    /**
      * Get notified about events within [CrudApi] instances.
      */
     interface Listener {
