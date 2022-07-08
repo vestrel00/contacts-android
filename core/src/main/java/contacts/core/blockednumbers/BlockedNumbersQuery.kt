@@ -168,7 +168,7 @@ interface BlockedNumbersQuery : CrudApi {
      *
      * You may print individual blocked numbers in this list by iterating through it.
      */
-    interface Result : List<BlockedNumber>, CrudApi.Result {
+    interface Result : List<BlockedNumber>, CrudApi.QueryResultWithLimit {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -264,11 +264,16 @@ private class BlockedNumbersQueryImpl(
     override fun find(cancel: () -> Boolean): BlockedNumbersQuery.Result {
         onPreExecute()
 
-        return if (!privileges.canReadAndWrite()) {
-            BlockedNumbersQueryResult(emptyList())
+        val blockedNumbers = if (!privileges.canReadAndWrite() || cancel()) {
+            emptyList()
         } else {
             contentResolver.resolve(INCLUDE, where, orderBy, limit, offset, cancel)
         }
+
+        return BlockedNumbersQueryResult(
+            blockedNumbers,
+            isLimitBreached = blockedNumbers.size > limit
+        )
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -289,7 +294,7 @@ private fun ContentResolver.resolve(
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
-): BlockedNumbersQuery.Result = query(
+): List<BlockedNumber> = query(
     Table.BlockedNumbers,
     include,
     where,
@@ -307,28 +312,35 @@ private fun ContentResolver.resolve(
         blockedNumbersList.clear()
     }
 
-    BlockedNumbersQueryResult(blockedNumbersList)
+    blockedNumbersList
 
-} ?: BlockedNumbersQueryResult(emptyList())
+} ?: emptyList()
 
 private class BlockedNumbersQueryResult private constructor(
     blockedNumbers: List<BlockedNumber>,
+    override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
 ) : ArrayList<BlockedNumber>(blockedNumbers), BlockedNumbersQuery.Result {
 
-    constructor(blockedNumbers: List<BlockedNumber>) : this(blockedNumbers, false)
+    constructor(blockedNumbers: List<BlockedNumber>, isLimitBreached: Boolean) : this(
+        blockedNumbers = blockedNumbers,
+        isLimitBreached = isLimitBreached,
+        isRedacted = false
+    )
 
     override fun toString(): String =
         """
             BlockedNumbersQuery.Result {
                 Number of blocked numbers found: $size
                 First blocked number: ${firstOrNull()}
+                isLimitBreached: $isLimitBreached
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): BlockedNumbersQuery.Result = BlockedNumbersQueryResult(
-        redactedCopies(),
+        blockedNumbers = redactedCopies(),
+        isLimitBreached = isLimitBreached,
         isRedacted = true
     )
 }
