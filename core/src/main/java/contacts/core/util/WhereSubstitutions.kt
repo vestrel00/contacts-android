@@ -8,23 +8,33 @@ import contacts.core.*
  *
  * More specifically, this translates the following column names to work with the Contacts table;
  *
- * - RawContacts.CONTACT_ID -> Contacts._ID
  * - Data.CONTACT_ID -> Contacts._ID
  *
- * This does no translate anything else. So any fields used that does not exist in the Contacts
- * table will remain.
+ * This does not translate anything else. If any fields that does not exist in the Contacts table
+ * are encountered, then this will return null.
  */
-internal fun Where<AbstractDataField>.inContactsTable(): Where<ContactsField> =
-    copyWithFieldValueSubstitutions(
-        substituteField = { fieldHolder ->
-            when (fieldHolder.field) {
-                // Technically, RawContactsFields.ContactId and Fields.Contact.Id have the same columnName.
-                // For the sake of OCD and just-in-case, I'm performing this redundant replacement. SUE ME!
-                RawContactsFields.ContactId, Fields.Contact.Id -> FieldHolder(ContactsFields.Id)
-                else -> fieldHolder // no substitution
+fun Where<AbstractDataField>.toContactsTableWhere(): Where<ContactsField>? =
+    if (containsField(Fields.DataId.columnName)) {
+        // The ID column names in all tables are the same. Therefore, we need to make sure that if
+        // the Data table where is using the Data ID, then there is no corresponding Contacts table
+        // where to avoid unintentional matching.
+        null
+    } else {
+        val transformedWhere = copyWithFieldValueSubstitutions<AbstractDataField, ContactsField>(
+            substituteField = { fieldHolder ->
+                when (fieldHolder.field) {
+                    Fields.Contact.Id -> FieldHolder(ContactsFields.Id)
+                    else -> fieldHolder // no substitution
+                }
             }
+        )
+
+        if (transformedWhere.allFieldsContainedIn(ContactsFields.all.map { it.columnName })) {
+            transformedWhere
+        } else {
+            null
         }
-    )
+    }
 
 /**
  * Converts [this] Data where clause to a where clause that is usable for the RawContacts table.
@@ -33,18 +43,78 @@ internal fun Where<AbstractDataField>.inContactsTable(): Where<ContactsField> =
  *
  * - Data.RAW_CONTACT_ID -> RawContacts._ID
  *
- * This does no translate anything else. So any fields used that does not exist in the RawContacts
- * table will remain.
+ * This does not translate anything else. If any fields that does not exist in the RawContacts table
+ * are encountered, then this will return null.
  */
-internal fun Where<AbstractDataField>.inRawContactsTable(): Where<RawContactsField> =
-    copyWithFieldValueSubstitutions(
-        substituteField = { fieldHolder ->
-            when (fieldHolder.field) {
-                Fields.RawContact.Id -> FieldHolder(RawContactsFields.Id)
-                else -> fieldHolder // no substitution
+fun Where<AbstractDataField>.toRawContactsTableWhere(): Where<RawContactsField>? =
+    if (containsField(Fields.DataId.columnName)) {
+        // The ID column names in all tables are the same. Therefore, we need to make sure that if
+        // the Data table where is using the Data ID, then there is no corresponding RawContacts
+        // table where to avoid unintentional matching.
+        null
+    } else {
+        val transformedWhere = copyWithFieldValueSubstitutions<AbstractDataField, RawContactsField>(
+            substituteField = { fieldHolder ->
+                when (fieldHolder.field) {
+                    Fields.RawContact.Id -> FieldHolder(RawContactsFields.Id)
+                    // This part is not necessary at all because both Fields.Contact.Id and
+                    // RawContactsFields.ContactId reference RawContactsColumns.CONTACT_ID. This
+                    // essentially does nothing... but it doesn't hurt!
+                    Fields.Contact.Id -> FieldHolder(RawContactsFields.ContactId)
+                    else -> fieldHolder // no substitution
+                }
             }
+        )
+
+        // Make sure that Options columns are not included in the field set check because the
+        // options in the Data table reference Contacts table options and NOT RawContacts table
+        // options.
+        val rawContactsFieldsFromDataFields = RawContactsFields.all.asSequence().minus(
+            // The RawContactsFields.Options.Id is structurally equal to RawContactsFields.Id so
+            // we need to make sure we are not subtracting that.
+            RawContactsFields.Options.all.minus(RawContactsFields.Options.Id)
+        )
+        if (transformedWhere.allFieldsContainedIn(
+                rawContactsFieldsFromDataFields.map { it.columnName }.toSet()
+            )
+        ) {
+            transformedWhere
+        } else {
+            null
         }
-    )
+    }
+
+/**
+ * Returns true if all of the fields in this [Where] is contained in [fieldColumnNames]. Returns
+ * false if even one field in this [Where] is not in [fieldColumnNames].
+ */
+private fun Where<Field>.allFieldsContainedIn(fieldColumnNames: Collection<String>): Boolean = run {
+    if (lhs is FieldHolder) {
+        // Base case.
+        fieldColumnNames.contains(lhs.field.columnName)
+    } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
+        // Recursive case.
+        lhs.where.allFieldsContainedIn(fieldColumnNames)
+                && rhs.where.allFieldsContainedIn(fieldColumnNames)
+    } else {
+        throw InvalidWhereFormException(this)
+    }
+}
+
+/**
+ * Returns true if this [Where] contains the given [fieldColumnName].
+ */
+private fun Where<Field>.containsField(fieldColumnName: String): Boolean = run {
+    if (lhs is FieldHolder) {
+        // Base case.
+        lhs.field.columnName == fieldColumnName
+    } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
+        // Recursive case.
+        lhs.where.containsField(fieldColumnName) || rhs.where.containsField(fieldColumnName)
+    } else {
+        throw InvalidWhereFormException(this)
+    }
+}
 
 /**
  * Returns a copy of this [Where] such that LHS fields are substituted with the output of

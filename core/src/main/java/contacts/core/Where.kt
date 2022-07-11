@@ -516,7 +516,7 @@ private fun <F : Field, V : Any?> Sequence<V>.combineWhere(
  * a Where composed of one or more GroupsField.
  *
  * The type [T] is not enforced within the class itself in order to support mutating functions
- * such as [contacts.core.util.inRawContactsTable] and [contacts.core.util.inContactsTable].
+ * such as [contacts.core.util.toRawContactsTableWhere] and [contacts.core.util.toContactsTableWhere].
  * This will allow us to construct a Where<X> from a Where<Y>.
  *
  * ### Binary tree structure
@@ -840,7 +840,7 @@ fun Any.likeWildcardsEscaped(escapeExpression: String = LIKE_ESCAPE_EXPR): Strin
 }
 
 /**
- * Exception thrown if the given where is not one of the following valid forms,
+ * Exception thrown if the given where is NOT one of the following valid forms,
  *
  * - "field match value"
  * - "where combine where"

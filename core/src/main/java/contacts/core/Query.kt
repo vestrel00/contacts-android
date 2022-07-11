@@ -572,12 +572,27 @@ private fun ContentResolver.resolve(
         // RawContacts and Contacts table respectively. Suppress DB exceptions because the where
         // clause may contain fields (columns) that are not in the respective tables.
         if (includeBlanks) {
-            contactIds.addAll(
-                findContactIdsInRawContactsTable(where.inRawContactsTable(), true, cancel)
-            )
-            contactIds.addAll(
-                findContactIdsInContactsTable(where.inContactsTable(), true, cancel)
-            )
+            val rawContactsTableWhere = where.toRawContactsTableWhere()
+            if (rawContactsTableWhere != null) {
+                // We do not actually need to suppress DB exceptions anymore because we are making
+                // sure that only RawContacts fields are in rawContactsTableWhere. However, it
+                // does not hurt to be extra safe... though this will mask programming errors in
+                // toRawContactsTableWhere by not crashing. Unit tests should cover this though!
+                contactIds.addAll(
+                    findContactIdsInRawContactsTable(rawContactsTableWhere, true, cancel)
+                )
+            }
+
+            val contactsTableWhere = where.toContactsTableWhere()
+            if (contactsTableWhere != null) {
+                // We do not actually need to suppress DB exceptions anymore because we are making
+                // sure that only Contacts fields are in contactsTableWhere. However, it does not
+                // hurt to be extra safe... though this will mask programming errors in
+                // toContactsTableWhere by not crashing. Unit tests should cover this though!
+                contactIds.addAll(
+                    findContactIdsInContactsTable(contactsTableWhere, true, cancel)
+                )
+            }
         }
 
         // If no match, return empty list.

@@ -1169,10 +1169,10 @@ object ContactsFields : FieldSet<ContactsField>() {
     @JvmField
     val Options = ContactsOptionsFields()
 
-    // Do not include in fields.
+    // Do not include in all.
     internal val DisplayNameSource = ContactsField(Contacts.DISPLAY_NAME_SOURCE)
 
-    // Do not include in fields.
+    // Do not include in all.
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     internal val NameRawContactId = ContactsField(Contacts.NAME_RAW_CONTACT_ID)
 
