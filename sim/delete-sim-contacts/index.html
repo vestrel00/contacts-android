@@ -1951,17 +1951,24 @@ the SIM card.</p>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">.</span><span class="na">simContacts</span><span class="p">(</span><span class="n">existingSimContacts</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
+<p>To delete using name and number,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="p">.</span><span class="na">sim</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="p">.</span><span class="na">delete</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="p">.</span><span class="na">simContact</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">number</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
 <h2 id="executing-the-delete">Executing the delete<a class="headerlink" href="#executing-the-delete" title="Permanent link">&para;</a></h2>
 <p>To execute the delete,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h3 id="handling-the-delete-result">Handling the delete result<a class="headerlink" href="#handling-the-delete-result" title="Permanent link">&para;</a></h3>
 <p>The <code>commit</code> function returns a <code>Result</code>,</p>
 <p>To check if all deletes succeeded,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allDeletesSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deleteResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allDeletesSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deleteResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
 </code></pre></div>
 <p>To check if a particular delete succeeded,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstDeleteSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deleteResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">simContact</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstDeleteSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deleteResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">simContact</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-delete-and-result-processing-asynchronously">Performing the delete and result processing asynchronously<a class="headerlink" href="#performing-the-delete-and-result-processing-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Deletes are executed when the <code>commit</code> or <code>commitInOneTransaction</code> function is invoked. The work is

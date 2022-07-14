@@ -653,6 +653,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rawcontact-deletion-is-not-guaranteed-to-be-immediate" class="md-nav__link">
+    RawContact deletion is not guaranteed to be immediate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#contacts-are-deleted-automatically-when-all-constituent-rawcontacts-are-deleted" class="md-nav__link">
     Contacts are deleted automatically when all constituent RawContacts are deleted
   </a>
@@ -1955,6 +1962,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rawcontact-deletion-is-not-guaranteed-to-be-immediate" class="md-nav__link">
+    RawContact deletion is not guaranteed to be immediate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#contacts-are-deleted-automatically-when-all-constituent-rawcontacts-are-deleted" class="md-nav__link">
     Contacts are deleted automatically when all constituent RawContacts are deleted
   </a>
@@ -1995,7 +2009,7 @@ RawContacts.</p>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactToDelete</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
-<p>If you want to delete a set of RawContacts,</p>
+<p>To delete a set of RawContacts,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delete</span><span class="w"></span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">contactToDelete</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
@@ -2073,6 +2087,13 @@ read <a href="../../permissions/permissions-handling-coroutines/">Permissions ha
 read <a href="../../customdata/delete-custom-data/">Delete custom data</a>.</p>
 <h2 id="data-belonging-to-rawcontactscontact-are-deleted">Data belonging to RawContacts/Contact are deleted<a class="headerlink" href="#data-belonging-to-rawcontactscontact-are-deleted" title="Permanent link">&para;</a></h2>
 <p>When a RawContact is deleted, all of its data are also deleted.</p>
+<h2 id="rawcontact-deletion-is-not-guaranteed-to-be-immediate">RawContact deletion is not guaranteed to be immediate<a class="headerlink" href="#rawcontact-deletion-is-not-guaranteed-to-be-immediate" title="Permanent link">&para;</a></h2>
+<p><strong>RawContacts may not immediately be deleted</strong>. They are marked for deletion and get deleted in the 
+background by the Contacts Provider depending on sync settings and network availability.</p>
+<p>Contacts of RawContacts that are marked for deletion are immediately deleted!</p>
+<blockquote>
+<p>ℹ️ For more info, read <a href="../../entities/sync-contact-data/">Sync contact data across devices</a>.</p>
+</blockquote>
 <h2 id="contacts-are-deleted-automatically-when-all-constituent-rawcontacts-are-deleted">Contacts are deleted automatically when all constituent RawContacts are deleted<a class="headerlink" href="#contacts-are-deleted-automatically-when-all-constituent-rawcontacts-are-deleted" title="Permanent link">&para;</a></h2>
 <p>Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained
 in the documentation in <code>ContactsContract.RawContacts</code>;</p>
