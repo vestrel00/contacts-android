@@ -110,7 +110,7 @@ You may, of course, use other permission handling libraries or just do it yourse
 
 ## Profile accounts
 
-The `AccountsQuery` API also supports querying the Profile (device owner) contact data. To get an
+The `AccountsQuery` API also supports querying the Profile (device owner) account. To get an
 instance of this API for Profile queries,
 
 ```kotlin

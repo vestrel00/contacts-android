@@ -71,7 +71,16 @@ val allDeletesSuccessful = deleteResult.isSuccessful
 To check if a particular delete succeeded,
 
 ```kotlin
-val firstDeleteSuccessful = deleteResult.isSuccessful(group1)
+val deleteSuccessful = deleteResult.isSuccessful(group)
+val deleteSuccessful = deleteResult.isSuccessful(group.id)
+```
+
+To check if a particular advanced delete managed to delete at least one matching group,
+
+```kotlin
+val where = GroupsFields.AccountType equalTo "com.google"
+val deleteResult = delete.groupsWhere(where).commit()
+val advancedDeleteSuccessful = deleteResult.isSuccessful(where)
 ```
 
 ## Performing the delete and result processing asynchronously

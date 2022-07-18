@@ -52,7 +52,8 @@ val allDeletesSuccessful = deleteResult.isSuccessful
 To check if a particular delete succeeded,
 
 ```kotlin
-val firstDeleteSuccessful = deleteResult.isSuccessful(simContact)
+val deleteSuccessful = deleteResult.isSuccessful(simContact)
+val deleteSuccessful = deleteResult.isSuccessful(name, number)
 ```
 
 ## Performing the delete and result processing asynchronously

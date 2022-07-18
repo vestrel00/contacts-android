@@ -74,7 +74,16 @@ val allDeletesSuccessful = deleteResult.isSuccessful
 To check if a particular delete succeeded,
 
 ```kotlin
-val firstDeleteSuccessful = deleteResult.isSuccessful(blockedNumber1)
+val deleteSuccessful = deleteResult.isSuccessful(blockedNumber)
+val deleteSuccessful = deleteResult.isSuccessful(blockedNumber.id)
+```
+
+To check if a particular advanced delete managed to delete at least one matching blocked number,
+
+```kotlin
+val where = BlockedNumbersFields.Number contains "555"
+val deleteResult = delete.groupsWhere(where).commit()
+val advancedDeleteSuccessful = deleteResult.isSuccessful(where)
 ```
 
 ## Performing the delete and result processing asynchronously
