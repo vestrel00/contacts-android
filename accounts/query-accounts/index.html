@@ -1998,7 +1998,7 @@ permissions. If not granted, the query will do nothing and return an empty list.
 more info, read <a href="../../permissions/permissions-handling-coroutines/">Permissions handling using coroutines</a>.</p>
 <p>You may, of course, use other permission handling libraries or just do it yourself =)</p>
 <h2 id="profile-accounts">Profile accounts<a class="headerlink" href="#profile-accounts" title="Permanent link">&para;</a></h2>
-<p>The <code>AccountsQuery</code> API also supports querying the Profile (device owner) contact data. To get an
+<p>The <code>AccountsQuery</code> API also supports querying the Profile (device owner) account. To get an
 instance of this API for Profile queries,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">accounts</span><span class="p">().</span><span class="na">profile</span><span class="p">().</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
