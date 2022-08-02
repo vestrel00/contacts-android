@@ -181,7 +181,13 @@ class ContactsActivity : BaseActivity() {
         contactsAdapter.apply {
             setNotifyOnChange(false)
             clear()
-            addAll(searchResults.map { it.displayNamePrimary })
+            addAll(searchResults.map {
+                if (it.displayNamePrimary.isNullOrEmpty()) {
+                    "(No name)"
+                } else {
+                    it.displayNamePrimary
+                }
+            })
             notifyDataSetChanged()
         }
     }
