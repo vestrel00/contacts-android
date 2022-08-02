@@ -2052,7 +2052,7 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 <ul>
 <li>📜 <a href="https://vestrel00.github.io/contacts-android/">Documentation</a></li>
 <li>🚉 <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.2.3">Current release - 0.2.3</a></li>
-<li>🚂 <a href="https://github.com/vestrel00/contacts-android/discussions/218">Upcoming release - 0.3.0</a></li>
+<li>🚂 <a href="https://github.com/vestrel00/contacts-android/discussions/248">Upcoming release - 0.2.4</a></li>
 <li>🗺 <a href="https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap">Project roadmap</a></li>
 <li>💌 <a href="https://github.com/vestrel00/contacts-android/wiki/Why-use-this-library%3F">Why use this library?</a></li>
 </ul>
@@ -2416,11 +2416,14 @@ contact returned. They do this to fetch the data per contact. This means that if
 1,000 matching contacts, then an extra 1,000 internal database queries are performed! 
 This is not cool!</p>
 <p>To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at 
-least two and at most six or seven internal database queries no matter how many contacts are 
-matched! Even if there are 100,000 contacts matched, the library will only perform two to seven 
-internal database queries (depending on your query parameters).</p>
+least two internal database queries no matter how many contacts are matched! Even if there are 
+10,000 contacts matched, the library will only perform two internal database queries (depending on 
+your query parameters). Fetch 10,000 as fast as <strong>99 milliseconds</strong>!</p>
+<blockquote>
+<p>ℹ️ For more info, read <a href="entities/include-only-desired-data/#optimizing-queries">Optimizing queries</a>.</p>
+</blockquote>
 <p>Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
-<strong>pagination</strong> with <code>limit</code> and <code>offset</code> functions :sunglasses:</p>
+<strong>pagination</strong> with <code>limit</code> and <code>offset</code> functions!</p>
 <p><strong>Cancellations</strong> are also supported! To cancel a query amid execution,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>

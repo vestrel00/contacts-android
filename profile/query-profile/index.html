@@ -1014,13 +1014,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#including-blank-raw-contacts" class="md-nav__link">
-    Including blank (raw) contacts
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#specifying-accounts" class="md-nav__link">
     Specifying Accounts
   </a>
@@ -1887,13 +1880,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#including-blank-raw-contacts" class="md-nav__link">
-    Including blank (raw) contacts
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#specifying-accounts" class="md-nav__link">
     Specifying Accounts
   </a>
@@ -1972,17 +1958,12 @@ RawContacts.</p>
 <p>To get the profile Contact,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">profileContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">profile</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">find</span><span class="p">().</span><span class="na">contact</span><span class="w"></span>
 </code></pre></div>
-<h2 id="including-blank-raw-contacts">Including blank (raw) contacts<a class="headerlink" href="#including-blank-raw-contacts" title="Permanent link">&para;</a></h2>
-<p>The API allows you to specify if you want to include blank (raw) contacts or not,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="na">includeBlanks</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-<p>For more info, read about <a href="../../entities/about-blank-contacts/">Blank contacts</a>.</p>
 <h2 id="specifying-accounts">Specifying Accounts<a class="headerlink" href="#specifying-accounts" title="Permanent link">&para;</a></h2>
 <p>To only include RawContacts associated with one of the given accounts,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For example, to include only RawContacts belonging to only one account,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">))</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">))</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
@@ -2001,25 +1982,25 @@ should only specify this if you actually need it.</p>
 </blockquote>
 <h2 id="including-only-specific-data">Including only specific data<a class="headerlink" href="#including-only-specific-data" title="Permanent link">&para;</a></h2>
 <p>To include only the given set of fields (data) in each of the Profile Contact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For example, to only include email and name fields,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="cancelling-the-query">Cancelling the query<a class="headerlink" href="#cancelling-the-query" title="Permanent link">&para;</a></h2>
 <p>To cancel a query amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>find</code> function optionally takes in a function that, if it returns true, will cancel query
 processing as soon as possible. The function is called numerous times during query processing to
 check if processing should stop or continue. This gives you the option to cancel the query.</p>
 <p>For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-query-asynchronously">Performing the query asynchronously<a class="headerlink" href="#performing-the-query-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Queries are executed when the <code>find</code> function is invoked. The work is done in the same thread as
