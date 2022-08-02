@@ -81,11 +81,38 @@ in order to increase speed and lessen memory usage.
 .include(Fields.Contact.PhotoThumbnailUri, Fields.Contact.DisplayNamePrimary)
 ```
 
-Getting 10,000 contacts (without using the `where`, `offset`, and `limit` functions), can be done 
-in less than 1-2 seconds in mid-range devices.
+Here is a sample benchmark running on an M1 MacBook Pro using a Pixel 4 API 30 emulator in 
+Android Studio. The Contacts Provider database contains 10,000 contacts each having exactly one 
+address, email, event, im, name, nickname, note, organization, phone, relation, sip address, and 
+website.
 
-In general, including only fields from `Fields.Contact` in `Query` and `BroadQuery` API calls will
-result in the fastest and memory-efficient queries.
+Getting all 10,000 contacts including only fields from `Fields.Contact` using the following query,
+
+```kotlin
+val contacts = Contacts(context)
+    .broadQuery()
+    .include(
+        Fields.Contact.LookupKey,
+        Fields.Contact.DisplayNamePrimary
+    )
+    .find()
+```
+
+takes between 99 to 144 **milliseconds** =)
+
+> ℹ️ As of [version 0.2.4](https://github.com/vestrel00/contacts-android/discussions/248), including
+> only fields from `Fields.Contact` in `Query` and `BroadQuery` API calls will result in the 
+> fastest and most memory efficient queries. Prior versions do not have this extra optimization, 
+> though including less fields still result in faster queries. Prior versions will take on average
+> 1334 milliseconds for the same query above.
+
+Getting all 10,000 contacts including ALL fields using the following query,
+
+```kotlin
+val contacts = Contacts(context).broadQuery().find()
+```
+
+takes between 2953 to 3009 milliseconds =(
 
 ## Using `include` in insert APIs
 

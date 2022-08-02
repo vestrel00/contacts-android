@@ -115,6 +115,8 @@ For example, to only include email and name fields,
 
 For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
 
+### Optimize your queries
+
 To optimize speed and minimize CPU and memory consumption, it is highly recommended that you only 
 include fields you need.
 

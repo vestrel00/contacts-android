@@ -93,3 +93,25 @@ internal fun Include<AbstractDataField>.onlyRawContactsFields(): Include<RawCont
             // DataContactsFields.Id has a different columnName than RawContactsFields.ContactId.
             .plus(RawContactsFields.ContactId)
     )
+
+/**
+ * Returns true if there is at least one field belonging to the Data table that is in this includes.
+ *
+ * Note that [AbstractDataField] has 4 different direct subtypes;
+ *
+ * - [DataRawContactsField]
+ * - [DataContactsField]
+ * - [GenericDataField]
+ * - [DataField]
+ *
+ * Instances of [DataRawContactsField] and [DataContactsField] represent fields from the RawContacts
+ * and Contacts tables respectively.
+ *
+ * Instances of [GenericDataField] represent fields from the Data table. However, they do not
+ * represent any intrinsic data (e.g. email, phone). Furthermore, all of them are a part of
+ * [RequiredDataFields] so they are always included.
+ *
+ * The only fields we are interested in are instances of [DataField].
+ */
+internal val Include<AbstractDataField>.containsAtLeastOneDataField: Boolean
+    get() = fields.find { it is DataField } != null

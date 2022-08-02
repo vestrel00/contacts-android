@@ -623,15 +623,18 @@ internal fun ContentResolver.resolve(
         return emptyList()
     }
 
-    // Collect Data for non-blank RawContact and Contact in the given offsetAndLimitedContactIds.
-    // If offsetAndLimitedContactIds is null, then all Data and non-blank RawContacts and Contacts
-    // are collected.
-    query(
-        Table.Data, include, offsetAndLimitedContactIds?.let {
-            Fields.Contact.Id `in` it
-        },
-        processCursor = contactsMapper::processDataCursor
-    )
+    // Skip querying the Data table if there are no data fields included.
+    if (include.containsAtLeastOneDataField) {
+        // Collect Data for non-blank RawContact and Contact in the given offsetAndLimitedContactIds.
+        // If offsetAndLimitedContactIds is null, then all Data and non-blank RawContacts and Contacts
+        // are collected.
+        query(
+            Table.Data, include, offsetAndLimitedContactIds?.let {
+                Fields.Contact.Id `in` it
+            },
+            processCursor = contactsMapper::processDataCursor
+        )
+    }
 
     if (cancel()) {
         return emptyList()

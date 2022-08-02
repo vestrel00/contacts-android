@@ -450,8 +450,10 @@ This is not cool!
 
 To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at 
 least two internal database queries no matter how many contacts are matched! Even if there are 
-100,000 contacts matched, the library will only perform two internal database queries (depending on 
-your query parameters).
+10,000 contacts matched, the library will only perform two internal database queries (depending on 
+your query parameters). Fetch 10,000 as fast as **99 milliseconds**!
+
+> ℹ️ For more info, read [Optimizing queries](/docs/entities/include-only-desired-data.md#optimizing-queries).
 
 Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
 **pagination** with `limit` and `offset` functions!
