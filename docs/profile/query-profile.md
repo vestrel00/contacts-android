@@ -24,16 +24,6 @@ To get the profile Contact,
 val profileContact = Contacts(context).profile().query().find().contact
 ```
 
-## Including blank (raw) contacts
-
-The API allows you to specify if you want to include blank (raw) contacts or not,
-
-```kotlin
-.includeBlanks(true|false)
-```
-
-For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
-
 ## Specifying Accounts
 
 To only include RawContacts associated with one of the given accounts,

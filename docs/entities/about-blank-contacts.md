@@ -10,8 +10,8 @@ The Contacts Providers allows for RawContacts that have no rows in the Data tabl
 least one data row. It also deletes blanks on update. Despite seemingly not allowing blanks, the
 native Contacts app shows them. 
 
-> ℹ️ This library provides APIs that follows the native Contacts app behavior by default but also 
-> allows you to override the default behavior.
+> ℹ️ This library provides APIs that follows the native (AOSP) Contacts app behavior by default but 
+> also allows you to override the default behavior.
 
 There are two scenarios where blanks may exist.
 

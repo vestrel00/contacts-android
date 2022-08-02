@@ -101,16 +101,6 @@ val contacts = Contacts(context)
 
 To get a Contact by lookup key, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
 
-## Including blank contacts
-
-The API allows you to specify if you want to include blank contacts or not,
-
-```kotlin
-.includeBlanks(true|false)
-```
-
-For more info, read [Blank contacts](./../entities/about-blank-contacts.md).
-
 ## Specifying Accounts
 
 To limit the search to only those contacts associated with one of the given accounts,
@@ -159,6 +149,11 @@ For example, to only include email and name fields,
 ```
 
 For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
+
+To optimize speed and minimize CPU and memory consumption, it is highly recommended that you only
+include fields you need.
+
+For more info, read [Optimizing queries](./../entities/include-only-desired-data.md#optimizing-queries).
 
 ### Specifying Groups
 

@@ -449,12 +449,12 @@ contact returned. They do this to fetch the data per contact. This means that if
 This is not cool!
 
 To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at 
-least two and at most six or seven internal database queries no matter how many contacts are 
-matched! Even if there are 100,000 contacts matched, the library will only perform two to seven 
-internal database queries (depending on your query parameters).
+least two internal database queries no matter how many contacts are matched! Even if there are 
+100,000 contacts matched, the library will only perform two internal database queries (depending on 
+your query parameters).
 
 Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
-**pagination** with `limit` and `offset` functions :sunglasses:
+**pagination** with `limit` and `offset` functions!
 
 **Cancellations** are also supported! To cancel a query amid execution,
 

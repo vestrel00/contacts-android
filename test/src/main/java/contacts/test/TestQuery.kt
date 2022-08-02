@@ -22,10 +22,6 @@ internal class TestQuery(
 
     override fun redactedCopy() = TestQuery(query.redactedCopy(), contactsApi, isRedacted = true)
 
-    override fun includeBlanks(includeBlanks: Boolean): TestQuery = apply {
-        query.includeBlanks(includeBlanks)
-    }
-
     override fun accounts(vararg accounts: Account?): TestQuery = accounts(accounts.asSequence())
 
     override fun accounts(accounts: Collection<Account?>): TestQuery =

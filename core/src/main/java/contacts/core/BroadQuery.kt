@@ -82,33 +82,6 @@ import contacts.core.util.*
 interface BroadQuery : CrudApi {
 
     /**
-     * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
-     * blanks are not guaranteed to be included. This flag is set to true by default, which results
-     * in more database queries so setting this to false will increase performance, especially for
-     * large Contacts databases.
-     *
-     * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
-     * without at least one data row. It also deletes blanks on update. Despite seemingly not
-     * allowing blanks, the native Contacts app shows them.
-     *
-     * There are two scenarios where blanks may not be returned if this flag is set to false.
-     *
-     * 1. Contact with RawContact(s) with no Data row(s).
-     *     - In this case, the Contact is blank as well as its RawContact(s).
-     * 2. Contact that has a RawContact with Data row(s) and a RawContact with no Data rows.
-     *     - In this case, the Contact and the RawContact with Data row(s) are not blank but the
-     *     RawContact with no Data row is blank.
-     *
-     * ## Performance
-     *
-     * This may require one or more additional queries, internally performed in this function, which
-     * increases the time it takes for [find] to complete. Therefore, you should only specify this
-     * if you actually need it.
-     */
-    fun includeBlanks(includeBlanks: Boolean): BroadQuery
-
-    /**
      * Limits the search to only those RawContacts associated with one of the given accounts.
      * Contacts returned may still contain RawContacts / data that belongs to other accounts not
      * specified in [accounts] because Contacts may be made up of more than one RawContact from
@@ -182,8 +155,12 @@ interface BroadQuery : CrudApi {
      * and Data are populated with values from the database. Properties of fields that are not
      * included are guaranteed to be null.
      *
-     * Note that this may affect performance. It is recommended to only include fields that will be
-     * used to save CPU and memory.
+     * ## Performance
+     *
+     * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * The most optimal queries only include fields from [Fields.Contact] because no Data table rows
+     * need to be processed.
      */
     fun include(vararg fields: AbstractDataField): BroadQuery
 
@@ -509,7 +486,6 @@ internal fun BroadQuery(contacts: Contacts): BroadQuery = BroadQueryImpl(contact
 private class BroadQueryImpl(
     override val contactsApi: Contacts,
 
-    private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var groupMembershipWhere: Where<GroupMembershipField>? = DEFAULT_GROUP_MEMBERSHIP_WHERE,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
@@ -525,7 +501,6 @@ private class BroadQueryImpl(
     override fun toString(): String =
         """
             BroadQuery {
-                includeBlanks: $includeBlanks
                 rawContactsWhere: $rawContactsWhere
                 groupMembershipWhere: $groupMembershipWhere
                 include: $include
@@ -541,7 +516,6 @@ private class BroadQueryImpl(
     override fun redactedCopy(): BroadQuery = BroadQueryImpl(
         contactsApi,
 
-        includeBlanks,
         // Redact Account information.
         rawContactsWhere?.redactedCopy(),
         groupMembershipWhere,
@@ -555,10 +529,6 @@ private class BroadQueryImpl(
 
         isRedacted = true
     )
-
-    override fun includeBlanks(includeBlanks: Boolean): BroadQuery = apply {
-        this.includeBlanks = includeBlanks
-    }
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
@@ -646,9 +616,8 @@ private class BroadQueryImpl(
             emptyList()
         } else {
             contentResolver.resolve(
-                customDataRegistry,
-                includeBlanks, rawContactsWhere, groupMembershipWhere, include,
-                match, searchString,
+                customDataRegistry, rawContactsWhere, groupMembershipWhere,
+                include, match, searchString,
                 orderBy, limit, offset, cancel
             )
         }
@@ -659,7 +628,6 @@ private class BroadQueryImpl(
     }
 
     private companion object {
-        const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
@@ -673,7 +641,6 @@ private class BroadQueryImpl(
 
 private fun ContentResolver.resolve(
     customDataRegistry: CustomDataRegistry,
-    includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     groupMembershipWhere: Where<GroupMembershipField>?,
     include: Include<AbstractDataField>,
@@ -738,7 +705,7 @@ private fun ContentResolver.resolve(
     }
 
     return resolve(
-        customDataRegistry, contactIds, includeBlanks, include, orderBy, limit, offset, cancel
+        customDataRegistry, contactIds, include, orderBy, limit, offset, cancel
     )
 }
 

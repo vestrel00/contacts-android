@@ -57,28 +57,6 @@ import contacts.core.util.unsafeLazy
 interface ProfileQuery : CrudApi {
 
     /**
-     * If [includeBlanks] is set to true, then queries may include blank RawContacts. Otherwise,
-     * blanks will not be included. If the Profile Contact only contains blank RawContacts, then
-     * the query will still return the blank Contact regardless of this flag. This flag is set to
-     * true by default.
-     *
-     * This flag is set to true by default, which results in more database queries so setting this
-     * to false will increase performance, especially for large Contacts databases.
-     *
-     * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
-     * without at least one data row. It also deletes blanks on update. Despite seemingly not
-     * allowing blanks, the native Contacts app shows them.
-     *
-     * ## Performance
-     *
-     * This may require one or more additional queries, internally performed in this function, which
-     * increases the time it takes for [find] to complete. Therefore, you should only specify this
-     * if you actually need it.
-     */
-    fun includeBlanks(includeBlanks: Boolean): ProfileQuery
-
-    /**
      * Limits the RawContacts and associated data to those associated with one of the given
      * accounts. The Contact returned will not contain data that belongs to other accounts not
      * specified in [accounts].
@@ -218,7 +196,6 @@ internal fun ProfileQuery(contacts: Contacts): ProfileQuery = ProfileQueryImpl(c
 private class ProfileQueryImpl(
     override val contactsApi: Contacts,
 
-    private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
 
@@ -228,7 +205,6 @@ private class ProfileQueryImpl(
     override fun toString(): String =
         """
             ProfileQuery {
-                includeBlanks: $includeBlanks
                 rawContactsWhere: $rawContactsWhere
                 include: $include
                 hasPermission: ${permissions.canQuery()}
@@ -239,17 +215,12 @@ private class ProfileQueryImpl(
     override fun redactedCopy(): ProfileQuery = ProfileQueryImpl(
         contactsApi,
 
-        includeBlanks,
         // Redact Account information.
         rawContactsWhere?.redactedCopy(),
         include,
 
         isRedacted = true
     )
-
-    override fun includeBlanks(includeBlanks: Boolean): ProfileQuery = apply {
-        this.includeBlanks = includeBlanks
-    }
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
@@ -282,9 +253,7 @@ private class ProfileQueryImpl(
         val profileContact = if (!permissions.canQuery()) {
             null
         } else {
-            contentResolver.resolve(
-                customDataRegistry, includeBlanks, rawContactsWhere, include, cancel
-            )
+            contentResolver.resolve(customDataRegistry, rawContactsWhere, include, cancel)
         }
         return ProfileQueryResult(profileContact)
             .redactedCopyOrThis(isRedacted)
@@ -292,7 +261,6 @@ private class ProfileQueryImpl(
     }
 
     private companion object {
-        const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
     }
@@ -300,7 +268,6 @@ private class ProfileQueryImpl(
 
 private fun ContentResolver.resolve(
     customDataRegistry: CustomDataRegistry,
-    includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
     cancel: () -> Boolean
@@ -323,12 +290,11 @@ private fun ContentResolver.resolve(
     }
 
     // If Contact only has blank RawContacts (no Data rows), then we need to query the Contacts
-    // table. This should be done regardless of the includeBlanks flag. This query should be done
-    // before a potential query to the RawContacts table so that the mapper saves the Contact with
-    // the values in the Contacts table instead of the RawContacts table. Some fields such as
-    // options are different depending on the table. The Contacts and Data table contains options
-    // of the Contacts. The RawContacts table contains the options of the RawContacts. This libs'
-    // Contact model requires the options of the Contacts table.
+    // table. This query should be done before a potential query to the RawContacts table so that
+    // the mapper saves the Contact with the values in the Contacts table instead of the RawContacts
+    // table. Some fields such as options are different depending on the table. The Contacts and
+    // Data table contains options of the Contacts. The RawContacts table contains the options of
+    // the RawContacts. This libs' Contact model requires the options of the Contacts table.
     if (!cancel() && rawContactIds.isNotEmpty() && contactsMapper.contactIds.isEmpty()) {
         query(
             ProfileUris.CONTACTS.uri,
@@ -341,7 +307,7 @@ private fun ContentResolver.resolve(
     // Get the blank RawContacts (no Data rows), which are those RawContacts that have not been
     // retrieved from the data query.
     val blankRawContactIds = rawContactIds.minus(contactsMapper.rawContactIds)
-    if (!cancel() && includeBlanks && blankRawContactIds.isNotEmpty()) {
+    if (!cancel() && blankRawContactIds.isNotEmpty()) {
         query(
             ProfileUris.RAW_CONTACTS.uri,
             include.onlyRawContactsFields(),

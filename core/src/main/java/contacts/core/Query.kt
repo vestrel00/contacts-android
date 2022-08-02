@@ -75,33 +75,6 @@ import contacts.core.util.*
 interface Query : CrudApi {
 
     /**
-     * If [includeBlanks] is set to true, then queries may include blank RawContacts or blank
-     * Contacts ([Contact.isBlank]). Otherwise, blanks will not be included. This flag is set to
-     * true by default, which results in more database queries so setting this to false will
-     * increase performance, especially for large Contacts databases.
-     *
-     * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
-     * without at least one data row. It also deletes blanks on update. Despite seemingly not
-     * allowing blanks, the native Contacts app shows them.
-     *
-     * There are two scenarios where blanks may not be returned if this flag is set to false.
-     *
-     * 1. Contact with RawContact(s) with no Data row(s).
-     *     - In this case, the Contact is blank as well as its RawContact(s).
-     * 2. Contact that has a RawContact with Data row(s) and a RawContact with no Data rows.
-     *     - In this case, the Contact and the RawContact with Data row(s) are not blank but the
-     *     RawContact with no Data row is blank.
-     *
-     * ## Performance
-     *
-     * This may require one or more additional queries, internally performed in this function, which
-     * increases the time it takes for [find] to complete. Therefore, you should only specify this
-     * if you actually need it.
-     */
-    fun includeBlanks(includeBlanks: Boolean): Query
-
-    /**
      * Limits the search to only those RawContacts associated with one of the given accounts.
      * Contacts returned may still contain RawContacts / data that belongs to other accounts not
      * specified in [accounts] because Contacts may be made up of more than one RawContact from
@@ -150,8 +123,12 @@ interface Query : CrudApi {
      * and Data are populated with values from the database. Properties of fields that are not
      * included are guaranteed to be null.
      *
-     * Note that this may affect performance. It is recommended to only include fields that will be
-     * used to save CPU and memory.
+     * ## Performance
+     *
+     * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * The most optimal queries only include fields from [Fields.Contact] because no Data table rows
+     * need to be processed.
      */
     fun include(vararg fields: AbstractDataField): Query
 
@@ -198,16 +175,14 @@ interface Query : CrudApi {
      * ## Blank Contacts
      *
      * This where clause is only used to query the Data table. Some contacts do not have any Data
-     * table rows (see [includeBlanks]). However, this library exposes some fields that belong to
-     * other tables, accessible via the Data table with joins;
+     * table rows (they are blank). This library exposes some fields that belong to other tables,
+     * accessible via the Data table with joins;
      *
      * - [Fields.Contact]
      * - [Fields.RawContact]
      *
      * Using these fields in the where clause does not have any effect in matching blank Contacts
      * or RawContacts simply because they have no Data rows containing these joined fields.
-     *
-     * See [includeBlanks] for more info about blank Contacts and RawContacts.
      *
      * #### Limitations
      *
@@ -402,7 +377,6 @@ internal fun Query(contacts: Contacts): Query = QueryImpl(contacts)
 private class QueryImpl(
     override val contactsApi: Contacts,
 
-    private var includeBlanks: Boolean = DEFAULT_INCLUDE_BLANKS,
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
@@ -416,7 +390,6 @@ private class QueryImpl(
     override fun toString(): String =
         """
             Query {
-                includeBlanks: $includeBlanks
                 rawContactsWhere: $rawContactsWhere
                 include: $include
                 where: $where
@@ -431,7 +404,6 @@ private class QueryImpl(
     override fun redactedCopy(): Query = QueryImpl(
         contactsApi,
 
-        includeBlanks,
         // Redact Account information.
         rawContactsWhere?.redactedCopy(),
         include,
@@ -443,10 +415,6 @@ private class QueryImpl(
 
         isRedacted = true
     )
-
-    override fun includeBlanks(includeBlanks: Boolean): Query = apply {
-        this.includeBlanks = includeBlanks
-    }
 
     override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
@@ -526,8 +494,7 @@ private class QueryImpl(
             where(where)
 
             contentResolver.resolve(
-                customDataRegistry, includeBlanks,
-                rawContactsWhere, include, where, orderBy, limit, offset, cancel
+                customDataRegistry, rawContactsWhere, include, where, orderBy, limit, offset, cancel
             )
         }
 
@@ -537,7 +504,6 @@ private class QueryImpl(
     }
 
     private companion object {
-        const val DEFAULT_INCLUDE_BLANKS = true
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
         val DEFAULT_WHERE: Where<AbstractDataField>? = null
@@ -549,7 +515,6 @@ private class QueryImpl(
 
 private fun ContentResolver.resolve(
     customDataRegistry: CustomDataRegistry,
-    includeBlanks: Boolean,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
     where: Where<AbstractDataField>?,
@@ -571,28 +536,26 @@ private fun ContentResolver.resolve(
         // Get the Contacts Ids of blank RawContacts and blank Contacts matching the where from the
         // RawContacts and Contacts table respectively. Suppress DB exceptions because the where
         // clause may contain fields (columns) that are not in the respective tables.
-        if (includeBlanks) {
-            val rawContactsTableWhere = where.toRawContactsTableWhere()
-            if (rawContactsTableWhere != null) {
-                // We do not actually need to suppress DB exceptions anymore because we are making
-                // sure that only RawContacts fields are in rawContactsTableWhere. However, it
-                // does not hurt to be extra safe... though this will mask programming errors in
-                // toRawContactsTableWhere by not crashing. Unit tests should cover this though!
-                contactIds.addAll(
-                    findContactIdsInRawContactsTable(rawContactsTableWhere, true, cancel)
-                )
-            }
+        val rawContactsTableWhere = where.toRawContactsTableWhere()
+        if (rawContactsTableWhere != null) {
+            // We do not actually need to suppress DB exceptions anymore because we are making
+            // sure that only RawContacts fields are in rawContactsTableWhere. However, it
+            // does not hurt to be extra safe... though this will mask programming errors in
+            // toRawContactsTableWhere by not crashing. Unit tests should cover this though!
+            contactIds.addAll(
+                findContactIdsInRawContactsTable(rawContactsTableWhere, true, cancel)
+            )
+        }
 
-            val contactsTableWhere = where.toContactsTableWhere()
-            if (contactsTableWhere != null) {
-                // We do not actually need to suppress DB exceptions anymore because we are making
-                // sure that only Contacts fields are in contactsTableWhere. However, it does not
-                // hurt to be extra safe... though this will mask programming errors in
-                // toContactsTableWhere by not crashing. Unit tests should cover this though!
-                contactIds.addAll(
-                    findContactIdsInContactsTable(contactsTableWhere, true, cancel)
-                )
-            }
+        val contactsTableWhere = where.toContactsTableWhere()
+        if (contactsTableWhere != null) {
+            // We do not actually need to suppress DB exceptions anymore because we are making
+            // sure that only Contacts fields are in contactsTableWhere. However, it does not
+            // hurt to be extra safe... though this will mask programming errors in
+            // toContactsTableWhere by not crashing. Unit tests should cover this though!
+            contactIds.addAll(
+                findContactIdsInContactsTable(contactsTableWhere, true, cancel)
+            )
         }
 
         // If no match, return empty list.
@@ -619,15 +582,12 @@ private fun ContentResolver.resolve(
         }
     }
 
-    return resolve(
-        customDataRegistry, contactIds, includeBlanks, include, orderBy, limit, offset, cancel
-    )
+    return resolve(customDataRegistry, contactIds, include, orderBy, limit, offset, cancel)
 }
 
 internal fun ContentResolver.resolve(
     customDataRegistry: CustomDataRegistry,
     contactIds: MutableSet<Long>?,
-    includeBlanks: Boolean,
     include: Include<AbstractDataField>,
     orderBy: CompoundOrderBy<ContactsField>,
     limit: Int,
@@ -644,8 +604,8 @@ internal fun ContentResolver.resolve(
     // Collect Contacts, RawContacts, and Data with this mapper.
     val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
-    // Collect Contacts (which may include blanks) that are in the given contactIds.
-    // If contactIds is null, then all Contacts are collected.
+    // Collect Contacts that are in the given contactIds. If contactIds is null, then all Contacts
+    // are collected.
     query(
         Table.Contacts, include.onlyContactsFields(), contactIds?.let {
             ContactsFields.Id `in` it
@@ -677,26 +637,24 @@ internal fun ContentResolver.resolve(
         return emptyList()
     }
 
-    // Collect blank RawContacts.
-    if (includeBlanks) {
-        // This redeclaration is just here to get rid of compiler not being able to smart cast
-        // offsetAndLimitedContactIds as non-null because it is a var.
-        val contactIdsThatMayIncludeBlanks = offsetAndLimitedContactIds
+    // Ensure that blank RawContacts are also collected.
+    // This redeclaration is just here to get rid of compiler not being able to smart cast
+    // offsetAndLimitedContactIds as non-null because it is a var.
+    val finalOffsetAndLimitedContactIds = offsetAndLimitedContactIds
 
-        query(
-            Table.RawContacts, include.onlyRawContactsFields(),
-            (RawContactsFields.Deleted notEqualTo true) and
-                    if (contactIdsThatMayIncludeBlanks != null) {
-                        // Note that we do not need to check for the DELETED flag here because RawContacts
-                        // that are marked for deletion also have a null Contact ID reference.
-                        RawContactsFields.ContactId `in` contactIdsThatMayIncludeBlanks
-                    } else {
-                        // There may be RawContacts that are marked for deletion that have not yet been deleted.
-                        RawContactsFields.Deleted notEqualTo true
-                    },
-            processCursor = contactsMapper::processRawContactsCursor
-        )
-    }
+    query(
+        Table.RawContacts, include.onlyRawContactsFields(),
+        (RawContactsFields.Deleted notEqualTo true) and
+                if (finalOffsetAndLimitedContactIds != null) {
+                    // Note that we do not need to check for the DELETED flag here because RawContacts
+                    // that are marked for deletion also have a null Contact ID reference.
+                    RawContactsFields.ContactId `in` finalOffsetAndLimitedContactIds
+                } else {
+                    // There may be RawContacts that are marked for deletion that have not yet been deleted.
+                    RawContactsFields.Deleted notEqualTo true
+                },
+        processCursor = contactsMapper::processRawContactsCursor
+    )
 
     // Output all collected Contacts, RawContacts, and Data.
     return if (cancel()) emptyList() else contactsMapper.map()
