@@ -157,7 +157,7 @@ include fields you need.
 
 For more info, read [Optimizing queries](./../entities/include-only-desired-data.md#optimizing-queries).
 
-### Specifying Groups
+## Specifying Groups
 
 To limit the search to only those RawContacts associated with at least one of the given groups,
 
