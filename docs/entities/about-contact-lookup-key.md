@@ -65,7 +65,7 @@ explicitly specify the lookup key,
 
 `Contact`s instances returned by the query will contain a value in the `Contact.lookupKey` property.
 
-For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../basics/include-only-desired-data.md).
 
 ## How to get Contacts using lookup keys?
 

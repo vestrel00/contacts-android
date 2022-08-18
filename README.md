@@ -48,7 +48,7 @@ The `core` module provides,
 - ✅ [**Custom data** integration](/docs/customdata/integrate-custom-data.md)
 - ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups
 - ✅ [Contact **lookup keys**](/docs/entities/about-contact-lookup-key.md)
-- ✅ [Include only desired fields](/docs/entities/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**
+- ✅ [Include only desired fields](/docs/basics/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**
 - ✅ Powerful, **type-safe query DSL**
 - ✅ **Pagination** using order by, limit, and offset database functions.
 - ✅ [**Insert**](/docs/basics/insert-contacts.md) one or more RawContacts with an associated Account,
@@ -453,7 +453,7 @@ least two internal database queries no matter how many contacts are matched! Eve
 10,000 contacts matched, the library will only perform two internal database queries (depending on 
 your query parameters). Fetch 10,000 contacts as fast as **99 milliseconds** (varies per device)!
 
-> ℹ️ For more info, read [Optimizing queries](/docs/entities/include-only-desired-data.md#optimizing-queries).
+> ℹ️ For more info, read [Optimizing queries](/docs/basics/include-only-desired-data.md#optimizing-queries).
 
 Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
 **pagination** with `limit` and `offset` functions!

@@ -120,7 +120,7 @@ Contact {
 }
 ```
 
-> ℹ️ For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
+> ℹ️ For more info, read [Include only certain fields for read and write operations](./../basics/include-only-desired-data.md).
 
 ## Data kinds count restrictions
 

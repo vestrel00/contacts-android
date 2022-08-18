@@ -69,7 +69,7 @@ For example, to only include email and name fields,
 .include { Email.all + Name.all }
 ```
 
-For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../basics/include-only-desired-data.md).
 
 ## Cancelling the query
 

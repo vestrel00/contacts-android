@@ -78,7 +78,7 @@ For example, to explicitly include all `HandleName` fields,
 .include(HandleNameFields.all)
 ```
 
-For more info, read [Include only certain fields for read and write operations](./../entities/include-only-desired-data.md).
+For more info, read [Include only certain fields for read and write operations](./../basics/include-only-desired-data.md).
 
 ## The `where` function and custom data
 

@@ -21,7 +21,6 @@ nav:
       - 'API entities': entities/about-api-entities.md
       - 'Blank contacts': entities/about-blank-contacts.md
       - 'Blank data': entities/about-blank-data.md
-      - 'Include only certain fields for read and write operations': entities/include-only-desired-data.md
       - 'Local (device-only) contacts': entities/about-local-contacts.md
       - 'Contact lookup key vs ID': entities/about-contact-lookup-key.md
       - 'Sync contact data across devices': entities/sync-contact-data.md
@@ -32,6 +31,7 @@ nav:
     - 'Insert contacts': basics/insert-contacts.md
     - 'Update contacts': basics/update-contacts.md
     - 'Delete contacts': basics/delete-contacts.md
+    - 'Include only certain fields for read and write operations': basics/include-only-desired-data.md
   - 'Data':
     - 'Query specific data kinds': data/query-data-sets.md
     - 'Insert data into new or existing contacts': data/insert-data-sets.md
