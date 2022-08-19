@@ -1,5 +1,6 @@
 package contacts.core.entities
 
+import android.accounts.Account
 import contacts.core.entities.custom.AbstractCustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
@@ -404,6 +405,12 @@ data class BlankRawContact internal constructor(
     // This can only be retrieved from RawContacts table queries. The Data table contains the
     // display name for Contacts, not for RawContacts.
     val displayNameAlt: String?,
+
+    /**
+     * The RawContact's associated [Account]. If this is null, then it indicates that this is a
+     * local RawContact, which will not be synced.
+     */
+    val account: Account?,
 
     override val isRedacted: Boolean
 
