@@ -152,24 +152,15 @@ Use `ContactsFields` to construct the orderBys.
 
 ## Limiting and offsetting
 
-To limit the amount of contacts returned and/or offset (skip) a specified number of contacts,
+To limit the amount of contacts returned and/or offset (skip) a specified number of contacts, use 
+the `limit` and `offset` functions;
 
 ```kotlin
 .limit(limit)
 .offset(offset)
 ```
 
-For example, to only get a maximum 20 contacts, skipping the first 20,
-
-```kotlin
-.limit(20)
-.offset(20)
-```
-
-This is useful for pagination =)
-
-> ℹ️ It is recommended to limit the number of contacts when querying to increase performance and 
-> decrease memory cost.
+For more info, read [Using limit and offset in queries](./../basics/limit-and-offset-queries.md).
 
 ## Executing the query
 
