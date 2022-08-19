@@ -6,10 +6,7 @@ import contacts.core.*
 import contacts.core.entities.Group
 import contacts.core.entities.mapper.groupMapper
 import contacts.core.entities.table.Table
-import contacts.core.util.isEmpty
-import contacts.core.util.query
-import contacts.core.util.toGroupsWhere
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * Queries on the groups table.
@@ -133,6 +130,29 @@ interface GroupsQuery : CrudApi {
     fun offset(offset: Int): GroupsQuery
 
     /**
+     * If the [limit] and [offset] functions are not supported by the device's database query
+     * operation, all entities will be returned. In such cases, the [Result.isLimitBreached] will
+     * be true if the number of entities returned exceed the [limit].
+     *
+     * Setting [forceOffsetAndLimit] to true will ensure that the [offset] and [limit] will be
+     * applied after performing the internal database query, before returning the result to the
+     * caller (you).
+     *
+     * This defaults to true in order to seamlessly support pagination. However, it is recommended
+     * to set this to false and handle such cases yourself to prevent performing more than one query
+     * for devices that do not support pagination.
+     *
+     * For the full set of devices that do not support pagination, visit this discussion;
+     * https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613
+     *
+     * ### Limitation
+     *
+     * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
+     * is unable to detect/handle events where the [offset] is not supported. Sorry :P
+     */
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): GroupsQuery
+
+    /**
      * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
@@ -226,6 +246,7 @@ private class GroupsQueryImpl(
     private var orderBy: CompoundOrderBy<GroupsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET,
+    private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
 ) : GroupsQuery {
@@ -238,6 +259,7 @@ private class GroupsQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                forceOffsetAndLimit: $forceOffsetAndLimit
                 hasPermission: ${permissions.canQuery()}
                 isRedacted: $isRedacted
             }
@@ -253,6 +275,7 @@ private class GroupsQueryImpl(
         orderBy,
         limit,
         offset,
+        forceOffsetAndLimit,
 
         isRedacted = true
     )
@@ -303,12 +326,16 @@ private class GroupsQueryImpl(
         }
     }
 
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): GroupsQuery = apply {
+        this.forceOffsetAndLimit = forceOffsetAndLimit
+    }
+
     override fun find(): GroupsQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): GroupsQuery.Result {
         onPreExecute()
 
-        val groups = if (!permissions.canQuery() || cancel()) {
+        var groups = if (!permissions.canQuery() || cancel()) {
             emptyList()
         } else {
             contentResolver.resolve(
@@ -316,7 +343,12 @@ private class GroupsQueryImpl(
             )
         }
 
-        return GroupsQueryResult(groups, isLimitBreached = groups.size > limit)
+        val isLimitBreached = groups.size > limit
+        if (isLimitBreached && forceOffsetAndLimit) {
+            groups = groups.offsetAndLimit(offset, limit)
+        }
+
+        return GroupsQueryResult(groups, isLimitBreached)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -328,6 +360,7 @@ private class GroupsQueryImpl(
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(GroupsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
+        const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true
     }
 }
 

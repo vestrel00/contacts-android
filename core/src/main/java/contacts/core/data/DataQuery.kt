@@ -8,10 +8,7 @@ import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.dataEntityMapperFor
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
-import contacts.core.util.isEmpty
-import contacts.core.util.query
-import contacts.core.util.toRawContactsWhere
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * Provides new query instances for specific types of Profile OR non-Profile (depending on instance)
@@ -336,6 +333,29 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
     fun offset(offset: Int): DataQuery<F, S, E>
 
     /**
+     * If the [limit] and [offset] functions are not supported by the device's database query
+     * operation, all entities will be returned. In such cases, the [Result.isLimitBreached] will
+     * be true if the number of entities returned exceed the [limit].
+     *
+     * Setting [forceOffsetAndLimit] to true will ensure that the [offset] and [limit] will be
+     * applied after performing the internal database query, before returning the result to the
+     * caller (you).
+     *
+     * This defaults to true in order to seamlessly support pagination. However, it is recommended
+     * to set this to false and handle such cases yourself to prevent performing more than one query
+     * for devices that do not support pagination.
+     *
+     * For the full set of devices that do not support pagination, visit this discussion;
+     * https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613
+     *
+     * ### Limitation
+     *
+     * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
+     * is unable to detect/handle events where the [offset] is not supported. Sorry :P
+     */
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): DataQuery<F, S, E>
+
+    /**
      * The list of [E]s.
      *
      * ## Permissions
@@ -424,6 +444,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
     private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET,
+    private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
 ) : DataQuery<F, S, E> {
@@ -439,6 +460,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                forceOffsetAndLimit: $forceOffsetAndLimit
                 hasPermission: ${permissions.canQuery()}
                 isRedacted: $isRedacted
             }
@@ -455,6 +477,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
         orderBy,
         limit,
         offset,
+        forceOffsetAndLimit,
 
         isRedacted = true
     )
@@ -520,12 +543,16 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
         }
     }
 
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): DataQuery<F, S, E> = apply {
+        this.forceOffsetAndLimit = forceOffsetAndLimit
+    }
+
     override fun find(): DataQuery.Result<E> = find { false }
 
     override fun find(cancel: () -> Boolean): DataQuery.Result<E> {
         onPreExecute()
 
-        val data: List<E> = if (!permissions.canQuery()) {
+        var data: List<E> = if (!permissions.canQuery()) {
             emptyList()
         } else {
             contactsApi.resolveDataEntity(
@@ -536,7 +563,12 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
             )
         }
 
-        return DataQueryResult(data, isLimitBreached = data.size > limit)
+        val isLimitBreached = data.size > limit
+        if (isLimitBreached && forceOffsetAndLimit) {
+            data = data.offsetAndLimit(offset, limit)
+        }
+
+        return DataQueryResult(data, isLimitBreached)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -548,6 +580,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(Fields.DataId.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
+        const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true
     }
 }
 

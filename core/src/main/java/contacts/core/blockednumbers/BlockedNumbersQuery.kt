@@ -6,6 +6,7 @@ import contacts.core.entities.BlockedNumber
 import contacts.core.entities.mapper.blockedNumberMapper
 import contacts.core.entities.table.Table
 import contacts.core.util.isEmpty
+import contacts.core.util.offsetAndLimit
 import contacts.core.util.query
 import contacts.core.util.unsafeLazy
 
@@ -104,6 +105,29 @@ interface BlockedNumbersQuery : CrudApi {
     fun offset(offset: Int): BlockedNumbersQuery
 
     /**
+     * If the [limit] and [offset] functions are not supported by the device's database query
+     * operation, all entities will be returned. In such cases, the [Result.isLimitBreached] will
+     * be true if the number of entities returned exceed the [limit].
+     *
+     * Setting [forceOffsetAndLimit] to true will ensure that the [offset] and [limit] will be
+     * applied after performing the internal database query, before returning the result to the
+     * caller (you).
+     *
+     * This defaults to true in order to seamlessly support pagination. However, it is recommended
+     * to set this to false and handle such cases yourself to prevent performing more than one query
+     * for devices that do not support pagination.
+     *
+     * For the full set of devices that do not support pagination, visit this discussion;
+     * https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613
+     *
+     * ### Limitation
+     *
+     * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
+     * is unable to detect/handle events where the [offset] is not supported. Sorry :P
+     */
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): BlockedNumbersQuery
+
+    /**
      * Returns the [Result] matching the preceding query options.
      *
      * ## Privileges
@@ -187,6 +211,7 @@ private class BlockedNumbersQueryImpl(
     private var orderBy: CompoundOrderBy<BlockedNumbersField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET,
+    private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
 ) : BlockedNumbersQuery {
@@ -198,6 +223,7 @@ private class BlockedNumbersQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                forceOffsetAndLimit: $forceOffsetAndLimit
                 hasPrivileges: ${privileges.canReadAndWrite()}
                 isRedacted: $isRedacted
             }
@@ -212,6 +238,7 @@ private class BlockedNumbersQueryImpl(
         orderBy,
         limit,
         offset,
+        forceOffsetAndLimit,
 
         isRedacted = true
     )
@@ -259,21 +286,27 @@ private class BlockedNumbersQueryImpl(
         }
     }
 
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): BlockedNumbersQuery = apply {
+        this.forceOffsetAndLimit = forceOffsetAndLimit
+    }
+
     override fun find(): BlockedNumbersQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): BlockedNumbersQuery.Result {
         onPreExecute()
 
-        val blockedNumbers = if (!privileges.canReadAndWrite() || cancel()) {
+        var blockedNumbers = if (!privileges.canReadAndWrite() || cancel()) {
             emptyList()
         } else {
             contentResolver.resolve(INCLUDE, where, orderBy, limit, offset, cancel)
         }
 
-        return BlockedNumbersQueryResult(
-            blockedNumbers,
-            isLimitBreached = blockedNumbers.size > limit
-        )
+        val isLimitBreached = blockedNumbers.size > limit
+        if (isLimitBreached && forceOffsetAndLimit) {
+            blockedNumbers = blockedNumbers.offsetAndLimit(offset, limit)
+        }
+
+        return BlockedNumbersQueryResult(blockedNumbers, isLimitBreached)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -284,6 +317,7 @@ private class BlockedNumbersQueryImpl(
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(BlockedNumbersFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
+        const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true
     }
 }
 

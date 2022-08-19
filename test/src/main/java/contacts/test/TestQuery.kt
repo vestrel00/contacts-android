@@ -78,6 +78,10 @@ internal class TestQuery(
         query.offset(offset)
     }
 
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): TestQuery = apply {
+        query.forceOffsetAndLimit(forceOffsetAndLimit)
+    }
+
     override fun find(): Query.Result = query.find()
 
     override fun find(cancel: () -> Boolean): Query.Result = query.find(cancel)

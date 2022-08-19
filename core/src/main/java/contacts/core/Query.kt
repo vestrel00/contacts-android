@@ -295,6 +295,29 @@ interface Query : CrudApi {
     fun offset(offset: Int): Query
 
     /**
+     * If the [limit] and [offset] functions are not supported by the device's database query
+     * operation, all entities will be returned. In such cases, the [Result.isLimitBreached] will
+     * be true if the number of entities returned exceed the [limit].
+     *
+     * Setting [forceOffsetAndLimit] to true will ensure that the [offset] and [limit] will be
+     * applied after performing the internal database query, before returning the result to the
+     * caller (you).
+     *
+     * This defaults to true in order to seamlessly support pagination. However, it is recommended
+     * to set this to false and handle such cases yourself to prevent performing more than one query
+     * for devices that do not support pagination.
+     *
+     * For the full set of devices that do not support pagination, visit this discussion;
+     * https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613
+     *
+     * ### Limitation
+     *
+     * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
+     * is unable to detect/handle events where the [offset] is not supported. Sorry :P
+     */
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): Query
+
+    /**
      * Returns a list of [Contact]s matching the preceding query options.
      *
      * ## Permissions
@@ -383,6 +406,7 @@ private class QueryImpl(
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET,
+    private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
 ) : Query {
@@ -396,6 +420,7 @@ private class QueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                forceOffsetAndLimit: $forceOffsetAndLimit
                 hasPermission: ${permissions.canQuery()}
                 isRedacted: $isRedacted
             }
@@ -412,6 +437,7 @@ private class QueryImpl(
         orderBy,
         limit,
         offset,
+        forceOffsetAndLimit,
 
         isRedacted = true
     )
@@ -478,12 +504,16 @@ private class QueryImpl(
         }
     }
 
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): Query = apply {
+        this.forceOffsetAndLimit = forceOffsetAndLimit
+    }
+
     override fun find(): Query.Result = find { false }
 
     override fun find(cancel: () -> Boolean): Query.Result {
         onPreExecute()
 
-        val contacts = if (!permissions.canQuery() || cancel()) {
+        var contacts = if (!permissions.canQuery() || cancel()) {
             emptyList()
         } else {
             // Invoke the function to ensure that delegators (e.g. in tests) get access to the private
@@ -498,7 +528,12 @@ private class QueryImpl(
             )
         }
 
-        return QueryResult(contacts, isLimitBreached = contacts.size > limit)
+        val isLimitBreached = contacts.size > limit
+        if (isLimitBreached && forceOffsetAndLimit) {
+            contacts = contacts.offsetAndLimit(offset, limit)
+        }
+
+        return QueryResult(contacts, isLimitBreached)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -510,6 +545,7 @@ private class QueryImpl(
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
+        const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true
     }
 }
 

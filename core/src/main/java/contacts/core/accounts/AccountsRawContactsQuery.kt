@@ -4,8 +4,6 @@ import android.accounts.Account
 import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.BlankRawContact
-import contacts.core.entities.cursor.account
-import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.blankRawContactMapper
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
@@ -138,6 +136,29 @@ interface AccountsRawContactsQuery : CrudApi {
     fun offset(offset: Int): AccountsRawContactsQuery
 
     /**
+     * If the [limit] and [offset] functions are not supported by the device's database query
+     * operation, all entities will be returned. In such cases, the [Result.isLimitBreached] will
+     * be true if the number of entities returned exceed the [limit].
+     *
+     * Setting [forceOffsetAndLimit] to true will ensure that the [offset] and [limit] will be
+     * applied after performing the internal database query, before returning the result to the
+     * caller (you).
+     *
+     * This defaults to true in order to seamlessly support pagination. However, it is recommended
+     * to set this to false and handle such cases yourself to prevent performing more than one query
+     * for devices that do not support pagination.
+     *
+     * For the full set of devices that do not support pagination, visit this discussion;
+     * https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613
+     *
+     * ### Limitation
+     *
+     * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
+     * is unable to detect/handle events where the [offset] is not supported. Sorry :P
+     */
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): AccountsRawContactsQuery
+
+    /**
      * Returns the [Result] matching the preceding query options.
      *
      * ## Permissions
@@ -234,6 +255,7 @@ private class AccountsRawContactsQueryImpl(
     private var orderBy: CompoundOrderBy<RawContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET,
+    private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
 ) : AccountsRawContactsQuery {
@@ -247,6 +269,7 @@ private class AccountsRawContactsQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                forceOffsetAndLimit: $forceOffsetAndLimit
                 hasPermission: ${accountsPermissions.canQueryRawContacts()}
                 isRedacted: $isRedacted
             }
@@ -262,6 +285,7 @@ private class AccountsRawContactsQueryImpl(
         orderBy,
         limit,
         offset,
+        forceOffsetAndLimit,
 
         isRedacted = true
     )
@@ -315,16 +339,22 @@ private class AccountsRawContactsQueryImpl(
         }
     }
 
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): AccountsRawContactsQuery =
+        apply {
+            this.forceOffsetAndLimit = forceOffsetAndLimit
+        }
+
     override fun find(): AccountsRawContactsQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): AccountsRawContactsQuery.Result {
         onPreExecute()
 
         return if (!accountsPermissions.canQueryRawContacts()) {
-            AccountsRawContactsQueryResult(emptyList(), emptyMap(), isLimitBreached = false)
+            AccountsRawContactsQueryResult(emptyList(), isLimitBreached = false)
         } else {
             contentResolver.resolve(
-                isProfile, rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
+                isProfile, rawContactsWhere, INCLUDE, where,
+                orderBy, limit, offset, forceOffsetAndLimit, cancel
             )
         }
             .redactedCopyOrThis(isRedacted)
@@ -338,6 +368,7 @@ private class AccountsRawContactsQueryImpl(
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(RawContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
+        const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true
     }
 }
 
@@ -349,6 +380,7 @@ private fun ContentResolver.resolve(
     orderBy: CompoundOrderBy<RawContactsField>,
     limit: Int,
     offset: Int,
+    forceOffsetAndLimit: Boolean,
     cancel: () -> Boolean
 ): AccountsRawContactsQuery.Result = query(
     if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
@@ -357,53 +389,37 @@ private fun ContentResolver.resolve(
     (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere and where,
     sortOrder = "$orderBy LIMIT $limit OFFSET $offset"
 ) {
-    val accountRawContactsMap = mutableMapOf<Account?, MutableList<BlankRawContact>>()
-    val rawContactsList = mutableListOf<BlankRawContact>()
+    var rawContactsList = mutableListOf<BlankRawContact>()
 
     val blankRawContactMapper = it.blankRawContactMapper()
-    val rawContactsCursor = it.rawContactsCursor()
-
     while (!cancel() && it.moveToNext()) {
-        val account = rawContactsCursor.account()
-        val rawContactsInMap = accountRawContactsMap.getOrPut(account) { mutableListOf() }
+        rawContactsList.add(blankRawContactMapper.value)
+    }
 
-        val blankRawContact = blankRawContactMapper.value
-
-        // The cursor is ordered in ascending order by the display name. Therefore, these lists are
-        // already in order.
-        rawContactsList.add(blankRawContact)
-        rawContactsInMap.add(blankRawContact)
+    val isLimitBreached = rawContactsList.size > limit
+    if (isLimitBreached && forceOffsetAndLimit) {
+        rawContactsList = rawContactsList.offsetAndLimit(offset, limit).toMutableList()
     }
 
     // Ensure incomplete data sets are not returned.
     if (cancel()) {
-        accountRawContactsMap.clear()
+        rawContactsList.clear()
     }
 
-    AccountsRawContactsQueryResult(
-        rawContactsList,
-        accountRawContactsMap,
-        isLimitBreached = rawContactsList.size > limit
-    )
+    AccountsRawContactsQueryResult(rawContactsList, isLimitBreached)
 
-} ?: AccountsRawContactsQueryResult(emptyList(), emptyMap(), isLimitBreached = false)
+} ?: AccountsRawContactsQueryResult(emptyList(), isLimitBreached = false)
 
 private class AccountsRawContactsQueryResult private constructor(
     rawContacts: List<BlankRawContact>,
-    private val accountRawContactsMap: Map<Account?, List<BlankRawContact>>,
     override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
 ) : ArrayList<BlankRawContact>(rawContacts), AccountsRawContactsQuery.Result {
 
-    constructor(
-        rawContacts: List<BlankRawContact>,
-        accountRawContactsMap: Map<Account?, List<BlankRawContact>>,
-        isLimitBreached: Boolean
-    ) : this(
+    constructor(rawContacts: List<BlankRawContact>, isLimitBreached: Boolean) : this(
         rawContacts = rawContacts,
-        accountRawContactsMap = accountRawContactsMap,
         isLimitBreached = isLimitBreached,
-        false
+        isRedacted = false
     )
 
     override fun toString(): String =
@@ -419,13 +435,10 @@ private class AccountsRawContactsQueryResult private constructor(
     override fun redactedCopy(): AccountsRawContactsQuery.Result =
         AccountsRawContactsQueryResult(
             rawContacts = redactedCopies(),
-            accountRawContactsMap = accountRawContactsMap.entries.associate {
-                it.key?.redactedCopy() to it.value.redactedCopies()
-            },
             isLimitBreached = isLimitBreached,
             isRedacted = true
         )
 
     override fun rawContactsFor(account: Account?): List<BlankRawContact> =
-        accountRawContactsMap.getOrElse(account) { emptyList() }
+        filter { it.account == account }
 }

@@ -37,11 +37,16 @@ interface CrudApi : Redactable {
     interface QueryResultWithLimit : Result {
         /**
          * This is true if the number of entities found is exceeds the specified limit. This occurs
-         * when the device does not support limits in queries. In such cases, pagination is  not
+         * when the device does not support limits in queries. In such cases, pagination is not
          * supported because all table rows have been returned.
          *
          * For a list of devices found not to support limits, visit this discussion page;
-         * https://github.com/vestrel00/contacts-android/discussions/242
+         * https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613
+         *
+         * ## Note
+         *
+         * If forceOffsetAndLimit is true, then the number of entities this holds will be under the
+         * limit even in cases where the value of this boolean true.
          */
         val isLimitBreached: Boolean
     }

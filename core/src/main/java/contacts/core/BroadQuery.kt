@@ -263,6 +263,8 @@ interface BroadQuery : CrudApi {
      * Limits the maximum number of returned [Contact]s to the given [limit].
      *
      * If not specified, limit value of [Int.MAX_VALUE] is used.
+     *
+     * Some devices do not support this. See [forceOffsetAndLimit].
      */
     fun limit(limit: Int): BroadQuery
 
@@ -270,8 +272,33 @@ interface BroadQuery : CrudApi {
      * Skips results 0 to [offset] (excluding the offset).
      *
      * If not specified, offset value of 0 is used.
+     *
+     * Some devices do not support this. See [forceOffsetAndLimit].
      */
     fun offset(offset: Int): BroadQuery
+
+    /**
+     * If the [limit] and [offset] functions are not supported by the device's database query
+     * operation, all entities will be returned. In such cases, the [Result.isLimitBreached] will
+     * be true if the number of entities returned exceed the [limit].
+     *
+     * Setting [forceOffsetAndLimit] to true will ensure that the [offset] and [limit] will be
+     * applied after performing the internal database query, before returning the result to the
+     * caller (you).
+     *
+     * This defaults to true in order to seamlessly support pagination. However, it is recommended
+     * to set this to false and handle such cases yourself to prevent performing more than one query
+     * for devices that do not support pagination.
+     *
+     * For the full set of devices that do not support pagination, visit this discussion;
+     * https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613
+     *
+     * ### Limitation
+     *
+     * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
+     * is unable to detect/handle events where the [offset] is not supported. Sorry :P
+     */
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): BroadQuery
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -494,6 +521,7 @@ private class BroadQueryImpl(
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET,
+    private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
 ) : BroadQuery {
@@ -509,6 +537,7 @@ private class BroadQueryImpl(
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
+                forceOffsetAndLimit: $forceOffsetAndLimit
                 isRedacted: $isRedacted
             }
         """.trimIndent()
@@ -526,6 +555,7 @@ private class BroadQueryImpl(
         orderBy,
         limit,
         offset,
+        forceOffsetAndLimit,
 
         isRedacted = true
     )
@@ -607,12 +637,16 @@ private class BroadQueryImpl(
         }
     }
 
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): BroadQuery = apply {
+        this.forceOffsetAndLimit = forceOffsetAndLimit
+    }
+
     override fun find(): BroadQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): BroadQuery.Result {
         onPreExecute()
 
-        val contacts = if (!permissions.canQuery()) {
+        var contacts = if (!permissions.canQuery()) {
             emptyList()
         } else {
             contentResolver.resolve(
@@ -622,7 +656,12 @@ private class BroadQueryImpl(
             )
         }
 
-        return BroadQueryResult(contacts, isLimitBreached = contacts.size > limit)
+        val isLimitBreached = contacts.size > limit
+        if (isLimitBreached && forceOffsetAndLimit) {
+            contacts = contacts.offsetAndLimit(offset, limit)
+        }
+
+        return BroadQueryResult(contacts, isLimitBreached)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -636,6 +675,7 @@ private class BroadQueryImpl(
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
+        const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true
     }
 }
 
