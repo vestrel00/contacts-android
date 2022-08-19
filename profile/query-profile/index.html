@@ -395,20 +395,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../entities/include-only-desired-data/" class="md-nav__link">
-        Include only certain fields for read and write operations
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../entities/about-local-contacts/" class="md-nav__link">
         Local (device-only) contacts
       </a>
@@ -557,6 +543,34 @@
     <li class="md-nav__item">
       <a href="../../basics/delete-contacts/" class="md-nav__link">
         Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/limit-and-offset-queries/" class="md-nav__link">
+        Using limit and offset in queries
       </a>
     </li>
   
@@ -1987,7 +2001,7 @@ should only specify this if you actually need it.</p>
 <p>For example, to only include email and name fields,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
-<p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
+<p>For more info, read <a href="../../basics/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="cancelling-the-query">Cancelling the query<a class="headerlink" href="#cancelling-the-query" title="Permanent link">&para;</a></h2>
 <p>To cancel a query amid execution,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>

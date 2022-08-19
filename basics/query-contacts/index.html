@@ -395,20 +395,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../entities/include-only-desired-data/" class="md-nav__link">
-        Include only certain fields for read and write operations
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../entities/about-local-contacts/" class="md-nav__link">
         Local (device-only) contacts
       </a>
@@ -737,6 +723,34 @@
     <li class="md-nav__item">
       <a href="../delete-contacts/" class="md-nav__link">
         Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../limit-and-offset-queries/" class="md-nav__link">
+        Using limit and offset in queries
       </a>
     </li>
   
@@ -2208,11 +2222,11 @@ should only specify this if you actually need it.</p>
 <p>For example, to only include email and name fields,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
-<p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
+<p>For more info, read <a href="../include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h3 id="optimize-your-queries">Optimize your queries<a class="headerlink" href="#optimize-your-queries" title="Permanent link">&para;</a></h3>
 <p>To optimize speed and minimize CPU and memory consumption, it is highly recommended that you only 
 include fields you need.</p>
-<p>For more info, read <a href="../../entities/include-only-desired-data/#optimizing-queries">Optimizing queries</a>.</p>
+<p>For more info, read <a href="../include-only-desired-data/#optimizing-queries">Optimizing queries</a>.</p>
 <h2 id="ordering">Ordering<a class="headerlink" href="#ordering" title="Permanent link">&para;</a></h2>
 <p>To order resulting Contacts using one or more fields,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">fieldOrder</span><span class="p">)</span><span class="w"></span>
@@ -2234,26 +2248,19 @@ addition to <code>ContactsFields</code>), use <code>contacts.core.util.ContactsC
 For more info, read <a href="../../other/convenience-functions/">Convenience functions</a>.</p>
 </blockquote>
 <h2 id="limiting-and-offsetting">Limiting and offsetting<a class="headerlink" href="#limiting-and-offsetting" title="Permanent link">&para;</a></h2>
-<p>To limit the amount of contacts returned and/or offset (skip) a specified number of contacts,</p>
+<p>To limit the amount of contacts returned and/or offset (skip) a specified number of contacts, use 
+the <code>limit</code> and <code>offset</code> functions;</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
-<p>For example, to only get a maximum 20 contacts, skipping the first 20,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="m">20</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="m">20</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-<p>This is useful for pagination =)</p>
-<blockquote>
-<p>ℹ️ It is recommended to limit the number of contacts when querying to increase performance and 
-decrease memory cost.</p>
-</blockquote>
+<p>For more info, read <a href="../limit-and-offset-queries/">Using limit and offset in queries</a>.</p>
 <h2 id="executing-the-query">Executing the query<a class="headerlink" href="#executing-the-query" title="Permanent link">&para;</a></h2>
 <p>To execute the query,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="cancelling-the-query">Cancelling the query<a class="headerlink" href="#cancelling-the-query" title="Permanent link">&para;</a></h2>
 <p>To cancel a query amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>find</code> function optionally takes in a function that, if it returns true, will cancel query
 processing as soon as possible. The function is called numerous times during query processing to
@@ -2262,11 +2269,11 @@ check if processing should stop or continue. This gives you the option to cancel
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.</p>
 <p>For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-query-asynchronously">Performing the query asynchronously<a class="headerlink" href="#performing-the-query-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Queries are executed when the <code>find</code> function is invoked. The work is done in the same thread as
@@ -2403,13 +2410,13 @@ of the string and not in the middle or end;</p>
 <h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
 <p>Matching only by phone number or email address is possible thanks to the following filter Uris
 defined in <code>ContactsContract</code>, which exist for this specific purpose.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">ContactsContract</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="n">Contacts</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// Default used by BroadQuery</span><span class="w"></span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="n">CommonDataKinds</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">        </span><span class="n">Phone</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="p">}</span><span class="w"> </span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">ContactsContract</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="n">Contacts</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// Default used by BroadQuery</span><span class="w"></span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">CommonDataKinds</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">        </span><span class="n">Phone</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="p">}</span><span class="w"> </span>
 </code></pre></div>
 <p><strong>These special filter URIs are only available for the phone and email common data kinds.</strong></p>
 <p>Note that the <code>EMAIL</code> and <code>PHONE</code> additionally matches the contact display name.</p>

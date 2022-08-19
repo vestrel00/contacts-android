@@ -12,14 +12,14 @@
         <meta name="author" content="Vandolf Estrellado">
       
       
-        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/debug/debug-blockednumber-provider-tables/">
+        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/basics/limit-and-offset-queries/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.3">
     
     
       
-        <title>Debug the BlockedNumber Provider tables - Contacts, Reborn</title>
+        <title>Using limit and offset in queries - Contacts, Reborn</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#debug-the-blocked-number-provider-tables" class="md-skip">
+        <a href="#using-limit-and-offset-in-queries" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Debug the BlockedNumber Provider tables
+              Using limit and offset in queries
             
           </span>
         </div>
@@ -457,12 +457,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
       
       
@@ -485,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../basics/query-contacts/" class="md-nav__link">
+      <a href="../query-contacts/" class="md-nav__link">
         Query contacts
       </a>
     </li>
@@ -499,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../basics/query-contacts-advanced/" class="md-nav__link">
+      <a href="../query-contacts-advanced/" class="md-nav__link">
         Query contacts (advanced)
       </a>
     </li>
@@ -513,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../basics/insert-contacts/" class="md-nav__link">
+      <a href="../insert-contacts/" class="md-nav__link">
         Insert contacts
       </a>
     </li>
@@ -527,7 +529,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../basics/update-contacts/" class="md-nav__link">
+      <a href="../update-contacts/" class="md-nav__link">
         Update contacts
       </a>
     </li>
@@ -541,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../basics/delete-contacts/" class="md-nav__link">
+      <a href="../delete-contacts/" class="md-nav__link">
         Delete contacts
       </a>
     </li>
@@ -555,7 +557,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../basics/include-only-desired-data/" class="md-nav__link">
+      <a href="../include-only-desired-data/" class="md-nav__link">
         Include only certain fields for read and write operations
       </a>
     </li>
@@ -567,11 +569,65 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../basics/limit-and-offset-queries/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Using limit and offset in queries
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Using limit and offset in queries
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#some-devices-do-not-support-limit-andor-offset-in-queries" class="md-nav__link">
+    Some devices do not support limit and/or offset in queries
+  </a>
+  
+    <nav class="md-nav" aria-label="Some devices do not support limit and/or offset in queries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#limitation" class="md-nav__link">
+    Limitation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1675,14 +1731,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_19" type="checkbox" id="__nav_19" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_19" type="checkbox" id="__nav_19" >
       
       
       
@@ -1705,7 +1759,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../debug-contacts-provider-tables/" class="md-nav__link">
+      <a href="../../debug/debug-contacts-provider-tables/" class="md-nav__link">
         Debug the Contacts Provider tables
       </a>
     </li>
@@ -1717,66 +1771,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Debug the BlockedNumber Provider tables
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../debug/debug-blockednumber-provider-tables/" class="md-nav__link">
         Debug the BlockedNumber Provider tables
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#this-is-not-meant-to-be-used-in-production-code" class="md-nav__link">
-    This is not meant to be used in production code!
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debug-functions-do-not-depend-on-the-core-library" class="md-nav__link">
-    Debug functions do not depend on the core library
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debug-functions-assume-that-privileges-are-acquired" class="md-nav__link">
-    Debug functions assume that privileges are acquired
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1788,7 +1787,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../debug-sim-contacts-tables/" class="md-nav__link">
+      <a href="../../debug/debug-sim-contacts-tables/" class="md-nav__link">
         Debug the Sim Contacts table
       </a>
     </li>
@@ -1859,23 +1858,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#this-is-not-meant-to-be-used-in-production-code" class="md-nav__link">
-    This is not meant to be used in production code!
+  <a href="#some-devices-do-not-support-limit-andor-offset-in-queries" class="md-nav__link">
+    Some devices do not support limit and/or offset in queries
+  </a>
+  
+    <nav class="md-nav" aria-label="Some devices do not support limit and/or offset in queries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#limitation" class="md-nav__link">
+    Limitation
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#debug-functions-do-not-depend-on-the-core-library" class="md-nav__link">
-    Debug functions do not depend on the core library
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debug-functions-assume-that-privileges-are-acquired" class="md-nav__link">
-    Debug functions assume that privileges are acquired
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1891,34 +1889,48 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/vestrel00/contacts-android/tree/main/docs/debug/debug-blockednumber-provider-tables.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/vestrel00/contacts-android/tree/main/docs/basics/limit-and-offset-queries.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="debug-the-blocked-number-provider-tables">Debug the Blocked Number Provider tables<a class="headerlink" href="#debug-the-blocked-number-provider-tables" title="Permanent link">&para;</a></h1>
-<p>If you want to take a look at the contents of Blocked Number Provider database tables that this
-library uses, then use the <code>debug</code> module functions to print relevant columns and all rows of a
-particular table to the Logcat.</p>
-<p>This is useful if you are experiencing an issue and are trying to figure out if it is this library's
-fault or not. This is most useful for contributors of this library. It allows us to verify that the
-work we are doing is correct. Consumers may also use it, especially if they are building their own
-full-fledged contacts application.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">Context</span><span class="p">.</span><span class="na">logBlockedNumbersTable</span><span class="p">()</span><span class="w"></span>
+<h1 id="using-limit-and-offset-in-queries">Using limit and offset in queries<a class="headerlink" href="#using-limit-and-offset-in-queries" title="Permanent link">&para;</a></h1>
+<p>Most query APIs in this library provide <code>limit</code> and <code>offset</code> functions to allow you to retrieve only
+some entities instead of everything.</p>
+<p>To limit the amount of entities returned and/or offset (skip) a specified number of entities,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
-<h2 id="this-is-not-meant-to-be-used-in-production-code">This is not meant to be used in production code!<a class="headerlink" href="#this-is-not-meant-to-be-used-in-production-code" title="Permanent link">&para;</a></h2>
-<p>DO NOT include usages of the <code>debug</code> module in your production code! It is only meant to be used as
-a debugging tool <strong>during development</strong>!</p>
-<h2 id="debug-functions-do-not-depend-on-the-core-library">Debug functions do not depend on the core library<a class="headerlink" href="#debug-functions-do-not-depend-on-the-core-library" title="Permanent link">&para;</a></h2>
-<p>Notice that the <code>debug</code> module does not depend on the <code>core</code> module, or any other modules in this
-project. This is done to ensure that whatever is being logged is independent of the core API
-implementation! This is important for debugging the core APIs during development. We wouldn't
-exactly want to debug the core APIs using the core APIs. That's just a recipe for disaster!</p>
-<h2 id="debug-functions-assume-that-privileges-are-acquired">Debug functions assume that privileges are acquired<a class="headerlink" href="#debug-functions-assume-that-privileges-are-acquired" title="Permanent link">&para;</a></h2>
-<p>There are no permissions required for blocked numbers. However, there are privileges that must be
-acquired. For more info, read about <a href="../../blockednumbers/about-blocked-numbers/">Blocked numbers</a>.</p>
-<p>If privileges are not acquired, the debug functions will not print any table rows.</p>
+<p>For example, to only get a maximum 20 entities, skipping the first 20,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="m">20</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="m">20</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<p>This is useful for pagination =)</p>
+<blockquote>
+<p>ℹ️ It is recommended to limit the number of entities requested when querying to increase 
+performance and decrease memory cost.</p>
+</blockquote>
+<h2 id="some-devices-do-not-support-limit-andor-offset-in-queries">Some devices do not support limit and/or offset in queries<a class="headerlink" href="#some-devices-do-not-support-limit-andor-offset-in-queries" title="Permanent link">&para;</a></h2>
+<p>If the <code>limit</code> and <code>offset</code> functions are not supported by the device's database query operation, 
+all entities will be returned. In such cases, the <code>Result.isLimitBreached</code> will be true if the 
+number of entities returned exceed the <code>limit</code>.</p>
+<blockquote>
+<p>ℹ️ The <code>Result.isLimitBreached</code> is available since <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.2.3">version 0.2.3</a>.</p>
+</blockquote>
+<p>Setting <code>forceOffsetAndLimit(true)</code> will ensure that the <code>offset</code> and `limit will be applied after 
+performing the internal database query, before returning the result to the caller (you).</p>
+<blockquote>
+<p>ℹ️ The <code>forceOffsetAndLimit</code> is available since <a href="https://github.com/vestrel00/contacts-android/discussions/248">version 0.2.4</a>.</p>
+</blockquote>
+<p>This defaults to true in order to seamlessly support pagination. However, it is recommended to set 
+this to false and handle such cases yourself to prevent performing more than one query for devices 
+that do not support pagination.</p>
+<p>For the full set of devices that do not support pagination, visit this discussion;
+https://github.com/vestrel00/contacts-android/discussions/242#discussioncomment-3337613</p>
+<h3 id="limitation">Limitation<a class="headerlink" href="#limitation" title="Permanent link">&para;</a></h3>
+<p>If the number of entities found do not exceed the <code>limit</code> but an <code>offset</code> is provided, this is 
+unable to detect/handle events where the <code>offset</code> is not supported. Sorry :P</p>
 
               
             </article>
@@ -1934,7 +1946,7 @@ acquired. For more info, read about <a href="../../blockednumbers/about-blocked-
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../debug-contacts-provider-tables/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Debug the Contacts Provider tables" rel="prev">
+        <a href="../include-only-desired-data/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Include only certain fields for read and write operations" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1943,20 +1955,20 @@ acquired. For more info, read about <a href="../../blockednumbers/about-blocked-
               <span class="md-footer__direction">
                 Previous
               </span>
-              Debug the Contacts Provider tables
+              Include only certain fields for read and write operations
             </div>
           </div>
         </a>
       
       
         
-        <a href="../debug-sim-contacts-tables/" class="md-footer__link md-footer__link--next" aria-label="Next: Debug the Sim Contacts table" rel="next">
+        <a href="../../data/query-data-sets/" class="md-footer__link md-footer__link--next" aria-label="Next: Query specific data kinds" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Debug the Sim Contacts table
+              Query specific data kinds
             </div>
           </div>
           <div class="md-footer__button md-icon">

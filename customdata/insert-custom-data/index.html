@@ -395,20 +395,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../entities/include-only-desired-data/" class="md-nav__link">
-        Include only certain fields for read and write operations
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../entities/about-local-contacts/" class="md-nav__link">
         Local (device-only) contacts
       </a>
@@ -557,6 +543,34 @@
     <li class="md-nav__item">
       <a href="../../basics/delete-contacts/" class="md-nav__link">
         Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/limit-and-offset-queries/" class="md-nav__link">
+        Using limit and offset in queries
       </a>
     </li>
   
@@ -1936,7 +1950,7 @@ fields that can be used in this function.</p>
 <p>For example, to specifically include only <code>HandleName</code> and <code>Gender</code> fields,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">HandleNameFields</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">GenderFields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
-<p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
+<p>For more info, read <a href="../../basics/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="blank-data-are-not-inserted">Blank data are not inserted<a class="headerlink" href="#blank-data-are-not-inserted" title="Permanent link">&para;</a></h2>
 <p>Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are
 ignored and are not inserted by insert APIs.</p>

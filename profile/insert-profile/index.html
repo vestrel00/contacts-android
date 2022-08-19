@@ -395,20 +395,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../entities/include-only-desired-data/" class="md-nav__link">
-        Include only certain fields for read and write operations
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../entities/about-local-contacts/" class="md-nav__link">
         Local (device-only) contacts
       </a>
@@ -557,6 +543,34 @@
     <li class="md-nav__item">
       <a href="../../basics/delete-contacts/" class="md-nav__link">
         Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/limit-and-offset-queries/" class="md-nav__link">
+        Using limit and offset in queries
       </a>
     </li>
   
@@ -2187,7 +2201,7 @@ associated account are considered local or device-only contacts, which are not s
 <p>For example, to only include email and name fields,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
-<p>For more info, read <a href="../../entities/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
+<p>For more info, read <a href="../../basics/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="executing-the-insert">Executing the insert<a class="headerlink" href="#executing-the-insert" title="Permanent link">&para;</a></h2>
 <p>To execute the insert,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>

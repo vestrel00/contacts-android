@@ -520,20 +520,6 @@
   
   
     <li class="md-nav__item">
-      <a href="entities/include-only-desired-data/" class="md-nav__link">
-        Include only certain fields for read and write operations
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="entities/about-local-contacts/" class="md-nav__link">
         Local (device-only) contacts
       </a>
@@ -682,6 +668,34 @@
     <li class="md-nav__item">
       <a href="basics/delete-contacts/" class="md-nav__link">
         Delete contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="basics/include-only-desired-data/" class="md-nav__link">
+        Include only certain fields for read and write operations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="basics/limit-and-offset-queries/" class="md-nav__link">
+        Using limit and offset in queries
       </a>
     </li>
   
@@ -2064,7 +2078,7 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 <li>✅ <a href="customdata/integrate-custom-data/"><strong>Custom data</strong> integration</a></li>
 <li>✅ <a href="basics/query-contacts/"><strong>Broad queries</strong></a> and <a href="basics/query-contacts-advanced/"><strong>advanced queries</strong></a> of Contacts and RawContacts from zero or more Accounts and/or Groups</li>
 <li>✅ <a href="entities/about-contact-lookup-key/">Contact <strong>lookup keys</strong></a></li>
-<li>✅ <a href="entities/include-only-desired-data/">Include only desired fields</a> in read/write operations to <strong>optimize CPU and memory</strong></li>
+<li>✅ <a href="basics/include-only-desired-data/">Include only desired fields</a> in read/write operations to <strong>optimize CPU and memory</strong></li>
 <li>✅ Powerful, <strong>type-safe query DSL</strong></li>
 <li>✅ <strong>Pagination</strong> using order by, limit, and offset database functions.</li>
 <li>✅ <a href="basics/insert-contacts/"><strong>Insert</strong></a> one or more RawContacts with an associated Account,
@@ -2418,9 +2432,9 @@ This is not cool!</p>
 <p>To address this issue, the query APIs provided in the Contacts, Reborn library, perform only at 
 least two internal database queries no matter how many contacts are matched! Even if there are 
 10,000 contacts matched, the library will only perform two internal database queries (depending on 
-your query parameters). Fetch 10,000 as fast as <strong>99 milliseconds</strong>!</p>
+your query parameters). Fetch 10,000 contacts as fast as <strong>99 milliseconds</strong> (varies per device)!</p>
 <blockquote>
-<p>ℹ️ For more info, read <a href="entities/include-only-desired-data/#optimizing-queries">Optimizing queries</a>.</p>
+<p>ℹ️ For more info, read <a href="basics/include-only-desired-data/#optimizing-queries">Optimizing queries</a>.</p>
 </blockquote>
 <p>Of course, if you don't want to fetch all hundreds of thousands of contacts, the query APIs support 
 <strong>pagination</strong> with <code>limit</code> and <code>offset</code> functions!</p>
