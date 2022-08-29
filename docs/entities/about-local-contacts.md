@@ -65,3 +65,28 @@ disables consumers from violating them.
 > ⚠️ As of [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
 > [restrictions will be removed](https://github.com/vestrel00/contacts-android/issues/167). You 
 > will be able insert or update all of the above fields for local raw contacts.
+
+## Samsung Phone contacts
+
+In most flavors of Android, a local (device-only) RawContact have null Account name and type in
+the RawContacts table. However, Samsung phones use `vnd.sec.contact.phone` to fill the Account
+name and type in the RawContacts table for local RawContacts (referred to as "Phone" in the 
+Samsung Contacts app).
+
+The `vnd.sec.contact.phone` does NOT refer to an actual `android.accounts.Account`. It is not 
+returned by the `android.accounts.AccountManager`. 
+
+In short, Samsung devices use `vnd.sec.contact.phone` instead of null for local RawContacts.
+
+In Samsung devices, RawContacts that are inserted with a null account will, immediately or at a 
+later time, be automatically associated with the `vnd.sec.contact.phone`.
+
+In order to query for local RawContacts on Samsung devices, you do not have to do anything 
+different. Just pass in null as usual;
+
+```kotlin
+query.accounts(null)
+```
+
+When a null is provided, all query APIs will internally additionally add 
+`Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`.

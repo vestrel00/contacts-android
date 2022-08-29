@@ -80,10 +80,17 @@ internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
             (RawContactsFields.AccountName equalToIgnoreCase account.name) and
                     (RawContactsFields.AccountType equalToIgnoreCase account.type)
         } else {
-            RawContactsFields.AccountName.isNull() and
-                    RawContactsFields.AccountType.isNull()
+            // Samsung devices use "vnd.sec.contact.phone" for account name and type instead of null.
+            // See https://github.com/vestrel00/contacts-android/issues/257
+            (RawContactsFields.AccountName.isNull() and RawContactsFields.AccountType.isNull())
+                .or(
+                    (RawContactsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
+                            (RawContactsFields.AccountType equalTo SAMSUNG_PHONE_ACCOUNT)
+                )
         }
     }
+
+private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
 
 /**
  * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
