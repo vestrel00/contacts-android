@@ -99,12 +99,12 @@ it is possible to programmatically set the display name to "Ice Cold" but set th
 name to "Hot Fire". The `Contacts.DISPLAY_NAME` is made up of the prefix, given, middle, family
 name, and suffix ("Hot Fire") and not the unstructured display name.
 
-The Contacts Provider's [general matching][3] algorithm does **not** include the
+The Contacts Provider's [general matching][2] algorithm does **not** include the
 `Contacts.DISPLAY_NAME`. However, the `StructuredName.DISPLAY_NAME` is included in the matching
 process but not the rest of the structured components (e.g. given and family name).
 
 The native Contacts app displays the `Contacts.DISPLAY_NAME`. So, here comes the unusual scenario
-that looks like a bug. The [general matching][3] algorithm will match the text "Ice" or "Cold" but
+that looks like a bug. The [general matching][2] algorithm will match the text "Ice" or "Cold" but
 not "Hot" or "Fire". The end result is that searching for the Contact "Ice Cold" will show a
 Contact called "Hot Fire"!
 
@@ -1389,12 +1389,10 @@ worth it (IMO).
 
 I want to keep the dependency list of this library to a minimum. The Contacts Provider is native to
 Android since the beginning. I want to honor that fact by avoiding adding dependencies here. I made
-a bit of an exception by adding the [Dexter library][2] for permissions handling for the permissions
-modules (not in the core modules). I'm tempted to remove the Dexter dependency and implement 
-permissions handling myself because Dexter brings in a lot of other dependencies with it. However,
-it is not part of the core module so I'm able to live with this.
-
-TODO Remove/replace Dexter. It is no longer being maintained.
+a bit of an exception by adding a permissions handling library for the permissions modules (not in 
+the core modules). I'm tempted to remove the permissions dependency and implement permissions 
+handling myself because external dependencies brings in other dependencies with it. However, it is 
+not part of the core module so I'm able to live with this.
 
 Keeping dependencies to a minimum is just a small challenge I made up. We will see how long it can
 last!
@@ -1406,5 +1404,4 @@ lib. I think we can all be consenting adults =)
 If the community strongly desires the addition of these support libs, then the community will win =)
 
 [1]: https://developer.android.com/guide/topics/providers/contacts-provider
-[2]: https://github.com/Karumi/Dexter
-[3]: https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch
+[2]: https://developer.android.com/training/contacts-provider/retrieve-names#GeneralMatch

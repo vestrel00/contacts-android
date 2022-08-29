@@ -16,7 +16,7 @@ import contacts.permissions.requestWritePermission
  */
 suspend fun Data.queryWithPermission(): DataQueryFactory {
     if (!contactsApi.permissions.canQuery()) {
-        contactsApi.applicationContext.requestReadPermission()
+        requestReadPermission()
     }
 
     return query()
@@ -30,7 +30,7 @@ suspend fun Data.queryWithPermission(): DataQueryFactory {
  */
 suspend fun Data.updateWithPermission(): DataUpdate {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return update()
@@ -44,7 +44,7 @@ suspend fun Data.updateWithPermission(): DataUpdate {
  */
 suspend fun Data.deleteWithPermission(): DataDelete {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return delete()

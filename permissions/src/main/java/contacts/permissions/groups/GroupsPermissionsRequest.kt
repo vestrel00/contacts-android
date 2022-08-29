@@ -14,7 +14,7 @@ import contacts.permissions.requestWritePermission
  */
 suspend fun Groups.queryWithPermission(): GroupsQuery {
     if (!contactsApi.permissions.canQuery()) {
-        contactsApi.applicationContext.requestReadPermission()
+        requestReadPermission()
     }
 
     return query()
@@ -30,8 +30,8 @@ suspend fun Groups.queryWithPermission(): GroupsQuery {
  */
 suspend fun Groups.insertWithPermission(): GroupsInsert {
     if (!contactsApi.permissions.canInsert()) {
-        contactsApi.applicationContext.requestWritePermission()
-        contactsApi.applicationContext.requestGetAccountsPermission()
+        requestWritePermission()
+        requestGetAccountsPermission()
     }
 
     return insert()
@@ -45,7 +45,7 @@ suspend fun Groups.insertWithPermission(): GroupsInsert {
  */
 suspend fun Groups.updateWithPermission(): GroupsUpdate {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return update()
@@ -59,7 +59,7 @@ suspend fun Groups.updateWithPermission(): GroupsUpdate {
  */
 suspend fun Groups.deleteWithPermission(): GroupsDelete {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return delete()

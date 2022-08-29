@@ -1,6 +1,5 @@
 package contacts.permissions.accounts
 
-import android.content.Context
 import contacts.core.ContactsPermissions
 import contacts.core.accounts.*
 import contacts.permissions.R
@@ -17,7 +16,7 @@ import contacts.permissions.requestWritePermission
  */
 suspend fun Accounts.queryWithPermission(): AccountsQuery {
     if (!contactsApi.accountsPermissions.canQueryAccounts()) {
-        contactsApi.applicationContext.requestQueryAccountsPermission()
+        requestQueryAccountsPermission()
     }
 
     return query()
@@ -32,7 +31,7 @@ suspend fun Accounts.queryWithPermission(): AccountsQuery {
  */
 suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery {
     if (!contactsApi.accountsPermissions.canQueryRawContacts()) {
-        contactsApi.applicationContext.requestQueryRawContactsPermission()
+        requestQueryRawContactsPermission()
     }
 
     return queryRawContacts()
@@ -49,7 +48,7 @@ suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery 
 suspend fun Accounts.updateLocalRawContactsAccountWithPermission():
         AccountsLocalRawContactsUpdate {
     if (!contactsApi.accountsPermissions.canUpdateLocalRawContactsAccount()) {
-        contactsApi.applicationContext.requestUpdateLocalRawContactsAccountPermission()
+        requestUpdateLocalRawContactsAccountPermission()
     }
 
     return updateLocalRawContactsAccount()
@@ -62,7 +61,7 @@ suspend fun Accounts.updateLocalRawContactsAccountWithPermission():
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun Context.requestQueryAccountsPermission(): Boolean =
+suspend fun requestQueryAccountsPermission(): Boolean =
     requestGetAccountsPermission() && requestReadPermission()
 
 /**
@@ -71,7 +70,7 @@ suspend fun Context.requestQueryAccountsPermission(): Boolean =
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun Context.requestQueryRawContactsPermission(): Boolean = requestReadPermission()
+suspend fun requestQueryRawContactsPermission(): Boolean = requestReadPermission()
 
 /**
  * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
@@ -80,7 +79,7 @@ suspend fun Context.requestQueryRawContactsPermission(): Boolean = requestReadPe
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun Context.requestUpdateLocalRawContactsAccountPermission(): Boolean =
+suspend fun requestUpdateLocalRawContactsAccountPermission(): Boolean =
     requestGetAccountsPermission() && requestWritePermission()
 
 /**
@@ -89,10 +88,9 @@ suspend fun Context.requestUpdateLocalRawContactsAccountPermission(): Boolean =
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun Context.requestGetAccountsPermission(): Boolean =
+suspend fun requestGetAccountsPermission(): Boolean =
     requestPermission(
         AccountsPermissions.GET_ACCOUNTS_PERMISSION,
-        this,
         R.string.contacts_accounts_request_permission_title,
         R.string.contacts_accounts_request_permission_description
     )

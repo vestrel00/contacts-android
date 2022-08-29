@@ -14,7 +14,7 @@ import contacts.permissions.requestWritePermission
  */
 suspend fun Profile.queryWithPermission(): ProfileQuery {
     if (!contactsApi.permissions.canQuery()) {
-        contactsApi.applicationContext.requestReadPermission()
+        requestReadPermission()
     }
 
     return query()
@@ -30,8 +30,8 @@ suspend fun Profile.queryWithPermission(): ProfileQuery {
  */
 suspend fun Profile.insertWithPermission(): ProfileInsert {
     if (!contactsApi.permissions.canInsert()) {
-        contactsApi.applicationContext.requestWritePermission()
-        contactsApi.applicationContext.requestGetAccountsPermission()
+        requestWritePermission()
+        requestGetAccountsPermission()
     }
 
     return insert()
@@ -45,7 +45,7 @@ suspend fun Profile.insertWithPermission(): ProfileInsert {
  */
 suspend fun Profile.updateWithPermission(): ProfileUpdate {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return update()
@@ -59,7 +59,7 @@ suspend fun Profile.updateWithPermission(): ProfileUpdate {
  */
 suspend fun Profile.deleteWithPermission(): ProfileDelete {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return delete()

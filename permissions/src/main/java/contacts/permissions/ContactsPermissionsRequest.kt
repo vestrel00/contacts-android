@@ -1,6 +1,5 @@
 package contacts.permissions
 
-import android.content.Context
 import contacts.core.*
 import contacts.permissions.accounts.requestGetAccountsPermission
 
@@ -12,7 +11,7 @@ import contacts.permissions.accounts.requestGetAccountsPermission
  */
 suspend fun Contacts.queryWithPermission(): Query {
     if (!permissions.canQuery()) {
-        applicationContext.requestReadPermission()
+        requestReadPermission()
     }
 
     return query()
@@ -26,7 +25,7 @@ suspend fun Contacts.queryWithPermission(): Query {
  */
 suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
     if (!permissions.canQuery()) {
-        applicationContext.requestReadPermission()
+        requestReadPermission()
     }
 
     return broadQuery()
@@ -42,8 +41,8 @@ suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
  */
 suspend fun Contacts.insertWithPermission(): Insert {
     if (!permissions.canInsert()) {
-        applicationContext.requestWritePermission()
-        applicationContext.requestGetAccountsPermission()
+        requestWritePermission()
+        requestGetAccountsPermission()
     }
 
     return insert()
@@ -57,7 +56,7 @@ suspend fun Contacts.insertWithPermission(): Insert {
  */
 suspend fun Contacts.updateWithPermission(): Update {
     if (!permissions.canUpdateDelete()) {
-        applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return update()
@@ -71,7 +70,7 @@ suspend fun Contacts.updateWithPermission(): Update {
  */
 suspend fun Contacts.deleteWithPermission(): Delete {
     if (!permissions.canUpdateDelete()) {
-        applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return delete()
@@ -83,7 +82,7 @@ suspend fun Contacts.deleteWithPermission(): Delete {
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun Context.requestReadPermission(): Boolean =
+suspend fun requestReadPermission(): Boolean =
     requestContactsPermission(ContactsPermissions.READ_PERMISSION)
 
 /**
@@ -92,13 +91,12 @@ suspend fun Context.requestReadPermission(): Boolean =
  *
  * Returns true if permission is granted. False otherwise.
  */
-suspend fun Context.requestWritePermission(): Boolean =
+suspend fun requestWritePermission(): Boolean =
     requestContactsPermission(ContactsPermissions.WRITE_PERMISSION)
 
-private suspend fun Context.requestContactsPermission(permission: String): Boolean =
+private suspend fun requestContactsPermission(permission: String): Boolean =
     requestPermission(
         permission,
-        this,
         R.string.contacts_request_permission_title,
         R.string.contacts_request_permission_description
     )

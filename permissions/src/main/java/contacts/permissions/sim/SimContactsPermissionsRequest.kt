@@ -13,7 +13,7 @@ import contacts.permissions.requestWritePermission
  */
 suspend fun SimContacts.queryWithPermission(): SimContactsQuery {
     if (!contactsApi.permissions.canQuery()) {
-        contactsApi.applicationContext.requestReadPermission()
+        requestReadPermission()
     }
 
     return query()
@@ -27,7 +27,7 @@ suspend fun SimContacts.queryWithPermission(): SimContactsQuery {
  */
 suspend fun SimContacts.insertWithPermission(): SimContactsInsert {
     if (!contactsApi.permissions.canInsertToSim()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return insert()
@@ -41,7 +41,7 @@ suspend fun SimContacts.insertWithPermission(): SimContactsInsert {
  */
 suspend fun SimContacts.updateWithPermission(): SimContactsUpdate {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return update()
@@ -55,7 +55,7 @@ suspend fun SimContacts.updateWithPermission(): SimContactsUpdate {
  */
 suspend fun SimContacts.deleteWithPermission(): SimContactsDelete {
     if (!contactsApi.permissions.canUpdateDelete()) {
-        contactsApi.applicationContext.requestWritePermission()
+        requestWritePermission()
     }
 
     return delete()
