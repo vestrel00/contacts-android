@@ -3704,11 +3704,10 @@ worth it (IMO).</p>
 <h2 id="why-not-add-android-x-support-library-dependencies">Why Not Add Android X / Support Library Dependencies?<a class="headerlink" href="#why-not-add-android-x-support-library-dependencies" title="Permanent link">&para;</a></h2>
 <p>I want to keep the dependency list of this library to a minimum. The Contacts Provider is native to
 Android since the beginning. I want to honor that fact by avoiding adding dependencies here. I made
-a bit of an exception by adding the <a href="https://github.com/Karumi/Dexter">Dexter library</a> for permissions handling for the permissions
-modules (not in the core modules). I'm tempted to remove the Dexter dependency and implement 
-permissions handling myself because Dexter brings in a lot of other dependencies with it. However,
-it is not part of the core module so I'm able to live with this.</p>
-<p>TODO Remove/replace Dexter. It is no longer being maintained.</p>
+a bit of an exception by adding a permissions handling library for the permissions modules (not in 
+the core modules). I'm tempted to remove the permissions dependency and implement permissions 
+handling myself because external dependencies brings in other dependencies with it. However, it is 
+not part of the core module so I'm able to live with this.</p>
 <p>Keeping dependencies to a minimum is just a small challenge I made up. We will see how long it can
 last!</p>
 <p>I left comments all over the code on when an androidx dependency may be useful. The most glaring

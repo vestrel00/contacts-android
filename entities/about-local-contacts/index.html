@@ -451,6 +451,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#samsung-phone-contacts" class="md-nav__link">
+    Samsung Phone contacts
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1879,6 +1886,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#samsung-phone-contacts" class="md-nav__link">
+    Samsung Phone contacts
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1956,6 +1970,27 @@ disables consumers from violating them.</p>
 <p>⚠️ As of <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>, these
 <a href="https://github.com/vestrel00/contacts-android/issues/167">restrictions will be removed</a>. You 
 will be able insert or update all of the above fields for local raw contacts.</p>
+</blockquote>
+<h2 id="samsung-phone-contacts">Samsung Phone contacts<a class="headerlink" href="#samsung-phone-contacts" title="Permanent link">&para;</a></h2>
+<p>In most flavors of Android, a local (device-only) RawContact have null Account name and type in
+the RawContacts table. However, Samsung phones use <code>vnd.sec.contact.phone</code> to fill the Account
+name and type in the RawContacts table for local RawContacts (referred to as "Phone" in the 
+Samsung Contacts app).</p>
+<p>The <code>vnd.sec.contact.phone</code> does NOT refer to an actual <code>android.accounts.Account</code>. It is not 
+returned by the <code>android.accounts.AccountManager</code>. </p>
+<p>In short, Samsung devices use <code>vnd.sec.contact.phone</code> instead of null for local RawContacts.</p>
+<p>In Samsung devices, RawContacts that are inserted with a null account will, immediately or at a 
+later time, be automatically associated with the <code>vnd.sec.contact.phone</code>.</p>
+<p>In order to query for local RawContacts on Samsung devices, you do not have to do anything 
+different. Just pass in null as usual;</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">query</span><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<p>When a null is provided, all query APIs will internally additionally add 
+<code>Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")</code>.</p>
+<blockquote>
+<p>⚠️ This internal fix is available as of <a href="https://github.com/vestrel00/contacts-android/discussions/248">version 0.2.4</a>.
+Prior versions will require you to pass in <code>Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")</code>
+in addition to <code>null</code> when using <code>accounts</code> for matching local contacts.</p>
 </blockquote>
 
               
