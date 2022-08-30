@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 
 class SettingsActivity : BaseActivity() {
 
@@ -14,12 +17,14 @@ class SettingsActivity : BaseActivity() {
 
         findViewById<View>(R.id.accounts).setOnClickListener { showAccounts() }
         findViewById<View>(R.id.default_account).setOnClickListener { chooseDefaultAccount() }
+        findViewById<Spinner>(R.id.sort_by).setupSortBy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
             preferences.defaultAccountForNewContacts = it.firstOrNull()
+            setResult(RESULT_OK)
         }
     }
 
@@ -37,9 +42,44 @@ class SettingsActivity : BaseActivity() {
         )
     }
 
+    private fun Spinner.setupSortBy() {
+        adapter = ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, SortBy.values())
+            .also { it.setDropDownViewResource(android.R.layout.simple_list_item_1) }
+
+        setSelection(preferences.sortBy.ordinal)
+
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                preferences.sortBy = adapter.getItem(position) as SortBy
+                setResult(RESULT_OK)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
     companion object {
         fun showSettings(activity: Activity) {
-            activity.startActivity(Intent(activity, SettingsActivity::class.java))
+            activity.startActivityForResult(
+                Intent(activity, SettingsActivity::class.java),
+                REQUEST_SHOW_SETTINGS
+            )
         }
+
+        fun onShowSettingsResult(requestCode: Int, resultCode: Int, onSettingsChanged: () -> Unit) {
+            if (requestCode != REQUEST_SHOW_SETTINGS || resultCode != RESULT_OK) {
+                return
+            }
+
+            onSettingsChanged()
+        }
+
+        private const val REQUEST_SHOW_SETTINGS = 6735246
     }
 }

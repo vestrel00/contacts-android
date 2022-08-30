@@ -58,7 +58,7 @@ abstract class DataEntityWithTypeAndLabelListView
         // exist, it defaults to the last on the list. The custom type is excluded from this.
         val existingUnderlyingDataTypes = dataList.map { it.type }
         val underlyingDataType = defaultUnderlyingDataTypes
-            .minus(existingUnderlyingDataTypes)
+            .minus(existingUnderlyingDataTypes.toSet())
             .firstOrNull()
             ?: defaultUnderlyingDataTypes.last()
 

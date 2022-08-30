@@ -131,6 +131,10 @@ class ContactsActivity : BaseActivity() {
             this.selectedGroups = selectedGroups
             showContacts()
         }
+
+        SettingsActivity.onShowSettingsResult(requestCode, resultCode) {
+            showContacts()
+        }
     }
 
     private fun setupSearchField() {
@@ -168,7 +172,12 @@ class ContactsActivity : BaseActivity() {
                     Fields.Contact.DisplayNamePrimary,
                 )
                 .wherePartiallyMatches(searchText)
-                .orderBy(ContactsFields.DisplayNamePrimary.asc())
+                .orderBy(
+                    when (preferences.sortBy) {
+                        SortBy.FIRST_NAME -> ContactsFields.DisplayNamePrimary.asc()
+                        SortBy.LAST_NAME -> ContactsFields.DisplayNameAlt.asc()
+                    }
+                )
                 // Not showing how to low 4xad x number of contacts at a time and then loading more when
                 // scrolled to the very bottom of the list for brevity. Consumers can figure it out.
                 // .offset(...)
