@@ -102,6 +102,10 @@
         <activity
             android:name=".BlockedNumbersActivity"
             android:label="@string/blocked_numbers" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/settings" />
     </application>
 
 </manifest>

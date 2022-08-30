@@ -28,4 +28,8 @@
         android:showAsAction="never"
         android:title="@string/blocked_numbers" />
 
+    <item
+        android:id="@+id/settings"
+        android:showAsAction="never"
+        android:title="@string/settings" />
 </menu>

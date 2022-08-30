@@ -104,6 +104,9 @@ class ContactsActivity : BaseActivity() {
             R.id.blocked_numbers -> {
                 BlockedNumbersActivity.showBlockedNumbers(this)
             }
+            R.id.settings -> {
+                SettingsActivity.showSettings(this)
+            }
         }
 
         return super.onOptionsItemSelected(menuItem)
