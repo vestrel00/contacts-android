@@ -18,6 +18,7 @@ class SettingsActivity : BaseActivity() {
         findViewById<View>(R.id.accounts).setOnClickListener { showAccounts() }
         findViewById<View>(R.id.default_account).setOnClickListener { chooseDefaultAccount() }
         findViewById<Spinner>(R.id.sort_by).setupSortBy()
+        findViewById<Spinner>(R.id.name_format).setupNameFormat()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -50,12 +51,28 @@ class SettingsActivity : BaseActivity() {
 
         onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
                 preferences.sortBy = adapter.getItem(position) as SortBy
+                setResult(RESULT_OK)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
+    private fun Spinner.setupNameFormat() {
+        adapter = ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, NameFormat.values())
+            .also { it.setDropDownViewResource(android.R.layout.simple_list_item_1) }
+
+        setSelection(preferences.nameFormat.ordinal)
+
+        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
+            ) {
+                preferences.nameFormat = adapter.getItem(position) as NameFormat
                 setResult(RESULT_OK)
             }
 

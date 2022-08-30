@@ -169,7 +169,10 @@ class ContactsActivity : BaseActivity() {
                 .groups(selectedGroups)
                 .include(
                     Fields.Contact.LookupKey,
-                    Fields.Contact.DisplayNamePrimary,
+                    when (preferences.nameFormat) {
+                        NameFormat.FIRST_NAME_FIRST -> Fields.Contact.DisplayNamePrimary
+                        NameFormat.LAST_NAME_FIRST -> Fields.Contact.DisplayNameAlt
+                    }
                 )
                 .wherePartiallyMatches(searchText)
                 .orderBy(
@@ -193,10 +196,15 @@ class ContactsActivity : BaseActivity() {
             setNotifyOnChange(false)
             clear()
             addAll(searchResults.map {
-                if (it.displayNamePrimary.isNullOrEmpty()) {
+                val displayName = when (preferences.nameFormat) {
+                    NameFormat.FIRST_NAME_FIRST -> it.displayNamePrimary
+                    NameFormat.LAST_NAME_FIRST -> it.displayNameAlt
+                }
+
+                if (displayName.isNullOrEmpty()) {
                     "(No name)"
                 } else {
-                    it.displayNamePrimary
+                    displayName
                 }
             })
             notifyDataSetChanged()

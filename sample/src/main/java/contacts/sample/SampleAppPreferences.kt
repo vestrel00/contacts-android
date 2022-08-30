@@ -28,11 +28,22 @@ class SampleAppPreferences(private val context: Context) {
         }
 
     var sortBy: SortBy
-        get() = sharedPrefs.getString(SORT_BY, null)?.let(SortBy::valueOf) ?: SortBy.FIRST_NAME
+        get() = sharedPrefs.getString(SORT_BY, null)?.let(SortBy::valueOf)
+            ?: SortBy.FIRST_NAME
         set(value) {
             sharedPrefs
                 .edit()
                 .putString(SORT_BY, value.name)
+                .apply()
+        }
+
+    var nameFormat: NameFormat
+        get() = sharedPrefs.getString(NAME_FORMAT, null)?.let(NameFormat::valueOf)
+            ?: NameFormat.FIRST_NAME_FIRST
+        set(value) {
+            sharedPrefs
+                .edit()
+                .putString(NAME_FORMAT, value.name)
                 .apply()
         }
 }
@@ -44,9 +55,17 @@ enum class SortBy(private val value: String) {
     override fun toString() = "Sort by: $value"
 }
 
+enum class NameFormat(private val value: String) {
+    FIRST_NAME_FIRST("First name first"),
+    LAST_NAME_FIRST("Last name first");
+
+    override fun toString() = "Name format: $value"
+}
+
 private const val SHARED_PREFS_NAME = "contacts.sample.SHARED_PREFS"
 
 private const val ACCOUNT_NAME = "ACCOUNT_NAME"
 private const val ACCOUNT_TYPE = "ACCOUNT_TYPE"
 
 private const val SORT_BY = "SORT_BY"
+private const val NAME_FORMAT = "NAME_FORMAT"
