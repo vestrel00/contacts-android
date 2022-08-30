@@ -14,7 +14,7 @@ class SampleApp : Application() {
 
     // Obviously, this is not the way to provide a singleton when using dependency injection
     // frameworks such as dagger, hilt, or koin. Again, this sample is made to be barebones!
-    val contacts: Contacts by lazy(LazyThreadSafetyMode.NONE) {
+    val contacts by lazy(LazyThreadSafetyMode.NONE) {
         Contacts(
             this,
             customDataRegistry = CustomDataRegistry().register(
@@ -26,5 +26,9 @@ class SampleApp : Application() {
             ),
             logger = AndroidLogger(redactMessages = !BuildConfig.DEBUG)
         )
+    }
+
+    val preferences by lazy(LazyThreadSafetyMode.NONE) {
+        SampleAppPreferences(this)
     }
 }

@@ -24,5 +24,16 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray" />
 
+        <TextView
+            android:id="@+id/default_account"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+            android:background="@android:drawable/list_selector_background"
+            android:gravity="center_vertical"
+            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+            android:text="@string/settings_default_account"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
     </LinearLayout>
 </ScrollView>

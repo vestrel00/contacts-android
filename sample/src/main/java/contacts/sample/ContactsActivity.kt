@@ -113,6 +113,7 @@ class ContactsActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         ContactDetailsActivity.onViewContactDetailsResult(requestCode) {
             showContacts()
         }
@@ -130,8 +131,6 @@ class ContactsActivity : BaseActivity() {
             this.selectedGroups = selectedGroups
             showContacts()
         }
-
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setupSearchField() {

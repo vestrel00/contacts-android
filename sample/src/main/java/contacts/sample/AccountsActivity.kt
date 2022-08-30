@@ -69,12 +69,12 @@ class AccountsActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         GroupsActivity.onSelectGroupsResult(
             requestCode, resultCode, data
         ) { account, selectedGroups ->
             selectedAccountGroups[account] = selectedGroups
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun finish() {

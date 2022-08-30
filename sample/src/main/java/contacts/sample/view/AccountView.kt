@@ -59,14 +59,19 @@ class AccountView @JvmOverloads constructor(
 
     /**
      * Sets the RawContact account shown and managed by this view to the given [rawContact] and uses
-     * the given [contacts] API to perform operations on it.
+     * the given [contacts] API to perform operations on it. The [defaultAccount] is used if the
+     * [rawContact] is not yet associated with an account.
      */
-    fun setRawContact(rawContact: RawContactEntity?, contacts: Contacts) {
+    fun setRawContact(
+        contacts: Contacts,
+        rawContact: RawContactEntity?,
+        defaultAccount: Account?
+    ) {
         this.rawContact = rawContact
-        loadAccount(contacts)
+        loadAccount(contacts, defaultAccount)
     }
 
-    private fun loadAccount(contacts: Contacts) = launch {
+    private fun loadAccount(contacts: Contacts, defaultAccount: Account?) = launch {
         val account = rawContact?.let {
             if (it is ExistingRawContactEntityWithContactId) {
                 contacts.accounts(it.isProfile)
@@ -75,7 +80,7 @@ class AccountView @JvmOverloads constructor(
                     .findWithContext()
                     .firstOrNull()
             } else {
-                null
+                defaultAccount
             }
         }
         setAccount(account)

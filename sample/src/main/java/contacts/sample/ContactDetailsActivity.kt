@@ -186,7 +186,7 @@ class ContactDetailsActivity : BaseActivity() {
                 contactView.isEnabled = true
             }
             Mode.CREATE -> {
-                contactView.loadNewContact(contacts)
+                contactView.loadNewContact(contacts, preferences.defaultAccountForNewContacts)
                 contactView.isEnabled = true
             }
         }

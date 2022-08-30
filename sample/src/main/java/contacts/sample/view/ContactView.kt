@@ -1,5 +1,6 @@
 package contacts.sample.view
 
+import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -110,14 +111,15 @@ class ContactView @JvmOverloads constructor(
 
     /**
      * Set the Contact shown and managed by this view to the given [contact] and uses the given
-     * [contacts] API to perform operations on it.
+     * [contacts] API to perform operations on it. The [defaultAccount] is used as the account if
+     * the [contact] is not yet associated with one.
      */
-    private fun setContact(contact: ContactEntity?, contacts: Contacts) {
+    private fun setContact(contacts: Contacts, contact: ContactEntity?, defaultAccount: Account?) {
         this.contact = contact
 
         setOptionsView(contacts)
         setDetailsView(contacts)
-        setRawContactsView(contacts)
+        setRawContactsView(contacts, defaultAccount)
     }
 
     /**
@@ -199,18 +201,19 @@ class ContactView @JvmOverloads constructor(
             .firstOrNull()
             ?.mutableCopy()
 
-        setContact(contact, contacts)
+        setContact(contacts, contact, null)
 
         return contact != null
     }
 
     /**
-     * Removes any loaded contact and loads an empty new (raw) contact.
+     * Removes any loaded contact and loads an empty new (raw) contact. The [defaultAccount] is
+     * used as the initially selected account.
      *
      * To insert the new (raw) contact into the Contacts database, call [createNewContact].
      */
-    fun loadNewContact(contacts: Contacts) {
-        setContact(null, contacts)
+    fun loadNewContact(contacts: Contacts, defaultAccount: Account?) {
+        setContact(contacts, null, defaultAccount)
     }
 
     /**
@@ -360,7 +363,7 @@ class ContactView @JvmOverloads constructor(
         sendToVoicemailView.isChecked = sendToVoicemail
     }
 
-    private fun setRawContactsView(contacts: Contacts) {
+    private fun setRawContactsView(contacts: Contacts, defaultAccount: Account?) {
         rawContactsView.removeAllViews()
 
         val contact = contact
@@ -368,7 +371,7 @@ class ContactView @JvmOverloads constructor(
             newRawContactView = null
 
             contact.rawContacts.forEach { rawContact ->
-                val rawContactView = addRawContactView(rawContact, contacts)
+                val rawContactView = addRawContactView(contacts, rawContact, null)
 
                 if (contact is ExistingContactEntity
                     && rawContact is ExistingRawContactEntityWithContactId
@@ -382,7 +385,7 @@ class ContactView @JvmOverloads constructor(
                 }
             }
         } else {
-            newRawContactView = addRawContactView(NewRawContact(), contacts).also {
+            newRawContactView = addRawContactView(contacts, NewRawContact(), defaultAccount).also {
                 // Make sure that this Contact view and the primary photo holder view is set to the
                 // same photo whenever the user picks one.
                 it.setPhotoDrawableOnPhotoPickedWith(photoView)
@@ -391,11 +394,12 @@ class ContactView @JvmOverloads constructor(
     }
 
     private fun addRawContactView(
+        contacts: Contacts,
         rawContact: RawContactEntity,
-        contacts: Contacts
+        defaultAccount: Account?
     ): RawContactView {
         val rawContactView = RawContactView(context)
-        rawContactView.setRawContact(rawContact, contacts)
+        rawContactView.setRawContact(contacts, rawContact, defaultAccount)
         rawContactsView.addView(rawContactView)
         return rawContactView
     }

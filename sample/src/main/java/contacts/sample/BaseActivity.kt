@@ -24,6 +24,9 @@ abstract class BaseActivity : Activity(), CoroutineScope by MainScope() {
     protected val contacts: Contacts
         get() = (application as SampleApp).contacts
 
+    protected val preferences: SampleAppPreferences
+        get() = (application as SampleApp).preferences
+
     // Obviously, this is not the way to provide a singleton when using dependency injection
     // frameworks such as dagger or koin. Again, this sample is made to be barebones!
 

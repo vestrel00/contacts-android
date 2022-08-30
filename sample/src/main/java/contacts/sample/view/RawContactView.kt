@@ -70,11 +70,12 @@ class RawContactView @JvmOverloads constructor(
 
     /**
      * Sets the RawContact shown and managed by this view to the given [rawContact] and uses the
-     * given [contacts] API to perform operations on it.
+     * given [contacts] API to perform operations on it. The [defaultAccount] is used if the
+     * [rawContact] is not yet associated with an account.
      */
-    fun setRawContact(rawContact: RawContactEntity, contacts: Contacts) {
+    fun setRawContact(contacts: Contacts, rawContact: RawContactEntity, defaultAccount: Account?) {
         this.rawContact = rawContact
-        setRawContactView(contacts)
+        setRawContactView(contacts, defaultAccount)
     }
 
     // Not using any view binding libraries or plugins just for this.
@@ -168,11 +169,11 @@ class RawContactView @JvmOverloads constructor(
         }
     }
 
-    private fun setRawContactView(contacts: Contacts) {
+    private fun setRawContactView(contacts: Contacts, defaultAccount: Account?) {
         val rawContact = rawContact
 
         photoThumbnailView.setRawContact(rawContact, contacts)
-        accountView.setRawContact(rawContact, contacts)
+        accountView.setRawContact(contacts, rawContact, defaultAccount)
         nameView.data = rawContact.name ?: NewName().also { newName ->
             when (rawContact) {
                 is MutableRawContact -> rawContact.setName(newName)

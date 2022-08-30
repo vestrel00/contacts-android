@@ -46,8 +46,8 @@ import contacts.core.util.*
  *
  * ## Usage
  *
- * To insert a (Profile) raw contact with the name "john doe" with email "john@doe.com" for the
- * local account (no account), not allowing multiple raw contacts per account;
+ * To insert a (Profile) raw contact with the name "john doe" with email "john@doe.com", not
+ * allowing multiple raw contacts per account;
  *
  * In Kotlin,
  *

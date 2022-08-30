@@ -103,4 +103,5 @@
 
     <!-- Settings -->
     <string name="settings">Settings</string>
+    <string name="settings_default_account">Default account for new contacts</string>
 </resources>
