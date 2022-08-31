@@ -3,6 +3,8 @@ package contacts.sample
 import android.accounts.Account
 import android.content.Context
 import android.content.SharedPreferences
+import contacts.sample.PhoneticName.ALWAYS_SHOW
+import contacts.sample.PhoneticName.HIDE_IF_EMPTY
 
 class SampleAppPreferences(private val context: Context) {
 
@@ -46,6 +48,17 @@ class SampleAppPreferences(private val context: Context) {
                 .putString(NAME_FORMAT, value.name)
                 .apply()
         }
+
+
+    var phoneticName: PhoneticName
+        get() = sharedPrefs.getString(PHONETIC_NAME, null)?.let(PhoneticName::valueOf)
+            ?: PhoneticName.ALWAYS_SHOW
+        set(value) {
+            sharedPrefs
+                .edit()
+                .putString(PHONETIC_NAME, value.name)
+                .apply()
+        }
 }
 
 enum class SortBy(private val value: String) {
@@ -62,6 +75,23 @@ enum class NameFormat(private val value: String) {
     override fun toString() = "Name format: $value"
 }
 
+/**
+ * Determines the visibility of phonetic name fields in the contact details' view mode.
+ *
+ * - When [ALWAYS_SHOW], phonetic name fields will be shown even if they are all empty.
+ * - When [HIDE_IF_EMPTY], phonetic name fields will be hidden if all are empty.
+ *
+ * Phonetic name fields will always be visible in edit mode.
+ *
+ * This has nothing to do with the contact primary or alt display name.
+ */
+enum class PhoneticName(private val value: String) {
+    ALWAYS_SHOW("Always show"),
+    HIDE_IF_EMPTY("Hide if empty");
+
+    override fun toString() = "Phonetic name: $value"
+}
+
 private const val SHARED_PREFS_NAME = "contacts.sample.SHARED_PREFS"
 
 private const val ACCOUNT_NAME = "ACCOUNT_NAME"
@@ -69,3 +99,4 @@ private const val ACCOUNT_TYPE = "ACCOUNT_TYPE"
 
 private const val SORT_BY = "SORT_BY"
 private const val NAME_FORMAT = "NAME_FORMAT"
+private const val PHONETIC_NAME = "PHONETIC_NAME"

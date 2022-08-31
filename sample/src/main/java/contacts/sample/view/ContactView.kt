@@ -114,12 +114,17 @@ class ContactView @JvmOverloads constructor(
      * [contacts] API to perform operations on it. The [defaultAccount] is used as the account if
      * the [contact] is not yet associated with one.
      */
-    private fun setContact(contacts: Contacts, contact: ContactEntity?, defaultAccount: Account?) {
+    private fun setContact(
+        contacts: Contacts,
+        contact: ContactEntity?,
+        defaultAccount: Account?,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
+    ) {
         this.contact = contact
 
         setOptionsView(contacts)
         setDetailsView(contacts)
-        setRawContactsView(contacts, defaultAccount)
+        setRawContactsView(contacts, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
     }
 
     /**
@@ -194,14 +199,18 @@ class ContactView @JvmOverloads constructor(
      *
      * Returns true if the load succeeded.
      */
-    suspend fun loadContactWithLookupKey(lookupKey: String, contacts: Contacts): Boolean {
+    suspend fun loadContactWithLookupKey(
+        contacts: Contacts,
+        lookupKey: String,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
+    ): Boolean {
         val contact = contacts.queryWithPermission()
             .where { Contact.lookupKeyIn(lookupKey) }
             .findWithContext()
             .firstOrNull()
             ?.mutableCopy()
 
-        setContact(contacts, contact, null)
+        setContact(contacts, contact, null, hidePhoneticNameIfEmptyAndDisabled)
 
         return contact != null
     }
@@ -212,8 +221,12 @@ class ContactView @JvmOverloads constructor(
      *
      * To insert the new (raw) contact into the Contacts database, call [createNewContact].
      */
-    fun loadNewContact(contacts: Contacts, defaultAccount: Account?) {
-        setContact(contacts, null, defaultAccount)
+    fun loadNewContact(
+        contacts: Contacts,
+        defaultAccount: Account?,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
+    ) {
+        setContact(contacts, null, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
     }
 
     /**
@@ -363,7 +376,11 @@ class ContactView @JvmOverloads constructor(
         sendToVoicemailView.isChecked = sendToVoicemail
     }
 
-    private fun setRawContactsView(contacts: Contacts, defaultAccount: Account?) {
+    private fun setRawContactsView(
+        contacts: Contacts,
+        defaultAccount: Account?,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
+    ) {
         rawContactsView.removeAllViews()
 
         val contact = contact
@@ -371,7 +388,12 @@ class ContactView @JvmOverloads constructor(
             newRawContactView = null
 
             contact.rawContacts.forEach { rawContact ->
-                val rawContactView = addRawContactView(contacts, rawContact, null)
+                val rawContactView = addRawContactView(
+                    contacts,
+                    rawContact,
+                    null,
+                    hidePhoneticNameIfEmptyAndDisabled
+                )
 
                 if (contact is ExistingContactEntity
                     && rawContact is ExistingRawContactEntityWithContactId
@@ -385,7 +407,12 @@ class ContactView @JvmOverloads constructor(
                 }
             }
         } else {
-            newRawContactView = addRawContactView(contacts, NewRawContact(), defaultAccount).also {
+            newRawContactView = addRawContactView(
+                contacts,
+                NewRawContact(),
+                defaultAccount,
+                hidePhoneticNameIfEmptyAndDisabled
+            ).also {
                 // Make sure that this Contact view and the primary photo holder view is set to the
                 // same photo whenever the user picks one.
                 it.setPhotoDrawableOnPhotoPickedWith(photoView)
@@ -396,10 +423,16 @@ class ContactView @JvmOverloads constructor(
     private fun addRawContactView(
         contacts: Contacts,
         rawContact: RawContactEntity,
-        defaultAccount: Account?
+        defaultAccount: Account?,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
     ): RawContactView {
         val rawContactView = RawContactView(context)
-        rawContactView.setRawContact(contacts, rawContact, defaultAccount)
+        rawContactView.setRawContact(
+            contacts,
+            rawContact,
+            defaultAccount,
+            hidePhoneticNameIfEmptyAndDisabled
+        )
         rawContactsView.addView(rawContactView)
         return rawContactView
     }

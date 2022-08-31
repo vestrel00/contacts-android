@@ -57,12 +57,27 @@ class NameView @JvmOverloads constructor(
             setNameFields()
         }
 
+    var hidePhoneticNameIfEmptyAndDisabled: Boolean = false
+        set(value) {
+            field = value
+            isEnabled = isEnabled
+        }
+
     // Not using any view binding libraries or plugins just for this.
     private val namePrefixField: EditText
     private val firstNameField: EditText
     private val middleNameField: EditText
     private val lastNameField: EditText
     private val nameSuffixField: EditText
+
+    private val phoneticFirstNameField: EditText
+    private val phoneticMiddleNameField: EditText
+    private val phoneticLastNameField: EditText
+
+    private val phoneticFieldsAreEmpty: Boolean
+        get() = phoneticFirstNameField.length() <= 0 &&
+                phoneticMiddleNameField.length() <= 0 &&
+                phoneticLastNameField.length() <= 0
 
     init {
         orientation = VERTICAL
@@ -74,7 +89,24 @@ class NameView @JvmOverloads constructor(
         lastNameField = findViewById(R.id.lastNameField)
         nameSuffixField = findViewById(R.id.nameSuffixField)
 
+        phoneticFirstNameField = findViewById(R.id.phoneticFirstNameField)
+        phoneticMiddleNameField = findViewById(R.id.phoneticMiddleNameField)
+        phoneticLastNameField = findViewById(R.id.phoneticLastNameField)
+
         setNameFieldsListeners()
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        if (hidePhoneticNameIfEmptyAndDisabled && !enabled && phoneticFieldsAreEmpty) {
+            phoneticFirstNameField.visibility = GONE
+            phoneticMiddleNameField.visibility = GONE
+            phoneticLastNameField.visibility = GONE
+        } else {
+            phoneticFirstNameField.visibility = VISIBLE
+            phoneticMiddleNameField.visibility = VISIBLE
+            phoneticLastNameField.visibility = VISIBLE
+        }
     }
 
     private fun setNameFieldsListeners() {
@@ -117,6 +149,30 @@ class NameView @JvmOverloads constructor(
                 }
             }
         })
+
+        phoneticFirstNameField.addTextChangedListener(object : AbstractTextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                data.applyIfMutable {
+                    phoneticGivenName = s?.toString()
+                }
+            }
+        })
+
+        phoneticMiddleNameField.addTextChangedListener(object : AbstractTextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                data.applyIfMutable {
+                    phoneticMiddleName = s?.toString()
+                }
+            }
+        })
+
+        phoneticLastNameField.addTextChangedListener(object : AbstractTextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                data.applyIfMutable {
+                    phoneticFamilyName = s?.toString()
+                }
+            }
+        })
     }
 
     private fun setNameFields() {
@@ -125,6 +181,10 @@ class NameView @JvmOverloads constructor(
         middleNameField.setText(data.middleName)
         lastNameField.setText(data.familyName)
         nameSuffixField.setText(data.suffix)
+
+        phoneticFirstNameField.setText(data.phoneticGivenName)
+        phoneticMiddleNameField.setText(data.phoneticMiddleName)
+        phoneticLastNameField.setText(data.phoneticFamilyName)
     }
 }
 

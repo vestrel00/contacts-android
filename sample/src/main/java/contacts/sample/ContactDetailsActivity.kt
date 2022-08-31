@@ -186,7 +186,11 @@ class ContactDetailsActivity : BaseActivity() {
                 contactView.isEnabled = true
             }
             Mode.CREATE -> {
-                contactView.loadNewContact(contacts, preferences.defaultAccountForNewContacts)
+                contactView.loadNewContact(
+                    contacts,
+                    preferences.defaultAccountForNewContacts,
+                    preferences.phoneticName == PhoneticName.HIDE_IF_EMPTY
+                )
                 contactView.isEnabled = true
             }
         }
@@ -194,7 +198,11 @@ class ContactDetailsActivity : BaseActivity() {
 
     private suspend fun loadContact() {
         val loadSuccess = contactLookupKey?.let {
-            contactView.loadContactWithLookupKey(it, contacts)
+            contactView.loadContactWithLookupKey(
+                contacts,
+                it,
+                preferences.phoneticName == PhoneticName.HIDE_IF_EMPTY
+            )
         } == true
 
         if (loadSuccess) {

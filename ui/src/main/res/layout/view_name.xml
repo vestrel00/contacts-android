@@ -41,4 +41,28 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:hint="@string/contacts_ui_name_suffix_hint"
         android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/phoneticFirstNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_phonetic_first_hint"
+        android:inputType="textPhonetic" />
+
+    <EditText
+        android:id="@+id/phoneticMiddleNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_phonetic_middle_hint"
+        android:inputType="textPhonetic" />
+
+    <EditText
+        android:id="@+id/phoneticLastNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:hint="@string/contacts_ui_name_phonetic_last_hint"
+        android:inputType="textPhonetic" />
 </merge>

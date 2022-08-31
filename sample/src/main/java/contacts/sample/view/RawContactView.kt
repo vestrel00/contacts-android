@@ -73,9 +73,14 @@ class RawContactView @JvmOverloads constructor(
      * given [contacts] API to perform operations on it. The [defaultAccount] is used if the
      * [rawContact] is not yet associated with an account.
      */
-    fun setRawContact(contacts: Contacts, rawContact: RawContactEntity, defaultAccount: Account?) {
+    fun setRawContact(
+        contacts: Contacts,
+        rawContact: RawContactEntity,
+        defaultAccount: Account?,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
+    ) {
         this.rawContact = rawContact
-        setRawContactView(contacts, defaultAccount)
+        setRawContactView(contacts, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
     }
 
     // Not using any view binding libraries or plugins just for this.
@@ -169,7 +174,11 @@ class RawContactView @JvmOverloads constructor(
         }
     }
 
-    private fun setRawContactView(contacts: Contacts, defaultAccount: Account?) {
+    private fun setRawContactView(
+        contacts: Contacts,
+        defaultAccount: Account?,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
+    ) {
         val rawContact = rawContact
 
         photoThumbnailView.setRawContact(rawContact, contacts)
@@ -183,6 +192,7 @@ class RawContactView @JvmOverloads constructor(
                 }
             }
         }
+        nameView.hidePhoneticNameIfEmptyAndDisabled = hidePhoneticNameIfEmptyAndDisabled
         nicknameView.data = rawContact.nickname ?: NewNickname().also { newNickname ->
             when (rawContact) {
                 is MutableRawContact -> rawContact.setNickname(newNickname)

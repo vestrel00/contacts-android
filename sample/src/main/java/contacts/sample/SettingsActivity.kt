@@ -19,6 +19,7 @@ class SettingsActivity : BaseActivity() {
         findViewById<View>(R.id.default_account).setOnClickListener { chooseDefaultAccount() }
         findViewById<Spinner>(R.id.sort_by).setupSortBy()
         findViewById<Spinner>(R.id.name_format).setupNameFormat()
+        findViewById<Spinner>(R.id.phonetic_name).setupPhoneticName()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -49,16 +50,8 @@ class SettingsActivity : BaseActivity() {
 
         setSelection(preferences.sortBy.ordinal)
 
-        onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
-                preferences.sortBy = adapter.getItem(position) as SortBy
-                setResult(RESULT_OK)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+        onItemPositionSelected { position ->
+            preferences.sortBy = adapter.getItem(position) as SortBy
         }
     }
 
@@ -68,11 +61,29 @@ class SettingsActivity : BaseActivity() {
 
         setSelection(preferences.nameFormat.ordinal)
 
+        onItemPositionSelected { position ->
+            preferences.nameFormat = adapter.getItem(position) as NameFormat
+        }
+    }
+
+    private fun Spinner.setupPhoneticName() {
+        adapter =
+            ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, PhoneticName.values())
+                .also { it.setDropDownViewResource(android.R.layout.simple_list_item_1) }
+
+        setSelection(preferences.phoneticName.ordinal)
+
+        onItemPositionSelected { position ->
+            preferences.phoneticName = adapter.getItem(position) as PhoneticName
+        }
+    }
+
+    private inline fun Spinner.onItemPositionSelected(crossinline block: (position: Int) -> Unit) {
         onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
-                preferences.nameFormat = adapter.getItem(position) as NameFormat
+                block(position)
                 setResult(RESULT_OK)
             }
 

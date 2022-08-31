@@ -22,6 +22,9 @@
     <string name="contacts_ui_name_middle_hint">Middle name</string>
     <string name="contacts_ui_name_last_hint">Last name</string>
     <string name="contacts_ui_name_suffix_hint">Name suffix</string>
+    <string name="contacts_ui_name_phonetic_first_hint">Phonetic first name</string>
+    <string name="contacts_ui_name_phonetic_middle_hint">Phonetic middle name</string>
+    <string name="contacts_ui_name_phonetic_last_hint">Phonetic last name</string>
 
     <!-- Nickname -->
     <string name="contacts_ui_nickname_hint">Nickname</string>
