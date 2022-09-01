@@ -14,6 +14,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import contacts.async.commitWithContext
 import contacts.async.findWithContext
+import contacts.async.profile.commitWithContext
+import contacts.async.profile.findWithContext
 import contacts.async.util.contactWithContext
 import contacts.async.util.optionsWithContext
 import contacts.async.util.setOptionsWithContext
@@ -26,6 +28,10 @@ import contacts.core.util.lookupKeyIn
 import contacts.core.util.shareVCardIntent
 import contacts.permissions.deleteWithPermission
 import contacts.permissions.insertWithPermission
+import contacts.permissions.profile.deleteWithPermission
+import contacts.permissions.profile.insertWithPermission
+import contacts.permissions.profile.queryWithPermission
+import contacts.permissions.profile.updateWithPermission
 import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
 import contacts.sample.R
@@ -204,10 +210,30 @@ class ContactView @JvmOverloads constructor(
         lookupKey: String,
         hidePhoneticNameIfEmptyAndDisabled: Boolean
     ): Boolean {
-        val contact = contacts.queryWithPermission()
+        val contact = contacts
+            .queryWithPermission()
             .where { Contact.lookupKeyIn(lookupKey) }
             .findWithContext()
             .firstOrNull()
+            ?.mutableCopy()
+
+        setContact(contacts, contact, null, hidePhoneticNameIfEmptyAndDisabled)
+
+        return contact != null
+    }
+
+    /**
+     * Loads the Profile (device owner) contact.
+     */
+    suspend fun loadProfile(
+        contacts: Contacts,
+        hidePhoneticNameIfEmptyAndDisabled: Boolean
+    ): Boolean {
+        val contact = contacts
+            .profile()
+            .queryWithPermission()
+            .findWithContext()
+            .contact
             ?.mutableCopy()
 
         setContact(contacts, contact, null, hidePhoneticNameIfEmptyAndDisabled)
@@ -234,22 +260,37 @@ class ContactView @JvmOverloads constructor(
      *
      * Returns the newly created contact's lookup key. Returns null if the insert failed.
      */
-    suspend fun createNewContact(contacts: Contacts): String? {
+    suspend fun createNewContact(contacts: Contacts, isProfile: Boolean): String? {
         val rawContact = newRawContactView?.rawContact
         if (rawContact == null || rawContact !is NewRawContact) {
             // Only new RawContacts can be inserted.
             return null
         }
 
-        val newContact = contacts.insertWithPermission()
-            // Make sure that if a contact only has a photo, that a blank gets inserted. The photo
-            // will be set after the contact has been inserted. This mechanism will change as part
-            // of https://github.com/vestrel00/contacts-android/issues/119
-            .allowBlanks(newRawContactView?.hasPhotoToSave() == true)
-            .forAccount(newRawContactView?.account)
-            .rawContacts(rawContact)
-            .commitWithContext()
-            .contactWithContext(contacts, rawContact)
+        val newContact = if (isProfile) {
+            contacts
+                .profile()
+                .insertWithPermission()
+                // Make sure that if a contact only has a photo, that a blank gets inserted. The photo
+                // will be set after the contact has been inserted. This mechanism will change as part
+                // of https://github.com/vestrel00/contacts-android/issues/119
+                .allowBlanks(newRawContactView?.hasPhotoToSave() == true)
+                .forAccount(newRawContactView?.account)
+                .rawContact(rawContact)
+                .commitWithContext()
+                .contactWithContext(contacts)
+        } else {
+            contacts
+                .insertWithPermission()
+                // Make sure that if a contact only has a photo, that a blank gets inserted. The photo
+                // will be set after the contact has been inserted. This mechanism will change as part
+                // of https://github.com/vestrel00/contacts-android/issues/119
+                .allowBlanks(newRawContactView?.hasPhotoToSave() == true)
+                .forAccount(newRawContactView?.account)
+                .rawContacts(rawContact)
+                .commitWithContext()
+                .contactWithContext(contacts, rawContact)
+        }
 
         // Try to insert the photo. Ignore whether it succeeds or fails. This mechanism will change
         // as part of https://github.com/vestrel00/contacts-android/issues/119
@@ -286,14 +327,28 @@ class ContactView @JvmOverloads constructor(
         photoView.savePhoto(contacts)
 
         // Perform the update. Ignore if photos update succeeded or not :D
-        return contacts.updateWithPermission()
-            // Make sure that if a contact only has a photo, that that it does not get deleted on
-            // update. This mechanism will change as part of
-            // https://github.com/vestrel00/contacts-android/issues/119
-            .deleteBlanks(!photoView.hasPhoto())
-            .contacts(contact)
-            .commitWithContext()
-            .isSuccessful
+        return if (contact.isProfile) {
+            contacts
+                .profile()
+                .updateWithPermission()
+                // Make sure that if a contact only has a photo, that that it does not get deleted on
+                // update. This mechanism will change as part of
+                // https://github.com/vestrel00/contacts-android/issues/119
+                .deleteBlanks(!photoView.hasPhoto())
+                .contact(contact)
+                .commitWithContext()
+                .isSuccessful
+        } else {
+            contacts
+                .updateWithPermission()
+                // Make sure that if a contact only has a photo, that that it does not get deleted on
+                // update. This mechanism will change as part of
+                // https://github.com/vestrel00/contacts-android/issues/119
+                .deleteBlanks(!photoView.hasPhoto())
+                .contacts(contact)
+                .commitWithContext()
+                .isSuccessful
+        }
     }
 
     /**
@@ -309,10 +364,20 @@ class ContactView @JvmOverloads constructor(
             return true
         }
 
-        return contacts.deleteWithPermission()
-            .contacts(contact)
-            .commitWithContext()
-            .isSuccessful
+        return if (contact.isProfile) {
+            contacts
+                .profile()
+                .deleteWithPermission()
+                .contact()
+                .commitWithContext()
+                .isSuccessful
+        } else {
+            contacts
+                .deleteWithPermission()
+                .contacts(contact)
+                .commitWithContext()
+                .isSuccessful
+        }
     }
 
     fun shareContact() {
@@ -328,7 +393,7 @@ class ContactView @JvmOverloads constructor(
     private fun setOptionsView(contacts: Contacts) {
         val contact = contact
 
-        optionsView.visibility = if (contact != null) VISIBLE else GONE
+        optionsView.visibility = if (contact != null && !contact.isProfile) VISIBLE else GONE
 
         // A contact must exist in order to update options. This means that options are not
         // available in create mode. This is the same behavior as the native Contacts app.

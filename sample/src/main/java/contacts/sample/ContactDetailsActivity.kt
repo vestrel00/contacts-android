@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
  * Also provides functions to create new contacts, edit existing contacts, and deleting existing
  * contacts.
  *
+ * This is also able to read/write the Profile (device owner) contact when [IS_PROFILE] is true.
+ *
  * #### Modes
  *
  * - [Mode.VIEW]: Displays all existing Contact/RawContact(s) Data. Modifications are NOT allowed.
@@ -121,6 +123,14 @@ class ContactDetailsActivity : BaseActivity() {
                     unlinkMenuItem.isVisible = false
                 }
             }
+
+            if (intent.isProfile) {
+                // This sample app will not support a shortcut to the profile contact.
+                // This is the same as AOSP Contacts app and Google Contacts app.
+                createShortcutMenuItem.isVisible = false
+                // Unlinking Profile is not supported, so we hide it.
+                unlinkMenuItem.isVisible = false
+            }
         }
         return super.onPrepareOptionsMenu(menu)
     }
@@ -186,24 +196,25 @@ class ContactDetailsActivity : BaseActivity() {
                 contactView.isEnabled = true
             }
             Mode.CREATE -> {
-                contactView.loadNewContact(
-                    contacts,
-                    preferences.defaultAccountForNewContacts,
-                    preferences.phoneticName == PhoneticName.HIDE_IF_EMPTY
-                )
+                loadNewContact()
                 contactView.isEnabled = true
             }
         }
     }
 
     private suspend fun loadContact() {
-        val loadSuccess = contactLookupKey?.let {
-            contactView.loadContactWithLookupKey(
-                contacts,
-                it,
-                preferences.phoneticName == PhoneticName.HIDE_IF_EMPTY
-            )
-        } == true
+        val hidePhoneticNameIfEmptyAndDisabled =
+            preferences.phoneticName == PhoneticName.HIDE_IF_EMPTY
+
+        val loadSuccess = if (intent.isProfile) {
+            contactView.loadProfile(contacts, hidePhoneticNameIfEmptyAndDisabled)
+        } else {
+            contactLookupKey?.let {
+                contactView.loadContactWithLookupKey(
+                    contacts, it, hidePhoneticNameIfEmptyAndDisabled
+                )
+            } == true
+        }
 
         if (loadSuccess) {
             // Show/hide the Unlink menu item depending on RawContact count.
@@ -214,10 +225,18 @@ class ContactDetailsActivity : BaseActivity() {
         }
     }
 
+    private fun loadNewContact() {
+        contactView.loadNewContact(
+            contacts,
+            preferences.defaultAccountForNewContacts,
+            preferences.phoneticName == PhoneticName.HIDE_IF_EMPTY
+        )
+    }
+
     private fun createNewContact() = launch {
         showProgressDialog()
 
-        contactLookupKey = contactView.createNewContact(contacts)
+        contactLookupKey = contactView.createNewContact(contacts, intent.isProfile)
         val createSuccess = contactLookupKey != null
 
         val resultMessageRes = if (createSuccess) {
@@ -287,6 +306,15 @@ class ContactDetailsActivity : BaseActivity() {
             activity.startActivityForResult(intent, REQUEST_VIEW)
         }
 
+        fun viewProfileDetails(activity: Activity) {
+            val intent = Intent(activity, ContactDetailsActivity::class.java).apply {
+                putExtra(REQUEST_CODE, REQUEST_VIEW)
+                putExtra(IS_PROFILE, true)
+            }
+
+            activity.startActivityForResult(intent, REQUEST_VIEW)
+        }
+
         fun onViewContactDetailsResult(requestCode: Int, contactDetailsViewed: () -> Unit) {
             if (requestCode == REQUEST_VIEW) {
                 contactDetailsViewed()
@@ -295,10 +323,10 @@ class ContactDetailsActivity : BaseActivity() {
         // endregion
 
         // region EDIT
-        fun editContactDetails(activity: Activity, contactId: Long) {
+        fun editContactDetails(activity: Activity, contactLookupKey: String) {
             val intent = Intent(activity, ContactDetailsActivity::class.java).apply {
                 putExtra(REQUEST_CODE, REQUEST_EDIT)
-                putExtra(CONTACT_LOOKUP_KEY, contactId)
+                putExtra(CONTACT_LOOKUP_KEY, contactLookupKey)
             }
 
             activity.startActivityForResult(intent, REQUEST_EDIT)
@@ -317,7 +345,14 @@ class ContactDetailsActivity : BaseActivity() {
                 putExtra(REQUEST_CODE, REQUEST_CREATE)
             }
 
-            intent.type
+            activity.startActivityForResult(intent, REQUEST_CREATE)
+        }
+
+        fun createProfile(activity: Activity) {
+            val intent = Intent(activity, ContactDetailsActivity::class.java).apply {
+                putExtra(REQUEST_CODE, REQUEST_CREATE)
+                putExtra(IS_PROFILE, true)
+            }
 
             activity.startActivityForResult(intent, REQUEST_CREATE)
         }
@@ -362,6 +397,9 @@ private val Intent.mode: Mode
         }
     }
 
+private val Intent.isProfile: Boolean
+    get() = getBooleanExtra(IS_PROFILE, false)
+
 /**
  * The lookup key of an existing Contact. Defaults to -null if not provided.
  */
@@ -375,3 +413,5 @@ private const val REQUEST_CREATE = 333
 private const val REQUEST_CODE = "requestCode"
 private const val CONTACT_LOOKUP_KEY = "contactLookupKey"
 private const val MODE = "mode"
+
+private const val IS_PROFILE = "isProfile"

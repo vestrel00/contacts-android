@@ -8,6 +8,10 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import contacts.async.profile.findWithContext
+import contacts.core.Fields
+import contacts.permissions.profile.queryWithPermission
+import kotlinx.coroutines.launch
 
 class SettingsActivity : BaseActivity() {
 
@@ -15,6 +19,7 @@ class SettingsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        findViewById<View>(R.id.profile).setOnClickListener { launch { showProfile() } }
         findViewById<View>(R.id.accounts).setOnClickListener { showAccounts() }
         findViewById<View>(R.id.default_account).setOnClickListener { chooseDefaultAccount() }
         findViewById<Spinner>(R.id.sort_by).setupSortBy()
@@ -27,6 +32,21 @@ class SettingsActivity : BaseActivity() {
         AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
             preferences.defaultAccountForNewContacts = it.firstOrNull()
             setResult(RESULT_OK)
+        }
+    }
+
+    private suspend fun showProfile() {
+        val profile = contacts
+            .profile()
+            .queryWithPermission()
+            .include(Fields.Contact.LookupKey)
+            .findWithContext()
+            .contact
+
+        if (profile != null) {
+            ContactDetailsActivity.viewProfileDetails(this)
+        } else {
+            ContactDetailsActivity.createProfile(this)
         }
     }
 
