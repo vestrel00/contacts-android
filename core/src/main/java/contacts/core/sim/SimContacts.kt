@@ -29,6 +29,11 @@ interface SimContacts {
     fun delete(): SimContactsDelete
 
     /**
+     * Returns a [SimCardState] instance, which provides functions for checking SIM card states.
+     */
+    val state: SimCardState
+
+    /**
      * A reference to the [Contacts] instance that constructed this. This is mostly used internally
      * to shorten internal code.
      *
@@ -42,9 +47,14 @@ interface SimContacts {
  * Creates a new [SimContacts] instance.
  */
 @Suppress("FunctionName")
-internal fun SimContacts(contacts: Contacts): SimContacts = SimContactsImpl(contacts)
+internal fun SimContacts(contacts: Contacts): SimContacts = SimContactsImpl(
+    SimCardState(contacts.applicationContext), contacts
+)
 
-private class SimContactsImpl(override val contactsApi: Contacts) : SimContacts {
+private class SimContactsImpl(
+    override val state: SimCardState,
+    override val contactsApi: Contacts
+) : SimContacts {
 
     override fun query() = SimContactsQuery(contactsApi)
 

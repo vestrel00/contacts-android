@@ -8,6 +8,9 @@ An instance of the `SimContactsUpdate` API is obtained by,
 val update = Contacts(context).sim().update()
 ```
 
+Note that SIM card update will only work if there is a SIM card in the ready state. For more info,
+read [SIM card state](./../sim/about-sim-contacts.md#sim-card-state).
+
 ## A basic update
 
 To update an existing contact in the SIM card,

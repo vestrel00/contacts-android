@@ -18,11 +18,16 @@ import contacts.core.util.unsafeLazy
  * Blank SimContacts (name AND number are both null or blank) will NOT be inserted. The name OR
  * number can be null or blank but not both.
  *
-* ## Character limits
+ * ## Character limits
  *
  * The `name` and `number` are subject to the SIM card's maximum character limit, which is typically
  * around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will
  * fail if the limit is breached.
+ *
+ * ## SIM Card state
+ *
+ * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * insert will do nothing.
  *
  * ## Permissions
  *
@@ -77,6 +82,10 @@ interface SimContactsInsert : CrudApi {
     /**
      * Inserts the [NewSimContact]s in the queue (added via [simContacts]) and returns the
      * [Result].
+     *
+     * ## SIM Card state
+     *
+     * Requires [SimCardState.isReady] to be true.
      *
      * ## Permissions
      *
@@ -151,10 +160,11 @@ interface SimContactsInsert : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsInsert(contacts: Contacts): SimContactsInsert =
-    SimContactsInsertImpl(contacts)
+    SimContactsInsertImpl(contacts, SimCardState(contacts.applicationContext))
 
 private class SimContactsInsertImpl(
     override val contactsApi: Contacts,
+    private val state: SimCardState,
 
     private val simContacts: MutableSet<NewSimContact> = mutableSetOf(),
 
@@ -166,12 +176,14 @@ private class SimContactsInsertImpl(
             SimContactsInsert {
                 simContacts: $simContacts
                 hasPermission: ${permissions.canInsertToSim()}
+                isSimCardReady: ${state.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsInsert = SimContactsInsertImpl(
         contactsApi,
+        state,
 
         // Redact SIM contact data.
         simContacts.asSequence().redactedCopies().toMutableSet(),
@@ -198,7 +210,12 @@ private class SimContactsInsertImpl(
     override fun commit(cancel: () -> Boolean): SimContactsInsert.Result {
         onPreExecute()
 
-        return if (simContacts.isEmpty() || !permissions.canInsertToSim() || cancel()) {
+        return if (
+            simContacts.isEmpty() ||
+            !permissions.canInsertToSim() ||
+            !state.isReady ||
+            cancel()
+        ) {
             SimContactsInsertFailed()
         } else {
 

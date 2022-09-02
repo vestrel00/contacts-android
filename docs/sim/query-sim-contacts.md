@@ -9,6 +9,9 @@ An instance of the `SimContactsQuery` API is obtained by,
 val query = Contacts(context).sim().query()
 ```
 
+Note that SIM card queries will only work if there is a SIM card in the ready state. For more info, 
+read [SIM card state](./../sim/about-sim-contacts.md#sim-card-state).
+
 ## A basic query
 
 To get all of the contacts in the SIM card,

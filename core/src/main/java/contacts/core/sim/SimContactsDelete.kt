@@ -8,6 +8,11 @@ import contacts.core.util.unsafeLazy
 /**
  * Deletes one or more SIM contacts from the SIM Contacts table.
  *
+ * ## SIM Card state
+ *
+ * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * update will do nothing.
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
@@ -55,6 +60,10 @@ interface SimContactsDelete : CrudApi {
     /**
      * Deletes the [ExistingSimContactEntity]s in the queue (added via [simContacts]) and returns
      * the [Result].
+     *
+     * ## SIM Card state
+     *
+     * Requires [SimCardState.isReady] to be true.
      *
      * ## Permissions
      *
@@ -106,10 +115,11 @@ interface SimContactsDelete : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsDelete(contacts: Contacts): SimContactsDelete =
-    SimContactsDeleteImpl(contacts)
+    SimContactsDeleteImpl(contacts, SimCardState(contacts.applicationContext))
 
 private class SimContactsDeleteImpl(
     override val contactsApi: Contacts,
+    private val state: SimCardState,
 
     private val simContactsToDelete: MutableSet<SimContactToDelete> = mutableSetOf(),
 
@@ -121,12 +131,14 @@ private class SimContactsDeleteImpl(
             SimContactsDelete {
                 simContactsToDelete: $simContactsToDelete
                 hasPermission: ${permissions.canUpdateDelete()}
+                isSimCardReady: ${state.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsDelete = SimContactsDeleteImpl(
         contactsApi,
+        state,
 
         // Redact SIM contact data.
         simContactsToDelete.asSequence().redactedCopies().toMutableSet(),
@@ -161,7 +173,11 @@ private class SimContactsDeleteImpl(
     override fun commit(): SimContactsDelete.Result {
         onPreExecute()
 
-        return if (simContactsToDelete.isEmpty() || !permissions.canUpdateDelete()) {
+        return if (
+            simContactsToDelete.isEmpty() ||
+            !permissions.canUpdateDelete() ||
+            !state.isReady
+        ) {
             SimContactsDeleteResult(emptyMap())
         } else {
             val results = mutableMapOf<SimContactToDelete, Boolean>()

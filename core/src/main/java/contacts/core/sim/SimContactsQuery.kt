@@ -10,6 +10,11 @@ import contacts.core.util.query
 /**
  * Queries on the SIM card table.
  *
+ * ## SIM Card state
+ *
+ * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * query will do nothing and return an empty list.
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.READ_PERMISSION] is assumed to have been granted already in these
@@ -47,7 +52,11 @@ interface SimContactsQuery : CrudApi {
     /**
      * Returns the [Result] matching the preceding query options.
      *
-     * ## Privileges
+     * ## SIM Card state
+     *
+     * Requires [SimCardState.isReady] to be true.
+     *
+     * ## Permissions
      *
      * Requires [ContactsPermissions.READ_PERMISSION]. Returns an empty result otherwise.
      *
@@ -60,6 +69,10 @@ interface SimContactsQuery : CrudApi {
 
     /**
      * Returns the [Result] matching the preceding query options.
+     *
+     * ## SIM Card state
+     *
+     * Requires [SimCardState.isReady] to be true.
      *
      * ## Permissions
      *
@@ -117,10 +130,14 @@ interface SimContactsQuery : CrudApi {
 }
 
 @Suppress("FunctionName")
-internal fun SimContactsQuery(contacts: Contacts): SimContactsQuery = SimContactsQueryImpl(contacts)
+internal fun SimContactsQuery(contacts: Contacts): SimContactsQuery = SimContactsQueryImpl(
+    contacts, SimCardState(contacts.applicationContext)
+)
 
 private class SimContactsQueryImpl(
     override val contactsApi: Contacts,
+    private val state: SimCardState,
+
     override val isRedacted: Boolean = false
 ) : SimContactsQuery {
 
@@ -128,12 +145,14 @@ private class SimContactsQueryImpl(
         """
             SimContactsQuery {
                 hasPermission: ${permissions.canQuery()}
+                isSimCardReady: ${state.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsQuery = SimContactsQueryImpl(
         contactsApi,
+        state,
         isRedacted = true
     )
 
@@ -142,7 +161,7 @@ private class SimContactsQueryImpl(
     override fun find(cancel: () -> Boolean): SimContactsQuery.Result {
         onPreExecute()
 
-        return if (!permissions.canQuery()) {
+        return if (!permissions.canQuery() || !state.isReady) {
             SimContactsQueryResult(emptyList())
         } else {
             contentResolver.resolve(cancel)

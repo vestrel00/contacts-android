@@ -9,6 +9,9 @@ An instance of the `SimContactsDelete` API is obtained by,
 val delete = Contacts(context).sim().delete()
 ```
 
+Note that SIM card deletes will only work if there is a SIM card in the ready state. For more info,
+read [SIM card state](./../sim/about-sim-contacts.md#sim-card-state).
+
 ## A basic delete
 
 To delete a set of existing contacts from the SIM card,

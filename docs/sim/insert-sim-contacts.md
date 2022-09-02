@@ -9,6 +9,9 @@ An instance of the `SimContactsInsert` API is obtained by,
 val insert = Contacts(context).sim().insert()
 ```
 
+Note that SIM card inserts will only work if there is a SIM card in the ready state. For more info,
+read [SIM card state](./../sim/about-sim-contacts.md#sim-card-state).
+
 ## A basic insert
 
 To create/insert a new contact into the SIM card,

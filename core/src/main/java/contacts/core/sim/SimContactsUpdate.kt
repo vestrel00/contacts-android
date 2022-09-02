@@ -25,6 +25,11 @@ import contacts.core.util.unsafeLazy
  * around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will
  * fail if the limit is breached.
  *
+ * ## SIM Card state
+ *
+ * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * insert will do nothing.
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] is assumed to have been granted already in these
@@ -133,6 +138,10 @@ interface SimContactsUpdate : CrudApi {
     /**
      * Updates the [Entry]s in the queue (added via [simContacts]) and returns the [Result].
      *
+     * ## SIM Card state
+     *
+     * Requires [SimCardState.isReady] to be true.
+     *
      * ## Permissions
      *
      * Requires [ContactsPermissions.WRITE_PERMISSION]. This will do nothing if this permission is
@@ -208,10 +217,11 @@ interface SimContactsUpdate : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsUpdate(contacts: Contacts): SimContactsUpdate =
-    SimContactsUpdateImpl(contacts)
+    SimContactsUpdateImpl(contacts, SimCardState(contacts.applicationContext))
 
 private class SimContactsUpdateImpl(
     override val contactsApi: Contacts,
+    private val state: SimCardState,
 
     private val entries: MutableSet<SimContactsUpdate.Entry> = mutableSetOf(),
 
@@ -223,12 +233,14 @@ private class SimContactsUpdateImpl(
             SimContactsUpdate {
                 entries: $entries
                 hasPermission: ${permissions.canUpdateDelete()}
+                isSimCardReady: ${state.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsUpdate = SimContactsUpdateImpl(
         contactsApi,
+        state,
 
         // Redact SIM contact data.
         entries.asSequence().redactedCopies().toMutableSet(),
@@ -255,7 +267,12 @@ private class SimContactsUpdateImpl(
     override fun commit(cancel: () -> Boolean): SimContactsUpdate.Result {
         onPreExecute()
 
-        return if (entries.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+        return if (
+            entries.isEmpty() ||
+            !permissions.canUpdateDelete() ||
+            !state.isReady ||
+            cancel()
+        ) {
             SimContactsUpdateFailed()
         } else {
 

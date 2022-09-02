@@ -7,6 +7,18 @@ This library gives you APIs that allow you to read and write Contacts stored in 
 - [`SimContactsUpdate`](./../sim/update-sim-contacts.md)
 - [`SimContactsDelete`](./../sim/delete-sim-contacts.md)
 
+## SIM card state
+
+In order for any SIM card read or write operations to succeed, the default/active SIM card must 
+be in a ready state. If no SIM card is in a ready state, then read/write operations will fail
+immediately. 
+
+To check if the default/active SIM card is in a ready state,
+
+```kotlin
+val isSimCardReady = Contacts(context).sim().state.isReady
+```
+
 ## SIM Contact data
 
 SIM Contact data consists of the `name` and `number`.
@@ -58,7 +70,7 @@ your thoughts or knowledge =)
 This feature lets users activate and use additional SIMs on devices that have two or more SIM card slots.
 
 The APIs in this library have not been tested against dual SIM card configurations. It should still
-work, at the very least the current active SIM card should be accessible.
+work, at the very least the current default/active SIM card should be accessible.
 
 Please [raise an issue](https://github.com/vestrel00/contacts-android/issues/new) if you find any bugs
 or [start a discussion](https://github.com/vestrel00/contacts-android/discussions/new) and share 
