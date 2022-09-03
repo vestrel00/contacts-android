@@ -106,6 +106,10 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settings" />
+
+        <activity
+            android:name=".ImportSimContactsActivity"
+            android:label="@string/import_sim_contacts" />
     </application>
 
 </manifest>

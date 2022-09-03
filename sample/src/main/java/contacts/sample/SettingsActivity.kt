@@ -25,12 +25,16 @@ class SettingsActivity : BaseActivity() {
         findViewById<Spinner>(R.id.sort_by).setupSortBy()
         findViewById<Spinner>(R.id.name_format).setupNameFormat()
         findViewById<Spinner>(R.id.phonetic_name).setupPhoneticName()
+        findViewById<View>(R.id.import_sim_contacts).setOnClickListener { importSimContacts() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
             preferences.defaultAccountForNewContacts = it.firstOrNull()
+            setResult(RESULT_OK)
+        }
+        ImportSimContactsActivity.onImportSimContactsResult(requestCode, resultCode) {
             setResult(RESULT_OK)
         }
     }
@@ -110,6 +114,10 @@ class SettingsActivity : BaseActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
+    }
+
+    private fun importSimContacts() {
+        ImportSimContactsActivity.importSimContacts(this)
     }
 
     companion object {

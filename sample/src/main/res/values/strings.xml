@@ -101,8 +101,17 @@
     <string name="blocked_numbers_remove_success">Number is no longer blocked</string>
     <string name="blocked_numbers_remove_fail">Failed to unblock number</string>
 
+    <!-- Import SIM contacts -->
+    <string name="import_sim_contacts">Import SIM contacts</string>
+    <string name="import_sim_contacts_success">Successfully imported contacts</string>
+    <string name="import_sim_contacts_failed">Failed to import contacts</string>
+    <string name="import_sim_contacts_action_import">IMPORT</string>
+    <string name="import_sim_contacts_card_not_ready">There is no accessible SIM card</string>
+    <string name="import_sim_contacts_already_in_contacts_provider_db">Contact already exist in the Contacts Provider DB</string>
+
     <!-- Settings -->
     <string name="settings">Settings</string>
-    <string name="settings_default_account">Default account for new contacts</string>
     <string name="settings_profile">Profile (your info)</string>
+    <string name="settings_default_account">Default account for new contacts</string>
+    <string name="settings_import_sim_contacts">Import from SIM</string>
 </resources>
