@@ -14,6 +14,8 @@ val query = Contacts(context).broadQuery()
 
 > ℹ️ For a more granular, advanced queries, use the `Query` API; [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
+> ℹ️ For specialized matching of phone numbers and SIP addresses, use the `PhoneLookupQuery` API; [Query contacts by phone or SIP](./../basics/query-contacts-by-phone-or-sip.md).
+
 > ℹ️ If you want to query Data directly instead of Contacts, read [Query specific data kinds](./../data/query-data-sets.md).
 
 > ℹ️ If you want to get the device owner Contact Profile, read [Query device owner Contact profile](./../profile/query-profile.md).

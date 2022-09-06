@@ -28,6 +28,7 @@ nav:
   - 'Basics':
     - 'Query contacts': basics/query-contacts.md
     - 'Query contacts (advanced)': basics/query-contacts-advanced.md
+    - 'Query contacts by phone or SIP': basics/query-contacts-by-phone-or-sip.md
     - 'Insert contacts': basics/insert-contacts.md
     - 'Update contacts': basics/update-contacts.md
     - 'Delete contacts': basics/delete-contacts.md
