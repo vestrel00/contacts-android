@@ -32,6 +32,20 @@ suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
 }
 
 /**
+ * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permission, and then returns a new [PhoneLookupQuery] instance.
+ *
+ * If permission is already granted, then immediately returns a new [PhoneLookupQuery] instance.
+ */
+suspend fun Contacts.phoneLookupQueryWithPermission(): PhoneLookupQuery {
+    if (!permissions.canQuery()) {
+        requestReadPermission()
+    }
+
+    return phoneLookupQuery()
+}
+
+/**
  * If [ContactsPermissions.WRITE_PERMISSION] and
  * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
  * suspends the current coroutine, requests for the permissions, and then returns a new [Insert]
