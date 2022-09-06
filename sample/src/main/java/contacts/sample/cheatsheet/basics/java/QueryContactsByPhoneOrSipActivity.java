@@ -13,7 +13,7 @@ public class QueryContactsByPhoneOrSipActivity extends Activity {
     List<Contact> getContactsWithPhoneNumberThatExactlyMatches(String text) {
         return ContactsFactory.create(this)
                 .phoneLookupQuery()
-                .match(PhoneLookupQuery.Match.PHONE_NUMBER)
+                .match(PhoneLookupQuery.Match.PHONE)
                 .whereExactlyMatches(text)
                 .find();
     }
@@ -21,7 +21,7 @@ public class QueryContactsByPhoneOrSipActivity extends Activity {
     List<Contact> getContactsWithEmailOrDisplayNameThatPartiallyMatches(String text) {
         return ContactsFactory.create(this)
                 .phoneLookupQuery()
-                .match(PhoneLookupQuery.Match.SIP_ADDRESS)
+                .match(PhoneLookupQuery.Match.SIP)
                 .whereExactlyMatches(text)
                 .find();
     }

@@ -150,7 +150,7 @@ interface PhoneLookupQuery : CrudApi {
      * Specifies the type of lookup data that should be used in the matching process. This
      * will affect the search results when [whereExactlyMatches] is used.
      *
-     * The default is [Match.PHONE_NUMBER].
+     * The default is [Match.PHONE].
      */
     fun match(match: Match): PhoneLookupQuery
 
@@ -160,6 +160,8 @@ interface PhoneLookupQuery : CrudApi {
      *
      * Specify the type of contact data that should be used in the matching process using the
      * [match] function.
+     *
+     * **Custom data are not included in the matching process!** To match custom data, use [Query].
      */
     fun whereExactlyMatches(searchString: String?): PhoneLookupQuery
 
@@ -341,18 +343,18 @@ interface PhoneLookupQuery : CrudApi {
          * "+923123456789" and "03123456789" are saved, searching for "03123456789" will return
          * only the contact with that exact number (NOT including the contact with "+923123456789").
          */
-        PHONE_NUMBER,
+        PHONE,
 
         /**
-         * Same as [PHONE_NUMBER] except this matches SIP addresses instead of phone numbers.
+         * Same as [PHONE] except this matches SIP addresses instead of phone numbers.
          *
          * ## API version 21+ only
          *
-         * This is only available for API 21 and above. The [PHONE_NUMBER] will be used for API
-         * versions below 21 even if [SIP_ADDRESS] is specified.
+         * This is only available for API 21 and above. The [PHONE] will be used for API
+         * versions below 21 even if [SIP] is specified.
          */
         // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
-        SIP_ADDRESS
+        SIP
     }
 
     /**
@@ -470,7 +472,7 @@ private class PhoneLookupQueryImpl(
 
     override fun match(match: Match): PhoneLookupQuery = apply {
         this.match = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Match.PHONE_NUMBER
+            Match.PHONE
         } else {
             match
         }
@@ -546,7 +548,7 @@ private class PhoneLookupQueryImpl(
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
-        val DEFAULT_MATCH: Match = Match.PHONE_NUMBER
+        val DEFAULT_MATCH: Match = Match.PHONE
         val DEFAULT_SEARCH_STRING: String? = null
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
@@ -638,8 +640,8 @@ private fun ContentResolver.findMatchingContactIds(
                 it.appendQueryParameter(
                     ContactsContract.PhoneLookup.QUERY_PARAMETER_SIP_ADDRESS,
                     when (match) {
-                        Match.PHONE_NUMBER -> "0"
-                        Match.SIP_ADDRESS -> "1"
+                        Match.PHONE -> "0"
+                        Match.SIP -> "1"
                     }
                 )
             } else {

@@ -320,7 +320,7 @@ heading explore each API in full detail. You may also find these samples in the 
     }
     ```
 
-### [Query contacts by phone number or SIP address](./basics/query-contacts-by-phone-or-sip.md)
+### [Query contacts by phone or SIP](./basics/query-contacts-by-phone-or-sip.md)
 
 === "Kotlin"
 
@@ -334,14 +334,14 @@ heading explore each API in full detail. You may also find these samples in the 
         fun getContactsWithPhoneNumberThatExactlyMatches(text: String?): List<Contact> =
             Contacts(this)
                 .phoneLookupQuery()
-                .match(PhoneLookupQuery.Match.PHONE_NUMBER)
+                .match(PhoneLookupQuery.Match.PHONE)
                 .whereExactlyMatches(text)
                 .find()
     
         fun getContactsWithSipAddressThatExactlyMatches(text: String?): List<Contact> =
             Contacts(this)
                 .phoneLookupQuery()
-                .match(PhoneLookupQuery.Match.SIP_ADDRESS)
+                .match(PhoneLookupQuery.Match.SIP)
                 .whereExactlyMatches(text)
                 .find()
     }
@@ -363,7 +363,7 @@ heading explore each API in full detail. You may also find these samples in the 
         List<Contact> getContactsWithPhoneNumberThatExactlyMatches(String text) {
             return ContactsFactory.create(this)
                     .phoneLookupQuery()
-                    .match(PhoneLookupQuery.Match.PHONE_NUMBER)
+                    .match(PhoneLookupQuery.Match.PHONE)
                     .whereExactlyMatches(text)
                     .find();
         }
@@ -371,7 +371,7 @@ heading explore each API in full detail. You may also find these samples in the 
         List<Contact> getContactsWithEmailOrDisplayNameThatPartiallyMatches(String text) {
             return ContactsFactory.create(this)
                     .phoneLookupQuery()
-                    .match(PhoneLookupQuery.Match.SIP_ADDRESS)
+                    .match(PhoneLookupQuery.Match.SIP)
                     .whereExactlyMatches(text)
                     .find();
         }
