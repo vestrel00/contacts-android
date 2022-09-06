@@ -12,14 +12,14 @@
         <meta name="author" content="Vandolf Estrellado">
       
       
-        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/basics/query-contacts/">
+        <link rel="canonical" href="https://vestrel00.github.io/contacts-android/basics/query-contacts-by-phone-or-sip/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.3">
     
     
       
-        <title>Query contacts - Contacts, Reborn</title>
+        <title>Query contacts by phone or SIP - Contacts, Reborn</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#query-contacts" class="md-skip">
+        <a href="#query-contacts-by-phone-or-sip" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Query contacts
+              Query contacts by phone or SIP
             
           </span>
         </div>
@@ -485,6 +485,34 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../query-contacts/" class="md-nav__link">
+        Query contacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-contacts-advanced/" class="md-nav__link">
+        Query contacts (advanced)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -497,12 +525,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Query contacts
+          Query contacts by phone or SIP
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Query contacts
+        Query contacts by phone or SIP
       </a>
       
         
@@ -611,19 +639,12 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria" class="md-nav__link">
-    Using the match and wherePartiallyMatches functions to specify matching criteria
+  <a href="#using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria" class="md-nav__link">
+    Using the match and whereExactlyMatches functions to specify matching criteria
   </a>
   
-    <nav class="md-nav" aria-label="Using the match and wherePartiallyMatches functions to specify matching criteria">
+    <nav class="md-nav" aria-label="Using the match and whereExactlyMatches functions to specify matching criteria">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#matchany" class="md-nav__link">
-    Match.ANY
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#matchphone" class="md-nav__link">
@@ -633,28 +654,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#matchemail" class="md-nav__link">
-    Match.EMAIL
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
-    Developer notes (or for advanced users)
-  </a>
-  
-    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#comparison-table" class="md-nav__link">
-    Comparison table
+  <a href="#matchsip" class="md-nav__link">
+    Match.SIP
   </a>
   
 </li>
@@ -668,34 +669,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../query-contacts-advanced/" class="md-nav__link">
-        Query contacts (advanced)
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../query-contacts-by-phone-or-sip/" class="md-nav__link">
-        Query contacts by phone or SIP
-      </a>
     </li>
   
 
@@ -2086,19 +2059,12 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria" class="md-nav__link">
-    Using the match and wherePartiallyMatches functions to specify matching criteria
+  <a href="#using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria" class="md-nav__link">
+    Using the match and whereExactlyMatches functions to specify matching criteria
   </a>
   
-    <nav class="md-nav" aria-label="Using the match and wherePartiallyMatches functions to specify matching criteria">
+    <nav class="md-nav" aria-label="Using the match and whereExactlyMatches functions to specify matching criteria">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#matchany" class="md-nav__link">
-    Match.ANY
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#matchphone" class="md-nav__link">
@@ -2108,28 +2074,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#matchemail" class="md-nav__link">
-    Match.EMAIL
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
-    Developer notes (or for advanced users)
-  </a>
-  
-    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#comparison-table" class="md-nav__link">
-    Comparison table
+  <a href="#matchsip" class="md-nav__link">
+    Match.SIP
   </a>
   
 </li>
@@ -2151,47 +2097,38 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/vestrel00/contacts-android/tree/main/docs/basics/query-contacts.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/vestrel00/contacts-android/tree/main/docs/basics/query-contacts-by-phone-or-sip.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="query-contacts">Query contacts<a class="headerlink" href="#query-contacts" title="Permanent link">&para;</a></h1>
-<p>This library provides the <code>BroadQuery</code> API that allows you to get the exact same search results
-as the native Contacts app! This query lets the Contacts Provider perform the search using its own
-custom matching algorithm via the <code>wherePartiallyMatches</code> function. This type of query is the basis
-of an app that does a broad search of the Contacts Provider. The technique is useful for apps that
-want to implement functionality similar to the People app's contact list screen.</p>
-<p>An instance of the <code>BroadQuery</code> API is obtained by,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">broadQuery</span><span class="p">()</span><span class="w"></span>
+<h1 id="query-contacts-by-phone-or-sip">Query contacts by phone or SIP<a class="headerlink" href="#query-contacts-by-phone-or-sip" title="Permanent link">&para;</a></h1>
+<p>This library provides the <code>PhoneLookupQuery</code> API that performs a highly optimized query using a 
+phone number or SIP address. This will only match EXACT phone numbers or SIP addresses. There is no 
+partial matching. This is useful for caller IDs in incoming and outgoing calls.</p>
+<p>An instance of the <code>PhoneLookupQuery</code> API is obtained by,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">phoneLookupQuery</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
+<p>ℹ️ For a broader, and more native Contacts app like query that allows partial matching, use the <code>BroadQuery</code> API, read <a href="../query-contacts/">Query contacts</a>.</p>
 <p>ℹ️ For a more granular, advanced queries, use the <code>Query</code> API; <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
-<p>ℹ️ For specialized matching of phone numbers and SIP addresses, use the <code>PhoneLookupQuery</code> API; <a href="../query-contacts-by-phone-or-sip/">Query contacts by phone or SIP</a>.</p>
 <p>ℹ️ If you want to query Data directly instead of Contacts, read <a href="../../data/query-data-sets/">Query specific data kinds</a>.</p>
 <p>ℹ️ If you want to get the device owner Contact Profile, read <a href="../../profile/query-profile/">Query device owner Contact profile</a>.</p>
 </blockquote>
 <h2 id="a-basic-query">A basic query<a class="headerlink" href="#a-basic-query" title="Permanent link">&para;</a></h2>
-<p>To get all contacts ordered by the primary display name,</p>
+<p>To get all contacts that have the exact phone number "555-555-5555",</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="p">.</span><span class="na">broadQuery</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">asc</span><span class="p">())</span><span class="w"></span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="p">.</span><span class="na">phoneLookupQuery</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">.</span><span class="na">whereExactlyMatches</span><span class="p">(</span><span class="s">&quot;555-555-5555&quot;</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
-</code></pre></div>
-<p>To get all contacts that have any data (e.g. name, email, phone, address, organization, note, etc) 
-that at least partially matches a given <code>searchText</code>,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="p">.</span><span class="na">broadQuery</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="p">.</span><span class="na">wherePartiallyMatches</span><span class="p">(</span><span class="n">searchText</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="specifying-accounts">Specifying Accounts<a class="headerlink" href="#specifying-accounts" title="Permanent link">&para;</a></h2>
 <p>To limit the search to only those contacts associated with one of the given accounts,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For example, to limit the search to contacts belonging to only one account,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">))</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">))</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
@@ -2212,10 +2149,10 @@ should only specify this if you actually need it.</p>
 </blockquote>
 <h2 id="specifying-groups">Specifying Groups<a class="headerlink" href="#specifying-groups" title="Permanent link">&para;</a></h2>
 <p>To limit the search to only those RawContacts associated with at least one of the given groups,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For example, to limit the search to only favorites,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">favoritesGroup</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">favoritesGroup</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../groups/query-groups/">Query groups</a>.</p>
@@ -2232,10 +2169,10 @@ should only specify this if you actually need it.</p>
 </blockquote>
 <h2 id="including-only-specific-data">Including only specific data<a class="headerlink" href="#including-only-specific-data" title="Permanent link">&para;</a></h2>
 <p>To include only the given set of fields (data) in each of the matching contacts,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
-<p>For example, to only include email and name fields,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<p>For example, to only include phone fields,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Phone</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>For more info, read <a href="../include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h3 id="optimize-your-queries">Optimize your queries<a class="headerlink" href="#optimize-your-queries" title="Permanent link">&para;</a></h3>
@@ -2244,15 +2181,15 @@ include fields you need.</p>
 <p>For more info, read <a href="../include-only-desired-data/#optimizing-queries">Optimizing queries</a>.</p>
 <h2 id="ordering">Ordering<a class="headerlink" href="#ordering" title="Permanent link">&para;</a></h2>
 <p>To order resulting Contacts using one or more fields,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">fieldOrder</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">fieldOrder</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For example, to order contacts by favorite/starred status such that favorite/starred contacts
 appear first in the list AND order by display name primary in ascending order (from a to z ignoring
 case),</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="w"></span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">Starred</span><span class="p">.</span><span class="na">desc</span><span class="p">(),</span><span class="w"></span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">asc</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">Starred</span><span class="p">.</span><span class="na">desc</span><span class="p">(),</span><span class="w"></span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">ContactsFields</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">.</span><span class="na">asc</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>String comparisons ignores case by default. Each orderBys provides <code>ignoreCase</code> as an optional
 parameter.</p>
@@ -2265,17 +2202,17 @@ For more info, read <a href="../../other/convenience-functions/">Convenience fun
 <h2 id="limiting-and-offsetting">Limiting and offsetting<a class="headerlink" href="#limiting-and-offsetting" title="Permanent link">&para;</a></h2>
 <p>To limit the amount of contacts returned and/or offset (skip) a specified number of contacts, use 
 the <code>limit</code> and <code>offset</code> functions;</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span><span class="na">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="p">.</span><span class="na">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For more info, read <a href="../limit-and-offset-queries/">Using limit and offset in queries</a>.</p>
 <h2 id="executing-the-query">Executing the query<a class="headerlink" href="#executing-the-query" title="Permanent link">&para;</a></h2>
 <p>To execute the query,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="cancelling-the-query">Cancelling the query<a class="headerlink" href="#cancelling-the-query" title="Permanent link">&para;</a></h2>
 <p>To cancel a query amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfQueryShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>find</code> function optionally takes in a function that, if it returns true, will cancel query
 processing as soon as possible. The function is called numerous times during query processing to
@@ -2284,11 +2221,11 @@ check if processing should stop or continue. This gives you the option to cancel
 used is when performing queries as the user types a search text. You are able to cancel the current
 query when the user enters new text.</p>
 <p>For example, to automatically cancel the query inside a Kotlin coroutine when the coroutine is cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-query-asynchronously">Performing the query asynchronously<a class="headerlink" href="#performing-the-query-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Queries are executed when the <code>find</code> function is invoked. The work is done in the same thread as
@@ -2307,298 +2244,42 @@ do nothing and return an empty list.</p>
 For more info, read <a href="../../permissions/permissions-handling-coroutines/">Permissions handling using coroutines</a>.</p>
 <p>You may, of course, use other permission handling libraries or just do it yourself =)</p>
 <h2 id="custom-data-support">Custom data support<a class="headerlink" href="#custom-data-support" title="Permanent link">&para;</a></h2>
-<p>The <code>BroadQuery</code> API does not include custom data in the matching process. However, you may still
+<p>The <code>PhoneLookupQuery</code> API does not include custom data in the matching process. However, you may still
 use the <code>include</code> function with custom data. For more info, read <a href="../../customdata/query-custom-data/">Query custom data</a>.</p>
-<h2 id="using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria">Using the <code>match</code> and <code>wherePartiallyMatches</code> functions to specify matching criteria<a class="headerlink" href="#using-the-match-and-wherepartiallymatches-functions-to-specify-matching-criteria" title="Permanent link">&para;</a></h2>
-<p>The <code>BroadQuery</code> API lets the Contacts Provider perform the search using its own custom matching
-algorithm via the <code>wherePartiallyMatches</code> function.</p>
+<h2 id="using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria">Using the <code>match</code> and <code>whereExactlyMatches</code> functions to specify matching criteria<a class="headerlink" href="#using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria" title="Permanent link">&para;</a></h2>
+<p>The <code>PhoneLookupQuery</code> API lets the Contacts Provider perform the search using its own custom matching
+algorithm via the <code>whereExactlyMatches</code> function.</p>
 <p>There are several different types of matching algorithms that can be used. The type is set via the
 <code>match</code> function.</p>
-<p>Matching is <strong>case-insensitive</strong> (case is ignored).</p>
 <p><strong>Custom data are not included in the matching process!</strong> To match custom data, use <code>Query</code>.</p>
-<h3 id="matchany">Match.ANY<a class="headerlink" href="#matchany" title="Permanent link">&para;</a></h3>
-<p>Most, but not all, Contact data are included in the matching process.
-E.G. name, email, phone, address, organization, note, etc.</p>
-<p>Use this if you want to get the same results when searching contacts using the AOSP Contacts app 
-and the Google Contacts app.</p>
-<p>Data matching is more sophisticated under the hood than <code>Query</code>. The Contacts Provider matches parts
-of several types of data in segments. For example, a Contact having the email "hologram@gram.net"
-will be matched with the following texts;</p>
-<ul>
-<li>h</li>
-<li>HOLO</li>
-<li>@g</li>
-<li>@gram.net</li>
-<li>gram@</li>
-<li>net</li>
-<li>holo.net</li>
-<li>hologram.net</li>
-</ul>
-<p>But will NOT be matched with the following texts;</p>
-<ul>
-<li>olo</li>
-<li>@</li>
-<li>gram@gram</li>
-<li>am@gram.net</li>
-</ul>
-<p>Similarly, a Contact having the name "Zack Air" will be matched with the following texts;</p>
-<ul>
-<li>z</li>
-<li>zack</li>
-<li>zack, air</li>
-<li>air, zack</li>
-<li>za a</li>
-<li>, z</li>
-<li>, a</li>
-<li>,a</li>
-</ul>
-<p>But will NOT be matched with the following texts;</p>
-<ul>
-<li>ack</li>
-<li>ir</li>
-<li>,</li>
-</ul>
-<p>Another example is a Contact having the note "Lots   of   spa        ces." will be
-matched with the following texts;</p>
-<ul>
-<li>l</li>
-<li>lots</li>
-<li>lots of</li>
-<li>of lots</li>
-<li>ces spa       lots of.</li>
-<li>lo o sp ce . . . . .</li>
-</ul>
-<p>But will NOT be matched with the following texts;</p>
-<ul>
-<li>.</li>
-<li>ots</li>
-</ul>
-<p>Several types of data are matched in segments. E.G. A Contact with display name "Bell Zee" and 
-phone numbers "987", "1 23", and "456" will be matched with "be bell ze 9 123 1 98 456".</p>
 <h3 id="matchphone">Match.PHONE<a class="headerlink" href="#matchphone" title="Permanent link">&para;</a></h3>
-<p>Only phones or (contact display name + any phones) are included in the matching process.</p>
-<p>Use this if you want to get contacts that have a matching phone number or matching
-(<code>Contact.displayNamePrimary</code> + any phone number).</p>
-<p>If you are attempting to matching contacts with phone numbers using <code>Query</code>, then you will most
-likely find it to difficult and tricky because the normalizedNumber could be null and matching
-formatted numbers (e.g. (718) 737-1991) would require some special regular expressions. This match
-might just be what you need =)</p>
-<p>Only the <code>Contact.displayNamePrimary</code> and the phone number/normalizedNumber are included in the
-matching process.</p>
-<p>For example, a contact with <code>Contact.displayNamePrimary</code> of "Bob Dole" and phone number
-"(718) 737-1991" (regardless of the value of normalizedNumber) will be matched with the following
-texts;</p>
+<p>Match phone numbers. This is the default.</p>
+<p>This will only match EXACT phone numbers or SIP addresses. There is no partial matching. This is 
+useful for caller IDs in incoming and outgoing calls. For example,</p>
+<p>If there are contacts with the following numbers;</p>
 <ul>
-<li>718</li>
-<li>7187371991</li>
-<li>7.1-8.7-3.7-19(91)</li>
-<li>bob</li>
-<li>dole</li>
+<li>123</li>
+<li>1234</li>
+<li>1234</li>
+<li>12345</li>
 </ul>
-<p>Notice that "bob" and "dole" will trigger a match because the display name matches and the contact
-has a phone number.</p>
-<p>The following texts will NOT trigger a match because the comparison begins at the beginning of the
-string and not in the middle or end;</p>
-<ul>
-<li>737</li>
-<li>1991</li>
-</ul>
-<h3 id="matchemail">Match.EMAIL<a class="headerlink" href="#matchemail" title="Permanent link">&para;</a></h3>
-<p>Only emails or (contact display name + any emails) are included in the matching process.</p>
-<p>Only the <code>Contact.displayNamePrimary</code> and the email address are included in the matching process.</p>
-<p>For example, the search text "bob" will match the following contacts;</p>
-<ul>
-<li>Robert Parr (bob@incredibles.com)</li>
-<li>Bob Parr (incredible@android.com)</li>
-</ul>
-<p>Notice that the contact Bob Parr is also matched because the display name matches and an email
-exist (even though it does not match).</p>
-<p>The following search texts will NOT trigger a match because the comparison begins at the beginning
-of the string and not in the middle or end;</p>
-<ul>
-<li>android</li>
-<li>gmail</li>
-<li>@</li>
-<li>.com</li>
-</ul>
-<hr />
-<h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
-<p>Matching only by phone number or email address is possible thanks to the following filter Uris
-defined in <code>ContactsContract</code>, which exist for this specific purpose.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">ContactsContract</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="n">Contacts</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// Default used by BroadQuery</span><span class="w"></span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">CommonDataKinds</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">        </span><span class="n">Phone</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">        </span><span class="n">Email</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CONTENT_FILTER_URI</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="p">}</span><span class="w"> </span>
-</code></pre></div>
-<p><strong>These special filter URIs are only available for the phone and email common data kinds.</strong></p>
-<p>Note that the <code>EMAIL</code> and <code>PHONE</code> additionally matches the contact display name.</p>
-<h3 id="comparison-table">Comparison table<a class="headerlink" href="#comparison-table" title="Permanent link">&para;</a></h3>
-<p>I've done some preliminary testing on the differences between the different matching/filter 
-algorithms. So, given the following contacts...</p>
-<ol>
-<li>Display name: Robert Parr<ul>
-<li>Email: bob@incredibles.com</li>
-</ul>
-</li>
-<li>Display name: Bob Parr<ul>
-<li>Email: incredible@android.com</li>
-</ul>
-</li>
-<li>Display name: Bob Dole<ul>
-<li>Phone: (718) 737-1991</li>
-</ul>
-</li>
-<li>Display name: vestrel00@gmail.com<ul>
-<li>Email: vestrel00@gmail.com</li>
-</ul>
-</li>
-<li>Display name: 646-123-4567<ul>
-<li>Phone: 646-123-4567</li>
-</ul>
-</li>
-<li>Display name: Secret agent.<ul>
-<li>Address: Dole street</li>
-<li>Company: 718</li>
-<li>Note: Agent code is 646000. His skills are incredible!</li>
-</ul>
-</li>
-</ol>
-<p>Here are some search terms followed by matching contacts based on the type of <code>Match</code> used.</p>
-<table>
-<thead>
-<tr>
-<th><strong>Search term</strong></th>
-<th><strong>ANY</strong></th>
-<th><strong>PHONE</strong></th>
-<th><strong>EMAIL</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bob</td>
-<td>1, 2, 3</td>
-<td>3</td>
-<td>1, 2</td>
-</tr>
-<tr>
-<td>incredible</td>
-<td>1, 2, 6</td>
-<td></td>
-<td>2</td>
-</tr>
-<tr>
-<td>android</td>
-<td>2</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>gmail</td>
-<td>4</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>.com</td>
-<td>1, 2, 4</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>@</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>7187371991</td>
-<td>3</td>
-<td>3</td>
-<td></td>
-</tr>
-<tr>
-<td>7.1-8.7-3.7-19(91)</td>
-<td>3</td>
-<td>3</td>
-<td></td>
-</tr>
-<tr>
-<td>646</td>
-<td>5, 6</td>
-<td>5</td>
-<td></td>
-</tr>
-<tr>
-<td>646-646</td>
-<td>6</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>718</td>
-<td>3, 6</td>
-<td>3</td>
-<td></td>
-</tr>
-<tr>
-<td>1991</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>4567</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>000</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>dole</td>
-<td>3, 6</td>
-<td>3</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>The above table gives us some insight on how sophisticated the matching (or search / indexing) 
-algorithm is.</p>
-<p>For the search term "bob",</p>
-<ul>
-<li>PHONE matches contact 3.<ul>
-<li>Display name matches and contact has a phone even though it does match.</li>
-</ul>
-</li>
-<li>EMAIL matches contact 1, 2.<ul>
-<li>1 has a matching email "bob". 2 is also matched because the name matches even though the email
-  does not. On the other hand, 3 is NOT matched even though the name matches because 3 has no
-  email. Adding an email to 3 will cause 3 to be matched.</li>
-</ul>
-</li>
-</ul>
-<p>For the search term "incredible",</p>
-<ul>
-<li>EMAIL matches 2 (incredible@android.com) but NOT 1 (bob@incredibles.com).<ul>
-<li>This means that email matching does not use <code>contains</code> but rather a form of <code>startsWith</code>.</li>
-</ul>
-</li>
-</ul>
-<p><strong>TLDR</strong></p>
-<ul>
-<li>ANY matches any contact data; name, email, phone, address, organization, note, etc.</li>
-<li>EMAIL matches emails or (display name + any email)</li>
-<li>PHONE matches phones or (display name + any phone)</li>
-<li>EMAIL and PHONE matching is NOT as simple as using the <code>Query</code> API
-  with <code>.where { [Email|Phone] contains searchTerm }</code></li>
-</ul>
+<p>Searching for "123" will only return the one contact with the number "123". Searching for "1234" 
+will return the contact(s) with the number "1234".</p>
+<p>Additionally, this is able to match phone numbers with or without using country codes. For example, 
+the phone number "+923123456789" (country code 92) will be matched using any of the following;
+"03123456789", "923123456789", "+923123456789".</p>
+<p>The reverse is true. For example, the phone number "03123456789" will be matched using any of the 
+following; "03123456789", "923123456789", "+923123456789".</p>
+<p>However, if a phone number is saved with AND without a country code, then only the contact with the 
+number that matches exactly will be returned. For example, when numbers "+923123456789" and 
+"03123456789" are saved, searching for "03123456789" will return only the contact with that exact 
+number (NOT including the contact with "+923123456789").</p>
+<h3 id="matchsip">Match.SIP<a class="headerlink" href="#matchsip" title="Permanent link">&para;</a></h3>
+<p>Same as <code>Match.PHONE</code> except this matches SIP addresses instead of phone numbers.</p>
+<blockquote>
+<p>⚠️ This is only available for API 21 and above. The <code>Match.PHONE</code> will be used for API versions 
+below 21 even if <code>Match.SIP</code> is specified.</p>
+</blockquote>
 
               
             </article>
@@ -2614,7 +2295,7 @@ algorithm is.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../../entities/redact-apis-and-entities/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Redact entities and API input and output in production" rel="prev">
+        <a href="../query-contacts-advanced/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Query contacts (advanced)" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2623,20 +2304,20 @@ algorithm is.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Redact entities and API input and output in production
+              Query contacts (advanced)
             </div>
           </div>
         </a>
       
       
         
-        <a href="../query-contacts-advanced/" class="md-footer__link md-footer__link--next" aria-label="Next: Query contacts (advanced)" rel="next">
+        <a href="../insert-contacts/" class="md-footer__link md-footer__link--next" aria-label="Next: Insert contacts" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Query contacts (advanced)
+              Insert contacts
             </div>
           </div>
           <div class="md-footer__button md-icon">

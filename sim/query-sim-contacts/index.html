@@ -513,6 +513,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../basics/query-contacts-by-phone-or-sip/" class="md-nav__link">
+        Query contacts by phone or SIP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../basics/insert-contacts/" class="md-nav__link">
         Insert contacts
       </a>
@@ -1945,6 +1959,8 @@ card.</p>
 <p>An instance of the <code>SimContactsQuery</code> API is obtained by,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">sim</span><span class="p">().</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
+<p>Note that SIM card queries will only work if there is a SIM card in the ready state. For more info, 
+read <a href="../about-sim-contacts/#sim-card-state">SIM card state</a>.</p>
 <h2 id="a-basic-query">A basic query<a class="headerlink" href="#a-basic-query" title="Permanent link">&para;</a></h2>
 <p>To get all of the contacts in the SIM card,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">simContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">sim</span><span class="p">().</span><span class="na">query</span><span class="p">().</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
