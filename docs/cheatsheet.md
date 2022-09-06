@@ -320,6 +320,64 @@ heading explore each API in full detail. You may also find these samples in the 
     }
     ```
 
+### [Query contacts by phone number or SIP address](./basics/query-contacts-by-phone-or-sip.md)
+
+=== "Kotlin"
+
+    ```kotlin
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.entities.Contact
+    
+    class QueryContactsByPhoneOrSipActivity : Activity() {
+    
+        fun getContactsWithPhoneNumberThatExactlyMatches(text: String?): List<Contact> =
+            Contacts(this)
+                .phoneLookupQuery()
+                .match(PhoneLookupQuery.Match.PHONE_NUMBER)
+                .whereExactlyMatches(text)
+                .find()
+    
+        fun getContactsWithSipAddressThatExactlyMatches(text: String?): List<Contact> =
+            Contacts(this)
+                .phoneLookupQuery()
+                .match(PhoneLookupQuery.Match.SIP_ADDRESS)
+                .whereExactlyMatches(text)
+                .find()
+    }
+    ```
+
+=== "Java"
+
+    ```java
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.PhoneLookupQuery;
+    import contacts.core.entities.Contact;
+    
+    public class QueryContactsByPhoneOrSipActivity extends Activity {
+    
+        List<Contact> getContactsWithPhoneNumberThatExactlyMatches(String text) {
+            return ContactsFactory.create(this)
+                    .phoneLookupQuery()
+                    .match(PhoneLookupQuery.Match.PHONE_NUMBER)
+                    .whereExactlyMatches(text)
+                    .find();
+        }
+    
+        List<Contact> getContactsWithEmailOrDisplayNameThatPartiallyMatches(String text) {
+            return ContactsFactory.create(this)
+                    .phoneLookupQuery()
+                    .match(PhoneLookupQuery.Match.SIP_ADDRESS)
+                    .whereExactlyMatches(text)
+                    .find();
+        }
+    }
+    ```
+
 ### [Insert contacts](./basics/insert-contacts.md)
 
 === "Kotlin"
