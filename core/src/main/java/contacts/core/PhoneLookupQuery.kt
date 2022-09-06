@@ -3,30 +3,23 @@ package contacts.core
 import android.accounts.Account
 import android.content.ContentResolver
 import android.net.Uri
+import android.os.Build
 import android.provider.ContactsContract
-import contacts.core.BroadQuery.Match
+import contacts.core.PhoneLookupQuery.Match
 import contacts.core.entities.Contact
 import contacts.core.entities.Group
-import contacts.core.entities.cursor.contactsCursor
-import contacts.core.entities.cursor.dataCursor
+import contacts.core.entities.cursor.phoneLookupCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.util.*
 
 /**
- * A generalized version of [Query], that lets the Contacts Provider perform the search using its
- * own custom matching algorithm. It allows you to get the exact same search results as the native
- * Contacts app!
+ * Performs a highly optimized query using a phone number or SIP address.
  *
- * This type of query is the basis of an app that does a broad search of the Contacts Provider. The
- * technique is useful for apps that want to implement functionality similar to the People app's
- * contact list screen.
+ * This will only match EXACT phone numbers or SIP addresses. There is no partial matching. This is
+ * useful for caller IDs in incoming and outgoing calls.
  *
- * Custom mimetypes / data are excluded from the search! Use [Query] to search for contacts using
- * custom data.
- *
- * If you need more granularity and customizations when providing matching criteria, use [Query].
- * For example, getting a Contact by ID is not supported by [BroadQuery] but can be achieved by
- * [Query].
+ * If you need to perform partial matching based on other data than just phone numbers and SIP
+ * addresses, use [Query] or [PhoneLookupQuery].
  *
  * ## How does the matching process work?
  *
@@ -39,47 +32,21 @@ import contacts.core.util.*
  *
  * ## Usage
  *
- * Here is an example query that returns the first 10 [Contact]s, skipping the first 5, where the
- * any Contact data (e.g. name, email, address, phone, note, etc) partially matches the search term
- * "john", ordered by the Contact display name primary (given name first) in ascending order
- * (ignoring case). Include only Contacts with at least one RawContact belonging to the given
- * account and groups. Include only the name and email properties of [Contact]s.
+ * Here is an example query that searches for the phone number "123";
  *
  * In Kotlin,
  *
  * ```kotlin
- * val contacts = broadQuery
- *      .accounts(account)
- *      .groups(groups)
- *      .include { Name.all + Address.all }
- *      .wherePartiallyMatches("john")
- *      .orderBy(ContactsFields.DisplayNamePrimary.asc())
- *      .offset(5)
- *      .limit(10)
- *      .find()
+ * val contacts = phoneLookupQuery.whereExactlyMatches("123").find()
  * ```
  *
  * In Java,
  *
  * ```java
- * import static contacts.core.Fields.*;
- * import static contacts.core.OrderByKt.*;
- *
- * List<Contact> contacts = broadQuery
- *      .accounts(account)
- *      .groups(groups)
- *      .include(new ArrayList<>() {{
- *           addAll(Name.getAll());
- *           addAll(Address.getAll());
- *       }})
- *      .wherePartiallyMatches("john")
- *      .orderBy(asc(ContactsFields.DisplayNamePrimary))
- *      .offset(5)
- *      .limit(10)
- *      .find();
+ * List<Contact> contacts = phoneLookupQuery.whereExactlyMatches("123").find();
  * ```
  */
-interface BroadQuery : CrudApi {
+interface PhoneLookupQuery : CrudApi {
 
     /**
      * Limits the search to only those RawContacts associated with one of the given accounts.
@@ -100,17 +67,17 @@ interface BroadQuery : CrudApi {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun accounts(vararg accounts: Account?): BroadQuery
+    fun accounts(vararg accounts: Account?): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.accounts]
+     * See [PhoneLookupQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account?>): BroadQuery
+    fun accounts(accounts: Collection<Account?>): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.accounts]
+     * See [PhoneLookupQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account?>): BroadQuery
+    fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery
 
     /**
      * Limits the search to only those RawContacts associated with at least one of the given groups.
@@ -127,17 +94,17 @@ interface BroadQuery : CrudApi {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun groups(vararg groups: Group): BroadQuery
+    fun groups(vararg groups: Group): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.groups]
+     * See [PhoneLookupQuery.groups]
      */
-    fun groups(groups: Collection<Group>): BroadQuery
+    fun groups(groups: Collection<Group>): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.groups]
+     * See [PhoneLookupQuery.groups]
      */
-    fun groups(groups: Sequence<Group>): BroadQuery
+    fun groups(groups: Sequence<Group>): PhoneLookupQuery
 
     /**
      * Includes only the given set of [fields] (data) in each of the matching contacts.
@@ -162,49 +129,39 @@ interface BroadQuery : CrudApi {
      * The most optimal queries only include fields from [Fields.Contact] because no Data table rows
      * need to be processed.
      */
-    fun include(vararg fields: AbstractDataField): BroadQuery
+    fun include(vararg fields: AbstractDataField): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.include].
+     * See [PhoneLookupQuery.include].
      */
-    fun include(fields: Collection<AbstractDataField>): BroadQuery
+    fun include(fields: Collection<AbstractDataField>): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.include].
+     * See [PhoneLookupQuery.include].
      */
-    fun include(fields: Sequence<AbstractDataField>): BroadQuery
+    fun include(fields: Sequence<AbstractDataField>): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.include].
+     * See [PhoneLookupQuery.include].
      */
-    fun include(fields: Fields.() -> Collection<AbstractDataField>): BroadQuery
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): PhoneLookupQuery
 
     /**
-     * Specifies the type of contact data that should be used in the matching process. This will
-     * affect the search results when [wherePartiallyMatches] is used.
+     * Specifies the type of lookup data that should be used in the matching process. This
+     * will affect the search results when [whereExactlyMatches] is used.
      *
-     * The default is [Match.ANY].
+     * The default is [Match.PHONE_NUMBER].
      */
-    fun match(match: Match): BroadQuery
+    fun match(match: Match): PhoneLookupQuery
 
     /**
-     * Filters the [Contact]s partially matching the [searchString]. If not specified or null or
-     * empty, then all [Contact]s are returned.
+     * Filters the [Contact]s exactly matching the [searchString]. If not specified or null or
+     * empty, then no [Contact]s are returned.
      *
      * Specify the type of contact data that should be used in the matching process using the
      * [match] function.
-     *
-     * Matching is **case-insensitive** (case is ignored).
-     *
-     * **Custom data are not included in the matching process!** To match custom data, use [Query].
-     *
-     * ## Performance
-     *
-     * This may require one or more additional queries, internally performed in this function, which
-     * increases the time it takes for [find] to complete. Therefore, you should only specify this
-     * if you actually need it.
      */
-    fun wherePartiallyMatches(searchString: String?): BroadQuery
+    fun whereExactlyMatches(searchString: String?): PhoneLookupQuery
 
     /**
      * Orders the [Contact]s using one or more [orderBy]s. If not specified, then contacts are
@@ -242,22 +199,22 @@ interface BroadQuery : CrudApi {
      * [AddressFields.FormattedAddress] ('data1').
      */
     @SafeVarargs
-    fun orderBy(vararg orderBy: OrderBy<ContactsField>): BroadQuery
+    fun orderBy(vararg orderBy: OrderBy<ContactsField>): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.orderBy].
+     * See [PhoneLookupQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): BroadQuery
+    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.orderBy].
+     * See [PhoneLookupQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): BroadQuery
+    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): PhoneLookupQuery
 
     /**
-     * See [BroadQuery.orderBy].
+     * See [PhoneLookupQuery.orderBy].
      */
-    fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>): BroadQuery
+    fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>): PhoneLookupQuery
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
@@ -266,7 +223,7 @@ interface BroadQuery : CrudApi {
      *
      * Some devices do not support this. See [forceOffsetAndLimit].
      */
-    fun limit(limit: Int): BroadQuery
+    fun limit(limit: Int): PhoneLookupQuery
 
     /**
      * Skips results 0 to [offset] (excluding the offset).
@@ -275,7 +232,7 @@ interface BroadQuery : CrudApi {
      *
      * Some devices do not support this. See [forceOffsetAndLimit].
      */
-    fun offset(offset: Int): BroadQuery
+    fun offset(offset: Int): PhoneLookupQuery
 
     /**
      * If the [limit] and [offset] functions are not supported by the device's database query
@@ -298,7 +255,7 @@ interface BroadQuery : CrudApi {
      * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
      * is unable to detect/handle events where the [offset] is not supported. Sorry :P
      */
-    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): BroadQuery
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): PhoneLookupQuery
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -349,138 +306,53 @@ interface BroadQuery : CrudApi {
      * **Redacted operations should typically only be used for logging in production!**
      */
     // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): BroadQuery
+    override fun redactedCopy(): PhoneLookupQuery
 
     /**
-     * Specifies the type of contact data that should be used in the matching process.
+     * Specifies the type of lookup data that should be used in the matching process.
      */
     enum class Match {
 
         /**
-         * Any contact data is included in the matching process. This is the default.
+         * Match phone numbers. This is the default.
          *
-         * Use this if you want to get the same results when searching contacts using the
-         * AOSP Contacts app and the Google Contacts app.
+         * This will only match EXACT phone numbers or SIP addresses. There is no partial matching.
+         * This is useful for caller IDs in incoming and outgoing calls. For example,
          *
-         * Most, but not all, contact data are included in the matching process.
-         * E.G. name, email, phone, address, organization, note, etc.
+         * If there are contacts with the following numbers;
          *
-         * Data matching is more sophisticated under the hood than [Query]. The Contacts Provider
-         * matches parts of several types of data in segments. For example, a Contact having the
-         * email "hologram@gram.net" will be matched with the following texts;
+         * - 123
+         * - 1234
+         * - 1234
+         * - 12345
          *
-         * - h
-         * - HOLO
-         * - @g
-         * - @gram.net
-         * - gram@
-         * - net
-         * - holo.net
-         * - hologram.net
+         * Searching for "123" will only return the one contact with the number "123". Searching for
+         * "1234" will return the contact(s) with the number "1234".
          *
-         * But will NOT be matched with the following texts;
+         * Additionally, this is able to match phone numbers with or without using country codes.
+         * For example, the phone number "+923123456789" (country code 92) will be matched using
+         * any of the following; "03123456789", "923123456789", "+923123456789".
          *
-         * - olo
-         * - @
-         * - gram@gram
-         * - am@gram.net
+         * The reverse is true. For example, the phone number "03123456789" will be matched using
+         * any of the following; "03123456789", "923123456789", "+923123456789".
          *
-         * Similarly, a Contact having the name "Zack Air" will be matched with the following texts;
-         *
-         * - z
-         * - zack
-         * - zack, air
-         * - air, zack
-         * - za a
-         * - , z
-         * - , a
-         * - ,a
-         *
-         * But will NOT be matched with the following texts;
-         *
-         * - ack
-         * - ir
-         * - ,
-         *
-         * Another example is a Contact having the note "Lots   of   spa        ces." will be
-         * matched with the following texts;
-         *
-         * - l
-         * - lots
-         * - lots of
-         * - of lots
-         * - ces spa       lots of.
-         * - lo o sp ce . . . . .
-         *
-         * But will NOT be matched with the following texts;
-         *
-         * - .
-         * - ots
-         *
-         * Several types of data are matched in segments. E.G. A Contact with display name
-         * "Bell Zee" and phone numbers "987", "1 23", and "456" will be matched with
-         * "be bell ze 9 123 1 98 456".
+         * However, if a phone number is saved with AND without a country code, then only the
+         * contact with the number that matches exactly will be returned. For example, when numbers
+         * "+923123456789" and "03123456789" are saved, searching for "03123456789" will return
+         * only the contact with that exact number (NOT including the contact with "+923123456789").
          */
-        ANY,
+        PHONE_NUMBER,
 
         /**
-         * Only phones or (contact display name + any phones) are included in the matching process.
+         * Same as [PHONE_NUMBER] except this matches SIP addresses instead of phone numbers.
          *
-         * Use this if you want to get contacts that have a matching phone number or matching
-         * ([Contact.displayNamePrimary] + any phone number).
+         * ## API version 21+ only
          *
-         * If you are attempting to matching contacts with phone numbers using [Query], then you
-         * will most likely find it to difficult and tricky because the normalizedNumber could be
-         * null and matching formatted numbers (e.g. (718) 737-1991) would require some special
-         * regular expressions. This match might just be what you need =)
-         *
-         * Only the [Contact.displayNamePrimary] and the phone number/normalizedNumber are included
-         * in the matching process.
-         *
-         * For example, a contact with [Contact.displayNamePrimary] of "Bob Dole" and phone number
-         * "(718) 737-1991" (regardless of the value of normalizedNumber) will be matched with the
-         * following texts;
-         *
-         * - 718
-         * - 7187371991
-         * - 7.1-8.7-3.7-19(91)
-         * - bob
-         * - dole
-         *
-         * Notice that "bob" and "dole" will trigger a match because the display name matches and
-         * the contact has a phone number.
-         *
-         * The following texts will NOT trigger a match because the comparison begins at the
-         * beginning of the string and not in the middle or end;
-         *
-         * - 737
-         * - 1991
+         * This is only available for API 21 and above. The [PHONE_NUMBER] will be used for API
+         * versions below 21 even if [SIP_ADDRESS] is specified.
          */
-        PHONE,
-
-        /**
-         * Only emails or (contact display name + any emails) are included in the matching process.
-         *
-         * Only the [Contact.displayNamePrimary] and the email address are included in the matching
-         * process.
-         *
-         * For example, the search text "bob" will match the following contacts;
-         *
-         * - Robert Parr (bob@incredibles.com)
-         * - Bob Parr (incredible@android.com)
-         *
-         * Notice that the contact Bob Parr is also matched because the display name matches and an
-         * email exist (even though it does not match).
-         *
-         * The following search texts will NOT trigger a match because the comparison begins at the
-         * beginning of the string and not in the middle or end;
-         *
-         * - android
-         * - gmail
-         * - @
-         * - .com
-         */
-        EMAIL
+        // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
+        SIP_ADDRESS
     }
 
     /**
@@ -508,9 +380,9 @@ interface BroadQuery : CrudApi {
 }
 
 @Suppress("FunctionName")
-internal fun BroadQuery(contacts: Contacts): BroadQuery = BroadQueryImpl(contacts)
+internal fun PhoneLookupQuery(contacts: Contacts): PhoneLookupQuery = PhoneLookupQueryImpl(contacts)
 
-private class BroadQueryImpl(
+private class PhoneLookupQueryImpl(
     override val contactsApi: Contacts,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
@@ -524,11 +396,11 @@ private class BroadQueryImpl(
     private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
-) : BroadQuery {
+) : PhoneLookupQuery {
 
     override fun toString(): String =
         """
-            BroadQuery {
+            PhoneLookupQuery {
                 rawContactsWhere: $rawContactsWhere
                 groupMembershipWhere: $groupMembershipWhere
                 include: $include
@@ -542,7 +414,7 @@ private class BroadQueryImpl(
             }
         """.trimIndent()
 
-    override fun redactedCopy(): BroadQuery = BroadQueryImpl(
+    override fun redactedCopy(): PhoneLookupQuery = PhoneLookupQueryImpl(
         contactsApi,
 
         // Redact Account information.
@@ -564,7 +436,7 @@ private class BroadQueryImpl(
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account?>): BroadQuery = apply {
+    override fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery = apply {
         rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
@@ -572,7 +444,7 @@ private class BroadQueryImpl(
 
     override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
 
-    override fun groups(groups: Sequence<Group>): BroadQuery = apply {
+    override fun groups(groups: Sequence<Group>): PhoneLookupQuery = apply {
         val groupIds = groups.map { it.id }
         groupMembershipWhere = if (groupIds.isEmpty()) {
             DEFAULT_GROUP_MEMBERSHIP_WHERE
@@ -585,7 +457,7 @@ private class BroadQueryImpl(
 
     override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<AbstractDataField>): BroadQuery = apply {
+    override fun include(fields: Sequence<AbstractDataField>): PhoneLookupQuery = apply {
         include = if (fields.isEmpty()) {
             contactsApi.includeAllFields()
         } else {
@@ -596,11 +468,15 @@ private class BroadQueryImpl(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
-    override fun match(match: Match): BroadQuery = apply {
-        this.match = match
+    override fun match(match: Match): PhoneLookupQuery = apply {
+        this.match = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Match.PHONE_NUMBER
+        } else {
+            match
+        }
     }
 
-    override fun wherePartiallyMatches(searchString: String?): BroadQuery = apply {
+    override fun whereExactlyMatches(searchString: String?): PhoneLookupQuery = apply {
         // Yes, I know DEFAULT_SEARCH_STRING is null. This reads better though.
         this.searchString = (searchString ?: DEFAULT_SEARCH_STRING)?.redactStringOrThis(isRedacted)
     }
@@ -610,7 +486,7 @@ private class BroadQueryImpl(
     override fun orderBy(orderBy: Collection<OrderBy<ContactsField>>) =
         orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): BroadQuery = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): PhoneLookupQuery = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -621,7 +497,7 @@ private class BroadQueryImpl(
     override fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>) =
         orderBy(orderBy(ContactsFields))
 
-    override fun limit(limit: Int): BroadQuery = apply {
+    override fun limit(limit: Int): PhoneLookupQuery = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
@@ -629,7 +505,7 @@ private class BroadQueryImpl(
         }
     }
 
-    override fun offset(offset: Int): BroadQuery = apply {
+    override fun offset(offset: Int): PhoneLookupQuery = apply {
         this.offset = if (offset >= 0) {
             offset
         } else {
@@ -637,13 +513,13 @@ private class BroadQueryImpl(
         }
     }
 
-    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): BroadQuery = apply {
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): PhoneLookupQuery = apply {
         this.forceOffsetAndLimit = forceOffsetAndLimit
     }
 
-    override fun find(): BroadQuery.Result = find { false }
+    override fun find(): PhoneLookupQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): BroadQuery.Result {
+    override fun find(cancel: () -> Boolean): PhoneLookupQuery.Result {
         onPreExecute()
 
         var contacts = if (!permissions.canQuery()) {
@@ -661,7 +537,7 @@ private class BroadQueryImpl(
             contacts = contacts.offsetAndLimit(offset, limit)
         }
 
-        return BroadQueryResult(contacts, isLimitBreached)
+        return PhoneLookupQueryResult(contacts, isLimitBreached)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -670,7 +546,7 @@ private class BroadQueryImpl(
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
-        val DEFAULT_MATCH: Match = Match.ANY
+        val DEFAULT_MATCH: Match = Match.PHONE_NUMBER
         val DEFAULT_SEARCH_STRING: String? = null
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
@@ -692,11 +568,14 @@ private fun ContentResolver.resolve(
     cancel: () -> Boolean
 ): List<Contact> {
 
+    if (searchString.isNullOrEmpty()) {
+        return emptyList()
+    }
+
     var contactIds: MutableSet<Long>? = null
 
-    // Get Contact Ids partially matching the searchString from the Contacts table. If searchString
-    // is null, skip.
-    if (searchString != null && searchString.isNotEmpty() && !cancel()) {
+    // Get Contact Ids exactly matching the searchString from the PhoneLookup table.
+    if (!cancel()) {
         contactIds = mutableSetOf<Long>().apply {
             addAll(findMatchingContactIds(match, searchString, cancel))
         }
@@ -750,62 +629,52 @@ private fun ContentResolver.resolve(
 
 private fun ContentResolver.findMatchingContactIds(
     match: Match, searchString: String, cancel: () -> Boolean
-): Set<Long> = when (match) {
-    Match.ANY -> findContactIdsInContactsTable(searchString, cancel)
-    Match.PHONE -> findContactIdsInDataTable(
-        ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI,
-        searchString,
-        cancel
-    )
-    Match.EMAIL -> findContactIdsInDataTable(
-        ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI,
-        searchString,
-        cancel
-    )
-}
-
-private fun ContentResolver.findContactIdsInContactsTable(
-    searchString: String, cancel: () -> Boolean
 ): Set<Long> = query(
-    Uri.withAppendedPath(
-        // The documentation states that this matches "various parts of the contact name".
-        // However, it actually matches more than just the name. Even data such as note
-        // that is not in ContactsContract.DisplayNameSources!
-        ContactsContract.Contacts.CONTENT_FILTER_URI,
-        Uri.encode(searchString)
+    ContactsContract.PhoneLookup.CONTENT_FILTER_URI
+        .buildUpon()
+        .appendEncodedPath(Uri.encode(searchString))
+        .let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                it.appendQueryParameter(
+                    ContactsContract.PhoneLookup.QUERY_PARAMETER_SIP_ADDRESS,
+                    when (match) {
+                        Match.PHONE_NUMBER -> "0"
+                        Match.SIP_ADDRESS -> "1"
+                    }
+                )
+            } else {
+                it
+            }
+        }
+        .build(),
+    Include(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            PhoneLookupFields.ContactId
+        } else {
+            PhoneLookupFields.Id
+        }
     ),
-    Include(ContactsFields.Id),
     null
 ) {
     val contactIds = mutableSetOf<Long>()
-    val contactsCursor = it.contactsCursor()
+    val phoneLookupCursor = it.phoneLookupCursor()
     while (!cancel() && it.moveToNext()) {
-        contactIds.add(contactsCursor.contactId)
+        contactIds.add(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                phoneLookupCursor.contactId
+            } else {
+                phoneLookupCursor.id
+            }
+        )
     }
     contactIds
 } ?: emptySet()
 
-private fun ContentResolver.findContactIdsInDataTable(
-    contentFilterUri: Uri,
-    searchString: String, cancel: () -> Boolean
-): Set<Long> = query(
-    Uri.withAppendedPath(contentFilterUri, Uri.encode(searchString)),
-    Include(Fields.Contact.Id),
-    null
-) {
-    val contactIds = mutableSetOf<Long>()
-    val dataCursor = it.dataCursor()
-    while (!cancel() && it.moveToNext()) {
-        contactIds.add(dataCursor.contactId)
-    }
-    contactIds
-} ?: emptySet()
-
-private class BroadQueryResult private constructor(
+private class PhoneLookupQueryResult private constructor(
     contacts: List<Contact>,
     override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
-) : ArrayList<Contact>(contacts), BroadQuery.Result {
+) : ArrayList<Contact>(contacts), PhoneLookupQuery.Result {
 
     constructor(contacts: List<Contact>, isLimitBreached: Boolean) : this(
         contacts = contacts,
@@ -815,7 +684,7 @@ private class BroadQueryResult private constructor(
 
     override fun toString(): String =
         """
-            BroadQuery.Result {
+            PhoneLookupQuery.Result {
                 Number of contacts found: $size
                 First contact: ${firstOrNull()}
                 isLimitBreached: $isLimitBreached
@@ -823,7 +692,7 @@ private class BroadQueryResult private constructor(
             }
         """.trimIndent()
 
-    override fun redactedCopy(): BroadQuery.Result = BroadQueryResult(
+    override fun redactedCopy(): PhoneLookupQuery.Result = PhoneLookupQueryResult(
         contacts = redactedCopies(),
         isLimitBreached = isLimitBreached,
         isRedacted = true

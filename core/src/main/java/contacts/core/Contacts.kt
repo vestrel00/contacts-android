@@ -16,8 +16,8 @@ import contacts.core.profile.Profile
 import contacts.core.sim.SimContacts
 
 /**
- * Provides new [Query], [BroadQuery], [Insert], [Update], [Delete], [Data], [Groups], [Profile],
- * [Accounts], [BlockedNumbers], and [SimContacts] instances.
+ * Provides new [Query], [BroadQuery], [PhoneLookupQuery], [Insert], [Update], [Delete], [Data],
+ * [Groups], [Profile], [Accounts], [BlockedNumbers], and [SimContacts] instances.
  *
  * ## Permissions
  *
@@ -43,6 +43,11 @@ interface Contacts {
      * Returns a new [BroadQuery] instance.
      */
     fun broadQuery(): BroadQuery
+
+    /**
+     * Returns a new [PhoneLookupQuery] instance.
+     */
+    fun phoneLookupQuery(): PhoneLookupQuery
 
     /**
      * Returns a new [Insert] instance.
@@ -201,6 +206,8 @@ private class ContactsImpl(
     override fun query() = Query(this)
 
     override fun broadQuery() = BroadQuery(this)
+
+    override fun phoneLookupQuery() = PhoneLookupQuery(this)
 
     override fun insert() = Insert(this)
 

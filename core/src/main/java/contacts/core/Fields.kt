@@ -1236,6 +1236,35 @@ class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
 
 // endregion
 
+// region PhoneLookup Table Fields
+
+data class PhoneLookupField internal constructor(
+    override val columnName: String,
+    override val required: Boolean = false
+) : Field()
+
+/**
+ * Fields for PhoneLookup table operations.
+ */
+object PhoneLookupFields : FieldSet<PhoneLookupField>() {
+
+    // This actually contains the Contact ID
+    internal val Id = PhoneLookupField(PhoneLookup._ID)
+
+    // Technically not needed because the Id contains the Contact ID but we should be using this
+    // for supported API version for future-proofing.
+    @TargetApi(Build.VERSION_CODES.N)
+    internal val ContactId = PhoneLookupField(PhoneLookup.CONTACT_ID)
+
+    override val all by unsafeLazy {
+        // The ContactId is intentionally not included because it serves the same purpose as Id
+        // and is not available for all API versions.
+        setOf(Id)
+    }
+}
+
+// endregion
+
 // region Groups Table Fields
 
 data class GroupsField internal constructor(

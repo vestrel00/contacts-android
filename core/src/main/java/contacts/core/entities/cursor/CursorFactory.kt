@@ -73,6 +73,9 @@ internal fun CursorHolder<ContactsField>.contactsCursor() = ContactsCursor(curso
 internal fun CursorHolder<ContactsField>.optionsCursor() =
     ContactsOptionsCursor(cursor, includeFields)
 
+internal fun CursorHolder<PhoneLookupField>.phoneLookupCursor() =
+    PhoneLookupCursor(cursor, includeFields)
+
 internal fun CursorHolder<GroupsField>.groupsCursor() = GroupsCursor(cursor, includeFields)
 
 internal fun CursorHolder<BlockedNumbersField>.blockedNumbersCursor() =

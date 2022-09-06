@@ -29,6 +29,7 @@ internal inline fun <reified T : Field> Cursor.toEntityCursor(includeFields: Set
         )
         RawContactsField::class -> CursorHolder(this, includeFields as Set<RawContactsField>)
         ContactsField::class -> CursorHolder(this, includeFields as Set<ContactsField>)
+        PhoneLookupField::class -> CursorHolder(this, includeFields as Set<PhoneLookupField>)
         GroupsField::class -> CursorHolder(this, includeFields as Set<GroupsField>)
         AggregationExceptionsField::class -> CursorHolder(
             this,
