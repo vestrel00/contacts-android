@@ -6,15 +6,13 @@ import contacts.core.entities.ExistingSimContactEntity
 import contacts.core.entities.MutableSimContact
 import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
+import contacts.core.sim.SimContactsUpdate.Result.FailureReason
 import contacts.core.util.unsafeLazy
-
-// TODO Issue #Calculate max character limits for name and number. Pre-emptively fail the update for
-// entries that breach the limit. Make sure to update documentation.
 
 /**
  * Updates one or more user SIM contacts in the SIM contacts table.
  *
- * ## Blank SIM contacts are ignored
+ * ## Blank contacts are not allowed
  *
  * Blank SimContacts (name AND number are both null or blank) will NOT be updated. The name OR
  * number can be null or blank but not both.
@@ -210,24 +208,35 @@ interface SimContactsUpdate : CrudApi {
          */
         fun isSuccessful(simContact: ExistingSimContactEntity): Boolean
 
+        /**
+         * Returns the reason why the update failed for this [simContact].
+         * Null if it did not fail.
+         */
+        fun failureReason(simContact: ExistingSimContactEntity): FailureReason?
+
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
 
         enum class FailureReason {
 
             /**
-             * The SimContact name or number has exceeded the max character limit.
+             * The [ExistingSimContactEntity.name] has exceeded the max character limit.
              */
-            EXCEEDED_MAX_CHAR_LIMIT,
+            NAME_EXCEEDED_MAX_CHAR_LIMIT,
 
             /**
-             * The SimContact name or number cannot both be blank.
+             * The [ExistingSimContactEntity.number] has exceeded the max character limit.
+             */
+            NUMBER_EXCEEDED_MAX_CHAR_LIMIT,
+
+            /**
+             * The [ExistingSimContactEntity.name] and [ExistingSimContactEntity.number] are both blank.
              */
             NAME_AND_NUMBER_ARE_BLANK,
 
             /**
-             * The insert failed because of no SIM card in the ready state, no SimContacts
-             * specified for insert, etc...
+             * The update failed because of no SIM card in the ready state, no SimContacts
+             * specified for insert, number is invalid, etc...
              *
              * ## Dev note
              *
@@ -298,65 +307,99 @@ private class SimContactsUpdateImpl(
             SimContactsUpdateFailed()
         } else {
 
-            val results = mutableMapOf<Long, Boolean>()
+            val failureReasons = mutableMapOf<Long, FailureReason?>()
 
             for (entry in entries) {
                 if (cancel()) {
                     break
                 }
 
-                results[entry.current.id] =
-                    !entry.modified.isBlank && contentResolver.updateSimContact(
+                val maxCharacterLimits = simCardInfo.maxCharacterLimits()
+                failureReasons[entry.current.id] = if (entry.modified.isBlank) {
+                    FailureReason.NAME_AND_NUMBER_ARE_BLANK
+                } else if (entry.modified.name.length > maxCharacterLimits.nameMaxLength()) {
+                    FailureReason.NAME_EXCEEDED_MAX_CHAR_LIMIT
+                } else if (entry.modified.number.length > maxCharacterLimits.numberMaxLength()) {
+                    FailureReason.NUMBER_EXCEEDED_MAX_CHAR_LIMIT
+                } else if (!contentResolver.updateSimContact(
                         entry.current,
-                        entry.modified
+                        entry.modified,
+                        cancel
                     )
+                ) {
+                    FailureReason.UNKNOWN
+                } else {
+                    null
+                }
             }
-            SimContactsUpdateResult(results)
+
+            SimContactsUpdateResult(failureReasons)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
 
+private val String?.length: Int
+    get() = this?.let { length } ?: 0
+
 private fun ContentResolver.updateSimContact(
-    current: ExistingSimContactEntity, modified: MutableSimContact
+    current: ExistingSimContactEntity,
+    modified: MutableSimContact,
+    cancel: () -> Boolean
 ): Boolean {
     val result = SimContactsOperation().update(current, modified)?.let {
         update(Table.SimContacts.uri, it, null, null)
     }
 
-    // FIXME If result is not null, query to make sure the row is updated in the SIM table.
-    return result != null && result > 0
+    var updateSuccess = result != null && result > 0
+
+    if (updateSuccess) {
+        // If result is not null, query to make sure the row has actually been updated to the
+        // modified values. In some devices, the result will be successful but the row has not
+        // been modified.
+        val updatedSimContact = getSimContacts(cancel).find {
+            it.id == modified.id && it.name == modified.name && it.number == modified.number
+        }
+        if (updatedSimContact == null) {
+            updateSuccess = false
+        }
+    }
+
+    return updateSuccess
 }
 
 private class SimContactsUpdateResult private constructor(
-    private val simContactIdsResultMap: Map<Long, Boolean>,
+    private val failureReasons: Map<Long, FailureReason?>,
     override val isRedacted: Boolean
 ) : SimContactsUpdate.Result {
 
-    constructor(simContactIdsResultMap: Map<Long, Boolean>) : this(simContactIdsResultMap, false)
+    constructor(failureReasons: Map<Long, FailureReason?>) : this(failureReasons, false)
 
     override fun toString(): String =
         """
             SimContactsUpdate.Result {
                 isSuccessful: $isSuccessful
-                simContactIdsResultMap: $simContactIdsResultMap
+                failureReasons: $failureReasons
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsUpdate.Result = SimContactsUpdateResult(
-        simContactIdsResultMap,
+        failureReasons,
         isRedacted = true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
         // By default, all returns true when the collection is empty. So, we override that.
-        simContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+        failureReasons.run { isNotEmpty() && all { it.value == null } }
     }
 
     override fun isSuccessful(simContact: ExistingSimContactEntity): Boolean =
-        simContactIdsResultMap.getOrElse(simContact.id) { false }
+        failureReasons.containsKey(simContact.id) && failureReasons[simContact.id] == null
+
+    override fun failureReason(simContact: ExistingSimContactEntity): FailureReason? =
+        failureReasons[simContact.id]
 }
 
 private class SimContactsUpdateFailed private constructor(override val isRedacted: Boolean) :
@@ -377,4 +420,6 @@ private class SimContactsUpdateFailed private constructor(override val isRedacte
     override val isSuccessful: Boolean = false
 
     override fun isSuccessful(simContact: ExistingSimContactEntity): Boolean = isSuccessful
+
+    override fun failureReason(simContact: ExistingSimContactEntity) = FailureReason.UNKNOWN
 }

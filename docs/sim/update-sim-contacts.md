@@ -94,6 +94,21 @@ To check if a particular update succeeded,
 val firstUpdateSuccessful = updateResult.isSuccessful(simContact)
 ```
 
+### Handling update failure
+
+The update may fail for a particular SIM contact for various reasons,
+
+```kotlin
+updateResult.failureReason(simContact)?.let {
+    when (it) {
+        NAME_EXCEEDED_MAX_CHAR_LIMIT -> tellUserTheNameIsTooLong()
+        NUMBER_EXCEEDED_MAX_CHAR_LIMIT -> tellUserTheNumberIsTooLong()
+        NAME_AND_NUMBER_ARE_BLANK -> tellUserTheNameAndNumberCannotBothBeBlank()
+        UNKNOWN -> showGenericErrorMessage()
+    }
+}
+```
+
 ## Cancelling the update
 
 To cancel an update amid execution,

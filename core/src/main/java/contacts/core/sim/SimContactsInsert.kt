@@ -11,7 +11,7 @@ import contacts.core.util.unsafeLazy
 /**
  * Inserts one or more user SIM contacts into the SIM contacts table.
  *
- * ## Blank SIM contacts are ignored
+ * ## Blank contacts are not allowed
  *
  * Blank SimContacts (name AND number are both null or blank) will NOT be inserted. The name OR
  * number can be null or blank but not both.
@@ -178,13 +178,13 @@ interface SimContactsInsert : CrudApi {
             NUMBER_EXCEEDED_MAX_CHAR_LIMIT,
 
             /**
-             * The SimContact name or number cannot both be blank.
+             * The [NewSimContact.name] and [NewSimContact.number] are both blank.
              */
             NAME_AND_NUMBER_ARE_BLANK,
 
             /**
              * The insert failed because of no SIM card in the ready state, no SimContacts
-             * specified for insert, etc...
+             * specified for insert, number is invalid, etc...
              *
              * ## Dev note
              *
@@ -275,6 +275,7 @@ private class SimContactsInsertImpl(
                     null
                 }
             }
+
             SimContactsInsertResult(failureReasons)
         }
             .redactedCopyOrThis(isRedacted)
