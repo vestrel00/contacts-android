@@ -1,7 +1,7 @@
 # Insert contacts into SIM card
 
-This library provides the `SimContactsInsert` API that allows you to create/insert contacts into
-the SIM card.
+This library provides the `SimContactsInsert` API that allows you to create/insert contacts into the
+SIM card.
 
 An instance of the `SimContactsInsert` API is obtained by,
 
@@ -69,7 +69,8 @@ To check if a particular insert succeeded,
 val firstInsertSuccessful = insertResult.isSuccessful(newContact1)
 ```
 
-To get all newly created SimContacts, you may use the extensions provided in `SimContactsInsertResult`,
+To get all newly created SimContacts, you may use the extensions provided
+in `SimContactsInsertResult`,
 
 ```kotlin
 val simContacts = insertResult.simContacts(contactsApi)
@@ -86,6 +87,21 @@ val simContact = insertResult.simContact(contactsApi, newSimContact1)
 > Therefore, this library's insert API can only support getting the new rows from the result with some
 > limitations around duplicate entries (see documentation in `SimContactsInsertResult`).
 
+### Handling insert failure
+
+The insert may fail for a particular SIM contact for various reasons,
+
+```kotlin
+insertResult.failureReason(newSimContact1)?.let {
+    when (it) {
+        NAME_EXCEEDED_MAX_CHAR_LIMIT -> tellUserTheNameIsTooLong()
+        NUMBER_EXCEEDED_MAX_CHAR_LIMIT -> tellUserTheNumberIsTooLong()
+        NAME_AND_NUMBER_ARE_BLANK -> tellUserTheNameAndNumberCannotBothBeBlank()
+        UNKNOWN -> showGenericErrorMessage()
+    }
+}
+```
+
 ## Cancelling the insert
 
 To cancel an insert amid execution,
@@ -98,7 +114,8 @@ The `commit` function optionally takes in a function that, if it returns true, w
 processing as soon as possible. The function is called numerous times during insert processing to
 check if processing should stop or continue. This gives you the option to cancel the insert.
 
-For example, to automatically cancel the insert inside a Kotlin coroutine when the coroutine is cancelled,
+For example, to automatically cancel the insert inside a Kotlin coroutine when the coroutine is
+cancelled,
 
 ```kotlin
 launch {

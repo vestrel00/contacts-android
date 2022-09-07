@@ -5,10 +5,8 @@ import contacts.core.*
 import contacts.core.entities.NewSimContact
 import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
+import contacts.core.sim.SimContactsInsert.Result.FailureReason
 import contacts.core.util.unsafeLazy
-
-// TODO Calculate max character limits for name and number. Pre-emptively fail the insert for
-// entries that breach the limit. Make sure to update documentation.
 
 /**
  * Inserts one or more user SIM contacts into the SIM contacts table.
@@ -158,8 +156,43 @@ interface SimContactsInsert : CrudApi {
          */
         fun isSuccessful(simContact: NewSimContact): Boolean
 
+        /**
+         * Returns the reason why the insert failed for this [simContact].
+         * Null if it did not fail.
+         */
+        fun failureReason(simContact: NewSimContact): FailureReason?
+
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
+
+        enum class FailureReason {
+
+            /**
+             * The [NewSimContact.name] has exceeded the max character limit.
+             */
+            NAME_EXCEEDED_MAX_CHAR_LIMIT,
+
+            /**
+             * The [NewSimContact.number] has exceeded the max character limit.
+             */
+            NUMBER_EXCEEDED_MAX_CHAR_LIMIT,
+
+            /**
+             * The SimContact name or number cannot both be blank.
+             */
+            NAME_AND_NUMBER_ARE_BLANK,
+
+            /**
+             * The insert failed because of no SIM card in the ready state, no SimContacts
+             * specified for insert, etc...
+             *
+             * ## Dev note
+             *
+             * We can probably add more reasons instead of just putting all others in the "unknown"
+             * bucket. We'll see if consumers need to know about other failure reasons.
+             */
+            UNKNOWN
+        }
     }
 }
 
@@ -222,65 +255,94 @@ private class SimContactsInsertImpl(
             SimContactsInsertFailed()
         } else {
 
-            val results = mutableMapOf<NewSimContact, Boolean>()
+            val failureReasons = mutableMapOf<NewSimContact, FailureReason?>()
 
             for (simContact in simContacts) {
                 if (cancel()) {
                     break
                 }
 
-                results[simContact] =
-                    !simContact.isBlank && contentResolver.insertSimContact(simContact)
+                val maxCharacterLimits = simCardInfo.maxCharacterLimits()
+                failureReasons[simContact] = if (simContact.isBlank) {
+                    FailureReason.NAME_AND_NUMBER_ARE_BLANK
+                } else if (simContact.name.length > maxCharacterLimits.nameMaxLength()) {
+                    FailureReason.NAME_EXCEEDED_MAX_CHAR_LIMIT
+                } else if (simContact.number.length > maxCharacterLimits.numberMaxLength()) {
+                    FailureReason.NUMBER_EXCEEDED_MAX_CHAR_LIMIT
+                } else if (!contentResolver.insertSimContact(simContact, cancel)) {
+                    FailureReason.UNKNOWN
+                } else {
+                    null
+                }
             }
-            SimContactsInsertResult(results)
+            SimContactsInsertResult(failureReasons)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
 
-fun ContentResolver.insertSimContact(simContact: NewSimContact): Boolean {
+private val String?.length: Int
+    get() = this?.let { length } ?: 0
+
+fun ContentResolver.insertSimContact(simContact: NewSimContact, cancel: () -> Boolean): Boolean {
     val result = SimContactsOperation().insert(simContact)?.let {
         insert(Table.SimContacts.uri, it)
     }
 
-    // FIXME If result is not null, query to make sure a new row is inserted in the SIM table. In some OEMs,
-    // the result will be successful but no new row is added to the SIM table.
     // Successful result is always "content://icc/adn/0"
-    return result != null
+    var insertSuccess = result != null
+
+    if (insertSuccess) {
+        // If result is not null, query to make sure a new row is inserted in the SIM table. In some
+        // devices, the result will be successful but no new row is added to the SIM table. If a
+        // duplicate is being inserted (an entry with the same name and number already exists),
+        // then this extra check is useless because we can only compare by name and number due to
+        // the id being unavailable from the insert result.
+        val insertedSimContact = getSimContacts(cancel)
+            .find { it.name == simContact.name && it.number == simContact.number }
+        if (insertedSimContact == null) {
+            insertSuccess = false
+        }
+    }
+
+    return insertSuccess
 }
 
 private class SimContactsInsertResult private constructor(
-    private val simContactsMap: Map<NewSimContact, Boolean>,
+    private val failureReasons: Map<NewSimContact, FailureReason?>,
     override val isRedacted: Boolean
 ) : SimContactsInsert.Result {
 
-    constructor(simContactsMap: Map<NewSimContact, Boolean>) : this(simContactsMap, false)
+    constructor(failureReasons: Map<NewSimContact, FailureReason?>) : this(failureReasons, false)
 
     override fun toString(): String =
         """
             SimContactsInsert.Result {
                 isSuccessful: $isSuccessful
-                simContactsMap: $simContactsMap
+                failureReasons: $failureReasons
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsInsert.Result = SimContactsInsertResult(
-        simContactsMap.redactedKeys(),
+        failureReasons.redactedKeys(),
         isRedacted = true
     )
 
     override val newSimContacts: Set<NewSimContact>
-        get() = simContactsMap.filter { it.value }.keys
+        get() = failureReasons.filter { it.value == null }.keys
 
     override val isSuccessful: Boolean by unsafeLazy {
         // By default, all returns true when the collection is empty. So, we override that.
-        simContactsMap.run { isNotEmpty() && all { it.value } }
+        failureReasons.run { isNotEmpty() && all { it.value == null } }
     }
 
     override fun isSuccessful(simContact: NewSimContact): Boolean =
-        simContactsMap[simContact] == true
+        failureReasons.containsKey(simContact) && failureReasons[simContact] == null
+
+    override fun failureReason(simContact: NewSimContact): FailureReason? =
+        failureReasons[simContact]
 }
 
 private class SimContactsInsertFailed private constructor(override val isRedacted: Boolean) :
@@ -303,4 +365,6 @@ private class SimContactsInsertFailed private constructor(override val isRedacte
     override val isSuccessful: Boolean = false
 
     override fun isSuccessful(simContact: NewSimContact): Boolean = false
+
+    override fun failureReason(simContact: NewSimContact) = FailureReason.UNKNOWN
 }

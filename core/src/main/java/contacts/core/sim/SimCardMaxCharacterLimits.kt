@@ -224,11 +224,13 @@ private fun ContentResolver.maxCharLimit(
     while (!insertSuccess && length > 0 && !cancel()) {
         val name = nameChar?.repeat(length)
         val number = numberChar?.repeat(length)
-        insertSuccess = insertSimContact(NewSimContact(name = name, number = number))
+        insertSuccess = insertSimContact(NewSimContact(name = name, number = number), cancel)
         if (insertSuccess) {
             val insertedSimContact = getSimContacts(cancel)
                 .find { it.name == name && it.number == number }
             if (insertedSimContact == null) {
+                // Some devices return successful result even though a new row was not actually
+                // inserted. Therefore, we have to check for this possibility.
                 insertSuccess = false
             } else {
                 deleteSimContact(insertedSimContact)
