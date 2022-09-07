@@ -254,5 +254,14 @@ private class SimContactsDeleteResult private constructor(
  */
 private val ExistingSimContactEntity.deleteWhere: String
     // We will not construct the where String using our own Where functions to avoid generating
-    // parenthesis, which breaks the way this where clause is processed.
-    get() = "tag='${name}' AND number='${number}'"
+    // parenthesis, which will not be recognized by the IccProvider. Note that passing in null in
+    // the right hand side of the '=' will cause the delete to fail.
+    get() = if (name != null && number == null) {
+        "tag='${name}'"
+    } else if (name == null && number != null) {
+        "number='${number}'"
+    } else {
+        // If both name and number are not null, then we good. If both are null, this will probably
+        // fail but we don't allow that scenario anyways so this is fine.
+        "tag='${name}' AND number='${number}'"
+    }
