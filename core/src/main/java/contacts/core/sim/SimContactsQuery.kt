@@ -12,7 +12,7 @@ import contacts.core.util.query
  *
  * ## SIM Card state
  *
- * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * The [SimCardInfo.isReady] is assumed to be true in these examples for brevity. If false, the
  * query will do nothing and return an empty list.
  *
  * ## Permissions
@@ -54,7 +54,7 @@ interface SimContactsQuery : CrudApi {
      *
      * ## SIM Card state
      *
-     * Requires [SimCardState.isReady] to be true.
+     * Requires [SimCardInfo.isReady] to be true.
      *
      * ## Permissions
      *
@@ -72,7 +72,7 @@ interface SimContactsQuery : CrudApi {
      *
      * ## SIM Card state
      *
-     * Requires [SimCardState.isReady] to be true.
+     * Requires [SimCardInfo.isReady] to be true.
      *
      * ## Permissions
      *
@@ -131,12 +131,12 @@ interface SimContactsQuery : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsQuery(contacts: Contacts): SimContactsQuery = SimContactsQueryImpl(
-    contacts, SimCardState(contacts.applicationContext)
+    contacts, SimCardInfo(contacts.applicationContext)
 )
 
 private class SimContactsQueryImpl(
     override val contactsApi: Contacts,
-    private val state: SimCardState,
+    private val cardInfo: SimCardInfo,
 
     override val isRedacted: Boolean = false
 ) : SimContactsQuery {
@@ -145,14 +145,14 @@ private class SimContactsQueryImpl(
         """
             SimContactsQuery {
                 hasPermission: ${permissions.canQuery()}
-                isSimCardReady: ${state.isReady}
+                isSimCardReady: ${cardInfo.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsQuery = SimContactsQueryImpl(
         contactsApi,
-        state,
+        cardInfo,
         isRedacted = true
     )
 
@@ -161,7 +161,7 @@ private class SimContactsQueryImpl(
     override fun find(cancel: () -> Boolean): SimContactsQuery.Result {
         onPreExecute()
 
-        return if (!permissions.canQuery() || !state.isReady) {
+        return if (!permissions.canQuery() || !cardInfo.isReady) {
             SimContactsQueryResult(emptyList())
         } else {
             contentResolver.resolve(cancel)

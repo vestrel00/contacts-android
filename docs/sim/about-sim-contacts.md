@@ -16,7 +16,7 @@ immediately.
 To check if the default/active SIM card is in a ready state,
 
 ```kotlin
-val isSimCardReady = Contacts(context).sim().state.isReady
+val isSimCardReady = Contacts(context).sim().cardInfo.isReady
 ```
 
 ## SIM Contact data

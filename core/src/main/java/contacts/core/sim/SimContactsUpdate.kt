@@ -27,7 +27,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## SIM Card state
  *
- * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * The [SimCardInfo.isReady] is assumed to be true in these examples for brevity. If false, the
  * insert will do nothing.
  *
  * ## Permissions
@@ -140,7 +140,7 @@ interface SimContactsUpdate : CrudApi {
      *
      * ## SIM Card state
      *
-     * Requires [SimCardState.isReady] to be true.
+     * Requires [SimCardInfo.isReady] to be true.
      *
      * ## Permissions
      *
@@ -217,11 +217,11 @@ interface SimContactsUpdate : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsUpdate(contacts: Contacts): SimContactsUpdate =
-    SimContactsUpdateImpl(contacts, SimCardState(contacts.applicationContext))
+    SimContactsUpdateImpl(contacts, SimCardInfo(contacts.applicationContext))
 
 private class SimContactsUpdateImpl(
     override val contactsApi: Contacts,
-    private val state: SimCardState,
+    private val cardInfo: SimCardInfo,
 
     private val entries: MutableSet<SimContactsUpdate.Entry> = mutableSetOf(),
 
@@ -233,14 +233,14 @@ private class SimContactsUpdateImpl(
             SimContactsUpdate {
                 entries: $entries
                 hasPermission: ${permissions.canUpdateDelete()}
-                isSimCardReady: ${state.isReady}
+                isSimCardReady: ${cardInfo.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsUpdate = SimContactsUpdateImpl(
         contactsApi,
-        state,
+        cardInfo,
 
         // Redact SIM contact data.
         entries.asSequence().redactedCopies().toMutableSet(),
@@ -270,7 +270,7 @@ private class SimContactsUpdateImpl(
         return if (
             entries.isEmpty() ||
             !permissions.canUpdateDelete() ||
-            !state.isReady ||
+            !cardInfo.isReady ||
             cancel()
         ) {
             SimContactsUpdateFailed()

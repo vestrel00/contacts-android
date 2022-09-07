@@ -29,9 +29,10 @@ interface SimContacts {
     fun delete(): SimContactsDelete
 
     /**
-     * Returns a [SimCardState] instance, which provides functions for checking SIM card states.
+     * Returns a [SimCardInfo] instance, which provides functions for checking SIM card state,
+     * max character limits, etc.
      */
-    val state: SimCardState
+    val cardInfo: SimCardInfo
 
     /**
      * A reference to the [Contacts] instance that constructed this. This is mostly used internally
@@ -48,11 +49,11 @@ interface SimContacts {
  */
 @Suppress("FunctionName")
 internal fun SimContacts(contacts: Contacts): SimContacts = SimContactsImpl(
-    SimCardState(contacts.applicationContext), contacts
+    SimCardInfo(contacts.applicationContext), contacts
 )
 
 private class SimContactsImpl(
-    override val state: SimCardState,
+    override val cardInfo: SimCardInfo,
     override val contactsApi: Contacts
 ) : SimContacts {
 

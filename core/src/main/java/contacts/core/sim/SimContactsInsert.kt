@@ -26,7 +26,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## SIM Card state
  *
- * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * The [SimCardInfo.isReady] is assumed to be true in these examples for brevity. If false, the
  * insert will do nothing.
  *
  * ## Permissions
@@ -85,7 +85,7 @@ interface SimContactsInsert : CrudApi {
      *
      * ## SIM Card state
      *
-     * Requires [SimCardState.isReady] to be true.
+     * Requires [SimCardInfo.isReady] to be true.
      *
      * ## Permissions
      *
@@ -165,11 +165,11 @@ interface SimContactsInsert : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsInsert(contacts: Contacts): SimContactsInsert =
-    SimContactsInsertImpl(contacts, SimCardState(contacts.applicationContext))
+    SimContactsInsertImpl(contacts, SimCardInfo(contacts.applicationContext))
 
 private class SimContactsInsertImpl(
     override val contactsApi: Contacts,
-    private val state: SimCardState,
+    private val cardInfo: SimCardInfo,
 
     private val simContacts: MutableSet<NewSimContact> = mutableSetOf(),
 
@@ -181,14 +181,14 @@ private class SimContactsInsertImpl(
             SimContactsInsert {
                 simContacts: $simContacts
                 hasPermission: ${permissions.canInsertToSim()}
-                isSimCardReady: ${state.isReady}
+                isSimCardReady: ${cardInfo.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsInsert = SimContactsInsertImpl(
         contactsApi,
-        state,
+        cardInfo,
 
         // Redact SIM contact data.
         simContacts.asSequence().redactedCopies().toMutableSet(),
@@ -218,7 +218,7 @@ private class SimContactsInsertImpl(
         return if (
             simContacts.isEmpty() ||
             !permissions.canInsertToSim() ||
-            !state.isReady ||
+            !cardInfo.isReady ||
             cancel()
         ) {
             SimContactsInsertFailed()

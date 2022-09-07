@@ -40,7 +40,7 @@ class ImportSimContactsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_import_sim_contacts)
 
-        if (!contacts.sim().state.isReady) {
+        if (!contacts.sim().cardInfo.isReady) {
             showToast(R.string.import_sim_contacts_card_not_ready)
             setResult(RESULT_CANCELED)
             finish()

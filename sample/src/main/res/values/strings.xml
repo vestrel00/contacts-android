@@ -106,7 +106,7 @@
     <string name="import_sim_contacts_success">Successfully imported contacts</string>
     <string name="import_sim_contacts_failed">Failed to import contacts</string>
     <string name="import_sim_contacts_action_import">IMPORT</string>
-    <string name="import_sim_contacts_card_not_ready">There is no accessible SIM card</string>
+    <string name="import_sim_contacts_card_not_ready">SIM card is not ready or missing</string>
     <string name="import_sim_contacts_already_in_contacts_provider_db">Contact already exist in the Contacts Provider DB</string>
 
     <!-- Settings -->

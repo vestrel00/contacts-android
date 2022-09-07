@@ -12,7 +12,7 @@ import contacts.core.util.unsafeLazy
  *
  * ## SIM Card state
  *
- * The [SimCardState.isReady] is assumed to be true in these examples for brevity. If false, the
+ * The [SimCardInfo.isReady] is assumed to be true in these examples for brevity. If false, the
  * update will do nothing.
  *
  * ## Permissions
@@ -70,7 +70,7 @@ interface SimContactsDelete : CrudApi {
      *
      * ## SIM Card state
      *
-     * Requires [SimCardState.isReady] to be true.
+     * Requires [SimCardInfo.isReady] to be true.
      *
      * ## Permissions
      *
@@ -122,11 +122,11 @@ interface SimContactsDelete : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsDelete(contacts: Contacts): SimContactsDelete =
-    SimContactsDeleteImpl(contacts, SimCardState(contacts.applicationContext))
+    SimContactsDeleteImpl(contacts, SimCardInfo(contacts.applicationContext))
 
 private class SimContactsDeleteImpl(
     override val contactsApi: Contacts,
-    private val state: SimCardState,
+    private val cardInfo: SimCardInfo,
 
     private val simContactsToDelete: MutableSet<ExistingSimContactEntity> = mutableSetOf(),
 
@@ -138,14 +138,14 @@ private class SimContactsDeleteImpl(
             SimContactsDelete {
                 simContactsToDelete: $simContactsToDelete
                 hasPermission: ${permissions.canUpdateDelete()}
-                isSimCardReady: ${state.isReady}
+                isSimCardReady: ${cardInfo.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsDelete = SimContactsDeleteImpl(
         contactsApi,
-        state,
+        cardInfo,
 
         // Redact SIM contact data.
         simContactsToDelete.asSequence().redactedCopies().toMutableSet(),
@@ -183,7 +183,7 @@ private class SimContactsDeleteImpl(
         return if (
             simContactsToDelete.isEmpty() ||
             !permissions.canUpdateDelete() ||
-            !state.isReady
+            !cardInfo.isReady
         ) {
             SimContactsDeleteResult(emptyMap())
         } else {

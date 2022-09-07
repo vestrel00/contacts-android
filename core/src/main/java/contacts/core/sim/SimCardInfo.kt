@@ -5,9 +5,9 @@ import android.content.Context
 import android.telephony.TelephonyManager
 
 /**
- * Provides functions for checking SIM card states.
+ * Provides functions for checking SIM card state, max character limits, etc.
  */
-interface SimCardState {
+interface SimCardInfo {
 
     /**
      * Returns true if the default/active SIM card is ready for use.
@@ -16,10 +16,10 @@ interface SimCardState {
 }
 
 @Suppress("FunctionName")
-internal fun SimCardState(context: Context): SimCardState =
-    SimCardStateImpl(context.applicationContext)
+internal fun SimCardInfo(context: Context): SimCardInfo =
+    SimCardInfoImpl(context.applicationContext)
 
-private class SimCardStateImpl(private val applicationContext: Context) : SimCardState {
+private class SimCardInfoImpl(private val applicationContext: Context) : SimCardInfo {
 
     private val telephonyManager: TelephonyManager
         get() = applicationContext.getSystemService(Activity.TELEPHONY_SERVICE) as TelephonyManager
