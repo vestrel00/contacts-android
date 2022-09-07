@@ -17,9 +17,6 @@ import contacts.core.sim.SimContactsInsert
  * before this insert operation. In other words, there is no sure way of knowing if creating
  * duplicates actually succeeded or not.
  *
- * If the insert operation contains duplicate entries, this will return only the last entry inserted
- * regardless of which [simContact] is provided.
- *
  * ## Permissions
  *
  * The [contacts.core.ContactsPermissions.READ_PERMISSION] is required.
@@ -57,9 +54,6 @@ fun SimContactsInsert.Result.simContact(
  * values even if the insert actually failed if the same (duplicate) [simContact]s already exist
  * before this insert operation. In other words, there is no sure way of knowing if creating
  * duplicates actually succeeded or not.
- *
- * If the insert operation contains duplicate entries, this will return only the most recent
- * duplicate entry inserted.
  *
  * ## Permissions
  *

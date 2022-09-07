@@ -148,20 +148,13 @@ interface SimContactsInsert : CrudApi {
         val newSimContacts: Set<NewSimContact>
 
         /**
-         * True if all NewSimContacts have successfully been inserted. False if even one insert
+         * True if all [NewSimContact] have successfully been inserted. False if even one insert
          * failed.
          */
         val isSuccessful: Boolean
 
         /**
          * True if the [simContact] has been successfully inserted. False otherwise.
-         *
-         * ## Duplicate entries
-         *
-         * Due to duplicate entries being allowed and row IDs not being provided in the insert
-         * result, this will return true even if the insert actually failed if an entry of the
-         * [simContact] already exist before this insert operation. In other words, there is no sure
-         * way to know if creating duplicates actually succeeded or not.
          */
         fun isSuccessful(simContact: NewSimContact): Boolean
 
