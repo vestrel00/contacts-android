@@ -9,7 +9,7 @@ import contacts.core.entities.NewBlockedNumber
 import contacts.core.equalTo
 
 /**
- * Returns the newly created [BlockedNumber] or null if the insert operation failed.
+ * Returns the newly created [BlockedNumber].
  *
  * Returns null if the insert operation failed or privileges are not acquired.
  *

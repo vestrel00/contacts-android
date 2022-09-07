@@ -72,9 +72,22 @@ To check if a particular insert succeeded,
 val firstInsertSuccessful = insertResult.isSuccessful(newContact1)
 ```
 
-> ℹ️ The `IccProvider` does not yet return the row ID of newly inserted contacts. Look at the "TODO"
+To get all newly created SimContacts, you may use the extensions provided in `SimContactsInsertResult`,
+
+```kotlin
+val simContacts = insertResult.simContacts(contactsApi)
+```
+
+To get a particular simContact,
+
+```kotlin
+val simContact = insertResult.simContact(contactsApi, newSimContact1)
+```
+
+> ⚠️ The `IccProvider` does not yet return the row ID of newly inserted contacts. Look at the "TODO"
 > at line 259 of Android's [IccProvider](https://android.googlesource.com/platform/frameworks/opt/telephony/+/51302ef/src/java/com/android/internal/telephony/IccProvider.java#259).
-> Therefore, this library's insert API is does not yet support getting the new rows from the result.
+> Therefore, this library's insert API can only support getting the new rows from the result with some
+> limitations around duplicate entries (see documentation in `SimContactsInsertResult`).
 
 ## Cancelling the insert
 

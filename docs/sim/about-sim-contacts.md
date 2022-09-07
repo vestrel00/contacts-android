@@ -41,6 +41,11 @@ contact.
 DO NOT RELY ON THIS TO MATCH VALUES IN THE DATABASE! The SIM table does not support selection
 by ID so you can't use this for anything anyways. 
 
+### Duplicate entries
+
+Duplicate entries, multiple entries having the same name and/or number, are allowed. This follows
+the behavior of other smart phone and non-smart phone applications.
+
 ## Some OEMs automatically sync SIM card data with Contacts Provider data
 
 Samsung phones import contacts from SIM into the Contacts Provider. When using the builtin Samsung 
@@ -289,12 +294,12 @@ not null in the Samsung.
   operation. 
   - To figure out the max character limits, we can attempt to insert a string of length 35 (most
     names should fit there and most SIM cards have lower limits). Keep attempting to insert until
-    insert succeeds, making the string shorter each time. Delete the successful insert and record 
-    the length of the string. 
-    - Do this for both `name` and `number` and store the results in shared 
-      preferences mapped to a unique ID of the SIM card. We do not want to do this calculation 
-      everytime our APIs are used!
-  - Max character limits should be exposed to our API users also.
+    insert succeeds (query if the row is actually created instead of just relying on the insert 
+    result), making the string shorter each time. Delete the successful insert and record the 
+    length of the string. 
+    - Do this for both `name` and `number` and store the results in shared preferences mapped to a 
+      unique ID of the SIM card. We do not want to do this calculation everytime our APIs are used!
+  - Max character limits should be exposed our users via a public API.
 - Furthermore, we cannot rely on the result of the insert operation alone. If the result Uri is not
   null, we must perform a query to sanity check that the actual name and number was inserted!
 
@@ -338,6 +343,11 @@ rows are able to be updated and deleted.
 
 SIM contacts with emails are shown without the email data. These rows are able to be updated and 
 deleted.
+
+### Duplicate entries
+
+Duplicate entries, multiple entries having the same name and/or number, seem to be allowed by
+smart phone and non-smart phone applications.
 
 ### Other considerations
 

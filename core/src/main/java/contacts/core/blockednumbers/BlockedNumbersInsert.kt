@@ -172,7 +172,7 @@ interface BlockedNumbersInsert : CrudApi {
             NUMBER_IS_BLANK,
 
             /**
-             * The update failed because of no privileges, no blocked numbers specified for insert,
+             * The insert failed because of no privileges, no blocked numbers specified for insert,
              * etc...
              *
              * ## Dev note

@@ -303,6 +303,7 @@ private fun ContentResolver.updateSimContact(
         update(Table.SimContacts.uri, it, null, null)
     }
 
+    // FIXME If result is not null, query to make sure the row is updated in the SIM table.
     return result != null && result > 0
 }
 

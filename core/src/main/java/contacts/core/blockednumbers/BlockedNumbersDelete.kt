@@ -7,7 +7,6 @@ import contacts.core.entities.BlockedNumber
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.Table
 import contacts.core.util.applyBlockedNumberBatch
-import contacts.core.util.blockedNumbers
 import contacts.core.util.deleteSuccess
 import contacts.core.util.unsafeLazy
 

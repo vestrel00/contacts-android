@@ -143,6 +143,11 @@ interface SimContactsInsert : CrudApi {
     interface Result : CrudApi.Result {
 
         /**
+         * Contains all [NewSimContact] that have been successfully inserted.
+         */
+        val newSimContacts: Set<NewSimContact>
+
+        /**
          * True if all NewSimContacts have successfully been inserted. False if even one insert
          * failed.
          */
@@ -150,6 +155,13 @@ interface SimContactsInsert : CrudApi {
 
         /**
          * True if the [simContact] has been successfully inserted. False otherwise.
+         *
+         * ## Duplicate entries
+         *
+         * Due to duplicate entries being allowed and row IDs not being provided in the insert
+         * result, this will return true even if the insert actually failed if an entry of the
+         * [simContact] already exist before this insert operation. In other words, there is no sure
+         * way to know if creating duplicates actually succeeded or not.
          */
         fun isSuccessful(simContact: NewSimContact): Boolean
 
@@ -241,7 +253,7 @@ private fun ContentResolver.insertSimContact(simContact: NewSimContact): Boolean
         insert(Table.SimContacts.uri, it)
     }
 
-    // FIXME If result is not null, make sure a new row is inserted in the SIM table. In some OEMs,
+    // FIXME If result is not null, query to make sure a new row is inserted in the SIM table. In some OEMs,
     // the result will be successful but no new row is added to the SIM table.
     // Successful result is always "content://icc/adn/0"
     return result != null
@@ -268,6 +280,9 @@ private class SimContactsInsertResult private constructor(
         isRedacted = true
     )
 
+    override val newSimContacts: Set<NewSimContact>
+        get() = simContactsMap.filter { it.value }.keys
+
     override val isSuccessful: Boolean by unsafeLazy {
         // By default, all returns true when the collection is empty. So, we override that.
         simContactsMap.run { isNotEmpty() && all { it.value } }
@@ -291,6 +306,8 @@ private class SimContactsInsertFailed private constructor(override val isRedacte
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsInsert.Result = SimContactsInsertFailed(true)
+
+    override val newSimContacts: Set<NewSimContact> = emptySet()
 
     override val isSuccessful: Boolean = false
 
