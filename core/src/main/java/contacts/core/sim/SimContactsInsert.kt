@@ -165,11 +165,10 @@ interface SimContactsInsert : CrudApi {
 
 @Suppress("FunctionName")
 internal fun SimContactsInsert(contacts: Contacts): SimContactsInsert =
-    SimContactsInsertImpl(contacts, SimCardInfo(contacts.applicationContext))
+    SimContactsInsertImpl(contacts)
 
 private class SimContactsInsertImpl(
     override val contactsApi: Contacts,
-    private val cardInfo: SimCardInfo,
 
     private val simContacts: MutableSet<NewSimContact> = mutableSetOf(),
 
@@ -181,14 +180,13 @@ private class SimContactsInsertImpl(
             SimContactsInsert {
                 simContacts: $simContacts
                 hasPermission: ${permissions.canInsertToSim()}
-                isSimCardReady: ${cardInfo.isReady}
+                isSimCardReady: ${simCardInfo.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsInsert = SimContactsInsertImpl(
         contactsApi,
-        cardInfo,
 
         // Redact SIM contact data.
         simContacts.asSequence().redactedCopies().toMutableSet(),
@@ -218,7 +216,7 @@ private class SimContactsInsertImpl(
         return if (
             simContacts.isEmpty() ||
             !permissions.canInsertToSim() ||
-            !cardInfo.isReady ||
+            !simCardInfo.isReady ||
             cancel()
         ) {
             SimContactsInsertFailed()
@@ -241,7 +239,7 @@ private class SimContactsInsertImpl(
     }
 }
 
-private fun ContentResolver.insertSimContact(simContact: NewSimContact): Boolean {
+fun ContentResolver.insertSimContact(simContact: NewSimContact): Boolean {
     val result = SimContactsOperation().insert(simContact)?.let {
         insert(Table.SimContacts.uri, it)
     }

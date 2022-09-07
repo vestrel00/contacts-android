@@ -62,16 +62,13 @@ val updateResult = Contacts(context)
     .commit()
 ```
 
-## Blank contacts are ignored
+## Blank contacts are not allowed
 
-Blank contacts (name AND number are both null or blank) will NOT be updated. The name OR number 
-can be null or blank but not both.
+For more info, read about [SIM Contacts](./../sim/about-sim-contacts.md#blanks-are-not-allowed)
 
 ## Character limits
 
-The `name` and `number` are subject to the SIM card's maximum character limit, which is typically
-around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will fail
-if the limit is breached.
+For more info, read about [SIM Contacts](./../sim/about-sim-contacts.md#character-limits)
 
 ## Executing the update
 

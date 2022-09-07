@@ -48,9 +48,8 @@ interface SimContacts {
  * Creates a new [SimContacts] instance.
  */
 @Suppress("FunctionName")
-internal fun SimContacts(contacts: Contacts): SimContacts = SimContactsImpl(
-    SimCardInfo(contacts.applicationContext), contacts
-)
+internal fun SimContacts(contacts: Contacts): SimContacts =
+    SimContactsImpl(SimCardInfo(contacts), contacts)
 
 private class SimContactsImpl(
     override val cardInfo: SimCardInfo,

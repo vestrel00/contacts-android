@@ -212,16 +212,39 @@ interface SimContactsUpdate : CrudApi {
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
+
+        enum class FailureReason {
+
+            /**
+             * The SimContact name or number has exceeded the max character limit.
+             */
+            EXCEEDED_MAX_CHAR_LIMIT,
+
+            /**
+             * The SimContact name or number cannot both be blank.
+             */
+            NAME_AND_NUMBER_ARE_BLANK,
+
+            /**
+             * The insert failed because of no SIM card in the ready state, no SimContacts
+             * specified for insert, etc...
+             *
+             * ## Dev note
+             *
+             * We can probably add more reasons instead of just putting all others in the "unknown"
+             * bucket. We'll see if consumers need to know about other failure reasons.
+             */
+            UNKNOWN
+        }
     }
 }
 
 @Suppress("FunctionName")
 internal fun SimContactsUpdate(contacts: Contacts): SimContactsUpdate =
-    SimContactsUpdateImpl(contacts, SimCardInfo(contacts.applicationContext))
+    SimContactsUpdateImpl(contacts)
 
 private class SimContactsUpdateImpl(
     override val contactsApi: Contacts,
-    private val cardInfo: SimCardInfo,
 
     private val entries: MutableSet<SimContactsUpdate.Entry> = mutableSetOf(),
 
@@ -233,14 +256,13 @@ private class SimContactsUpdateImpl(
             SimContactsUpdate {
                 entries: $entries
                 hasPermission: ${permissions.canUpdateDelete()}
-                isSimCardReady: ${cardInfo.isReady}
+                isSimCardReady: ${simCardInfo.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsUpdate = SimContactsUpdateImpl(
         contactsApi,
-        cardInfo,
 
         // Redact SIM contact data.
         entries.asSequence().redactedCopies().toMutableSet(),
@@ -270,7 +292,7 @@ private class SimContactsUpdateImpl(
         return if (
             entries.isEmpty() ||
             !permissions.canUpdateDelete() ||
-            !cardInfo.isReady ||
+            !simCardInfo.isReady ||
             cancel()
         ) {
             SimContactsUpdateFailed()

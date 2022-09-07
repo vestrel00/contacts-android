@@ -29,8 +29,24 @@ SIM Contact data consists of the `name` and `number`.
 ### Character limits
 
 The `name` and `number` are subject to the SIM card's maximum character limit, which is typically 
-around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will fail 
-if the limit is breached.
+around 20-30 characters. This may vary per SIM card. Inserts or updates will fail if the limit is 
+breached.
+
+The `SimContactsInsert` and `SimContactsUpdate` APIs provided in this library automatically 
+detect max character limits and returns appropriate errors when limits are breached. However,
+you may also access these limits yourself if you want;
+
+```kotlin
+val nameMaxLength = Contacts(context).sim().cardInfo.maxCharacterLimits().nameMaxLength()
+val numberMaxLength = Contacts(context).sim().cardInfo.maxCharacterLimits().numberMaxLength()
+```
+
+Character limits are cached internally in shared preferences so that calculations need not occur
+everytime these functions are invoked. If you want to clear the cache to ensure recalculation;
+
+```kotlin
+Contacts(context).sim().cardInfo.maxCharacterLimits().clearCachedNameAndNumberMaxLengths()
+```
 
 ### SIM Contact row ID
 
@@ -41,10 +57,15 @@ contact.
 DO NOT RELY ON THIS TO MATCH VALUES IN THE DATABASE! The SIM table does not support selection
 by ID so you can't use this for anything anyways. 
 
-### Duplicate entries
+### Duplicate entries are allowed
 
 Duplicate entries, multiple entries having the same name and/or number, are allowed. This follows
 the behavior of other smart phone and non-smart phone applications.
+
+### Blanks are not allowed
+
+Blank contacts (name AND number are both null or blank) will NOT be inserted. The name OR number
+can be null or blank but not both.
 
 ## Some OEMs automatically sync SIM card data with Contacts Provider data
 
@@ -292,7 +313,7 @@ not null in the Samsung.
 - Our `SimContactsInsert` and `SimContactsUpdate` APIs need to be able to detect the maximum 
   character limits for the `name` and `number` before performing the actual insert or update 
   operation. 
-  - To figure out the max character limits, we can attempt to insert a string of length 35 (most
+  - To figure out the max character limits, we can attempt to insert a string of length 30 (most
     names should fit there and most SIM cards have lower limits). Keep attempting to insert until
     insert succeeds (query if the row is actually created instead of just relying on the insert 
     result), making the string shorter each time. Delete the successful insert and record the 

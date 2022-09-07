@@ -3,6 +3,7 @@ package contacts.core
 import android.content.ContentResolver
 import contacts.core.accounts.AccountsPermissions
 import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.sim.SimCardInfo
 
 // ## Developer notes
 //
@@ -142,6 +143,9 @@ internal fun CrudApi.onPostExecute(contactsApi: Contacts, result: CrudApi.Result
 
 internal val CrudApi.permissions: ContactsPermissions
     get() = contactsApi.permissions
+
+internal val CrudApi.simCardInfo: SimCardInfo
+    get() = contactsApi.sim().cardInfo
 
 internal val CrudApi.accountsPermissions: AccountsPermissions
     get() = contactsApi.accountsPermissions

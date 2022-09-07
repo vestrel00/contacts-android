@@ -1,8 +1,10 @@
 package contacts.core
 
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Resources
+import android.telephony.TelephonyManager
 import contacts.core.accounts.Accounts
 import contacts.core.accounts.AccountsPermissions
 import contacts.core.blockednumbers.BlockedNumbers
@@ -237,5 +239,11 @@ internal val Contacts.contentResolver: ContentResolver
 
 internal val Contacts.resources: Resources
     get() = applicationContext.resources
+
+internal val Contacts.telephonyManager: TelephonyManager
+    get() = applicationContext.getSystemService(Activity.TELEPHONY_SERVICE) as TelephonyManager
+
+internal val Contacts.isSimCardReady: Boolean
+    get() = telephonyManager.simState == TelephonyManager.SIM_STATE_READY
 
 // endregion

@@ -130,13 +130,10 @@ interface SimContactsQuery : CrudApi {
 }
 
 @Suppress("FunctionName")
-internal fun SimContactsQuery(contacts: Contacts): SimContactsQuery = SimContactsQueryImpl(
-    contacts, SimCardInfo(contacts.applicationContext)
-)
+internal fun SimContactsQuery(contacts: Contacts): SimContactsQuery = SimContactsQueryImpl(contacts)
 
 private class SimContactsQueryImpl(
     override val contactsApi: Contacts,
-    private val cardInfo: SimCardInfo,
 
     override val isRedacted: Boolean = false
 ) : SimContactsQuery {
@@ -145,14 +142,13 @@ private class SimContactsQueryImpl(
         """
             SimContactsQuery {
                 hasPermission: ${permissions.canQuery()}
-                isSimCardReady: ${cardInfo.isReady}
+                isSimCardReady: ${simCardInfo.isReady}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): SimContactsQuery = SimContactsQueryImpl(
         contactsApi,
-        cardInfo,
         isRedacted = true
     )
 
@@ -161,17 +157,17 @@ private class SimContactsQueryImpl(
     override fun find(cancel: () -> Boolean): SimContactsQuery.Result {
         onPreExecute()
 
-        return if (!permissions.canQuery() || !cardInfo.isReady) {
+        return if (!permissions.canQuery() || !simCardInfo.isReady) {
             SimContactsQueryResult(emptyList())
         } else {
-            contentResolver.resolve(cancel)
+            contentResolver.getSimContacts(cancel)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
 
-private fun ContentResolver.resolve(cancel: () -> Boolean): SimContactsQuery.Result = query(
+internal fun ContentResolver.getSimContacts(cancel: () -> Boolean): SimContactsQuery.Result = query(
     Table.SimContacts,
     // The actual database query selection is not supported. However, we still need to include all
     // fields so that our custom cursors will not return null.
