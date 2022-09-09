@@ -15,8 +15,9 @@ import contacts.core.util.*
 /**
  * Performs a highly optimized query using a phone number or SIP address.
  *
- * This will only match EXACT phone numbers or SIP addresses. There is no partial matching. This is
- * useful for caller IDs in incoming and outgoing calls.
+ * This will only match EXACT phone numbers or SIP addresses of different formatting and
+ * variations. There is no partial matching. This is useful for caller IDs in incoming and
+ * outgoing calls.
  *
  * If you need to perform partial matching based on other data than just phone numbers and SIP
  * addresses, use [Query] or [PhoneLookupQuery].
@@ -318,10 +319,10 @@ interface PhoneLookupQuery : CrudApi {
         /**
          * Match phone numbers. This is the default.
          *
-         * This will only match EXACT phone numbers or SIP addresses. There is no partial matching.
-         * This is useful for caller IDs in incoming and outgoing calls. For example,
-         *
-         * If there are contacts with the following numbers;
+         * This will only match EXACT phone numbers or SIP addresses of different formatting and
+         * variations. There is no partial matching. This is useful in cases where you want to
+         * implement a caller ID function for incoming and outgoing calls. For example, if there
+         * are contacts with the following numbers;
          *
          * - 123
          * - 1234

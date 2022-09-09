@@ -1,9 +1,9 @@
 # Query contacts by phone or SIP
 
 This library provides the `PhoneLookupQuery` API that performs a highly optimized query using a 
-phone number or SIP address. This will only match EXACT phone numbers or SIP addresses. There is no 
-partial matching. This is useful for dialer apps that want to implement caller IDs for incoming and 
-outgoing calls.
+phone number or SIP address. This will only match EXACT phone numbers or SIP addresses of different
+formatting and variations. There is no partial matching. This is useful for dialer apps that want 
+to implement caller IDs for incoming and outgoing calls.
 
 An instance of the `PhoneLookupQuery` API is obtained by,
 
@@ -29,6 +29,11 @@ val contacts = Contacts(context)
     .whereExactlyMatches("555-555-5555")
     .find()
 ```
+
+The above query will also match contacts that have the following formatting and variations of that
+number, such as "5555555555", "(555) 555-5555", or "+1 (555) 555-5555" _regardless of the normalized
+number stored in the database_. For more info about matching, read up on the 
+[`match` function](./../basics/query-contacts-by-phone-or-sip.md#using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria)
 
 ## Specifying Accounts
 
@@ -220,7 +225,8 @@ use the `include` function with custom data. For more info, read [Query custom d
 The `PhoneLookupQuery` API lets the Contacts Provider perform the search using its own custom matching
 algorithm via the `whereExactlyMatches` function.
 
-This will only match EXACT phone numbers or SIP addresses. There is no partial matching.
+This will only match EXACT phone numbers or SIP addresses of different formatting and variations. 
+There is no partial matching.
 
 There are several different types of matching algorithms that can be used. The type is set via the
 `match` function.
@@ -229,7 +235,8 @@ There are several different types of matching algorithms that can be used. The t
 
 ### Match.PHONE
 
-Match phone numbers. This is the default.
+Match phone numbers. This is useful in cases where you want to implement a caller ID function for 
+incoming and outgoing calls. This is the default.
 
 For example, if there are contacts with the following numbers;
 
@@ -252,6 +259,10 @@ However, if a phone number is saved with AND without a country code, then only t
 number that matches exactly will be returned. For example, when numbers "+923123456789" and 
 "03123456789" are saved, searching for "03123456789" will return only the contact with that exact 
 number (NOT including the contact with "+923123456789").
+
+> ℹ️ Matching is not strictly based on the `PhoneEntity.normalizedNumber` (E164 representation) if 
+> it is not null. In cases where it is null, matching will be done strictly based on the 
+> `PhoneEntity.number`.
 
 ### Match.SIP
 
