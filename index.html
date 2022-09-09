@@ -2079,8 +2079,8 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 <h2 id="quick-links">Quick links<a class="headerlink" href="#quick-links" title="Permanent link">&para;</a></h2>
 <ul>
 <li>📜 <a href="https://vestrel00.github.io/contacts-android/">Documentation</a></li>
-<li>🚉 <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.2.3">Current release - 0.2.3</a></li>
-<li>🚂 <a href="https://github.com/vestrel00/contacts-android/discussions/248">Upcoming release - 0.2.4</a></li>
+<li>🚉 <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.2.4">Current release - 0.2.4</a></li>
+<li>🚂 <a href="https://github.com/vestrel00/contacts-android/discussions/218">Upcoming release - 0.3.0</a></li>
 <li>🗺 <a href="https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap">Project roadmap</a></li>
 <li>💌 <a href="https://github.com/vestrel00/contacts-android/wiki/Why-use-this-library%3F">Why use this library?</a></li>
 </ul>
@@ -2088,9 +2088,10 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 <p>The <code>core</code> module provides,</p>
 <ul>
 <li>✅ <a href="entities/about-api-entities/"><strong>All data kinds</strong></a> in the Contacts Provider;
-  <em>address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website</em>.</li>
+  <em>address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website</em></li>
 <li>✅ <a href="customdata/integrate-custom-data/"><strong>Custom data</strong> integration</a></li>
 <li>✅ <a href="basics/query-contacts/"><strong>Broad queries</strong></a> and <a href="basics/query-contacts-advanced/"><strong>advanced queries</strong></a> of Contacts and RawContacts from zero or more Accounts and/or Groups</li>
+<li>✅ <a href="basics/query-contacts-by-phone-or-sip/"><strong>Phone lookup queries</strong></a> for specialized matching of phone or SIP</li>
 <li>✅ <a href="entities/about-contact-lookup-key/">Contact <strong>lookup keys</strong></a></li>
 <li>✅ <a href="basics/include-only-desired-data/">Include only desired fields</a> in read/write operations to <strong>optimize CPU and memory</strong></li>
 <li>✅ Powerful, <strong>type-safe query DSL</strong></li>
@@ -2170,25 +2171,25 @@ as the native (AOSP) Android Contacts app and Google Contacts app, this library 
 </code></pre></div>
 <p>To install individual modules,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:core:0.2.3&#39;</span><span class="w"></span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:core:0.2.4&#39;</span><span class="w"></span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:async:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-gender:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-googlecontacts:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-handlename:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-pokemon:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-rpg:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:debug:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:permissions:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:test:0.2.3&#39;</span><span class="w"></span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:ui:0.2.3&#39;</span><span class="w"></span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:async:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-gender:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-googlecontacts:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-handlename:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-pokemon:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-rpg:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:debug:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:permissions:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:test:0.2.4&#39;</span><span class="w"></span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:ui:0.2.4&#39;</span><span class="w"></span>
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="c1">// Notice that when importing specific modules/subprojects, the first &quot;:&quot; comes after &quot;contacts-android&quot;.</span><span class="w"></span>
 <a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="o">}</span><span class="w"></span>
 </code></pre></div>
 <p><strong>The <code>core</code> module is really all you need. All other modules are optional.</strong></p>
 <p>To install all modules in a single line,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00:contacts-android:0.2.3&#39;</span><span class="w"></span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00:contacts-android:0.2.4&#39;</span><span class="w"></span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="c1">// Notice that when importing all modules, the first &quot;:&quot; comes after &quot;vestrel00&quot;.</span><span class="w"></span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="o">}</span><span class="w"></span>
 </code></pre></div>

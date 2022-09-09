@@ -1270,8 +1270,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#blank-contacts-are-ignored" class="md-nav__link">
-    Blank contacts are ignored
+  <a href="#blank-contacts-are-not-allowed" class="md-nav__link">
+    Blank contacts are not allowed
   </a>
   
 </li>
@@ -1294,6 +1294,13 @@
           <li class="md-nav__item">
   <a href="#handling-the-update-result" class="md-nav__link">
     Handling the update result
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-update-failure" class="md-nav__link">
+    Handling update failure
   </a>
   
 </li>
@@ -1968,8 +1975,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#blank-contacts-are-ignored" class="md-nav__link">
-    Blank contacts are ignored
+  <a href="#blank-contacts-are-not-allowed" class="md-nav__link">
+    Blank contacts are not allowed
   </a>
   
 </li>
@@ -1992,6 +1999,13 @@
           <li class="md-nav__item">
   <a href="#handling-the-update-result" class="md-nav__link">
     Handling the update result
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-update-failure" class="md-nav__link">
+    Handling update failure
   </a>
   
 </li>
@@ -2094,13 +2108,10 @@ update, then you must use the modified copy as the current,</p>
 <a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="p">.</span><span class="na">simContacts</span><span class="p">(</span><span class="n">update1</span><span class="p">,</span><span class="w"> </span><span class="n">update2</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
-<h2 id="blank-contacts-are-ignored">Blank contacts are ignored<a class="headerlink" href="#blank-contacts-are-ignored" title="Permanent link">&para;</a></h2>
-<p>Blank contacts (name AND number are both null or blank) will NOT be updated. The name OR number 
-can be null or blank but not both.</p>
+<h2 id="blank-contacts-are-not-allowed">Blank contacts are not allowed<a class="headerlink" href="#blank-contacts-are-not-allowed" title="Permanent link">&para;</a></h2>
+<p>For more info, read about <a href="../about-sim-contacts/#blanks-are-not-allowed">SIM Contacts</a></p>
 <h2 id="character-limits">Character limits<a class="headerlink" href="#character-limits" title="Permanent link">&para;</a></h2>
-<p>The <code>name</code> and <code>number</code> are subject to the SIM card's maximum character limit, which is typically
-around 20-30 characters (in modern times). This may vary per SIM card. Inserts or updates will fail
-if the limit is breached.</p>
+<p>For more info, read about <a href="../about-sim-contacts/#character-limits">SIM Contacts</a></p>
 <h2 id="executing-the-update">Executing the update<a class="headerlink" href="#executing-the-update" title="Permanent link">&para;</a></h2>
 <p>To execute the update,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
@@ -2113,19 +2124,30 @@ if the limit is breached.</p>
 <p>To check if a particular update succeeded,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstUpdateSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">updateResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">simContact</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
+<h3 id="handling-update-failure">Handling update failure<a class="headerlink" href="#handling-update-failure" title="Permanent link">&para;</a></h3>
+<p>The update may fail for a particular SIM contact for various reasons,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">updateResult</span><span class="p">.</span><span class="na">failureReason</span><span class="p">(</span><span class="n">simContact</span><span class="p">)</span><span class="o">?.</span><span class="na">let</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">        </span><span class="n">NAME_EXCEEDED_MAX_CHAR_LIMIT</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">tellUserTheNameIsTooLong</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">        </span><span class="n">NUMBER_EXCEEDED_MAX_CHAR_LIMIT</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">tellUserTheNumberIsTooLong</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">        </span><span class="n">NAME_AND_NUMBER_ARE_BLANK</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">tellUserTheNameAndNumberCannotBothBeBlank</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">        </span><span class="n">UNKNOWN</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showGenericErrorMessage</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">}</span><span class="w"></span>
+</code></pre></div>
 <h2 id="cancelling-the-update">Cancelling the update<a class="headerlink" href="#cancelling-the-update" title="Permanent link">&para;</a></h2>
 <p>To cancel an update amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfUpdateShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfUpdateShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>commit</code> function optionally takes in a function that, if it returns true, will cancel update
 processing as soon as possible. The function is called numerous times during update processing to
 check if processing should stop or continue. This gives you the option to cancel the update.</p>
 <p>For example, to automatically cancel the update inside a Kotlin coroutine when the coroutine is cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">update</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">update</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-update-and-result-processing-asynchronously">Performing the update and result processing asynchronously<a class="headerlink" href="#performing-the-update-and-result-processing-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Updates are executed when the <code>commit</code> function is invoked. The work is done in the same thread as
