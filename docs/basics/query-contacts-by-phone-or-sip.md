@@ -2,7 +2,8 @@
 
 This library provides the `PhoneLookupQuery` API that performs a highly optimized query using a 
 phone number or SIP address. This will only match EXACT phone numbers or SIP addresses. There is no 
-partial matching. This is useful for caller IDs in incoming and outgoing calls.
+partial matching. This is useful for dialer apps that want to implement caller IDs for incoming and 
+outgoing calls.
 
 An instance of the `PhoneLookupQuery` API is obtained by,
 
@@ -219,6 +220,8 @@ use the `include` function with custom data. For more info, read [Query custom d
 The `PhoneLookupQuery` API lets the Contacts Provider perform the search using its own custom matching
 algorithm via the `whereExactlyMatches` function.
 
+This will only match EXACT phone numbers or SIP addresses. There is no partial matching.
+
 There are several different types of matching algorithms that can be used. The type is set via the
 `match` function.
 
@@ -228,10 +231,7 @@ There are several different types of matching algorithms that can be used. The t
 
 Match phone numbers. This is the default.
 
-This will only match EXACT phone numbers or SIP addresses. There is no partial matching. This is 
-useful for caller IDs in incoming and outgoing calls. For example,
-
-If there are contacts with the following numbers;
+For example, if there are contacts with the following numbers;
 
 - 123
 - 1234
