@@ -33,7 +33,7 @@ number of entities returned exceed the `limit`.
 Setting `forceOffsetAndLimit(true)` will ensure that the `offset` and `limit will be applied after 
 performing the internal database query, before returning the result to the caller (you).
 
-> ℹ️ The `forceOffsetAndLimit` is available since [version 0.2.4](https://github.com/vestrel00/contacts-android/discussions/248).
+> ℹ️ The `forceOffsetAndLimit` is available since [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4).
 
 This defaults to true in order to seamlessly support pagination. However, it is recommended to set 
 this to false and handle such cases yourself to prevent performing more than one query for devices 

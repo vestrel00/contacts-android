@@ -100,9 +100,9 @@ val contacts = Contacts(context)
 
 takes between 99 to 144 **milliseconds** =)
 
-> ℹ️ As of [version 0.2.4](https://github.com/vestrel00/contacts-android/discussions/248), including
-> only fields from `Fields.Contact` in `Query` and `BroadQuery` API calls will result in the 
-> fastest and most memory efficient queries. Prior versions do not have this extra optimization, 
+> ℹ️ As of [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4), 
+> including only fields from `Fields.Contact` in `Query` and `BroadQuery` API calls will result in 
+> the fastest and most memory efficient queries. Prior versions do not have this extra optimization, 
 > though including less fields still result in faster queries. Prior versions will take on average
 > 1334 milliseconds for the same query above.
 

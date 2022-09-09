@@ -91,6 +91,6 @@ query.accounts(null)
 When a null is provided, all query APIs will internally additionally add 
 `Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`.
 
-> ⚠️ This internal fix is available as of [version 0.2.4](https://github.com/vestrel00/contacts-android/discussions/248).
+> ⚠️ This internal fix is available as of [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4).
 > Prior versions will require you to pass in `Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`
 > in addition to `null` when using `accounts` for matching local contacts.
