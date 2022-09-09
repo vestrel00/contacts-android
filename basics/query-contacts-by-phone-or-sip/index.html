@@ -2105,9 +2105,9 @@
 
 <h1 id="query-contacts-by-phone-or-sip">Query contacts by phone or SIP<a class="headerlink" href="#query-contacts-by-phone-or-sip" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>PhoneLookupQuery</code> API that performs a highly optimized query using a 
-phone number or SIP address. This will only match EXACT phone numbers or SIP addresses. There is no 
-partial matching. This is useful for dialer apps that want to implement caller IDs for incoming and 
-outgoing calls.</p>
+phone number or SIP address. This will only match EXACT phone numbers or SIP addresses of different
+formatting and variations. There is no partial matching. This is useful for dialer apps that want 
+to implement caller IDs for incoming and outgoing calls.</p>
 <p>An instance of the <code>PhoneLookupQuery</code> API is obtained by,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">phoneLookupQuery</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
@@ -2124,6 +2124,10 @@ outgoing calls.</p>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">.</span><span class="na">whereExactlyMatches</span><span class="p">(</span><span class="s">&quot;555-555-5555&quot;</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
+<p>The above query will also match contacts that have the following formatting and variations of that
+number, such as "5555555555", "(555) 555-5555", or "+1 (555) 555-5555" <em>regardless of the normalized
+number stored in the database</em>. For more info about matching, read up on the 
+<a href="./#using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria"><code>match</code> function</a></p>
 <h2 id="specifying-accounts">Specifying Accounts<a class="headerlink" href="#specifying-accounts" title="Permanent link">&para;</a></h2>
 <p>To limit the search to only those contacts associated with one of the given accounts,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span><span class="w"></span>
@@ -2250,12 +2254,14 @@ use the <code>include</code> function with custom data. For more info, read <a h
 <h2 id="using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria">Using the <code>match</code> and <code>whereExactlyMatches</code> functions to specify matching criteria<a class="headerlink" href="#using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria" title="Permanent link">&para;</a></h2>
 <p>The <code>PhoneLookupQuery</code> API lets the Contacts Provider perform the search using its own custom matching
 algorithm via the <code>whereExactlyMatches</code> function.</p>
-<p>This will only match EXACT phone numbers or SIP addresses. There is no partial matching.</p>
+<p>This will only match EXACT phone numbers or SIP addresses of different formatting and variations. 
+There is no partial matching.</p>
 <p>There are several different types of matching algorithms that can be used. The type is set via the
 <code>match</code> function.</p>
 <p><strong>Custom data are not included in the matching process!</strong> To match custom data, use <code>Query</code>.</p>
 <h3 id="matchphone">Match.PHONE<a class="headerlink" href="#matchphone" title="Permanent link">&para;</a></h3>
-<p>Match phone numbers. This is the default.</p>
+<p>Match phone numbers. This is useful in cases where you want to implement a caller ID function for 
+incoming and outgoing calls. This is the default.</p>
 <p>For example, if there are contacts with the following numbers;</p>
 <ul>
 <li>123</li>
@@ -2274,6 +2280,11 @@ following; "03123456789", "923123456789", "+923123456789".</p>
 number that matches exactly will be returned. For example, when numbers "+923123456789" and 
 "03123456789" are saved, searching for "03123456789" will return only the contact with that exact 
 number (NOT including the contact with "+923123456789").</p>
+<blockquote>
+<p>ℹ️ Matching is not strictly based on the <code>PhoneEntity.normalizedNumber</code> (E164 representation) if 
+it is not null. In cases where it is null, matching will be done strictly based on the 
+<code>PhoneEntity.number</code>.</p>
+</blockquote>
 <h3 id="matchsip">Match.SIP<a class="headerlink" href="#matchsip" title="Permanent link">&para;</a></h3>
 <p>Same as <code>Match.PHONE</code> except this matches SIP addresses instead of phone numbers.</p>
 <blockquote>
