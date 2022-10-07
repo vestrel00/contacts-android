@@ -34,11 +34,8 @@ fun Insert.Result.rawContact(
     contacts: Contacts,
     rawContact: NewRawContact,
     cancel: () -> Boolean = { false }
-): RawContact? {
-
-    val rawContactId = rawContactId(rawContact) ?: return null
-
-    return contacts.query()
+): RawContact? = rawContactId(rawContact)?.let { rawContactId ->
+    contacts.query()
         .where { RawContact.Id equalTo rawContactId }
         .find(cancel)
         .asSequence()
@@ -106,11 +103,8 @@ fun Insert.Result.contact(
     contacts: Contacts,
     rawContact: NewRawContact,
     cancel: () -> Boolean = { false }
-): Contact? {
-
-    val rawContactId = rawContactId(rawContact) ?: return null
-
-    return contacts.query()
+): Contact? = rawContactId(rawContact)?.let { rawContactId ->
+    contacts.query()
         .where { RawContact.Id equalTo rawContactId }
         .find(cancel)
         .firstOrNull()
