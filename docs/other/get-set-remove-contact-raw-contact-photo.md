@@ -96,10 +96,10 @@ This can only be done for existing Contacts/RawContacts.
 To set the Contact photo, use one of the extension functions in `contacts.core.util.ContactPhoto.kt`,
 
 ```kotlin
-contact.setPhotoDirect(contactsApi, photoInputStream)
-contact.setPhotoDirect(contactsApi, photoBytes)
-contact.setPhotoDirect(contactsApi, photoBitmap)
-contact.setPhotoDirect(contactsApi, photoBitmapDrawable)
+contact.setPhotoDirect(contactsApi, PhotoData.from(inputStream))
+contact.setPhotoDirect(contactsApi, PhotoData.from(byteArray))
+contact.setPhotoDirect(contactsApi, PhotoData.from(bitmap))
+contact.setPhotoDirect(contactsApi, PhotoData.from(bitmapDrawable))
 ```
 
 Setting the full-sized photo will automatically set the thumbnail. The Contacts Provider 
@@ -108,14 +108,15 @@ automatically creates a downsized version of the full-sized photo.
 To set a RawContact photo, use one of the extension functions in `contacts.core.util.RawContactPhoto.kt`,
 
 ```kotlin
-rawContact.setPhotoDirect(contactsApi, photoInputStream)
-rawContact.setPhotoDirect(contactsApi, photoBytes)
-rawContact.setPhotoDirect(contactsApi, photoBitmap)
-rawContact.setPhotoDirect(contactsApi, photoBitmapDrawable)
+rawContact.setPhotoDirect(contactsApi, PhotoData.from(inputStream))
+rawContact.setPhotoDirect(contactsApi, PhotoData.from(byteArray))
+rawContact.setPhotoDirect(contactsApi, PhotoData.from(bitmap))
+rawContact.setPhotoDirect(contactsApi, PhotoData.from(bitmapDrawable))
 ```
 
 > ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
-> functions were named `setPhoto`.
+> functions were named `setPhoto`. Additionally, there was one function signature for each of ;
+> InputStream, ByteArray, Bitmap, BitmapDrawable
 
 ### As part of an insert or update API call
 

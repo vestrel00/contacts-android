@@ -9,6 +9,7 @@ import contacts.async.util.removePhotoDirectWithContext
 import contacts.async.util.setPhotoDirectWithContext
 import contacts.core.Contacts
 import contacts.core.entities.ContactEntity
+import contacts.core.util.PhotoData
 import contacts.sample.util.runIfExist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -74,7 +75,7 @@ class ContactPhotoView @JvmOverloads constructor(
 
     override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
         contact.runIfExist {
-            it.setPhotoDirectWithContext(contacts, photoDrawable)
+            it.setPhotoDirectWithContext(contacts, PhotoData.from(photoDrawable))
         } == true
 
     override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =

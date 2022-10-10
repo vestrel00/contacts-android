@@ -340,7 +340,7 @@ fun ExistingContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): Bitm
  * [ContactsContract.RawContacts.DisplayPhoto] class documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoBytes: ByteArray): Boolean {
+fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoData: PhotoData): Boolean {
     if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
@@ -359,30 +359,9 @@ fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoBytes: ByteArr
     }
 
     return rawContact?.id?.let { rawContactId ->
-        contacts.setRawContactPhoto(rawContactId, photoBytes)
+        contacts.setRawContactPhoto(rawContactId, photoData)
     } == true
 }
-
-/**
- * See [ExistingContactEntity.setPhotoDirect].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoInputStream: InputStream): Boolean =
-    setPhotoDirect(contacts, photoInputStream.readBytes())
-
-/**
- * See [ExistingContactEntity.setPhotoDirect].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoBitmap: Bitmap): Boolean =
-    setPhotoDirect(contacts, photoBitmap.bytes())
-
-/**
- * See [ExistingContactEntity.setPhotoDirect].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoDrawable: BitmapDrawable): Boolean =
-    setPhotoDirect(contacts, photoDrawable.bitmap.bytes())
 
 private fun ExistingContactEntity.photoFileId(contacts: Contacts): Long? =
     contacts.contentResolver.query(

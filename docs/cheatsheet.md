@@ -3122,7 +3122,8 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.graphics.Bitmap
     import android.net.Uri
     import contacts.core.Contacts
-    import contacts.core.entities.*
+    import contacts.core.entities.Contact
+    import contacts.core.entities.RawContact
     import contacts.core.util.*
     
     class ContactAndRawContactPhotosActivity : Activity() {
@@ -3141,16 +3142,16 @@ heading explore each API in full detail. You may also find these samples in the 
         fun getRawContactPhotoThumbnail(rawContact: RawContact): Bitmap? =
             rawContact.photoThumbnailBitmap(Contacts(this))
     
-        fun setContactPhoto(contact: Contact, photo: Bitmap): Boolean =
-            contact.setPhoto(Contacts(this), photo)
+        fun setContactPhoto(contact: Contact, bitmap: Bitmap): Boolean =
+            contact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
     
-        fun setRawContactPhoto(rawContact: RawContact, photo: Bitmap): Boolean =
-            rawContact.setPhoto(Contacts(this), photo)
+        fun setRawContactPhoto(rawContact: RawContact, bitmap: Bitmap): Boolean =
+            rawContact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
     
-        fun removeContactPhoto(contact: Contact): Boolean = contact.removePhoto(Contacts(this))
+        fun removeContactPhoto(contact: Contact): Boolean = contact.removePhotoDirect(Contacts(this))
     
         fun removeRawContactPhoto(rawContact: RawContact): Boolean =
-            rawContact.removePhoto(Contacts(this))
+            rawContact.removePhotoDirect(Contacts(this))
     }
     ```
 
@@ -3162,8 +3163,11 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.net.Uri;
     
     import contacts.core.ContactsFactory;
-    import contacts.core.entities.*;
-    import contacts.core.util.*;
+    import contacts.core.entities.Contact;
+    import contacts.core.entities.RawContact;
+    import contacts.core.util.ContactPhotoKt;
+    import contacts.core.util.PhotoData;
+    import contacts.core.util.RawContactPhotoKt;
     
     public class ContactAndRawContactPhotosActivity extends Activity {
     
@@ -3191,20 +3195,20 @@ heading explore each API in full detail. You may also find these samples in the 
             return RawContactPhotoKt.photoThumbnailBitmap(rawContact, ContactsFactory.create(this));
         }
     
-        Boolean setContactPhoto(Contact contact, Bitmap photo) {
-            return ContactPhotoKt.setPhoto(contact, ContactsFactory.create(this), photo);
+        Boolean setContactPhoto(Contact contact, Bitmap bitmap) {
+            return ContactPhotoKt.setPhotoDirect(contact, ContactsFactory.create(this), PhotoData.from(bitmap));
         }
     
-        Boolean setRawContactPhoto(RawContact rawContact, Bitmap photo) {
-            return RawContactPhotoKt.setPhoto(rawContact, ContactsFactory.create(this), photo);
+        Boolean setRawContactPhoto(RawContact rawContact, Bitmap bitmap) {
+            return RawContactPhotoKt.setPhotoDirect(rawContact, ContactsFactory.create(this), PhotoData.from(bitmap));
         }
     
         Boolean removeContactPhoto(Contact contact) {
-            return ContactPhotoKt.removePhoto(contact, ContactsFactory.create(this));
+            return ContactPhotoKt.removePhotoDirect(contact, ContactsFactory.create(this));
         }
     
         Boolean removeRawContactPhoto(RawContact rawContact) {
-            return RawContactPhotoKt.removePhoto(rawContact, ContactsFactory.create(this));
+            return RawContactPhotoKt.removePhotoDirect(rawContact, ContactsFactory.create(this));
         }
     }
     ```

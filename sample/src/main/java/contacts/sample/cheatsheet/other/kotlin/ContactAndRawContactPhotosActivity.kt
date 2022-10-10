@@ -4,7 +4,8 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
 import contacts.core.Contacts
-import contacts.core.entities.*
+import contacts.core.entities.Contact
+import contacts.core.entities.RawContact
 import contacts.core.util.*
 
 class ContactAndRawContactPhotosActivity : Activity() {
@@ -23,11 +24,11 @@ class ContactAndRawContactPhotosActivity : Activity() {
     fun getRawContactPhotoThumbnail(rawContact: RawContact): Bitmap? =
         rawContact.photoThumbnailBitmap(Contacts(this))
 
-    fun setContactPhoto(contact: Contact, photo: Bitmap): Boolean =
-        contact.setPhotoDirect(Contacts(this), photo)
+    fun setContactPhoto(contact: Contact, bitmap: Bitmap): Boolean =
+        contact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
 
-    fun setRawContactPhoto(rawContact: RawContact, photo: Bitmap): Boolean =
-        rawContact.setPhotoDirect(Contacts(this), photo)
+    fun setRawContactPhoto(rawContact: RawContact, bitmap: Bitmap): Boolean =
+        rawContact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
 
     fun removeContactPhoto(contact: Contact): Boolean = contact.removePhotoDirect(Contacts(this))
 

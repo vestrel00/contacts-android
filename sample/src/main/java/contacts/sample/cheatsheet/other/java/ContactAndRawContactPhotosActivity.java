@@ -5,8 +5,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import contacts.core.ContactsFactory;
-import contacts.core.entities.*;
-import contacts.core.util.*;
+import contacts.core.entities.Contact;
+import contacts.core.entities.RawContact;
+import contacts.core.util.ContactPhotoKt;
+import contacts.core.util.PhotoData;
+import contacts.core.util.RawContactPhotoKt;
 
 public class ContactAndRawContactPhotosActivity extends Activity {
 
@@ -34,12 +37,12 @@ public class ContactAndRawContactPhotosActivity extends Activity {
         return RawContactPhotoKt.photoThumbnailBitmap(rawContact, ContactsFactory.create(this));
     }
 
-    Boolean setContactPhoto(Contact contact, Bitmap photo) {
-        return ContactPhotoKt.setPhotoDirect(contact, ContactsFactory.create(this), photo);
+    Boolean setContactPhoto(Contact contact, Bitmap bitmap) {
+        return ContactPhotoKt.setPhotoDirect(contact, ContactsFactory.create(this), PhotoData.from(bitmap));
     }
 
-    Boolean setRawContactPhoto(RawContact rawContact, Bitmap photo) {
-        return RawContactPhotoKt.setPhotoDirect(rawContact, ContactsFactory.create(this), photo);
+    Boolean setRawContactPhoto(RawContact rawContact, Bitmap bitmap) {
+        return RawContactPhotoKt.setPhotoDirect(rawContact, ContactsFactory.create(this), PhotoData.from(bitmap));
     }
 
     Boolean removeContactPhoto(Contact contact) {

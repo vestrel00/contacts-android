@@ -15,7 +15,6 @@ import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 
@@ -287,46 +286,15 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBitmapDrawable(
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun ExistingRawContactEntityWithContactId.setPhotoDirect(
     contacts: Contacts,
-    photoBytes: ByteArray
-): Boolean =
-    contacts.setRawContactPhoto(id, photoBytes)
-
-/**
- * See [ExistingRawContactEntityWithContactId.setPhotoDirect].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhotoDirect(
-    contacts: Contacts,
-    photoInputStream: InputStream
-): Boolean =
-    setPhotoDirect(contacts, photoInputStream.readBytes())
-
-/**
- * See [ExistingRawContactEntityWithContactId.setPhotoDirect].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhotoDirect(
-    contacts: Contacts,
-    photoBitmap: Bitmap
-): Boolean =
-    setPhotoDirect(contacts, photoBitmap.bytes())
-
-/**
- * See [ExistingRawContactEntityWithContactId.setPhotoDirect].
- */
-// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhotoDirect(
-    contacts: Contacts,
-    photoDrawable: BitmapDrawable
-): Boolean =
-    setPhotoDirect(contacts, photoDrawable.bitmap.bytes())
+    photoData: PhotoData
+): Boolean = contacts.setRawContactPhoto(id, photoData)
 
 /**
  * Performs the actual setting of the photo.
  */
 internal fun Contacts.setRawContactPhoto(
     rawContactId: Long,
-    photoBytes: ByteArray
+    photoData: PhotoData
 ): Boolean {
     if (!permissions.canUpdateDelete()) {
         return false
@@ -343,12 +311,11 @@ internal fun Contacts.setRawContactPhoto(
         // Didn't want to force unwrap because I'm trying to keep the codebase free of it.
         // I wanted to fold the if-return using ?: but it results in a lint error about unreachable
         // code (it's not unreachable).
-        val fd = contentResolver
-            .openAssetFileDescriptor(photoUri, "rw")
+        val fd = contentResolver.openAssetFileDescriptor(photoUri, "rw")
         if (fd != null) {
             val os = fd.createOutputStream()
 
-            os.write(photoBytes)
+            os.write(photoData.bytes())
 
             os.close()
             fd.close()
@@ -359,12 +326,6 @@ internal fun Contacts.setRawContactPhoto(
         // do nothing
     }
     return isSuccessful
-}
-
-internal fun Bitmap.bytes(): ByteArray {
-    val outputStream = ByteArrayOutputStream()
-    compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-    return outputStream.toByteArray()
 }
 
 // endregion

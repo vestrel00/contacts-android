@@ -120,42 +120,9 @@ suspend fun ExistingContactEntity.photoThumbnailBitmapDrawableWithContext(
  * See [ExistingContactEntity.setPhotoDirect].
  */
 suspend fun ExistingContactEntity.setPhotoDirectWithContext(
-    contacts: Contacts, imageBytes: ByteArray,
+    contacts: Contacts, photoData: PhotoData,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(coroutineContext) { setPhotoDirect(contacts, imageBytes) }
-
-/**
- * Suspends the current coroutine, performs the operation in background, then returns the control
- * flow to the calling coroutine scope.
- *
- * See [ExistingContactEntity.setPhotoDirect].
- */
-suspend fun ExistingContactEntity.setPhotoDirectWithContext(
-    contacts: Contacts, photoInputStream: InputStream,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(coroutineContext) { setPhotoDirect(contacts, photoInputStream) }
-
-/**
- * Suspends the current coroutine, performs the operation in background, then returns the control
- * flow to the calling coroutine scope.
- *
- * See [ExistingContactEntity.setPhotoDirect].
- */
-suspend fun ExistingContactEntity.setPhotoDirectWithContext(
-    contacts: Contacts, photoBitmap: Bitmap,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(coroutineContext) { setPhotoDirect(contacts, photoBitmap) }
-
-/**
- * Suspends the current coroutine, performs the operation in background, then returns the control
- * flow to the calling coroutine scope.
- *
- * See [ExistingContactEntity.setPhotoDirect].
- */
-suspend fun ExistingContactEntity.setPhotoDirectWithContext(
-    contacts: Contacts, photoDrawable: BitmapDrawable,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(coroutineContext) { setPhotoDirect(contacts, photoDrawable) }
+): Boolean = withContext(coroutineContext) { setPhotoDirect(contacts, photoData) }
 
 // endregion
 
@@ -286,43 +253,10 @@ fun ExistingContactEntity.photoThumbnailBitmapDrawableAsync(
  * See [ExistingContactEntity.setPhotoDirect].
  */
 fun ExistingContactEntity.setPhotoDirectAsync(
-    contacts: Contacts, imageBytes: ByteArray,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setPhotoDirect(contacts, imageBytes) }
-
-/**
- * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
- * scope, then returns the [Deferred] result.
- *
- * See [ExistingContactEntity.setPhotoDirect].
- */
-fun ExistingContactEntity.setPhotoDirectAsync(
-    contacts: Contacts, photoInputStream: InputStream,
+    contacts: Contacts, photoData: PhotoData,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
 ): Deferred<Boolean> =
-    CoroutineScope(coroutineContext).async { setPhotoDirect(contacts, photoInputStream) }
-
-/**
- * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
- * scope, then returns the [Deferred] result.
- *
- * See [ExistingContactEntity.setPhotoDirect].
- */
-fun ExistingContactEntity.setPhotoDirectAsync(
-    contacts: Contacts, photoBitmap: Bitmap,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setPhotoDirect(contacts, photoBitmap) }
-
-/**
- * Creates a [CoroutineScope] with the given [coroutineContext], performs the operation in that
- * scope, then returns the [Deferred] result.
- *
- * See [ExistingContactEntity.setPhotoDirect].
- */
-fun ExistingContactEntity.setPhotoDirectAsync(
-    contacts: Contacts, photoDrawable: BitmapDrawable,
-    coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(coroutineContext).async { setPhotoDirect(contacts, photoDrawable) }
+    CoroutineScope(coroutineContext).async { setPhotoDirect(contacts, photoData) }
 
 // endregion
 
