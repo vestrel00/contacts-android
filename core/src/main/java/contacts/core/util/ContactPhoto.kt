@@ -302,9 +302,9 @@ fun ExistingContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): Bitm
 
 /**
  * Sets the photo of this [ExistingContactEntity] (and the [contacts.core.entities.RawContact] that
- * the Contacts Provider has chosen to hold the primary photo). If a photo already exists, it will
- * be overwritten. The Contacts Provider automatically creates a downsized version of this as the
- * thumbnail.
+ * the Contacts Provider has chosen to hold the primary photo) directly to the database. If a photo
+ * already exists, it will be overwritten. The Contacts Provider automatically creates a downsized
+ * version of this as the thumbnail.
  *
  * If a photo has not yet been set and the Contacts Provider has not yet chosen the RawContact that
  * will be used as the primary photo holder, then this will use the first RawContact in the list of
@@ -340,7 +340,7 @@ fun ExistingContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): Bitm
  * [ContactsContract.RawContacts.DisplayPhoto] class documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhoto(contacts: Contacts, photoBytes: ByteArray): Boolean {
+fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoBytes: ByteArray): Boolean {
     if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
@@ -364,25 +364,25 @@ fun ExistingContactEntity.setPhoto(contacts: Contacts, photoBytes: ByteArray): B
 }
 
 /**
- * See [ExistingContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhotoDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhoto(contacts: Contacts, photoInputStream: InputStream): Boolean =
-    setPhoto(contacts, photoInputStream.readBytes())
+fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoInputStream: InputStream): Boolean =
+    setPhotoDirect(contacts, photoInputStream.readBytes())
 
 /**
- * See [ExistingContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhotoDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhoto(contacts: Contacts, photoBitmap: Bitmap): Boolean =
-    setPhoto(contacts, photoBitmap.bytes())
+fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoBitmap: Bitmap): Boolean =
+    setPhotoDirect(contacts, photoBitmap.bytes())
 
 /**
- * See [ExistingContactEntity.setPhoto].
+ * See [ExistingContactEntity.setPhotoDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.setPhoto(contacts: Contacts, photoDrawable: BitmapDrawable): Boolean =
-    setPhoto(contacts, photoDrawable.bitmap.bytes())
+fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoDrawable: BitmapDrawable): Boolean =
+    setPhotoDirect(contacts, photoDrawable.bitmap.bytes())
 
 private fun ExistingContactEntity.photoFileId(contacts: Contacts): Long? =
     contacts.contentResolver.query(
@@ -408,13 +408,10 @@ private fun ExistingContactEntity.rawContactWithPhotoFileId(
 // region REMOVE PHOTO
 
 /**
- * Removes the photos of all the RawContacts associated with this [ExistingContactEntity], if any
- * exists.
+ * Removes the photos of all the RawContacts associated with this [ExistingContactEntity] directly
+ * from the database, if any exists.
  *
  * Returns true if the operation succeeds.
- *
- * The native Contacts app actually does not provide the option to remove the photo of a Contact
- * with at least 2 associated RawContacts.
  *
  * Supports profile and non-profile Contacts.
  *
@@ -439,7 +436,7 @@ private fun ExistingContactEntity.rawContactWithPhotoFileId(
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.removePhoto(contacts: Contacts): Boolean {
+fun ExistingContactEntity.removePhotoDirect(contacts: Contacts): Boolean {
     if (!contacts.permissions.canUpdateDelete()) {
         return false
     }

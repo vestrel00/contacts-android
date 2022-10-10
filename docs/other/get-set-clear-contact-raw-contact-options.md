@@ -55,19 +55,6 @@ contact.updateOptions(contactsApi) {
 
 This is useful if you only want to set certain properties and keep other properties the same.
 
-## Changes are immediate and are not applied to the receiver
-
-These apply to set and update functions.
-
-1. Changes are immediate.
-    - These functions will make the changes to the Contacts Provider database immediately. You do
-      not need to use update APIs to commit the changes.
-2. Changes are not applied to the receiver.
-    - This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
-      query APIs or refresh extensions or process the result of this function call to get the most
-      up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
-      Provider database.
-
 ## Using the ui RingtonePicker extensions
 
 The `contacts.ui.util.RingtonePicker.kt` in the `ui` module` provides extension functions to make
@@ -145,22 +132,3 @@ operation. For example,
 -> set starred to false
 -> update RawContact (still containing a group membership to the favorites group)
 -> starred will be set back to true.
-
-## FAQs
-
-### Can contacts be inserted with options?
-
-No, you cannot get/set/update options for Contacts/RawContacts that have not yet been inserted in 
-the Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or 
-result APIs can use the extension functions in `contacts.core.util.ContactOptions.kt` and
-`contacts.core.util.RawContactOptions.kt`.
-
-> ℹ️ Issue [#120](https://github.com/vestrel00/contacts-android/issues/120) will change the answer 
-> to "yes". THe underlying mechanism will not change but the outward public facing API will change.
-> Internally, the insert operation will insert a new row in the Contacts/RawContacts table and then 
-> attempt to set the options immediately after.
-
-To insert a new contact "with options", you should insert the contact first. Then, if the insert
-succeeds, proceed to set the options.
-
-> ℹ️ For more info about insert, read [Insert contacts](./../basics/insert-contacts.md).

@@ -48,8 +48,8 @@ class QueryContactsAdvancedActivity : Activity() {
     fun getContactsWithAtLeastOnePhoneNumber(): List<Contact> = Contacts(this)
         .query()
         .where {
-            Phone.Number.isNotNullOrEmpty()
-            // or Contact.HasPhoneNumber equalTo true
+            Contact.HasPhoneNumber equalTo true
+            // Phone.Number.isNotNullOrEmpty() this works too but the above is more optimized
         }
         .find()
 

@@ -24,13 +24,13 @@ class ContactAndRawContactPhotosActivity : Activity() {
         rawContact.photoThumbnailBitmap(Contacts(this))
 
     fun setContactPhoto(contact: Contact, photo: Bitmap): Boolean =
-        contact.setPhoto(Contacts(this), photo)
+        contact.setPhotoDirect(Contacts(this), photo)
 
     fun setRawContactPhoto(rawContact: RawContact, photo: Bitmap): Boolean =
-        rawContact.setPhoto(Contacts(this), photo)
+        rawContact.setPhotoDirect(Contacts(this), photo)
 
-    fun removeContactPhoto(contact: Contact): Boolean = contact.removePhoto(Contacts(this))
+    fun removeContactPhoto(contact: Contact): Boolean = contact.removePhotoDirect(Contacts(this))
 
     fun removeRawContactPhoto(rawContact: RawContact): Boolean =
-        rawContact.removePhoto(Contacts(this))
+        rawContact.removePhotoDirect(Contacts(this))
 }

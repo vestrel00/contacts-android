@@ -71,8 +71,8 @@ public class QueryContactsAdvancedActivity extends Activity {
         return ContactsFactory.create(this)
                 .query()
                 .where(
-                        isNotNullOrEmpty(Fields.Phone.Number)
-                        // or equalTo(Fields.Contact.HasPhoneNumber, true)
+                        equalTo(Fields.Contact.HasPhoneNumber, true)
+                        // isNotNullOrEmpty(Fields.Phone.Number) this works too but the above is more optimized
                 )
                 .find();
     }

@@ -5,8 +5,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.widget.ImageView
 import contacts.async.util.photoThumbnailBitmapDrawableWithContext
-import contacts.async.util.removePhotoWithContext
-import contacts.async.util.setPhotoWithContext
+import contacts.async.util.removePhotoDirectWithContext
+import contacts.async.util.setPhotoDirectWithContext
 import contacts.core.Contacts
 import contacts.core.entities.RawContactEntity
 import contacts.sample.util.runIfExist
@@ -68,12 +68,12 @@ class RawContactPhotoThumbnailView @JvmOverloads constructor(
 
     override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
         rawContact.runIfExist {
-            it.setPhotoWithContext(contacts, photoDrawable)
+            it.setPhotoDirectWithContext(contacts, photoDrawable)
         } == true
 
     override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =
         rawContact.runIfExist {
-            it.removePhotoWithContext(contacts)
+            it.removePhotoDirectWithContext(contacts)
         } == true
 
     private fun setPhotoThumbnailDrawableFromRawContact(contacts: Contacts) {

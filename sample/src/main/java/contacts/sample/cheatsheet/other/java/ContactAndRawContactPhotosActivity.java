@@ -35,18 +35,18 @@ public class ContactAndRawContactPhotosActivity extends Activity {
     }
 
     Boolean setContactPhoto(Contact contact, Bitmap photo) {
-        return ContactPhotoKt.setPhoto(contact, ContactsFactory.create(this), photo);
+        return ContactPhotoKt.setPhotoDirect(contact, ContactsFactory.create(this), photo);
     }
 
     Boolean setRawContactPhoto(RawContact rawContact, Bitmap photo) {
-        return RawContactPhotoKt.setPhoto(rawContact, ContactsFactory.create(this), photo);
+        return RawContactPhotoKt.setPhotoDirect(rawContact, ContactsFactory.create(this), photo);
     }
 
     Boolean removeContactPhoto(Contact contact) {
-        return ContactPhotoKt.removePhoto(contact, ContactsFactory.create(this));
+        return ContactPhotoKt.removePhotoDirect(contact, ContactsFactory.create(this));
     }
 
     Boolean removeRawContactPhoto(RawContact rawContact) {
-        return RawContactPhotoKt.removePhoto(rawContact, ContactsFactory.create(this));
+        return RawContactPhotoKt.removePhotoDirect(rawContact, ContactsFactory.create(this));
     }
 }

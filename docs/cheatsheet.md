@@ -210,8 +210,8 @@ heading explore each API in full detail. You may also find these samples in the 
         fun getContactsWithAtLeastOnePhoneNumber(): List<Contact> = Contacts(this)
             .query()
             .where {
-                Phone.Number.isNotNullOrEmpty()
-                // or Contact.HasPhoneNumber equalTo true
+                Contact.HasPhoneNumber equalTo true
+                // Phone.Number.isNotNullOrEmpty() this works too but the above is more optimized
             }
             .find()
     
@@ -299,8 +299,8 @@ heading explore each API in full detail. You may also find these samples in the 
             return ContactsFactory.create(this)
                     .query()
                     .where(
-                            isNotNullOrEmpty(Fields.Phone.Number)
-                            // or equalTo(Fields.Contact.HasPhoneNumber, true)
+                            equalTo(Fields.Contact.HasPhoneNumber, true)
+                            // isNotNullOrEmpty(Fields.Phone.Number) this works too but the above is more optimized
                     )
                     .find();
         }

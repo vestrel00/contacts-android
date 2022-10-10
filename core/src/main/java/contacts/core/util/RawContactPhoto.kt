@@ -246,9 +246,9 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBitmapDrawable(
 // region SET PHOTO
 
 /**
- * Sets the photo of this [ExistingRawContactEntityWithContactId]. If a photo already exists, it
- * will be overwritten. The Contacts Provider automatically creates a downsized version of this as
- * the thumbnail.
+ * Sets the photo of this [ExistingRawContactEntityWithContactId] directly to the database. If a
+ * photo already exists, it will be overwritten. The Contacts Provider automatically creates a
+ * downsized version of this as the thumbnail.
  *
  * If this [ExistingRawContactEntityWithContactId] is the only one that make up a
  * [contacts.core.entities.ContactEntity], then the photo set here will also be used by the
@@ -285,41 +285,41 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBitmapDrawable(
  * documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhoto(
+fun ExistingRawContactEntityWithContactId.setPhotoDirect(
     contacts: Contacts,
     photoBytes: ByteArray
 ): Boolean =
     contacts.setRawContactPhoto(id, photoBytes)
 
 /**
- * See [ExistingRawContactEntityWithContactId.setPhoto].
+ * See [ExistingRawContactEntityWithContactId.setPhotoDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhoto(
+fun ExistingRawContactEntityWithContactId.setPhotoDirect(
     contacts: Contacts,
     photoInputStream: InputStream
 ): Boolean =
-    setPhoto(contacts, photoInputStream.readBytes())
+    setPhotoDirect(contacts, photoInputStream.readBytes())
 
 /**
- * See [ExistingRawContactEntityWithContactId.setPhoto].
+ * See [ExistingRawContactEntityWithContactId.setPhotoDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhoto(
+fun ExistingRawContactEntityWithContactId.setPhotoDirect(
     contacts: Contacts,
     photoBitmap: Bitmap
 ): Boolean =
-    setPhoto(contacts, photoBitmap.bytes())
+    setPhotoDirect(contacts, photoBitmap.bytes())
 
 /**
- * See [ExistingRawContactEntityWithContactId.setPhoto].
+ * See [ExistingRawContactEntityWithContactId.setPhotoDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhoto(
+fun ExistingRawContactEntityWithContactId.setPhotoDirect(
     contacts: Contacts,
     photoDrawable: BitmapDrawable
 ): Boolean =
-    setPhoto(contacts, photoDrawable.bitmap.bytes())
+    setPhotoDirect(contacts, photoDrawable.bitmap.bytes())
 
 /**
  * Performs the actual setting of the photo.
@@ -372,7 +372,8 @@ internal fun Bitmap.bytes(): ByteArray {
 // region REMOVE PHOTO
 
 /**
- * Removes the photo of this [ExistingRawContactEntityWithContactId], if one exists.
+ * Removes the photo of this [ExistingRawContactEntityWithContactId] directly from the database, if
+ * one exists.
  *
  * If this [ExistingRawContactEntityWithContactId] is the only one that make up a
  * [contacts.core.entities.ContactEntity], then the contact photo will also be removed. Otherwise,
@@ -403,7 +404,7 @@ internal fun Bitmap.bytes(): ByteArray {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.removePhoto(contacts: Contacts): Boolean {
+fun ExistingRawContactEntityWithContactId.removePhotoDirect(contacts: Contacts): Boolean {
     if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
