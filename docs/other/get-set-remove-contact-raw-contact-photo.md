@@ -216,7 +216,7 @@ Activity {
         showPhotoPickerDialog(
             withRemovePhotoOption = true,
             removePhoto = {
-                contact.removePhoto(contactsApi)
+                // remove contact photo
             }
         )
     }
@@ -225,7 +225,7 @@ Activity {
         super.onActivityResult(requestCode, resultCode, data)
         onPhotoPicked(requestCode, resultCode, data,
             photoBitmapPicked = { photoBitmap ->
-                contact.setPhoto(contactsApi, photoBitmap)
+                // set contact photo
             },
             photoUriPicked = { uri ->
                 // Note that bitmap decoding should be done in a non-UI thread. Threading has been
@@ -236,7 +236,7 @@ Activity {
                     MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
                 }
 
-                contact.setPhoto(contactsApi, photoBitmap)
+                // set contact photo
             }
         )
     }

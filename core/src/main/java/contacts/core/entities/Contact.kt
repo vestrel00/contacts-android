@@ -272,8 +272,7 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      * This is useful if you are showing the Contact photo and the primary photo holder (a
      * RawContact) photo in the same screen.
      *
-     * This requires the [photoFileId]. If not available, this will just return the first
-     * [ExistingRawContactEntity] in [rawContacts].
+     * This requires the [photoFileId].
      */
     val primaryPhotoHolder: ExistingRawContactEntity?
 
@@ -320,7 +319,7 @@ data class Contact internal constructor(
 ) : ExistingContactEntity, ImmutableEntityWithMutableType<MutableContact> {
 
     override val primaryPhotoHolder: RawContact?
-        get() = rawContacts.find { photoFileId == it.photo?.fileId } ?: rawContacts.firstOrNull()
+        get() = rawContacts.find { photoFileId == it.photo?.fileId }
 
     override fun mutableCopy() = MutableContact(
         id = id,
@@ -386,7 +385,7 @@ data class MutableContact internal constructor(
 ) : ExistingContactEntity, MutableEntity {
 
     override val primaryPhotoHolder: MutableRawContact?
-        get() = rawContacts.find { photoFileId == it.photo?.fileId } ?: rawContacts.firstOrNull()
+        get() = rawContacts.find { photoFileId == it.photo?.fileId }
 
     override fun redactedCopy() = copy(
         isRedacted = true,
