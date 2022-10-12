@@ -1574,13 +1574,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#changes-are-immediate-and-are-not-applied-to-the-receiver" class="md-nav__link">
-    Changes are immediate and are not applied to the receiver
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#using-the-ui-ringtonepicker-extensions" class="md-nav__link">
     Using the ui RingtonePicker extensions
   </a>
@@ -1605,26 +1598,6 @@
   <a href="#starred-in-android-favorites" class="md-nav__link">
     Starred in Android (Favorites)
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#faqs" class="md-nav__link">
-    FAQs
-  </a>
-  
-    <nav class="md-nav" aria-label="FAQs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#can-contacts-be-inserted-with-options" class="md-nav__link">
-    Can contacts be inserted with options?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1949,13 +1922,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#changes-are-immediate-and-are-not-applied-to-the-receiver" class="md-nav__link">
-    Changes are immediate and are not applied to the receiver
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#using-the-ui-ringtonepicker-extensions" class="md-nav__link">
     Using the ui RingtonePicker extensions
   </a>
@@ -1980,26 +1946,6 @@
   <a href="#starred-in-android-favorites" class="md-nav__link">
     Starred in Android (Favorites)
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#faqs" class="md-nav__link">
-    FAQs
-  </a>
-  
-    <nav class="md-nav" aria-label="FAQs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#can-contacts-be-inserted-with-options" class="md-nav__link">
-    Can contacts be inserted with options?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2053,22 +1999,6 @@ the options of a Contact or RawContact retrieved from the database,</p>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>This is useful if you only want to set certain properties and keep other properties the same.</p>
-<h2 id="changes-are-immediate-and-are-not-applied-to-the-receiver">Changes are immediate and are not applied to the receiver<a class="headerlink" href="#changes-are-immediate-and-are-not-applied-to-the-receiver" title="Permanent link">&para;</a></h2>
-<p>These apply to set and update functions.</p>
-<ol>
-<li>Changes are immediate.<ul>
-<li>These functions will make the changes to the Contacts Provider database immediately. You do
-  not need to use update APIs to commit the changes.</li>
-</ul>
-</li>
-<li>Changes are not applied to the receiver.<ul>
-<li>This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
-  query APIs or refresh extensions or process the result of this function call to get the most
-  up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
-  Provider database.</li>
-</ul>
-</li>
-</ol>
 <h2 id="using-the-ui-ringtonepicker-extensions">Using the ui RingtonePicker extensions<a class="headerlink" href="#using-the-ui-ringtonepicker-extensions" title="Permanent link">&para;</a></h2>
 <p>The <code>contacts.ui.util.RingtonePicker.kt</code> in the <code>ui</code> module` provides extension functions to make
 selecting existing ringtones easier. It provides you the same UX as the native Contacts app. </p>
@@ -2127,23 +2057,6 @@ operation. For example,</p>
 -&gt; set starred to false
 -&gt; update RawContact (still containing a group membership to the favorites group)
 -&gt; starred will be set back to true.</p>
-<h2 id="faqs">FAQs<a class="headerlink" href="#faqs" title="Permanent link">&para;</a></h2>
-<h3 id="can-contacts-be-inserted-with-options">Can contacts be inserted with options?<a class="headerlink" href="#can-contacts-be-inserted-with-options" title="Permanent link">&para;</a></h3>
-<p>No, you cannot get/set/update options for Contacts/RawContacts that have not yet been inserted in 
-the Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or 
-result APIs can use the extension functions in <code>contacts.core.util.ContactOptions.kt</code> and
-<code>contacts.core.util.RawContactOptions.kt</code>.</p>
-<blockquote>
-<p>ℹ️ Issue <a href="https://github.com/vestrel00/contacts-android/issues/120">#120</a> will change the answer 
-to "yes". THe underlying mechanism will not change but the outward public facing API will change.
-Internally, the insert operation will insert a new row in the Contacts/RawContacts table and then 
-attempt to set the options immediately after.</p>
-</blockquote>
-<p>To insert a new contact "with options", you should insert the contact first. Then, if the insert
-succeeds, proceed to set the options.</p>
-<blockquote>
-<p>ℹ️ For more info about insert, read <a href="../../basics/insert-contacts/">Insert contacts</a>.</p>
-</blockquote>
 
               
             </article>

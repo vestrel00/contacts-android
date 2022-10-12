@@ -1564,6 +1564,26 @@
     Setting contact photo
   </a>
   
+    <nav class="md-nav" aria-label="Setting contact photo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#directly-to-the-database" class="md-nav__link">
+    Directly to the database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#as-part-of-an-insert-or-update-api-call" class="md-nav__link">
+    As part of an insert or update API call
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1571,12 +1591,25 @@
     Removing contact photo
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#changes-are-immediate-and-are-not-applied-to-the-receiver" class="md-nav__link">
-    Changes are immediate and are not applied to the receiver
+    <nav class="md-nav" aria-label="Removing contact photo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#directly-to-the-database_1" class="md-nav__link">
+    Directly to the database
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#as-part-of-an-update-api-call" class="md-nav__link">
+    As part of an update API call
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1598,33 +1631,6 @@
   <a href="#performing-photo-management-with-permission" class="md-nav__link">
     Performing photo management with permission
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#faqs" class="md-nav__link">
-    FAQs
-  </a>
-  
-    <nav class="md-nav" aria-label="FAQs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#can-contacts-be-insert-with-photo" class="md-nav__link">
-    Can contacts be insert with photo?
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#can-photo-be-set-using-a-uri-instead-of-bytes-and-bitmaps" class="md-nav__link">
-    Can photo be set using a uri instead of bytes and bitmaps?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1967,6 +1973,26 @@
     Setting contact photo
   </a>
   
+    <nav class="md-nav" aria-label="Setting contact photo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#directly-to-the-database" class="md-nav__link">
+    Directly to the database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#as-part-of-an-insert-or-update-api-call" class="md-nav__link">
+    As part of an insert or update API call
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1974,12 +2000,25 @@
     Removing contact photo
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#changes-are-immediate-and-are-not-applied-to-the-receiver" class="md-nav__link">
-    Changes are immediate and are not applied to the receiver
+    <nav class="md-nav" aria-label="Removing contact photo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#directly-to-the-database_1" class="md-nav__link">
+    Directly to the database
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#as-part-of-an-update-api-call" class="md-nav__link">
+    As part of an update API call
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2001,33 +2040,6 @@
   <a href="#performing-photo-management-with-permission" class="md-nav__link">
     Performing photo management with permission
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#faqs" class="md-nav__link">
-    FAQs
-  </a>
-  
-    <nav class="md-nav" aria-label="FAQs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#can-contacts-be-insert-with-photo" class="md-nav__link">
-    Can contacts be insert with photo?
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#can-photo-be-set-using-a-uri-instead-of-bytes-and-bitmaps" class="md-nav__link">
-    Can photo be set using a uri instead of bytes and bitmaps?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2120,92 +2132,144 @@ and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a
 <p>ℹ️ The Contact photo is just a reference to one of its RawContact's photo.</p>
 </blockquote>
 <h2 id="setting-contact-photo">Setting contact photo<a class="headerlink" href="#setting-contact-photo" title="Permanent link">&para;</a></h2>
-<p>Setting the photo can only be done after the Contact or RawContact has been inserted. In other 
-words, photo management can only be done for existing Contacts/RawContacts.</p>
+<p>There are two ways to set Contact or RawContact photo.</p>
+<h3 id="directly-to-the-database">Directly to the database<a class="headerlink" href="#directly-to-the-database" title="Permanent link">&para;</a></h3>
+<p>This can only be done for existing Contacts/RawContacts.</p>
 <p>To set the Contact photo, use one of the extension functions in <code>contacts.core.util.ContactPhoto.kt</code>,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoInputStream</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBytes</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmapDrawable</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">inputStream</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">byteArray</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">bitmap</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">bitmapDrawable</span><span class="p">))</span><span class="w"></span>
 </code></pre></div>
 <p>Setting the full-sized photo will automatically set the thumbnail. The Contacts Provider 
 automatically creates a downsized version of the full-sized photo.</p>
 <p>To set a RawContact photo, use one of the extension functions in <code>contacts.core.util.RawContactPhoto.kt</code>,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoInputStream</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBytes</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmapDrawable</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">inputStream</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">byteArray</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">bitmap</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">bitmapDrawable</span><span class="p">))</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
-<p>ℹ️ The Contact photo is just a reference to one of its RawContact's photo.</p>
+<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>, these
+functions were named <code>setPhoto</code>. Additionally, there was one function signature for each of ;
+InputStream, ByteArray, Bitmap, BitmapDrawable</p>
+</blockquote>
+<h3 id="as-part-of-an-insert-or-update-api-call">As part of an insert or update API call<a class="headerlink" href="#as-part-of-an-insert-or-update-api-call" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>ℹ️ Setting photo as part of insert or update API calls was not possible prior to
+<a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>.</p>
+</blockquote>
+<p>To insert a new RawContact with a photo,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContact</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">        </span><span class="n">setPhoto</span><span class="p">(</span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(...))</span><span class="w"></span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ For more info on insert APIs, read <a href="../../basics/insert-contacts/">Insert contacts</a>.</p>
+</blockquote>
+<p>To update an existing Contact or RawContact with a photo,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">        </span><span class="n">contact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">            </span><span class="n">setPhoto</span><span class="p">(</span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(...))</span><span class="w"></span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">        </span><span class="n">rawContact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">            </span><span class="n">setPhoto</span><span class="p">(</span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(...))</span><span class="w"></span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ For more info on update APIs, read <a href="../../basics/update-contacts/">Update contacts</a>.</p>
 </blockquote>
 <h2 id="removing-contact-photo">Removing contact photo<a class="headerlink" href="#removing-contact-photo" title="Permanent link">&para;</a></h2>
+<p>There are two ways to remove Contact or RawContact photo.</p>
+<h3 id="directly-to-the-database_1">Directly to the database<a class="headerlink" href="#directly-to-the-database_1" title="Permanent link">&para;</a></h3>
+<p>This can only be done for existing Contacts/RawContacts.</p>
 <p>To remove the Contact (and corresponding RawContact) photo (full-sized and thumbnail),</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">removePhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To remove a specific RawContact's photo (full-sized and thumbnail),</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">removePhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
-<p>ℹ️ The Contact photo is just a reference to one of its RawContact's photo.</p>
+<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>, these
+functions were named <code>removePhoto</code>.</p>
 </blockquote>
-<h2 id="changes-are-immediate-and-are-not-applied-to-the-receiver">Changes are immediate and are not applied to the receiver<a class="headerlink" href="#changes-are-immediate-and-are-not-applied-to-the-receiver" title="Permanent link">&para;</a></h2>
-<p>These apply to set and remove functions.</p>
-<ol>
-<li>Changes are immediate.</li>
-<li>These functions will make the changes to the Contacts Provider database immediately. You do
-     not need to use update APIs to commit the changes.</li>
-<li>Changes are not applied to the receiver.</li>
-<li>This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
-     query APIs or refresh extensions or process the result of this function call to get the most
-     up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
-     Provider database.</li>
-</ol>
+<h3 id="as-part-of-an-update-api-call">As part of an update API call<a class="headerlink" href="#as-part-of-an-update-api-call" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>ℹ️ Removing photo as part of insert or update API calls was not possible prior to
+<a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>.</p>
+</blockquote>
+<p>To update an existing Contact or RawContact without a photo,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">        </span><span class="n">contact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">            </span><span class="n">removePhoto</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">        </span><span class="n">rawContact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">            </span><span class="n">removePhoto</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ For more info on update APIs, read <a href="../../basics/update-contacts/">Update contacts</a>.</p>
+</blockquote>
 <h2 id="using-the-ui-photopicker-extensions">Using the ui PhotoPicker extensions<a class="headerlink" href="#using-the-ui-photopicker-extensions" title="Permanent link">&para;</a></h2>
 <p>The <code>contacts.ui.util.PhotoPicker.kt</code> in the <code>ui</code> module` provides extension functions to make 
 selecting existing photos, taking new photos, and removing photos easier. It provides you the same
 UX as the native Contacts app. To use it,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">Activity</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onPhotoViewClicked</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">        </span><span class="n">showPhotoPickerDialog</span><span class="p">(</span><span class="w"></span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">            </span><span class="n">withRemovePhotoOption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">            </span><span class="n">removePhoto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="n">Intent?)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">        </span><span class="n">onPhotoPicked</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"></span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">            </span><span class="n">photoBitmapPicked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">photoBitmap</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">            </span><span class="p">},</span><span class="w"></span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">            </span><span class="n">photoUriPicked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">uri</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">                </span><span class="c1">// Note that bitmap decoding should be done in a non-UI thread. Threading has been</span><span class="w"></span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">                </span><span class="c1">// left out of this example for brevity.</span><span class="w"></span>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">                </span><span class="kd">val</span><span class="w"> </span><span class="nv">photoBitmap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION</span><span class="p">.</span><span class="na">SDK_INT</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION_CODES</span><span class="p">.</span><span class="na">P</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">                    </span><span class="n">ImageDecoder</span><span class="p">.</span><span class="na">decodeBitmap</span><span class="p">(</span><span class="n">ImageDecoder</span><span class="p">.</span><span class="na">createSource</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">contentResolver</span><span class="p">,</span><span class="w"> </span><span class="n">uri</span><span class="p">))</span><span class="w"></span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">                    </span><span class="n">MediaStore</span><span class="p">.</span><span class="na">Images</span><span class="p">.</span><span class="na">Media</span><span class="p">.</span><span class="na">getBitmap</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">contentResolver</span><span class="p">,</span><span class="w"> </span><span class="n">uri</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">                </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>
-<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">Activity</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onPhotoViewClicked</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">        </span><span class="n">showPhotoPickerDialog</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">            </span><span class="n">withRemovePhotoOption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">            </span><span class="n">removePhoto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="n">Intent?)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">        </span><span class="n">onPhotoPicked</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"></span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">            </span><span class="n">photoBitmapPicked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">photoBitmap</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">            </span><span class="p">},</span><span class="w"></span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">            </span><span class="n">photoUriPicked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">uri</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">                </span><span class="c1">// Note that bitmap decoding should be done in a non-UI thread. Threading has been</span><span class="w"></span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">                </span><span class="c1">// left out of this example for brevity.</span><span class="w"></span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">                </span><span class="kd">val</span><span class="w"> </span><span class="nv">photoBitmap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION</span><span class="p">.</span><span class="na">SDK_INT</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION_CODES</span><span class="p">.</span><span class="na">P</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">                    </span><span class="n">ImageDecoder</span><span class="p">.</span><span class="na">decodeBitmap</span><span class="p">(</span><span class="n">ImageDecoder</span><span class="p">.</span><span class="na">createSource</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">contentResolver</span><span class="p">,</span><span class="w"> </span><span class="n">uri</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">                    </span><span class="n">MediaStore</span><span class="p">.</span><span class="na">Images</span><span class="p">.</span><span class="na">Media</span><span class="p">.</span><span class="na">getBitmap</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">contentResolver</span><span class="p">,</span><span class="w"> </span><span class="n">uri</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">                </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>Starting with Android 11 (API 30), you must include the following to your manifest in order to
 successfully use the above functions.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>&lt;queries&gt;
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>   &lt;intent&gt;
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>      &lt;action android:name=&quot;android.media.action.IMAGE_CAPTURE&quot; /&gt;
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>   &lt;/intent&gt;
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>   &lt;intent&gt;
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>      &lt;action android:name=&quot;android.intent.action.PICK&quot; /&gt;
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>   &lt;/intent&gt;
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>&lt;/queries&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>&lt;queries&gt;
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>   &lt;intent&gt;
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>      &lt;action android:name=&quot;android.media.action.IMAGE_CAPTURE&quot; /&gt;
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>   &lt;/intent&gt;
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>   &lt;intent&gt;
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>      &lt;action android:name=&quot;android.intent.action.PICK&quot; /&gt;
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>   &lt;/intent&gt;
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>&lt;/queries&gt;
 </code></pre></div>
 <h2 id="performing-photo-management-asynchronously">Performing photo management asynchronously<a class="headerlink" href="#performing-photo-management-asynchronously" title="Permanent link">&para;</a></h2>
 <p>All of the code shown in this guide are done in the same thread as the call-site. This may result 
@@ -2220,48 +2284,9 @@ For more info, read <a href="../../async/async-execution-coroutines/">Execute wo
 <p>Getting and setting photos require the <code>android.permission.READ_CONTACTS</code> and 
 <code>android.permission.WRITE_CONTACTS</code> permissions respectively. If not granted, getting/setting photos
 will fail.</p>
-<p>TODO Update this section as part of issue <a href="https://github.com/vestrel00/contacts-android/issues/119">#119</a>.</p>
-<h2 id="faqs">FAQs<a class="headerlink" href="#faqs" title="Permanent link">&para;</a></h2>
-<h3 id="can-contacts-be-insert-with-photo">Can contacts be insert with photo?<a class="headerlink" href="#can-contacts-be-insert-with-photo" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>ℹ️ Asked in issue <a href="https://github.com/vestrel00/contacts-android/issues/116">#116</a></p>
-</blockquote>
-<p>No, you cannot get/set/remove photos for Contacts/RawContacts that have not yet been inserted in the
-Contacts Provider database. In other words, only Contacts/RawContacts retrieved via query or result
-APIs can use the extension functions in <code>contacts.core.util.ContactPhoto.kt</code> and
-<code>contacts.core.util.RawContactPhoto.kt</code>.</p>
-<blockquote>
-<p>ℹ️ Issue <a href="https://github.com/vestrel00/contacts-android/issues/119">#119</a> will change the answer
-to yes". THe underlying mechanism will not change but the outward public facing API will change.
-Internally, the insert operation will insert a new row in the Contacts/RawContacts table and then
-attempt to set the photo immediately after.</p>
-</blockquote>
-<p>To insert a new contact "with photo", you should insert the contact first. Then, if the insert
-succeeds, proceed to set the photo.</p>
-<blockquote>
-<p>ℹ️ For more info about insert, read <a href="../../basics/insert-contacts/">Insert contacts</a>.</p>
-<p>🗒 Note for contributors; It is possible to include photo <strong>thumbnail</strong> data as part of the 
-insertion of a new RawContact using <code>ContactsContract.CommonDataKinds.Photo.PHOTO</code>. The Contacts 
-Provider will use the thumbnail as the full-sized photo as well. However, this is not good 
-practice as the full-sized photo will have a really low resolution. Showing the full-sized photo 
-in a big view will not look good. Therefore, this library does not allow this. Consumers must 
-first insert their new RawContact so that they can set the full-sized photo.</p>
-</blockquote>
-<h3 id="can-photo-be-set-using-a-uri-instead-of-bytes-and-bitmaps">Can photo be set using a uri instead of bytes and bitmaps?<a class="headerlink" href="#can-photo-be-set-using-a-uri-instead-of-bytes-and-bitmaps" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>ℹ️ Asked in discussion <a href="https://github.com/vestrel00/contacts-android/discussions/195">#195</a></p>
-</blockquote>
-<p>No and yes. The core APIs provided in this library only provides functions that the Contacts 
-Provider natively supports. This means setting Contact or RawContact photo only using bytes (and 
-other similar types). See documentation in <code>ContactsContract.RawContacts.DisplayPhoto</code>.</p>
-<p>Photos are stored and managed by the Contacts Provider, which in turn provides specific URIs for 
-RawContacts and Contacts for read/write access to those photos. We cannot simply just pass in our 
-own URIs. The Contacts Provider will not accept it. The Contacts Provider will only accept raw photo
-data. It will then generate and manage URIs on its own automatically to enforce data integrity.</p>
-<p>Consumers may write their own functions to convert a URI to a byte array or bitmap using whatever 
-imaging libraries they want. Certain URIs/URLs may require networking and heavy image processing, 
-which this <strong>Contacts library</strong> will not cover! URI/URL to image conversion simply does not belong 
-in this library! </p>
+<p>To perform the get/set photo with permission, use the extensions provided in the <code>permissions</code> module.
+For more info, read <a href="../../permissions/permissions-handling-coroutines/">Permissions handling using coroutines</a>.</p>
+<p>You may, of course, use other permission handling libraries or just do it yourself =)</p>
 
               
             </article>
