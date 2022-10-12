@@ -135,9 +135,9 @@ suspend fun ExistingContactEntity.setPhotoDirectWithContext(
  * See [ExistingContactEntity.removePhotoDirect].
  */
 suspend fun ExistingContactEntity.removePhotoDirectWithContext(
-    contacts: Contacts,
+    contacts: Contacts, fromAllRawContacts: Boolean = false,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Boolean = withContext(coroutineContext) { removePhotoDirect(contacts) }
+): Boolean = withContext(coroutineContext) { removePhotoDirect(contacts, fromAllRawContacts) }
 
 // endregion
 
@@ -269,9 +269,11 @@ fun ExistingContactEntity.setPhotoDirectAsync(
  * See [ExistingContactEntity.removePhotoDirect].
  */
 fun ExistingContactEntity.removePhotoDirectAsync(
-    contacts: Contacts,
+    contacts: Contacts, fromAllRawContacts: Boolean = false,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Boolean> = CoroutineScope(coroutineContext).async { removePhotoDirect(contacts) }
+): Deferred<Boolean> = CoroutineScope(coroutineContext).async {
+    removePhotoDirect(contacts, fromAllRawContacts)
+}
 
 // endregion
 

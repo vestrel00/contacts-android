@@ -5,11 +5,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.widget.ImageView
 import contacts.async.util.photoThumbnailBitmapDrawableWithContext
-import contacts.async.util.removePhotoDirectWithContext
-import contacts.async.util.setPhotoDirectWithContext
 import contacts.core.Contacts
+import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
 import contacts.core.util.PhotoData
+import contacts.core.util.removePhoto
+import contacts.core.util.setPhoto
 import contacts.sample.util.runIfExist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -52,7 +54,7 @@ class RawContactPhotoThumbnailView @JvmOverloads constructor(
     /**
      * The RawContact whose photo thumbnail is shown in this view. Setting this will automatically
      * update the views. Any modifications in the views will also be made to the [rawContact]'s
-     * photo upon [savePhoto].
+     * photo upon insert or update.
      */
     private var rawContact: RawContactEntity? = null
 
@@ -67,15 +69,30 @@ class RawContactPhotoThumbnailView @JvmOverloads constructor(
 
     private var setRawContactPhotoJob: Job? = null
 
-    override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
-        rawContact.runIfExist {
-            it.setPhotoDirectWithContext(contacts, PhotoData.from(photoDrawable))
-        } == true
-
-    override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =
-        rawContact.runIfExist {
-            it.removePhotoDirectWithContext(contacts)
-        } == true
+    override suspend fun onPhotoPicked(photoDrawable: BitmapDrawable?) {
+        super.onPhotoPicked(photoDrawable)
+        rawContact?.let {
+            if (photoDrawable != null) {
+                when (it) {
+                    is NewRawContact -> {
+                        it.setPhoto(PhotoData.from(photoDrawable))
+                    }
+                    is MutableRawContact -> it.setPhoto(PhotoData.from(photoDrawable))
+                    else -> {
+                        // Do nothing
+                    }
+                }
+            } else {
+                when (it) {
+                    is NewRawContact -> it.removePhoto()
+                    is MutableRawContact -> it.removePhoto()
+                    else -> {
+                        // Do nothing
+                    }
+                }
+            }
+        }
+    }
 
     private fun setPhotoThumbnailDrawableFromRawContact(contacts: Contacts) {
         setRawContactPhotoJob?.cancel()

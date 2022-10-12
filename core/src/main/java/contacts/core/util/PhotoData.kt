@@ -24,6 +24,14 @@ sealed interface PhotoData {
     }
 }
 
+/**
+ * Determines what photo operation to perform for insert and update APIs.
+ */
+internal sealed interface PhotoDataOperation {
+    class SetPhoto(val photoData: PhotoData) : PhotoDataOperation
+    object RemovePhoto : PhotoDataOperation
+}
+
 internal fun PhotoData.bytes(): ByteArray = when (this) {
     is PhotoInputStream -> inputStream.readBytes()
     is PhotoByteArray -> byteArray

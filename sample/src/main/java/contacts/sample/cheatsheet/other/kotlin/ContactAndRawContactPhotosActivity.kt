@@ -4,6 +4,8 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
 import contacts.core.Contacts
+import contacts.core.Insert
+import contacts.core.Update
 import contacts.core.entities.Contact
 import contacts.core.entities.RawContact
 import contacts.core.util.*
@@ -24,14 +26,59 @@ class ContactAndRawContactPhotosActivity : Activity() {
     fun getRawContactPhotoThumbnail(rawContact: RawContact): Bitmap? =
         rawContact.photoThumbnailBitmap(Contacts(this))
 
-    fun setContactPhoto(contact: Contact, bitmap: Bitmap): Boolean =
+
+    fun insertNewRawContactWithPhoto(bitmap: Bitmap): Insert.Result = Contacts(this)
+        .insert()
+        .rawContact {
+            setPhoto(PhotoData.from(bitmap))
+        }
+        .commit()
+
+    fun setContactPhoto(contact: Contact, bitmap: Bitmap): Update.Result = Contacts(this)
+        .update()
+        .contacts(
+            contact.mutableCopy {
+                setPhoto(PhotoData.from(bitmap))
+            }
+        )
+        .commit()
+
+    fun setRawContactPhoto(rawContact: RawContact, bitmap: Bitmap): Update.Result = Contacts(this)
+        .update()
+        .rawContacts(
+            rawContact.mutableCopy {
+                setPhoto(PhotoData.from(bitmap))
+            }
+        )
+        .commit()
+
+    fun removeContactPhoto(contact: Contact): Update.Result = Contacts(this)
+        .update()
+        .contacts(
+            contact.mutableCopy {
+                removePhoto()
+            }
+        )
+        .commit()
+
+    fun removeRawContactPhoto(rawContact: RawContact): Update.Result = Contacts(this)
+        .update()
+        .rawContacts(
+            rawContact.mutableCopy {
+                removePhoto()
+            }
+        )
+        .commit()
+
+    fun setContactPhotoDirect(contact: Contact, bitmap: Bitmap): Boolean =
         contact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
 
-    fun setRawContactPhoto(rawContact: RawContact, bitmap: Bitmap): Boolean =
+    fun setRawContactPhotoDirect(rawContact: RawContact, bitmap: Bitmap): Boolean =
         rawContact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
 
-    fun removeContactPhoto(contact: Contact): Boolean = contact.removePhotoDirect(Contacts(this))
+    fun removeContactPhotoDirect(contact: Contact): Boolean =
+        contact.removePhotoDirect(Contacts(this))
 
-    fun removeRawContactPhoto(rawContact: RawContact): Boolean =
+    fun removeRawContactPhotoDirect(rawContact: RawContact): Boolean =
         rawContact.removePhotoDirect(Contacts(this))
 }

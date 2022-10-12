@@ -5,11 +5,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.widget.ImageView
 import contacts.async.util.photoBitmapDrawableWithContext
-import contacts.async.util.removePhotoDirectWithContext
-import contacts.async.util.setPhotoDirectWithContext
 import contacts.core.Contacts
 import contacts.core.entities.ContactEntity
+import contacts.core.entities.MutableContact
 import contacts.core.util.PhotoData
+import contacts.core.util.removePhoto
+import contacts.core.util.setPhoto
 import contacts.sample.util.runIfExist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -54,7 +55,7 @@ class ContactPhotoView @JvmOverloads constructor(
     /**
      * The Contact whose photo is shown in this view. Setting this will automatically update the
      * views. Any modifications in the views will also be made to the [contact]'s photo upon
-     * [savePhoto].
+     * insert or update.
      */
     private var contact: ContactEntity? = null
 
@@ -64,24 +65,23 @@ class ContactPhotoView @JvmOverloads constructor(
      *
      * The [contact] will only be mutated if it is mutable.
      */
-    fun setContact(
-        contact: ContactEntity?, contacts: Contacts, loadContactPhoto: Boolean = true
-    ) {
+    fun setContact(contact: ContactEntity?, contacts: Contacts) {
         this.contact = contact
-        if (loadContactPhoto) {
-            setPhotoDrawableFromContact(contacts)
-        }
+        setPhotoDrawableFromContact(contacts)
     }
 
-    override suspend fun savePhotoToDb(photoDrawable: BitmapDrawable, contacts: Contacts): Boolean =
-        contact.runIfExist {
-            it.setPhotoDirectWithContext(contacts, PhotoData.from(photoDrawable))
-        } == true
-
-    override suspend fun removePhotoFromDb(contacts: Contacts): Boolean =
-        contact.runIfExist {
-            it.removePhotoDirectWithContext(contacts)
-        } == true
+    override suspend fun onPhotoPicked(photoDrawable: BitmapDrawable?) {
+        super.onPhotoPicked(photoDrawable)
+        contact?.let {
+            if (it is MutableContact) {
+                if (photoDrawable != null) {
+                    it.setPhoto(PhotoData.from(photoDrawable))
+                } else {
+                    it.removePhoto(fromAllRawContacts = false)
+                }
+            }
+        }
+    }
 
     private fun setPhotoDrawableFromContact(contacts: Contacts) {
         setContactPhotoJob?.cancel()

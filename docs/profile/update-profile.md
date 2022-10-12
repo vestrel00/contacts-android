@@ -190,3 +190,8 @@ As per documentation in `android.provider.ContactsContract.Profile`,
 > The profile Contact has the same update restrictions as Contacts in general...
 > Only certain columns of Contact are modifiable: STARRED, CUSTOM_RINGTONE, SEND_TO_VOICEMAIL.
 > Changing any of these columns on the Contact also changes them on all constituent raw contacts.
+
+## Updating photos and thumbnails
+
+To set full-sized photos (and by API design thumbnails),
+read [Get set remove full-sized and thumbnail contact photos](./../other/get-set-remove-contact-raw-contact-photo.md).

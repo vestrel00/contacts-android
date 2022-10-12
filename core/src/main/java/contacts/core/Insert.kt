@@ -383,6 +383,8 @@ private class InsertImpl(
  * Contact rows should not be manually created because the Contacts Provider and other sync
  * providers may consolidate multiple RawContacts and associated Data rows to a single Contacts
  * row.
+ *
+ * Returns the inserted RawContact's ID. Or null, if insert failed.
  */
 internal fun Contacts.insertRawContactForAccount(
     account: Account?,
@@ -438,7 +440,10 @@ internal fun Contacts.insertRawContactForAccount(
     }
 
     operations.addAll(
-        ImOperation(isProfile, Fields.Im.intersect(includeFields)).insertForNewRawContact(rawContact.ims)
+        ImOperation(
+            isProfile,
+            Fields.Im.intersect(includeFields)
+        ).insertForNewRawContact(rawContact.ims)
     )
 
     rawContact.name?.let {
@@ -447,7 +452,10 @@ internal fun Contacts.insertRawContactForAccount(
     }
 
     rawContact.nickname?.let {
-        NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields)).insertForNewRawContact(it)
+        NicknameOperation(
+            isProfile,
+            Fields.Nickname.intersect(includeFields)
+        ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
@@ -457,7 +465,10 @@ internal fun Contacts.insertRawContactForAccount(
     }
 
     rawContact.organization?.let {
-        OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields)).insertForNewRawContact(it)
+        OrganizationOperation(
+            isProfile,
+            Fields.Organization.intersect(includeFields)
+        ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
@@ -482,7 +493,10 @@ internal fun Contacts.insertRawContactForAccount(
     }
 
     rawContact.sipAddress?.let {
-        SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields)).insertForNewRawContact(it)
+        SipAddressOperation(
+            isProfile,
+            Fields.SipAddress.intersect(includeFields)
+        ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
@@ -514,9 +528,15 @@ internal fun Contacts.insertRawContactForAccount(
      * Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, "18")
      */
     return results?.firstOrNull()?.let { result ->
-        val rawContactUri = result.uri
-        val rawContactId = rawContactUri?.lastPathSegment?.toLongOrNull()
-        rawContactId
+        result.uri?.lastPathSegment?.toLongOrNull()
+    }?.also { rawContactId ->
+        // We will attempt to set the photo, ignoring whether it failed or succeeded. Users of this
+        // library can submit a request to change this behavior if they want =)
+        rawContact.photoDataOperation?.let {
+            if (it is PhotoDataOperation.SetPhoto) {
+                setRawContactPhotoDirect(rawContactId, it.photoData)
+            }
+        }
     }
 }
 
@@ -541,7 +561,8 @@ private fun NewRawContact.customDataInsertOperations(
                 }
             }
             CustomDataCountRestriction.NO_LIMIT -> {
-                customDataOperation.insertForNewRawContact(customDataEntityHolder.entities).let(::addAll)
+                customDataOperation.insertForNewRawContact(customDataEntityHolder.entities)
+                    .let(::addAll)
             }
         }
     }

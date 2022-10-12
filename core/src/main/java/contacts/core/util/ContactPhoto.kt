@@ -9,6 +9,7 @@ import android.provider.ContactsContract
 import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
+import contacts.core.entities.MutableContact
 import contacts.core.entities.TempRawContact
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataCursor
@@ -301,6 +302,40 @@ fun ExistingContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): Bitm
 // region SET PHOTO
 
 /**
+ * Sets the photo of this [MutableContact.primaryPhotoHolder], pending an update API call. If a
+ * photo already exists, it will be overwritten. The Contacts Provider automatically creates a
+ * downsized version of this as the thumbnail.
+ *
+ * If a photo has not yet been set and the Contacts Provider has not yet chosen the RawContact that
+ * will be used as the primary photo holder, then this will use the first RawContact in the list of
+ * [MutableContact.rawContacts].
+ *
+ * The given [photoData] will not be set until the update API call is committed successfully.
+ *
+ * If you want to directly set the photo into the database, without an update API call, use
+ * [MutableContact.setPhotoDirect].
+ *
+ * Note that the [MutableContact.primaryPhotoHolder] requires [MutableContact.photoFileId].
+ *
+ * ## No includes required
+ *
+ * When using update APIs, there is is no field required to be passed into the `include` function
+ * to make sure the photo is set as long as this function is invoked.
+ *
+ * ## Not parcelable
+ *
+ * The [photoData] is ignored on parcel. The [photoData] will not be carried over across activities,
+ * fragments, or views during creation/recreation.
+ */
+fun MutableContact.setPhoto(photoData: PhotoData) {
+    primaryPhotoHolder?.photoDataOperation = PhotoDataOperation.SetPhoto(photoData)
+}
+
+// endregion
+
+// region SET PHOTO DIRECT
+
+/**
  * Sets the photo of this [ExistingContactEntity] (and the [contacts.core.entities.RawContact] that
  * the Contacts Provider has chosen to hold the primary photo) directly to the database. If a photo
  * already exists, it will be overwritten. The Contacts Provider automatically creates a downsized
@@ -359,7 +394,7 @@ fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoData: PhotoDat
     }
 
     return rawContact?.id?.let { rawContactId ->
-        contacts.setRawContactPhoto(rawContactId, photoData)
+        contacts.setRawContactPhotoDirect(rawContactId, photoData)
     } == true
 }
 
@@ -387,8 +422,48 @@ private fun ExistingContactEntity.rawContactWithPhotoFileId(
 // region REMOVE PHOTO
 
 /**
- * Removes the photos of all the RawContacts associated with this [ExistingContactEntity] directly
- * from the database, if any exists.
+ * Removes the photos, pending an update API call.
+ *
+ * If [fromAllRawContacts] is true, the photos of all RawContacts associated with this
+ * [ExistingContactEntity] will be removed. Otherwise, only the photo of the
+ * [ExistingContactEntity.primaryPhotoHolder] will be removed.
+ *
+ * The photo will not be removed until the update API call is committed successfully.
+ *
+ * If you want to directly remove the photo from the database, without an update API call, use
+ * [MutableContact.removePhotoDirect].
+ *
+ * ## No includes required
+ *
+ * When using update APIs, there is is no field required to be passed into the `include` function
+ * to make sure the photo is removed as long as this function is invoked.
+ *
+ * ## Not parcelable
+ *
+ * This action is ignored on parcel. This action will not be carried over across activities,
+ * fragments, or views during creation/recreation.
+ */
+@JvmOverloads
+fun MutableContact.removePhoto(fromAllRawContacts: Boolean = false) {
+    if (fromAllRawContacts) {
+        for (rawContact in rawContacts) {
+            rawContact.photoDataOperation = PhotoDataOperation.RemovePhoto
+        }
+    } else {
+        primaryPhotoHolder?.photoDataOperation = PhotoDataOperation.RemovePhoto
+    }
+}
+
+// endregion
+
+// region REMOVE PHOTO DIRECT
+
+/**
+ * Removes the photos directly from the database.
+ *
+ * If [fromAllRawContacts] is true, the photos of all RawContacts associated with this
+ * [ExistingContactEntity] will be removed. Otherwise, only the photo of the
+ * [ExistingContactEntity.primaryPhotoHolder] will be removed.
  *
  * Returns true if the operation succeeds.
  *
@@ -415,17 +490,28 @@ private fun ExistingContactEntity.rawContactWithPhotoFileId(
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.removePhotoDirect(contacts: Contacts): Boolean {
+@JvmOverloads
+fun ExistingContactEntity.removePhotoDirect(
+    contacts: Contacts, fromAllRawContacts: Boolean = false
+): Boolean {
     if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
 
+    val whereId = if (fromAllRawContacts) {
+        Fields.Contact.Id equalTo id
+    } else {
+        val primaryPhotoHolderId = primaryPhotoHolder?.id
+        if (primaryPhotoHolderId != null) {
+            Fields.RawContact.Id equalTo primaryPhotoHolderId
+        } else {
+            return false
+        }
+    }
+
     return contacts.contentResolver.applyBatch(
         newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
-            .withSelection(
-                (Fields.Contact.Id equalTo id)
-                        and (Fields.MimeType equalTo MimeType.Photo)
-            )
+            .withSelection(whereId and (Fields.MimeType equalTo MimeType.Photo))
             .build()
     ) != null
 }

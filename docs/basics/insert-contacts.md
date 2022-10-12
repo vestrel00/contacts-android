@@ -371,6 +371,5 @@ val insertResult = Contacts(context)
 
 ## Inserting photos and thumbnails
 
-Full-sized photos (and by API design thumbnails) can only be inserted after inserting the contact. 
-
-For more info, read [Get set remove full-sized and thumbnail contact photos](./../other/get-set-remove-contact-raw-contact-photo.md).
+To set full-sized photos (and by API design thumbnails), 
+read [Get set remove full-sized and thumbnail contact photos](./../other/get-set-remove-contact-raw-contact-photo.md).

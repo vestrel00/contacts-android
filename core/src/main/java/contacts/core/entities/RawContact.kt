@@ -5,7 +5,9 @@ import contacts.core.entities.custom.AbstractCustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
 import contacts.core.redactedCopies
+import contacts.core.util.PhotoDataOperation
 import contacts.core.util.isProfileId
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -300,6 +302,12 @@ data class MutableRawContact internal constructor(
 
 ) : ExistingRawContactEntity, MutableEntity {
 
+    @IgnoredOnParcel
+    internal var photoDataOperation: PhotoDataOperation? = null
+
+    override val isBlank: Boolean
+        get() = super.isBlank && photoDataOperation !is PhotoDataOperation.SetPhoto
+
     override fun redactedCopy() = copy(
         isRedacted = true,
 
@@ -351,6 +359,12 @@ data class NewRawContact @JvmOverloads constructor(
     override val isRedacted: Boolean = false
 
 ) : RawContactEntity, NewEntity, MutableEntity {
+
+    @IgnoredOnParcel
+    internal var photoDataOperation: PhotoDataOperation? = null
+
+    override val isBlank: Boolean
+        get() = super.isBlank && photoDataOperation !is PhotoDataOperation.SetPhoto
 
     override fun redactedCopy() = copy(
         isRedacted = true,

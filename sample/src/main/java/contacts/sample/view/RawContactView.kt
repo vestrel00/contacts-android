@@ -138,13 +138,9 @@ class RawContactView @JvmOverloads constructor(
     }
 
     fun setPhotoDrawableOnPhotoPickedWith(photoView: PhotoView) {
-        photoView.setPhotoDrawableOnPhotoPicked = photoThumbnailView
-        photoThumbnailView.setPhotoDrawableOnPhotoPicked = photoView
+        photoView.invokeOnPhotoPicked = photoThumbnailView
+        photoThumbnailView.invokeOnPhotoPicked = photoView
     }
-
-    fun hasPhotoToSave(): Boolean = photoThumbnailView.hasPhoto()
-
-    suspend fun savePhoto(contacts: Contacts): Boolean = photoThumbnailView.savePhoto(contacts)
 
     // The native (AOSP) Contacts app hides these from the UI for local raw contacts. These
     // will no longer be hidden as part of https://github.com/vestrel00/contacts-android/issues/167

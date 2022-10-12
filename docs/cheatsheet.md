@@ -3122,6 +3122,8 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.graphics.Bitmap
     import android.net.Uri
     import contacts.core.Contacts
+    import contacts.core.Insert
+    import contacts.core.Update
     import contacts.core.entities.Contact
     import contacts.core.entities.RawContact
     import contacts.core.util.*
@@ -3142,15 +3144,60 @@ heading explore each API in full detail. You may also find these samples in the 
         fun getRawContactPhotoThumbnail(rawContact: RawContact): Bitmap? =
             rawContact.photoThumbnailBitmap(Contacts(this))
     
-        fun setContactPhoto(contact: Contact, bitmap: Bitmap): Boolean =
+    
+        fun insertNewRawContactWithPhoto(bitmap: Bitmap): Insert.Result = Contacts(this)
+            .insert()
+            .rawContact {
+                setPhoto(PhotoData.from(bitmap))
+            }
+            .commit()
+    
+        fun setContactPhoto(contact: Contact, bitmap: Bitmap): Update.Result = Contacts(this)
+            .update()
+            .contacts(
+                contact.mutableCopy {
+                    setPhoto(PhotoData.from(bitmap))
+                }
+            )
+            .commit()
+    
+        fun setRawContactPhoto(rawContact: RawContact, bitmap: Bitmap): Update.Result = Contacts(this)
+            .update()
+            .rawContacts(
+                rawContact.mutableCopy {
+                    setPhoto(PhotoData.from(bitmap))
+                }
+            )
+            .commit()
+    
+        fun removeContactPhoto(contact: Contact): Update.Result = Contacts(this)
+            .update()
+            .contacts(
+                contact.mutableCopy {
+                    removePhoto()
+                }
+            )
+            .commit()
+    
+        fun removeRawContactPhoto(rawContact: RawContact): Update.Result = Contacts(this)
+            .update()
+            .rawContacts(
+                rawContact.mutableCopy {
+                    removePhoto()
+                }
+            )
+            .commit()
+    
+        fun setContactPhotoDirect(contact: Contact, bitmap: Bitmap): Boolean =
             contact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
     
-        fun setRawContactPhoto(rawContact: RawContact, bitmap: Bitmap): Boolean =
+        fun setRawContactPhotoDirect(rawContact: RawContact, bitmap: Bitmap): Boolean =
             rawContact.setPhotoDirect(Contacts(this), PhotoData.from(bitmap))
     
-        fun removeContactPhoto(contact: Contact): Boolean = contact.removePhotoDirect(Contacts(this))
+        fun removeContactPhotoDirect(contact: Contact): Boolean =
+            contact.removePhotoDirect(Contacts(this))
     
-        fun removeRawContactPhoto(rawContact: RawContact): Boolean =
+        fun removeRawContactPhotoDirect(rawContact: RawContact): Boolean =
             rawContact.removePhotoDirect(Contacts(this))
     }
     ```
@@ -3163,7 +3210,12 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.net.Uri;
     
     import contacts.core.ContactsFactory;
+    import contacts.core.Insert;
+    import contacts.core.Update;
     import contacts.core.entities.Contact;
+    import contacts.core.entities.MutableContact;
+    import contacts.core.entities.MutableRawContact;
+    import contacts.core.entities.NewRawContact;
     import contacts.core.entities.RawContact;
     import contacts.core.util.ContactPhotoKt;
     import contacts.core.util.PhotoData;
@@ -3195,19 +3247,69 @@ heading explore each API in full detail. You may also find these samples in the 
             return RawContactPhotoKt.photoThumbnailBitmap(rawContact, ContactsFactory.create(this));
         }
     
-        Boolean setContactPhoto(Contact contact, Bitmap bitmap) {
+        Insert.Result insertNewRawContactWithPhoto(Bitmap bitmap) {
+            NewRawContact rawContact = new NewRawContact();
+            RawContactPhotoKt.setPhoto(rawContact, PhotoData.from(bitmap));
+    
+            return ContactsFactory.create(this)
+                    .insert()
+                    .rawContacts(rawContact)
+                    .commit();
+        }
+    
+        Update.Result setContactPhoto(Contact contact, Bitmap bitmap) {
+            MutableContact mutableContact = contact.mutableCopy();
+            ContactPhotoKt.setPhoto(mutableContact, PhotoData.from(bitmap));
+    
+            return ContactsFactory.create(this)
+                    .update()
+                    .contacts(mutableContact)
+                    .commit();
+        }
+    
+        Update.Result setRawContactPhoto(RawContact rawContact, Bitmap bitmap) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactPhotoKt.setPhoto(mutableRawContact, PhotoData.from(bitmap));
+    
+            return ContactsFactory.create(this)
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        Update.Result removeContactPhoto(Contact contact) {
+            MutableContact mutableContact = contact.mutableCopy();
+            ContactPhotoKt.removePhoto(mutableContact);
+    
+            return ContactsFactory.create(this)
+                    .update()
+                    .contacts(mutableContact)
+                    .commit();
+        }
+    
+        Update.Result removeRawContactPhoto(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactPhotoKt.removePhoto(mutableRawContact);
+    
+            return ContactsFactory.create(this)
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        Boolean setContactPhotoDirect(Contact contact, Bitmap bitmap) {
             return ContactPhotoKt.setPhotoDirect(contact, ContactsFactory.create(this), PhotoData.from(bitmap));
         }
     
-        Boolean setRawContactPhoto(RawContact rawContact, Bitmap bitmap) {
+        Boolean setRawContactPhotoDirect(RawContact rawContact, Bitmap bitmap) {
             return RawContactPhotoKt.setPhotoDirect(rawContact, ContactsFactory.create(this), PhotoData.from(bitmap));
         }
     
-        Boolean removeContactPhoto(Contact contact) {
+        Boolean removeContactPhotoDirect(Contact contact) {
             return ContactPhotoKt.removePhotoDirect(contact, ContactsFactory.create(this));
         }
     
-        Boolean removeRawContactPhoto(RawContact rawContact) {
+        Boolean removeRawContactPhotoDirect(RawContact rawContact) {
             return RawContactPhotoKt.removePhotoDirect(rawContact, ContactsFactory.create(this));
         }
     }

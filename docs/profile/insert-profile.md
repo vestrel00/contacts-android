@@ -287,3 +287,8 @@ As per documentation in `android.provider.ContactsContract.Profile`,
 > column gets the _ID of the profile Contact. If no match is found, the profile Contact is
 > created and its _ID is put into the RawContacts.CONTACT_ID column of the newly inserted raw
 > contact.
+
+## Inserting photos and thumbnails
+
+To set full-sized photos (and by API design thumbnails),
+read [Get set remove full-sized and thumbnail contact photos](./../other/get-set-remove-contact-raw-contact-photo.md).

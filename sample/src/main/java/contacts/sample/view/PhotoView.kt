@@ -8,7 +8,6 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.widget.ImageView
-import contacts.core.Contacts
 import contacts.sample.R
 import contacts.ui.util.onPhotoPicked
 import contacts.ui.util.showPhotoPickerDialog
@@ -53,20 +52,13 @@ abstract class PhotoView @JvmOverloads constructor(
 
     private var photoDrawable: BitmapDrawable? = null
     private var isPickingPhoto: Boolean = false
-    private var photoHasChanged: Boolean = false
 
     /**
-     * When [onPhotoPicked] is invoked, this photo view's photo drawable will also be set. This is
-     * useful for propagating the pick event between a Contact and its primary photo holder (a
-     * RawContact).
+     * When [onPhotoPicked] is invoked, this photo view's [onPhotoPicked] will also be invoked.
+     * This is useful for propagating the pick event between a Contact and its primary photo holder
+     * (a RawContact).
      */
-    var setPhotoDrawableOnPhotoPicked: PhotoView? = null
-
-    protected abstract suspend fun savePhotoToDb(
-        photoDrawable: BitmapDrawable, contacts: Contacts
-    ): Boolean
-
-    protected abstract suspend fun removePhotoFromDb(contacts: Contacts): Boolean
+    var invokeOnPhotoPicked: PhotoView? = null
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -76,9 +68,10 @@ abstract class PhotoView @JvmOverloads constructor(
                 it.showPhotoPickerDialog(
                     withRemovePhotoOption = photoDrawable != null,
                     removePhoto = {
-                        photoHasChanged = true
-                        isPickingPhoto = false
-                        launch { onPhotoPicked(null) }
+                        launch {
+                            onPhotoPicked(null)
+                            isPickingPhoto = false
+                        }
                     },
                     onCancelled = {
                         isPickingPhoto = false
@@ -98,13 +91,12 @@ abstract class PhotoView @JvmOverloads constructor(
         }
         onPhotoPicked(requestCode, resultCode, data,
             photoBitmapPicked = { bitmap ->
-                photoHasChanged = true
-                isPickingPhoto = false
-                launch { onPhotoPicked(BitmapDrawable(resources, bitmap)) }
+                launch {
+                    onPhotoPicked(BitmapDrawable(resources, bitmap))
+                    isPickingPhoto = false
+                }
             },
             photoUriPicked = { uri ->
-                photoHasChanged = true
-                isPickingPhoto = false
                 launch {
                     // FIXME This suppression should no longer be necessary once the compiler is
                     // smart enough to realize that these blocking calls are ran using the
@@ -125,34 +117,10 @@ abstract class PhotoView @JvmOverloads constructor(
                     }
 
                     onPhotoPicked(BitmapDrawable(resources, bitmap))
+                    isPickingPhoto = false
                 }
             }
         )
-    }
-
-    fun hasPhoto(): Boolean = photoDrawable != null
-
-    /**
-     * Saves the photo to the DB if it has changed. If there is no photo, then the photo is removed
-     * from the DB.
-     */
-    suspend fun savePhoto(contacts: Contacts): Boolean {
-        if (!photoHasChanged) {
-            return true
-        }
-
-        val photoDrawable = photoDrawable
-        val success = if (photoDrawable != null) {
-            savePhotoToDb(photoDrawable, contacts)
-        } else {
-            removePhotoFromDb(contacts)
-        }
-
-        if (success) {
-            photoHasChanged = false
-        }
-
-        return success
     }
 
     protected suspend fun setPhotoDrawable(photoDrawable: BitmapDrawable?) {
@@ -177,9 +145,13 @@ abstract class PhotoView @JvmOverloads constructor(
         }
     }
 
-    private suspend fun onPhotoPicked(photoDrawable: BitmapDrawable?) {
-        setPhotoDrawableOnPhotoPicked?.setPhotoDrawable(photoDrawable)
+    protected open suspend fun onPhotoPicked(photoDrawable: BitmapDrawable?) {
         setPhotoDrawable(photoDrawable)
+
+        // Prevent an infinite loop by only invoking this from the on photo picked origin.
+        if (isPickingPhoto) {
+            invokeOnPhotoPicked?.onPhotoPicked(photoDrawable)
+        }
     }
 
     override fun onDetachedFromWindow() {

@@ -5,11 +5,15 @@ import android.content.ContentResolver
 import contacts.core.accounts.accountForRawContactWithId
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.MutableRawContact
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
+import contacts.core.util.*
+import contacts.core.util.PhotoDataOperation
 import contacts.core.util.applyBatch
 import contacts.core.util.isEmpty
+import contacts.core.util.setRawContactPhotoDirect
 import contacts.core.util.unsafeLazy
 
 /**
@@ -488,7 +492,18 @@ internal fun Contacts.updateRawContact(
      * Note that the returned result on success is ContentProviderResult(count=0). Therefore, we
      * cannot use the count to determine if the operation succeeded or not.
      */
-    return contentResolver.applyBatch(operations) != null
+    val success = contentResolver.applyBatch(operations) != null
+    if (success && rawContact is MutableRawContact) {
+        // We will attempt to set or remove the photo, ignoring whether it failed or succeeded.
+        // Users of this library can submit a request to change this behavior if they want =)
+        rawContact.photoDataOperation?.let {
+            when (it) {
+                is PhotoDataOperation.SetPhoto -> setRawContactPhotoDirect(rawContact.id, it.photoData)
+                is PhotoDataOperation.RemovePhoto -> removePhotoDirect(rawContact.id)
+            }
+        }
+    }
+    return success
 }
 
 private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(

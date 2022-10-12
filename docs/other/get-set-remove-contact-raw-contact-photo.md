@@ -120,10 +120,41 @@ rawContact.setPhotoDirect(contactsApi, PhotoData.from(bitmapDrawable))
 
 ### As part of an insert or update API call
 
-TODO
-
 > ℹ️ Setting photo as part of insert or update API calls was not possible prior to
 > [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+
+To insert a new RawContact with a photo,
+
+```kotlin
+Contacts(this)
+    .insert()
+    .rawContact {
+        setPhoto(PhotoData.from(...))
+    }
+    .commit()
+```
+
+> ℹ️ For more info on insert APIs, read [Insert contacts](../basics/insert-contacts.md).
+
+To update an existing Contact or RawContact with a photo,
+
+```kotlin
+Contacts(this)
+    .update()
+    .contacts(
+        contact.mutableCopy {
+            setPhoto(PhotoData.from(...))
+        }
+    )
+    .rawContacts(
+        rawContact.mutableCopy {
+            setPhoto(PhotoData.from(...))
+        }
+    )
+    .commit()
+```
+
+> ℹ️ For more info on update APIs, read [Update contacts](../basics/update-contacts.md).
 
 ## Removing contact photo
 
@@ -148,12 +179,30 @@ rawContact.removePhotoDirect(contactsApi)
 > ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
 > functions were named `removePhoto`.
 
-### As part of an insert or update API call
-
-TODO
+### As part of an update API call
 
 > ℹ️ Removing photo as part of insert or update API calls was not possible prior to
 > [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+
+To update an existing Contact or RawContact without a photo,
+
+```kotlin
+Contacts(this)
+    .update()
+    .contacts(
+        contact.mutableCopy {
+            removePhoto()
+        }
+    )
+    .rawContacts(
+        rawContact.mutableCopy {
+            removePhoto()
+        }
+    )
+    .commit()
+```
+
+> ℹ️ For more info on update APIs, read [Update contacts](../basics/update-contacts.md).
 
 ## Using the ui PhotoPicker extensions
 
@@ -226,4 +275,7 @@ Getting and setting photos require the `android.permission.READ_CONTACTS` and
 `android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting/setting photos
 will fail.
 
-TODO Update this section as part of issue [#119](https://github.com/vestrel00/contacts-android/issues/119).
+To perform the get/set photo with permission, use the extensions provided in the `permissions` module.
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
+
+You may, of course, use other permission handling libraries or just do it yourself =)

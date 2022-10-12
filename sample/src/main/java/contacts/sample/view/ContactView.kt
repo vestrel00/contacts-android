@@ -271,10 +271,6 @@ class ContactView @JvmOverloads constructor(
             contacts
                 .profile()
                 .insertWithPermission()
-                // Make sure that if a contact only has a photo, that a blank gets inserted. The photo
-                // will be set after the contact has been inserted. This mechanism will change as part
-                // of https://github.com/vestrel00/contacts-android/issues/119
-                .allowBlanks(newRawContactView?.hasPhotoToSave() == true)
                 .forAccount(newRawContactView?.account)
                 .rawContact(rawContact)
                 .commitWithContext()
@@ -282,20 +278,13 @@ class ContactView @JvmOverloads constructor(
         } else {
             contacts
                 .insertWithPermission()
-                // Make sure that if a contact only has a photo, that a blank gets inserted. The photo
-                // will be set after the contact has been inserted. This mechanism will change as part
-                // of https://github.com/vestrel00/contacts-android/issues/119
-                .allowBlanks(newRawContactView?.hasPhotoToSave() == true)
                 .forAccount(newRawContactView?.account)
                 .rawContacts(rawContact)
                 .commitWithContext()
                 .contactWithContext(contacts, rawContact)
         }
 
-        // Try to insert the photo. Ignore whether it succeeds or fails. This mechanism will change
-        // as part of https://github.com/vestrel00/contacts-android/issues/119
-        photoView.setContact(newContact, contacts, loadContactPhoto = false)
-        photoView.savePhoto(contacts)
+        photoView.setContact(newContact, contacts)
 
         return newContact?.lookupKey
     }
@@ -314,37 +303,17 @@ class ContactView @JvmOverloads constructor(
             return false
         }
 
-        // Update RawContact photos that have changed first so that the (Raw)Contacts does not get
-        // deleted if it only has a photo. Blank (Raw)Contacts are by default deleted in updates.
-        for (index in 0 until rawContactsView.childCount) {
-            val rawContactView = rawContactsView.getChildAt(index) as RawContactView
-            rawContactView.savePhoto(contacts)
-        }
-
-        // Update the Contact photo if it has changed.
-        // Saving the contact photo is actually not necessary because it is synced with the primary
-        // photo holder. We'll do it anyways just to make sure this functions correctly.
-        photoView.savePhoto(contacts)
-
         // Perform the update. Ignore if photos update succeeded or not :D
         return if (contact.isProfile) {
             contacts
                 .profile()
                 .updateWithPermission()
-                // Make sure that if a contact only has a photo, that that it does not get deleted on
-                // update. This mechanism will change as part of
-                // https://github.com/vestrel00/contacts-android/issues/119
-                .deleteBlanks(!photoView.hasPhoto())
                 .contact(contact)
                 .commitWithContext()
                 .isSuccessful
         } else {
             contacts
                 .updateWithPermission()
-                // Make sure that if a contact only has a photo, that that it does not get deleted on
-                // update. This mechanism will change as part of
-                // https://github.com/vestrel00/contacts-android/issues/119
-                .deleteBlanks(!photoView.hasPhoto())
                 .contacts(contact)
                 .commitWithContext()
                 .isSuccessful

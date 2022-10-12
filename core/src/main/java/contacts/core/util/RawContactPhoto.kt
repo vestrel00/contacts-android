@@ -10,6 +10,8 @@ import android.provider.ContactsContract.RawContacts
 import contacts.core.*
 import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.MimeType
+import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
 import contacts.core.entities.cursor.photoCursor
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
@@ -245,6 +247,51 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBitmapDrawable(
 // region SET PHOTO
 
 /**
+ * Set the photo of this [MutableRawContact], pending an update API call.
+ *
+ * The given [photoData] will not be set until the update API call is committed successfully.
+ *
+ * If you want to directly set the photo into the database, without an update API call, use
+ * [MutableRawContact.setPhotoDirect].
+ *
+ * ## No includes required
+ *
+ * When using update APIs, there is is no field required to be passed into the `include` function
+ * to make sure the photo is set as long as this function is invoked.
+ *
+ * ## Not parcelable
+ *
+ * The [photoData] is ignored on parcel. The [photoData] will not be carried over across activities,
+ * fragments, or views during creation/recreation.
+ */
+fun MutableRawContact.setPhoto(photoData: PhotoData) {
+    photoDataOperation = PhotoDataOperation.SetPhoto(photoData)
+}
+
+/**
+ * Set the photo of this [NewRawContact], pending an insert API call.
+ *
+ * The given [photoData] will not be set until the insert API call is committed successfully.
+ *
+ * ## No includes required
+ *
+ * When using insert APIs, there is is no field required to be passed into the `include` function
+ * to make sure the photo is set as long as this function is invoked.
+ *
+ * ## Not parcelable
+ *
+ * The [photoData] is ignored on parcel. The [photoData] will not be carried over across activities,
+ * fragments, or views during creation/recreation.
+ */
+fun NewRawContact.setPhoto(photoData: PhotoData) {
+    photoDataOperation = PhotoDataOperation.SetPhoto(photoData)
+}
+
+// endregion
+
+// region SET PHOTO DIRECT
+
+/**
  * Sets the photo of this [ExistingRawContactEntityWithContactId] directly to the database. If a
  * photo already exists, it will be overwritten. The Contacts Provider automatically creates a
  * downsized version of this as the thumbnail.
@@ -262,6 +309,8 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBitmapDrawable(
  *
  * This function will make the changes to the Contacts Provider database immediately. You do not
  * need to use update APIs to commit the changes.
+ *
+ * If you want to set the photo lazily, upon and update API call, use [MutableRawContact.setPhoto].
  *
  * ## Changes are not applied to the receiver
  *
@@ -287,12 +336,12 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBitmapDrawable(
 fun ExistingRawContactEntityWithContactId.setPhotoDirect(
     contacts: Contacts,
     photoData: PhotoData
-): Boolean = contacts.setRawContactPhoto(id, photoData)
+): Boolean = contacts.setRawContactPhotoDirect(id, photoData)
 
 /**
  * Performs the actual setting of the photo.
  */
-internal fun Contacts.setRawContactPhoto(
+internal fun Contacts.setRawContactPhotoDirect(
     rawContactId: Long,
     photoData: PhotoData
 ): Boolean {
@@ -333,6 +382,46 @@ internal fun Contacts.setRawContactPhoto(
 // region REMOVE PHOTO
 
 /**
+ * Removes the photo of this [MutableRawContact], pending an update API call.
+ *
+ * The photo will not be removed until the update API call is committed successfully.
+ *
+ * If you want to directly remove the photo from the database, without an update API call, use
+ * [ExistingRawContactEntityWithContactId.removePhotoDirect].
+ *
+ * ## No includes required
+ *
+ * When using update APIs, there is is no field required to be passed into the `include` function
+ * to make sure the photo is removed as long as this function is invoked.
+ *
+ * ## Not parcelable
+ *
+ * This action is ignored on parcel. This action will not be carried over across activities,
+ * fragments, or views during creation/recreation.
+ */
+fun MutableRawContact.removePhoto() {
+    photoDataOperation = PhotoDataOperation.RemovePhoto
+}
+
+/**
+ * Removes the pending photo of this [NewRawContact], pending an insert API call.
+ *
+ * Any photo set prior will not be included in the insert API call.
+ *
+ * ## Not parcelable
+ *
+ * This action is ignored on parcel. This action will not be carried over across activities,
+ * fragments, or views during creation/recreation.
+ */
+fun NewRawContact.removePhoto() {
+    photoDataOperation = PhotoDataOperation.RemovePhoto
+}
+
+// endregion
+
+// region REMOVE PHOTO DIRECT
+
+/**
  * Removes the photo of this [ExistingRawContactEntityWithContactId] directly from the database, if
  * one exists.
  *
@@ -348,6 +437,9 @@ internal fun Contacts.setRawContactPhoto(
  *
  * This function will make the changes to the Contacts Provider database immediately. You do not
  * need to use update APIs to commit the changes.
+ *
+ * If you want to remove the photo lazily, upon and update API call, use
+ * [MutableRawContact.removePhoto].
  *
  * ## Changes are not applied to the receiver
  *
@@ -365,15 +457,21 @@ internal fun Contacts.setRawContactPhoto(
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.removePhotoDirect(contacts: Contacts): Boolean {
-    if (!contacts.permissions.canUpdateDelete()) {
+fun ExistingRawContactEntityWithContactId.removePhotoDirect(contacts: Contacts): Boolean =
+    contacts.removePhotoDirect(id)
+
+/**
+ * Performs the actual removal of the photo.
+ */
+internal fun Contacts.removePhotoDirect(rawContactId: Long): Boolean {
+    if (!permissions.canUpdateDelete()) {
         return false
     }
 
-    return contacts.contentResolver.applyBatch(
-        newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
+    return contentResolver.applyBatch(
+        newDelete(if (rawContactId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri)
             .withSelection(
-                (Fields.RawContact.Id equalTo id)
+                (Fields.RawContact.Id equalTo rawContactId)
                         and (Fields.MimeType equalTo MimeType.Photo)
             )
             .build()
