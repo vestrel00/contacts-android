@@ -124,10 +124,10 @@ sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {
     abstract val forMatching: Set<T>
 }
 
-data class GenericDataField internal constructor(
-    override val columnName: String,
-    override val required: Boolean = false,
-) : AbstractDataField()
+data class GenericDataField internal constructor(override val columnName: String) :
+    AbstractDataField() {
+    override val required: Boolean = true
+}
 
 /**
  * Contains all fields / columns that are accessible via the Data table with joins from the
@@ -155,7 +155,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Contact = DataContactsFields()
 
     @JvmField
-    val DataId = GenericDataField(Data._ID, required = true)
+    val DataId = GenericDataField(Data._ID)
 
     @JvmField
     val Email = EmailFields()
@@ -170,12 +170,12 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Im = ImFields()
 
     @JvmField
-    val IsPrimary = GenericDataField(Data.IS_PRIMARY, required = true)
+    val IsPrimary = GenericDataField(Data.IS_PRIMARY)
 
     @JvmField
-    val IsSuperPrimary = GenericDataField(Data.IS_SUPER_PRIMARY, required = true)
+    val IsSuperPrimary = GenericDataField(Data.IS_SUPER_PRIMARY)
 
-    internal val MimeType = GenericDataField(Data.MIMETYPE, required = true)
+    internal val MimeType = GenericDataField(Data.MIMETYPE)
 
     @JvmField
     val Name = NameFields()
@@ -1091,12 +1091,36 @@ object RawContactsFields : FieldSet<RawContactsField>() {
 
     internal val Deleted = RawContactsField(RawContacts.DELETED)
 
+    /**
+     * See [RequiredRawContactsFields].
+     */
+    @JvmField
+    val Required = RequiredRawContactsFields
+
     override val all by unsafeLazy {
         mutableSetOf(
             Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
         ).apply {
             addAll(Options.all)
         }.toSet() // ensure that this is not modifiable at runtime
+    }
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+}
+
+/**
+ * The set of raw contacts fields that are required, internally by this library, to be included in
+ * all query results.
+ */
+object RequiredRawContactsFields : FieldSet<RawContactsField>() {
+
+    override val all by unsafeLazy {
+        setOf(RawContactsFields.Id)
     }
 
     /**

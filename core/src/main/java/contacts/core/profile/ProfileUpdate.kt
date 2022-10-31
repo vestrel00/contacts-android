@@ -3,7 +3,9 @@ package contacts.core.profile
 import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.util.contacts
 import contacts.core.util.isEmpty
+import contacts.core.util.rawContacts
 import contacts.core.util.unsafeLazy
 
 /**
@@ -132,7 +134,35 @@ interface ProfileUpdate : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): ProfileUpdate
 
     /**
-     * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
+     * Similar to [include] except this is really only used to specify
+     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields
+     * and the corresponding properties are immutable (exception for options).
+     *
+     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
+     * included. Otherwise, only the specified fields will be included in addition to required API
+     * fields [RawContactsFields.Required].
+     */
+    fun includeRawContactsFields(vararg fields: RawContactsField): ProfileUpdate
+
+    /**
+     * See [ProfileUpdate.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Collection<RawContactsField>): ProfileUpdate
+
+    /**
+     * See [ProfileUpdate.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileUpdate
+
+    /**
+     * See [ProfileUpdate.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): ProfileUpdate
+
+    /**
+     * Adds the given profile [rawContacts] to the update queue, which will be updated on [commit].
+     *
+     * Each [ExistingRawContactEntity] will be updated separately.
      */
     fun rawContacts(vararg rawContacts: ExistingRawContactEntity): ProfileUpdate
 
@@ -147,8 +177,10 @@ interface ProfileUpdate : CrudApi {
     fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): ProfileUpdate
 
     /**
-     * Adds the profile ([ExistingRawContactEntity.isProfile]) [ExistingContactEntity.rawContacts]s
-     * of the given [contact] to the update queue, which will be updated on [commit].
+     * Adds the profile [contact] to the update queue, which will be updated on [commit].
+     *
+     * All of the [ExistingContactEntity.rawContacts] will be updated together in one atomic
+     * operation.
      */
     fun contact(contact: ExistingContactEntity): ProfileUpdate
 
@@ -217,15 +249,27 @@ interface ProfileUpdate : CrudApi {
     interface Result : CrudApi.Result {
 
         /**
-         * True if all of the RawContacts have successfully been updated. False if even one
-         * update failed.
+         * True if the profile Contact and RawContacts have successfully been updated. False if
+         * even one update failed.
          */
         val isSuccessful: Boolean
 
         /**
          * True if the [rawContact] has been successfully updated. False otherwise.
+         *
+         * Use this for checking the success status of [ExistingRawContactEntity] passed in
+         * [rawContacts].
          */
         fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
+
+        /**
+         * True if the [contact] along with all of its [ExistingContactEntity.rawContacts] have
+         * been successfully updated. False otherwise.
+         *
+         * Use this for checking the success status of [ExistingContactEntity] passed in
+         * [ProfileUpdate.contact].
+         */
+        fun isSuccessful(contact: ExistingContactEntity): Boolean
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -240,6 +284,8 @@ private class ProfileUpdateImpl(
 
     private var deleteBlanks: Boolean = true,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
+    private var contact: ExistingContactEntity? = null,
     private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -250,6 +296,8 @@ private class ProfileUpdateImpl(
             ProfileUpdate {
                 deleteBlanks: $deleteBlanks
                 include: $include
+                includeRawContactsFields: $includeRawContactsFields
+                contact: $contact
                 rawContacts: $rawContacts
                 hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
@@ -261,7 +309,9 @@ private class ProfileUpdateImpl(
 
         deleteBlanks,
         include,
+        includeRawContactsFields,
         // Redact contact data.
+        contact?.redactedCopy(),
         rawContacts.asSequence().redactedCopies().toMutableSet(),
 
         isRedacted = true
@@ -286,6 +336,25 @@ private class ProfileUpdateImpl(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
+    override fun includeRawContactsFields(vararg fields: RawContactsField) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Collection<RawContactsField>) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileUpdate =
+        apply {
+            includeRawContactsFields = if (fields.isEmpty()) {
+                DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+            } else {
+                Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+            }
+        }
+
+    override fun includeRawContactsFields(
+        fields: RawContactsFields.() -> Collection<RawContactsField>
+    ) = includeRawContactsFields(fields(RawContactsFields))
+
     override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())
 
@@ -297,8 +366,9 @@ private class ProfileUpdateImpl(
             this.rawContacts.addAll(rawContacts.redactedCopiesOrThis(isRedacted))
         }
 
-    override fun contact(contact: ExistingContactEntity): ProfileUpdate =
-        rawContacts(contact.rawContacts)
+    override fun contact(contact: ExistingContactEntity): ProfileUpdate = apply {
+        this.contact = contact
+    }
 
     override fun commit(): ProfileUpdate.Result = commit { false }
 
@@ -308,59 +378,105 @@ private class ProfileUpdateImpl(
         return if (rawContacts.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
             ProfileUpdateFailed()
         } else {
-            val results = mutableMapOf<Long, Boolean>()
+            val rawContactIdsResultMap = mutableMapOf<Long, Boolean>()
+
+            val contactUpdateSuccess = contact?.let {
+                if (it.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // non-profile updates. Otherwise, operation can succeed. This is only done to
+                    // enforce API design.
+                    false
+                } else if (it.isBlank && deleteBlanks) {
+                    contentResolver.deleteRawContactsWhere(RawContactsFields.ContactId equalTo it.id)
+                } else {
+                    contactsApi.updateContact(
+                        include.fields,
+                        includeRawContactsFields.fields,
+                        it
+                    )
+                }
+            }
+
             for (rawContact in rawContacts) {
                 if (cancel()) {
                     break
                 }
 
-                results[rawContact.id] = if (!rawContact.isProfile) {
+                rawContactIdsResultMap[rawContact.id] = if (!rawContact.isProfile) {
                     // Intentionally fail the operation to ensure that this is only used for profile
                     // updates. Otherwise, operation can succeed. This is only done to enforce API
                     // design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    contentResolver.deleteRawContactsWhere(RawContactsFields.Id equalTo rawContact.id)
+                    contentResolver.deleteProfileContact()
                 } else {
-                    contactsApi.updateRawContact(include.fields, rawContact)
+                    contactsApi.updateRawContact(
+                        include.fields,
+                        includeRawContactsFields.fields,
+                        rawContact
+                    )
                 }
             }
 
-            ProfileUpdateResult(results)
+            ProfileUpdateResult(contactUpdateSuccess, rawContactIdsResultMap)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
+
+    private companion object {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+            RawContactsFields.Required.all.asSequence()
+        }
+    }
 }
 
 private class ProfileUpdateResult private constructor(
+    private val contactUpdateSuccess: Boolean?,
     private val rawContactIdsResultMap: Map<Long, Boolean>,
     override val isRedacted: Boolean
 ) : ProfileUpdate.Result {
 
-    constructor(rawContactIdsResultMap: Map<Long, Boolean>) : this(rawContactIdsResultMap, false)
+    constructor(contactUpdateSuccess: Boolean?, rawContactIdsResultMap: Map<Long, Boolean>) : this(
+        contactUpdateSuccess,
+        rawContactIdsResultMap,
+        false
+    )
 
     override fun toString(): String =
         """
             ProfileUpdate.Result {
                 isSuccessful: $isSuccessful
+                contactUpdateSuccess: $contactUpdateSuccess
                 rawContactIdsResultMap: $rawContactIdsResultMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): ProfileUpdate.Result = ProfileUpdateResult(
+        contactUpdateSuccess,
         rawContactIdsResultMap,
         isRedacted = true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        // By default, all returns true when the collection is empty. So, we override that.
-        rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+        if (rawContactIdsResultMap.isEmpty() && contactUpdateSuccess == null) {
+            // Updating nothing is NOT successful.
+            false
+        } else {
+            // There is failure if it is NOT empty and one of its entries is false.
+            val hasRawContactFailure = rawContactIdsResultMap.any { !it.value }
+            val contactUpdateFailure = contactUpdateSuccess == false
+            !hasRawContactFailure && !contactUpdateFailure
+        }
     }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
         rawContactIdsResultMap.getOrElse(rawContact.id) { false }
+
+    override fun isSuccessful(contact: ExistingContactEntity): Boolean =
+        contactUpdateSuccess == true
 }
 
 
@@ -383,4 +499,6 @@ private class ProfileUpdateFailed private constructor(
     override val isSuccessful: Boolean = false
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = false
+
+    override fun isSuccessful(contact: ExistingContactEntity): Boolean = false
 }

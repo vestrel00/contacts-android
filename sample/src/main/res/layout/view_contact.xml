@@ -3,53 +3,13 @@
 <!-- [ANDROID X] Not using ConstraintLayout to avoid dependency on androidx.constraintlayout -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Contact options
-         These should always remain enabled as they update immediately, instead of on save/update.
-    -->
-    <LinearLayout
+    <!-- Contact options -->
+
+    <contacts.ui.view.OptionsView
         android:id="@+id/options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/starred"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:scaleType="fitCenter" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/contact_send_to_voicemail"
-                android:src="@android:drawable/stat_notify_voicemail" />
-
-            <CheckBox
-                android:id="@+id/sendToVoicemail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/customRingtone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:scaleType="fitCenter"
-            android:src="@android:drawable/ic_popup_reminder"/>
-
-    </LinearLayout>
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
 
     <!-- Contact photo -->
 

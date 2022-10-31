@@ -29,6 +29,14 @@ public class QueryGroupsActivity extends Activity {
                 .find();
     }
 
+    List<Group> getGroupsByTitle(String title) {
+        return ContactsFactory.create(this)
+                .groups()
+                .query()
+                .where(contains(GroupsFields.Title, title))
+                .find();
+    }
+
     List<Group> getGroupsByGroupMembership(List<GroupMembership> groupMemberships) {
         List<Long> groupsIds = new ArrayList<>();
         for (GroupMembership groupMembership : groupMemberships) {
@@ -41,15 +49,6 @@ public class QueryGroupsActivity extends Activity {
                 .groups()
                 .query()
                 .where(in(GroupsFields.Id, groupsIds))
-                .find();
-    }
-
-    List<Group> getFavoritesGroups(Account account) {
-        return ContactsFactory.create(this)
-                .groups()
-                .query()
-                .accounts(account)
-                .where(equalTo(GroupsFields.Favorites, true))
                 .find();
     }
 

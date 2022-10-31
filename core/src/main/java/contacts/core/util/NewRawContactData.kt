@@ -216,8 +216,19 @@ fun NewRawContact.setNote(configureNote: NewNote.() -> Unit) {
     setNote(NewNote().apply(configureNote))
 }
 
-// Options intentionally left out because a Contact and associated RawContacts have independent
-// Options.
+/**
+ * Sets the [NewRawContact.options] to the given [options].
+ */
+fun NewRawContact.setOptions(options: NewOptions?) {
+    this.options = options?.redactedCopyOrThis(isRedacted)
+}
+
+/**
+ * Sets the [NewRawContact.options] (configured by [configureOptions]) to a new options.
+ */
+fun NewRawContact.setOptions(configureOptions: NewOptions.() -> Unit) {
+    setOptions(NewOptions().apply(configureOptions))
+}
 
 /**
  * Sets the [NewRawContact.organization] to the given [organization].
@@ -265,9 +276,6 @@ fun NewRawContact.removePhone(phone: NewPhone, byReference: Boolean = false) {
 fun NewRawContact.removeAllPhones() {
     phones.clear()
 }
-
-// Photo intentionally left out because a Contact and associated RawContacts have independent
-// Photos.
 
 /**
  * Adds the given [relation] to [NewRawContact.relations].

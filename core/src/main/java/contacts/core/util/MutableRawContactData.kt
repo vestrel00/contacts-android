@@ -216,8 +216,19 @@ fun MutableRawContact.setNote(configureNote: NewNote.() -> Unit) {
     setNote(NewNote().apply(configureNote))
 }
 
-// Options intentionally left out because a Contact and associated RawContacts have independent
-// Options.
+/**
+ * Sets the [MutableRawContact.options] to the given [options].
+ */
+fun MutableRawContact.setOptions(options: MutableOptionsEntity?) {
+    this.options = options?.redactedCopyOrThis(isRedacted)
+}
+
+/**
+ * Sets the [MutableRawContact.options] (configured by [configureOptions]) to a new options.
+ */
+fun MutableRawContact.setOptions(configureOptions: NewOptions.() -> Unit) {
+    setOptions(NewOptions().apply(configureOptions))
+}
 
 /**
  * Sets the [MutableRawContact.organization] to the given [organization].
@@ -265,9 +276,6 @@ fun MutableRawContact.removePhone(phone: MutablePhoneEntity, byReference: Boolea
 fun MutableRawContact.removeAllPhones() {
     phones.clear()
 }
-
-// Photo intentionally left out because a Contact and associated RawContacts have independent
-// Photos.
 
 /**
  * Adds the given [relation] to [MutableRawContact.relations].

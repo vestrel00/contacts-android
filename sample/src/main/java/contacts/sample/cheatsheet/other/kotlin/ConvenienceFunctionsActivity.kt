@@ -48,7 +48,4 @@ class ConvenienceFunctionsActivity : Activity() {
 
     fun getGroupOfGroupMemberships(groupMemberships: List<GroupMembership>): List<Group> =
         groupMemberships.groups(Contacts(this))
-
-    fun getRawContactOfBlankRawContact(blankRawContact: BlankRawContact): RawContact? =
-        blankRawContact.toRawContact(Contacts(this))
 }

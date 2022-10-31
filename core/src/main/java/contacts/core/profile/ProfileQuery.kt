@@ -8,10 +8,7 @@ import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.mapper.ContactsMapper
 import contacts.core.entities.table.ProfileUris
-import contacts.core.util.isEmpty
-import contacts.core.util.query
-import contacts.core.util.toRawContactsWhere
-import contacts.core.util.unsafeLazy
+import contacts.core.util.*
 
 /**
  * Queries the Contacts, RawContacts, and Data tables and returns the one and only profile
@@ -81,23 +78,24 @@ interface ProfileQuery : CrudApi {
     fun accounts(accounts: Sequence<Account?>): ProfileQuery
 
     /**
-     * Includes only the given set of [fields] (data) in each of the matching contacts.
+     * Includes only the given set of [fields] (data) in the profile Contact.
      *
-     * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
-     * which are always included.
+     * If no fields are specified, then all fields ([Fields.all]) are included. Otherwise, only the
+     * specified fields will be included in addition to required API fields [Fields.Required]
+     * (e.g. IDs), which are always included.
      *
-     * When all fields are included in a query operation, all properties of Contacts, RawContacts,
+     * When all fields are included in a query operation, all properties of the profile Contacts
      * and Data are populated with values from the database. Properties of fields that are included
      * are not guaranteed to be non-null because the database may actually have no data for the
      * corresponding field.
      *
-     * When only some fields are included, only those included properties of Contacts, RawContacts,
+     * When only some fields are included, only those included properties of the profile Contacts
      * and Data are populated with values from the database. Properties of fields that are not
      * included are guaranteed to be null.
      *
-     * Note that this may affect performance. It is recommended to only include fields that will be
-     * used to save CPU and memory.
+     * ## Performance
+     *
+     * It is recommended to only include fields that will be used to save CPU and memory.
      */
     fun include(vararg fields: AbstractDataField): ProfileQuery
 
@@ -115,6 +113,69 @@ interface ProfileQuery : CrudApi {
      * See [ProfileQuery.include].
      */
     fun include(fields: Fields.() -> Collection<AbstractDataField>): ProfileQuery
+
+    /**
+     * Includes [fields] from the RawContacts table corresponding to the following RawContacts
+     * properties;
+     *
+     * - [contacts.core.entities.RawContact.displayNamePrimary]
+     * - [contacts.core.entities.RawContact.displayNameAlt]
+     * - [contacts.core.entities.RawContact.account]
+     * - [contacts.core.entities.RawContact.options]
+     *
+     * For all other fields/properties, use [include].
+     *
+     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
+     * included. Otherwise, only the specified fields will be included in addition to required API
+     * fields [RawContactsFields.Required].
+     *
+     * When all fields are included in a query operation, all of the aforementioned properties of
+     * RawContacts are populated with values from the database. Properties of fields that are
+     * included are not guaranteed to be non-null because the database may actually have no data for
+     * the corresponding field.
+     *
+     * When only some fields are included, only those included properties of RawContacts are
+     * populated with values from the database. Properties of fields that are not included are
+     * guaranteed to be null.
+     *
+     * To include RawContact specific properties, use [ProfileQuery.includeRawContactsFields].
+     *
+     * ## Performance
+     *
+     * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * ## Developer notes
+     *
+     * So, why not just add these fields to [DataRawContactsFields]?
+     *
+     * The reason is that [DataRawContactsFields], and everything in [Fields], are used for
+     * **Data table** queries. Data table queries uses the
+     * [android.provider.ContactsContract.DataColumnsWithJoins], which does not include
+     * [android.provider.ContactsContract.SyncColumns] required to determine the
+     * [contacts.core.entities.RawContact.account].
+     *
+     * Furthermore, the display name and options values in the returned rows reference the Contact's
+     * values instead of the RawContact's values.
+     *
+     * Therefore, it made sense to make sure that [RawContactsFields] cannot be a part of a where
+     * clause but can be included.
+     */
+    fun includeRawContactsFields(vararg fields: RawContactsField): ProfileQuery
+
+    /**
+     * See [ProfileQuery.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Collection<RawContactsField>): ProfileQuery
+
+    /**
+     * See [ProfileQuery.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileQuery
+
+    /**
+     * See [ProfileQuery.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): ProfileQuery
 
     /**
      * Returns the profile [Contact] (inside the [Result]), if available.
@@ -198,6 +259,7 @@ private class ProfileQueryImpl(
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
 
     override val isRedacted: Boolean = false
 ) : ProfileQuery {
@@ -207,6 +269,7 @@ private class ProfileQueryImpl(
             ProfileQuery {
                 rawContactsWhere: $rawContactsWhere
                 include: $include
+                includeRawContactsFields: $includeRawContactsFields
                 hasPermission: ${permissions.canQuery()}
                 isRedacted: $isRedacted
             }
@@ -218,6 +281,7 @@ private class ProfileQueryImpl(
         // Redact Account information.
         rawContactsWhere?.redactedCopy(),
         include,
+        includeRawContactsFields,
 
         isRedacted = true
     )
@@ -245,6 +309,25 @@ private class ProfileQueryImpl(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
+    override fun includeRawContactsFields(vararg fields: RawContactsField) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Collection<RawContactsField>) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileQuery =
+        apply {
+            includeRawContactsFields = if (fields.isEmpty()) {
+                DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+            } else {
+                Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+            }
+        }
+
+    override fun includeRawContactsFields(
+        fields: RawContactsFields.() -> Collection<RawContactsField>
+    ) = includeRawContactsFields(fields(RawContactsFields))
+
     override fun find(): ProfileQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): ProfileQuery.Result {
@@ -253,7 +336,9 @@ private class ProfileQueryImpl(
         val profileContact = if (!permissions.canQuery()) {
             null
         } else {
-            contentResolver.resolve(customDataRegistry, rawContactsWhere, include, cancel)
+            contentResolver.resolve(
+                customDataRegistry, rawContactsWhere, include, includeRawContactsFields, cancel
+            )
         }
         return ProfileQueryResult(profileContact)
             .redactedCopyOrThis(isRedacted)
@@ -262,7 +347,11 @@ private class ProfileQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+            RawContactsFields.Required.all.asSequence()
+        }
     }
 }
 
@@ -270,16 +359,37 @@ private fun ContentResolver.resolve(
     customDataRegistry: CustomDataRegistry,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
+    includeRawContactsFields: Include<RawContactsField>,
     cancel: () -> Boolean
 ): Contact? {
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
 
-    // Data table queries using profile uris only return user profile data.
-    // Yes, I am aware of IS_USER_PROFILE and RAW_CONTACT_IS_USER_PROFILE but those seem to cause
-    // queries to throw an exception.
+    if (cancel() || rawContactIds.isEmpty()) {
+        return null
+    }
+
+    // Collect Contacts, RawContacts, and Data with this mapper.
     val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
-    // Get the Data, RawContacts, and Contact from the Data table.
+    // Collect the profile Contact, if exist.
+    query(
+        ProfileUris.CONTACTS.uri,
+        include.onlyContactsFields(),
+        null,
+        processCursor = contactsMapper::processContactsCursor
+    )
+
+    // Collect RawContacts.
+    if (!cancel() && rawContactIds.isNotEmpty()) {
+        query(
+            ProfileUris.RAW_CONTACTS.uri,
+            includeRawContactsFields,
+            RawContactsFields.Id `in` rawContactIds,
+            processCursor = contactsMapper::processRawContactsCursor
+        )
+    }
+
+    // Collect Data
     if (!cancel() && rawContactIds.isNotEmpty()) {
         query(
             ProfileUris.DATA.uri,
@@ -289,34 +399,7 @@ private fun ContentResolver.resolve(
         )
     }
 
-    // If Contact only has blank RawContacts (no Data rows), then we need to query the Contacts
-    // table. This query should be done before a potential query to the RawContacts table so that
-    // the mapper saves the Contact with the values in the Contacts table instead of the RawContacts
-    // table. Some fields such as options are different depending on the table. The Contacts and
-    // Data table contains options of the Contacts. The RawContacts table contains the options of
-    // the RawContacts. This libs' Contact model requires the options of the Contacts table.
-    if (!cancel() && rawContactIds.isNotEmpty() && contactsMapper.contactIds.isEmpty()) {
-        query(
-            ProfileUris.CONTACTS.uri,
-            include.onlyContactsFields(),
-            null,
-            processCursor = contactsMapper::processContactsCursor
-        )
-    }
-
-    // Get the blank RawContacts (no Data rows), which are those RawContacts that have not been
-    // retrieved from the data query.
-    val blankRawContactIds = rawContactIds.minus(contactsMapper.rawContactIds)
-    if (!cancel() && blankRawContactIds.isNotEmpty()) {
-        query(
-            ProfileUris.RAW_CONTACTS.uri,
-            include.onlyRawContactsFields(),
-            RawContactsFields.Id `in` blankRawContactIds,
-            processCursor = contactsMapper::processRawContactsCursor
-        )
-    }
-
-    return contactsMapper.map().firstOrNull()
+    return contactsMapper.mapContacts().firstOrNull()
 }
 
 private fun ContentResolver.rawContactIds(

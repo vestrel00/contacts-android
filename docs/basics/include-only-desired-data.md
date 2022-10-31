@@ -59,8 +59,9 @@ be included in addition to required API fields (e.g. IDs), which are always incl
 
 ## Using `include` in query APIs
 
-When using query APIs such as `Query`, `BroadQuery`, `ProfileQuery`, and `DataQuery`, you are able
-to specify all or only some kinds of data that you want to be included in the returned results.
+When using query APIs such as `Query`, `BroadQuery`, `PhoneLookupQuery`, `RawContactsQuery`,
+`ProfileQuery`, and `DataQuery`, you are able to specify all or only some kinds of data that you 
+want to be included in the returned results.
 
 When all fields are included in a query operation, all properties of Contacts, RawContacts, and Data
 are populated with values from the database. Properties of fields that are included are not 
@@ -74,12 +75,20 @@ guaranteed to be null.
 ### Optimizing queries
 
 When you are showing a list of Contacts using the `Query` and `BroadQuery` APIs, you typically only 
-display their thumbnail photo and display name. In such cases, you should only include those fields 
-in order to increase speed and lessen memory usage.
+show their thumbnail photo and display name.
 
 ```kotlin
 .include(Fields.Contact.PhotoThumbnailUri, Fields.Contact.DisplayNamePrimary)
 ```
+
+If instead you are showing a list of RawContacts directly instead of Contacts using the 
+`RawContactsQuery`, you typically only show their display name.
+
+```kotlin
+.includeRawContactsFields(RawContactsFields.DisplayNamePrimary)
+```
+
+In such cases, you should only include those fields in order to increase speed and lessen memory usage.
 
 Here is a sample benchmark running on an M1 MacBook Pro using a Pixel 4 API 30 emulator in 
 Android Studio. The Contacts Provider database contains 10,000 contacts each having exactly one 
@@ -194,15 +203,6 @@ To remove all emails from all contacts without updating anything else in the dat
 val contactsWithAllData = query.find()
 val contactsWithNoEmailData = removeEmailsFrom(contactsWithAllData)
 update.contacts(contactsWithNoEmailData).include(Fields.Email.all).commit()
-```
-
-Or alternatively,
-
-```kotlin
-val contactsWithNoData = query
-    .include(Fields.Required.all) // does not have to be Fields.Required.
-    .find()
-update.contacts(contactsWithNoData).include(Fields.Email.all).commit()
 ```
 
 ### Including a subset of field sets for "update"

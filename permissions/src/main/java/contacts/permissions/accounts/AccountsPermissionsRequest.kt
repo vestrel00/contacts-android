@@ -1,7 +1,10 @@
 package contacts.permissions.accounts
 
 import contacts.core.ContactsPermissions
-import contacts.core.accounts.*
+import contacts.core.accounts.Accounts
+import contacts.core.accounts.AccountsLocalRawContactsUpdate
+import contacts.core.accounts.AccountsPermissions
+import contacts.core.accounts.AccountsQuery
 import contacts.permissions.R
 import contacts.permissions.requestPermission
 import contacts.permissions.requestReadPermission
@@ -20,21 +23,6 @@ suspend fun Accounts.queryWithPermission(): AccountsQuery {
     }
 
     return query()
-}
-
-/**
- * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
- * requests for the permission, and then returns a new [AccountsRawContactsQuery] instance.
- *
- * If permission is already granted, then immediately returns a new [AccountsRawContactsQuery]
- * instance.
- */
-suspend fun Accounts.queryRawContactsWithPermission(): AccountsRawContactsQuery {
-    if (!contactsApi.accountsPermissions.canQueryRawContacts()) {
-        requestQueryRawContactsPermission()
-    }
-
-    return queryRawContacts()
 }
 
 /**
@@ -63,14 +51,6 @@ suspend fun Accounts.updateLocalRawContactsAccountWithPermission():
  */
 suspend fun requestQueryAccountsPermission(): Boolean =
     requestGetAccountsPermission() && requestReadPermission()
-
-/**
- * Requests the [ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until
- * the user either grants or denies the permission request.
- *
- * Returns true if permission is granted. False otherwise.
- */
-suspend fun requestQueryRawContactsPermission(): Boolean = requestReadPermission()
 
 /**
  * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and

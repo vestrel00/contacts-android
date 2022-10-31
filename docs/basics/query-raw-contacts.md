@@ -1,43 +1,81 @@
 # Query RawContacts
 
-This library provides the `AccountsRawContactsQuery` API that allows you to get a list of 
-RawContacts matching a specific search criteria.
+This library provides the `RawContactsQuery` API that allows you to get a list of RawContacts 
+matching a specific search criteria. Use this if you want to show RawContacts directly (something
+that the Google Contacts app does) instead of Contacts that may consist of several linked RawContacts.
 
-More specifically, this query returns `BlankRawContact`s, which are RawContacts that contains no 
-data (e.g. email, phone). It only contains critical information required for performing RawContact 
-operations such as associating local RawContacts to an Account.
-
-> ℹ️ For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
-
-An instance of the `AccountsRawContactsQuery` API is obtained by,
+An instance of the `RawContactsQuery` API is obtained by,
 
 ```kotlin
-val query = Contacts(context).accounts().queryRawContacts()
+val query = Contacts(context).rawContactsQuery()
 ```
+
+> ℹ️ For a broader, and more native Contacts app like query, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
+
+> ℹ️ For specialized matching of phone numbers and SIP addresses, use the `PhoneLookupQuery` API; [Query contacts by phone or SIP](./../basics/query-contacts-by-phone-or-sip.md).
+
+> ℹ️ If you want to get Contacts instead of RawContacts; [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+
+> ℹ️ If you want to query Data directly instead of Contacts, read [Query specific data kinds](./../data/query-data-sets.md).
+
+> ℹ️ If you want to get the device owner Contact Profile, read [Query device owner Contact profile](./../profile/query-profile.md).
 
 ## A basic query
 
-To get all RawContacts as blanks, 
+To get all RawContacts, 
 
 ```kotlin
-val rawContacts = Contacts(context).accounts().queryRawContacts().find()
+val rawContacts = Contacts(context).rawContactsQuery().find()
 ```
+
+## An advanced query
+
+To retrieve the first 5 RawContacts in the given account that has at least one email, skipping the 
+first 2, where the RawContact's display name starts with "a", ordered by the display name in 
+ascending order (ignoring case),
+
+```kotlin
+val rawContacts = rawContactsQuery
+    .rawContactsWhere(emptySet(), RawContactsFields.DisplayNamePrimary.isNotNullOrEmpty() )
+    .where { Email.Address.isNotNullOrEmpty() }
+    .orderBy(RawContactsFields.DisplayNamePrimary.asc())
+    .limit(5)
+    .offset(2)
+    .find()
+```
+
+## Including only specific data
+
+To include only the given set of fields (data) in each of the matching RawContacts,
+
+```kotlin
+.include(fields)
+```
+
+For example, to only include the RawContact's primary display name, and email and name fields,
+
+```kotlin
+.includeRawContactsFields(RawContactsFields.DisplayNamePrimary)
+.include { Email.all + Name.all }
+```
+
+For more info, read [Include only certain fields for read and write operations](./../basics/include-only-desired-data.md).
 
 ## Specifying Accounts
 
 To limit the search to only those RawContacts associated with one of the given accounts,
 
 ```kotlin
-.accounts(accounts)
+.rawContactsWhere(accounts, null)
 ```
 
 For example, to limit the search to contacts belonging to only one account,
 
 ```kotlin
-.accounts(Account("john.doe@gmail.com", "com.google"))
+.rawContactsWhere(listOf(Account("john.doe@gmail.com", "com.google")), null)
 ```
 
-> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+> ℹ️ For more info, read [Query for Accounts](../accounts/query-accounts.md).
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.
@@ -46,7 +84,7 @@ A null Account may be provided here, which results in RawContacts with no associ
 included in the search. RawContacts without an associated account are considered local contacts or
 device-only contacts, which are not synced.
 
-For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+For more info, read about [Local (device-only) contacts](../entities/about-local-contacts.md).
 
 > ℹ️ This may affect performance. This may require one or more additional queries, internally 
 > performed in this function, which increases the time required for the search. Therefore, you 
@@ -81,7 +119,7 @@ use the `limit` and `offset` functions;
 .offset(offset)
 ```
 
-For more info, read [Using limit and offset in queries](./../basics/limit-and-offset-queries.md).
+For more info, read [Using limit and offset in queries](limit-and-offset-queries.md).
 
 ## Executing the query
 
@@ -123,7 +161,7 @@ Queries are executed when the `find` function is invoked. The work is done in th
 the call-site. This may result in a choppy UI.
 
 To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
+For more info, read [Execute work outside of the UI thread using coroutines](../async/async-execution-coroutines.md).
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
@@ -136,52 +174,51 @@ Queries require the `android.permission.READ_CONTACTS` permission. If not grante
 do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module.
-For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
+For more info, read [Permissions handling using coroutines](../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## RawContacts from more than one account in the same list
 
 When you perform a query that returns groups from more than one account, you will get everything
-in the same `BlankRawContactsList`. This list is just like any other `List` except it also provides 
-an extra function that allows you to get a sublist with RawContacts belonging only to a particular 
-account.
+in the same list. This list is just like any other `List` except it also provides an extra function
+that allows you to get a sublist with RawContacts belonging only to a particular account.
 
 ```kotlin
-val rawContactsFromAccount = blankRawContactsList.from(account)
+val rawContactsFromAccount = rawContactsList.from(account)
 ```
 
-## Getting Contacts and RawContacts from BlankRawContacts
+## Getting Contacts from RawContacts
 
-If you want to get the Contacts and all associated RawContacts and Data from a set of `BlankRawContact`s,
+If you want to get the Contacts and all associated RawContacts and Data from a set of `RawContact`s,
 
 ```kotlin
 val contacts = Contacts(context)
     .query()
-    .where { RawContact.Id `in` blankRawContactIds }
+    .where { RawContact.Id `in` rawContactIds }
     .find()
 ```
 
-> ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ For more info, read [Query contacts (advanced)](query-contacts-advanced.md).
 
-If you need a more convenient way to convert the `BlankRawContact`s to `RawContacts`, use 
-`BlankRawContactToRawContact` extensions. For more info, read [Convenience functions](./../other/convenience-functions.md).
+If you need a more convenient way to convert the `RawContact`s to `Contact`s, use 
+`RawContactContact` extensions. For more info, read [Convenience functions](../other/convenience-functions.md).
 
 ## Profile RawContacts
 
-The `AccountsRawContactsQuery` API also supports querying the Profile (device owner) RawContacts. 
+The `RawContactsQuery` API also supports querying the Profile (device owner) RawContacts. 
 To get an instance of this API for Profile queries,
 
 ```kotlin
-val query = Contacts(context).accounts().profile().queryRawContacts()
+val query = Contacts(context).profile().rawContactsQuery()
 ```
 
 All queries will be limited to the Profile, whether it exists or not.
 
-## Using the `where` function to specify matching criteria
+## Using the `where` and `rawContactsWhere` function to specify matching criteria
 
-Use the `contacts.core.RawContactsField` combined with the extensions from `contacts.core.Where` to 
-form WHERE clauses. 
+Use the `contacts.core.Fields` and `contacts.core.RawContactsFields` combined with the extensions 
+from `contacts.core.Where` to form WHERE clauses. 
 
 > ℹ️ This docs page will not provide a tutorial on database where clauses. It assumes that you know 
 > the basics. If you don't know the basics, then search for [sqlite where clause](https://www.google.com/search?q=sqlite+where+clause). 
@@ -189,10 +226,19 @@ form WHERE clauses.
 For example, to get a list of RawContacts with the given IDs,
 
 ```kotlin
-val favoriteRawContacts = Contacts(context)
-    .accounts()
-    .queryRawContacts()
-    .where { Id `in` rawContactIds }
+val rawContacts = Contacts(context)
+    .rawContactsQuery()
+    .rawContactsWhere(emptyList(), RawContactsFields.Id `in` rawContactIds)
+    // alternatively, .where { RawContact.Id `in` rawContactIds }
+    .find()
+```
+
+To get all favorited/starred RawContacts,
+
+```kotlin
+fun getAllFavoriteRawContacts(): List<RawContact> = Contacts(this)
+    .rawContactsQuery()
+    .rawContactsWhere(emptyList(), RawContactsFields.Options.Starred equalTo true)
     .find()
 ```
 

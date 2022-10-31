@@ -8,7 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.provider.ContactsContract.RawContacts
 import contacts.core.*
-import contacts.core.entities.ExistingRawContactEntityWithContactId
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableRawContact
 import contacts.core.entities.NewRawContact
@@ -41,7 +41,7 @@ import java.io.InputStream
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoInputStream(contacts: Contacts): InputStream? {
+fun ExistingRawContactEntity.photoInputStream(contacts: Contacts): InputStream? {
     if (!contacts.permissions.canQuery()) {
         return null
     }
@@ -79,7 +79,7 @@ fun ExistingRawContactEntityWithContactId.photoInputStream(contacts: Contacts): 
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoBytes(contacts: Contacts): ByteArray? =
+fun ExistingRawContactEntity.photoBytes(contacts: Contacts): ByteArray? =
     photoInputStream(contacts)?.apply {
         it.readBytes()
     }
@@ -101,7 +101,7 @@ fun ExistingRawContactEntityWithContactId.photoBytes(contacts: Contacts): ByteAr
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoBitmap(contacts: Contacts): Bitmap? =
+fun ExistingRawContactEntity.photoBitmap(contacts: Contacts): Bitmap? =
     photoInputStream(contacts)?.apply {
         BitmapFactory.decodeStream(it)
     }
@@ -123,7 +123,7 @@ fun ExistingRawContactEntityWithContactId.photoBitmap(contacts: Contacts): Bitma
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoBitmapDrawable(contacts: Contacts): BitmapDrawable? =
+fun ExistingRawContactEntity.photoBitmapDrawable(contacts: Contacts): BitmapDrawable? =
     photoInputStream(contacts)?.apply {
         BitmapDrawable(contacts.resources, it)
     }
@@ -157,7 +157,7 @@ internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoThumbnailInputStream(
+fun ExistingRawContactEntity.photoThumbnailInputStream(
     contacts: Contacts
 ): InputStream? {
     if (!contacts.permissions.canQuery()) {
@@ -192,7 +192,7 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailInputStream(
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoThumbnailBytes(contacts: Contacts): ByteArray? =
+fun ExistingRawContactEntity.photoThumbnailBytes(contacts: Contacts): ByteArray? =
     photoThumbnailInputStream(contacts)?.apply {
         it.readBytes()
     }
@@ -214,7 +214,7 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBytes(contacts: Contacts
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
+fun ExistingRawContactEntity.photoThumbnailBitmap(contacts: Contacts): Bitmap? =
     photoThumbnailInputStream(contacts)?.apply {
         BitmapFactory.decodeStream(it)
     }
@@ -236,7 +236,7 @@ fun ExistingRawContactEntityWithContactId.photoThumbnailBitmap(contacts: Contact
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.photoThumbnailBitmapDrawable(
+fun ExistingRawContactEntity.photoThumbnailBitmapDrawable(
     contacts: Contacts
 ): BitmapDrawable? = photoThumbnailInputStream(contacts)?.apply {
     BitmapDrawable(contacts.resources, it)
@@ -292,11 +292,11 @@ fun NewRawContact.setPhoto(photoData: PhotoData) {
 // region SET PHOTO DIRECT
 
 /**
- * Sets the photo of this [ExistingRawContactEntityWithContactId] directly to the database. If a
- * photo already exists, it will be overwritten. The Contacts Provider automatically creates a
- * downsized version of this as the thumbnail.
+ * Sets the photo of this [ExistingRawContactEntity] directly to the database. If a photo already
+ * exists, it will be overwritten. The Contacts Provider automatically creates a downsized version
+ * of this as the thumbnail.
  *
- * If this [ExistingRawContactEntityWithContactId] is the only one that make up a
+ * If this [ExistingRawContactEntity] is the only one that make up a
  * [contacts.core.entities.ContactEntity], then the photo set here will also be used by the
  * Contacts Provider as the contact photo. Otherwise, it may or may not be the photo picked by the
  * Contacts Provider as the contact photo.
@@ -333,7 +333,7 @@ fun NewRawContact.setPhoto(photoData: PhotoData) {
  * documentation.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.setPhotoDirect(
+fun ExistingRawContactEntity.setPhotoDirect(
     contacts: Contacts,
     photoData: PhotoData
 ): Boolean = contacts.setRawContactPhotoDirect(id, photoData)
@@ -387,7 +387,7 @@ internal fun Contacts.setRawContactPhotoDirect(
  * The photo will not be removed until the update API call is committed successfully.
  *
  * If you want to directly remove the photo from the database, without an update API call, use
- * [ExistingRawContactEntityWithContactId.removePhotoDirect].
+ * [ExistingRawContactEntity.removePhotoDirect].
  *
  * ## No includes required
  *
@@ -422,10 +422,9 @@ fun NewRawContact.removePhoto() {
 // region REMOVE PHOTO DIRECT
 
 /**
- * Removes the photo of this [ExistingRawContactEntityWithContactId] directly from the database, if
- * one exists.
+ * Removes the photo of this [ExistingRawContactEntity] directly from the database, if one exists.
  *
- * If this [ExistingRawContactEntityWithContactId] is the only one that make up a
+ * If this [ExistingRawContactEntity] is the only one that make up a
  * [contacts.core.entities.ContactEntity], then the contact photo will also be removed. Otherwise,
  * it may or may not affect the contact photo.
  *
@@ -457,13 +456,13 @@ fun NewRawContact.removePhoto() {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntityWithContactId.removePhotoDirect(contacts: Contacts): Boolean =
-    contacts.removePhotoDirect(id)
+fun ExistingRawContactEntity.removePhotoDirect(contacts: Contacts): Boolean =
+    contacts.removeRawContactPhotoDirect(id)
 
 /**
  * Performs the actual removal of the photo.
  */
-internal fun Contacts.removePhotoDirect(rawContactId: Long): Boolean {
+internal fun Contacts.removeRawContactPhotoDirect(rawContactId: Long): Boolean {
     if (!permissions.canUpdateDelete()) {
         return false
     }

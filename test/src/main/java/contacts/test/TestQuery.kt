@@ -44,6 +44,19 @@ internal class TestQuery(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
+    override fun includeRawContactsFields(vararg fields: RawContactsField): TestQuery =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Collection<RawContactsField>): TestQuery =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): TestQuery = apply {
+        query.includeRawContactsFields(fields)
+    }
+
+    override fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): TestQuery =
+        includeRawContactsFields(fields(RawContactsFields))
+
     override fun where(where: Where<AbstractDataField>?): TestQuery = apply {
         // Make sure only RawContacts with the test marker data are queried.
         query.where(

@@ -61,7 +61,7 @@ sealed interface ContactEntity : Entity {
      * If data rows suitable to be a [ContactEntity.displayNamePrimary] are not available, it will
      * be null.
      *
-     * Data suitable to be a Contacts row display name are;
+     * Data suitable to be the contact's display name are;
      *
      * - [Organization]
      * - [Email]
@@ -79,6 +79,11 @@ sealed interface ContactEntity : Entity {
      * added back the same character (undo), and then saved. It still counts as the most recently
      * updated. This logic is not implemented in this library. It is up to the consumers to implement it
      * or not, or do it differently.
+     *
+     * ## [ContactEntity.displayNamePrimary] vs [ExistingRawContactEntity.displayNamePrimary]
+     *
+     * The [ContactEntity.displayNamePrimary] holds the same value as **one of its** constituent
+     * RawContacts.
      */
     val displayNamePrimary: String?
 
@@ -103,17 +108,15 @@ sealed interface ContactEntity : Entity {
     val lastUpdatedTimestamp: Date?
 
     /**
-     * Contains options for this contact and all of the [RawContact]s associated with it (not
-     * limited to the [rawContacts] in this instance).
+     * The [OptionsEntity] for this contact.
+     *
+     * ## [ContactEntity.options] vs [RawContactEntity.options]
      *
      * Changes to the options of a RawContact may affect the options of the parent Contact. On the
      * other hand, changes to the options of the parent Contact will be propagated to all child
      * RawContact options.
-     *
-     * This options instance will be ignored for update operations. Use the ContactOptions extension
-     * functions to modify options or get the most up-to-date options.
      */
-    val options: Options?
+    val options: OptionsEntity?
 
     /**
      * The uri to the full-sized image of this contact. This full sized image is from the associated
@@ -332,7 +335,7 @@ data class Contact internal constructor(
 
         lastUpdatedTimestamp = lastUpdatedTimestamp,
 
-        options = options,
+        options = options?.mutableCopy(),
 
         photoFileId = photoFileId,
         photoUri = photoUri,
@@ -372,7 +375,7 @@ data class MutableContact internal constructor(
 
     override val lastUpdatedTimestamp: Date?,
 
-    override val options: Options?,
+    override var options: MutableOptionsEntity?,
 
     override val photoFileId: Long?,
     override val photoUri: Uri?,

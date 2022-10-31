@@ -77,24 +77,6 @@ internal fun Include<AbstractDataField>.onlyContactsFields(): Include<ContactsFi
 )
 
 /**
- * Returns a new instance of [Include] where only [RawContactsFields] in [this] are included.
- *
- * This is used to convert an [Include] of [DataFields] to [RawContactsFields].
- */
-internal fun Include<AbstractDataField>.onlyRawContactsFields(): Include<RawContactsField> =
-    Include(
-        // We are unable to use the Iterable.intersect function because sets of DataFields and
-        // RawContactsFields have no intersection because they cannot be equal. We could override the
-        // equals and hashcode functions but it may have unwanted side effects so we won't for now.
-        RawContactsFields.all
-            .filter { columnNames.contains(it.columnName) }
-            // DataRawContactsFields.Id has a different columnName than RawContactsFields.Id.
-            .plus(RawContactsFields.Id)
-            // DataContactsFields.Id has a different columnName than RawContactsFields.ContactId.
-            .plus(RawContactsFields.ContactId)
-    )
-
-/**
  * Returns true if there is at least one field belonging to the Data table that is in this includes.
  *
  * Note that [AbstractDataField] has 4 different direct subtypes;
@@ -104,8 +86,8 @@ internal fun Include<AbstractDataField>.onlyRawContactsFields(): Include<RawCont
  * - [GenericDataField]
  * - [DataField]
  *
- * Instances of [DataRawContactsField] and [DataContactsField] represent fields from the RawContacts
- * and Contacts tables respectively.
+ * Instances of [DataRawContactsField] and [DataContactsField] represent joined fields from the
+ * RawContacts and Contacts tables respectively.
  *
  * Instances of [GenericDataField] represent fields from the Data table. However, they do not
  * represent any intrinsic data (e.g. email, phone). Furthermore, all of them are a part of

@@ -70,7 +70,7 @@ The `core` module provides,
 - ✅ [Query](/docs/sim/query-sim-contacts.md), [insert](/docs/sim/insert-sim-contacts.md),
   [update](/docs/sim/update-sim-contacts.md), and [delete](/docs/sim/delete-sim-contacts.md) **SIM card contacts**
 - ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table
-- ✅ [Query](/docs/accounts/query-raw-contacts.md) for just RawContacts
+- ✅ [Query](/docs/basics/query-raw-contacts.md) for just RawContacts
 - ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md)
 - ✅ [**Link/unlink**](/docs/other/link-unlink-contacts.md) two or more Contacts
 - ✅ [Get/set contact options](/docs/other/get-set-clear-contact-raw-contact-options.md);

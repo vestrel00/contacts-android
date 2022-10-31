@@ -10,11 +10,6 @@ import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
 import contacts.core.util.*
-import contacts.core.util.PhotoDataOperation
-import contacts.core.util.applyBatch
-import contacts.core.util.isEmpty
-import contacts.core.util.setRawContactPhotoDirect
-import contacts.core.util.unsafeLazy
 
 /**
  * Updates one or more contacts in the Contacts Provider database to ensure that it contains the
@@ -134,7 +129,35 @@ interface Update : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): Update
 
     /**
+     * Similar to [include] except this is really only used to specify
+     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields
+     * and the corresponding properties are immutable (exception for options).
+     *
+     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
+     * included. Otherwise, only the specified fields will be included in addition to required API
+     * fields [RawContactsFields.Required].
+     */
+    fun includeRawContactsFields(vararg fields: RawContactsField): Update
+
+    /**
+     * See [Update.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Collection<RawContactsField>): Update
+
+    /**
+     * See [Update.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Sequence<RawContactsField>): Update
+
+    /**
+     * See [Update.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): Update
+
+    /**
      * Adds the given [rawContacts] to the update queue, which will be updated on [commit].
+     *
+     * Each [ExistingRawContactEntity] will be updated separately.
      */
     fun rawContacts(vararg rawContacts: ExistingRawContactEntity): Update
 
@@ -149,10 +172,11 @@ interface Update : CrudApi {
     fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Update
 
     /**
-     * Adds the [ExistingRawContactEntity]s of the given [contacts] to the update queue, which will
-     * be updated on [commit].
+     * Adds the given [contacts] to the update queue, which will be updated on [commit].
      *
-     * See [rawContacts].
+     * Each [ExistingContactEntity] will be updated separately. However, all of the
+     * [ExistingContactEntity.rawContacts] of a [ExistingContactEntity] will be updated together
+     * in one atomic operation.
      */
     fun contacts(vararg contacts: ExistingContactEntity): Update
 
@@ -231,19 +255,17 @@ interface Update : CrudApi {
 
         /**
          * True if the [rawContact] has been successfully updated. False otherwise.
+         *
+         * Use this for checking the success status of [ExistingRawContactEntity] passed in
+         * [rawContacts].
          */
         fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
 
         /**
-         * True if all of the [ExistingContactEntity.rawContacts] has been successfully updated.
-         * False otherwise.
+         * True if the [contact] along with all of its [ExistingContactEntity.rawContacts] have
+         * been successfully updated. False otherwise.
          *
-         * ## Important
-         *
-         * If this [contact] has as [ExistingRawContactEntity] that has not been updated, then this
-         * will return false. This may occur if only some (not all) of the
-         * [ExistingRawContactEntity] in [ExistingContactEntity.rawContacts] have been added to the
-         * update queue via [Update.rawContacts].
+         * Use this for checking the success status of [ExistingContactEntity] passed in [contacts].
          */
         fun isSuccessful(contact: ExistingContactEntity): Boolean
 
@@ -260,6 +282,8 @@ private class UpdateImpl(
 
     private var deleteBlanks: Boolean = true,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
+    private val contacts: MutableSet<ExistingContactEntity> = mutableSetOf(),
     private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -270,6 +294,8 @@ private class UpdateImpl(
             Update {
                 deleteBlanks: $deleteBlanks
                 include: $include
+                includeRawContactsFields: $includeRawContactsFields
+                contacts: $contacts
                 rawContacts: $rawContacts
                 hasPermission: ${permissions.canUpdateDelete()}
                 isRedacted: $isRedacted
@@ -281,7 +307,9 @@ private class UpdateImpl(
 
         deleteBlanks,
         include,
+        includeRawContactsFields,
         // Redact contact data.
+        contacts.asSequence().redactedCopies().toMutableSet(),
         rawContacts.asSequence().redactedCopies().toMutableSet(),
 
         isRedacted = true
@@ -306,6 +334,24 @@ private class UpdateImpl(
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
 
+    override fun includeRawContactsFields(vararg fields: RawContactsField) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Collection<RawContactsField>) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): Update = apply {
+        includeRawContactsFields = if (fields.isEmpty()) {
+            DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+        } else {
+            Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+        }
+    }
+
+    override fun includeRawContactsFields(
+        fields: RawContactsFields.() -> Collection<RawContactsField>
+    ) = includeRawContactsFields(fields(RawContactsFields))
+
     override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())
 
@@ -322,24 +368,52 @@ private class UpdateImpl(
     override fun contacts(contacts: Collection<ExistingContactEntity>) =
         contacts(contacts.asSequence())
 
-    override fun contacts(contacts: Sequence<ExistingContactEntity>): Update =
-        rawContacts(contacts.flatMap { it.rawContacts.asSequence() })
+    override fun contacts(contacts: Sequence<ExistingContactEntity>): Update = apply {
+        this.contacts.addAll(contacts.redactedCopiesOrThis(isRedacted))
+    }
 
     override fun commit(): Update.Result = commit { false }
 
     override fun commit(cancel: () -> Boolean): Update.Result {
         onPreExecute()
 
-        return if (rawContacts.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+        return if (
+            (contacts.isEmpty() && rawContacts.isEmpty()) ||
+            !permissions.canUpdateDelete() ||
+            cancel()
+        ) {
             UpdateFailed()
         } else {
-            val results = mutableMapOf<Long, Boolean>()
+            val contactIdsResultMap = mutableMapOf<Long, Boolean>()
+            val rawContactIdsResultMap = mutableMapOf<Long, Boolean>()
+
+            for (contact in contacts) {
+                if (cancel()) {
+                    break
+                }
+
+                contactIdsResultMap[contact.id] = if (contact.isProfile) {
+                    // Intentionally fail the operation to ensure that this is only used for
+                    // non-profile updates. Otherwise, operation can succeed. This is only done to
+                    // enforce API design.
+                    false
+                } else if (contact.isBlank && deleteBlanks) {
+                    contentResolver.deleteRawContactsWhere(RawContactsFields.ContactId equalTo contact.id)
+                } else {
+                    contactsApi.updateContact(
+                        include.fields,
+                        includeRawContactsFields.fields,
+                        contact
+                    )
+                }
+            }
+
             for (rawContact in rawContacts) {
                 if (cancel()) {
                     break
                 }
 
-                results[rawContact.id] = if (rawContact.isProfile) {
+                rawContactIdsResultMap[rawContact.id] = if (rawContact.isProfile) {
                     // Intentionally fail the operation to ensure that this is only used for
                     // non-profile updates. Otherwise, operation can succeed. This is only done to
                     // enforce API design.
@@ -347,18 +421,81 @@ private class UpdateImpl(
                 } else if (rawContact.isBlank && deleteBlanks) {
                     contentResolver.deleteRawContactsWhere(RawContactsFields.Id equalTo rawContact.id)
                 } else {
-                    contactsApi.updateRawContact(include.fields, rawContact)
+                    contactsApi.updateRawContact(
+                        include.fields,
+                        includeRawContactsFields.fields,
+                        rawContact
+                    )
                 }
             }
-            UpdateResult(results)
+
+            UpdateResult(
+                contactIdsResultMap = contactIdsResultMap,
+                rawContactIdsResultMap = rawContactIdsResultMap
+            )
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
+
+    private companion object {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+            RawContactsFields.Required.all.asSequence()
+        }
+    }
 }
 
 /**
- * Updates an existing raw contact's data rows.
+ * Updates an existing profile or non-profile contact and all constituent raw contacts.
+ */
+internal fun Contacts.updateContact(
+    includeFields: Set<AbstractDataField>,
+    includeRawContactsFields: Set<RawContactsField>,
+    contact: ExistingContactEntity
+): Boolean {
+
+    val operations = arrayListOf<ContentProviderOperation>()
+
+    for (rawContact in contact.rawContacts) {
+        operations.addAll(
+            updateOperationsForRawContact(
+                includeFields, includeRawContactsFields, rawContact
+            )
+        )
+    }
+
+    // Apply the Contacts option operations after RawContacts options because Contacts options
+    // takes priority of RawContacts options. Users may exclude Fields.Contact.Options if they want
+    // to update RawContact options.
+    OptionsOperation().updateContactOptions(
+        contact.id,
+        contact.options,
+        Fields.Contact.Options.intersect(includeFields)
+    )?.let(operations::add)
+
+    /*
+     * Atomically perform all of the operations. All will either succeed or all will fail.
+     *
+     * Note that the returned result on success is ContentProviderResult(count=0). Therefore, we
+     * cannot use the count to determine if the operation succeeded or not.
+     */
+    val success = contentResolver.applyBatch(operations) != null
+
+    if (success) {
+        // We will attempt to set or remove the photos, ignoring whether they fails or succeeds.
+        // Users of this library can submit a request to change this behavior if they want =)
+        for (rawContact in contact.rawContacts) {
+            executePendingPhotoDataOperationFor(rawContact)
+        }
+        // Note that the contact photo operations are just propagated to the raw contacts.
+    }
+
+    return success
+}
+
+/**
+ * Updates an existing profile or non-profile raw contact's data rows.
  *
  * If a raw contact attribute is null or the attribute's values are all null, then the
  * corresponding data row (if any) will be deleted.
@@ -368,8 +505,52 @@ private class UpdateImpl(
  */
 internal fun Contacts.updateRawContact(
     includeFields: Set<AbstractDataField>,
+    includeRawContactsFields: Set<RawContactsField>,
     rawContact: ExistingRawContactEntity
 ): Boolean {
+
+    val operations = updateOperationsForRawContact(
+        includeFields, includeRawContactsFields, rawContact
+    )
+
+    /*
+     * Atomically perform all of the operations. All will either succeed or all will fail.
+     *
+     * Note that the returned result on success is ContentProviderResult(count=0). Therefore, we
+     * cannot use the count to determine if the operation succeeded or not.
+     */
+    val success = contentResolver.applyBatch(operations) != null
+
+    if (success) {
+        // We will attempt to set or remove the photo, ignoring whether it fails or succeeds.
+        // Users of this library can submit a request to change this behavior if they want =)
+        executePendingPhotoDataOperationFor(rawContact)
+    }
+
+    return success
+}
+
+private fun Contacts.executePendingPhotoDataOperationFor(rawContact: ExistingRawContactEntity) {
+    if (rawContact is MutableRawContact) {
+        rawContact.photoDataOperation?.let {
+            when (it) {
+                is PhotoDataOperation.SetPhoto -> setRawContactPhotoDirect(
+                    rawContact.id,
+                    it.photoData
+                )
+                is PhotoDataOperation.RemovePhoto -> removeRawContactPhotoDirect(rawContact.id)
+            }
+        }
+        // Perform the operation only once. Users can set a pending operation again if they'd like.
+        rawContact.photoDataOperation = null
+    }
+}
+
+private fun Contacts.updateOperationsForRawContact(
+    includeFields: Set<AbstractDataField>,
+    includeRawContactsFields: Set<RawContactsField>,
+    rawContact: ExistingRawContactEntity
+): ArrayList<ContentProviderOperation> {
     val isProfile = rawContact.isProfile
     val account = contentResolver.accountForRawContactWithId(rawContact.id)
     val hasAccount = account != null
@@ -439,6 +620,17 @@ internal fun Contacts.updateRawContact(
             rawContact.note, rawContact.id, contentResolver
         )?.let(operations::add)
 
+    // Apply the options operations after the group memberships operation.
+    // Any remove or add membership operation to the favorites group will be overshadowed by the
+    // value of Options.starred. If starred is true, the Contacts Provider will automatically add a
+    // group membership to the favorites group (if exist). If starred is false, then the favorites
+    // group membership will be removed.
+    OptionsOperation().updateRawContactOptions(
+        rawContact.id,
+        rawContact.options,
+        RawContactsFields.Options.all.intersect(includeRawContactsFields)
+    )?.let(operations::add)
+
     OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields))
         .updateInsertOrDeleteDataForRawContact(
             rawContact.organization, rawContact.id, contentResolver
@@ -485,25 +677,7 @@ internal fun Contacts.updateRawContact(
         )
     )
 
-    /*
-     * Atomically update all of the associated Data rows. All of the above operations will
-     * either succeed or fail.
-     *
-     * Note that the returned result on success is ContentProviderResult(count=0). Therefore, we
-     * cannot use the count to determine if the operation succeeded or not.
-     */
-    val success = contentResolver.applyBatch(operations) != null
-    if (success && rawContact is MutableRawContact) {
-        // We will attempt to set or remove the photo, ignoring whether it failed or succeeded.
-        // Users of this library can submit a request to change this behavior if they want =)
-        rawContact.photoDataOperation?.let {
-            when (it) {
-                is PhotoDataOperation.SetPhoto -> setRawContactPhotoDirect(rawContact.id, it.photoData)
-                is PhotoDataOperation.RemovePhoto -> removePhotoDirect(rawContact.id)
-            }
-        }
-    }
-    return success
+    return operations
 }
 
 private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
@@ -541,45 +715,49 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
 }
 
 private class UpdateResult private constructor(
+    private val contactIdsResultMap: Map<Long, Boolean>,
     private val rawContactIdsResultMap: Map<Long, Boolean>,
     override val isRedacted: Boolean
 ) : Update.Result {
 
-    constructor(rawContactIdsResultMap: Map<Long, Boolean>) : this(rawContactIdsResultMap, false)
+    constructor(
+        contactIdsResultMap: Map<Long, Boolean>,
+        rawContactIdsResultMap: Map<Long, Boolean>
+    ) : this(contactIdsResultMap, rawContactIdsResultMap, false)
 
     override fun toString(): String =
         """
             Update.Result {
                 isSuccessful: $isSuccessful
+                contactIdsResultMap: $contactIdsResultMap
                 rawContactIdsResultMap: $rawContactIdsResultMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): Update.Result = UpdateResult(
-        rawContactIdsResultMap,
+        contactIdsResultMap = contactIdsResultMap,
+        rawContactIdsResultMap = rawContactIdsResultMap,
         isRedacted = true
     )
 
     override val isSuccessful: Boolean by unsafeLazy {
-        // By default, all returns true when the collection is empty. So, we override that.
-        rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }
+        if (rawContactIdsResultMap.isEmpty() && contactIdsResultMap.isEmpty()) {
+            // Updating nothing is NOT successful.
+            false
+        } else {
+            // A set has failure if it is NOT empty and one of its entries is false.
+            val hasRawContactFailure = rawContactIdsResultMap.any { !it.value }
+            val hasContactFailure = contactIdsResultMap.any { !it.value }
+            !hasRawContactFailure && !hasContactFailure
+        }
     }
 
     override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
-        isSuccessful(rawContact.id)
+        rawContactIdsResultMap.getOrElse(rawContact.id) { false }
 
-    override fun isSuccessful(contact: ExistingContactEntity): Boolean {
-        for (rawContactId in contact.rawContacts.asSequence().map { it.id }) {
-            if (!isSuccessful(rawContactId)) {
-                return false
-            }
-        }
-        return true
-    }
-
-    private fun isSuccessful(rawContactId: Long?): Boolean = rawContactId != null
-            && rawContactIdsResultMap.getOrElse(rawContactId) { false }
+    override fun isSuccessful(contact: ExistingContactEntity): Boolean =
+        contactIdsResultMap.getOrElse(contact.id) { false }
 }
 
 private class UpdateFailed private constructor(

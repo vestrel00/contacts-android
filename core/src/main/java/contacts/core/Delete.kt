@@ -3,7 +3,7 @@ package contacts.core
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import contacts.core.entities.ExistingContactEntity
-import contacts.core.entities.ExistingRawContactEntityWithContactId
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.operation.RawContactsOperation
 import contacts.core.util.*
 
@@ -25,7 +25,7 @@ import contacts.core.util.*
  *
  * ## Usage
  *
- * To delete a [ExistingContactEntity] and all associated [ExistingRawContactEntityWithContactId]s;
+ * To delete a [ExistingContactEntity] and all associated [ExistingRawContactEntity]s;
  *
  * ```kotlin
  * val result = delete.contacts(contact).commit()
@@ -44,22 +44,21 @@ interface Delete : CrudApi {
      *
      * ## Note
      *
-     * Deleting all [ExistingRawContactEntityWithContactId]s of a [ExistingContactEntity] will
-     * result in the deletion of the associated [ExistingContactEntity]! However, the
-     * [ExistingContactEntity] will remain as long as it has at least has one associated
-     * [ExistingRawContactEntityWithContactId].
+     * Deleting all [ExistingRawContactEntity]s of a [ExistingContactEntity] will result in the
+     * deletion of the associated [ExistingContactEntity]! However, the [ExistingContactEntity]
+     * will remain as long as it has at least has one associated [ExistingRawContactEntity].
      */
-    fun rawContacts(vararg rawContacts: ExistingRawContactEntityWithContactId): Delete
+    fun rawContacts(vararg rawContacts: ExistingRawContactEntity): Delete
 
     /**
      * See [Delete.rawContacts].
      */
-    fun rawContacts(rawContacts: Collection<ExistingRawContactEntityWithContactId>): Delete
+    fun rawContacts(rawContacts: Collection<ExistingRawContactEntity>): Delete
 
     /**
      * See [Delete.rawContacts].
      */
-    fun rawContacts(rawContacts: Sequence<ExistingRawContactEntityWithContactId>): Delete
+    fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>): Delete
 
     /**
      * Adds the given [rawContactsIds] to the delete queue, which will be deleted on [commit].
@@ -110,7 +109,7 @@ interface Delete : CrudApi {
      * ## Note
      *
      * Deleting a [ExistingContactEntity] will result in the deletion of all associated
-     * [ExistingRawContactEntityWithContactId]s even those that are not in the
+     * [ExistingRawContactEntity]s even those that are not in the
      * [ExistingContactEntity.rawContacts] set!
      */
     fun contacts(vararg contacts: ExistingContactEntity): Delete
@@ -170,8 +169,8 @@ interface Delete : CrudApi {
     fun contactsWhereData(where: Fields.() -> Where<AbstractDataField>?): Delete
 
     /**
-     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the
-     * queue specified via;
+     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntity]s in the queue specified
+     * via;
      *
      * - [rawContacts]
      * - [rawContactsWithId]
@@ -196,8 +195,8 @@ interface Delete : CrudApi {
     fun commit(): Result
 
     /**
-     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntityWithContactId]s in the
-     * queue (added via [contacts]/[contactsWithId] and [rawContacts]/[rawContactsWithId]) in one
+     * Deletes the [ExistingContactEntity]s and [ExistingRawContactEntity]s in the queue
+     * (added via [contacts]/[contactsWithId] and [rawContacts]/[rawContactsWithId]) in one
      * transaction. Either ALL deletes succeed or ALL fail.
      *
      * ## Permissions
@@ -256,7 +255,7 @@ interface Delete : CrudApi {
          *
          * This is used in conjunction with [Delete.rawContacts].
          */
-        fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean
+        fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
 
         /**
          * True if the RawContact with the given [rawContactId] has been successfully deleted.
@@ -270,12 +269,12 @@ interface Delete : CrudApi {
         fun isRawContactDeleteSuccessful(rawContactId: Long): Boolean
 
         /**
-         * True the [ExistingContactEntity] (and all of its associated
-         * [ExistingRawContactEntityWithContactId]s) has been successfully deleted. False otherwise.
+         * True the [ExistingContactEntity] (and all of its associated [ExistingRawContactEntity]s)
+         * has been successfully deleted. False otherwise.
          *
-         * This does not indicate whether child [ExistingRawContactEntityWithContactId]s have
-         * been deleted or not. This may return false even if all associated
-         * [ExistingRawContactEntityWithContactId]s have been deleted.
+         * This does not indicate whether child [ExistingRawContactEntity]s have been deleted or
+         * not. This may return false even if all associated [ExistingRawContactEntity]s have been
+         * deleted.
          *
          * This is used in conjunction with [Delete.contacts].
          */
@@ -361,13 +360,13 @@ private class DeleteImpl(
         isRedacted = true
     )
 
-    override fun rawContacts(vararg rawContacts: ExistingRawContactEntityWithContactId) =
+    override fun rawContacts(vararg rawContacts: ExistingRawContactEntity) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Collection<ExistingRawContactEntityWithContactId>) =
+    override fun rawContacts(rawContacts: Collection<ExistingRawContactEntity>) =
         rawContacts(rawContacts.asSequence())
 
-    override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntityWithContactId>) =
+    override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>) =
         rawContactsWithId(rawContacts.asSequence().map { it.id })
 
     override fun rawContactsWithId(vararg rawContactsIds: Long) =
@@ -602,7 +601,7 @@ private class DeleteResult private constructor(
         }
     }
 
-    override fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean =
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
         isRawContactDeleteSuccessful(rawContact.id)
 
     override fun isRawContactDeleteSuccessful(rawContactId: Long): Boolean =
@@ -641,8 +640,7 @@ private class DeleteAllResult private constructor(
         isRedacted = true
     )
 
-    override fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean =
-        isSuccessful
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = isSuccessful
 
     override fun isRawContactDeleteSuccessful(rawContactId: Long): Boolean = isSuccessful
 

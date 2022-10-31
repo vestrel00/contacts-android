@@ -1,64 +1,126 @@
 # Get set contact options
 
-This library provides several functions to interact with Contact and RawContact options;
-starred, send to voicemail, and ringtone.
-
-## Contact and RawContact options affect each other
-
-Changes to the options of the parent Contact will be propagated to all child RawContact options.
-Changes to the options of a RawContact may or may not affect the options of the parent Contact.
+This library provides several functions to interact with Contact and RawContact options; starred,
+send to voicemail, and ringtone.
 
 ## Getting contact options
 
-To get Contact options,
+To get Contact and RawContact options using query APIs provided in this library,
 
 ```kotlin
-val options = contact.options(contactsApi)
-```
+val contacts = Contacts(context)
+    .query() // or broadQuery() and other query APIs
+    // if you only want to include only options in the returned Contacts and RawContacts
+    .include(Fields.Contact.Options.all)
+    .includeRawContactsFields(RawContactsFields.Options.all)
+    .find()
 
-To get RawContact options,
-
-```kotlin
-val options = rawContact.options(contactsApi)
-```
-
-## Setting contact options
-
-To set Contact options,
-
-```kotlin
-contact.setOptions(contactsApi, mutableOptions)
-```
-
-To set RawContact options,
-
-```kotlin
-rawContact.setOptions(contactsApi, mutableOptions)
-```
-
-For example, to set a contact to be starred (favorited),
-
-```kotlin
-contact.setOptions(contactsApi, mutableOptions.apply {
-    starred = true
-})
-```
-
-The `setOption` function takes in an arbitrary `Options` instance. If you instead want to modify
-the options of a Contact or RawContact retrieved from the database,
-
-```kotlin
-contact.updateOptions(contactsApi) {
-    starred = true
+for (contact in contacts) {
+    Log.d("Contact", "${contact.options}")
+    for (rawContact in contacts.rawContacts) {
+        Log.d("RawContact", "${rawContact.options}")
+    }
 }
 ```
 
-This is useful if you only want to set certain properties and keep other properties the same.
+> ℹ️ For more info on query APIs, read [Query contacts](./../basics/query-contacts.md) and
+> [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+
+## Setting Contact options
+
+To set Contact options using insert and update APIs provided in this library,
+
+```kotlin
+Contacts(context)
+    .update()
+    .contacts(
+        contact.mutableCopy {
+            setOptions {
+                starred = true
+                customRingtone = null
+                sendToVoicemail = false
+            }
+        }
+    )
+    .commit()
+```
+
+> ℹ️ For more info on insert and APIs, read [Insert contacts](./../basics/insert-contacts.md) and
+> [Update contacts](./../basics/update-contacts.md).
+
+### Contact and RawContact options affect each other
+
+Changes to the options of the parent Contact will be propagated to all child RawContact options.
+Changes to the options of a RawContact may or may not affect the options of the parent Contact. This
+propagation is done automatically by the Contacts Provider at the time the insert or update APIs
+provided in this library are committed.
+
+Typically, you should only read/write Contact options. Don't mind RawContact options, unless you
+really want to. For example,
+
+- the native AOSP Contacts app only allows reading and writing Contact options.
+- the Google Contacts app allows reading and writing Contact and RawContact options.
+
+### Setting RawContact options
+
+Due to the aforementioned relationship of Contact and RawContact options, the update APIs provided
+in this library will prioritize Contact options over RawContact options. This means that any changes
+you make to RawContact options will be overshadowed by Contact options.
+
+If you want to set RawContact options, then you should pass in the RawContact directly using the
+`rawContact` function instead of passing in the Contact using the `contacts` function,
+
+```kotlin
+Contacts(context)
+    .update()
+    .rawContacts(
+        rawContact.mutableCopy {
+            setOptions {
+                starred = true
+                customRingtone = null
+                sendToVoicemail = false
+            }
+        }
+    )
+    .commit()
+```
+
+If you must pass Contacts instead of RawContacts and still want to prioritize RawContact options
+over Contact options, then you exclude Contact options fields from the update operation,
+
+```kotlin
+Contacts(context)
+    .update()
+    // Include all fields except for Contact options.
+    .include(Fields.all.minus(Fields.Contact.Options.all))
+    .contacts(contacts)
+    .commit()
+```
+
+> ℹ️ For more info on field includes, read
+> [Include only certain fields for read and write operations](./../basics/include-only-desired-data.md).
+
+### Starred in Android & Favorites Group Membership
+
+When a Contact is starred, the Contacts Provider automatically adds a group membership to the
+favorites group for all RawContacts linked to the Contact. Setting the Contact starred to false
+removes all group memberships to the favorites group.
+
+The Contact's "starred" value is interdependent with memberships to the favorites group. Adding a
+membership to the favorites group results in starred being set to true. Removing the membership sets
+it to false. This behavior can cause bugs and increased code complexity for API users. Therefore,
+the update APIs provided in this library overshadows membership changes to the favorites group with
+the value of `Options.starred`. In other words, the only way to star or favorite Contacts and
+RawContacts is to set the value of `Options.starred`.
+
+> ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
+> though these RawContacts may not have a membership to a favorites group, they may still be
+> "starred" (favorited), which is not dependent on the existence of a favorites group membership.
 
 ## Using the ui RingtonePicker extensions
 
 The `contacts.ui.util.RingtonePicker.kt` in the `ui` module` provides extension functions to make
-selecting existing ringtones easier. It provides you the same UX as the native Contacts app. 
+selecting existing ringtones easier. It provides you the same UX as the native Contacts app.
 
 To use it,
 
@@ -70,10 +132,8 @@ Activity {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        onRingtoneSelected(requestCode, resultCode, data) { ringtoneUri -> 
-            contact.updateOptions(contactsApi) {
-                customRingtone = ringtoneUri
-            }
+        onRingtoneSelected(requestCode, resultCode, data) { ringtoneUri ->
+            contact.options?.customRingtone = ringtoneUri
         }
     }
 }
@@ -89,46 +149,3 @@ successfully use the above functions.
     </intent>
 </queries>
 ```
-
-## Performing options management asynchronously
-
-All of the code shown in this guide are done in the same thread as the call-site. This may result
-in a choppy UI.
-
-To perform the work in a different thread, use the Kotlin coroutine extensions provided in the `async` module.
-For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
-
-You may, of course, use other multi-threading libraries or just do it yourself =)
-
-> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.
-
-## Performing options management with permission
-
-Getting and setting options require the `android.permission.READ_CONTACTS` and
-`android.permission.WRITE_CONTACTS` permissions respectively. If not granted, getting and setting 
-options will fail.
-
-TODO Update this section as part of issue [#120](https://github.com/vestrel00/contacts-android/issues/120).
-      
-## Starred in Android (Favorites)
-
-When a Contact is starred, the Contacts Provider automatically adds a group membership to the
-favorites group for all RawContacts linked to the Contact. Setting the Contact starred to false
-removes all group memberships to the favorites group.
-
-The Contact's "starred" value is interdependent with group memberships to the favorites group.
-Adding a group membership to the favorites group results in starred being set to true. Removing
-the membership sets it to false.
-
-Raw contacts that are not associated with an account do not have any group memberships. Even
-though these RawContacts may not have a membership to the favorites group, they may still be
-"starred" (favorited), which is not dependent on the existence of a favorites group membership.
-
-**Refresh RawContact instances after changing the starred value.** Otherwise, performing an
-update on the RawContact with a stale set of group memberships may revert the star/unstar
-operation. For example,
-
--> query returns a starred RawContact
--> set starred to false
--> update RawContact (still containing a group membership to the favorites group)
--> starred will be set back to true.

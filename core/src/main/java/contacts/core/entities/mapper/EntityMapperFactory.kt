@@ -91,11 +91,8 @@ internal fun <T : ExistingDataEntity> CursorHolder<AbstractDataField>.dataEntity
 
 // endregion
 
-internal fun RawContactIdCursor.tempRawContactMapper(): EntityMapper<TempRawContact> =
-    TempRawContactMapper(this)
-
-internal fun CursorHolder<RawContactsField>.blankRawContactMapper(): EntityMapper<BlankRawContact> =
-    BlankRawContactMapper(rawContactsCursor())
+internal fun CursorHolder<RawContactsField>.tempRawContactMapper(): EntityMapper<TempRawContact> =
+    TempRawContactMapper(rawContactsCursor(), rawContactsOptionsMapper())
 
 internal fun CursorHolder<RawContactsField>.rawContactsOptionsMapper(): EntityMapper<Options> =
     OptionsMapper(rawContactsOptionsCursor())

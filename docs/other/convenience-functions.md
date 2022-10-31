@@ -177,24 +177,3 @@ val groups = groupMemberships.groups(contactsApi)
 These are blocking calls so you might want to do them outside the UI thread.
 
 > ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
-
-## Get the RawContact of a BlankRawContact
-
-The `Query` API allows you to get the `RawContact` version of a `BlankRawContact`,
-
-```kotlin
-val rawContact = contactsApi.query().where { RawContact.Id equalTo blankRawContact.id }.find()
-    .firstOrNull()
-    ?.rawContacts
-    ?.find { it.id == blankRawContact.id }
-```
-
-To shorten things, you can use the extensions in `BlankRawContactToRawContact.kt`,
-
-```kotlin
-val rawContact = blankRawContact.toRawContact(contactsApi)
-```
-
-These are blocking calls so you might want to do them outside the UI thread.
-
-> ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).

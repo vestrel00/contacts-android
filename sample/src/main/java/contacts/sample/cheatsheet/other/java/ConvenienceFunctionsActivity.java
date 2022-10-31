@@ -63,8 +63,4 @@ public class ConvenienceFunctionsActivity extends Activity {
     List<Group> getGroupOfGroupMemberships(List<GroupMembership> groupMemberships) {
         return GroupMembershipGroupKt.groups(groupMemberships, ContactsFactory.create(this));
     }
-
-    RawContact getRawContactOfBlankRawContact(BlankRawContact blankRawContact) {
-        return BlankRawContactToRawContactKt.toRawContact(blankRawContact, ContactsFactory.create(this));
-    }
 }

@@ -4,12 +4,8 @@ import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.AttributeSet
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import contacts.async.commitWithContext
@@ -17,13 +13,8 @@ import contacts.async.findWithContext
 import contacts.async.profile.commitWithContext
 import contacts.async.profile.findWithContext
 import contacts.async.util.contactWithContext
-import contacts.async.util.optionsWithContext
-import contacts.async.util.setOptionsWithContext
-import contacts.async.util.updateOptionsWithContext
 import contacts.core.Contacts
-import contacts.core.Fields
 import contacts.core.entities.*
-import contacts.core.equalTo
 import contacts.core.util.lookupKeyIn
 import contacts.core.util.shareVCardIntent
 import contacts.permissions.deleteWithPermission
@@ -35,11 +26,13 @@ import contacts.permissions.profile.updateWithPermission
 import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
 import contacts.sample.R
-import contacts.ui.util.onRingtoneSelected
-import contacts.ui.util.selectRingtone
+import contacts.ui.view.OptionsView
 import contacts.ui.view.activity
 import contacts.ui.view.setThisAndDescendantsEnabled
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -54,8 +47,6 @@ import kotlin.coroutines.CoroutineContext
  * From top to bottom;
  *
  * 1. Contact's options; starred, sendToVoicemail, and customRingtone.
- *     - These options may be changed in edit or view mode. The changes are immediate and does not
- *     require pressing the save button.
  * 2. Contact photo.
  * 3. Contact details; display name primary and alternate, and last updated timestamp.
  * 4. List of RawContacts associated with this Contact.
@@ -128,9 +119,9 @@ class ContactView @JvmOverloads constructor(
     ) {
         this.contact = contact
 
-        setOptionsView(contacts)
-        setDetailsView(contacts)
         setRawContactsView(contacts, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
+        // Call setDetailsView after newRawContactView has been set in setRawContactsView
+        setDetailsView(contacts)
     }
 
     /**
@@ -142,10 +133,7 @@ class ContactView @JvmOverloads constructor(
         get() = SupervisorJob() + Dispatchers.Main
 
     // options
-    private val optionsView: ViewGroup
-    private val starredView: ImageView
-    private val sendToVoicemailView: CheckBox
-    private val customRingtoneView: ImageView
+    private val optionsView: OptionsView
 
     // details
     private val photoView: ContactPhotoView
@@ -167,9 +155,6 @@ class ContactView @JvmOverloads constructor(
         inflate(context, R.layout.view_contact, this)
 
         optionsView = findViewById(R.id.options)
-        starredView = findViewById(R.id.starred)
-        sendToVoicemailView = findViewById(R.id.sendToVoicemail)
-        customRingtoneView = findViewById(R.id.customRingtone)
 
         photoView = findViewById(R.id.photo)
 
@@ -180,10 +165,8 @@ class ContactView @JvmOverloads constructor(
         rawContactsView = findViewById(R.id.rawContacts)
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?, contacts: Contacts) {
-        onRingtoneSelected(requestCode, resultCode, data) { ringtoneUri ->
-            launch { setCustomRingtone(ringtoneUri, contacts) }
-        }
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        optionsView.onActivityResult(requestCode, resultCode, data)
 
         photoView.onActivityResult(requestCode, resultCode, data)
 
@@ -195,9 +178,9 @@ class ContactView @JvmOverloads constructor(
 
     override fun setEnabled(enabled: Boolean) {
         // super.setEnabled(enabled) intentionally not calling this
+        optionsView.setThisAndDescendantsEnabled(enabled)
         photoView.isEnabled = enabled
         rawContactsView.setThisAndDescendantsEnabled(enabled)
-        // Do not disable the contact options and details.
     }
 
     /**
@@ -359,55 +342,30 @@ class ContactView @JvmOverloads constructor(
         }
     }
 
-    private fun setOptionsView(contacts: Contacts) {
-        val contact = contact
-
-        optionsView.visibility = if (contact != null && !contact.isProfile) VISIBLE else GONE
-
-        // A contact must exist in order to update options. This means that options are not
-        // available in create mode. This is the same behavior as the native Contacts app.
-        if (contact == null) {
-            return
-        }
-
-        launch { setStarredView(contact.options?.starred == true) }
-        setSendToVoicemailView(contact.options?.sendToVoicemail == true)
-
-        starredView.setOnClickListener {
-            launch { toggleStarred(contacts) }
-        }
-        sendToVoicemailView.setOnCheckedChangeListener { _, isChecked ->
-            launch { sendToVoicemail(isChecked, contacts) }
-        }
-        customRingtoneView.setOnClickListener {
-            launch { selectCustomRingtone(contacts) }
-        }
-    }
-
     @SuppressLint("SetTextI18n")
     private fun setDetailsView(contacts: Contacts) {
+        val contact = contact
+
+        val rawContact = newRawContactView?.rawContact
+        val newOptions = NewOptions()
+        if (rawContact != null && rawContact is NewRawContact) {
+            // We are inserting a new raw contact.
+            optionsView.data = newOptions
+            rawContact.options = newOptions
+        } else {
+            // We are editing an existing contact.
+            optionsView.data = contact?.options ?: newOptions
+        }
+        optionsView.visibility = if (contact?.isProfile == true || rawContact?.isProfile == true) {
+            GONE
+        } else {
+            VISIBLE
+        }
+
         photoView.setContact(contact, contacts)
         displayNamePrimaryView.text = "Display name primary: ${contact?.displayNamePrimary}"
         displayNameAltView.text = "Display name alt: ${contact?.displayNameAlt}"
         lastUpdatedView.text = "Last updated: ${contact?.lastUpdatedTimestamp}"
-    }
-
-    private suspend fun setStarredView(starred: Boolean) {
-        val starBitmap = withContext(Dispatchers.IO) {
-            BitmapFactory.decodeResource(
-                resources, if (starred) {
-                    android.R.drawable.star_big_on
-                } else {
-                    android.R.drawable.star_big_off
-                }
-            )
-        }
-
-        starredView.setImageBitmap(starBitmap)
-    }
-
-    private fun setSendToVoicemailView(sendToVoicemail: Boolean) {
-        sendToVoicemailView.isChecked = sendToVoicemail
     }
 
     private fun setRawContactsView(
@@ -418,7 +376,7 @@ class ContactView @JvmOverloads constructor(
         rawContactsView.removeAllViews()
 
         val contact = contact
-        if (contact != null) {
+        if (contact != null) { // Edit existing contact
             newRawContactView = null
 
             contact.rawContacts.forEach { rawContact ->
@@ -430,7 +388,7 @@ class ContactView @JvmOverloads constructor(
                 )
 
                 if (contact is ExistingContactEntity
-                    && rawContact is ExistingRawContactEntityWithContactId
+                    && rawContact is ExistingRawContactEntity
                 ) {
                     // Make sure that this Contact view and the primary photo holder view is set to
                     // the same photo whenever the user picks one.
@@ -440,7 +398,7 @@ class ContactView @JvmOverloads constructor(
                     }
                 }
             }
-        } else {
+        } else { // Create new raw contact
             newRawContactView = addRawContactView(
                 contacts,
                 NewRawContact(),
@@ -469,109 +427,6 @@ class ContactView @JvmOverloads constructor(
         )
         rawContactsView.addView(rawContactView)
         return rawContactView
-    }
-
-    private suspend fun toggleStarred(contacts: Contacts) {
-        val contact = contact
-
-        if (contact == null || contact !is ExistingContactEntity) {
-            // Only existing contacts can perform this operation.
-            return
-        }
-
-        // The starred value from DB needs to be retrieved.
-        val options = contact.optionsWithContext(contacts)?.mutableCopy() ?: NewOptions()
-        val starred = options.starred == true
-
-        options.starred = !starred
-
-        // Update immediately, separate from the general update/save.
-        val success = contact.setOptionsWithContext(contacts, options)
-
-        if (success) {
-            setStarredView(!starred)
-
-            // As documented in the setOptions extensions, we need to refresh the set of group
-            // memberships for all RawContacts belonging to the Contact because a group membership
-            // to the favorites group may have been added or removed automatically by the
-            // Contacts Provider. We can just refresh the entire contact but that will undo any
-            // pending changes the user has not yet saved.
-            refreshRawContactsGroupMemberships(contacts)
-        }
-    }
-
-    private suspend fun sendToVoicemail(sendToVoicemail: Boolean, contacts: Contacts) {
-        val contact = contact
-        if (contact == null || contact !is ExistingContactEntity) {
-            // Only existing contacts can perform this operation.
-            return
-        }
-
-        // Update immediately, separate from the general update/save.
-        contact.updateOptionsWithContext(contacts) {
-            this.sendToVoicemail = sendToVoicemail
-        }
-    }
-
-    private suspend fun selectCustomRingtone(contacts: Contacts) {
-        val contact = contact
-        if (contact == null || contact !is ExistingContactEntity) {
-            // Only existing contacts can perform this operation.
-            return
-        }
-
-        // The customRingtone value from DB needs to be retrieved.
-        activity?.selectRingtone(contact.optionsWithContext(contacts)?.customRingtone)
-    }
-
-    private suspend fun setCustomRingtone(customRingtone: Uri?, contacts: Contacts) {
-        val contact = contact
-        if (contact == null || contact !is ExistingContactEntity) {
-            // Only existing contacts can perform this operation.
-            return
-        }
-
-        // Update immediately, separate from the general update/save.
-        contact.updateOptionsWithContext(contacts) {
-            this.customRingtone = customRingtone
-        }
-    }
-
-    private suspend fun refreshRawContactsGroupMemberships(contacts: Contacts) {
-        val contact = contact
-        if (contact == null || contact !is MutableContact) {
-            // Only existing mutable contacts can perform this operation.
-            return
-        }
-
-        val contactId = contact.id
-
-        // We could fetch the the set of groups for all linked RawContacts and then fetch group
-        // memberships to the favorites group. Or, we can just fetch the entire contact again but
-        // only to copy over the group memberships to the RawContacts =)
-        val refreshedContact = contacts.queryWithPermission()
-            .include(Fields.GroupMembership.all)
-            .where { Contact.Id equalTo contactId }
-            .findWithContext()
-            .firstOrNull()
-            ?: return
-
-        // Copy over the refreshed group memberships to the RawContacts.
-        for (rawContact in contact.rawContacts) {
-            refreshedContact.rawContacts.find { it.id == rawContact.id }
-                ?.let { refreshedRawContact ->
-                    rawContact.groupMemberships =
-                        refreshedRawContact.groupMemberships.asMutableList()
-                }
-        }
-
-        // Invalidate group membership views.
-        // Unsaved changes to the set of group memberships will be discarded. We could fix this but
-        // it's too much code and this is just a sample app so we'll leave it!
-        for (index in 0 until rawContactsView.childCount) {
-            val rawContactView = rawContactsView.getChildAt(index) as RawContactView
-            rawContactView.setAccountRequiredViews(contacts)
-        }
     }
 
     override fun onDetachedFromWindow() {

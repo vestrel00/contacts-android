@@ -1,22 +1,34 @@
 package contacts.sample.cheatsheet.other.kotlin
 
 import android.app.Activity
-import contacts.core.Contacts
 import contacts.core.entities.*
-import contacts.core.util.*
+import contacts.core.util.setOptions
 
 class ContactAndRawContactOptionsActivity : Activity() {
 
     fun getContactOptions(contact: Contact): Options? = contact.options
 
-    fun getContactOptionsFromDb(contact: Contact): Options? = contact.options(Contacts(this))
+    fun setContactOptions(contact: Contact) {
+        contact.mutableCopy {
+            setOptions {
+                starred = true
+                customRingtone = null
+                sendToVoicemail = false
 
-    fun getRawContactOptionsFromDb(rawContact: RawContact): Options? =
-        rawContact.options(Contacts(this))
+            }
+        }
+    }
 
-    fun setContactOptions(contact: Contact, options: MutableOptions): Boolean =
-        contact.setOptions(Contacts(this), options)
+    fun getRawContactOptions(rawContact: RawContact): Options? = rawContact.options
 
-    fun setRawContactOptions(rawContact: RawContact, options: MutableOptions): Boolean =
-        rawContact.setOptions(Contacts(this), options)
+    fun setRawContactOptions(rawContact: RawContact) {
+        rawContact.mutableCopy {
+            setOptions {
+                starred = true
+                customRingtone = null
+                sendToVoicemail = false
+
+            }
+        }
+    }
 }

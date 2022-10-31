@@ -15,6 +15,8 @@ val query = Contacts(context).phoneLookupQuery()
 
 > ℹ️ For a more granular, advanced queries, use the `Query` API; [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
+> ℹ️ If you want to query RawContacts directly instead of Contacts, read [Query RawContacts](./../basics/query-raw-contacts.md).
+
 > ℹ️ If you want to query Data directly instead of Contacts, read [Query specific data kinds](./../data/query-data-sets.md).
 
 > ℹ️ If you want to get the device owner Contact Profile, read [Query device owner Contact profile](./../profile/query-profile.md).
@@ -76,10 +78,10 @@ To limit the search to only those RawContacts associated with at least one of th
 .groups(groups)
 ```
 
-For example, to limit the search to only favorites,
+For example, to limit the search to only friends,
 
 ```kotlin
-.groups(favoritesGroup)
+.groups(friendsGroup)
 ```
 
 > ℹ️ For more info, read [Query groups](./../groups/query-groups.md).

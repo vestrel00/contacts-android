@@ -18,19 +18,18 @@ class QueryGroupsActivity : Activity() {
         .where { Id `in` groupsIds }
         .find()
 
+    fun getGroupsByTitle(title: String): List<Group> = Contacts(this)
+        .groups()
+        .query()
+        .where { Title contains title }
+        .find()
+
     fun getGroupsOfGroupMemberships(groupMemberships: List<GroupMembership>): List<Group> =
         Contacts(this)
             .groups()
             .query()
             .where { Id `in` groupMemberships.mapNotNull { it.groupId } }
             .find()
-
-    fun getFavoritesGroups(account: Account): List<Group> = Contacts(this)
-        .groups()
-        .query()
-        .accounts(account)
-        .where { Favorites equalTo true }
-        .find()
 
     fun getSystemGroups(account: Account): List<Group> = Contacts(this)
         .groups()

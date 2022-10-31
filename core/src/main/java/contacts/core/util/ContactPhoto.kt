@@ -10,10 +10,8 @@ import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableContact
-import contacts.core.entities.TempRawContact
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataCursor
-import contacts.core.entities.mapper.tempRawContactMapper
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
@@ -381,21 +379,14 @@ fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoData: PhotoDat
     }
 
     val photoFileId = photoFileId(contacts)
-
-    val rawContact = if (photoFileId != null) {
+    val rawContactId = photoFileId?.let {
         // A photo exists for the Contact. Get the RawContact in the Data table that holds the photo
         // row with the same photo file id. Keep in mind that there may be multiple RawContacts
         // associated with a single Contact.
-        rawContactWithPhotoFileId(contacts, photoFileId)
-    } else {
-        // No photo exists for the Contact or any of its associated RawContacts. Use the
-        // first RawContact as the default or fail if also not available.
-        rawContacts.firstOrNull()
+        rawContactIdWithPhotoFileId(contacts, photoFileId)
     }
 
-    return rawContact?.id?.let { rawContactId ->
-        contacts.setRawContactPhotoDirect(rawContactId, photoData)
-    } == true
+    return rawContactId != null && contacts.setRawContactPhotoDirect(rawContactId, photoData)
 }
 
 private fun ExistingContactEntity.photoFileId(contacts: Contacts): Long? =
@@ -407,14 +398,14 @@ private fun ExistingContactEntity.photoFileId(contacts: Contacts): Long? =
         it.getNextOrNull { it.contactsCursor().photoFileId }
     }
 
-private fun ExistingContactEntity.rawContactWithPhotoFileId(
+private fun ExistingContactEntity.rawContactIdWithPhotoFileId(
     contacts: Contacts, photoFileId: Long
-): TempRawContact? = contacts.contentResolver.query(
+): Long? = contacts.contentResolver.query(
     if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
     Include(Fields.RawContact.Id),
     Fields.Photo.PhotoFileId equalTo photoFileId
 ) {
-    it.getNextOrNull { it.dataCursor().tempRawContactMapper().value }
+    it.getNextOrNull { it.dataCursor().rawContactId }
 }
 
 // endregion
@@ -501,9 +492,15 @@ fun ExistingContactEntity.removePhotoDirect(
     val whereId = if (fromAllRawContacts) {
         Fields.Contact.Id equalTo id
     } else {
-        val primaryPhotoHolderId = primaryPhotoHolder?.id
-        if (primaryPhotoHolderId != null) {
-            Fields.RawContact.Id equalTo primaryPhotoHolderId
+        val photoFileId = photoFileId(contacts)
+        val rawContactId = photoFileId?.let {
+            // A photo exists for the Contact. Get the RawContact in the Data table that holds the photo
+            // row with the same photo file id. Keep in mind that there may be multiple RawContacts
+            // associated with a single Contact.
+            rawContactIdWithPhotoFileId(contacts, photoFileId)
+        }
+        if (rawContactId != null) {
+            Fields.RawContact.Id equalTo rawContactId
         } else {
             return false
         }

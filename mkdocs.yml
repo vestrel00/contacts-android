@@ -29,6 +29,7 @@ nav:
     - 'Query contacts': basics/query-contacts.md
     - 'Query contacts (advanced)': basics/query-contacts-advanced.md
     - 'Query contacts by phone or SIP': basics/query-contacts-by-phone-or-sip.md
+    - 'Query RawContacts': basics/query-raw-contacts.md
     - 'Insert contacts': basics/insert-contacts.md
     - 'Update contacts': basics/update-contacts.md
     - 'Delete contacts': basics/delete-contacts.md
@@ -63,7 +64,6 @@ nav:
     - 'Delete device owner Contact profile': profile/delete-profile.md
   - 'Accounts':
     - 'Query for Accounts': accounts/query-accounts.md
-    - 'Query RawContacts': accounts/query-raw-contacts.md
     - 'Associate a local RawContact to an Account': accounts/associate-device-local-raw-contacts-to-an-account.md
   - 'SIM card':
       - 'About SIM contacts': sim/about-sim-contacts.md

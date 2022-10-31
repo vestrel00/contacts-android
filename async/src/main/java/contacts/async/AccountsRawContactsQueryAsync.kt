@@ -1,7 +1,6 @@
-package contacts.async.accounts
+package contacts.async
 
-import contacts.async.ASYNC_DISPATCHER
-import contacts.core.accounts.AccountsRawContactsQuery
+import contacts.core.RawContactsQuery
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -11,10 +10,10 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [AccountsRawContactsQuery.find].
+ * See [RawContactsQuery.find].
  */
-suspend fun AccountsRawContactsQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
-        AccountsRawContactsQuery.Result = withContext(context) { find { !isActive } }
+suspend fun RawContactsQuery.findWithContext(context: CoroutineContext = ASYNC_DISPATCHER):
+        RawContactsQuery.Result = withContext(context) { find { !isActive } }
 
 /**
  * Creates a [CoroutineScope] with the given [context], performs the operation in that scope, then
@@ -22,8 +21,8 @@ suspend fun AccountsRawContactsQuery.findWithContext(context: CoroutineContext =
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [AccountsRawContactsQuery.find].
+ * See [RawContactsQuery.find].
  */
-fun AccountsRawContactsQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER):
-        Deferred<AccountsRawContactsQuery.Result> =
+fun RawContactsQuery.findAsync(context: CoroutineContext = ASYNC_DISPATCHER):
+        Deferred<RawContactsQuery.Result> =
     CoroutineScope(context).async { find { !isActive } }

@@ -53,6 +53,28 @@ internal fun ContentResolver.findContactIdsInRawContactsTable(
     } ?: emptySet()
 }
 
+
+internal fun ContentResolver.findRawContactIdsInRawContactsTable(
+    rawContactsWhere: Where<RawContactsField>?,
+    suppressDbExceptions: Boolean = false,
+    cancel: () -> Boolean = { false }
+): Set<Long> = if (cancel()) emptySet() else {
+    query(
+        Table.RawContacts,
+        Include(RawContactsFields.Id),
+        // There may be RawContacts that are marked for deletion that have not yet been deleted.
+        (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere,
+        suppressDbExceptions = suppressDbExceptions
+    ) {
+        mutableSetOf<Long>().apply {
+            val rawContactsCursor = it.rawContactsCursor()
+            while (!cancel() && it.moveToNext()) {
+                add(rawContactsCursor.rawContactId)
+            }
+        }
+    } ?: emptySet()
+}
+
 // endregion
 
 // region Data table

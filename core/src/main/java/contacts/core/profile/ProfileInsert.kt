@@ -178,6 +178,32 @@ interface ProfileInsert : CrudApi {
     fun include(fields: Fields.() -> Sequence<AbstractDataField>): ProfileInsert
 
     /**
+     * Similar to [include] except this is really only used to specify
+     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields
+     * and the corresponding properties are immutable (exception for options).
+     *
+     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
+     * included. Otherwise, only the specified fields will be included in addition to required API
+     * fields [RawContactsFields.Required].
+     */
+    fun includeRawContactsFields(vararg fields: RawContactsField): ProfileInsert
+
+    /**
+     * See [ProfileInsert.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Collection<RawContactsField>): ProfileInsert
+
+    /**
+     * See [ProfileInsert.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileInsert
+
+    /**
+     * See [ProfileInsert.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): ProfileInsert
+
+    /**
      * Configures a new [NewRawContact] for insertion, which will be inserted on [commit]. The
      * new instance is configured by the [configureRawContact] function.
      *
@@ -282,6 +308,7 @@ private class ProfileInsertImpl(
     private var allowBlanks: Boolean = false,
     private var allowMultipleRawContactsPerAccount: Boolean = false,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
     private var account: Account? = null,
     private var rawContact: NewRawContact? = null,
 
@@ -294,6 +321,7 @@ private class ProfileInsertImpl(
                 allowBlanks: $allowBlanks
                 allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
                 include: $include
+                includeRawContactsFields: $includeRawContactsFields
                 account: $account
                 rawContact: $rawContact
                 hasPermission: ${permissions.canInsert()}
@@ -307,6 +335,7 @@ private class ProfileInsertImpl(
         allowBlanks,
         allowMultipleRawContactsPerAccount,
         include,
+        includeRawContactsFields,
         // Redact account info.
         account?.redactedCopy(),
         // Redact contact data.
@@ -344,6 +373,25 @@ private class ProfileInsertImpl(
     override fun include(fields: Fields.() -> Sequence<AbstractDataField>) =
         include((fields(Fields)))
 
+    override fun includeRawContactsFields(vararg fields: RawContactsField) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Collection<RawContactsField>) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileInsert =
+        apply {
+            includeRawContactsFields = if (fields.isEmpty()) {
+                DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+            } else {
+                Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+            }
+        }
+
+    override fun includeRawContactsFields(
+        fields: RawContactsFields.() -> Collection<RawContactsField>
+    ) = includeRawContactsFields(fields(RawContactsFields))
+
     override fun rawContact(configureRawContact: NewRawContact.() -> Unit): ProfileInsert =
         rawContact(NewRawContact().apply(configureRawContact))
 
@@ -377,7 +425,7 @@ private class ProfileInsertImpl(
                 // No need to propagate the cancel function to within insertRawContactForAccount
                 // as that operation should be fast and CPU time should be trivial.
                 val rawContactId = contactsApi.insertRawContactForAccount(
-                    account, include.fields, rawContact, IS_PROFILE
+                    account, include.fields, includeRawContactsFields.fields, rawContact, IS_PROFILE
                 )
 
                 return ProfileInsertResult(rawContactId)
@@ -389,6 +437,11 @@ private class ProfileInsertImpl(
 
     private companion object {
         const val IS_PROFILE = true
+
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+            RawContactsFields.Required.all.asSequence()
+        }
     }
 }
 

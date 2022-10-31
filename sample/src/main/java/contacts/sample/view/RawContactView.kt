@@ -6,13 +6,10 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import contacts.async.accounts.findWithContext
 import contacts.core.Contacts
 import contacts.core.entities.*
 import contacts.core.util.*
-import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.R
-import contacts.sample.util.runIfExist
 import contacts.ui.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -146,13 +143,7 @@ class RawContactView @JvmOverloads constructor(
     // will no longer be hidden as part of https://github.com/vestrel00/contacts-android/issues/167
     fun setAccountRequiredViews(contacts: Contacts) {
         launch {
-            val account = rawContact.runIfExist {
-                contacts.accounts(it.isProfile)
-                    .queryWithPermission()
-                    .associatedWith(it)
-                    .findWithContext()
-                    .firstOrNull()
-            }
+            val account = rawContact.accountOrNull
 
             if (account != null) {
                 eventsView.dataList = rawContact.events.asMutableList()

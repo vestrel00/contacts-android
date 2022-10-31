@@ -7,7 +7,7 @@ import android.content.ContentProviderOperation.newUpdate
 import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
-import contacts.core.entities.ExistingRawContactEntityWithContactId
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.operation.withSelection
@@ -69,21 +69,21 @@ interface AccountsLocalRawContactsUpdate : CrudApi {
      * by the Contacts Provider upon successful operation.
      */
     fun localRawContacts(
-        vararg rawContacts: ExistingRawContactEntityWithContactId
+        vararg rawContacts: ExistingRawContactEntity
     ): AccountsLocalRawContactsUpdate
 
     /**
      * See [AccountsLocalRawContactsUpdate.localRawContacts].
      */
     fun localRawContacts(
-        rawContacts: Collection<ExistingRawContactEntityWithContactId>
+        rawContacts: Collection<ExistingRawContactEntity>
     ): AccountsLocalRawContactsUpdate
 
     /**
      * See [AccountsLocalRawContactsUpdate.localRawContacts].
      */
     fun localRawContacts(
-        rawContacts: Sequence<ExistingRawContactEntityWithContactId>
+        rawContacts: Sequence<ExistingRawContactEntity>
     ): AccountsLocalRawContactsUpdate
 
     /**
@@ -169,12 +169,12 @@ interface AccountsLocalRawContactsUpdate : CrudApi {
         /**
          * True if the [rawContact] has been successfully associated with the Account.
          */
-        fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean
+        fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
 
         /**
          * Returns the reason why the update failed for this [rawContact]. Null if it did not fail.
          */
-        fun failureReason(rawContact: ExistingRawContactEntityWithContactId): FailureReason?
+        fun failureReason(rawContact: ExistingRawContactEntity): FailureReason?
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -247,14 +247,14 @@ private class AccountsLocalRawContactsUpdateImpl(
         this.account = account.redactedCopyOrThis(isRedacted)
     }
 
-    override fun localRawContacts(vararg rawContacts: ExistingRawContactEntityWithContactId) =
+    override fun localRawContacts(vararg rawContacts: ExistingRawContactEntity) =
         localRawContacts(rawContacts.asSequence())
 
-    override fun localRawContacts(rawContacts: Collection<ExistingRawContactEntityWithContactId>) =
+    override fun localRawContacts(rawContacts: Collection<ExistingRawContactEntity>) =
         localRawContacts(rawContacts.asSequence())
 
     override fun localRawContacts(
-        rawContacts: Sequence<ExistingRawContactEntityWithContactId>
+        rawContacts: Sequence<ExistingRawContactEntity>
     ): AccountsLocalRawContactsUpdate = apply {
         rawContactIds.addAll(rawContacts.map { it.id })
     }
@@ -366,10 +366,10 @@ private class AccountsRawContactsAssociationsUpdateResult private constructor(
 
     override val isSuccessful: Boolean by unsafeLazy { failureReasons.isEmpty() }
 
-    override fun isSuccessful(rawContact: ExistingRawContactEntityWithContactId): Boolean =
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean =
         failureReason(rawContact) == null
 
-    override fun failureReason(rawContact: ExistingRawContactEntityWithContactId): FailureReason? =
+    override fun failureReason(rawContact: ExistingRawContactEntity): FailureReason? =
         failureReasons[rawContact.id]
 }
 
@@ -400,11 +400,7 @@ private class AccountsRawContactsAssociationsUpdateResultFailed private construc
 
     override val isSuccessful: Boolean = false
 
-    override fun isSuccessful(
-        rawContact: ExistingRawContactEntityWithContactId
-    ): Boolean = isSuccessful
+    override fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean = isSuccessful
 
-    override fun failureReason(
-        rawContact: ExistingRawContactEntityWithContactId
-    ): FailureReason = failureReason
+    override fun failureReason(rawContact: ExistingRawContactEntity): FailureReason = failureReason
 }

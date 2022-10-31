@@ -378,6 +378,129 @@ heading explore each API in full detail. You may also find these samples in the 
     }
     ```
 
+### [Query for RawContacts](basics/query-raw-contacts.md)
+
+=== "Kotlin"
+
+    ```kotlin
+    import android.accounts.Account
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.RawContactsFields
+    import contacts.core.entities.RawContact
+    import contacts.core.equalTo
+    import contacts.core.isNotNullOrEmpty
+    
+    class QueryRawContactsActivity : Activity() {
+    
+        fun getAllRawContacts(): List<RawContact> = Contacts(this).rawContactsQuery().find()
+    
+        fun getAllFavoriteRawContacts(): List<RawContact> = Contacts(this)
+            .rawContactsQuery()
+            .rawContactsWhere(emptyList(), RawContactsFields.Options.Starred equalTo true)
+            .find()
+    
+        fun getRawContactsForAccount(account: Account): List<RawContact> =
+            Contacts(this)
+                .rawContactsQuery()
+                .rawContactsWhere(listOf(account), null)
+                .find()
+    
+        fun getRawContactsForAllGoogleAccounts(): List<RawContact> =
+            Contacts(this)
+                .rawContactsQuery()
+                .rawContactsWhere(emptyList(), RawContactsFields.AccountType equalTo "com.google")
+                .find()
+    
+        fun getRawContactsThatHasANote(): List<RawContact> =
+            Contacts(this)
+                .rawContactsQuery()
+                .where { Note.Note.isNotNullOrEmpty() }
+                .find()
+    
+        fun getRawContactById(rawContactId: Long): RawContact? =
+            Contacts(this)
+                .rawContactsQuery()
+                .rawContactsWhere(emptyList(), RawContactsFields.Id equalTo rawContactId)
+                // alternatively, .where { RawContact.Id equalTo rawContactId }
+                .find()
+                .firstOrNull()
+    }
+    ```
+
+=== "Java"
+
+    ```java
+    import static contacts.core.WhereKt.equalTo;
+    import static contacts.core.WhereKt.isNotNullOrEmpty;
+    
+    import android.accounts.Account;
+    import android.app.Activity;
+    
+    import java.util.ArrayList;
+    import java.util.List;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.Fields;
+    import contacts.core.RawContactsFields;
+    import contacts.core.entities.RawContact;
+    
+    public class QueryRawContactsActivity extends Activity {
+    
+        List<RawContact> getAllRawContacts() {
+            return ContactsFactory.create(this).rawContactsQuery().find();
+        }
+    
+        List<RawContact> getAllFavoriteRawContacts() {
+            return ContactsFactory.create(this)
+                    .rawContactsQuery()
+                    .rawContactsWhere(
+                            new ArrayList<>(),
+                            equalTo(RawContactsFields.Options.Starred, true)
+                    )
+                    .find();
+        }
+    
+        List<RawContact> getRawContactsForAccount(Account account) {
+            List<Account> accounts = new ArrayList<>();
+            accounts.add(account);
+            return ContactsFactory.create(this)
+                    .rawContactsQuery()
+                    .rawContactsWhere(accounts, null)
+                    .find();
+        }
+    
+        List<RawContact> getRawContactsForAllGoogleAccounts() {
+            return ContactsFactory.create(this)
+                    .rawContactsQuery()
+                    .rawContactsWhere(
+                            new ArrayList<>(),
+                            equalTo(RawContactsFields.AccountType, "com.google")
+                    )
+                    .find();
+        }
+    
+        List<RawContact> getRawContactsThatHasANote() {
+            return ContactsFactory.create(this)
+                    .rawContactsQuery()
+                    .where(isNotNullOrEmpty(Fields.Note.Note))
+                    .find();
+        }
+    
+        RawContact getRawContactById(Long rawContactId) {
+            return ContactsFactory.create(this)
+                    .rawContactsQuery()
+                    .rawContactsWhere(
+                            new ArrayList<>(),
+                            equalTo(RawContactsFields.Id, rawContactId)
+                    )
+                    // alternatively, .where(equalTo(Fields.RawContact.Id, rawContactId))
+                    .find()
+                    .get(0);
+        }
+    }
+    ```
+
 ### [Insert contacts](./basics/insert-contacts.md)
 
 === "Kotlin"
@@ -1984,19 +2107,18 @@ heading explore each API in full detail. You may also find these samples in the 
             .where { Id `in` groupsIds }
             .find()
     
+        fun getGroupsByTitle(title: String): List<Group> = Contacts(this)
+            .groups()
+            .query()
+            .where { Title contains title }
+            .find()
+        
         fun getGroupsOfGroupMemberships(groupMemberships: List<GroupMembership>): List<Group> =
             Contacts(this)
                 .groups()
                 .query()
                 .where { Id `in` groupMemberships.mapNotNull { it.groupId } }
                 .find()
-    
-        fun getFavoritesGroups(account: Account): List<Group> = Contacts(this)
-            .groups()
-            .query()
-            .accounts(account)
-            .where { Favorites equalTo true }
-            .find()
     
         fun getSystemGroups(account: Account): List<Group> = Contacts(this)
             .groups()
@@ -2045,7 +2167,15 @@ heading explore each API in full detail. You may also find these samples in the 
                     .where(in(GroupsFields.Id, groupsIds))
                     .find();
         }
-    
+        
+        List<Group> getGroupsByTitle(String title) {
+            return ContactsFactory.create(this)
+                    .groups()
+                    .query()
+                    .where(contains(GroupsFields.Title, title))
+                    .find();
+        }
+        
         List<Group> getGroupsByGroupMembership(List<GroupMembership> groupMemberships) {
             List<Long> groupsIds = new ArrayList<>();
             for (GroupMembership groupMembership : groupMemberships) {
@@ -2058,15 +2188,6 @@ heading explore each API in full detail. You may also find these samples in the 
                     .groups()
                     .query()
                     .where(in(GroupsFields.Id, groupsIds))
-                    .find();
-        }
-    
-        List<Group> getFavoritesGroups(Account account) {
-            return ContactsFactory.create(this)
-                    .groups()
-                    .query()
-                    .accounts(account)
-                    .where(equalTo(GroupsFields.Favorites, true))
                     .find();
         }
     
@@ -2608,92 +2729,6 @@ heading explore each API in full detail. You may also find these samples in the 
                     .accounts()
                     .query()
                     .associatedWith(rawContact)
-                    .find()
-                    .get(0);
-        }
-    }
-    ```
-
-### [Query for RawContacts](./accounts/query-raw-contacts.md)
-
-=== "Kotlin"
-
-    ```kotlin
-    import android.accounts.Account
-    import android.app.Activity
-    import contacts.core.Contacts
-    import contacts.core.entities.BlankRawContact
-    import contacts.core.equalTo
-    
-    class QueryAccountsRawContactsActivity : Activity() {
-    
-        fun getAllRawContacts(): List<BlankRawContact> =
-            Contacts(this).accounts().queryRawContacts().find()
-    
-        fun getRawContactsForAccount(account: Account): List<BlankRawContact> =
-            Contacts(this)
-                .accounts()
-                .queryRawContacts()
-                .accounts(account)
-                .find()
-    
-        fun getRawContactsForAllGoogleAccounts(): List<BlankRawContact> =
-            Contacts(this)
-                .accounts()
-                .queryRawContacts()
-                .where { AccountType equalTo "com.google" }
-                .find()
-    
-        fun getRawContactById(rawContactId: Long): BlankRawContact? =
-            Contacts(this)
-                .accounts()
-                .queryRawContacts()
-                .where { Id equalTo rawContactId }
-                .find()
-                .firstOrNull()
-    }
-    ```
-
-=== "Java"
-
-    ```java
-    import static contacts.core.WhereKt.equalTo;
-    
-    import android.accounts.Account;
-    import android.app.Activity;
-    
-    import java.util.List;
-    
-    import contacts.core.*;
-    import contacts.core.entities.BlankRawContact;
-    
-    public class QueryAccountsRawContactsActivity extends Activity {
-    
-        List<BlankRawContact> getAllRawContacts() {
-            return ContactsFactory.create(this).accounts().queryRawContacts().find();
-        }
-    
-        List<BlankRawContact> getRawContactsForAccount(Account account) {
-            return ContactsFactory.create(this)
-                    .accounts()
-                    .queryRawContacts()
-                    .accounts(account)
-                    .find();
-        }
-    
-        List<BlankRawContact> getRawContactsForAllGoogleAccounts() {
-            return ContactsFactory.create(this)
-                    .accounts()
-                    .queryRawContacts()
-                    .where(equalTo(RawContactsFields.AccountType, "com.google"))
-                    .find();
-        }
-    
-        BlankRawContact getRawContactById(Long rawContactId) {
-            return ContactsFactory.create(this)
-                    .accounts()
-                    .queryRawContacts()
-                    .where(equalTo(RawContactsFields.Id, rawContactId))
                     .find()
                     .get(0);
         }
@@ -3321,24 +3356,36 @@ heading explore each API in full detail. You may also find these samples in the 
 
     ```kotlin
     import android.app.Activity
-    import contacts.core.Contacts
     import contacts.core.entities.*
-    import contacts.core.util.*
+    import contacts.core.util.setOptions
     
     class ContactAndRawContactOptionsActivity : Activity() {
     
         fun getContactOptions(contact: Contact): Options? = contact.options
     
-        fun getContactOptionsFromDb(contact: Contact): Options? = contact.options(Contacts(this))
+        fun setContactOptions(contact: Contact) {
+            contact.mutableCopy {
+                setOptions {
+                    starred = true
+                    customRingtone = null
+                    sendToVoicemail = false
     
-        fun getRawContactOptionsFromDb(rawContact: RawContact): Options? =
-            rawContact.options(Contacts(this))
+                }
+            }
+        }
     
-        fun setContactOptions(contact: Contact, options: MutableOptions): Boolean =
-            contact.setOptions(Contacts(this), options)
+        fun getRawContactOptions(rawContact: RawContact): Options? = rawContact.options
     
-        fun setRawContactOptions(rawContact: RawContact, options: MutableOptions): Boolean =
-            rawContact.setOptions(Contacts(this), options)
+        fun setRawContactOptions(rawContact: RawContact) {
+            rawContact.mutableCopy {
+                setOptions {
+                    starred = true
+                    customRingtone = null
+                    sendToVoicemail = false
+    
+                }
+            }
+        }
     }
     ```
 
@@ -3347,7 +3394,6 @@ heading explore each API in full detail. You may also find these samples in the 
     ```java
     import android.app.Activity;
     
-    import contacts.core.ContactsFactory;
     import contacts.core.entities.*;
     import contacts.core.util.*;
     
@@ -3357,20 +3403,30 @@ heading explore each API in full detail. You may also find these samples in the 
             return contact.getOptions();
         }
     
-        Options getContactOptionsFromDb(Contact contact) {
-            return ContactOptionsKt.options(contact, ContactsFactory.create(this));
+        void setContactOptions(Contact contact) {
+            NewOptions newOptions = new NewOptions();
+            newOptions.setStarred(true);
+            newOptions.setCustomRingtone(null);
+            newOptions.setSendToVoicemail(false);
+    
+            MutableContact mutableContact = contact.mutableCopy();
+    
+            ContactDataKt.setOptions(mutableContact, newOptions);
         }
     
-        Options getRawContactOptionsFromDb(RawContact rawContact) {
-            return RawContactOptionsKt.options(rawContact, ContactsFactory.create(this));
+        Options getRawContactOptions(RawContact rawContact) {
+            return rawContact.getOptions();
         }
     
-        Boolean setContactOptions(Contact contact, MutableOptions options) {
-            return ContactOptionsKt.setOptions(contact, ContactsFactory.create(this), options);
-        }
+        void setRawContactOptions(RawContact rawContact) {
+            NewOptions newOptions = new NewOptions();
+            newOptions.setStarred(true);
+            newOptions.setCustomRingtone(null);
+            newOptions.setSendToVoicemail(false);
     
-        Boolean setRawContactOptions(RawContact rawContact, MutableOptions options) {
-            return RawContactOptionsKt.setOptions(rawContact, ContactsFactory.create(this), options);
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+    
+            MutableRawContactDataKt.setOptions(mutableRawContact, newOptions);
         }
     }
     ```
@@ -3571,9 +3627,6 @@ heading explore each API in full detail. You may also find these samples in the 
     
         fun getGroupOfGroupMemberships(groupMemberships: List<GroupMembership>): List<Group> =
             groupMemberships.groups(Contacts(this))
-    
-        fun getRawContactOfBlankRawContact(blankRawContact: BlankRawContact): RawContact? =
-            blankRawContact.toRawContact(Contacts(this))
     }
     ```
 
@@ -3642,10 +3695,6 @@ heading explore each API in full detail. You may also find these samples in the 
     
         List<Group> getGroupOfGroupMemberships(List<GroupMembership> groupMemberships) {
             return GroupMembershipGroupKt.groups(groupMemberships, ContactsFactory.create(this));
-        }
-    
-        RawContact getRawContactOfBlankRawContact(BlankRawContact blankRawContact) {
-            return BlankRawContactToRawContactKt.toRawContact(blankRawContact, ContactsFactory.create(this));
         }
     }
     ```

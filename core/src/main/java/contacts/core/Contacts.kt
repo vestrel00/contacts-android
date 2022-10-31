@@ -18,13 +18,13 @@ import contacts.core.profile.Profile
 import contacts.core.sim.SimContacts
 
 /**
- * Provides new [Query], [BroadQuery], [PhoneLookupQuery], [Insert], [Update], [Delete], [Data],
- * [Groups], [Profile], [Accounts], [BlockedNumbers], and [SimContacts] instances.
+ * Provides new [Query], [RawContactsQuery], [BroadQuery], [PhoneLookupQuery], [Insert], [Update],
+ * [Delete], [Data], [Groups], [Profile], [Accounts], [BlockedNumbers], and [SimContacts] instances.
  *
  * ## Permissions
  *
- * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query] and
- *   [broadQuery].
+ * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query],
+ *   [rawContactsQuery], [phoneLookupQuery], and [broadQuery].
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
  *   [update], and [delete].
  *
@@ -40,6 +40,11 @@ interface Contacts {
      * Returns a new [Query] instance.
      */
     fun query(): Query
+
+    /**
+     * Returns a new [RawContactsQuery] instance for non-profile operations.
+     */
+    fun rawContactsQuery(): RawContactsQuery
 
     /**
      * Returns a new [BroadQuery] instance.
@@ -85,14 +90,6 @@ interface Contacts {
      * Returns a new [Accounts] instance for non-profile operations.
      */
     fun accounts(): Accounts
-
-    /**
-     * Returns a new [Accounts] instance that is for profile or non-profile operations based on the
-     * given [isProfile].
-     */
-    // @JvmOverloads cannot be used in interface methods...
-    // fun accounts(isProfile: Boolean = false): Accounts
-    fun accounts(isProfile: Boolean): Accounts
 
     /**
      * Returns a new [BlockedNumbers] instance.
@@ -207,6 +204,8 @@ private class ContactsImpl(
 
     override fun query() = Query(this)
 
+    override fun rawContactsQuery() = RawContactsQuery(this, false)
+
     override fun broadQuery() = BroadQuery(this)
 
     override fun phoneLookupQuery() = PhoneLookupQuery(this)
@@ -223,9 +222,7 @@ private class ContactsImpl(
 
     override fun profile() = Profile(this)
 
-    override fun accounts() = accounts(false)
-
-    override fun accounts(isProfile: Boolean) = Accounts(this, isProfile)
+    override fun accounts() = Accounts(this, false)
 
     override fun blockedNumbers() = BlockedNumbers(this)
 

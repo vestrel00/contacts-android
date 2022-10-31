@@ -2,6 +2,7 @@ package contacts.core.util
 
 import contacts.core.Contacts
 import contacts.core.ContactsException
+import contacts.core.RawContactsFields
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MutableRawContact
 import contacts.core.entities.RawContact
@@ -55,14 +56,10 @@ internal fun Contacts.findRawContactWithId(
     rawContactId: Long,
     cancel: () -> Boolean
 ): RawContact? = if (rawContactId.isProfileId) {
-    profile().query()
-        .find(cancel)
-        .contact
+    profile().rawContactsQuery()
 } else {
-    query()
-        .where { RawContact.Id equalTo rawContactId }
-        .find(cancel)
-        .firstOrNull()
+    rawContactsQuery()
 }
-    ?.rawContacts
-    ?.find { it.id == rawContactId }
+    .rawContactsWhere(emptyList(), RawContactsFields.Id equalTo rawContactId)
+    .find(cancel)
+    .firstOrNull()

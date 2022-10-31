@@ -152,6 +152,32 @@ interface Insert : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): Insert
 
     /**
+     * Similar to [include] except this is really only used to specify
+     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields
+     * and the corresponding properties are immutable (exception for options).
+     *
+     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
+     * included. Otherwise, only the specified fields will be included in addition to required API
+     * fields [RawContactsFields.Required].
+     */
+    fun includeRawContactsFields(vararg fields: RawContactsField): Insert
+
+    /**
+     * See [Insert.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Collection<RawContactsField>): Insert
+
+    /**
+     * See [Insert.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Sequence<RawContactsField>): Insert
+
+    /**
+     * See [Insert.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): Insert
+
+    /**
      * Adds a new [NewRawContact] to the insert queue, which will be inserted on [commit].
      * The new instance is configured by the [configureRawContact] function.
      */
@@ -268,6 +294,7 @@ private class InsertImpl(
 
     private var allowBlanks: Boolean = false,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
     private var account: Account? = null,
     private val rawContacts: MutableSet<NewRawContact> = mutableSetOf(),
 
@@ -279,6 +306,7 @@ private class InsertImpl(
             Insert {
                 allowBlanks: $allowBlanks
                 include: $include
+                includeRawContactsFields: $includeRawContactsFields
                 account: $account
                 rawContacts: $rawContacts
                 hasPermission: ${permissions.canInsert()}
@@ -291,6 +319,7 @@ private class InsertImpl(
 
         allowBlanks,
         include,
+        includeRawContactsFields,
         // Redact account info.
         account?.redactedCopy(),
         // Redact contact data.
@@ -321,6 +350,24 @@ private class InsertImpl(
 
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
+
+    override fun includeRawContactsFields(vararg fields: RawContactsField) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Collection<RawContactsField>) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): Insert = apply {
+        includeRawContactsFields = if (fields.isEmpty()) {
+            DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+        } else {
+            Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+        }
+    }
+
+    override fun includeRawContactsFields(
+        fields: RawContactsFields.() -> Collection<RawContactsField>
+    ) = includeRawContactsFields(fields(RawContactsFields))
 
     override fun rawContact(configureRawContact: NewRawContact.() -> Unit): Insert =
         rawContacts(NewRawContact().apply(configureRawContact))
@@ -359,7 +406,7 @@ private class InsertImpl(
                     // as that operation should be fast and CPU time should be trivial.
                     contactsApi.insertRawContactForAccount(
                         account,
-                        include.fields,
+                        include.fields, includeRawContactsFields.fields,
                         rawContact,
                         IS_PROFILE
                     )
@@ -373,6 +420,11 @@ private class InsertImpl(
 
     private companion object {
         const val IS_PROFILE = false
+
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+            RawContactsFields.Required.all.asSequence()
+        }
     }
 }
 
@@ -389,6 +441,7 @@ private class InsertImpl(
 internal fun Contacts.insertRawContactForAccount(
     account: Account?,
     includeFields: Set<AbstractDataField>,
+    includeRawContactsFields: Set<RawContactsField>,
     rawContact: NewRawContact,
     isProfile: Boolean
 ): Long? {
@@ -438,6 +491,17 @@ internal fun Contacts.insertRawContactForAccount(
             ).insertForNewRawContact(rawContact.groupMemberships, account)
         )
     }
+
+    // Apply the options operations after the group memberships operation.
+    // Any add membership operation to the favorites group will be overshadowed by the value of
+    // Options.starred. If starred is true, the Contacts Provider will automatically add a group
+    // membership to the favorites group (if exist). If starred is false, then the favorites group
+    // membership will be removed.
+    OptionsOperation().updateNewRawContactOptions(
+        rawContact.options,
+        RawContactsFields.Options.all.intersect(includeRawContactsFields),
+        isProfile
+    )?.let(operations::add)
 
     operations.addAll(
         ImOperation(
@@ -530,13 +594,15 @@ internal fun Contacts.insertRawContactForAccount(
     return results?.firstOrNull()?.let { result ->
         result.uri?.lastPathSegment?.toLongOrNull()
     }?.also { rawContactId ->
-        // We will attempt to set the photo, ignoring whether it failed or succeeded. Users of this
+        // We will attempt to set the photo, ignoring whether it fails or succeeds. Users of this
         // library can submit a request to change this behavior if they want =)
         rawContact.photoDataOperation?.let {
             if (it is PhotoDataOperation.SetPhoto) {
                 setRawContactPhotoDirect(rawContactId, it.photoData)
             }
         }
+        // Perform the operation only once. Users can set a pending operation again if they'd like.
+        rawContact.photoDataOperation = null
     }
 }
 

@@ -15,9 +15,11 @@ import contacts.core.intersect
 
 /**
  * Contains functions that processes cursors from the Contacts ([processContactsCursor]),
- * RawContacts ([processRawContactsCursor]), and Data ([processDataCursor]) tables to  accumulate
- * Contacts, RawContacts, and Data. Once accumulation is complete, the [map] function returns a list
- * of [Contact]s.
+ * RawContacts ([processRawContactsCursor]), and Data ([processDataCursor]) tables to accumulate
+ * Contacts, RawContacts, and Data.
+ *
+ * Once accumulation is complete, the [mapContacts] and [mapRawContacts] function returns a list of
+ * the accumulated [Contact]s and [RawContact]s respectively.
  */
 internal class ContactsMapper(
     /**
@@ -43,9 +45,14 @@ internal class ContactsMapper(
     private val rawContactsMap: MutableMap<Long, TempRawContact> = mutableMapOf()
 ) {
 
-    val rawContactIds: Set<Long> = rawContactsMap.keys
+    // We could technically use the assignment operator here because it will assign a reference to
+    // the mutable set itself. Meaning the value this returns is not static. However, using get()
+    // reads better (less prone to confusion) and is safer.
+    val contactIds: Set<Long>
+        get() = contactsMap.keys.toSet() // provide an immutable copy for safety
 
-    val contactIds: Set<Long> = contactsMap.keys
+    val rawContactIds: Set<Long>
+        get() = rawContactsMap.keys.toSet()
 
     /**
      * Collects Contacts from the given Contacts table cursor.
@@ -75,7 +82,7 @@ internal class ContactsMapper(
     fun processRawContactsCursor(cursor: CursorHolder<RawContactsField>): ContactsMapper = apply {
         // Use the RawContacts cursor to retrieve the rawContactId.
         val rawContactsCursor = cursor.rawContactsCursor()
-        val tempRawContactMapper = rawContactsCursor.tempRawContactMapper()
+        val tempRawContactMapper = cursor.tempRawContactMapper()
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
@@ -88,39 +95,26 @@ internal class ContactsMapper(
     }
 
     /**
-     * Collects Contacts, RawContacts, and Data from the given Data table cursor.
+     * Collects Data from the given Data table cursor and updates collected RawContacts.
+     *
+     * This should only be invoked after [processContactsCursor] and [processRawContactsCursor]
+     * have been invoked.
      *
      * This will not close the given [cursor].
      */
     fun processDataCursor(cursor: CursorHolder<AbstractDataField>): ContactsMapper = apply {
         // Changing the cursor position also changes the values returned by the mappers.
         val dataCursor = cursor.dataCursor()
-        val contactMapper = cursor.dataContactsMapper()
-        val tempRawContactMapper = dataCursor.tempRawContactMapper()
 
         cursor.resetPosition()
         while (!cancel() && cursor.moveToNext()) {
-
-            // Collect contacts.
-            // Use the Data cursor to retrieve the contactId.
-            val contactId = dataCursor.contactId
-            if (!contactsMap.containsKey(contactId)) {
-                contactsMap[contactId] = contactMapper.value
+            rawContactsMap[dataCursor.rawContactId]?.let { tempRawContact ->
+                cursor.updateRawContact(customDataRegistry, tempRawContact)
             }
-
-            // Collect the RawContacts and update them.
-            // Use the Data cursor to retrieve the rawContactId.
-            rawContactsMap.getOrPut(dataCursor.rawContactId) { tempRawContactMapper.value }
-                .also { cursor.updateRawContact(customDataRegistry, it) }
         }
     }
 
-    /*
-     * This used to return a Sequence but I found that it was more CPU and memory intensive.
-     * This is especially true if callers of this function call Sequence.count(), which invokes
-     * all of the intermediate functions during traversal producing unwanted side effects.
-     */
-    fun map(): List<Contact> {
+    fun mapContacts(): List<Contact> {
         if (cancel()) {
             return emptyList()
         }
@@ -154,33 +148,18 @@ internal class ContactsMapper(
             }
         }
 
-        // Add all of the remaining RawContacts in contactRawMap without a parent Contact.
-        for (entry in contactRawMap) {
-            contactList.add(
-                Contact(
-                    id = entry.key,
-                    lookupKey = null,
-                    rawContacts = entry.value.sortedBy { it.id },
-                    displayNamePrimary = null,
-                    displayNameAlt = null,
-                    lastUpdatedTimestamp = null,
-                    options = null,
-                    photoFileId = null,
-                    photoUri = null,
-                    photoThumbnailUri = null,
-                    hasPhoneNumber = null,
+        return if (cancel()) emptyList() else contactList
+    }
 
-                    isRedacted = false
-                )
-            )
-
-            // Return empty list if cancelled to ensure only correct data set is returned.
+    fun mapRawContacts(): List<RawContact> = mutableListOf<RawContact>().apply {
+        // In order to support cancellations, we do not just do;
+        // rawContactsMap.values.map { it.toRawContact() }
+        for (tempRawContact in rawContactsMap.values) {
+            add(tempRawContact.toRawContact())
             if (cancel()) {
                 return emptyList()
             }
         }
-
-        return if (cancel()) emptyList() else contactList
     }
 }
 

@@ -176,7 +176,7 @@ class ContactDetailsActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        contactView.onActivityResult(requestCode, resultCode, data, contacts)
+        contactView.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

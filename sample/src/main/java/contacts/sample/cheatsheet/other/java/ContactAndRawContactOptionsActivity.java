@@ -2,7 +2,6 @@ package contacts.sample.cheatsheet.other.java;
 
 import android.app.Activity;
 
-import contacts.core.ContactsFactory;
 import contacts.core.entities.*;
 import contacts.core.util.*;
 
@@ -12,19 +11,29 @@ public class ContactAndRawContactOptionsActivity extends Activity {
         return contact.getOptions();
     }
 
-    Options getContactOptionsFromDb(Contact contact) {
-        return ContactOptionsKt.options(contact, ContactsFactory.create(this));
+    void setContactOptions(Contact contact) {
+        NewOptions newOptions = new NewOptions();
+        newOptions.setStarred(true);
+        newOptions.setCustomRingtone(null);
+        newOptions.setSendToVoicemail(false);
+
+        MutableContact mutableContact = contact.mutableCopy();
+
+        ContactDataKt.setOptions(mutableContact, newOptions);
     }
 
-    Options getRawContactOptionsFromDb(RawContact rawContact) {
-        return RawContactOptionsKt.options(rawContact, ContactsFactory.create(this));
+    Options getRawContactOptions(RawContact rawContact) {
+        return rawContact.getOptions();
     }
 
-    Boolean setContactOptions(Contact contact, MutableOptions options) {
-        return ContactOptionsKt.setOptions(contact, ContactsFactory.create(this), options);
-    }
+    void setRawContactOptions(RawContact rawContact) {
+        NewOptions newOptions = new NewOptions();
+        newOptions.setStarred(true);
+        newOptions.setCustomRingtone(null);
+        newOptions.setSendToVoicemail(false);
 
-    Boolean setRawContactOptions(RawContact rawContact, MutableOptions options) {
-        return RawContactOptionsKt.setOptions(rawContact, ContactsFactory.create(this), options);
+        MutableRawContact mutableRawContact = rawContact.mutableCopy();
+
+        MutableRawContactDataKt.setOptions(mutableRawContact, newOptions);
     }
 }

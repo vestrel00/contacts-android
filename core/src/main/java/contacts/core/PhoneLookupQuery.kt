@@ -108,20 +108,22 @@ interface PhoneLookupQuery : CrudApi {
     fun groups(groups: Sequence<Group>): PhoneLookupQuery
 
     /**
-     * Includes only the given set of [fields] (data) in each of the matching contacts.
+     * Includes only the given set of [fields] in each of the matching contacts.
      *
-     * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
-     * which are always included.
+     * If no fields are specified, then all fields ([Fields.all]) are included. Otherwise, only the
+     * specified fields will be included in addition to required API fields [Fields.Required]
+     * (e.g. IDs), which are always included.
      *
-     * When all fields are included in a query operation, all properties of Contacts, RawContacts,
-     * and Data are populated with values from the database. Properties of fields that are included
-     * are not guaranteed to be non-null because the database may actually have no data for the
+     * When all fields are included in a query operation, all properties of Contacts and Data are
+     * populated with values from the database. Properties of fields that are included are not
+     * guaranteed to be non-null because the database may actually have no data for the
      * corresponding field.
      *
-     * When only some fields are included, only those included properties of Contacts, RawContacts,
-     * and Data are populated with values from the database. Properties of fields that are not
-     * included are guaranteed to be null.
+     * When only some fields are included, only those included properties of Contacts and Data are
+     * populated with values from the database. Properties of fields that are not included are
+     * guaranteed to be null.
+     *
+     * To include RawContact specific properties, use [PhoneLookupQuery.includeRawContactsFields].
      *
      * ## Performance
      *
@@ -146,6 +148,67 @@ interface PhoneLookupQuery : CrudApi {
      * See [PhoneLookupQuery.include].
      */
     fun include(fields: Fields.() -> Collection<AbstractDataField>): PhoneLookupQuery
+
+    /**
+     * Includes [fields] from the RawContacts table corresponding to the following RawContacts
+     * properties;
+     *
+     * - [contacts.core.entities.RawContact.displayNamePrimary]
+     * - [contacts.core.entities.RawContact.displayNameAlt]
+     * - [contacts.core.entities.RawContact.account]
+     * - [contacts.core.entities.RawContact.options]
+     *
+     * For all other fields/properties, use [include].
+     *
+     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
+     * included. Otherwise, only the specified fields will be included in addition to required API
+     * fields [RawContactsFields.Required].
+     *
+     * When all fields are included in a query operation, all of the aforementioned properties of
+     * RawContacts are populated with values from the database. Properties of fields that are
+     * included are not guaranteed to be non-null because the database may actually have no data for
+     * the corresponding field.
+     *
+     * When only some fields are included, only those included properties of RawContacts are
+     * populated with values from the database. Properties of fields that are not included are
+     * guaranteed to be null.
+     *
+     * ## Performance
+     *
+     * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * ## Developer notes
+     *
+     * So, why not just add these fields to [DataRawContactsFields]?
+     *
+     * The reason is that [DataRawContactsFields], and everything in [Fields], are used for
+     * **Data table** queries. Data table queries uses the
+     * [android.provider.ContactsContract.DataColumnsWithJoins], which does not include
+     * [android.provider.ContactsContract.SyncColumns] required to determine the
+     * [contacts.core.entities.RawContact.account].
+     *
+     * Furthermore, the display name and options values in the returned rows reference the Contact's
+     * values instead of the RawContact's values.
+     *
+     * Therefore, it made sense to make sure that [RawContactsFields] cannot be a part of a where
+     * clause but can be included.
+     */
+    fun includeRawContactsFields(vararg fields: RawContactsField): PhoneLookupQuery
+
+    /**
+     * See [PhoneLookupQuery.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Collection<RawContactsField>): PhoneLookupQuery
+
+    /**
+     * See [PhoneLookupQuery.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: Sequence<RawContactsField>): PhoneLookupQuery
+
+    /**
+     * See [PhoneLookupQuery.includeRawContactsFields].
+     */
+    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): PhoneLookupQuery
 
     /**
      * Specifies the type of lookup data that should be used in the matching process. This
@@ -391,6 +454,7 @@ private class PhoneLookupQueryImpl(
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var groupMembershipWhere: Where<GroupMembershipField>? = DEFAULT_GROUP_MEMBERSHIP_WHERE,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
     private var match: Match = DEFAULT_MATCH,
     private var searchString: String? = DEFAULT_SEARCH_STRING,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
@@ -407,6 +471,7 @@ private class PhoneLookupQueryImpl(
                 rawContactsWhere: $rawContactsWhere
                 groupMembershipWhere: $groupMembershipWhere
                 include: $include
+                includeRawContactsFields: $includeRawContactsFields
                 match: $match
                 searchString: $searchString
                 orderBy: $orderBy
@@ -424,6 +489,7 @@ private class PhoneLookupQueryImpl(
         rawContactsWhere?.redactedCopy(),
         groupMembershipWhere,
         include,
+        includeRawContactsFields,
         match,
         // Redact search input.
         searchString?.redact(),
@@ -470,6 +536,25 @@ private class PhoneLookupQueryImpl(
 
     override fun include(fields: Fields.() -> Collection<AbstractDataField>) =
         include(fields(Fields))
+
+    override fun includeRawContactsFields(vararg fields: RawContactsField) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Collection<RawContactsField>) =
+        includeRawContactsFields(fields.asSequence())
+
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): PhoneLookupQuery =
+        apply {
+            includeRawContactsFields = if (fields.isEmpty()) {
+                DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+            } else {
+                Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+            }
+        }
+
+    override fun includeRawContactsFields(
+        fields: RawContactsFields.() -> Collection<RawContactsField>
+    ) = includeRawContactsFields(fields(RawContactsFields))
 
     override fun match(match: Match): PhoneLookupQuery = apply {
         this.match = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -529,9 +614,12 @@ private class PhoneLookupQueryImpl(
             emptyList()
         } else {
             contentResolver.resolve(
-                customDataRegistry, rawContactsWhere, groupMembershipWhere,
-                include, match, searchString,
-                orderBy, limit, offset, cancel
+                customDataRegistry,
+                rawContactsWhere, groupMembershipWhere,
+                include, includeRawContactsFields,
+                match, searchString,
+                orderBy, limit, offset,
+                cancel
             )
         }
 
@@ -548,7 +636,11 @@ private class PhoneLookupQueryImpl(
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
         val DEFAULT_GROUP_MEMBERSHIP_WHERE: Where<GroupMembershipField>? = null
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
         val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+            RawContactsFields.Required.all.asSequence()
+        }
         val DEFAULT_MATCH: Match = Match.PHONE
         val DEFAULT_SEARCH_STRING: String? = null
         val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
@@ -563,6 +655,7 @@ private fun ContentResolver.resolve(
     rawContactsWhere: Where<RawContactsField>?,
     groupMembershipWhere: Where<GroupMembershipField>?,
     include: Include<AbstractDataField>,
+    includeRawContactsFields: Include<RawContactsField>,
     match: Match,
     searchString: String?,
     orderBy: CompoundOrderBy<ContactsField>,
@@ -626,7 +719,11 @@ private fun ContentResolver.resolve(
     }
 
     return resolve(
-        customDataRegistry, contactIds, include, orderBy, limit, offset, cancel
+        customDataRegistry,
+        contactIds,
+        include, includeRawContactsFields,
+        orderBy, limit, offset,
+        cancel
     )
 }
 

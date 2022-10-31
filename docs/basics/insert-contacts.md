@@ -355,10 +355,7 @@ val insertResult = Contacts(context)
                 .groups()
                 .query()
                 .accounts(accountToAddContactTo)
-                .where {
-                    (Favorites equalTo true) or
-                            (Title contains "friend")
-                }
+                .where { Title contains "friend"}
                 .find()
                 .newMemberships()
         )

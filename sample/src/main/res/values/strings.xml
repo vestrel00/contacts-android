@@ -47,9 +47,6 @@
     <string name="groups">Groups</string>
     <string name="groups_local_account_not_yet_supported">Support for null (local) Account is coming in issue #167</string>
 
-    <!-- ContactView -->
-    <string name="contact_send_to_voicemail">Send to voicemail</string>
-
     <!-- RawContactView -->
     <string name="raw_contact_name_label">Name</string>
     <string name="raw_contact_nickname_label">Nickname</string>

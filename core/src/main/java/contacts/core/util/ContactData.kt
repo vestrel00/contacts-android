@@ -171,8 +171,10 @@ fun Contact.notes(): Sequence<Note> = rawContacts
  */
 fun Contact.noteList(): List<Note> = notes().toList()
 
-// Options intentionally left out because a Contact and associated RawContacts have independent
-// Options.
+/**
+ * This contact's [Options].
+ */
+fun Contact.options(): Options? = options
 
 /**
  * Sequence of organizations from all [Contact.rawContacts] ordered by the [Organization.id].
@@ -199,9 +201,6 @@ fun Contact.phones(): Sequence<Phone> = rawContacts
  * List of phones from all [Contact.rawContacts] ordered by the [Phone.id].
  */
 fun Contact.phoneList(): List<Phone> = phones().toList()
-
-// Photo intentionally left out because a Contact and associated RawContacts have independent
-// Photos.
 
 /**
  * Sequence of relations from all [Contact.rawContacts] ordered by the [Relation.id].
@@ -575,8 +574,24 @@ fun MutableContact.setNote(configureNote: NewNote.() -> Unit) {
     rawContacts.firstOrNull()?.setNote(configureNote)
 }
 
-// Options intentionally left out because a Contact and associated RawContacts have independent
-// Options.
+/**
+ * This contact's [MutableOptionsEntity].
+ */
+fun MutableContact.options(): MutableOptionsEntity? = options
+
+/**
+ * Sets the [MutableContact.options].
+ */
+fun MutableContact.setOptions(options: MutableOptionsEntity?) {
+    this.options = options
+}
+
+/**
+ * Sets the [MutableContact.options] (configured by [configureOptions]).
+ */
+fun MutableContact.setOptions(configureOptions: NewOptions.() -> Unit) {
+    setOptions(NewOptions().apply(configureOptions))
+}
 
 /**
  * Sequence of organizations from all [MutableContact.rawContacts] ordered by id.
@@ -660,9 +675,6 @@ fun MutableContact.removeAllPhones() {
         rawContact.removeAllPhones()
     }
 }
-
-// Photo intentionally left out because a Contact and associated RawContacts have independent
-// Photos.
 
 /**
  * Sequence of relations from all [MutableContact.rawContacts] ordered by id.

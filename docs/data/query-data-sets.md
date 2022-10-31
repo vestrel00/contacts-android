@@ -9,8 +9,11 @@ An instance of the `DataQueryFactory` API is obtained by,
 val query = Contacts(context).data().query()
 ```
 
-> ℹ️ To retrieve all kinds of data via Contacts/RawContacts, read [Query contacts](./../basics/query-contacts.md)
-> and [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
+> ℹ️ To retrieve all kinds of data via Contacts/RawContacts, read 
+> [Query contacts](./../basics/query-contacts.md),
+> [Query contacts (advanced)](./../basics/query-contacts-advanced.md),
+> [Query contacts by phone or SIP](./../basics/query-contacts-by-phone-or-sip.md),
+> [Query RawContacts](./../basics/query-raw-contacts.md).
 
 ## Data queries
 

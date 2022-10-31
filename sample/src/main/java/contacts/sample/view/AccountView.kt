@@ -5,15 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import android.widget.TextView
-import contacts.async.accounts.findWithContext
 import contacts.core.Contacts
-import contacts.core.entities.ExistingRawContactEntityWithContactId
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
-import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.AccountsActivity
 import contacts.ui.view.activity
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -68,22 +68,7 @@ class AccountView @JvmOverloads constructor(
         defaultAccount: Account?
     ) {
         this.rawContact = rawContact
-        loadAccount(contacts, defaultAccount)
-    }
-
-    private fun loadAccount(contacts: Contacts, defaultAccount: Account?) = launch {
-        val account = rawContact?.let {
-            if (it is ExistingRawContactEntityWithContactId) {
-                contacts.accounts(it.isProfile)
-                    .queryWithPermission()
-                    .associatedWith(it)
-                    .findWithContext()
-                    .firstOrNull()
-            } else {
-                defaultAccount
-            }
-        }
-        setAccount(account)
+        setAccount(rawContact?.accountOrNull)
     }
 
     private fun setAccount(account: Account?) {

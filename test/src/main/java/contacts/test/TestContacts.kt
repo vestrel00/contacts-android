@@ -41,6 +41,10 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
 
     override fun query(): Query = TestQuery(contactsApi.query(), contactsApi)
 
+    override fun rawContactsQuery(): RawContactsQuery {
+        TODO("Not yet implemented")
+    }
+
     override fun broadQuery(): BroadQuery {
         TODO("Not yet implemented")
     }
@@ -73,9 +77,7 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
         TODO("Not yet implemented")
     }
 
-    override fun accounts() = accounts(false)
-
-    override fun accounts(isProfile: Boolean): Accounts {
+    override fun accounts(): Accounts {
         TODO("Not yet implemented")
     }
 

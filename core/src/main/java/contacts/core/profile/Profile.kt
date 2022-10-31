@@ -1,14 +1,18 @@
 package contacts.core.profile
 
 import contacts.core.Contacts
+import contacts.core.RawContactsQuery
 import contacts.core.data.Data
 
 /**
  * Provides new [ProfileQuery], [ProfileInsert], [ProfileUpdate], and [ProfileDelete] instances.
  *
+ * Also [RawContactsQuery] and [Data].
+ *
  * ## Permissions
  *
- * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query].
+ * - Add the "android.permission.READ_CONTACTS" to the AndroidManifest in order to [query]
+ * and [rawContactsQuery].
  *     - For API 22 and below, the permission "android.permission.READ_PROFILE" is also required.
  * - Add the "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to [insert],
  * [update], and [delete].
@@ -20,6 +24,11 @@ interface Profile {
      * Returns a new [ProfileQuery] instance.
      */
     fun query(): ProfileQuery
+
+    /**
+     * Returns a new [RawContactsQuery] instance for profile operations.
+     */
+    fun rawContactsQuery(): RawContactsQuery
 
     /**
      * Returns a new [ProfileInsert] instance.
@@ -57,6 +66,8 @@ internal fun Profile(contacts: Contacts): Profile = ProfileImpl(contacts)
 private class ProfileImpl(override val contactsApi: Contacts) : Profile {
 
     override fun query() = ProfileQuery(contactsApi)
+
+    override fun rawContactsQuery() = RawContactsQuery(contactsApi, true)
 
     override fun insert() = ProfileInsert(contactsApi)
 

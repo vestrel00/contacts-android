@@ -1,19 +1,26 @@
 package contacts.core.entities.mapper
 
+import contacts.core.entities.Options
 import contacts.core.entities.TempRawContact
-import contacts.core.entities.cursor.RawContactIdCursor
+import contacts.core.entities.cursor.RawContactsCursor
+import contacts.core.entities.cursor.account
 
 /**
  * Creates [TempRawContact] instances. May be used for cursors from the RawContacts or Data table.
  */
 internal class TempRawContactMapper(
-    private val rawContactIdCursor: RawContactIdCursor
+    private val rawContactsCursor: RawContactsCursor,
+    private val optionsMapper: EntityMapper<Options>
 ) : EntityMapper<TempRawContact> {
 
     override val value: TempRawContact
         get() = TempRawContact(
-            id = rawContactIdCursor.rawContactId,
-            contactId = rawContactIdCursor.contactId,
+            id = rawContactsCursor.rawContactId,
+            contactId = rawContactsCursor.contactId,
+
+            displayNamePrimary = rawContactsCursor.displayNamePrimary,
+            displayNameAlt = rawContactsCursor.displayNameAlt,
+            account = rawContactsCursor.account(),
 
             addresses = mutableListOf(),
 
@@ -30,6 +37,8 @@ internal class TempRawContactMapper(
             nickname = null,
 
             note = null,
+
+            options = optionsMapper.value,
 
             organization = null,
 

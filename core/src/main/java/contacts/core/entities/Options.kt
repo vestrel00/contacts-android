@@ -23,16 +23,23 @@ sealed interface OptionsEntity : Entity {
     /**
      * True if the contact or raw contact is starred (favorite). Use this to mark favorite contacts.
      *
-     * Setting this to true results in the addition of a group membership to the favorites group of
-     * the associated account. Setting it to false removes that membership. The inverse works too.
-     * Adding a group membership to the favorites group results in this being set to true. Removing
-     * the membership sets it to false.
+     * ## Starred in Android & Favorites Group Membership
      *
-     * When there are no accounts, there are also no groups and group memberships that can exist.
-     * Even though the favorites group does not exist, contacts may still be starred. When an
-     * account is added, all of the starred contacts also gain a membership to the favorites group.
-     * Therefore, this should be the preferred way of marking contacts as favorites instead of
-     * group membership manipulation.
+     * When a Contact is starred, the Contacts Provider automatically adds a group membership to the
+     * favorites group for all RawContacts linked to the Contact. Setting the Contact starred to
+     * false removes all group memberships to the favorites group.
+     *
+     * The Contact's "starred" value is interdependent with memberships to the favorites group.
+     * Adding a membership to the favorites group results in starred being set to true. Removing the
+     * membership sets it to false. This behavior can cause bugs and increased code complexity for
+     * API users. Therefore, the update APIs provided in this library overshadows membership
+     * changes to the favorites group with the value of [starred]. In other words, the only way to
+     * star or favorite Contacts and RawContacts is to set the value of [starred].
+     *
+     * Raw contacts that are not associated with an account may not have any group memberships. Even
+     * though these RawContacts may not have a membership to a favorites group, they may still be
+     * "starred" (favorited), which is not dependent on the existence of a favorites group
+     * membership.
      */
     val starred: Boolean?
 
