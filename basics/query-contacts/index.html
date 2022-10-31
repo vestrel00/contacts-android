@@ -707,6 +707,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../insert-contacts/" class="md-nav__link">
         Insert contacts
       </a>
@@ -1271,20 +1285,6 @@
     <li class="md-nav__item">
       <a href="../../accounts/query-accounts/" class="md-nav__link">
         Query for Accounts
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
-        Query RawContacts
       </a>
     </li>
   
@@ -2169,6 +2169,7 @@ want to implement functionality similar to the People app's contact list screen.
 <blockquote>
 <p>ℹ️ For a more granular, advanced queries, use the <code>Query</code> API; <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 <p>ℹ️ For specialized matching of phone numbers and SIP addresses, use the <code>PhoneLookupQuery</code> API; <a href="../query-contacts-by-phone-or-sip/">Query contacts by phone or SIP</a>.</p>
+<p>ℹ️ If you want to query RawContacts directly instead of Contacts, read <a href="../query-raw-contacts/">Query RawContacts</a>.</p>
 <p>ℹ️ If you want to query Data directly instead of Contacts, read <a href="../../data/query-data-sets/">Query specific data kinds</a>.</p>
 <p>ℹ️ If you want to get the device owner Contact Profile, read <a href="../../profile/query-profile/">Query device owner Contact profile</a>.</p>
 </blockquote>
@@ -2214,8 +2215,8 @@ should only specify this if you actually need it.</p>
 <p>To limit the search to only those RawContacts associated with at least one of the given groups,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
-<p>For example, to limit the search to only favorites,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">favoritesGroup</span><span class="p">)</span><span class="w"></span>
+<p>For example, to limit the search to only friends,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">friendsGroup</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../groups/query-groups/">Query groups</a>.</p>

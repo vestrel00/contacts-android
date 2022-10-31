@@ -527,6 +527,20 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -1244,20 +1258,6 @@
     <li class="md-nav__item">
       <a href="../../accounts/query-accounts/" class="md-nav__link">
         Query for Accounts
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
-        Query RawContacts
       </a>
     </li>
   
@@ -2366,18 +2366,15 @@ screen,</p>
 <a id="__codelineno-22-59" name="__codelineno-22-59" href="#__codelineno-22-59"></a><span class="w">                </span><span class="p">.</span><span class="na">groups</span><span class="p">()</span><span class="w"></span>
 <a id="__codelineno-22-60" name="__codelineno-22-60" href="#__codelineno-22-60"></a><span class="w">                </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
 <a id="__codelineno-22-61" name="__codelineno-22-61" href="#__codelineno-22-61"></a><span class="w">                </span><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accountToAddContactTo</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-62" name="__codelineno-22-62" href="#__codelineno-22-62"></a><span class="w">                </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-63" name="__codelineno-22-63" href="#__codelineno-22-63"></a><span class="w">                    </span><span class="p">(</span><span class="n">Favorites</span><span class="w"> </span><span class="n">equalTo</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="n">or</span><span class="w"></span>
-<a id="__codelineno-22-64" name="__codelineno-22-64" href="#__codelineno-22-64"></a><span class="w">                            </span><span class="p">(</span><span class="n">Title</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="s">&quot;friend&quot;</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-65" name="__codelineno-22-65" href="#__codelineno-22-65"></a><span class="w">                </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-66" name="__codelineno-22-66" href="#__codelineno-22-66"></a><span class="w">                </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-67" name="__codelineno-22-67" href="#__codelineno-22-67"></a><span class="w">                </span><span class="p">.</span><span class="na">newMemberships</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-68" name="__codelineno-22-68" href="#__codelineno-22-68"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-69" name="__codelineno-22-69" href="#__codelineno-22-69"></a><span class="w">        </span><span class="n">setNote</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-70" name="__codelineno-22-70" href="#__codelineno-22-70"></a><span class="w">            </span><span class="n">note</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The best toy in the world!&quot;</span><span class="w"></span>
-<a id="__codelineno-22-71" name="__codelineno-22-71" href="#__codelineno-22-71"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-72" name="__codelineno-22-72" href="#__codelineno-22-72"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-73" name="__codelineno-22-73" href="#__codelineno-22-73"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-22-62" name="__codelineno-22-62" href="#__codelineno-22-62"></a><span class="w">                </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="s">&quot;friend&quot;</span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-22-63" name="__codelineno-22-63" href="#__codelineno-22-63"></a><span class="w">                </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-22-64" name="__codelineno-22-64" href="#__codelineno-22-64"></a><span class="w">                </span><span class="p">.</span><span class="na">newMemberships</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-22-65" name="__codelineno-22-65" href="#__codelineno-22-65"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-22-66" name="__codelineno-22-66" href="#__codelineno-22-66"></a><span class="w">        </span><span class="n">setNote</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-22-67" name="__codelineno-22-67" href="#__codelineno-22-67"></a><span class="w">            </span><span class="n">note</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The best toy in the world!&quot;</span><span class="w"></span>
+<a id="__codelineno-22-68" name="__codelineno-22-68" href="#__codelineno-22-68"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-22-69" name="__codelineno-22-69" href="#__codelineno-22-69"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-22-70" name="__codelineno-22-70" href="#__codelineno-22-70"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="inserting-photos-and-thumbnails">Inserting photos and thumbnails<a class="headerlink" href="#inserting-photos-and-thumbnails" title="Permanent link">&para;</a></h2>
 <p>To set full-sized photos (and by API design thumbnails), 
@@ -2397,7 +2394,7 @@ read <a href="../../other/get-set-remove-contact-raw-contact-photo/">Get set rem
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../query-contacts-by-phone-or-sip/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Query contacts by phone or SIP" rel="prev">
+        <a href="../query-raw-contacts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Query RawContacts" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2406,7 +2403,7 @@ read <a href="../../other/get-set-remove-contact-raw-contact-photo/">Get set rem
               <span class="md-footer__direction">
                 Previous
               </span>
-              Query contacts by phone or SIP
+              Query RawContacts
             </div>
           </div>
         </a>

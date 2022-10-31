@@ -527,6 +527,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../basics/query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../basics/insert-contacts/" class="md-nav__link">
         Insert contacts
       </a>
@@ -1103,20 +1117,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
-        Query RawContacts
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
         Associate a local RawContact to an Account
       </a>
@@ -1650,13 +1650,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#get-the-rawcontact-of-a-blankrawcontact" class="md-nav__link">
-    Get the RawContact of a BlankRawContact
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1942,13 +1935,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#get-the-rawcontact-of-a-blankrawcontact" class="md-nav__link">
-    Get the RawContact of a BlankRawContact
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2096,20 +2082,6 @@ use the extensions in <code>ContactsComparator.kt</code> to build a <code>Compar
 <p>To shorten things, you can use the extensions in <code>GroupMembershipGroup.kt</code>,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">groupMembership</span><span class="p">.</span><span class="na">group</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">groupMemberships</span><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-<p>These are blocking calls so you might want to do them outside the UI thread.</p>
-<blockquote>
-<p>ℹ️ For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
-</blockquote>
-<h2 id="get-the-rawcontact-of-a-blankrawcontact">Get the RawContact of a BlankRawContact<a class="headerlink" href="#get-the-rawcontact-of-a-blankrawcontact" title="Permanent link">&para;</a></h2>
-<p>The <code>Query</code> API allows you to get the <code>RawContact</code> version of a <code>BlankRawContact</code>,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="p">.</span><span class="na">query</span><span class="p">().</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">equalTo</span><span class="w"> </span><span class="n">blankRawContact</span><span class="p">.</span><span class="na">id</span><span class="w"> </span><span class="p">}.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="p">.</span><span class="na">firstOrNull</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="o">?.</span><span class="na">rawContacts</span><span class="w"></span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="o">?.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">blankRawContact</span><span class="p">.</span><span class="na">id</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-</code></pre></div>
-<p>To shorten things, you can use the extensions in <code>BlankRawContactToRawContact.kt</code>,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blankRawContact</span><span class="p">.</span><span class="na">toRawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>These are blocking calls so you might want to do them outside the UI thread.</p>
 <blockquote>

@@ -527,6 +527,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../basics/query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../basics/insert-contacts/" class="md-nav__link">
         Insert contacts
       </a>
@@ -1091,20 +1105,6 @@
     <li class="md-nav__item">
       <a href="../../accounts/query-accounts/" class="md-nav__link">
         Query for Accounts
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
-        Query RawContacts
       </a>
     </li>
   
@@ -2234,7 +2234,7 @@ UX as the native Contacts app. To use it,</p>
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">        </span><span class="n">showPhotoPickerDialog</span><span class="p">(</span><span class="w"></span>
 <a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">            </span><span class="n">withRemovePhotoOption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">            </span><span class="n">removePhoto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">removePhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">                </span><span class="c1">// remove contact photo</span><span class="w"></span>
 <a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
 <a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
@@ -2243,7 +2243,7 @@ UX as the native Contacts app. To use it,</p>
 <a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">        </span><span class="n">onPhotoPicked</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"></span>
 <a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">            </span><span class="n">photoBitmapPicked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">photoBitmap</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">                </span><span class="c1">// set contact photo</span><span class="w"></span>
 <a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">            </span><span class="p">},</span><span class="w"></span>
 <a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">            </span><span class="n">photoUriPicked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">uri</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
 <a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">                </span><span class="c1">// Note that bitmap decoding should be done in a non-UI thread. Threading has been</span><span class="w"></span>
@@ -2254,7 +2254,7 @@ UX as the native Contacts app. To use it,</p>
 <a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">                    </span><span class="n">MediaStore</span><span class="p">.</span><span class="na">Images</span><span class="p">.</span><span class="na">Media</span><span class="p">.</span><span class="na">getBitmap</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">contentResolver</span><span class="p">,</span><span class="w"> </span><span class="n">uri</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">                </span><span class="p">}</span><span class="w"></span>
 <a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>
-<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">                </span><span class="n">contact</span><span class="p">.</span><span class="na">setPhoto</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">photoBitmap</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">                </span><span class="c1">// set contact photo</span><span class="w"></span>
 <a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
 <a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>

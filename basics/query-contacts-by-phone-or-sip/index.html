@@ -680,6 +680,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../insert-contacts/" class="md-nav__link">
         Insert contacts
       </a>
@@ -1244,20 +1258,6 @@
     <li class="md-nav__item">
       <a href="../../accounts/query-accounts/" class="md-nav__link">
         Query for Accounts
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
-        Query RawContacts
       </a>
     </li>
   
@@ -2114,6 +2114,7 @@ to implement caller IDs for incoming and outgoing calls.</p>
 <blockquote>
 <p>ℹ️ For a broader, and more native Contacts app like query that allows partial matching, use the <code>BroadQuery</code> API, read <a href="../query-contacts/">Query contacts</a>.</p>
 <p>ℹ️ For a more granular, advanced queries, use the <code>Query</code> API; <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
+<p>ℹ️ If you want to query RawContacts directly instead of Contacts, read <a href="../query-raw-contacts/">Query RawContacts</a>.</p>
 <p>ℹ️ If you want to query Data directly instead of Contacts, read <a href="../../data/query-data-sets/">Query specific data kinds</a>.</p>
 <p>ℹ️ If you want to get the device owner Contact Profile, read <a href="../../profile/query-profile/">Query device owner Contact profile</a>.</p>
 </blockquote>
@@ -2156,8 +2157,8 @@ should only specify this if you actually need it.</p>
 <p>To limit the search to only those RawContacts associated with at least one of the given groups,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
-<p>For example, to limit the search to only favorites,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">favoritesGroup</span><span class="p">)</span><span class="w"></span>
+<p>For example, to limit the search to only friends,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">groups</span><span class="p">(</span><span class="n">friendsGroup</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../groups/query-groups/">Query groups</a>.</p>
@@ -2322,13 +2323,13 @@ below 21 even if <code>Match.SIP</code> is specified.</p>
       
       
         
-        <a href="../insert-contacts/" class="md-footer__link md-footer__link--next" aria-label="Next: Insert contacts" rel="next">
+        <a href="../query-raw-contacts/" class="md-footer__link md-footer__link--next" aria-label="Next: Query RawContacts" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Insert contacts
+              Query RawContacts
             </div>
           </div>
           <div class="md-footer__button md-icon">

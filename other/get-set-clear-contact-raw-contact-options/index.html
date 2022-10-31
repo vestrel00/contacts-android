@@ -527,6 +527,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../basics/query-raw-contacts/" class="md-nav__link">
+        Query RawContacts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../basics/insert-contacts/" class="md-nav__link">
         Insert contacts
       </a>
@@ -1103,20 +1117,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../accounts/query-raw-contacts/" class="md-nav__link">
-        Query RawContacts
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
         Associate a local RawContact to an Account
       </a>
@@ -1553,13 +1553,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#contact-and-rawcontact-options-affect-each-other" class="md-nav__link">
-    Contact and RawContact options affect each other
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#getting-contact-options" class="md-nav__link">
     Getting contact options
   </a>
@@ -1568,35 +1561,41 @@
       
         <li class="md-nav__item">
   <a href="#setting-contact-options" class="md-nav__link">
-    Setting contact options
+    Setting Contact options
   </a>
+  
+    <nav class="md-nav" aria-label="Setting Contact options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contact-and-rawcontact-options-affect-each-other" class="md-nav__link">
+    Contact and RawContact options affect each other
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-rawcontact-options" class="md-nav__link">
+    Setting RawContact options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#starred-in-android-favorites-group-membership" class="md-nav__link">
+    Starred in Android &amp; Favorites Group Membership
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#using-the-ui-ringtonepicker-extensions" class="md-nav__link">
     Using the ui RingtonePicker extensions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performing-options-management-asynchronously" class="md-nav__link">
-    Performing options management asynchronously
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performing-options-management-with-permission" class="md-nav__link">
-    Performing options management with permission
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#starred-in-android-favorites" class="md-nav__link">
-    Starred in Android (Favorites)
   </a>
   
 </li>
@@ -1901,13 +1900,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#contact-and-rawcontact-options-affect-each-other" class="md-nav__link">
-    Contact and RawContact options affect each other
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#getting-contact-options" class="md-nav__link">
     Getting contact options
   </a>
@@ -1916,35 +1908,41 @@
       
         <li class="md-nav__item">
   <a href="#setting-contact-options" class="md-nav__link">
-    Setting contact options
+    Setting Contact options
   </a>
+  
+    <nav class="md-nav" aria-label="Setting Contact options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contact-and-rawcontact-options-affect-each-other" class="md-nav__link">
+    Contact and RawContact options affect each other
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-rawcontact-options" class="md-nav__link">
+    Setting RawContact options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#starred-in-android-favorites-group-membership" class="md-nav__link">
+    Starred in Android &amp; Favorites Group Membership
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#using-the-ui-ringtonepicker-extensions" class="md-nav__link">
     Using the ui RingtonePicker extensions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performing-options-management-asynchronously" class="md-nav__link">
-    Performing options management asynchronously
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performing-options-management-with-permission" class="md-nav__link">
-    Performing options management with permission
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#starred-in-android-favorites" class="md-nav__link">
-    Starred in Android (Favorites)
   </a>
   
 </li>
@@ -1968,95 +1966,130 @@
 
 
 <h1 id="get-set-contact-options">Get set contact options<a class="headerlink" href="#get-set-contact-options" title="Permanent link">&para;</a></h1>
-<p>This library provides several functions to interact with Contact and RawContact options;
-starred, send to voicemail, and ringtone.</p>
-<h2 id="contact-and-rawcontact-options-affect-each-other">Contact and RawContact options affect each other<a class="headerlink" href="#contact-and-rawcontact-options-affect-each-other" title="Permanent link">&para;</a></h2>
-<p>Changes to the options of the parent Contact will be propagated to all child RawContact options.
-Changes to the options of a RawContact may or may not affect the options of the parent Contact.</p>
+<p>This library provides several functions to interact with Contact and RawContact options; starred,
+send to voicemail, and ringtone.</p>
 <h2 id="getting-contact-options">Getting contact options<a class="headerlink" href="#getting-contact-options" title="Permanent link">&para;</a></h2>
-<p>To get Contact options,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<p>To get Contact and RawContact options using query APIs provided in this library,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"> </span><span class="c1">// or broadQuery() and other query APIs</span><span class="w"></span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="c1">// if you only want to include only options in the returned Contacts and RawContacts</span><span class="w"></span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p">.</span><span class="na">includeRawContactsFields</span><span class="p">(</span><span class="n">RawContactsFields</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">contact</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">contacts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">&quot;Contact&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;</span><span class="si">${</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="si">}</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">rawContact</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">contacts</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">&quot;RawContact&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;</span><span class="si">${</span><span class="n">rawContact</span><span class="p">.</span><span class="na">options</span><span class="si">}</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
-<p>To get RawContact options,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawContact</span><span class="p">.</span><span class="na">options</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-<h2 id="setting-contact-options">Setting contact options<a class="headerlink" href="#setting-contact-options" title="Permanent link">&para;</a></h2>
-<p>To set Contact options,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">mutableOptions</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-<p>To set RawContact options,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">mutableOptions</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-<p>For example, to set a contact to be starred (favorited),</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">mutableOptions</span><span class="p">.</span><span class="na">apply</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="n">starred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">})</span><span class="w"></span>
-</code></pre></div>
-<p>The <code>setOption</code> function takes in an arbitrary <code>Options</code> instance. If you instead want to modify
-the options of a Contact or RawContact retrieved from the database,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">updateOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="n">starred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="p">}</span><span class="w"></span>
-</code></pre></div>
-<p>This is useful if you only want to set certain properties and keep other properties the same.</p>
-<h2 id="using-the-ui-ringtonepicker-extensions">Using the ui RingtonePicker extensions<a class="headerlink" href="#using-the-ui-ringtonepicker-extensions" title="Permanent link">&para;</a></h2>
-<p>The <code>contacts.ui.util.RingtonePicker.kt</code> in the <code>ui</code> module` provides extension functions to make
-selecting existing ringtones easier. It provides you the same UX as the native Contacts app. </p>
-<p>To use it,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">Activity</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onSelectRingtoneClicked</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="n">selectRingtone</span><span class="p">(</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="n">Intent?)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">        </span><span class="n">onRingtoneSelected</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ringtoneUri</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">            </span><span class="n">contact</span><span class="p">.</span><span class="na">updateOptions</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">                </span><span class="n">customRingtone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ringtoneUri</span><span class="w"></span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="p">}</span><span class="w"></span>
-</code></pre></div>
-<p>Starting with Android 11 (API 30), you must include the following to your manifest in order to
-successfully use the above functions.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>&lt;queries&gt;
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    &lt;intent&gt;
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>        &lt;action android:name=&quot;android.intent.action.RINGTONE_PICKER&quot; /&gt;
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    &lt;/intent&gt;
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>&lt;/queries&gt;
-</code></pre></div>
-<h2 id="performing-options-management-asynchronously">Performing options management asynchronously<a class="headerlink" href="#performing-options-management-asynchronously" title="Permanent link">&para;</a></h2>
-<p>All of the code shown in this guide are done in the same thread as the call-site. This may result
-in a choppy UI.</p>
-<p>To perform the work in a different thread, use the Kotlin coroutine extensions provided in the <code>async</code> module.
-For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
-<p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ For more info on query APIs, read <a href="../../basics/query-contacts/">Query contacts</a> and
+<a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
-<h2 id="performing-options-management-with-permission">Performing options management with permission<a class="headerlink" href="#performing-options-management-with-permission" title="Permanent link">&para;</a></h2>
-<p>Getting and setting options require the <code>android.permission.READ_CONTACTS</code> and
-<code>android.permission.WRITE_CONTACTS</code> permissions respectively. If not granted, getting and setting 
-options will fail.</p>
-<p>TODO Update this section as part of issue <a href="https://github.com/vestrel00/contacts-android/issues/120">#120</a>.</p>
-<h2 id="starred-in-android-favorites">Starred in Android (Favorites)<a class="headerlink" href="#starred-in-android-favorites" title="Permanent link">&para;</a></h2>
+<h2 id="setting-contact-options">Setting Contact options<a class="headerlink" href="#setting-contact-options" title="Permanent link">&para;</a></h2>
+<p>To set Contact options using insert and update APIs provided in this library,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="n">contact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">            </span><span class="n">setOptions</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">                </span><span class="n">starred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">                </span><span class="n">customRingtone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">                </span><span class="n">sendToVoicemail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ For more info on insert and APIs, read <a href="../../basics/insert-contacts/">Insert contacts</a> and
+<a href="../../basics/update-contacts/">Update contacts</a>.</p>
+</blockquote>
+<h3 id="contact-and-rawcontact-options-affect-each-other">Contact and RawContact options affect each other<a class="headerlink" href="#contact-and-rawcontact-options-affect-each-other" title="Permanent link">&para;</a></h3>
+<p>Changes to the options of the parent Contact will be propagated to all child RawContact options.
+Changes to the options of a RawContact may or may not affect the options of the parent Contact. This
+propagation is done automatically by the Contacts Provider at the time the insert or update APIs
+provided in this library are committed.</p>
+<p>Typically, you should only read/write Contact options. Don't mind RawContact options, unless you
+really want to. For example,</p>
+<ul>
+<li>the native AOSP Contacts app only allows reading and writing Contact options.</li>
+<li>the Google Contacts app allows reading and writing Contact and RawContact options.</li>
+</ul>
+<h3 id="setting-rawcontact-options">Setting RawContact options<a class="headerlink" href="#setting-rawcontact-options" title="Permanent link">&para;</a></h3>
+<p>Due to the aforementioned relationship of Contact and RawContact options, the update APIs provided
+in this library will prioritize Contact options over RawContact options. This means that any changes
+you make to RawContact options will be overshadowed by Contact options.</p>
+<p>If you want to set RawContact options, then you should pass in the RawContact directly using the
+<code>rawContact</code> function instead of passing in the Contact using the <code>contacts</code> function,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="n">rawContact</span><span class="p">.</span><span class="na">mutableCopy</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="n">setOptions</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">                </span><span class="n">starred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">                </span><span class="n">customRingtone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">                </span><span class="n">sendToVoicemail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">            </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+<p>If you must pass Contacts instead of RawContacts and still want to prioritize RawContact options
+over Contact options, then you exclude Contact options fields from the update operation,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="c1">// Include all fields except for Contact options.</span><span class="w"></span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">.</span><span class="na">minus</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">Options</span><span class="p">.</span><span class="na">all</span><span class="p">))</span><span class="w"></span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contacts</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ For more info on field includes, read
+<a href="../../basics/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
+</blockquote>
+<h3 id="starred-in-android-favorites-group-membership">Starred in Android &amp; Favorites Group Membership<a class="headerlink" href="#starred-in-android-favorites-group-membership" title="Permanent link">&para;</a></h3>
 <p>When a Contact is starred, the Contacts Provider automatically adds a group membership to the
 favorites group for all RawContacts linked to the Contact. Setting the Contact starred to false
 removes all group memberships to the favorites group.</p>
-<p>The Contact's "starred" value is interdependent with group memberships to the favorites group.
-Adding a group membership to the favorites group results in starred being set to true. Removing
-the membership sets it to false.</p>
-<p>Raw contacts that are not associated with an account do not have any group memberships. Even
-though these RawContacts may not have a membership to the favorites group, they may still be
+<p>The Contact's "starred" value is interdependent with memberships to the favorites group. Adding a
+membership to the favorites group results in starred being set to true. Removing the membership sets
+it to false. This behavior can cause bugs and increased code complexity for API users. Therefore,
+the update APIs provided in this library overshadows membership changes to the favorites group with
+the value of <code>Options.starred</code>. In other words, the only way to star or favorite Contacts and
+RawContacts is to set the value of <code>Options.starred</code>.</p>
+<blockquote>
+<p>ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
+though these RawContacts may not have a membership to a favorites group, they may still be
 "starred" (favorited), which is not dependent on the existence of a favorites group membership.</p>
-<p><strong>Refresh RawContact instances after changing the starred value.</strong> Otherwise, performing an
-update on the RawContact with a stale set of group memberships may revert the star/unstar
-operation. For example,</p>
-<p>-&gt; query returns a starred RawContact
--&gt; set starred to false
--&gt; update RawContact (still containing a group membership to the favorites group)
--&gt; starred will be set back to true.</p>
+</blockquote>
+<h2 id="using-the-ui-ringtonepicker-extensions">Using the ui RingtonePicker extensions<a class="headerlink" href="#using-the-ui-ringtonepicker-extensions" title="Permanent link">&para;</a></h2>
+<p>The <code>contacts.ui.util.RingtonePicker.kt</code> in the <code>ui</code> module` provides extension functions to make
+selecting existing ringtones easier. It provides you the same UX as the native Contacts app.</p>
+<p>To use it,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">Activity</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onSelectRingtoneClicked</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="n">selectRingtone</span><span class="p">(</span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="n">Intent?)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">        </span><span class="n">onRingtoneSelected</span><span class="p">(</span><span class="n">requestCode</span><span class="p">,</span><span class="w"> </span><span class="n">resultCode</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ringtoneUri</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">            </span><span class="n">contact</span><span class="p">.</span><span class="na">options</span><span class="o">?.</span><span class="na">customRingtone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ringtoneUri</span><span class="w"></span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>Starting with Android 11 (API 30), you must include the following to your manifest in order to
+successfully use the above functions.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&lt;queries&gt;
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    &lt;intent&gt;
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>        &lt;action android:name=&quot;android.intent.action.RINGTONE_PICKER&quot; /&gt;
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    &lt;/intent&gt;
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>&lt;/queries&gt;
+</code></pre></div>
 
               
             </article>
