@@ -1120,7 +1120,7 @@ object RawContactsFields : FieldSet<RawContactsField>() {
 object RequiredRawContactsFields : FieldSet<RawContactsField>() {
 
     override val all by unsafeLazy {
-        setOf(RawContactsFields.Id)
+        setOf(RawContactsFields.Id, RawContactsFields.ContactId)
     }
 
     /**
