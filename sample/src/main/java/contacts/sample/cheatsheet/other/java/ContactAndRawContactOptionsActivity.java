@@ -2,6 +2,7 @@ package contacts.sample.cheatsheet.other.java;
 
 import android.app.Activity;
 
+import contacts.core.ContactsFactory;
 import contacts.core.entities.*;
 import contacts.core.util.*;
 
@@ -20,6 +21,11 @@ public class ContactAndRawContactOptionsActivity extends Activity {
         MutableContact mutableContact = contact.mutableCopy();
 
         ContactDataKt.setOptions(mutableContact, newOptions);
+
+        ContactsFactory.create(this)
+                .update()
+                .contacts(mutableContact)
+                .commit();
     }
 
     Options getRawContactOptions(RawContact rawContact) {
@@ -35,5 +41,27 @@ public class ContactAndRawContactOptionsActivity extends Activity {
         MutableRawContact mutableRawContact = rawContact.mutableCopy();
 
         MutableRawContactDataKt.setOptions(mutableRawContact, newOptions);
+
+        ContactsFactory.create(this)
+                .update()
+                .rawContacts(mutableRawContact)
+                .commit();
+    }
+
+    void insertNewRawContactWithOptions() {
+        NewOptions newOptions = new NewOptions();
+        newOptions.setStarred(true);
+
+        NewNickname newNickname = new NewNickname();
+        newNickname.setName("Favorite friend");
+
+        NewRawContact newRawContact = new NewRawContact();
+
+        NewRawContactDataKt.setOptions(newRawContact, newOptions);
+
+        ContactsFactory.create(this)
+                .insert()
+                .rawContacts(newRawContact)
+                .commit();
     }
 }

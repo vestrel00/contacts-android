@@ -28,7 +28,7 @@ for (contact in contacts) {
 
 ## Setting Contact options
 
-To set Contact options using insert and update APIs provided in this library,
+To update Contact options using update APIs,
 
 ```kotlin
 Contacts(context)
@@ -44,6 +44,23 @@ Contacts(context)
     )
     .commit()
 ```
+
+To insert a new RawContact with options using insert APIs,
+
+```kotlin
+Contacts(context)
+    .insert()
+    .rawContact(
+        setOptions {
+            starred = true
+            customRingtone = null
+            sendToVoicemail = false
+        }
+    )
+    .commit()
+```
+
+The inserted RawContact and parent Contact will contain the specified options.
 
 > ℹ️ For more info on insert and APIs, read [Insert contacts](./../basics/insert-contacts.md) and
 > [Update contacts](./../basics/update-contacts.md).

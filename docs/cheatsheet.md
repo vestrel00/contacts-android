@@ -3356,35 +3356,56 @@ heading explore each API in full detail. You may also find these samples in the 
 
     ```kotlin
     import android.app.Activity
+    import contacts.core.Contacts
     import contacts.core.entities.*
-    import contacts.core.util.setOptions
+    import contacts.core.util.*
     
     class ContactAndRawContactOptionsActivity : Activity() {
     
         fun getContactOptions(contact: Contact): Options? = contact.options
     
         fun setContactOptions(contact: Contact) {
-            contact.mutableCopy {
-                setOptions {
-                    starred = true
-                    customRingtone = null
-                    sendToVoicemail = false
+            Contacts(this)
+                .update()
+                .contacts(
+                    contact.mutableCopy {
+                        setOptions {
+                            starred = true
+                            customRingtone = null
+                            sendToVoicemail = false
     
-                }
-            }
+                        }
+                    }
+                )
+                .commit()
         }
     
         fun getRawContactOptions(rawContact: RawContact): Options? = rawContact.options
     
         fun setRawContactOptions(rawContact: RawContact) {
-            rawContact.mutableCopy {
-                setOptions {
-                    starred = true
-                    customRingtone = null
-                    sendToVoicemail = false
+            Contacts(this)
+                .update()
+                .rawContacts(
+                    rawContact.mutableCopy {
+                        setOptions {
+                            starred = true
+                            customRingtone = null
+                            sendToVoicemail = false
     
+                        }
+                    }
+                )
+                .commit()
+        }
+    
+        fun insertNewRawContactWithOptions() {
+            Contacts(this)
+                .insert()
+                .rawContact {
+                    setOptions { starred = true }
+                    setNickname { name = "Favorite friend" }
                 }
-            }
+                .commit()
         }
     }
     ```
@@ -3394,6 +3415,7 @@ heading explore each API in full detail. You may also find these samples in the 
     ```java
     import android.app.Activity;
     
+    import contacts.core.ContactsFactory;
     import contacts.core.entities.*;
     import contacts.core.util.*;
     
@@ -3412,6 +3434,11 @@ heading explore each API in full detail. You may also find these samples in the 
             MutableContact mutableContact = contact.mutableCopy();
     
             ContactDataKt.setOptions(mutableContact, newOptions);
+    
+            ContactsFactory.create(this)
+                    .update()
+                    .contacts(mutableContact)
+                    .commit();
         }
     
         Options getRawContactOptions(RawContact rawContact) {
@@ -3427,6 +3454,28 @@ heading explore each API in full detail. You may also find these samples in the 
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
     
             MutableRawContactDataKt.setOptions(mutableRawContact, newOptions);
+    
+            ContactsFactory.create(this)
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        void insertNewRawContactWithOptions() {
+            NewOptions newOptions = new NewOptions();
+            newOptions.setStarred(true);
+    
+            NewNickname newNickname = new NewNickname();
+            newNickname.setName("Favorite friend");
+    
+            NewRawContact newRawContact = new NewRawContact();
+    
+            NewRawContactDataKt.setOptions(newRawContact, newOptions);
+    
+            ContactsFactory.create(this)
+                    .insert()
+                    .rawContacts(newRawContact)
+                    .commit();
         }
     }
     ```
