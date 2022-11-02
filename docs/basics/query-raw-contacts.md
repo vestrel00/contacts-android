@@ -4,6 +4,10 @@ This library provides the `RawContactsQuery` API that allows you to get a list o
 matching a specific search criteria. Use this if you want to show RawContacts directly (something
 that the Google Contacts app does) instead of Contacts that may consist of several linked RawContacts.
 
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
+> and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/accounts/query-raw-contacts.md).
+
 An instance of the `RawContactsQuery` API is obtained by,
 
 ```kotlin

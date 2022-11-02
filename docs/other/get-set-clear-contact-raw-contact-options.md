@@ -3,6 +3,10 @@
 This library provides several functions to interact with Contact and RawContact options; starred,
 send to voicemail, and ringtone.
 
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
+> and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/other/get-set-clear-contact-raw-contact-options.md).
+
 ## Getting contact options
 
 To get Contact and RawContact options using query APIs provided in this library,
@@ -85,7 +89,7 @@ in this library will prioritize Contact options over RawContact options. This me
 you make to RawContact options will be overshadowed by Contact options.
 
 If you want to set RawContact options, then you should pass in the RawContact directly using the
-`rawContact` function instead of passing in the Contact using the `contacts` function,
+`rawContacts` function instead of passing in the Contact using the `contacts` function,
 
 ```kotlin
 Contacts(context)
@@ -103,7 +107,7 @@ Contacts(context)
 ```
 
 If you must pass Contacts instead of RawContacts and still want to prioritize RawContact options
-over Contact options, then you exclude Contact options fields from the update operation,
+over Contact options, then you must exclude Contact options fields from the update operation,
 
 ```kotlin
 Contacts(context)
@@ -125,10 +129,14 @@ removes all group memberships to the favorites group.
 
 The Contact's "starred" value is interdependent with memberships to the favorites group. Adding a
 membership to the favorites group results in starred being set to true. Removing the membership sets
-it to false. This behavior can cause bugs and increased code complexity for API users. Therefore,
-the update APIs provided in this library overshadows membership changes to the favorites group with
-the value of `Options.starred`. In other words, the only way to star or favorite Contacts and
-RawContacts is to set the value of `Options.starred`.
+it to false. This behavior can cause bugs and increased code complexity for API users. 
+
+Thus, the update APIs provided in this library overshadows membership changes to the favorites group
+with the value of `Options.starred`. In other words, the only way to star/favorite Contacts and
+RawContacts is to set the value of `Options.starred`. If you really want to star/favorite
+Contacts/RawContacts via membership to the favorites group (not recommended), then you must exclude 
+`Fields.Contact.Options.Starred` and `RawContactsFields.Options.Starred` from the insert/update
+operations.
 
 > ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
 > though these RawContacts may not have a membership to a favorites group, they may still be
@@ -150,7 +158,7 @@ Activity {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         onRingtoneSelected(requestCode, resultCode, data) { ringtoneUri ->
-            contact.options?.customRingtone = ringtoneUri
+            // set contact options customRingtone = ringtoneUri
         }
     }
 }

@@ -3,6 +3,10 @@
 This library provides several functions to interact with Contact and RawContact full-sized and 
 thumbnail photos.
 
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4) 
+> and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/other/get-set-remove-contact-raw-contact-photo.md).
+
 ## Contact and RawContact photos
 
 The photo assigned to a Contact is just a reference to a photo assigned to a RawContact. If a 
