@@ -6,9 +6,11 @@ This library provides several query APIs that support custom data integration.
     - [Query contacts (advanced)](./../basics/query-contacts-advanced.md)
 2. `BroadQuery`
     - [Query contacts](./../basics/query-contacts.md)
-3. `ProfileQuery`
+3. `RawContactsQuery`
+    - [Query contacts](./../basics/query-raw-contacts.md)
+4. `ProfileQuery`
     - [Query device owner Contact profile](./../profile/query-profile.md)
-4. `DataQuery`
+5. `DataQuery`
     - [Query specific data kinds](./../data/query-data-sets.md)
 
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`
@@ -82,9 +84,9 @@ For more info, read [Include only certain fields for read and write operations](
 
 ## The `where` function and custom data
 
-The `Query` and `DataQuery` APIs provides a `where` function that allows you to specify a matching
-criteria based on specific field values. Custom data entries provides fields that can be used in 
-this function. For example, to match `HandleName`s starting with the letter "h",
+The `Query`, `RawContactsQuery`, and `DataQuery` APIs provides a `where` function that allows you 
+to specify a matching  criteria based on specific field values. Custom data entries provides fields 
+that can be used in this function. For example, to match `HandleName`s starting with the letter "h",
 
 ```kotlin
 .where { Handle startsWith "h" }
@@ -105,8 +107,9 @@ The `DataQuery` API provides an `orderBy` function that supports custom data. Fo
 .orderBy(HandleNameFields.Handle.asc())
 ```
 
-The `Query` and `BroadQuery` APIs provides an `orderBy` function that only takes in fields from
-the Contacts table, not data. So there is no custom data, or native data, support for this.
+The `Query`, `BroadQuery`, and `RawContactsQuery` APIs provides an `orderBy` function that only 
+takes in fields from the Contacts/RawContacts table, not the Data table. So there is no custom 
+data, or native data, support for this.
 
 The `ProfileQuery` API does not provide an `orderBy` function as there can only be at most one 
 profile Contact on the device.

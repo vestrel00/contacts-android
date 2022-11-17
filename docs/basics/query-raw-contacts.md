@@ -182,6 +182,10 @@ For more info, read [Permissions handling using coroutines](../permissions/permi
 
 You may, of course, use other permission handling libraries or just do it yourself =)
 
+## Custom data support
+
+The `RawContactsQuery` API supports custom data. For more info, read [Query custom data](./../customdata/query-custom-data.md).
+
 ## RawContacts from more than one account in the same list
 
 When you perform a query that returns groups from more than one account, you will get everything
