@@ -1950,6 +1950,10 @@
 <li><a href="../../basics/query-contacts/">Query contacts</a></li>
 </ul>
 </li>
+<li><code>RawContactsQuery</code><ul>
+<li><a href="../../basics/query-raw-contacts/">Query contacts</a></li>
+</ul>
+</li>
 <li><code>ProfileQuery</code><ul>
 <li><a href="../../profile/query-profile/">Query device owner Contact profile</a></li>
 </ul>
@@ -2006,9 +2010,9 @@ that can be used in this function. </p>
 </code></pre></div>
 <p>For more info, read <a href="../../basics/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="the-where-function-and-custom-data">The <code>where</code> function and custom data<a class="headerlink" href="#the-where-function-and-custom-data" title="Permanent link">&para;</a></h2>
-<p>The <code>Query</code> and <code>DataQuery</code> APIs provides a <code>where</code> function that allows you to specify a matching
-criteria based on specific field values. Custom data entries provides fields that can be used in 
-this function. For example, to match <code>HandleName</code>s starting with the letter "h",</p>
+<p>The <code>Query</code>, <code>RawContactsQuery</code>, and <code>DataQuery</code> APIs provides a <code>where</code> function that allows you 
+to specify a matching  criteria based on specific field values. Custom data entries provides fields 
+that can be used in this function. For example, to match <code>HandleName</code>s starting with the letter "h",</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Handle</span><span class="w"> </span><span class="n">startsWith</span><span class="w"> </span><span class="s">&quot;h&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>BroadQuery</code> API provides a <code>wherePartiallyMatches</code> function that NOT support matching custom
@@ -2020,8 +2024,9 @@ per device. </p>
 <code>HandleName</code>s,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">HandleNameFields</span><span class="p">.</span><span class="na">Handle</span><span class="p">.</span><span class="na">asc</span><span class="p">())</span><span class="w"></span>
 </code></pre></div>
-<p>The <code>Query</code> and <code>BroadQuery</code> APIs provides an <code>orderBy</code> function that only takes in fields from
-the Contacts table, not data. So there is no custom data, or native data, support for this.</p>
+<p>The <code>Query</code>, <code>BroadQuery</code>, and <code>RawContactsQuery</code> APIs provides an <code>orderBy</code> function that only 
+takes in fields from the Contacts/RawContacts table, not the Data table. So there is no custom 
+data, or native data, support for this.</p>
 <p>The <code>ProfileQuery</code> API does not provide an <code>orderBy</code> function as there can only be at most one 
 profile Contact on the device.</p>
 

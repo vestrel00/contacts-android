@@ -2182,10 +2182,16 @@ ignored and are not inserted by insert APIs.</p>
 <p>For more info, read about <a href="../../entities/about-blank-data/">Blank data</a>.</p>
 <h2 id="associating-an-account">Associating an Account<a class="headerlink" href="#associating-an-account" title="Permanent link">&para;</a></h2>
 <p>New RawContacts can be associated with an Account in order to enable syncing,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">forAccount</span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">newRawContact</span><span class="p">.</span><span class="na">account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">account</span><span class="w"></span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">// or newRawContact.setAccount(account)</span><span class="w"></span>
 </code></pre></div>
+<blockquote>
+<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>,
+setting the account is done via the <code>Insert.forAccount</code> function.</p>
+</blockquote>
 <p>For example, to associated the new RawContact to an account,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">forAccount</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">))</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">newRawContact</span><span class="p">.</span><span class="na">account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">// or newRawContact.setAccount(Account(&quot;john.doe@gmail.com&quot;, &quot;com.google&quot;))</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
@@ -2309,8 +2315,8 @@ screen,</p>
 <a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
 <a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="p">.</span><span class="na">forAccount</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContact</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContact</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">        </span><span class="n">setAccount</span><span class="p">(</span><span class="n">accountToAddContactTo</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">        </span><span class="n">setName</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">            </span><span class="n">givenName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Buzz&quot;</span><span class="w"></span>
 <a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">            </span><span class="n">familyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lightyear&quot;</span><span class="w"></span>

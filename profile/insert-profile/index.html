@@ -2202,11 +2202,17 @@ contact representing the user's personal profile data from that source.</p>
 "one profile RawContact per one Account", the Contacts Provider allows for multiple RawContacts per
 Account, including multiple local RawContacts (no Account). </p>
 <h2 id="associating-an-account">Associating an Account<a class="headerlink" href="#associating-an-account" title="Permanent link">&para;</a></h2>
-<p>New RawContacts can be associated with an Account in order to enable syncing, </p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="na">forAccount</span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="w"></span>
+<p>New RawContacts can be associated with an Account in order to enable syncing,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">newRawContact</span><span class="p">.</span><span class="na">account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">account</span><span class="w"></span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">// or newRawContact.setAccount(account)</span><span class="w"></span>
 </code></pre></div>
+<blockquote>
+<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>,
+setting the account is done via the <code>ProfileInsert.forAccount</code> function.</p>
+</blockquote>
 <p>For example, to associated the new RawContact to an account,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">forAccount</span><span class="p">(</span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">))</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">newRawContact</span><span class="p">.</span><span class="na">account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;john.doe@gmail.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.google&quot;</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">// or newRawContact.setAccount(Account(&quot;john.doe@gmail.com&quot;, &quot;com.google&quot;))</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
