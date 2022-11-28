@@ -60,15 +60,14 @@ class AccountView @JvmOverloads constructor(
     /**
      * Sets the RawContact account shown and managed by this view to the given [rawContact] and uses
      * the given [contacts] API to perform operations on it. The [defaultAccount] is used if the
-     * [rawContact] is not yet associated with an account.
+     * [rawContact] is a [NewRawContact] that is not yet associated with an account.
      */
-    fun setRawContact(
-        contacts: Contacts,
-        rawContact: RawContactEntity?,
-        defaultAccount: Account?
-    ) {
+    fun setRawContact(contacts: Contacts, rawContact: RawContactEntity?, defaultAccount: Account?) {
         this.rawContact = rawContact
-        setAccount(rawContact?.accountOrNull)
+        if (rawContact is NewRawContact) {
+            rawContact.account = defaultAccount
+        }
+        setAccount(rawContact?.account)
     }
 
     private fun setAccount(account: Account?) {
