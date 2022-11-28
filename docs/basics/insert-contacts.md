@@ -103,13 +103,18 @@ For more info, read about [Blank data](./../entities/about-blank-data.md).
 New RawContacts can be associated with an Account in order to enable syncing,
 
 ```kotlin
-.forAccount(account)
+newRawContact.account = account
+// or newRawContact.setAccount(account)
 ```
+
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218),
+> setting the account is done via the `Insert.forAccount` function.
 
 For example, to associated the new RawContact to an account,
 
 ```kotlin
-.forAccount(Account("john.doe@gmail.com", "com.google"))
+newRawContact.account = Account("john.doe@gmail.com", "com.google")
+// or newRawContact.setAccount(Account("john.doe@gmail.com", "com.google"))
 ```
 
 > ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
@@ -298,8 +303,8 @@ val accountToAddContactTo = Account("vestrel00@pixar.com", "com.pixar")
 
 val insertResult = Contacts(context)
     .insert()
-    .forAccount()
     .rawContact {
+        setAccount(accountToAddContactTo)
         setName {
             givenName = "Buzz"
             familyName = "Lightyear"

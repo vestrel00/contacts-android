@@ -60,15 +60,11 @@ class RawContactView @JvmOverloads constructor(
         private set
 
     /**
-     * The [Account] that the [rawContact] is (or will be) associated with.
-     */
-    val account: Account?
-        get() = accountView.account
-
-    /**
      * Sets the RawContact shown and managed by this view to the given [rawContact] and uses the
-     * given [contacts] API to perform operations on it. The [defaultAccount] is used if the
-     * [rawContact] is not yet associated with an account.
+     * given [contacts] API to perform operations on it.
+     *
+     * The [defaultAccount] is used if the [rawContact] is a [NewRawContact] that is not yet
+     * associated with an account.
      */
     fun setRawContact(
         contacts: Contacts,
@@ -141,9 +137,9 @@ class RawContactView @JvmOverloads constructor(
 
     // The native (AOSP) Contacts app hides these from the UI for local raw contacts. These
     // will no longer be hidden as part of https://github.com/vestrel00/contacts-android/issues/167
-    fun setAccountRequiredViews(contacts: Contacts) {
+    private fun setAccountRequiredViews(contacts: Contacts) {
         launch {
-            val account = rawContact.accountOrNull
+            val account = rawContact.account
 
             if (account != null) {
                 eventsView.dataList = rawContact.events.asMutableList()
@@ -169,7 +165,7 @@ class RawContactView @JvmOverloads constructor(
         val rawContact = rawContact
 
         photoThumbnailView.setRawContact(rawContact, contacts)
-        accountView.setRawContact(contacts, rawContact, defaultAccount)
+        accountView.setRawContact(rawContact, defaultAccount)
         nameView.data = rawContact.name ?: NewName().also { newName ->
             when (rawContact) {
                 is MutableRawContact -> rawContact.setName(newName)

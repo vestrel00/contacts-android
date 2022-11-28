@@ -1,6 +1,5 @@
 package contacts.core
 
-import android.accounts.Account
 import android.content.ContentProviderOperation
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.custom.CustomDataCountRestriction
@@ -43,8 +42,8 @@ import contacts.core.util.*
  *
  * ```kotlin
  * val result = insert
- *      .forAccount(account)
  *      .rawContact {
+ *          this.account = account
  *          name = NewName(
  *              givenName = "john"
  *              familyName = "doe"
@@ -72,11 +71,11 @@ import contacts.core.util.*
  * emails.add(email);
  *
  * NewRawContact rawContact = new NewRawContact();
+ * rawContact.setAccount(account);
  * rawContact.setName(name);
  * rawContact.setEmails(emails);
  *
  * Insert.Result result = insert
- *      .forAccount(account)
  *      .rawContacts(rawContact)
  *      .commit();
  * ```
@@ -99,34 +98,6 @@ interface Insert : CrudApi {
      * modified.
      */
     fun allowBlanks(allowBlanks: Boolean): Insert
-
-    /**
-     * All of the raw contacts that are inserted on [commit] will belong to the given [account].
-     *
-     * If not provided, or null is provided, or if an incorrect account is provided, the raw
-     * contacts inserted here will not be associated with an account. RawContacts inserted without
-     * an associated account are considered local or device-only contacts, which are not synced.
-     *
-     * **For Lollipop (API 22) and below**
-     *
-     * When an Account is added, from a state where no accounts have yet been added to the system, the
-     * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
-     * RawContacts table to that Account's name and type.
-     *
-     * RawContacts inserted without an associated account will automatically get assigned to an account
-     * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
-     * to do it.
-     *
-     * **For Marshmallow (API 23) and above**
-     *
-     * The Contacts Provider no longer associates local contacts to an account when an account is or
-     * becomes available. Local contacts remain local.
-     *
-     * **Account removal**
-     *
-     * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
-     */
-    fun forAccount(account: Account?): Insert
 
     /**
      * Specifies that only the given set of [fields] (data) will be inserted.
@@ -295,7 +266,6 @@ private class InsertImpl(
     private var allowBlanks: Boolean = false,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
-    private var account: Account? = null,
     private val rawContacts: MutableSet<NewRawContact> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -307,7 +277,6 @@ private class InsertImpl(
                 allowBlanks: $allowBlanks
                 include: $include
                 includeRawContactsFields: $includeRawContactsFields
-                account: $account
                 rawContacts: $rawContacts
                 hasPermission: ${permissions.canInsert()}
                 isRedacted: $isRedacted
@@ -320,8 +289,6 @@ private class InsertImpl(
         allowBlanks,
         include,
         includeRawContactsFields,
-        // Redact account info.
-        account?.redactedCopy(),
         // Redact contact data.
         rawContacts.asSequence().redactedCopies().toMutableSet(),
 
@@ -330,10 +297,6 @@ private class InsertImpl(
 
     override fun allowBlanks(allowBlanks: Boolean): Insert = apply {
         this.allowBlanks = allowBlanks
-    }
-
-    override fun forAccount(account: Account?): Insert = apply {
-        this.account = account?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -390,8 +353,6 @@ private class InsertImpl(
         return if (rawContacts.isEmpty() || !permissions.canInsert() || cancel()) {
             InsertFailed()
         } else {
-            // This ensures that a valid account is used. Otherwise, null is used.
-            account = account?.nullIfNotInSystem(contactsApi.accounts())
 
             val results = mutableMapOf<NewRawContact, Long?>()
             for (rawContact in rawContacts) {
@@ -402,10 +363,9 @@ private class InsertImpl(
                 results[rawContact] = if (!allowBlanks && rawContact.isBlank) {
                     null
                 } else {
-                    // No need to propagate the cancel function to within insertRawContactForAccount
-                    // as that operation should be fast and CPU time should be trivial.
-                    contactsApi.insertRawContactForAccount(
-                        account,
+                    // No need to propagate the cancel function to within insertRawContact as that
+                    // operation should be fast and CPU time should be trivial.
+                    contactsApi.insertRawContact(
                         include.fields, includeRawContactsFields.fields,
                         rawContact,
                         IS_PROFILE
@@ -438,13 +398,15 @@ private class InsertImpl(
  *
  * Returns the inserted RawContact's ID. Or null, if insert failed.
  */
-internal fun Contacts.insertRawContactForAccount(
-    account: Account?,
+internal fun Contacts.insertRawContact(
     includeFields: Set<AbstractDataField>,
     includeRawContactsFields: Set<RawContactsField>,
     rawContact: NewRawContact,
     isProfile: Boolean
 ): Long? {
+    // This ensures that a valid account is used. Otherwise, null is used.
+    val account = rawContact.account?.nullIfNotInSystem(accounts())
+
     val operations = arrayListOf<ContentProviderOperation>()
 
     /*

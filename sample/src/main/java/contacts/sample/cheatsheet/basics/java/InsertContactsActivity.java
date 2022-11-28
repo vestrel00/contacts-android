@@ -66,6 +66,7 @@ public class InsertContactsActivity extends Activity {
         website.setUrl("www.bigbadfox.com");
 
         NewRawContact rawContact = new NewRawContact();
+        rawContact.setAccount(account);
         rawContact.getAddresses().add(address);
         rawContact.getEmails().add(email);
         rawContact.getEvents().add(event);
@@ -84,7 +85,6 @@ public class InsertContactsActivity extends Activity {
 
         return ContactsFactory.create(this)
                 .insert()
-                .forAccount(account)
                 .rawContacts(rawContact)
                 .commit();
     }

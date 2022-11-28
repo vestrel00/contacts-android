@@ -127,34 +127,6 @@ interface ProfileInsert : CrudApi {
     ): ProfileInsert
 
     /**
-     * The RawContact that is inserted on [commit] will belong to the given [account].
-     *
-     * If not provided, or null is provided, or if an incorrect account is provided, the raw
-     * contacts inserted here will not be associated with an account. RawContacts inserted without
-     * an associated account are considered local or device-only contacts, which are not synced.
-     *
-     * **For Lollipop (API 22) and below**
-     *
-     * When an Account is added, from a state where no accounts have yet been added to the system, the
-     * Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
-     * RawContacts table to that Account's name and type.
-     *
-     * RawContacts inserted without an associated account will automatically get assigned to an account
-     * if there are any available. This may take a few seconds, whenever the Contacts Provider decides
-     * to do it.
-     *
-     * **For Marshmallow (API 23) and above**
-     *
-     * The Contacts Provider no longer associates local contacts to an account when an account is or
-     * becomes available. Local contacts remain local.
-     *
-     * **Account removal**
-     *
-     * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
-     */
-    fun forAccount(account: Account?): ProfileInsert
-
-    /**
      * Specifies that only the given set of [fields] (data) will be inserted.
      *
      * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
@@ -207,14 +179,14 @@ interface ProfileInsert : CrudApi {
      * Configures a new [NewRawContact] for insertion, which will be inserted on [commit]. The
      * new instance is configured by the [configureRawContact] function.
      *
-     * Replaces any previously set RawContact in the insert queue.
+     * **Replaces any previously set RawContact in the insert queue.**
      */
     fun rawContact(configureRawContact: NewRawContact.() -> Unit): ProfileInsert
 
     /**
      * Sets the given [rawContact] for insertion, which will be inserted on [commit].
      *
-     * Replaces any previously set RawContact in the insert queue.
+     * **Replaces any previously set RawContact in the insert queue.**
      */
     fun rawContact(rawContact: NewRawContact): ProfileInsert
 
@@ -309,7 +281,6 @@ private class ProfileInsertImpl(
     private var allowMultipleRawContactsPerAccount: Boolean = false,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
-    private var account: Account? = null,
     private var rawContact: NewRawContact? = null,
 
     override val isRedacted: Boolean = false
@@ -322,7 +293,6 @@ private class ProfileInsertImpl(
                 allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
                 include: $include
                 includeRawContactsFields: $includeRawContactsFields
-                account: $account
                 rawContact: $rawContact
                 hasPermission: ${permissions.canInsert()}
                 isRedacted: $isRedacted
@@ -336,8 +306,6 @@ private class ProfileInsertImpl(
         allowMultipleRawContactsPerAccount,
         include,
         includeRawContactsFields,
-        // Redact account info.
-        account?.redactedCopy(),
         // Redact contact data.
         rawContact?.redactedCopy(),
 
@@ -352,10 +320,6 @@ private class ProfileInsertImpl(
         allowMultipleRawContactsPerAccount: Boolean
     ): ProfileInsert = apply {
         this.allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount
-    }
-
-    override fun forAccount(account: Account?): ProfileInsert = apply {
-        this.account = account?.redactedCopyOrThis(isRedacted)
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -413,19 +377,19 @@ private class ProfileInsertImpl(
             ProfileInsertFailed()
         } else {
             // This ensures that a valid account is used. Otherwise, null is used.
-            account = account?.nullIfNotInSystem(contactsApi.accounts())
+            val account = rawContact.account?.nullIfNotInSystem(contactsApi.accounts())
 
             if (
                 (!allowMultipleRawContactsPerAccount
-                        && contentResolver.hasProfileRawContactForAccount(account))
+                        && contentResolver.profileRawContactExistFor(account))
                 || cancel()
             ) {
                 ProfileInsertFailed()
             } else {
-                // No need to propagate the cancel function to within insertRawContactForAccount
-                // as that operation should be fast and CPU time should be trivial.
-                val rawContactId = contactsApi.insertRawContactForAccount(
-                    account, include.fields, includeRawContactsFields.fields, rawContact, IS_PROFILE
+                // No need to propagate the cancel function to within insertRawContact as that
+                // operation should be fast and CPU time should be trivial.
+                val rawContactId = contactsApi.insertRawContact(
+                    include.fields, includeRawContactsFields.fields, rawContact, IS_PROFILE
                 )
 
                 return ProfileInsertResult(rawContactId)
@@ -445,7 +409,7 @@ private class ProfileInsertImpl(
     }
 }
 
-private fun ContentResolver.hasProfileRawContactForAccount(account: Account?): Boolean = query(
+private fun ContentResolver.profileRawContactExistFor(account: Account?): Boolean = query(
     ProfileUris.RAW_CONTACTS.uri,
     Include(RawContactsFields.Id),
     // There may be RawContacts that are marked for deletion that have not yet been deleted.

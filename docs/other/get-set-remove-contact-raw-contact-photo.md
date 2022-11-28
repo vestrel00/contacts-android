@@ -119,8 +119,7 @@ rawContact.setPhotoDirect(contactsApi, PhotoData.from(bitmapDrawable))
 ```
 
 > ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
-> functions were named `setPhoto`. Additionally, there was one function signature for each of ;
-> InputStream, ByteArray, Bitmap, BitmapDrawable
+> functions were named `setPhoto`.
 
 ### As part of an insert or update API call
 

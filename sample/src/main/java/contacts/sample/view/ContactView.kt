@@ -254,14 +254,12 @@ class ContactView @JvmOverloads constructor(
             contacts
                 .profile()
                 .insertWithPermission()
-                .forAccount(newRawContactView?.account)
                 .rawContact(rawContact)
                 .commitWithContext()
                 .contactWithContext(contacts)
         } else {
             contacts
                 .insertWithPermission()
-                .forAccount(newRawContactView?.account)
                 .rawContacts(rawContact)
                 .commitWithContext()
                 .contactWithContext(contacts, rawContact)
@@ -383,7 +381,7 @@ class ContactView @JvmOverloads constructor(
                 val rawContactView = addRawContactView(
                     contacts,
                     rawContact,
-                    null,
+                    defaultAccount,
                     hidePhoneticNameIfEmptyAndDisabled
                 )
 

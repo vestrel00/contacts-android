@@ -140,11 +140,39 @@ sealed interface RawContactEntity : Entity {
         get() = false
 
     /**
-     * Only existing RawContacts may have an Account. For all others, this will return null.
+     * The RawContact's associated [Account]. RawContacts that are not associated with an Account
+     * are local to the device and are not synced.
+     *
+     * Both the Account name and type must not be null. If anyone of those are null, then this will
+     * be null.
+     *
+     * ## Inserting new RawContacts
+     *
+     * If an account is not provided, or null is provided, or if an incorrect account is provided,
+     * the raw contacts inserted will not be associated with an account. RawContacts inserted
+     * without an associated account are considered local or device-only contacts, which are not
+     * synced.
+     *
+     * **For Lollipop (API 22) and below**
+     *
+     * When an Account is added, from a state where no accounts have yet been added to the system,
+     * the Contacts Provider automatically sets all of the null `accountName` and `accountType` in
+     * the RawContacts table to that Account's name and type.
+     *
+     * RawContacts inserted without an associated account will automatically get assigned to an
+     * account if there are any available. This may take a few seconds, whenever the Contacts
+     * Provider decides to do it.
+     *
+     * **For Marshmallow (API 23) and above**
+     *
+     * The Contacts Provider no longer associates local contacts to an account when an account is or
+     * becomes available. Local contacts remain local.
+     *
+     * **Account removal**
+     *
+     * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
      */
-    // This is declared here instead of an extension function for easier use for Java users.
-    val accountOrNull: Account?
-        get() = null
+    val account: Account?
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): RawContactEntity
@@ -237,23 +265,6 @@ sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
      * This is ignored for insert, update, and delete functions.
      */
     val displayNameAlt: String?
-
-    /**
-     * The RawContact's associated [Account].
-     *
-     * Both the Account name and type must not be null. If anyone of those are null, then this will
-     * be null.
-     *
-     * This is a read-only attribute and is ignored for insert, update, and delete functions. There
-     * are APIs provided in this library for moving RawContacts between different Accounts.
-     *
-     * RawContacts that are not associated with an Account are local to the device and are not
-     * synced.
-     */
-    val account: Account?
-
-    override val accountOrNull: Account?
-        get() = account
 
     override val isProfile: Boolean
         get() = id.isProfileId
@@ -389,9 +400,9 @@ data class MutableRawContact internal constructor(
 
     override val customDataEntities: MutableMap<String, CustomDataEntityHolder>,
 
-    override val isRedacted: Boolean,
+    override val isRedacted: Boolean
 
-    ) : ExistingRawContactEntity, MutableEntity {
+) : ExistingRawContactEntity, MutableEntity {
 
     @IgnoredOnParcel
     internal var photoDataOperation: PhotoDataOperation? = null
@@ -435,6 +446,8 @@ data class MutableRawContact internal constructor(
 @Parcelize
 data class NewRawContact @JvmOverloads constructor(
 
+    override var account: Account? = null,
+
     override var addresses: MutableList<NewAddress> = mutableListOf(),
     override var emails: MutableList<NewEmail> = mutableListOf(),
     override var events: MutableList<NewEvent> = mutableListOf(),
@@ -465,6 +478,8 @@ data class NewRawContact @JvmOverloads constructor(
 
     override fun redactedCopy() = copy(
         isRedacted = true,
+
+        account = account?.redactedCopy(),
 
         addresses = addresses.asSequence().redactedCopies().toMutableList(),
         emails = emails.asSequence().redactedCopies().toMutableList(),
@@ -501,7 +516,7 @@ internal data class TempRawContact constructor(
 
     var displayNamePrimary: String?,
     var displayNameAlt: String?,
-    var account: Account?,
+    override var account: Account?,
 
     override var addresses: MutableList<Address>,
     override var emails: MutableList<Email>,

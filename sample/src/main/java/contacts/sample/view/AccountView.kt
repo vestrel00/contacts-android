@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import android.widget.TextView
-import contacts.core.Contacts
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
 import contacts.sample.AccountsActivity
@@ -17,7 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [TextView] that displays an immutable [Account] from the given [RawContactEntity].
+ * A [TextView] that displays the given [RawContactEntity.account] and handles modifications to it.
  *
  * Setting the [rawContact] will automatically update the views.
  *
@@ -54,34 +53,34 @@ class AccountView @JvmOverloads constructor(
 
     private var rawContact: RawContactEntity? = null
 
-    var account: Account? = null
-        private set
-
     /**
      * Sets the RawContact account shown and managed by this view to the given [rawContact] and uses
      * the given [contacts] API to perform operations on it. The [defaultAccount] is used if the
      * [rawContact] is a [NewRawContact] that is not yet associated with an account.
      */
-    fun setRawContact(contacts: Contacts, rawContact: RawContactEntity?, defaultAccount: Account?) {
+    fun setRawContact(rawContact: RawContactEntity?, defaultAccount: Account?) {
         this.rawContact = rawContact
-        if (rawContact is NewRawContact) {
-            rawContact.account = defaultAccount
-        }
-        setAccount(rawContact?.account)
+        setAccount(rawContact?.account ?: defaultAccount)
     }
 
     private fun setAccount(account: Account?) {
-        this.account = account
+        rawContact?.let {
+            if (it is NewRawContact) {
+                it.account = account
+            }
+        }
 
-        text = if (account == null) {
+        val accountToDisplay = rawContact?.account
+
+        text = if (accountToDisplay == null) {
             """
                 Local account (device only)
                 Not synced
             """
         } else {
             """
-                Account Name: ${account.name}
-                Account Type: ${account.type}
+                Account Name: ${accountToDisplay.name}
+                Account Type: ${accountToDisplay.type}
             """
         }.trimIndent()
     }
@@ -90,7 +89,7 @@ class AccountView @JvmOverloads constructor(
         super.onAttachedToWindow()
         setOnClickListener {
             activity?.let {
-                AccountsActivity.selectAccounts(it, false, arrayListOf(account))
+                AccountsActivity.selectAccounts(it, false, arrayListOf(rawContact?.account))
             }
         }
     }

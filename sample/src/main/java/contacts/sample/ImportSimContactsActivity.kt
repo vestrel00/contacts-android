@@ -121,8 +121,14 @@ class ImportSimContactsActivity : BaseActivity() {
             .map { it.simContact }
 
         val importResult = contacts.insertWithPermission()
-            .forAccount(preferences.defaultAccountForNewContacts)
-            .rawContacts(checkedSimContacts.toNewRawContacts())
+            .rawContacts(
+                checkedSimContacts
+                    .toNewRawContacts()
+                    .map {
+                        it.account = preferences.defaultAccountForNewContacts
+                        it
+                    }
+            )
             .commitWithContext()
 
         dismissProgressDialog()

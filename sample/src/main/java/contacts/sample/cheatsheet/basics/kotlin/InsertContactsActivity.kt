@@ -12,8 +12,8 @@ class InsertContactsActivity : Activity() {
     fun insertContact(account: Account?, groupMembership: NewGroupMembership?): Insert.Result =
         Contacts(this)
             .insert()
-            .forAccount(account)
             .rawContact {
+                setAccount(account)
                 addAddress {
                     street = "123 Abc street"
                     city = "Brooklyn"

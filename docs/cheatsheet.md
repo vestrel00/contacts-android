@@ -518,8 +518,8 @@ heading explore each API in full detail. You may also find these samples in the 
         fun insertContact(account: Account?, groupMembership: NewGroupMembership?): Insert.Result =
             Contacts(this)
                 .insert()
-                .forAccount(account)
                 .rawContact {
+                    setAccount(account)
                     addAddress {
                         street = "123 Abc street"
                         city = "Brooklyn"
@@ -592,7 +592,7 @@ heading explore each API in full detail. You may also find these samples in the 
     import contacts.core.ContactsFactory;
     import contacts.core.Insert;
     import contacts.core.entities.*;
-
+    
     public class InsertContactsActivity extends Activity {
     
         Insert.Result insertContact(Account account, NewGroupMembership groupMembership) {
@@ -652,6 +652,7 @@ heading explore each API in full detail. You may also find these samples in the 
             website.setUrl("www.bigbadfox.com");
     
             NewRawContact rawContact = new NewRawContact();
+            rawContact.setAccount(account);
             rawContact.getAddresses().add(address);
             rawContact.getEmails().add(email);
             rawContact.getEvents().add(event);
@@ -670,7 +671,6 @@ heading explore each API in full detail. You may also find these samples in the 
     
             return ContactsFactory.create(this)
                     .insert()
-                    .forAccount(account)
                     .rawContacts(rawContact)
                     .commit();
         }

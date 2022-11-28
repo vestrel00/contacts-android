@@ -1,7 +1,15 @@
 package contacts.core.util
 
+import android.accounts.Account
 import contacts.core.entities.*
 import contacts.core.redactedCopyOrThis
+
+/**
+ * Sets the given [NewRawContact.account] to the given [account].
+ */
+fun NewRawContact.setAccount(account: Account?) {
+    this.account = account?.redactedCopyOrThis(isRedacted)
+}
 
 /**
  * Adds the given [address] to [NewRawContact.addresses].
