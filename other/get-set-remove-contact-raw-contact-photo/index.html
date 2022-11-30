@@ -1568,8 +1568,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#directly-to-the-database" class="md-nav__link">
-    Directly to the database
+  <a href="#using-extension-functions" class="md-nav__link">
+    Using extension functions
   </a>
   
 </li>
@@ -1595,8 +1595,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#directly-to-the-database_1" class="md-nav__link">
-    Directly to the database
+  <a href="#using-extension-functions_1" class="md-nav__link">
+    Using extension functions
   </a>
   
 </li>
@@ -1977,8 +1977,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#directly-to-the-database" class="md-nav__link">
-    Directly to the database
+  <a href="#using-extension-functions" class="md-nav__link">
+    Using extension functions
   </a>
   
 </li>
@@ -2004,8 +2004,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#directly-to-the-database_1" class="md-nav__link">
-    Directly to the database
+  <a href="#using-extension-functions_1" class="md-nav__link">
+    Using extension functions
   </a>
   
 </li>
@@ -2138,7 +2138,7 @@ and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a
 </blockquote>
 <h2 id="setting-contact-photo">Setting contact photo<a class="headerlink" href="#setting-contact-photo" title="Permanent link">&para;</a></h2>
 <p>There are two ways to set Contact or RawContact photo.</p>
-<h3 id="directly-to-the-database">Directly to the database<a class="headerlink" href="#directly-to-the-database" title="Permanent link">&para;</a></h3>
+<h3 id="using-extension-functions">Using extension functions<a class="headerlink" href="#using-extension-functions" title="Permanent link">&para;</a></h3>
 <p>This can only be done for existing Contacts/RawContacts.</p>
 <p>To set the Contact photo, use one of the extension functions in <code>contacts.core.util.ContactPhoto.kt</code>,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">inputStream</span><span class="p">))</span><span class="w"></span>
@@ -2194,7 +2194,7 @@ functions were named <code>setPhoto</code>.</p>
 </blockquote>
 <h2 id="removing-contact-photo">Removing contact photo<a class="headerlink" href="#removing-contact-photo" title="Permanent link">&para;</a></h2>
 <p>There are two ways to remove Contact or RawContact photo.</p>
-<h3 id="directly-to-the-database_1">Directly to the database<a class="headerlink" href="#directly-to-the-database_1" title="Permanent link">&para;</a></h3>
+<h3 id="using-extension-functions_1">Using extension functions<a class="headerlink" href="#using-extension-functions_1" title="Permanent link">&para;</a></h3>
 <p>This can only be done for existing Contacts/RawContacts.</p>
 <p>To remove the Contact (and corresponding RawContact) photo (full-sized and thumbnail),</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">contact</span><span class="p">.</span><span class="na">removePhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
