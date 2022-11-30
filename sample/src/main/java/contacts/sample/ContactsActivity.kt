@@ -12,14 +12,15 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
+import contacts.async.aggregationexceptions.commitWithContext
 import contacts.async.commitInOneTransactionWithContext
 import contacts.async.findWithContext
-import contacts.async.util.linkWithContext
 import contacts.core.ContactsFields
 import contacts.core.Fields
 import contacts.core.asc
 import contacts.core.entities.Contact
 import contacts.core.entities.Group
+import contacts.permissions.aggregationexceptions.linkContactsWithPermission
 import contacts.permissions.broadQueryWithPermission
 import contacts.permissions.deleteWithPermission
 import contacts.sample.util.AbstractMultiChoiceModeListener
@@ -238,7 +239,11 @@ class ContactsActivity : BaseActivity() {
             .trueKeys
             .map { searchResults[it] }
 
-        val link = contactsToLink.linkWithContext(contacts)
+        val link = contacts
+            .aggregationExceptions()
+            .linkContactsWithPermission()
+            .contacts(contactsToLink)
+            .commitWithContext()
 
         if (link.isSuccessful) {
             showToast(R.string.contacts_link_success)

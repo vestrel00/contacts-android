@@ -2,9 +2,9 @@ package contacts.async.util
 
 import contacts.async.ASYNC_DISPATCHER
 import contacts.core.Contacts
-import contacts.core.aggregationexceptions.ContactLink
+import contacts.core.aggregationexceptions.ContactUnlink
 import contacts.core.entities.Contact
-import contacts.core.util.contact
+import contacts.core.util.contacts
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -14,13 +14,13 @@ import kotlin.coroutines.CoroutineContext
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [ContactLink.Result.contact].
+ * See [ContactUnlink.Result.contacts].
  */
-suspend fun ContactLink.Result.contactWithContext(
+suspend fun ContactUnlink.Result.contactsWithContext(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Contact? = withContext(coroutineContext) {
-    contact(contacts) { !isActive }
+): List<Contact> = withContext(coroutineContext) {
+    contacts(contacts) { !isActive }
 }
 
 /**
@@ -29,11 +29,11 @@ suspend fun ContactLink.Result.contactWithContext(
  *
  * Computations automatically stops if the parent coroutine scope / job is cancelled.
  *
- * See [ContactLink.Result.contact].
+ * See [ContactUnlink.Result.contacts].
  */
-fun ContactLink.Result.contactAsync(
+fun ContactUnlink.Result.contactsAsync(
     contacts: Contacts,
     coroutineContext: CoroutineContext = ASYNC_DISPATCHER
-): Deferred<Contact?> = CoroutineScope(coroutineContext).async {
-    contact(contacts) { !isActive }
+): Deferred<List<Contact>> = CoroutineScope(coroutineContext).async {
+    contacts(contacts) { !isActive }
 }

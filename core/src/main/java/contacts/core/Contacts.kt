@@ -7,6 +7,7 @@ import android.content.res.Resources
 import android.telephony.TelephonyManager
 import contacts.core.accounts.Accounts
 import contacts.core.accounts.AccountsPermissions
+import contacts.core.aggregationexceptions.AggregationExceptions
 import contacts.core.blockednumbers.BlockedNumbers
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
@@ -19,7 +20,8 @@ import contacts.core.sim.SimContacts
 
 /**
  * Provides new [Query], [RawContactsQuery], [BroadQuery], [PhoneLookupQuery], [Insert], [Update],
- * [Delete], [Data], [Groups], [Profile], [Accounts], [BlockedNumbers], and [SimContacts] instances.
+ * [Delete], [AggregationExceptions], [Data], [Groups], [Profile], [Accounts], [BlockedNumbers],
+ * and [SimContacts] instances.
  *
  * ## Permissions
  *
@@ -29,7 +31,7 @@ import contacts.core.sim.SimContacts
  *   [update], and [delete].
  *
  * Use [permissions] convenience functions to check for required permissions. The same permissions
- * apply to [Data], [Groups], [Profile], and [SimContacts].
+ * apply to [AggregationExceptions], [Data], [Groups], [Profile], and [SimContacts].
  *
  * Use [accountsPermissions] convenience functions to check for required permissions to use the
  * [Accounts] API.
@@ -70,6 +72,11 @@ interface Contacts {
      * Returns a new [Delete] instance.
      */
     fun delete(): Delete
+
+    /**
+     * Returns a new [AggregationExceptions] instance.
+     */
+    fun aggregationExceptions(): AggregationExceptions
 
     /**
      * Returns a new [Data] instance for non-Profile data operations.
@@ -215,6 +222,8 @@ private class ContactsImpl(
     override fun update() = Update(this)
 
     override fun delete() = Delete(this)
+
+    override fun aggregationExceptions() = AggregationExceptions(this)
 
     override fun data() = Data(this, false)
 

@@ -3532,14 +3532,31 @@ heading explore each API in full detail. You may also find these samples in the 
     ```kotlin
     import android.app.Activity
     import contacts.core.Contacts
+    import contacts.core.aggregationexceptions.ContactLink
+    import contacts.core.aggregationexceptions.ContactUnlink
     import contacts.core.entities.Contact
-    import contacts.core.util.*
+    import contacts.core.util.linkDirect
+    import contacts.core.util.unlinkDirect
     
     class ContactLinksActivity : Activity() {
     
-        fun linkContacts(contacts: List<Contact>): ContactLinkResult = contacts.link(Contacts(this))
+        fun linkContacts(contacts: List<Contact>): ContactLink.Result = Contacts(this)
+            .aggregationExceptions()
+            .linkContacts()
+            .contacts(contacts)
+            .commit()
     
-        fun unlinkContact(contact: Contact): ContactUnlinkResult = contact.unlink(Contacts(this))
+        fun unlinkContact(contact: Contact): ContactUnlink.Result = Contacts(this)
+            .aggregationExceptions()
+            .unlinkContact()
+            .contact(contact)
+            .commit()
+    
+        fun linkContactsDirect(contacts: List<Contact>): ContactLink.Result =
+            contacts.linkDirect(Contacts(this))
+    
+        fun unlinkContactDirect(contact: Contact): ContactUnlink.Result =
+            contact.unlinkDirect(Contacts(this))
     }
     ```
 
@@ -3551,17 +3568,37 @@ heading explore each API in full detail. You may also find these samples in the 
     import java.util.List;
     
     import contacts.core.ContactsFactory;
+    import contacts.core.aggregationexceptions.ContactLink;
+    import contacts.core.aggregationexceptions.ContactUnlink;
     import contacts.core.entities.Contact;
-    import contacts.core.util.*;
+    import contacts.core.util.ContactLinksKt;
     
     public class ContactLinksActivity extends Activity {
     
-        ContactLinkResult linkContacts(List<Contact> contacts) {
-            return ContactLinksKt.link(contacts, ContactsFactory.create(this));
+        ContactLink.Result linkContacts(List<Contact> contacts) {
+            return ContactsFactory
+                    .create(this)
+                    .aggregationExceptions()
+                    .linkContacts()
+                    .contacts(contacts)
+                    .commit();
         }
     
-        ContactUnlinkResult unlinkContact(Contact contact) {
-            return ContactLinksKt.unlink(contact, ContactsFactory.create(this));
+        ContactUnlink.Result unlinkContact(Contact contact) {
+            return ContactsFactory
+                    .create(this)
+                    .aggregationExceptions()
+                    .unlinkContact()
+                    .contact(contact)
+                    .commit();
+        }
+    
+        ContactLink.Result linkContactsDirect(List<Contact> contacts) {
+            return ContactLinksKt.linkDirect(contacts, ContactsFactory.create(this));
+        }
+    
+        ContactUnlink.Result unlinkContactDirect(Contact contact) {
+            return ContactLinksKt.unlinkDirect(contact, ContactsFactory.create(this));
         }
     }
     ```

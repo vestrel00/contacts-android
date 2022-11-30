@@ -6,8 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import contacts.async.util.unlinkWithContext
+import contacts.async.aggregationexceptions.commitWithContext
 import contacts.core.entities.ExistingContactEntity
+import contacts.permissions.aggregationexceptions.unlinkContactWithPermission
 import contacts.sample.util.createPinnedShortcut
 import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
@@ -159,7 +160,12 @@ class ContactDetailsActivity : BaseActivity() {
                 val contact = contactView.contact
                 if (contact != null && contact is ExistingContactEntity) {
                     launch {
-                        val unlink = contact.unlinkWithContext(contacts)
+                        val unlink = contacts
+                            .aggregationExceptions()
+                            .unlinkContactWithPermission()
+                            .contact(contact)
+                            .commitWithContext()
+
                         if (unlink.isSuccessful) {
                             showToast(R.string.contact_details_unlink_success)
                             finish()

@@ -4,6 +4,7 @@ import android.content.ContentProviderOperation
 import android.os.Build
 import android.provider.ContactsContract
 import contacts.core.*
+import contacts.core.aggregationexceptions.*
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.Name
@@ -20,6 +21,7 @@ import contacts.core.entities.table.Table
 /**
  * Links (keep together) [this] Contact with the given [contacts]. This will aggregate all
  * RawContacts belonging to [this] Contact and the given [contacts] into a single Contact.
+ *
  * Aggregation is done by the Contacts Provider. For example,
  *
  * - Contact (id: 1, display name: A)
@@ -35,8 +37,8 @@ import contacts.core.entities.table.Table
  *     - RawContact B
  *     - RawContact C
  *
- * Contact 2 no longer exists and all of the Data belonging to RawContact B and C are now associated
- * with Contact 1.
+ * Contact 2 no longer exists and all of the RawContacts associated with Contact 2 are now
+ * associated with Contact 1.
  *
  * If instead Contact 2 is linked with Contact 1;
  *
@@ -97,24 +99,30 @@ import contacts.core.entities.table.Table
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.link(contactsApi: Contacts, vararg contacts: ExistingContactEntity) =
-    link(contactsApi, contacts.asSequence())
+fun ExistingContactEntity.linkDirect(
+    contactsApi: Contacts,
+    vararg contacts: ExistingContactEntity
+) =
+    linkDirect(contactsApi, contacts.asSequence())
 
 /**
- * See [ExistingContactEntity.link].
+ * See [ExistingContactEntity.linkDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.link(contactsApi: Contacts, contacts: Collection<ExistingContactEntity>) =
-    link(contactsApi, contacts.asSequence())
+fun ExistingContactEntity.linkDirect(
+    contactsApi: Contacts,
+    contacts: Collection<ExistingContactEntity>
+) =
+    linkDirect(contactsApi, contacts.asSequence())
 
 /**
- * See [ExistingContactEntity.link].
+ * See [ExistingContactEntity.linkDirect].
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.link(
+fun ExistingContactEntity.linkDirect(
     contactsApi: Contacts,
     contacts: Sequence<ExistingContactEntity>
-): ContactLinkResult {
+): ContactLink.Result {
     val mainContactId = id
 
     if (!contactsApi.permissions.canUpdateDelete() ||
@@ -175,57 +183,35 @@ fun ExistingContactEntity.link(
     val contactId =
         name?.contactId ?: contactsApi.contactIdOfRawContact(sortedRawContactIds.first())
 
-    return ContactLinkSuccess(contactId)
-}
-
-/**
- * Links the first Contact in this collection with the rest in the collection.
- *
- * See [ExistingContactEntity.link].
- */
-fun Collection<ExistingContactEntity>.link(contactsApi: Contacts): ContactLinkResult =
-    asSequence().link(contactsApi)
-
-/**
- * Links the first Contact in this sequence with the rest in the sequence.
- *
- * See [ExistingContactEntity.link].
- */
-fun Sequence<ExistingContactEntity>.link(contactsApi: Contacts): ContactLinkResult {
-    val mainContact = firstOrNull()
-    val contacts = filterIndexed { index, _ -> index > 0 }
-
-    return if (mainContact != null && contacts.isNotEmpty()) {
-        mainContact.link(contactsApi, contacts)
+    return if (contactId != null) {
+        ContactLinkSuccess(contactId)
     } else {
         ContactLinkFailed()
     }
 }
 
-interface ContactLinkResult {
+/**
+ * Links the first Contact in this collection with the rest in the collection.
+ *
+ * See [ExistingContactEntity.linkDirect].
+ */
+fun Collection<ExistingContactEntity>.linkDirect(contactsApi: Contacts): ContactLink.Result =
+    asSequence().linkDirect(contactsApi)
 
-    /**
-     * The parent [ExistingContactEntity.id] for all of the linked RawContacts. Null if
-     * [isSuccessful] is false.
-     */
-    val contactId: Long?
+/**
+ * Links the first Contact in this sequence with the rest in the sequence.
+ *
+ * See [ExistingContactEntity.linkDirect].
+ */
+fun Sequence<ExistingContactEntity>.linkDirect(contactsApi: Contacts): ContactLink.Result {
+    val mainContact = firstOrNull()
+    val contacts = filterIndexed { index, _ -> index > 0 }
 
-    /**
-     * True if the link succeeded.
-     */
-    val isSuccessful: Boolean
-}
-
-private class ContactLinkSuccess(override val contactId: Long?) : ContactLinkResult {
-
-    override val isSuccessful: Boolean = true
-}
-
-private class ContactLinkFailed : ContactLinkResult {
-
-    override val contactId: Long? = null
-
-    override val isSuccessful: Boolean = false
+    return if (mainContact != null && contacts.isNotEmpty()) {
+        mainContact.linkDirect(contactsApi, contacts)
+    } else {
+        ContactLinkFailed()
+    }
 }
 
 // endregion
@@ -262,7 +248,7 @@ private class ContactLinkFailed : ContactLinkResult {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
+fun ExistingContactEntity.unlinkDirect(contactsApi: Contacts): ContactUnlink.Result {
     val contactId = id
 
     if (!contactsApi.permissions.canUpdateDelete() ||
@@ -286,31 +272,6 @@ fun ExistingContactEntity.unlink(contactsApi: Contacts): ContactUnlinkResult {
     ) ?: return ContactUnlinkFailed()
 
     return ContactUnlinkSuccess(sortedRawContactIds)
-}
-
-interface ContactUnlinkResult {
-
-    /**
-     * The list of RawContacts' IDs that have been unlinked. Empty if [isSuccessful] is false.
-     */
-    val rawContactIds: List<Long>
-
-    /**
-     * True if the unlink succeeded.
-     */
-    val isSuccessful: Boolean
-}
-
-private class ContactUnlinkSuccess(override val rawContactIds: List<Long>) : ContactUnlinkResult {
-
-    override val isSuccessful: Boolean = true
-}
-
-private class ContactUnlinkFailed : ContactUnlinkResult {
-
-    override val rawContactIds: List<Long> = emptyList()
-
-    override val isSuccessful: Boolean = false
 }
 
 // endregion

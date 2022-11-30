@@ -1,25 +1,53 @@
 # Link unlink Contacts
 
 The Contacts Provider automatically aggregates similar RawContacts into a single Contact when it
-determines that they reference the same person. However, the Contacts Provider's aggregation
-algorithms are only as accurate as the Data belonging to these RawContacts. Sometimes, they are not
-enough to determine if they indeed are the same person. With this in mind, the Contacts Provider
-allows us to explicitly and forcefully specify whether two or more RawContacts reference the same
-person or not.
+determines that they reference the same person. 
 
-Hence, this library provides extensions in `contacts.core.util.ContactLinks.kt` to allow for linking
-and unlinking two or more Contacts (and their constituent RawContacts).
+However, the Contacts Provider's aggregation algorithms are only as accurate as the Data belonging 
+to these RawContacts. Sometimes, they are not enough to determine if they indeed are the same 
+person. With this in mind, the Contacts Provider allows us to explicitly and forcefully specify 
+whether two or more RawContacts reference the same person (Contact) or not.
+
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
+> and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/other/link-unlink-contacts.md).
 
 ## Linking
 
-To link three Contacts and all of their constituent RawContacts into a single Contact,
+There are two ways to link Contacts.
+
+### Using extension functions
+
+To link three Contacts and all of their constituent RawContacts into a single Contact using 
+extensions from `contacts.core.util.ContactLinks.kt`,
 
 ```kotlin
-val linkResult = contact1.link(contactsApi, contact2, contact3)
+val linkResult = contact1.linkDirect(contactsApi, contact2, contact3)
 ```
 
-The above links (keep together) all RawContacts belonging to `contact1`, `contact2`, and `contact3`
-into a single Contact.
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), this
+> function was named `link`.
+
+### Using the `ContactLink` API
+
+To link three Contacts and all of their constituent RawContacts into a single Contact using the
+`ContactLink` API,
+
+```kotlin
+val linkResult = contactsApi
+  .aggregationExceptions()
+  .linkContacts()
+  .contacts(contact1, contact2, contact3)
+  .commit()
+```
+
+> ℹ️ The `ContactLink` API was not available prior to 
+> [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+
+---------
+
+The above examples links (keep together) all RawContacts belonging to `contact1`, `contact2`, and 
+`contact3` into a single Contact.
 
 Aggregation is done by the Contacts Provider. For example,
 
@@ -82,8 +110,8 @@ val contact = contactsApi
 
 > ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
-Alternatively, you may use the extensions provided in `ContactLikResult`. To get the parent Contact 
-of all linked RawContacts,
+Alternatively, you may use the extensions provided in `contact.core.util.ContactLinkResult.kt`. 
+To get the parent Contact of all linked RawContacts,
 
 ```kotlin
 val contact = linkResult.contact(contactsApi)
@@ -91,11 +119,37 @@ val contact = linkResult.contact(contactsApi)
 
 ## Unlinking
 
-To unlink a Contacts with more than one RawContact into a separate Contacts,
+There are two ways to unlink a Contact.
+
+### Using extension functions
+
+To unlink a Contacts with more than one RawContact into a separate Contacts using extensions from 
+`contacts.core.util.ContactLinks.kt`,
 
 ```kotlin
-val unlinkResult = contact.unlink(contactsApi)
+val unlinkResult = contact.unlinkDirect(contactsApi)
 ```
+
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), this
+> function was named `unlink`.
+
+### Using the `ContactUnlink` API
+
+To unlink a Contacts with more than one RawContact into a separate Contacts using the 
+`ContactUnlink` API,
+
+```kotlin
+val unlinkResult = contactsApi
+  .aggregationExceptions()
+  .unlinkContact()
+  .contact(contact)
+  .commit()
+```
+
+> ℹ️ The `ContactUnlink` API was not available prior to
+> [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+
+---------
 
 The above unlinks (keep separate) all RawContacts belonging to the `contact` into separate
 Contacts.
@@ -130,25 +184,12 @@ val contacts = contactsApi
 
 > ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
-Alternatively, you may use the extensions provided in `ContactLikResult`. To get the Contacts
-of all unlinked RawContacts,
+Alternatively, you may use the extensions provided in `contact.core.util.ContactUnlinkResult.kt`. 
+To get the Contacts of all unlinked RawContacts,
 
 ```kotlin
 val contacts = unlinkResult.contacts(contactsApi)
 ```
-
-## Changes are immediate and are not applied to the receiver
-
-These apply to set and clear functions.
-
-1. Changes are immediate.
-    - These functions will make the changes to the Contacts Provider database immediately. You do
-      not need to use update APIs to commit the changes.
-2. Changes are not applied to the receiver.
-    - This function call does NOT mutate immutable or mutable receivers. Therefore, you should use
-      query APIs or refresh extensions or process the result of this function call to get the most
-      up-to-date reference to mutable or immutable entity that contains the changes in the Contacts
-      Provider database.
 
 ## Performing linking/unlinking asynchronously
 
@@ -165,10 +206,13 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 
 ## Performing linking/unlinking with permission
 
-Getting and setting/clearing default data require the `android.permission.WRITE_CONTACTS`
-permission. If not granted, linking/unlinking data will fail.
+Linking/unlinking requires the `android.permission.WRITE_CONTACTS` permission. If not granted, 
+linking/unlinking data will fail.
 
-TODO Update this section as part of issue [#138](https://github.com/vestrel00/contacts-android/issues/138).
+To perform the link/unlink with permission, use the extensions provided in the `permissions` module.
+For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
+
+You may, of course, use other permission handling libraries or just do it yourself =)
 
 ## Syncing is done at the RawContact level
 

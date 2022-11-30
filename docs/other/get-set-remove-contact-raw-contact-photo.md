@@ -93,7 +93,7 @@ val photoThumbnailBitmapDrawable = rawContact.photoThumbnailBitmapDrawable(conta
 
 There are two ways to set Contact or RawContact photo.
 
-### Directly to the database
+### Using extension functions
 
 This can only be done for existing Contacts/RawContacts.
 
@@ -163,7 +163,7 @@ Contacts(this)
 
 There are two ways to remove Contact or RawContact photo.
 
-### Directly to the database
+### Using extension functions
 
 This can only be done for existing Contacts/RawContacts.
 

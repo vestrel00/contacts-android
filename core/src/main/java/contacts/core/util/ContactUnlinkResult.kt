@@ -1,15 +1,16 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.aggregationexceptions.ContactLink
+import contacts.core.`in`
+import contacts.core.aggregationexceptions.ContactUnlink
 import contacts.core.entities.Contact
-import contacts.core.equalTo
 
 // Note that there is no need to handle isProfile here as ContactLinks operations do not support it.
 
 /**
- * Returns the [Contact] that contains all of the successfully linked RawContacts. Returns null if
- * the link operation failed or permissions are not granted.
+ * Returns all of the [Contact]s that are associated with each of the unlinked RawContacts.
+ *
+ * Returns an empty list if the link operation failed or permissions are not granted.
  *
  * ## Permissions
  *
@@ -27,10 +28,12 @@ import contacts.core.equalTo
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun ContactLink.Result.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
-    contactId?.let {
-        contacts.query()
-            .where { Contact.Id equalTo it }
-            .find(cancel)
-            .firstOrNull()
-    }
+fun ContactUnlink.Result.contacts(
+    contacts: Contacts,
+    cancel: () -> Boolean = { false }
+): List<Contact> = if (rawContactIds.isEmpty()) {
+    emptyList()
+} else {
+    contacts.query().where { RawContact.Id `in` rawContactIds }.find(cancel)
+}
+

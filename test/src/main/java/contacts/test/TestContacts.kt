@@ -3,6 +3,7 @@ package contacts.test
 import android.content.Context
 import contacts.core.*
 import contacts.core.accounts.Accounts
+import contacts.core.aggregationexceptions.AggregationExceptions
 import contacts.core.blockednumbers.BlockedNumbers
 import contacts.core.data.Data
 import contacts.core.entities.custom.CustomDataRegistry
@@ -62,6 +63,10 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
     }
 
     override fun delete(): Delete {
+        TODO("Not yet implemented")
+    }
+
+    override fun aggregationExceptions(): AggregationExceptions {
         TODO("Not yet implemented")
     }
 
