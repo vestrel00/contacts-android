@@ -166,12 +166,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt:                        && contentResolver.profileRawContactExistFor(account))
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt:private fun ContentResolver.profileRawContactExistFor(account: Account?): Boolean = query(
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    (RawContactsFields.Deleted notEqualTo true) and account.toRawContactsWhere()
-./core/src/main/java/contacts/core/Fields.kt:    val AccountName = RawContactsField(RawContacts.ACCOUNT_NAME)
-./core/src/main/java/contacts/core/Fields.kt:    val AccountType = RawContactsField(RawContacts.ACCOUNT_TYPE)
-./core/src/main/java/contacts/core/Fields.kt:            Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
-./core/src/main/java/contacts/core/Fields.kt:    val AccountName = GroupsField(Groups.ACCOUNT_NAME)
-./core/src/main/java/contacts/core/Fields.kt:    val AccountType = GroupsField(Groups.ACCOUNT_TYPE)
-./core/src/main/java/contacts/core/Fields.kt:        setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType, Deleted)
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:package contacts.core.accounts
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
