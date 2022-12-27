@@ -261,23 +261,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsLocalRawContactsUpdate.Result {
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun redactedCopy(): AccountsLocalRawContactsUpdate.Result =
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        AccountsRawContactsAssociationsUpdateResultFailed(
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:package contacts.core.accounts
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:import contacts.core.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt: * Provides functions for checking account permissions.
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:interface AccountsPermissions {
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:     * Returns true if [GET_ACCOUNTS_PERMISSION] and [READ_PERMISSION] are granted.
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    fun canQueryAccounts(): Boolean
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:     * Returns true if [GET_ACCOUNTS_PERMISSION] and [WRITE_PERMISSION] are granted.
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    fun canUpdateLocalRawContactsAccount(): Boolean
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        const val GET_ACCOUNTS_PERMISSION: String = Manifest.permission.GET_ACCOUNTS
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:internal fun AccountsPermissions(context: Context): AccountsPermissions =
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    AccountsPermissionsImpl(context.applicationContext)
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:private class AccountsPermissionsImpl(private val applicationContext: Context) :
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    AccountsPermissions {
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    override fun canQueryAccounts(): Boolean =
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    override fun canUpdateLocalRawContactsAccount(): Boolean =
-./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
 ./core/src/main/java/contacts/core/Update.kt:import contacts.core.accounts.accountForRawContactWithId
 ./core/src/main/java/contacts/core/Update.kt:    val account = contentResolver.accountForRawContactWithId(rawContact.id)
 ./core/src/main/java/contacts/core/Update.kt:    val hasAccount = account != null
