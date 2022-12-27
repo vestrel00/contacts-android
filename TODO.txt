@@ -493,22 +493,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/Options.kt:     * Raw contacts that are not associated with an account may not have any group memberships. Even
 ./core/src/main/java/contacts/core/entities/Event.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
 ./core/src/main/java/contacts/core/entities/Relation.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:package contacts.async.accounts
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:import contacts.core.accounts.AccountsQuery
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt: * See [AccountsQuery.find].
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:suspend fun AccountsQuery.findWithContext(
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:): AccountsQuery.Result = withContext(context) { find { !isActive } }
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt: * See [AccountsQuery.find].
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:fun AccountsQuery.findAsync(
-./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:): Deferred<AccountsQuery.Result> = CoroutineScope(context).async { find { !isActive } }
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:package contacts.async.accounts
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt: * See [AccountsLocalRawContactsUpdate.commit].
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:suspend fun AccountsLocalRawContactsUpdate.commitWithContext(
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:): AccountsLocalRawContactsUpdate.Result = withContext(context) { commit { !isActive } }
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt: * See [AccountsLocalRawContactsUpdate.commit].
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:fun AccountsLocalRawContactsUpdate.commitAsync(
-./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:): Deferred<AccountsLocalRawContactsUpdate.Result> = CoroutineScope(context).async {
 ./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt:import contacts.permissions.accounts.requestGetAccountsPermission
 ./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
 ./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt:        requestGetAccountsPermission()
