@@ -126,36 +126,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
-./core/src/main/java/contacts/core/RawContactsQuery.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/RawContactsQuery.kt: * Here is an example query that returns the first 5 [RawContact]s in the given account that has at
-./core/src/main/java/contacts/core/RawContactsQuery.kt: *      .whereRawContact(setOf(account), { DisplayNamePrimary startsWith "a" })
-./core/src/main/java/contacts/core/RawContactsQuery.kt: * ArrayList accounts = new ArrayList<Account>();
-./core/src/main/java/contacts/core/RawContactsQuery.kt: * accounts.add(account);
-./core/src/main/java/contacts/core/RawContactsQuery.kt: *      .whereRawContact(accounts, startsWith(DisplayNamePrimary, "a"))
-./core/src/main/java/contacts/core/RawContactsQuery.kt:     * - [contacts.core.entities.RawContact.account]
-./core/src/main/java/contacts/core/RawContactsQuery.kt:     * [contacts.core.entities.RawContact.account].
-./core/src/main/java/contacts/core/RawContactsQuery.kt:     * Filters the returned [RawContact]s belonging to the given [accounts] and matching the
-./core/src/main/java/contacts/core/RawContactsQuery.kt:     * If [accounts] is empty, then all accounts are included in the search. If [where] is null,
-./core/src/main/java/contacts/core/RawContactsQuery.kt:     * then all RawContacts in the specified [accounts] are returned. This is the default behavior
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
-./core/src/main/java/contacts/core/RawContactsQuery.kt:       Java users being able to provide accounts with null where.
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
-./core/src/main/java/contacts/core/RawContactsQuery.kt:     * The combined list of [RawContact]s from the specified Accounts ordered by [orderBy].
-./core/src/main/java/contacts/core/RawContactsQuery.kt:     * Use [rawContactsFor], to get the list of RawContacts for a specific Account.
-./core/src/main/java/contacts/core/RawContactsQuery.kt:         * The list of [RawContact]s from the specified [account] ordered by [orderBy].
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        fun rawContactsFor(account: Account?): List<RawContact>
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        // Redact account info.
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        val accountsWhere = accounts.toRawContactsWhere()
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        rawContactsWhere = if (accountsWhere != null && where != null) {
-./core/src/main/java/contacts/core/RawContactsQuery.kt:            accountsWhere and where
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        } else if (accountsWhere != null && where == null) {
-./core/src/main/java/contacts/core/RawContactsQuery.kt:            accountsWhere
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        } else if (accountsWhere == null && where != null) {
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
-./core/src/main/java/contacts/core/RawContactsQuery.kt:    ) = rawContactsWhere(accounts, where(RawContactsFields))
-./core/src/main/java/contacts/core/RawContactsQuery.kt:    override fun rawContactsFor(account: Account?): List<RawContact> =
-./core/src/main/java/contacts/core/RawContactsQuery.kt:        filter { it.account == account }
 ./core/src/main/java/contacts/core/CrudApi.kt:import contacts.core.accounts.AccountsPermissions
 ./core/src/main/java/contacts/core/CrudApi.kt:internal val CrudApi.accountsPermissions: AccountsPermissions
 ./core/src/main/java/contacts/core/CrudApi.kt:    get() = contactsApi.accountsPermissions
