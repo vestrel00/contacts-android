@@ -301,13 +301,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            val accountName = getNonNullString(GroupsFields.AccountName, "null")
 ./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            val accountType = getNonNullString(GroupsFields.AccountType, "null")
 ./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            return Account(accountName, accountType)
-./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val accountName: String? by string(RawContactsFields.AccountName)
-./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val accountType: String? by string(RawContactsFields.AccountType)
-./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:internal fun RawContactsCursor.account(): Account? {
-./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val name = accountName
-./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val type = accountType
-./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    return if (name != null && type != null) Account(name, type) else null
 ./core/src/main/java/contacts/core/entities/mapper/GroupMapper.kt:            account = groupsCursor.account,
 
 
