@@ -80,8 +80,6 @@ internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
             (RawContactsFields.AccountName equalToIgnoreCase account.name) and
                     (RawContactsFields.AccountType equalToIgnoreCase account.type)
         } else {
-            // Samsung devices use "vnd.sec.contact.phone" for account name and type instead of null.
-            // See https://github.com/vestrel00/contacts-android/issues/257
             (RawContactsFields.AccountName.isNull() and RawContactsFields.AccountType.isNull())
                 .or(
                     (RawContactsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
@@ -111,6 +109,9 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
         }
     }
 
+// Samsung devices use "vnd.sec.contact.phone" for local account name and type instead of null.
+// This is NOT an actual Account and is not returned by the Android AccountManager.
+// See https://github.com/vestrel00/contacts-android/issues/257
 private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
 
 // region Redactable
