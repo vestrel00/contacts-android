@@ -315,42 +315,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/mapper/GroupMapper.kt:            account = groupsCursor.account,
 ./core/src/main/java/contacts/core/entities/mapper/TempRawContactMapper.kt:import contacts.core.entities.cursor.account
 ./core/src/main/java/contacts/core/entities/mapper/TempRawContactMapper.kt:            account = rawContactsCursor.account(),
-./core/src/main/java/contacts/core/entities/RawContact.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/entities/RawContact.kt: * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
-./core/src/main/java/contacts/core/entities/RawContact.kt: * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
-./core/src/main/java/contacts/core/entities/RawContact.kt: * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * If this raw contact is not associated with an Account, then this will be ignored during
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * If this raw contact is not associated with an Account, then this will be ignored during
-./core/src/main/java/contacts/core/entities/RawContact.kt:            // Data table; displayNamePrimary, displayNameAlt, account, options
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * The RawContact's associated [Account]. RawContacts that are not associated with an Account
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * Both the Account name and type must not be null. If anyone of those are null, then this will
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * If an account is not provided, or null is provided, or if an incorrect account is provided,
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * the raw contacts inserted will not be associated with an account. RawContacts inserted
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * without an associated account are considered local or device-only contacts, which are not
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * When an Account is added, from a state where no accounts have yet been added to the system,
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * the Contacts Provider automatically sets all of the null `accountName` and `accountType` in
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * the RawContacts table to that Account's name and type.
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * RawContacts inserted without an associated account will automatically get assigned to an
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * account if there are any available. This may take a few seconds, whenever the Contacts
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * The Contacts Provider no longer associates local contacts to an account when an account is or
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * **Account removal**
-./core/src/main/java/contacts/core/entities/RawContact.kt:     * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
-./core/src/main/java/contacts/core/entities/RawContact.kt:    val account: Account?
-./core/src/main/java/contacts/core/entities/RawContact.kt:    override val account: Account?,
-./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account,
-./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
-./core/src/main/java/contacts/core/entities/RawContact.kt:    override val account: Account?,
-./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
-./core/src/main/java/contacts/core/entities/RawContact.kt:    override var account: Account? = null,
-./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
-./core/src/main/java/contacts/core/entities/RawContact.kt:    override var account: Account?,
-./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account,
-./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
-./core/src/main/java/contacts/core/entities/GroupMembership.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
-./core/src/main/java/contacts/core/entities/GroupMembership.kt: * the [contacts.core.groups.GroupsQuery] with the same account as the RawContact and convert the
-./core/src/main/java/contacts/core/entities/GroupMembership.kt:     * the same account as the contact.
-./core/src/main/java/contacts/core/entities/Event.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
-./core/src/main/java/contacts/core/entities/Relation.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
 
 
 ./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,

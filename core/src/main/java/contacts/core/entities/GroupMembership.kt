@@ -7,9 +7,6 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  *
- * Local RawContacts (those that are not associated with an Account) **should not** have any entries
- * of this data kind.
- *
  * ## Notes
  *
  * In more recent versions of Android, the native Contacts app presents group memberships
