@@ -140,19 +140,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/ContactsPermissions.kt:import contacts.core.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
 ./core/src/main/java/contacts/core/ContactsPermissions.kt:     * Returns true if [WRITE_PERMISSION] and [GET_ACCOUNTS_PERMISSION] are granted.
 ./core/src/main/java/contacts/core/ContactsPermissions.kt:                && applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
-./core/src/main/java/contacts/core/Contacts.kt:import contacts.core.accounts.Accounts
-./core/src/main/java/contacts/core/Contacts.kt:import contacts.core.accounts.AccountsPermissions
-./core/src/main/java/contacts/core/Contacts.kt: * [Delete], [AggregationExceptions], [Data], [Groups], [Profile], [Accounts], [BlockedNumbers],
-./core/src/main/java/contacts/core/Contacts.kt: * Use [accountsPermissions] convenience functions to check for required permissions to use the
-./core/src/main/java/contacts/core/Contacts.kt: * [Accounts] API.
-./core/src/main/java/contacts/core/Contacts.kt:     * Returns a new [Accounts] instance for non-profile operations.
-./core/src/main/java/contacts/core/Contacts.kt:    fun accounts(): Accounts
-./core/src/main/java/contacts/core/Contacts.kt:     * Returns a [AccountsPermissions] instance, which provides functions for checking required
-./core/src/main/java/contacts/core/Contacts.kt:     * permissions for Account operations.
-./core/src/main/java/contacts/core/Contacts.kt:    val accountsPermissions: AccountsPermissions
-./core/src/main/java/contacts/core/Contacts.kt:        AccountsPermissions(context.applicationContext),
-./core/src/main/java/contacts/core/Contacts.kt:    override val accountsPermissions: AccountsPermissions,
-./core/src/main/java/contacts/core/Contacts.kt:    override fun accounts() = Accounts(this, false)
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * allowing multiple raw contacts per account;
