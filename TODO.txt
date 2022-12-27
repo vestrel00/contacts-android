@@ -268,14 +268,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
 ./core/src/main/java/contacts/core/Update.kt:        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
 ./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:    fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(contentUri)
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * Passing in null account name and type is valid. It is the same behavior as the native
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * Android Contacts app when creating contacts when there are no available accounts. When an
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * account becomes available (or is already available), Android will automatically update
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * the RawContact name and type to an existing Account.
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:        .withValue(RawContactsFields.AccountName, rawContactAccount?.name)
-./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:        .withValue(RawContactsFields.AccountType, rawContactAccount?.type)
 ./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountName, group.account.name)
 ./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountType, group.account.type)
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import android.accounts.Account
