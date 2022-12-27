@@ -15,9 +15,6 @@ import java.util.*
  * A data kind representing an event.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
- *
- * Local RawContacts (those that are not associated with an Account) **should not** have any entries
- * of this data kind.
  */
 sealed interface EventEntity : DataEntityWithTypeAndLabel<Type> {
 
