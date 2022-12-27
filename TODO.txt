@@ -493,45 +493,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/Options.kt:     * Raw contacts that are not associated with an account may not have any group memberships. Even
 ./core/src/main/java/contacts/core/entities/Event.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
 ./core/src/main/java/contacts/core/entities/Relation.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
-./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt:import contacts.permissions.accounts.requestGetAccountsPermission
-./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
-./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt:        requestGetAccountsPermission()
-./permissions/src/main/java/contacts/permissions/groups/GroupsPermissionsRequest.kt:import contacts.permissions.accounts.requestGetAccountsPermission
-./permissions/src/main/java/contacts/permissions/groups/GroupsPermissionsRequest.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
-./permissions/src/main/java/contacts/permissions/groups/GroupsPermissionsRequest.kt:        requestGetAccountsPermission()
-./permissions/src/main/java/contacts/permissions/profile/ProfilePermissionsRequest.kt:import contacts.permissions.accounts.requestGetAccountsPermission
-./permissions/src/main/java/contacts/permissions/profile/ProfilePermissionsRequest.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
-./permissions/src/main/java/contacts/permissions/profile/ProfilePermissionsRequest.kt:        requestGetAccountsPermission()
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:package contacts.permissions.accounts
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.Accounts
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.AccountsPermissions
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.AccountsQuery
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.READ_PERMISSION] are
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * new [AccountsQuery] instance.
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun Accounts.queryWithPermission(): AccountsQuery {
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    if (!contactsApi.accountsPermissions.canQueryAccounts()) {
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        requestQueryAccountsPermission()
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * new [AccountsLocalRawContactsUpdate] instance.
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * [AccountsLocalRawContactsUpdate] instance.
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun Accounts.updateLocalRawContactsAccountWithPermission():
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        AccountsLocalRawContactsUpdate {
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    if (!contactsApi.accountsPermissions.canUpdateLocalRawContactsAccount()) {
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        requestUpdateLocalRawContactsAccountPermission()
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    return updateLocalRawContactsAccount()
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun requestQueryAccountsPermission(): Boolean =
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    requestGetAccountsPermission() && requestReadPermission()
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun requestUpdateLocalRawContactsAccountPermission(): Boolean =
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    requestGetAccountsPermission() && requestWritePermission()
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION]. The current coroutine is suspended
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun requestGetAccountsPermission(): Boolean =
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        AccountsPermissions.GET_ACCOUNTS_PERMISSION,
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        R.string.contacts_accounts_request_permission_title,
-./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        R.string.contacts_accounts_request_permission_description
 ./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,
 ./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:    var defaultAccountForNewContacts: Account?
