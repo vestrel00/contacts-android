@@ -325,9 +325,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val name = accountName
 ./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val type = accountType
 ./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    return if (name != null && type != null) Account(name, type) else null
-./core/src/main/java/contacts/core/entities/Data.kt: * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
-./core/src/main/java/contacts/core/entities/Data.kt: * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
-./core/src/main/java/contacts/core/entities/Data.kt: * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
 ./core/src/main/java/contacts/core/entities/Contact.kt: * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
 ./core/src/main/java/contacts/core/entities/Contact.kt: * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
 ./core/src/main/java/contacts/core/entities/Contact.kt: * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
