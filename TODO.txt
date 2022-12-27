@@ -129,29 +129,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/CrudApi.kt:import contacts.core.accounts.AccountsPermissions
 ./core/src/main/java/contacts/core/CrudApi.kt:internal val CrudApi.accountsPermissions: AccountsPermissions
 ./core/src/main/java/contacts/core/CrudApi.kt:    get() = contactsApi.accountsPermissions
-./core/src/main/java/contacts/core/BroadQuery.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/BroadQuery.kt: * account and groups. Include only the name and email properties of [Contact]s.
-./core/src/main/java/contacts/core/BroadQuery.kt: *      .accounts(account)
-./core/src/main/java/contacts/core/BroadQuery.kt: *      .accounts(account)
-./core/src/main/java/contacts/core/BroadQuery.kt:     * Limits the search to only those RawContacts associated with one of the given accounts.
-./core/src/main/java/contacts/core/BroadQuery.kt:     * Contacts returned may still contain RawContacts / data that belongs to other accounts not
-./core/src/main/java/contacts/core/BroadQuery.kt:     * specified in [accounts] because Contacts may be made up of more than one RawContact from
-./core/src/main/java/contacts/core/BroadQuery.kt:     * different Accounts. This is the same behavior as the native Contacts app.
-./core/src/main/java/contacts/core/BroadQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
-./core/src/main/java/contacts/core/BroadQuery.kt:     * A null [Account] may be provided here, which results in RawContacts with no associated
-./core/src/main/java/contacts/core/BroadQuery.kt:     * Account to be included in the search. RawContacts without an associated account are
-./core/src/main/java/contacts/core/BroadQuery.kt:    fun accounts(vararg accounts: Account?): BroadQuery
-./core/src/main/java/contacts/core/BroadQuery.kt:     * See [BroadQuery.accounts]
-./core/src/main/java/contacts/core/BroadQuery.kt:    fun accounts(accounts: Collection<Account?>): BroadQuery
-./core/src/main/java/contacts/core/BroadQuery.kt:     * See [BroadQuery.accounts]
-./core/src/main/java/contacts/core/BroadQuery.kt:    fun accounts(accounts: Sequence<Account?>): BroadQuery
-./core/src/main/java/contacts/core/BroadQuery.kt:     * - [contacts.core.entities.RawContact.account]
-./core/src/main/java/contacts/core/BroadQuery.kt:     * [contacts.core.entities.RawContact.account].
-./core/src/main/java/contacts/core/BroadQuery.kt:        // Redact Account information.
-./core/src/main/java/contacts/core/BroadQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/BroadQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/BroadQuery.kt:    override fun accounts(accounts: Sequence<Account?>): BroadQuery = apply {
-./core/src/main/java/contacts/core/BroadQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
 ./core/src/main/java/contacts/core/groups/GroupsQuery.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/groups/GroupsQuery.kt: * Here is an example query that returns the first 5 [Group]s in the account, skipping the first 2,
 ./core/src/main/java/contacts/core/groups/GroupsQuery.kt: *      .accounts(account)
