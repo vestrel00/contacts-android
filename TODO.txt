@@ -313,8 +313,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/Contact.kt: * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
 ./core/src/main/java/contacts/core/entities/Contact.kt:     * associated with an Account and are synced). The lookup key points to a person entity rather
 ./core/src/main/java/contacts/core/entities/mapper/GroupMapper.kt:            account = groupsCursor.account,
-./core/src/main/java/contacts/core/entities/mapper/TempRawContactMapper.kt:import contacts.core.entities.cursor.account
-./core/src/main/java/contacts/core/entities/mapper/TempRawContactMapper.kt:            account = rawContactsCursor.account(),
 
 
 ./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,
