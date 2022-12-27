@@ -720,14 +720,6 @@ grep --include="*kt" -ri "account" .
 ./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:    fun getEmailsForAccount(account: Account): List<Email> =
 ./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:        Contacts(this).data().query().emails().accounts(account).find()
-./debug/src/main/java/contacts/debug/LogRawContactsTable.kt:            ContactsContract.RawContacts.ACCOUNT_NAME,
-./debug/src/main/java/contacts/debug/LogRawContactsTable.kt:            ContactsContract.RawContacts.ACCOUNT_TYPE,
-./debug/src/main/java/contacts/debug/LogRawContactsTable.kt:                 displayNameAlt: $displayNameAlt,  accountName: $name, accountType: $type,
-./debug/src/main/java/contacts/debug/LogGroupsTable.kt:            ContactsContract.Groups.ACCOUNT_NAME,
-./debug/src/main/java/contacts/debug/LogGroupsTable.kt:            ContactsContract.Groups.ACCOUNT_TYPE,
-./debug/src/main/java/contacts/debug/LogGroupsTable.kt:        val accountName = cursor.getString(7)
-./debug/src/main/java/contacts/debug/LogGroupsTable.kt:        val accountType = cursor.getString(8)
-./debug/src/main/java/contacts/debug/LogGroupsTable.kt:                 shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType,
 
 ------------------------
 
