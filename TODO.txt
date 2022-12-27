@@ -1,0 +1,1586 @@
+DO NOT COMMIT THIS FILE TO MAIN!
+
+This file will be deleted when all of the following items have been checked/removed.
+
+------------------------
+
+Mentions of "account" in code
+
+grep --include="*kt" -ri "account" .
+
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * Limits the search to only those RawContacts associated with one of the given accounts.
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * Contacts returned may still contain RawContacts / data that belongs to other accounts not
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * specified in [accounts] because Contacts may be made up of more than one RawContact from
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * different Accounts. This is the same behavior as the native Contacts app.
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * A null [Account] may be provided here, which results in RawContacts with no associated
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * Account to be included in the search. RawContacts without an associated account are
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    fun accounts(vararg accounts: Account?): PhoneLookupQuery
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * See [PhoneLookupQuery.accounts]
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    fun accounts(accounts: Collection<Account?>): PhoneLookupQuery
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * See [PhoneLookupQuery.accounts]
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * - [contacts.core.entities.RawContact.account]
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * [contacts.core.entities.RawContact.account].
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:        // Redact Account information.
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    override fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery = apply {
+./core/src/main/java/contacts/core/PhoneLookupQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/Insert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
+./core/src/main/java/contacts/core/Insert.kt: * To insert a raw contact with the name "john doe" with email "john@doe.com" for the given account;
+./core/src/main/java/contacts/core/Insert.kt: *          this.account = account
+./core/src/main/java/contacts/core/Insert.kt: * rawContact.setAccount(account);
+./core/src/main/java/contacts/core/Insert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/Insert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/Insert.kt:    // This ensures that a valid account is used. Otherwise, null is used.
+./core/src/main/java/contacts/core/Insert.kt:    val account = rawContact.account?.nullIfNotInSystem(accounts())
+./core/src/main/java/contacts/core/Insert.kt:    operations.add(RawContactsOperation(isProfile).insert(account))
+./core/src/main/java/contacts/core/Insert.kt:    if (account != null) {
+./core/src/main/java/contacts/core/Insert.kt:    if (account != null) {
+./core/src/main/java/contacts/core/Insert.kt:        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
+./core/src/main/java/contacts/core/Insert.kt:            ).insertForNewRawContact(rawContact.groupMemberships, account)
+./core/src/main/java/contacts/core/Insert.kt:    if (account != null) {
+./core/src/main/java/contacts/core/util/NewRawContactData.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/util/NewRawContactData.kt: * Sets the given [NewRawContact.account] to the given [account].
+./core/src/main/java/contacts/core/util/NewRawContactData.kt:fun NewRawContact.setAccount(account: Account?) {
+./core/src/main/java/contacts/core/util/NewRawContactData.kt:    this.account = account?.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/util/NewRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
+./core/src/main/java/contacts/core/util/NewRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
+./core/src/main/java/contacts/core/util/NewRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:import contacts.core.accounts.Accounts
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns true if [this] is in the list of all accounts in the system.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns true if [this] is NOT in the list of all accounts in the system.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.nullIfNotInSystem(accounts: Accounts): Account? =
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:    nullIfNotIn(accounts.query().find())
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:    if (accounts.contains(this)) this else null
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Yes, I know that the column names of RawContactsFields and GroupsFields AccountName and
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * AccountType are the same. Two different functions exist that have outputs with the same
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches the given [Account]. This is for use in
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account?.toRawContactsWhere(): Where<RawContactsField> =
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Collection<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? = distinct()
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:    .whereOr { account ->
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:        if (account != null) {
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:            (RawContactsFields.AccountName equalToIgnoreCase account.name) and
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    (RawContactsFields.AccountType equalToIgnoreCase account.type)
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:            // Samsung devices use "vnd.sec.contact.phone" for account name and type instead of null.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:            (RawContactsFields.AccountName.isNull() and RawContactsFields.AccountType.isNull())
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    (RawContactsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:                            (RawContactsFields.AccountType equalTo SAMSUNG_PHONE_ACCOUNT)
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct()
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:    .whereOr { account ->
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:        if (account != null) {
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:            // RawContactsFields and GroupsFields AccountName and AccountType are the same.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:            (GroupsFields.AccountName equalToIgnoreCase account.name) and
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    (GroupsFields.AccountType equalToIgnoreCase account.type)
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:            GroupsFields.AccountName.isNull() and
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    GroupsFields.AccountType.isNull()
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:// These Redactable Account extensions might prove useful for some consumers. Thus, they are public.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a copy of this account where the [Account.name] and [Account.type] are redacted.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Account.redactedCopy(): Account = Account(
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * If [redact] is true, returns a copy of this account where the [Account.name] and [Account.type]
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Account.redactedCopyOrThis(redact: Boolean) = if (redact) redactedCopy() else this
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a copy of every account in this collection such that the [Account.name] and
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.type] are redacted.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Collection<Account>.redactedCopies(): List<Account> = map { it.redactedCopy() }
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * If [redact] is true, returns a copy of every account in this collection such that the
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.name] and [Account.type] are redacted. Otherwise, just returns this.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Collection<Account>.redactedCopiesOrThis(redact: Boolean) =
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a copy of every account in this sequence such that the [Account.name] and
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.type] are redacted.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Sequence<Account>.redactedCopies(): Sequence<Account> = map { it.redactedCopy() }
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * If [redact] is true, returns a copy of every account in this sequence such that the
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.name] and [Account.type] are redacted. Otherwise, just returns this.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Sequence<Account>.redactedCopiesOrThis(redact: Boolean) =
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a [RedactableAccount] that can be used for redacting this account and keeping track of
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * its [RedactableAccount.isRedacted] state.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Account.asRedactable() = RedactableAccount(this, isRedacted = false)
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Holds/wraps an [Account] and keeps track of its [isRedacted] state.
+./core/src/main/java/contacts/core/util/AccountExtensions.kt: * It might be possible to extend [Account]. However, I am not sure what kind of issues we can run
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:class RedactableAccount(
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:    val account: Account,
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:    override fun toString(): String = account.toString()
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:    override fun redactedCopy() = RedactableAccount(
+./core/src/main/java/contacts/core/util/AccountExtensions.kt:        account.redactedCopy(),
+./core/src/main/java/contacts/core/util/ContactRefresh.kt: * ## Contact linking/unlinking and changing Accounts
+./core/src/main/java/contacts/core/util/ContactRefresh.kt: * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
+./core/src/main/java/contacts/core/util/ContactData.kt: * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
+./core/src/main/java/contacts/core/util/ContactData.kt: * Groups are tied to an [android.accounts.Account]. There can be no group that exist without an
+./core/src/main/java/contacts/core/util/ContactData.kt: * associated Account. Therefore, memberships to groups ([GroupMembership]s) are also tied to an
+./core/src/main/java/contacts/core/util/ContactData.kt: * Account. This means that Contacts do NOT have group memberships. Rather, only RawContacts can
+./core/src/main/java/contacts/core/util/ContactData.kt: * For example, if there are two Accounts in the device,
+./core/src/main/java/contacts/core/util/ContactData.kt: * account via sync. While this set of groups may differ slightly from one OEM to another, they are
+./core/src/main/java/contacts/core/util/ContactData.kt: * generally the same. The above two accounts could have the following groups.
+./core/src/main/java/contacts/core/util/ContactData.kt: * Groups from "john@gmail.com" account;
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 1, systemId: Contacts, title: My Contacts, accountName: john@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 2, systemId: null, title: Starred in Android, accountName: john@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 3, systemId: Friends,title: Friends, accountName: john@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 4, systemId: Family, title: Family, accountName: john@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 5, systemId: Coworkers, title: Coworkers, accountName: john@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * Groups from "doe@gmail.com" account;
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 6, systemId: Contacts, title: My Contacts, accountName: doe@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 7, systemId: null, title: Starred in Android, accountName: doe@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 8, systemId: Friends,title: Friends, accountName: doe@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 9, systemId: Family, title: Family, accountName: doe@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 10, systemId: Coworkers, title: Coworkers, accountName: doe@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * Notice that there are two sets of the same systemId and title but they come from different accounts
+./core/src/main/java/contacts/core/util/ContactData.kt: * different accounts, then this set of group memberships may contain two memberships to what
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 1, systemId: Contacts, title: My Contacts, accountName: john@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 6, systemId: Contacts, title: My Contacts, accountName: doe@gmail.com, accountType: com.google
+./core/src/main/java/contacts/core/util/ContactData.kt: * respective accounts get automatically added to. Consumers may think this is a bug BUT it should
+./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
+./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
+./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
+./core/src/main/java/contacts/core/RawContactsQuery.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/RawContactsQuery.kt: * Here is an example query that returns the first 5 [RawContact]s in the given account that has at
+./core/src/main/java/contacts/core/RawContactsQuery.kt: *      .whereRawContact(setOf(account), { DisplayNamePrimary startsWith "a" })
+./core/src/main/java/contacts/core/RawContactsQuery.kt: * ArrayList accounts = new ArrayList<Account>();
+./core/src/main/java/contacts/core/RawContactsQuery.kt: * accounts.add(account);
+./core/src/main/java/contacts/core/RawContactsQuery.kt: *      .whereRawContact(accounts, startsWith(DisplayNamePrimary, "a"))
+./core/src/main/java/contacts/core/RawContactsQuery.kt:     * - [contacts.core.entities.RawContact.account]
+./core/src/main/java/contacts/core/RawContactsQuery.kt:     * [contacts.core.entities.RawContact.account].
+./core/src/main/java/contacts/core/RawContactsQuery.kt:     * Filters the returned [RawContact]s belonging to the given [accounts] and matching the
+./core/src/main/java/contacts/core/RawContactsQuery.kt:     * If [accounts] is empty, then all accounts are included in the search. If [where] is null,
+./core/src/main/java/contacts/core/RawContactsQuery.kt:     * then all RawContacts in the specified [accounts] are returned. This is the default behavior
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
+./core/src/main/java/contacts/core/RawContactsQuery.kt:       Java users being able to provide accounts with null where.
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
+./core/src/main/java/contacts/core/RawContactsQuery.kt:     * The combined list of [RawContact]s from the specified Accounts ordered by [orderBy].
+./core/src/main/java/contacts/core/RawContactsQuery.kt:     * Use [rawContactsFor], to get the list of RawContacts for a specific Account.
+./core/src/main/java/contacts/core/RawContactsQuery.kt:         * The list of [RawContact]s from the specified [account] ordered by [orderBy].
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        fun rawContactsFor(account: Account?): List<RawContact>
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        // Redact account info.
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        val accountsWhere = accounts.toRawContactsWhere()
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        rawContactsWhere = if (accountsWhere != null && where != null) {
+./core/src/main/java/contacts/core/RawContactsQuery.kt:            accountsWhere and where
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        } else if (accountsWhere != null && where == null) {
+./core/src/main/java/contacts/core/RawContactsQuery.kt:            accountsWhere
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        } else if (accountsWhere == null && where != null) {
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        accounts: Collection<Account?>,
+./core/src/main/java/contacts/core/RawContactsQuery.kt:    ) = rawContactsWhere(accounts, where(RawContactsFields))
+./core/src/main/java/contacts/core/RawContactsQuery.kt:    override fun rawContactsFor(account: Account?): List<RawContact> =
+./core/src/main/java/contacts/core/RawContactsQuery.kt:        filter { it.account == account }
+./core/src/main/java/contacts/core/CrudApi.kt:import contacts.core.accounts.AccountsPermissions
+./core/src/main/java/contacts/core/CrudApi.kt:internal val CrudApi.accountsPermissions: AccountsPermissions
+./core/src/main/java/contacts/core/CrudApi.kt:    get() = contactsApi.accountsPermissions
+./core/src/main/java/contacts/core/BroadQuery.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/BroadQuery.kt: * account and groups. Include only the name and email properties of [Contact]s.
+./core/src/main/java/contacts/core/BroadQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/BroadQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/BroadQuery.kt:     * Limits the search to only those RawContacts associated with one of the given accounts.
+./core/src/main/java/contacts/core/BroadQuery.kt:     * Contacts returned may still contain RawContacts / data that belongs to other accounts not
+./core/src/main/java/contacts/core/BroadQuery.kt:     * specified in [accounts] because Contacts may be made up of more than one RawContact from
+./core/src/main/java/contacts/core/BroadQuery.kt:     * different Accounts. This is the same behavior as the native Contacts app.
+./core/src/main/java/contacts/core/BroadQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
+./core/src/main/java/contacts/core/BroadQuery.kt:     * A null [Account] may be provided here, which results in RawContacts with no associated
+./core/src/main/java/contacts/core/BroadQuery.kt:     * Account to be included in the search. RawContacts without an associated account are
+./core/src/main/java/contacts/core/BroadQuery.kt:    fun accounts(vararg accounts: Account?): BroadQuery
+./core/src/main/java/contacts/core/BroadQuery.kt:     * See [BroadQuery.accounts]
+./core/src/main/java/contacts/core/BroadQuery.kt:    fun accounts(accounts: Collection<Account?>): BroadQuery
+./core/src/main/java/contacts/core/BroadQuery.kt:     * See [BroadQuery.accounts]
+./core/src/main/java/contacts/core/BroadQuery.kt:    fun accounts(accounts: Sequence<Account?>): BroadQuery
+./core/src/main/java/contacts/core/BroadQuery.kt:     * - [contacts.core.entities.RawContact.account]
+./core/src/main/java/contacts/core/BroadQuery.kt:     * [contacts.core.entities.RawContact.account].
+./core/src/main/java/contacts/core/BroadQuery.kt:        // Redact Account information.
+./core/src/main/java/contacts/core/BroadQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/BroadQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/BroadQuery.kt:    override fun accounts(accounts: Sequence<Account?>): BroadQuery = apply {
+./core/src/main/java/contacts/core/BroadQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt: * Here is an example query that returns the first 5 [Group]s in the account, skipping the first 2,
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * Limits the group(s) returned by this query to groups belonging to one of the [accounts].
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * A null Account may not be provided here because groups may only exist with an Account.
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * You may also use [where] in conjunction with [GroupsFields.AccountName] and
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * [GroupsFields.AccountType] for a more flexible search.
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    fun accounts(vararg accounts: Account): GroupsQuery
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * See [GroupsQuery.accounts].
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    fun accounts(accounts: Collection<Account>): GroupsQuery
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * See [GroupsQuery.accounts].
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    fun accounts(accounts: Sequence<Account>): GroupsQuery
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * The combined list of [Group]s from the specified Accounts ordered by [orderBy].
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:     * Use [from], to get the list of Groups for a specific Account.
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:         * The list of [Group]s from the specified [account] ordered by [orderBy].
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:        fun from(account: Account): List<Group>
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    // the Account name and type.
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:        // Redact account info.
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    override fun accounts(vararg accounts: Account) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    override fun accounts(accounts: Collection<Account>) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    override fun accounts(accounts: Sequence<Account>): GroupsQuery = apply {
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:        rawContactsWhere = accounts.toGroupsWhere()?.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/groups/GroupsQuery.kt:    override fun from(account: Account): List<Group> = filter { it.account == account }
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * ## Accounts
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * A set of groups exist for each [Account]. When there are no accounts in the system, there are
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * The get accounts permission is required here because this API retrieves all available accounts,
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * - if the account specified is found in the list of accounts returned by the system, the account
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * - if the account specified is not found in the list of accounts returned by the system, then the
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * - if there are no accounts in the system, [commit] does nothing and fails immediately
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * To insert a group with the title "Best Friends" for the given account,
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * val result = groupsInsert.group("Best Friends", account).commit()
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * GroupsInsert.Result result = groupsInsert.groups("Best Friends", account).commit();
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * The new instance is created with the given [title] and [account].
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:    fun group(title: String, account: Account): GroupsInsert
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * This does nothing if there are no available accounts or no groups are in the insert queue or
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * This does nothing if there are no available accounts or no groups are in the insert queue or
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:             * comparison) belonging to the same account to exist. In older versions of Android,
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:             * The Group's Account is not found in the system.
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            INVALID_ACCOUNT,
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:    override fun group(title: String, account: Account): GroupsInsert =
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:        groups(NewGroup(title, account))
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:        val accounts = contactsApi.accounts().query().find()
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            // Fail if there are no accounts. A group requires Accounts in the system to exist!
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            || accounts.isEmpty()
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            // Gather the accounts for groups that will be inserted.
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            val groupsAccounts = groups.map { it.account }
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            // Gather the existing titles per account to prevent duplicates.
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                // Limit the accounts for optimization in case there are a lot of accounts in the system
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                .accounts(groupsAccounts)
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            val existingAccountGroupsTitles = mutableMapOf<Account, MutableSet<String>>()
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                val existingTitles = existingAccountGroupsTitles
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                    .getOrPut(group.account) { mutableSetOf() }
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                    if (accounts.contains(group.account)) { // Group has a valid account.
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                        val existingTitles = existingAccountGroupsTitles
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                            .getOrPut(group.account) { mutableSetOf() }
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                    } else { // Group has an invalid account.
+./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                        failureReasons[group] = FailureReason.INVALID_ACCOUNT
+./core/src/main/java/contacts/core/groups/GroupsDelete.kt: * Raw contacts that are not associated with an account do not have any group memberships. Even
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:             * comparison) belonging to the same account to exist. In older versions of Android,
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            // Gather the accounts for groups that will be updated.
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            val groupsAccounts = groups.mapNotNull { it?.account }
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            // Gather the existing groups per account to prevent duplicate titles.
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                // Limit the accounts for optimization in case there are a lot of accounts in the system
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                .accounts(groupsAccounts)
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            val existingAccountGroups = mutableMapOf<Account, MutableSet<ExistingGroupEntity>>()
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                    val accountGroups = existingAccountGroups
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        .getOrPut(group.account) { mutableSetOf(group) }
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                    val differentGroupWithSameTitle = accountGroups
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        accountGroups.find { it.id == group.id }?.let { groupInMemory ->
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.remove(groupInMemory)
+./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.add(groupInMemory.copy(title = group.title))
+./core/src/main/java/contacts/core/ContactsPermissions.kt:import contacts.core.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
+./core/src/main/java/contacts/core/ContactsPermissions.kt:     * Returns true if [WRITE_PERMISSION] and [GET_ACCOUNTS_PERMISSION] are granted.
+./core/src/main/java/contacts/core/ContactsPermissions.kt:                && applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+./core/src/main/java/contacts/core/Contacts.kt:import contacts.core.accounts.Accounts
+./core/src/main/java/contacts/core/Contacts.kt:import contacts.core.accounts.AccountsPermissions
+./core/src/main/java/contacts/core/Contacts.kt: * [Delete], [AggregationExceptions], [Data], [Groups], [Profile], [Accounts], [BlockedNumbers],
+./core/src/main/java/contacts/core/Contacts.kt: * Use [accountsPermissions] convenience functions to check for required permissions to use the
+./core/src/main/java/contacts/core/Contacts.kt: * [Accounts] API.
+./core/src/main/java/contacts/core/Contacts.kt:     * Returns a new [Accounts] instance for non-profile operations.
+./core/src/main/java/contacts/core/Contacts.kt:    fun accounts(): Accounts
+./core/src/main/java/contacts/core/Contacts.kt:     * Returns a [AccountsPermissions] instance, which provides functions for checking required
+./core/src/main/java/contacts/core/Contacts.kt:     * permissions for Account operations.
+./core/src/main/java/contacts/core/Contacts.kt:    val accountsPermissions: AccountsPermissions
+./core/src/main/java/contacts/core/Contacts.kt:        AccountsPermissions(context.applicationContext),
+./core/src/main/java/contacts/core/Contacts.kt:    override val accountsPermissions: AccountsPermissions,
+./core/src/main/java/contacts/core/Contacts.kt:    override fun accounts() = Accounts(this, false)
+./core/src/main/java/contacts/core/Query.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/Query.kt: * RawContact belonging to the given account. Include only name and email properties of [Contact]s.
+./core/src/main/java/contacts/core/Query.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/Query.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/Query.kt:     * Limits the search to only those RawContacts associated with one of the given accounts.
+./core/src/main/java/contacts/core/Query.kt:     * Contacts returned may still contain RawContacts / data that belongs to other accounts not
+./core/src/main/java/contacts/core/Query.kt:     * specified in [accounts] because Contacts may be made up of more than one RawContact from
+./core/src/main/java/contacts/core/Query.kt:     * different Accounts. This is the same behavior as the native Contacts app.
+./core/src/main/java/contacts/core/Query.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
+./core/src/main/java/contacts/core/Query.kt:     * A null [Account] may be provided here, which results in RawContacts with no associated
+./core/src/main/java/contacts/core/Query.kt:     * Account to be included in the search. RawContacts without an associated account are
+./core/src/main/java/contacts/core/Query.kt:    fun accounts(vararg accounts: Account?): Query
+./core/src/main/java/contacts/core/Query.kt:     * See [Query.accounts]
+./core/src/main/java/contacts/core/Query.kt:    fun accounts(accounts: Collection<Account?>): Query
+./core/src/main/java/contacts/core/Query.kt:     * See [Query.accounts]
+./core/src/main/java/contacts/core/Query.kt:    fun accounts(accounts: Sequence<Account?>): Query
+./core/src/main/java/contacts/core/Query.kt:     * - [contacts.core.entities.RawContact.account]
+./core/src/main/java/contacts/core/Query.kt:     * [contacts.core.entities.RawContact.account].
+./core/src/main/java/contacts/core/Query.kt:        // Redact Account information.
+./core/src/main/java/contacts/core/Query.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/Query.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/Query.kt:    override fun accounts(accounts: Sequence<Account?>): Query = apply {
+./core/src/main/java/contacts/core/Query.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt: * to the given account. Include only the name and email properties of the profile [Contact].
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * accounts. The Contact returned will not contain data that belongs to other accounts not
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * specified in [accounts].
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * A null [Account] may be provided here, which results in RawContacts with no associated
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * Account to be included in the search. RawContacts without an associated account are
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    fun accounts(vararg accounts: Account?): ProfileQuery
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * See [ProfileQuery.accounts]
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    fun accounts(accounts: Collection<Account?>): ProfileQuery
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * See [ProfileQuery.accounts]
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    fun accounts(accounts: Sequence<Account?>): ProfileQuery
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * - [contacts.core.entities.RawContact.account]
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * [contacts.core.entities.RawContact.account].
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:        // Redact Account information.
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    override fun accounts(accounts: Sequence<Account?>): ProfileQuery = apply {
+./core/src/main/java/contacts/core/profile/ProfileQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * allowing multiple raw contacts per account;
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * If [allowMultipleRawContactsPerAccount] is set to true, then inserting a profile RawContact
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * with an Account that already has a profile RawContact is allowed. Otherwise, this will result
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * According to the `ContactsContract.Profile` documentation; "... each account (including data
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * personal profile data from that source." In other words, one account can have one profile
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * Despite the documentation of "one profile RawContact per one Account", the Contacts Provider
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * allows for multiple RawContacts per Account, including multiple local RawContacts (no
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * Account).
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    fun allowMultipleRawContactsPerAccount(
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        allowMultipleRawContactsPerAccount: Boolean
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    private var allowMultipleRawContactsPerAccount: Boolean = false,
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:                allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        allowMultipleRawContactsPerAccount,
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    override fun allowMultipleRawContactsPerAccount(
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        allowMultipleRawContactsPerAccount: Boolean
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        this.allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:            // This ensures that a valid account is used. Otherwise, null is used.
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:            val account = rawContact.account?.nullIfNotInSystem(contactsApi.accounts())
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:                (!allowMultipleRawContactsPerAccount
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:                        && contentResolver.profileRawContactExistFor(account))
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:private fun ContentResolver.profileRawContactExistFor(account: Account?): Boolean = query(
+./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    (RawContactsFields.Deleted notEqualTo true) and account.toRawContactsWhere()
+./core/src/main/java/contacts/core/Fields.kt:    val AccountName = RawContactsField(RawContacts.ACCOUNT_NAME)
+./core/src/main/java/contacts/core/Fields.kt:    val AccountType = RawContactsField(RawContacts.ACCOUNT_TYPE)
+./core/src/main/java/contacts/core/Fields.kt:            Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
+./core/src/main/java/contacts/core/Fields.kt:    val AccountName = GroupsField(Groups.ACCOUNT_NAME)
+./core/src/main/java/contacts/core/Fields.kt:    val AccountType = GroupsField(Groups.ACCOUNT_TYPE)
+./core/src/main/java/contacts/core/Fields.kt:        setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType, Deleted)
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:package contacts.core.accounts
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:import android.accounts.AccountManager
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:import contacts.core.entities.cursor.account
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * Retrieves [Account]s from the [AccountManager].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * Here is an example of how to get all accounts with type "com.google" that is associated with
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * val accounts = accountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * List<Account> accounts = accountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * If [withTypes] and [associatedWith] are not used, then all accounts in the system are returned.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * Assuming that there are not that many Accounts per user / device (can you think of someone that
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * has over 100 different Accounts that they are logged in to?). This assumption means that the
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * query function of Accounts need not be as extensive (or at all) as other Queries. Where, orderBy,
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:interface AccountsQuery : CrudApi {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Limits the search to Accounts that have one of the given [accountTypes].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * If this is not specified or none is provided (empty list), then Accounts with any type are
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    fun withTypes(vararg accountTypes: String): AccountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * See [AccountsQuery.withTypes].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    fun withTypes(accountTypes: Collection<String>): AccountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * See [AccountsQuery.withTypes].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    fun withTypes(accountTypes: Sequence<String>): AccountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Limits the search to Accounts that are associated with one of the given [rawContacts]s.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * If this is not specified or none is provided (empty list), then Accounts associated with any
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Account info for RawContacts provided here can be retrieved via [Result.accountFor].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    fun associatedWith(vararg rawContacts: ExistingRawContactEntity): AccountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * See [AccountsQuery.associatedWith].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    fun associatedWith(rawContacts: Collection<ExistingRawContactEntity>): AccountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * See [AccountsQuery.associatedWith].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>): AccountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Returns a list of [Accounts]s matching the preceding query options.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Returns a list of [Accounts]s matching the preceding query options.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Cancellation is supported while the accounts list is being built. To cancel at any time, the
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun redactedCopy(): AccountsQuery
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * A list of [Account]s.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:     * Use [accountFor] to retrieve the Account for the specified RawContact.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    interface Result : List<Account>, CrudApi.Result {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:         * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:         * null even if the [rawContact] actually has an account in the database.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:         * specified in [associatedWith] does not have an Account with a type specified in
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:         * [withTypes], then this will return null even if the [rawContact] actually has an account
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        fun accountFor(rawContact: ExistingRawContactEntity): Account?
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:         * See [Result.accountFor]
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        fun accountFor(rawContactId: Long): Account?
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:internal fun AccountsQuery(contacts: Contacts, isProfile: Boolean): AccountsQuery =
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    AccountsQueryImpl(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        AccountManager.get(contacts.applicationContext),
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:private class AccountsQueryImpl(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    private val accountManager: AccountManager,
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    private val accountTypes: MutableSet<String> = mutableSetOf(),
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:) : AccountsQuery {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            AccountsQuery {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                accountType: $accountTypes
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                hasPermission: ${accountsPermissions.canQueryAccounts()}
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun redactedCopy(): AccountsQuery = AccountsQueryImpl(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        contactsApi, accountManager, isProfile,
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        accountTypes = accountTypes.redactStrings().toMutableSet(),
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun withTypes(vararg accountTypes: String) = withTypes(accountTypes.asSequence())
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun withTypes(accountTypes: Collection<String>) = withTypes(accountTypes.asSequence())
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun withTypes(accountTypes: Sequence<String>): AccountsQuery = apply {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        this.accountTypes.addAll(accountTypes.redactStringsOrThis(isRedacted))
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>): AccountsQuery =
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun find(): AccountsQuery.Result = find { false }
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun find(cancel: () -> Boolean): AccountsQuery.Result {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        // We start off with the full set of accounts in the system (which is typically not
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        var accounts: Set<Account> = accountManager.accounts.toSet()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            || !accountsPermissions.canQueryAccounts()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            // No accounts in the system. No point in processing the rest of the query.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            || accounts.isEmpty()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            AccountsQueryResult(accounts, emptyMap())
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            var rawContactIdsAccountsMap = emptyMap<Long, Account>()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            if (!cancel() && accountTypes.isNotEmpty()) {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                // Reduce the accounts to only those that have the given types.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                accounts = accounts.filter {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                    accountTypes.contains(it.type)
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            if (!cancel() && rawContactIds.isNotEmpty() && accounts.isNotEmpty()) {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                // Reduce the accounts to only those that are associated with one of the
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                rawContactIdsAccountsMap = contentResolver.accountsForRawContactsWithIdsInAccounts(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                    rawContactIds, accounts, cancel
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                accounts = rawContactIdsAccountsMap.values.toSet()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                accounts = emptySet()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                rawContactIdsAccountsMap = emptyMap()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            AccountsQueryResult(accounts, rawContactIdsAccountsMap)
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * Returns a map of RawContact IDs to the corresponding Account for all RawContacts with IDs in
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * [rawContactIds] that belong to one of the Accounts in [accounts].
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * If the [accounts] is empty, it will be ignored. Otherwise, the query will only return RawContacts
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * that are associated with one of the given accounts.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:private fun ContentResolver.accountsForRawContactsWithIdsInAccounts(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    accounts: Set<Account>,
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:): Map<Long, Account> = query(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    Include(RawContactsFields.Id, RawContactsFields.AccountName, RawContactsFields.AccountType),
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    // Note that if accounts is empty, then accounts.toRawContactsWhere() will return null.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    (RawContactsFields.Id `in` rawContactIds) and accounts.toRawContactsWhere()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    val rawContactIdsAccountsMap = mutableMapOf<Long, Account>()
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        // Reuse references to the given set of accounts to reduce memory consumption by avoiding
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        // creating duplicate Accounts.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        val account = accounts.find { account ->
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            account.name == rawContactsCursor.accountName &&
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                    account.type == rawContactsCursor.accountType
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        if (account != null) {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            rawContactIdsAccountsMap[rawContactsCursor.rawContactId] = account
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    rawContactIdsAccountsMap
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt: * Returns the Account, based on the values in the RawContacts table, for the RawContact with the
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Account? = query(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    it.getNextOrNull { it.rawContactsCursor().account() }
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:private class AccountsQueryResult private constructor(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    accounts: Set<Account>,
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    private val rawContactIdsAccountsMap: Map<Long, Account>,
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:) : ArrayList<Account>(accounts), AccountsQuery.Result {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        accounts: Set<Account>,
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        rawContactIdAccountMap: Map<Long, Account>
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    ) : this(accounts, rawContactIdAccountMap, false)
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    // Note that it should be okay to print all of the Accounts as there shouldn't be much.
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:            AccountsQuery.Result {
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                Number of accounts found: $size
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                Accounts: ${joinToString()}
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:                rawContactIdsAccountsMap: $rawContactIdsAccountsMap
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun redactedCopy(): AccountsQuery.Result = AccountsQueryResult(
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        rawContactIdsAccountsMap.mapValues { it.value.redactedCopy() },
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun accountFor(rawContact: ExistingRawContactEntity): Account? =
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:        accountFor(rawContact.id)
+./core/src/main/java/contacts/core/accounts/AccountsQuery.kt:    override fun accountFor(rawContactId: Long): Account? = rawContactIdsAccountsMap[rawContactId]
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:package contacts.core.accounts
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * Associates **local** RawContacts (those that are not associated with an Account) to an
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * Account to enable syncing....
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * Here is an example that associate/add the given localRawContacts to the given account.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * val result = accountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: *      .addToAccount(account)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * AccountsLocalRawContactsUpdate.Result result = accountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: *      .addToAccount(account)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:interface AccountsLocalRawContactsUpdate : CrudApi {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * The [Account] that will be associated with the existing local RawContacts specified in
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * A valid account that is in the system is required. Otherwise, the update will fail.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    fun addToAccount(account: Account): AccountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * The existing local RawContacts that will be associated with the [Account] specified in
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * [addToAccount].
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * If a RawContact is already associated with an Account, this will NOT attempt to change the
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * Account and the operation will fail.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * A group membership to the default group of the given account will be created automatically
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    ): AccountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * See [AccountsLocalRawContactsUpdate.localRawContacts].
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    ): AccountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * See [AccountsLocalRawContactsUpdate.localRawContacts].
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    ): AccountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * Associates all existing local RawContacts specified in [localRawContacts] to the Account
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * specified in [addToAccount].
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * A valid account that is in the system is required. Otherwise, the update will fail.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * If a RawContact is already associated with an Account, this will NOT attempt to change the
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * Account and the operation will fail.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * A group membership to the default group of the given account will be created automatically
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * Associates all existing local RawContacts specified in [localRawContacts] to the Account
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * specified in [addToAccount].
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * A valid account that is in the system is required. Otherwise, the update will fail.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * If a RawContact is already associated with an Account, this will NOT attempt to change the
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * Account and the operation will fail.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * A group membership to the default group of the given account will be created automatically
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun redactedCopy(): AccountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:         * True if the RawContacts have been successfully associated to the given Account.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:         * True if the [rawContact] has been successfully associated with the Account.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:             * The Account is either not specified or is not in the system.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            INVALID_ACCOUNT,
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:             * The RawContact is already associated with an Account. It is not a local RawContact.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:internal fun AccountsLocalRawContactsUpdate(contacts: Contacts, isProfile: Boolean):
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        AccountsLocalRawContactsUpdate = AccountsLocalRawContactsUpdateImpl(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:private class AccountsLocalRawContactsUpdateImpl(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    private var account: Account? = null,
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:) : AccountsLocalRawContactsUpdate {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsRawContactsAssociationsUpdate {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:                account: $account
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:                hasPermission: ${accountsPermissions.canUpdateLocalRawContactsAccount()}
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun redactedCopy(): AccountsLocalRawContactsUpdate =
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        AccountsLocalRawContactsUpdateImpl(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            // Redact account info
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            account?.redactedCopy(),
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun addToAccount(account: Account): AccountsLocalRawContactsUpdate = apply {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        this.account = account.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    ): AccountsLocalRawContactsUpdate = apply {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun commit(cancel: () -> Boolean): AccountsLocalRawContactsUpdate.Result {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        val account = account
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            || !accountsPermissions.canUpdateLocalRawContactsAccount()
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsRawContactsAssociationsUpdateResultFailed(FailureReason.UNKNOWN)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        } else if (account?.isInSystem(contactsApi.accounts()) != true) {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            // Either account was not specified (null) or it is not in system.
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsRawContactsAssociationsUpdateResultFailed(FailureReason.INVALID_ACCOUNT)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:                } else if (contentResolver.rawContactHasAccount(rawContactId)) {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:                } else if (!contentResolver.setRawContactAccount(account, rawContactId)) {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsRawContactsAssociationsUpdateResult(failureReasons)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * RawContact with the given [rawContactId] with values from the given [account]. These two
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt: * Note that local RawContacts may have a group membership to an Account that it is not associated
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:private fun ContentResolver.setRawContactAccount(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    account: Account, rawContactId: Long
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            .withValue(RawContactsFields.AccountName, account.name)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            .withValue(RawContactsFields.AccountType, account.type)
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:private fun ContentResolver.rawContactHasAccount(rawContactId: Long): Boolean = query(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:                AccountName.isNotNullOrEmpty() and
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:                AccountType.isNotNullOrEmpty()
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:private class AccountsRawContactsAssociationsUpdateResult private constructor(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:) : AccountsLocalRawContactsUpdate.Result {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsLocalRawContactsUpdate.Result {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun redactedCopy(): AccountsLocalRawContactsUpdate.Result =
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        AccountsRawContactsAssociationsUpdateResult(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:private class AccountsRawContactsAssociationsUpdateResultFailed private constructor(
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:) : AccountsLocalRawContactsUpdate.Result {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsLocalRawContactsUpdate.Result {
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun redactedCopy(): AccountsLocalRawContactsUpdate.Result =
+./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        AccountsRawContactsAssociationsUpdateResultFailed(
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:package contacts.core.accounts
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:import contacts.core.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt: * Provides functions for checking account permissions.
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:interface AccountsPermissions {
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:     * Returns true if [GET_ACCOUNTS_PERMISSION] and [READ_PERMISSION] are granted.
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    fun canQueryAccounts(): Boolean
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:     * Returns true if [GET_ACCOUNTS_PERMISSION] and [WRITE_PERMISSION] are granted.
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    fun canUpdateLocalRawContactsAccount(): Boolean
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        const val GET_ACCOUNTS_PERMISSION: String = Manifest.permission.GET_ACCOUNTS
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:internal fun AccountsPermissions(context: Context): AccountsPermissions =
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    AccountsPermissionsImpl(context.applicationContext)
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:private class AccountsPermissionsImpl(private val applicationContext: Context) :
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    AccountsPermissions {
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    override fun canQueryAccounts(): Boolean =
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    override fun canUpdateLocalRawContactsAccount(): Boolean =
+./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+./core/src/main/java/contacts/core/accounts/Accounts.kt:package contacts.core.accounts
+./core/src/main/java/contacts/core/accounts/Accounts.kt: * Provides new [AccountsQuery] and [AccountsLocalRawContactsUpdate] for Profile OR non-Profile
+./core/src/main/java/contacts/core/accounts/Accounts.kt: * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.READ_CONTACTS" to the
+./core/src/main/java/contacts/core/accounts/Accounts.kt: * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.WRITE_CONTACTS" to the
+./core/src/main/java/contacts/core/accounts/Accounts.kt: *   AndroidManifest in order to use [updateLocalRawContactsAccount].
+./core/src/main/java/contacts/core/accounts/Accounts.kt:interface Accounts {
+./core/src/main/java/contacts/core/accounts/Accounts.kt:     * Returns a new [AccountsQuery] instance for Profile OR non-Profile (depending on instance)
+./core/src/main/java/contacts/core/accounts/Accounts.kt:    fun query(): AccountsQuery
+./core/src/main/java/contacts/core/accounts/Accounts.kt:     * Returns a new [AccountsLocalRawContactsUpdate] instance Profile OR non-Profile
+./core/src/main/java/contacts/core/accounts/Accounts.kt:    fun updateLocalRawContactsAccount(): AccountsLocalRawContactsUpdate
+./core/src/main/java/contacts/core/accounts/Accounts.kt:     * Returns a new [Accounts] instance for Profile operations.
+./core/src/main/java/contacts/core/accounts/Accounts.kt:    fun profile(): Accounts
+./core/src/main/java/contacts/core/accounts/Accounts.kt: * Creates a new [Accounts] instance for Profile or non-Profile operations.
+./core/src/main/java/contacts/core/accounts/Accounts.kt:internal fun Accounts(contacts: Contacts, isProfile: Boolean): Accounts = AccountsImpl(
+./core/src/main/java/contacts/core/accounts/Accounts.kt:private class AccountsImpl(
+./core/src/main/java/contacts/core/accounts/Accounts.kt:) : Accounts {
+./core/src/main/java/contacts/core/accounts/Accounts.kt:    override fun query() = AccountsQuery(contactsApi, isProfile)
+./core/src/main/java/contacts/core/accounts/Accounts.kt:    override fun updateLocalRawContactsAccount() =
+./core/src/main/java/contacts/core/accounts/Accounts.kt:        AccountsLocalRawContactsUpdate(contactsApi, isProfile)
+./core/src/main/java/contacts/core/accounts/Accounts.kt:    override fun profile(): Accounts = AccountsImpl(contactsApi, true)
+./core/src/main/java/contacts/core/Update.kt:import contacts.core.accounts.accountForRawContactWithId
+./core/src/main/java/contacts/core/Update.kt:    val account = contentResolver.accountForRawContactWithId(rawContact.id)
+./core/src/main/java/contacts/core/Update.kt:    val hasAccount = account != null
+./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
+./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
+./core/src/main/java/contacts/core/Update.kt:        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
+./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
+./core/src/main/java/contacts/core/data/DataQuery.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/data/DataQuery.kt: * [Address.postcode] in ascending order. Only addresses in the given account are included. Only the
+./core/src/main/java/contacts/core/data/DataQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/data/DataQuery.kt: *      .accounts(account)
+./core/src/main/java/contacts/core/data/DataQuery.kt:     * Limits this query to only search for data associated with one of the given [accounts].
+./core/src/main/java/contacts/core/data/DataQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
+./core/src/main/java/contacts/core/data/DataQuery.kt:     * all data from all accounts are searched.
+./core/src/main/java/contacts/core/data/DataQuery.kt:     * A null [Account] may be provided here, which results in data belonging to RawContacts with no
+./core/src/main/java/contacts/core/data/DataQuery.kt:     * associated Account to be included in the search. RawContacts without an associated account
+./core/src/main/java/contacts/core/data/DataQuery.kt:    fun accounts(vararg accounts: Account?): DataQuery<F, S, E>
+./core/src/main/java/contacts/core/data/DataQuery.kt:     * See [DataQuery.accounts]
+./core/src/main/java/contacts/core/data/DataQuery.kt:    fun accounts(accounts: Collection<Account?>): DataQuery<F, S, E>
+./core/src/main/java/contacts/core/data/DataQuery.kt:     * See [DataQuery.accounts]
+./core/src/main/java/contacts/core/data/DataQuery.kt:    fun accounts(accounts: Sequence<Account?>): DataQuery<F, S, E>
+./core/src/main/java/contacts/core/data/DataQuery.kt:        // Redact account info.
+./core/src/main/java/contacts/core/data/DataQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/data/DataQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
+./core/src/main/java/contacts/core/data/DataQuery.kt:    override fun accounts(accounts: Sequence<Account?>): DataQuery<F, S, E> = apply {
+./core/src/main/java/contacts/core/data/DataQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:    fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(contentUri)
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * Passing in null account name and type is valid. It is the same behavior as the native
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * Android Contacts app when creating contacts when there are no available accounts. When an
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * account becomes available (or is already available), Android will automatically update
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * the RawContact name and type to an existing Account.
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:        .withValue(RawContactsFields.AccountName, rawContactAccount?.name)
+./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:        .withValue(RawContactsFields.AccountType, rawContactAccount?.type)
+./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountName, group.account.name)
+./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountType, group.account.type)
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import contacts.core.accounts.accountForRawContactWithId
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:     * Inserts all of the [groupMemberships] that belong to the given [account].
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        account: Account
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        val accountGroups = groups.query().accounts(account).find()
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // to the same account.
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:     * [GroupMembershipEntity]s that do not belong to the Account associated with the [rawContactId]
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // Groups must always be associated with an account. No account, no group operation.
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        val account = context.contentResolver
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .accountForRawContactWithId(rawContactId) ?: return emptyList()
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        val accountGroups = groups.query().accounts(account).find()
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            // account. Just in case though...
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // to the same account.
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
+./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:                groupId != null && !accountGroups.getValue(groupId).isDefaultGroup
+./core/src/main/java/contacts/core/entities/Group.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/entities/Group.kt:     * - The Contacts system group is the default group in which all raw contacts of an account
+./core/src/main/java/contacts/core/entities/Group.kt:     * The Account that this group is associated with.
+./core/src/main/java/contacts/core/entities/Group.kt:     * This must be a valid Account.
+./core/src/main/java/contacts/core/entities/Group.kt:     * When there are no available accounts, no group may exist. The native Contacts app does not
+./core/src/main/java/contacts/core/entities/Group.kt:     * accounts present.
+./core/src/main/java/contacts/core/entities/Group.kt:    val account: Account
+./core/src/main/java/contacts/core/entities/Group.kt:     * The default group of an Account is a system group that has [autoAdd] set to true.
+./core/src/main/java/contacts/core/entities/Group.kt:     * Account belong to the Account's default group.
+./core/src/main/java/contacts/core/entities/Group.kt:     * Usually, an Account only has one group that have [favorites] set to true and that is
+./core/src/main/java/contacts/core/entities/Group.kt:    override val account: Account,
+./core/src/main/java/contacts/core/entities/Group.kt:        MutableGroup(id, systemId, title, readOnly, favorites, autoAdd, account, isRedacted)
+./core/src/main/java/contacts/core/entities/Group.kt:        account = account.redactedCopy()
+./core/src/main/java/contacts/core/entities/Group.kt:    override val account: Account,
+./core/src/main/java/contacts/core/entities/Group.kt:        account = account.redactedCopy()
+./core/src/main/java/contacts/core/entities/Group.kt:    override var account: Account,
+./core/src/main/java/contacts/core/entities/Group.kt:        account = account.redactedCopy()
+./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:    val account: Account
+./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            // There should never be null account name or type...
+./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            val accountName = getNonNullString(GroupsFields.AccountName, "null")
+./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            val accountType = getNonNullString(GroupsFields.AccountType, "null")
+./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            return Account(accountName, accountType)
+./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val accountName: String? by string(RawContactsFields.AccountName)
+./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val accountType: String? by string(RawContactsFields.AccountType)
+./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:internal fun RawContactsCursor.account(): Account? {
+./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val name = accountName
+./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    val type = accountType
+./core/src/main/java/contacts/core/entities/cursor/RawContactsCursor.kt:    return if (name != null && type != null) Account(name, type) else null
+./core/src/main/java/contacts/core/entities/Data.kt: * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
+./core/src/main/java/contacts/core/entities/Data.kt: * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
+./core/src/main/java/contacts/core/entities/Data.kt: * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
+./core/src/main/java/contacts/core/entities/Contact.kt: * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
+./core/src/main/java/contacts/core/entities/Contact.kt: * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
+./core/src/main/java/contacts/core/entities/Contact.kt: * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
+./core/src/main/java/contacts/core/entities/Contact.kt:     * associated with an Account and are synced). The lookup key points to a person entity rather
+./core/src/main/java/contacts/core/entities/mapper/GroupMapper.kt:            account = groupsCursor.account,
+./core/src/main/java/contacts/core/entities/mapper/TempRawContactMapper.kt:import contacts.core.entities.cursor.account
+./core/src/main/java/contacts/core/entities/mapper/TempRawContactMapper.kt:            account = rawContactsCursor.account(),
+./core/src/main/java/contacts/core/entities/RawContact.kt:import android.accounts.Account
+./core/src/main/java/contacts/core/entities/RawContact.kt: * and an [android.accounts.Account]. Each RawContact is associated with several pieces of Data such
+./core/src/main/java/contacts/core/entities/RawContact.kt: * The Contacts Provider may combine RawContacts from several different Accounts. The same effect
+./core/src/main/java/contacts/core/entities/RawContact.kt: * It is possible for a RawContact to not be associated with an Account. Such RawContacts are local
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * If this raw contact is not associated with an Account, then this will be ignored during
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * If this raw contact is not associated with an Account, then this will be ignored during
+./core/src/main/java/contacts/core/entities/RawContact.kt:            // Data table; displayNamePrimary, displayNameAlt, account, options
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * The RawContact's associated [Account]. RawContacts that are not associated with an Account
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * Both the Account name and type must not be null. If anyone of those are null, then this will
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * If an account is not provided, or null is provided, or if an incorrect account is provided,
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * the raw contacts inserted will not be associated with an account. RawContacts inserted
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * without an associated account are considered local or device-only contacts, which are not
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * When an Account is added, from a state where no accounts have yet been added to the system,
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * the Contacts Provider automatically sets all of the null `accountName` and `accountType` in
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * the RawContacts table to that Account's name and type.
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * RawContacts inserted without an associated account will automatically get assigned to an
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * account if there are any available. This may take a few seconds, whenever the Contacts
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * The Contacts Provider no longer associates local contacts to an account when an account is or
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * **Account removal**
+./core/src/main/java/contacts/core/entities/RawContact.kt:     * Removing the Account will delete all of the associated rows in the RawContact and Data tables.
+./core/src/main/java/contacts/core/entities/RawContact.kt:    val account: Account?
+./core/src/main/java/contacts/core/entities/RawContact.kt:    override val account: Account?,
+./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account,
+./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
+./core/src/main/java/contacts/core/entities/RawContact.kt:    override val account: Account?,
+./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
+./core/src/main/java/contacts/core/entities/RawContact.kt:    override var account: Account? = null,
+./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
+./core/src/main/java/contacts/core/entities/RawContact.kt:    override var account: Account?,
+./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account,
+./core/src/main/java/contacts/core/entities/RawContact.kt:        account = account?.redactedCopy(),
+./core/src/main/java/contacts/core/entities/GroupMembership.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
+./core/src/main/java/contacts/core/entities/GroupMembership.kt: * the [contacts.core.groups.GroupsQuery] with the same account as the RawContact and convert the
+./core/src/main/java/contacts/core/entities/GroupMembership.kt:     * the same account as the contact.
+./core/src/main/java/contacts/core/entities/Options.kt:     * Raw contacts that are not associated with an account may not have any group memberships. Even
+./core/src/main/java/contacts/core/entities/Event.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
+./core/src/main/java/contacts/core/entities/Relation.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
+./test/src/main/java/contacts/test/TestQuery.kt:import android.accounts.Account
+./test/src/main/java/contacts/test/TestQuery.kt:    override fun accounts(vararg accounts: Account?): TestQuery = accounts(accounts.asSequence())
+./test/src/main/java/contacts/test/TestQuery.kt:    override fun accounts(accounts: Collection<Account?>): TestQuery =
+./test/src/main/java/contacts/test/TestQuery.kt:        accounts(accounts.asSequence())
+./test/src/main/java/contacts/test/TestQuery.kt:    override fun accounts(accounts: Sequence<Account?>): TestQuery = apply {
+./test/src/main/java/contacts/test/TestQuery.kt:        query.accounts(accounts)
+./test/src/main/java/contacts/test/TestContacts.kt:import contacts.core.accounts.Accounts
+./test/src/main/java/contacts/test/TestContacts.kt:    override fun accounts(): Accounts {
+./test/src/main/java/contacts/test/TestContacts.kt:    override val accountsPermissions = contactsApi.accountsPermissions
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:package contacts.async.accounts
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:import contacts.core.accounts.AccountsQuery
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt: * See [AccountsQuery.find].
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:suspend fun AccountsQuery.findWithContext(
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:): AccountsQuery.Result = withContext(context) { find { !isActive } }
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt: * See [AccountsQuery.find].
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:fun AccountsQuery.findAsync(
+./async/src/main/java/contacts/async/accounts/AccountsQueryAsync.kt:): Deferred<AccountsQuery.Result> = CoroutineScope(context).async { find { !isActive } }
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:package contacts.async.accounts
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt: * See [AccountsLocalRawContactsUpdate.commit].
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:suspend fun AccountsLocalRawContactsUpdate.commitWithContext(
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:): AccountsLocalRawContactsUpdate.Result = withContext(context) { commit { !isActive } }
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt: * See [AccountsLocalRawContactsUpdate.commit].
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:fun AccountsLocalRawContactsUpdate.commitAsync(
+./async/src/main/java/contacts/async/accounts/AccountsLocalRawContactsUpdateAsync.kt:): Deferred<AccountsLocalRawContactsUpdate.Result> = CoroutineScope(context).async {
+./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt:import contacts.permissions.accounts.requestGetAccountsPermission
+./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
+./permissions/src/main/java/contacts/permissions/ContactsPermissionsRequest.kt:        requestGetAccountsPermission()
+./permissions/src/main/java/contacts/permissions/groups/GroupsPermissionsRequest.kt:import contacts.permissions.accounts.requestGetAccountsPermission
+./permissions/src/main/java/contacts/permissions/groups/GroupsPermissionsRequest.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
+./permissions/src/main/java/contacts/permissions/groups/GroupsPermissionsRequest.kt:        requestGetAccountsPermission()
+./permissions/src/main/java/contacts/permissions/profile/ProfilePermissionsRequest.kt:import contacts.permissions.accounts.requestGetAccountsPermission
+./permissions/src/main/java/contacts/permissions/profile/ProfilePermissionsRequest.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are not yet granted,
+./permissions/src/main/java/contacts/permissions/profile/ProfilePermissionsRequest.kt:        requestGetAccountsPermission()
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:package contacts.permissions.accounts
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.Accounts
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.AccountsPermissions
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:import contacts.core.accounts.AccountsQuery
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.READ_PERMISSION] are
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * new [AccountsQuery] instance.
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun Accounts.queryWithPermission(): AccountsQuery {
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    if (!contactsApi.accountsPermissions.canQueryAccounts()) {
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        requestQueryAccountsPermission()
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] are
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * new [AccountsLocalRawContactsUpdate] instance.
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * [AccountsLocalRawContactsUpdate] instance.
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun Accounts.updateLocalRawContactsAccountWithPermission():
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        AccountsLocalRawContactsUpdate {
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    if (!contactsApi.accountsPermissions.canUpdateLocalRawContactsAccount()) {
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        requestUpdateLocalRawContactsAccountPermission()
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    return updateLocalRawContactsAccount()
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun requestQueryAccountsPermission(): Boolean =
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    requestGetAccountsPermission() && requestReadPermission()
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun requestUpdateLocalRawContactsAccountPermission(): Boolean =
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:    requestGetAccountsPermission() && requestWritePermission()
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt: * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION]. The current coroutine is suspended
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:suspend fun requestGetAccountsPermission(): Boolean =
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        AccountsPermissions.GET_ACCOUNTS_PERMISSION,
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        R.string.contacts_accounts_request_permission_title,
+./permissions/src/main/java/contacts/permissions/accounts/AccountsPermissionsRequest.kt:        R.string.contacts_accounts_request_permission_description
+./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:    var defaultAccountForNewContacts: Account?
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:            val accountName = sharedPrefs.getString(ACCOUNT_NAME, null)
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:            val accountType = sharedPrefs.getString(ACCOUNT_TYPE, null)
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:            return if (accountName != null && accountType != null) {
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:                Account(accountName, accountType)
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:                .putString(ACCOUNT_NAME, value?.name)
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:                .putString(ACCOUNT_TYPE, value?.type)
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:private const val ACCOUNT_NAME = "ACCOUNT_NAME"
+./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:private const val ACCOUNT_TYPE = "ACCOUNT_TYPE"
+./sample/src/main/java/contacts/sample/ImportSimContactsActivity.kt:                        it.account = preferences.defaultAccountForNewContacts
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:        findViewById<View>(R.id.accounts).setOnClickListener { showAccounts() }
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:        findViewById<View>(R.id.default_account).setOnClickListener { chooseDefaultAccount() }
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:            preferences.defaultAccountForNewContacts = it.firstOrNull()
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:    private fun showAccounts() {
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:    private fun chooseDefaultAccount() {
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:        AccountsActivity.selectAccounts(
+./sample/src/main/java/contacts/sample/SettingsActivity.kt:            arrayListOf(preferences.defaultAccountForNewContacts)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:import contacts.async.accounts.findWithContext
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:import contacts.permissions.accounts.queryWithPermission
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:import contacts.sample.AccountsActivity.Companion.CHOICE_MODE
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:import contacts.sample.AccountsActivity.Companion.REQUEST_SELECT_ACCOUNTS
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:import contacts.sample.AccountsActivity.Companion.REQUEST_SELECT_GROUPS
+./sample/src/main/java/contacts/sample/AccountsActivity.kt: * Shows the list of all available accounts.
+./sample/src/main/java/contacts/sample/AccountsActivity.kt: * If [REQUEST_SELECT_ACCOUNTS], allows the user to select one or more accounts depending on the
+./sample/src/main/java/contacts/sample/AccountsActivity.kt: * [CHOICE_MODE]. The selected account(s) will be included in the result of this activity.
+./sample/src/main/java/contacts/sample/AccountsActivity.kt: * If [REQUEST_SELECT_GROUPS], allows the user to select groups from each account. The selected
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:class AccountsActivity : BaseActivity() {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    // The ArrayAdapter does not allow for null objects. E.G. Adding a null Account crashes the app.
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    // Therefore, we maintain the List<Account?> separately so that we can retrieve the selected
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    // Accounts via the checked item position. The null Account is the "Local Account".
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private lateinit var accountsAdapter: ArrayAdapter<String>
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private val selectableAccounts = mutableListOf<Account?>()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private val selectedAccounts: List<Account?>
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        get() = accountsListView
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            ?.map { selectableAccounts[it] }
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private val selectedAccountGroups: MutableMap<Account?, List<Group>> = mutableMapOf()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private lateinit var accountsListView: ListView
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        setContentView(R.layout.activity_accounts)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        setupAccountsListView()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            addLocalAccount()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            addAllAccounts()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            initSelectedAccountGroups()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            checkSelectedAccounts()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        ) { account, selectedGroups ->
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            selectedAccountGroups[account] = selectedGroups
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            putParcelableArrayListExtra(SELECTED_ACCOUNTS, ArrayList(selectedAccounts))
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                selectedAccountGroups.flatMap { it.value }
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private fun setupAccountsListView() {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        accountsListView = findViewById(R.id.accountsListView)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        accountsAdapter = ArrayAdapter(
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        accountsListView.adapter = accountsAdapter
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        accountsListView.choiceMode = intent.choiceMode()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            accountsListView.onItemClickListener = OnAccountClickListener()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private fun addLocalAccount() {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        selectableAccounts.add(null)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        accountsAdapter.add("Local Account")
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private suspend fun addAllAccounts() {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        val allAccounts = contacts.accounts().queryWithPermission().findWithContext()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        selectableAccounts.addAll(allAccounts)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        accountsAdapter.addAll(allAccounts.map { account ->
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                |${account.name}
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                |${account.type}
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private fun initSelectedAccountGroups() {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        for (account in selectableAccounts) {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            selectedAccountGroups[account] =
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                intent.selectedGroups().filter { it.account == account }
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private fun checkSelectedAccounts() {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        for (account in intent.selectedAccounts()) {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            val itemPosition = selectableAccounts.indexOf(account)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                // The ListView, ArrayAdapter, and selectableAccounts all have the same list of
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                // accounts in the same indices.
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                accountsListView.setItemChecked(itemPosition, true)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:    private inner class OnAccountClickListener : AdapterView.OnItemClickListener {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            val account = selectableAccounts[position]
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            val selectedGroupIds = selectedAccountGroups[account]?.map { it.id } ?: emptyList()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                this@AccountsActivity, true, account, selectedGroupIds
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        // region SELECT ACCOUNTS
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        fun selectAccounts(
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            activity: Activity, multipleChoice: Boolean, selectedAccounts: ArrayList<Account?>
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            val intent = Intent(activity, AccountsActivity::class.java).apply {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:                putParcelableArrayListExtra(SELECTED_ACCOUNTS, selectedAccounts)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            activity.startActivityForResult(intent, REQUEST_SELECT_ACCOUNTS)
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        fun onSelectAccountsResult(
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            processSelectedAccounts: (selectedAccounts: List<Account?>) -> Unit
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            if (requestCode != REQUEST_SELECT_ACCOUNTS || resultCode != RESULT_OK || data == null) {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            processSelectedAccounts(data.selectedAccounts())
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            val intent = Intent(activity, AccountsActivity::class.java).apply {
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        private fun Intent.selectedAccounts(): List<Account?> =
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:            getParcelableArrayListExtra(SELECTED_ACCOUNTS) ?: emptyList()
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        private const val REQUEST_SELECT_ACCOUNTS = 101
+./sample/src/main/java/contacts/sample/AccountsActivity.kt:        private const val SELECTED_ACCOUNTS = "selectedAccounts"
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/ContactsActivity.kt: * - Accounts: Opens an activity to select which accounts to include in the search.
+./sample/src/main/java/contacts/sample/ContactsActivity.kt: * - Groups: Opens an activity to select which groups of selected accounts to include in the search.
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:    private var selectedAccounts = emptyList<Account?>()
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:            R.id.accounts -> {
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:                AccountsActivity.selectAccounts(this, true, ArrayList(selectedAccounts))
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:                AccountsActivity.selectGroups(this, ArrayList(selectedGroups))
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) { selectedAccounts ->
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:            this.selectedAccounts = selectedAccounts
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:        AccountsActivity.onSelectGroupsResult(requestCode, resultCode, data) { selectedGroups ->
+./sample/src/main/java/contacts/sample/ContactsActivity.kt:                .accounts(selectedAccounts)
+./sample/src/main/java/contacts/sample/view/ContactView.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/view/ContactView.kt:     * [contacts] API to perform operations on it. The [defaultAccount] is used as the account if
+./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
+./sample/src/main/java/contacts/sample/view/ContactView.kt:        setRawContactsView(contacts, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
+./sample/src/main/java/contacts/sample/view/ContactView.kt:     * Removes any loaded contact and loads an empty new (raw) contact. The [defaultAccount] is
+./sample/src/main/java/contacts/sample/view/ContactView.kt:     * used as the initially selected account.
+./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
+./sample/src/main/java/contacts/sample/view/ContactView.kt:        setContact(contacts, null, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
+./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
+./sample/src/main/java/contacts/sample/view/ContactView.kt:                    defaultAccount,
+./sample/src/main/java/contacts/sample/view/ContactView.kt:                defaultAccount,
+./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
+./sample/src/main/java/contacts/sample/view/ContactView.kt:            defaultAccount,
+./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:    private var account: Account? = null
+./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:     * to belong to the given [account], and uses the given [contacts] API to perform operations on
+./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:        account: Account?,
+./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:        this.account = account
+./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:                    account,
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:     * The [defaultAccount] is used if the [rawContact] is a [NewRawContact] that is not yet
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:     * associated with an account.
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        defaultAccount: Account?,
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        setRawContactView(contacts, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:    private val accountView: AccountView
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:    private val accountRequiredViews: Set<View>
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountView = findViewById(R.id.account)
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountRequiredViews = setOf(
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountView.onActivityResult(requestCode, resultCode, data)
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:    private fun setAccountRequiredViews(contacts: Contacts) {
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:            val account = rawContact.account
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:            if (account != null) {
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:                    account,
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:                accountRequiredViews.forEach {
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        defaultAccount: Account?,
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountView.setRawContact(rawContact, defaultAccount)
+./sample/src/main/java/contacts/sample/view/RawContactView.kt:        setAccountRequiredViews(contacts)
+./sample/src/main/java/contacts/sample/view/AccountView.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/view/AccountView.kt:import contacts.sample.AccountsActivity
+./sample/src/main/java/contacts/sample/view/AccountView.kt: * A [TextView] that displays the given [RawContactEntity.account] and handles modifications to it.
+./sample/src/main/java/contacts/sample/view/AccountView.kt:class AccountView @JvmOverloads constructor(
+./sample/src/main/java/contacts/sample/view/AccountView.kt:     * Sets the RawContact account shown and managed by this view to the given [rawContact] and uses
+./sample/src/main/java/contacts/sample/view/AccountView.kt:     * the given [contacts] API to perform operations on it. The [defaultAccount] is used if the
+./sample/src/main/java/contacts/sample/view/AccountView.kt:     * [rawContact] is a [NewRawContact] that is not yet associated with an account.
+./sample/src/main/java/contacts/sample/view/AccountView.kt:    fun setRawContact(rawContact: RawContactEntity?, defaultAccount: Account?) {
+./sample/src/main/java/contacts/sample/view/AccountView.kt:        setAccount(rawContact?.account ?: defaultAccount)
+./sample/src/main/java/contacts/sample/view/AccountView.kt:    private fun setAccount(account: Account?) {
+./sample/src/main/java/contacts/sample/view/AccountView.kt:                it.account = account
+./sample/src/main/java/contacts/sample/view/AccountView.kt:        val accountToDisplay = rawContact?.account
+./sample/src/main/java/contacts/sample/view/AccountView.kt:        text = if (accountToDisplay == null) {
+./sample/src/main/java/contacts/sample/view/AccountView.kt:                Local account (device only)
+./sample/src/main/java/contacts/sample/view/AccountView.kt:                Account Name: ${accountToDisplay.name}
+./sample/src/main/java/contacts/sample/view/AccountView.kt:                Account Type: ${accountToDisplay.type}
+./sample/src/main/java/contacts/sample/view/AccountView.kt:                AccountsActivity.selectAccounts(it, false, arrayListOf(rawContact?.account))
+./sample/src/main/java/contacts/sample/view/AccountView.kt:     * account (if any). This will do nothing if the request did not originate from this view.
+./sample/src/main/java/contacts/sample/view/AccountView.kt:        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
+./sample/src/main/java/contacts/sample/view/AccountView.kt:            setAccount(it.firstOrNull())
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/GroupsActivity.kt: * Shows the list of all the groups of a given account, allowing the user to choose which groups to
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:        // TODO Issue #167 Remove this check as account restrictions for groups will be removed
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:        if (intent.account() == null) {
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            showToast(R.string.groups_local_account_not_yet_supported)
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            addAllGroupsForAccount()
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            putExtra(ACCOUNT, intent.account())
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:    private suspend fun addAllGroupsForAccount() {
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:        val accountGroups = contacts
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            // TODO Issue #167 Remove !! as account restrictions for groups will be removed
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            .accounts(intent.account()!!)
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:        selectableGroups.addAll(accountGroups)
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            accountGroups.map {
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            account: Account?,
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:                putExtra(ACCOUNT, account)
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            processSelectedGroups: (account: Account?, selectedGroups: List<Group>) -> Unit
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:            processSelectedGroups(data.account(), data.selectedGroups())
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:        private fun Intent.account(): Account? = getParcelableExtra(ACCOUNT)
+./sample/src/main/java/contacts/sample/GroupsActivity.kt:        private const val ACCOUNT = "account"
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:    fun getRawContactsForAccount(account: Account): List<RawContact> =
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:            .rawContactsWhere(listOf(account), null)
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:    fun getRawContactsForAllGoogleAccounts(): List<RawContact> =
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:            .rawContactsWhere(emptyList(), RawContactsFields.AccountType equalTo "com.google")
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/InsertContactsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/InsertContactsActivity.kt:    fun insertContact(account: Account?, groupMembership: NewGroupMembership?): Insert.Result =
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/InsertContactsActivity.kt:                setAccount(account)
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryContactsAdvancedActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryContactsAdvancedActivity.kt:    fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)
+./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryContactsAdvancedActivity.kt:        .accounts(Account("email@gmail.com", "com.google"))
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/DeleteGroupsActivity.kt:    fun deleteUserCreatedGroupFromAllGoogleAccounts(): GroupsDelete.Result = Contacts(this)
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/DeleteGroupsActivity.kt:        .groupsWhere { AccountType equalTo "com.google" }
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/InsertGroupsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/InsertGroupsActivity.kt:    fun insertGroup(title: String, account: Account): GroupsInsert.Result =
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/InsertGroupsActivity.kt:        Contacts(this).groups().insert().group(title, account).commit()
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getAllGroupsFromAllAccounts(): List<Group> = Contacts(this).groups().query().find()
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getGroupsFromAccount(account: Account): List<Group> =
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:        Contacts(this).groups().query().accounts(account).find()
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getSystemGroups(account: Account): List<Group> = Contacts(this)
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:        .accounts(account)
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getUserCreatedGroups(account: Account): List<Group> = Contacts(this)
+./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:        .accounts(account)
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:package contacts.sample.cheatsheet.accounts.kotlin
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:class UpdateLocalRawContactsAccountsActivity : Activity() {
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:    fun associateLocalRawContactToAccount(
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        localRawContact: RawContact, account: Account
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:    ): AccountsLocalRawContactsUpdate.Result = Contacts(this)
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        .accounts()
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        .updateLocalRawContactsAccount()
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        .addToAccount(account)
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:package contacts.sample.cheatsheet.accounts.kotlin
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:class QueryAccountsActivity : Activity() {
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:    fun getAllAccounts(): List<Account> = Contacts(this).accounts().query().find()
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:    fun getAllGoogleAccounts(): List<Account> = Contacts(this)
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:        .accounts()
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:    fun getRawContactAccount(rawContact: RawContact): Account? = Contacts(this)
+./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:        .accounts()
+./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:import android.accounts.Account
+./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:    fun getEmailsForAccount(account: Account): List<Email> =
+./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:        Contacts(this).data().query().emails().accounts(account).find()
+./debug/src/main/java/contacts/debug/LogRawContactsTable.kt:            ContactsContract.RawContacts.ACCOUNT_NAME,
+./debug/src/main/java/contacts/debug/LogRawContactsTable.kt:            ContactsContract.RawContacts.ACCOUNT_TYPE,
+./debug/src/main/java/contacts/debug/LogRawContactsTable.kt:                 displayNameAlt: $displayNameAlt,  accountName: $name, accountType: $type,
+./debug/src/main/java/contacts/debug/LogGroupsTable.kt:            ContactsContract.Groups.ACCOUNT_NAME,
+./debug/src/main/java/contacts/debug/LogGroupsTable.kt:            ContactsContract.Groups.ACCOUNT_TYPE,
+./debug/src/main/java/contacts/debug/LogGroupsTable.kt:        val accountName = cursor.getString(7)
+./debug/src/main/java/contacts/debug/LogGroupsTable.kt:        val accountType = cursor.getString(8)
+./debug/src/main/java/contacts/debug/LogGroupsTable.kt:                 shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType,
+
+------------------------
+
+Mentions of "account" in docs
+
+grep --include="*kt" -ri "account" .
+
+./docs/basics/query-contacts-by-phone-or-sip.md:## Specifying Accounts
+./docs/basics/query-contacts-by-phone-or-sip.md:To limit the search to only those contacts associated with one of the given accounts,
+./docs/basics/query-contacts-by-phone-or-sip.md:.accounts(accounts)
+./docs/basics/query-contacts-by-phone-or-sip.md:For example, to limit the search to contacts belonging to only one account,
+./docs/basics/query-contacts-by-phone-or-sip.md:.accounts(Account("john.doe@gmail.com", "com.google"))
+./docs/basics/query-contacts-by-phone-or-sip.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/basics/query-contacts-by-phone-or-sip.md:The Contacts returned may still contain RawContacts / data that belongs to other accounts not
+./docs/basics/query-contacts-by-phone-or-sip.md:specified in the given accounts because Contacts may be made up of more than one RawContact from
+./docs/basics/query-contacts-by-phone-or-sip.md:different Accounts. This is the same behavior as the native Contacts app.
+./docs/basics/query-contacts-by-phone-or-sip.md:If no accounts are specified (this function is not called or called with no Accounts), then all
+./docs/basics/query-contacts-by-phone-or-sip.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
+./docs/basics/query-contacts-by-phone-or-sip.md:included in the search. RawContacts without an associated account are considered local contacts or
+./docs/basics/query-contacts.md:## Specifying Accounts
+./docs/basics/query-contacts.md:To limit the search to only those contacts associated with one of the given accounts,
+./docs/basics/query-contacts.md:.accounts(accounts)
+./docs/basics/query-contacts.md:For example, to limit the search to contacts belonging to only one account,
+./docs/basics/query-contacts.md:.accounts(Account("john.doe@gmail.com", "com.google"))
+./docs/basics/query-contacts.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/basics/query-contacts.md:The Contacts returned may still contain RawContacts / data that belongs to other accounts not
+./docs/basics/query-contacts.md:specified in the given accounts because Contacts may be made up of more than one RawContact from
+./docs/basics/query-contacts.md:different Accounts. This is the same behavior as the native Contacts app.
+./docs/basics/query-contacts.md:If no accounts are specified (this function is not called or called with no Accounts), then all
+./docs/basics/query-contacts.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
+./docs/basics/query-contacts.md:included in the search. RawContacts without an associated account are considered local contacts or
+./docs/basics/query-contacts-advanced.md:- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"
+./docs/basics/query-contacts-advanced.md:    .accounts(
+./docs/basics/query-contacts-advanced.md:        Account("john.doe@gmail.com", "com.google"),
+./docs/basics/query-contacts-advanced.md:        Account("john.doe@myspace.com", "com.myspace"),
+./docs/basics/query-contacts-advanced.md:## Specifying Accounts
+./docs/basics/query-contacts-advanced.md:To limit the search to only those contacts associated with one of the given accounts,
+./docs/basics/query-contacts-advanced.md:.accounts(accounts)
+./docs/basics/query-contacts-advanced.md:For example, to limit the search to contacts belonging to only one account,
+./docs/basics/query-contacts-advanced.md:.accounts(Account("john.doe@gmail.com", "com.google"))
+./docs/basics/query-contacts-advanced.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/basics/query-contacts-advanced.md:The Contacts returned may still contain RawContacts / data that belongs to other accounts not
+./docs/basics/query-contacts-advanced.md:specified in the given accounts because Contacts may be made up of more than one RawContact from
+./docs/basics/query-contacts-advanced.md:different Accounts. This is the same behavior as the native Contacts app.
+./docs/basics/query-contacts-advanced.md:If no accounts are specified (this function is not called or called with no Accounts), then all
+./docs/basics/query-contacts-advanced.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
+./docs/basics/query-contacts-advanced.md:included in the search. RawContacts without an associated account are considered local contacts or
+./docs/basics/insert-contacts.md:## Associating an Account
+./docs/basics/insert-contacts.md:New RawContacts can be associated with an Account in order to enable syncing,
+./docs/basics/insert-contacts.md:newRawContact.account = account
+./docs/basics/insert-contacts.md:// or newRawContact.setAccount(account)
+./docs/basics/insert-contacts.md:> setting the account is done via the `Insert.forAccount` function.
+./docs/basics/insert-contacts.md:For example, to associated the new RawContact to an account,
+./docs/basics/insert-contacts.md:newRawContact.account = Account("john.doe@gmail.com", "com.google")
+./docs/basics/insert-contacts.md:// or newRawContact.setAccount(Account("john.doe@gmail.com", "com.google"))
+./docs/basics/insert-contacts.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/basics/insert-contacts.md:If no Account is provided, or null is provided, or if an incorrect account is provided, the
+./docs/basics/insert-contacts.md:RawContacts inserted will not be associated with an Account. RawContacts inserted without an
+./docs/basics/insert-contacts.md:associated account are considered local or device-only contacts, which are not synced.
+./docs/basics/insert-contacts.md:Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS`
+./docs/basics/insert-contacts.md:val accountToAddContactTo = Account("vestrel00@pixar.com", "com.pixar")
+./docs/basics/insert-contacts.md:        setAccount(accountToAddContactTo)
+./docs/basics/insert-contacts.md:                .accounts(accountToAddContactTo)
+./docs/basics/query-raw-contacts.md:> and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/accounts/query-raw-contacts.md).
+./docs/basics/query-raw-contacts.md:To retrieve the first 5 RawContacts in the given account that has at least one email, skipping the
+./docs/basics/query-raw-contacts.md:## Specifying Accounts
+./docs/basics/query-raw-contacts.md:To limit the search to only those RawContacts associated with one of the given accounts,
+./docs/basics/query-raw-contacts.md:.rawContactsWhere(accounts, null)
+./docs/basics/query-raw-contacts.md:For example, to limit the search to contacts belonging to only one account,
+./docs/basics/query-raw-contacts.md:.rawContactsWhere(listOf(Account("john.doe@gmail.com", "com.google")), null)
+./docs/basics/query-raw-contacts.md:> ℹ️ For more info, read [Query for Accounts](../accounts/query-accounts.md).
+./docs/basics/query-raw-contacts.md:If no accounts are specified (this function is not called or called with no Accounts), then all
+./docs/basics/query-raw-contacts.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
+./docs/basics/query-raw-contacts.md:included in the search. RawContacts without an associated account are considered local contacts or
+./docs/basics/query-raw-contacts.md:For example, to order RawContacts by account type,
+./docs/basics/query-raw-contacts.md:.orderBy(RawContactsFields.AccountType.asc())
+./docs/basics/query-raw-contacts.md:## RawContacts from more than one account in the same list
+./docs/basics/query-raw-contacts.md:When you perform a query that returns groups from more than one account, you will get everything
+./docs/basics/query-raw-contacts.md:that allows you to get a sublist with RawContacts belonging only to a particular account.
+./docs/basics/query-raw-contacts.md:val rawContactsFromAccount = rawContactsList.from(account)
+./docs/dev-notes.md:    - Rows that link Contacts rows to specific Accounts.
+./docs/dev-notes.md:    - `ACCOUNT_NAME`: the `Account.name`
+./docs/dev-notes.md:    - `ACCOUNT_TYPE` the `Account.type`
+./docs/dev-notes.md:with an Account and are synced).
+./docs/dev-notes.md:Another thing to check is what happens when associating a local RawContact to an Account (move from
+./docs/dev-notes.md:device to Account) and vice versa. Is the lookup key of the Contact affected?
+./docs/dev-notes.md:After associating the local RawContact to an Account...
+./docs/dev-notes.md:Removing the account from it results in...
+./docs/dev-notes.md:moving between accounts in the future.
+./docs/dev-notes.md:### RawContacts; Accounts + Contacts
+./docs/dev-notes.md:The RawContacts table associates a person to an `android.accounts.Account` that it belongs to.
+./docs/dev-notes.md:- a new row in the RawContacts with account name and type set to null
+./docs/dev-notes.md:RawContact id: 4, accountName: null, accountType: null
+./docs/dev-notes.md:RawContact id: 5, accountName: null, accountType: null
+./docs/dev-notes.md:RawContact id: 6, accountName: null, accountType: null
+./docs/dev-notes.md:RawContact id: 7, accountName: null, accountType: null
+./docs/dev-notes.md:RawContacts inserted without an associated account are considered local or device-only raw contacts,
+./docs/dev-notes.md:When an Account is added, from a state where no accounts have yet been added to the system, the
+./docs/dev-notes.md:Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
+./docs/dev-notes.md:RawContacts table to that Account's name and type;
+./docs/dev-notes.md:RawContact id: 4, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:RawContact id: 5, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:RawContact id: 6, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:RawContact id: 7, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:RawContacts inserted without an associated account will automatically get assigned to an account if
+./docs/dev-notes.md:it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
+./docs/dev-notes.md:back to an Account.
+./docs/dev-notes.md:The Contacts Provider no longer associates local contacts to an account when an account is or
+./docs/dev-notes.md:**Account removal**
+./docs/dev-notes.md:Removing the Account will remove all of the associated rows in the **local** RawContact, Data, and
+./docs/dev-notes.md:This library supports modifying the `SyncColumns.ACCOUNT_NAME` and `SyncColumns.ACCOUNT_TYPE` of the
+./docs/dev-notes.md:side-effects. It probably has something to do with syncing with remote servers and local Account /
+./docs/dev-notes.md:The motivation behind changing the Account columns of the RawContacts table rows is that it would
+./docs/dev-notes.md:- Associate local RawContacts (those that are not associated with an Account) to an Account,
+./docs/dev-notes.md:- Dissociate RawContacts from their Account such that they remain local to the device and not synced
+./docs/dev-notes.md:- Transfer RawContacts from one Account to another.
+./docs/dev-notes.md:- Associating local RawContact A to Account X.
+./docs/dev-notes.md:    - RawContact A is now associated with Account X and is synced across devices.
+./docs/dev-notes.md:- Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
+./docs/dev-notes.md:      membership to at least the default group from an Account.
+./docs/dev-notes.md:    - If local RawContact A is re-associated back to Account X, it will still no longer be synced.
+./docs/dev-notes.md:- Associating RawContact A from original Account X to Account Y.
+./docs/dev-notes.md:      and syncing Account Y in system settings fails.
+./docs/dev-notes.md:      Syncing Account Y in system settings succeeds.
+./docs/dev-notes.md:Given that associating originally local RawContacts to an Account is the only thing that actually
+./docs/dev-notes.md:If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
+./docs/dev-notes.md:RawContact associated with the desired Account and then delete the original RawContact. Same idea
+./docs/dev-notes.md:can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
+./docs/dev-notes.md:   Account when the account changes. This occurs even if the group membership already exists
+./docs/dev-notes.md:2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
+./docs/dev-notes.md:Account or there is no network connection.
+./docs/dev-notes.md:Note that local RawContacts rows (not associated with an Account) are deleted immediately as no sync
+./docs/dev-notes.md:The Contacts Provider may consolidate multiple contacts belonging to different accounts and combine
+./docs/dev-notes.md:RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+./docs/dev-notes.md:RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+./docs/dev-notes.md:RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+./docs/dev-notes.md:RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+./docs/dev-notes.md:- Group membership, underlying value defaults to the account's default system group
+./docs/dev-notes.md:> with an Account.
+./docs/dev-notes.md:If a valid account is provided, the default (auto add) system group membership row is automatically
+./docs/dev-notes.md:If a valid account is not provided, none of the above data rows are automatically created.
+./docs/dev-notes.md:### Groups Table & Accounts
+./docs/dev-notes.md:Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+./docs/dev-notes.md:The actual groups are in a separate table; Groups. Each group is associated with an Account. No
+./docs/dev-notes.md:group can exist without an account. It is account-exclusive.
+./docs/dev-notes.md:Each account will have its own set of the above system groups. This means that there may be multiple
+./docs/dev-notes.md:groups with the same title belonging to different accounts.
+./docs/dev-notes.md:- The Contacts system group is the default group in which all raw contacts of an account belongs to.
+./docs/dev-notes.md:Removing the Account will delete all of the associated rows in the Groups table.
+./docs/dev-notes.md:belonging to the same account to exist. In older versions of Android, the native Contacts app
+./docs/dev-notes.md:There may be multiple groups with the same title from different accounts. Therefore, the group
+./docs/dev-notes.md:membership should point to the group belonging to the same account as the raw contact. The native
+./docs/dev-notes.md:Contacts app displays only the groups belonging to the selected account.
+./docs/dev-notes.md:membership will be asynchronously added to the Account's default group by the Contacts Provider.
+./docs/dev-notes.md:Raw contacts that are not associated with an account do not have any group memberships. Even though
+./docs/dev-notes.md:Local RawContacts may have a group membership to the default system group of an Account without
+./docs/dev-notes.md:being associated with the Account...
+./docs/dev-notes.md:have no group membership to the default group when an Account is available. Though, edits can still
+./docs/dev-notes.md:the default group but does not associate the raw contact to the Account that owns the group. The
+./docs/dev-notes.md:Weirdly, this only occurs when there is exactly only one Account. If there are no Accounts or there
+./docs/dev-notes.md:are two or more Accounts, then this does not occur. Also, this does not occur for a Contact with a
+./docs/dev-notes.md:Account or there is no network connection.
+./docs/dev-notes.md:Note that local Groups rows (not associated with an Account) are deleted immediately as no sync
+./docs/dev-notes.md:not be associated with an Account. The RawContacts row(s) may have rows in the Data table as usual.
+./docs/dev-notes.md:separate list of accounts and contact data. This also means that each user has a separate (local)
+./docs/dev-notes.md:**Profile and Accounts**
+./docs/dev-notes.md:According to the `Profile` documentation; "... each account (including data set, if applicable) on
+./docs/dev-notes.md:In other words, one account can have one profile RawContact. Whether or not profile RawContacts
+./docs/dev-notes.md:associated to an Account can be carried over and synced across devices and users is up to the
+./docs/dev-notes.md:Contacts Provider / Sync provider for that Account.
+./docs/dev-notes.md:> ℹ️ From my experience, profile RawContacts associated to an Account is not carried over / synced
+./docs/dev-notes.md:Despite the documentation of "one profile RawContact per one Account", the Contacts Provider allows
+./docs/dev-notes.md:for multiple RawContacts per Account, including multiple local RawContacts (no Account). Thus, we
+./docs/dev-notes.md:RawContact (not associated with an Account) even if there are available Accounts.
+./docs/dev-notes.md:The Contacts Provider does not associate local contacts to an account when an account is or becomes
+./docs/dev-notes.md:Removing the Account will delete all of the associated rows in the Contact, RawContact, Data, and
+./docs/dev-notes.md:account will be available anywhere the Google account is used; in any Android or iOS device, a web
+./docs/dev-notes.md:depends on the account sync settings, which can be configured in the native system settings app and
+./docs/dev-notes.md:Account. Custom sync adapters are required to sync custom data. This library currently does NOT
+./docs/dev-notes.md:- `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
+./docs/other/get-set-clear-contact-raw-contact-options.md:> ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
+./docs/other/link-unlink-contacts.md:You may link Contacts with RawContacts that belong to different Accounts. Any RawContact Data
+./docs/other/link-unlink-contacts.md:modifications are synced per Account sync settings.
+./docs/other/link-unlink-contacts.md:RawContacts that are not associated with an Account are local to the device and therefore will not
+./docs/other/link-unlink-contacts.md:be synced even if it is linked to a Contact with a RawContact that is associated with an Account.
+./docs/other/link-unlink-contacts.md:RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+./docs/other/link-unlink-contacts.md:RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+./docs/other/link-unlink-contacts.md:RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
+./docs/other/link-unlink-contacts.md:RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:        fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)
+./docs/cheatsheet.md:            .accounts(Account("email@gmail.com", "com.google"))
+./docs/cheatsheet.md:    import android.accounts.Account;
+./docs/cheatsheet.md:        List<Contact> getAllContactsForAGoogleAccount() {
+./docs/cheatsheet.md:                    .accounts(new Account("email@gmail.com", "com.google"))
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:        fun getRawContactsForAccount(account: Account): List<RawContact> =
+./docs/cheatsheet.md:                .rawContactsWhere(listOf(account), null)
+./docs/cheatsheet.md:        fun getRawContactsForAllGoogleAccounts(): List<RawContact> =
+./docs/cheatsheet.md:                .rawContactsWhere(emptyList(), RawContactsFields.AccountType equalTo "com.google")
+./docs/cheatsheet.md:    import android.accounts.Account;
+./docs/cheatsheet.md:        List<RawContact> getRawContactsForAccount(Account account) {
+./docs/cheatsheet.md:            List<Account> accounts = new ArrayList<>();
+./docs/cheatsheet.md:            accounts.add(account);
+./docs/cheatsheet.md:                    .rawContactsWhere(accounts, null)
+./docs/cheatsheet.md:        List<RawContact> getRawContactsForAllGoogleAccounts() {
+./docs/cheatsheet.md:                            equalTo(RawContactsFields.AccountType, "com.google")
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:        fun insertContact(account: Account?, groupMembership: NewGroupMembership?): Insert.Result =
+./docs/cheatsheet.md:                    setAccount(account)
+./docs/cheatsheet.md:    import android.accounts.Account;
+./docs/cheatsheet.md:        Insert.Result insertContact(Account account, NewGroupMembership groupMembership) {
+./docs/cheatsheet.md:            rawContact.setAccount(account);
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:        fun getEmailsForAccount(account: Account): List<Email> =
+./docs/cheatsheet.md:            Contacts(this).data().query().emails().accounts(account).find()
+./docs/cheatsheet.md:    import android.accounts.Account;
+./docs/cheatsheet.md:        List<Email> getEmailsForAccount(Account account) {
+./docs/cheatsheet.md:            return ContactsFactory.create(this).data().query().emails().accounts(account).find();
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:        fun getAllGroupsFromAllAccounts(): List<Group> = Contacts(this).groups().query().find()
+./docs/cheatsheet.md:        fun getGroupsFromAccount(account: Account): List<Group> =
+./docs/cheatsheet.md:            Contacts(this).groups().query().accounts(account).find()
+./docs/cheatsheet.md:        fun getSystemGroups(account: Account): List<Group> = Contacts(this)
+./docs/cheatsheet.md:            .accounts(account)
+./docs/cheatsheet.md:        fun getUserCreatedGroups(account: Account): List<Group> = Contacts(this)
+./docs/cheatsheet.md:            .accounts(account)
+./docs/cheatsheet.md:    import android.accounts.Account;
+./docs/cheatsheet.md:        List<Group> getAllGroupsFromAllAccounts() {
+./docs/cheatsheet.md:        List<Group> getGroupsFromAccount(Account account) {
+./docs/cheatsheet.md:            return ContactsFactory.create(this).groups().query().accounts(account).find();
+./docs/cheatsheet.md:        List<Group> getSystemGroups(Account account) {
+./docs/cheatsheet.md:                    .accounts(account)
+./docs/cheatsheet.md:        List<Group> getUserCreatedGroups(Account account) {
+./docs/cheatsheet.md:                    .accounts(account)
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:        fun insertGroup(title: String, account: Account): GroupsInsert.Result =
+./docs/cheatsheet.md:            Contacts(this).groups().insert().group(title, account).commit()
+./docs/cheatsheet.md:        GroupsInsert.Result insertGroup(String title, Account account) {
+./docs/cheatsheet.md:            return ContactsFactory.create(this).groups().insert().group(title, account).commit();
+./docs/cheatsheet.md:        fun deleteUserCreatedGroupFromAllGoogleAccounts(): GroupsDelete.Result = Contacts(this)
+./docs/cheatsheet.md:            .groupsWhere { AccountType equalTo "com.google" }
+./docs/cheatsheet.md:        GroupsDelete.Result deleteUserCreatedGroupFromAllGoogleAccounts() {
+./docs/cheatsheet.md:                    .groupsWhere(equalTo(GroupsFields.AccountType, "com.google"))
+./docs/cheatsheet.md:## Accounts
+./docs/cheatsheet.md:### [Query for Accounts](./accounts/query-accounts.md)
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:    class QueryAccountsActivity : Activity() {
+./docs/cheatsheet.md:        fun getAllAccounts(): List<Account> = Contacts(this).accounts().query().find()
+./docs/cheatsheet.md:        fun getAllGoogleAccounts(): List<Account> = Contacts(this)
+./docs/cheatsheet.md:            .accounts()
+./docs/cheatsheet.md:        fun getRawContactAccount(rawContact: RawContact): Account? = Contacts(this)
+./docs/cheatsheet.md:            .accounts()
+./docs/cheatsheet.md:    import android.accounts.Account;
+./docs/cheatsheet.md:    public class QueryAccountsActivity extends Activity {
+./docs/cheatsheet.md:        List<Account> getAllAccounts() {
+./docs/cheatsheet.md:            return ContactsFactory.create(this).accounts().query().find();
+./docs/cheatsheet.md:        List<Account> getAllGoogleAccounts() {
+./docs/cheatsheet.md:                    .accounts()
+./docs/cheatsheet.md:        Account getRawContactAccount(RawContact rawContact) {
+./docs/cheatsheet.md:                    .accounts()
+./docs/cheatsheet.md:### [Associate a local RawContact to an Account](./accounts/associate-device-local-raw-contacts-to-an-account.md)
+./docs/cheatsheet.md:    import android.accounts.Account
+./docs/cheatsheet.md:    import contacts.core.accounts.AccountsLocalRawContactsUpdate
+./docs/cheatsheet.md:    class UpdateLocalRawContactsAccountsActivity : Activity() {
+./docs/cheatsheet.md:        fun associateLocalRawContactToAccount(
+./docs/cheatsheet.md:            localRawContact: RawContact, account: Account
+./docs/cheatsheet.md:        ): AccountsLocalRawContactsUpdate.Result = Contacts(this)
+./docs/cheatsheet.md:            .accounts()
+./docs/cheatsheet.md:            .updateLocalRawContactsAccount()
+./docs/cheatsheet.md:            .addToAccount(account)
+./docs/cheatsheet.md:    import android.accounts.Account;
+./docs/cheatsheet.md:    import contacts.core.accounts.AccountsLocalRawContactsUpdate;
+./docs/cheatsheet.md:    public class UpdateLocalRawContactsAccountsActivity extends Activity {
+./docs/cheatsheet.md:        AccountsLocalRawContactsUpdate.Result associateLocalRawContactToAccount(
+./docs/cheatsheet.md:                RawContact localRawContact, Account account
+./docs/cheatsheet.md:                    .accounts()
+./docs/cheatsheet.md:                    .updateLocalRawContactsAccount()
+./docs/cheatsheet.md:                    .addToAccount(account)
+./docs/groups/update-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
+./docs/groups/update-groups.md:The above list may vary per account.
+./docs/groups/update-groups.md:belonging to the same account to exist. In older versions of Android, the native Contacts app
+./docs/groups/insert-groups.md:an `Account`.
+./docs/groups/insert-groups.md:To create/insert a new group for an Account,
+./docs/groups/insert-groups.md:        account = Account("john.doe@gmail.com", "com.google")
+./docs/groups/insert-groups.md:val newGroup1 = NewGroup("Goodies", Account("john.doe@gmail.com", "com.google"))
+./docs/groups/insert-groups.md:val newGroup2 = NewGroup("Baddies", Account("john.doe@gmail.com", "com.google"))
+./docs/groups/insert-groups.md:## Groups and Accounts
+./docs/groups/insert-groups.md:A set of groups exist for each Account. When there are no accounts in the system, there are no
+./docs/groups/insert-groups.md:The get accounts permission is required here because this API retrieves all available accounts,
+./docs/groups/insert-groups.md:- if the account specified is found in the list of accounts returned by the system, then the account
+./docs/groups/insert-groups.md:- if the account specified is not found in the list of accounts returned by the system, then the
+./docs/groups/insert-groups.md:- if there are no accounts in the system, [commit] does nothing and fails immediately
+./docs/groups/insert-groups.md:> ℹ️ For more info on the relationship of Groups and Accounts, read [Query groups](./../groups/query-groups.md).
+./docs/groups/insert-groups.md:belonging to the same account to exist. In older versions of Android, the native Contacts app
+./docs/groups/insert-groups.md:        INVALID_ACCOUNT -> promptUserToPickDifferentAccount()
+./docs/groups/insert-groups.md:Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS`
+./docs/groups/query-groups.md:`Account`.
+./docs/groups/query-groups.md:To get all of the groups for all accounts,
+./docs/groups/query-groups.md:val groupsFromAllAccounts = Contacts(context)
+./docs/groups/query-groups.md:> ℹ️ It is recommended to get sets of groups for a single account at a time to avoid confusion.
+./docs/groups/query-groups.md:## Specifying Accounts
+./docs/groups/query-groups.md:To limit the search to only those Groups associated with one of the given accounts,
+./docs/groups/query-groups.md:.accounts(accounts)
+./docs/groups/query-groups.md:For example, to limit the search to groups belonging to only one account,
+./docs/groups/query-groups.md:.accounts(Account("john.doe@gmail.com", "com.google"))
+./docs/groups/query-groups.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/groups/query-groups.md:If no accounts are specified (this function is not called or called with no Accounts), then all
+./docs/groups/query-groups.md:Groups of all accounts are included in the search.
+./docs/groups/query-groups.md:A null Account may NOT be provided here because no group can exist without an account. Groups are
+./docs/groups/query-groups.md:inextricably linked to an Account.
+./docs/groups/query-groups.md:For example, to order groups by account name,
+./docs/groups/query-groups.md:.orderBy(GroupsFields.AccountName.asc())
+./docs/groups/query-groups.md:Each account will have its own set of system and user-created groups. This means that there may be
+./docs/groups/query-groups.md:multiple groups with the same title belonging to different accounts. This is not a bug. This is why
+./docs/groups/query-groups.md:it is recommended to only get sets of groups per account, especially if there is more than one
+./docs/groups/query-groups.md:account in the system.
+./docs/groups/query-groups.md:## Groups from more than one account in the same list
+./docs/groups/query-groups.md:When you perform a query that returns groups from more than one account, you will get everything
+./docs/groups/query-groups.md:function that allows you to get a sublist with groups belonging only to a particular account.
+./docs/groups/query-groups.md:val groupsFromAccount = groupsList.from(account)
+./docs/groups/query-groups.md:val groupsFromAccount = groupsList.filter { it.account == account }
+./docs/groups/query-groups.md:accounts in the same list as it could cause confusion. However, if you know what you are doing and
+./docs/groups/delete-groups.md:    .groupsWhere { AccountType equalTo "com.google" }
+./docs/groups/delete-groups.md:val where = GroupsFields.AccountType equalTo "com.google"
+./docs/groups/delete-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
+./docs/groups/delete-groups.md:The above list may vary per account.
+./docs/profile/insert-profile.md:## Allowing multiple RawContacts per Account
+./docs/profile/insert-profile.md:The API allows you to insert a profile RawContact with an Account that already has a profile
+./docs/profile/insert-profile.md:.allowMultipleRawContactsPerAccount(true|false)
+./docs/profile/insert-profile.md:> ... each account (including data set, if applicable) on the device may contribute a single raw
+./docs/profile/insert-profile.md:In other words, one account can have one profile RawContact. However, despite the documentation of
+./docs/profile/insert-profile.md:"one profile RawContact per one Account", the Contacts Provider allows for multiple RawContacts per
+./docs/profile/insert-profile.md:Account, including multiple local RawContacts (no Account).
+./docs/profile/insert-profile.md:## Associating an Account
+./docs/profile/insert-profile.md:New RawContacts can be associated with an Account in order to enable syncing,
+./docs/profile/insert-profile.md:newRawContact.account = account
+./docs/profile/insert-profile.md:// or newRawContact.setAccount(account)
+./docs/profile/insert-profile.md:> setting the account is done via the `ProfileInsert.forAccount` function.
+./docs/profile/insert-profile.md:For example, to associated the new RawContact to an account,
+./docs/profile/insert-profile.md:newRawContact.account = Account("john.doe@gmail.com", "com.google")
+./docs/profile/insert-profile.md:// or newRawContact.setAccount(Account("john.doe@gmail.com", "com.google"))
+./docs/profile/insert-profile.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/profile/insert-profile.md:If no Account is provided, or null is provided, or if an incorrect account is provided, the
+./docs/profile/insert-profile.md:RawContacts inserted will not be associated with an Account. RawContacts inserted without an
+./docs/profile/insert-profile.md:associated account are considered local or device-only contacts, which are not synced.
+./docs/profile/insert-profile.md:Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS`
+./docs/profile/query-profile.md:## Specifying Accounts
+./docs/profile/query-profile.md:To only include RawContacts associated with one of the given accounts,
+./docs/profile/query-profile.md:.accounts(accounts)
+./docs/profile/query-profile.md:For example, to include only RawContacts belonging to only one account,
+./docs/profile/query-profile.md:.accounts(Account("john.doe@gmail.com", "com.google"))
+./docs/profile/query-profile.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/profile/query-profile.md:The RawContacts returned will only belong to the specified accounts.
+./docs/profile/query-profile.md:If no accounts are specified (this function is not called or called with no Accounts), then all
+./docs/profile/query-profile.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
+./docs/profile/query-profile.md:included. RawContacts without an associated account are considered local contacts or device-only
+./docs/accounts/query-accounts.md:# Query for Accounts
+./docs/accounts/query-accounts.md:This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the
+./docs/accounts/query-accounts.md:`AccountManager`.
+./docs/accounts/query-accounts.md:An instance of the `AccountsQuery` API is obtained by,
+./docs/accounts/query-accounts.md:val query = Contacts(context).accounts().query()
+./docs/accounts/query-accounts.md:To get all available accounts in the system,
+./docs/accounts/query-accounts.md:val accounts = Contacts(context).accounts().query()
+./docs/accounts/query-accounts.md:To get all available accounts in the system with an account type of "com.google" or "com.yahoo",
+./docs/accounts/query-accounts.md:val accounts = Contacts(context).accounts().query()
+./docs/accounts/query-accounts.md:To get the account for a set of RawContacts,
+./docs/accounts/query-accounts.md:val account = Contacts(context).accounts().query()
+./docs/accounts/query-accounts.md:To get all available accounts in the system with an account type of "com.google" or "com.yahoo"
+./docs/accounts/query-accounts.md:val accounts = Contacts(context).accounts().query()
+./docs/accounts/query-accounts.md:> ℹ️ RawContacts that are not associated with an Account are local to the device. For more info,
+./docs/accounts/query-accounts.md:## Account for each specified RawContact
+./docs/accounts/query-accounts.md:the `Account` for each of the `RawContact` specified.
+./docs/accounts/query-accounts.md:val rawContactAccount = accounts.accountFor(rawContact)
+./docs/accounts/query-accounts.md:This allows you to get the accounts for multiple RawContacts in one API call =)
+./docs/accounts/query-accounts.md:Queries require the `android.permission.READ_CONTACTS` and `android.permission.GET_ACCOUNTS`
+./docs/accounts/query-accounts.md:## Profile accounts
+./docs/accounts/query-accounts.md:The `AccountsQuery` API also supports querying the Profile (device owner) account. To get an
+./docs/accounts/query-accounts.md:val query = Contacts(context).accounts().profile().query()
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:# Associate a local RawContact to an Account
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:This library provides the `AccountsLocalRawContactsUpdate` API, which allows you to associate
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:**local** RawContacts (those that are not associated with an Account) to an Account in order to
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:An instance of the `AccountsLocalRawContactsUpdate` API is obtained by,
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:val accountsLocalRawContactsUpdate = Contacts(context).accounts().updateLocalRawContactsAccount()
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:To associate/add the given local RawContacts to the given account,
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:val updateResult = accountsLocalRawContactsUpdate
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:     .addToAccount(account)
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:        INVALID_ACCOUNT -> handleInvalidAccount()
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:These updates require the `android.permission.GET_ACCOUNTS` and `android.permission.WRITE_CONTACTS`.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:The `AccountsLocalRawContactsUpdate` API also supports updating the Profile (device owner)
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:val profileDataUpdate = Contacts(context).accounts().profile().updateLocalRawContactsAccount()
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associate local RawContacts (those that are not associated with an Account) to an Account,
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Dissociate RawContacts from their Account such that they remain local to the device and not
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Transfer RawContacts from one Account to another.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:This library supports modifying the `SyncColumns.ACCOUNT_NAME` and `SyncColumns.ACCOUNT_TYPE` of the
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:side-effects. It probably has something to do with syncing with remote servers and local Account /
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:The motivation behind changing the Account columns of the RawContacts table rows is that it would
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associate local RawContacts (those that are not associated with an Account) to an Account,
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Dissociate RawContacts from their Account such that they remain local to the device and not synced
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Transfer RawContacts from one Account to another.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associating local RawContact A to Account X.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:  - RawContact A is now associated with Account X and is synced across devices.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:    membership to at least the default group from an Account.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:  - If local RawContact A is re-associated back to Account X, it will still no longer be synced.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associating RawContact A from original Account X to Account Y.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:    and syncing Account Y in system settings fails.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:    Syncing Account Y in system settings succeeds.
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:Given that associating originally local RawContacts to an Account is the only thing that actually
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:RawContact associated with the desired Account and then delete the original RawContact. Same idea
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:   Account when the account changes. This occurs even if the group membership already exists
+./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
+./docs/customdata/integrate-custom-data.md:across devices and will remain local to the device regardless of Account sync settings. It is up to
+./docs/customdata/integrate-custom-data.md:adapters. That is for you to implement based on your account services. This library provides you
+./docs/customdata/integrate-custom-data.md:> To display your custom data, provide a `contacts.xml` file containing a `<ContactsAccountType>`
+./docs/customdata/integrate-custom-data.md:<ContactsAccountType
+./docs/customdata/integrate-custom-data.md:</ContactsAccountType>
+./docs/customdata/integrate-custom-data.md:<ContactsAccountType xmlns:android="http://schemas.android.com/apk/res/android">
+./docs/customdata/integrate-custom-data.md:</ContactsAccountType>
+./docs/customdata/integrate-googlecontacts-custom-data.md:shown for RawContacts that are associated with a Google Account. Local (device-only) RawContacts do
+./docs/customdata/integrate-googlecontacts-custom-data.md:these custom data should remain synced depending on account sync settings.
+./docs/sim/about-sim-contacts.md:SyncAdapters. The RawContacts created in the Contacts Provider have a non-remote account name and
+./docs/sim/about-sim-contacts.md:accountName: primary.sim.account_name, accountType: vnd.sec.contact.sim
+./docs/data/query-data-sets.md:## Specifying Accounts
+./docs/data/query-data-sets.md:To limit the search to only those data associated with one of the given accounts,
+./docs/data/query-data-sets.md:.accounts(accounts)
+./docs/data/query-data-sets.md:For example, to limit the search to data belonging to only one account,
+./docs/data/query-data-sets.md:.accounts(Account("john.doe@gmail.com", "com.google"))
+./docs/data/query-data-sets.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+./docs/data/query-data-sets.md:If no accounts are specified (this function is not called or called with no Accounts), then all
+./docs/data/query-data-sets.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
+./docs/data/query-data-sets.md:included in the search. RawContacts without an associated account are considered local contacts or
+./docs/logging/log-api-input-output.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
+./docs/entities/about-local-contacts.md:`android.accounts.Account` are local to each device and will not be synced across devices.
+./docs/entities/about-local-contacts.md:remote service as it is not associated with any account.
+./docs/entities/about-local-contacts.md:## Associating a local RawContact to an Account
+./docs/entities/about-local-contacts.md:Local RawContacts can be associated to an Account to enable syncing.
+./docs/entities/about-local-contacts.md:For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
+./docs/entities/about-local-contacts.md:## Adding an Account to the device
+./docs/entities/about-local-contacts.md:Depending on the API level, the Contacts Provider behaves differently when the user adds an account
+./docs/entities/about-local-contacts.md:When an Account is added, from a state where no accounts have yet been added to the system, the
+./docs/entities/about-local-contacts.md:Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
+./docs/entities/about-local-contacts.md:RawContacts table to that Account's name and type.
+./docs/entities/about-local-contacts.md:RawContacts inserted without an associated account will automatically get assigned to an account if
+./docs/entities/about-local-contacts.md:it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
+./docs/entities/about-local-contacts.md:back to an Account.
+./docs/entities/about-local-contacts.md:The Contacts Provider no longer associates local RawContacts to an account when an account is or
+./docs/entities/about-local-contacts.md:**Account removal**
+./docs/entities/about-local-contacts.md:Removing the Account will remove all of the associated rows in the RawContact, Data, and Groups
+./docs/entities/about-local-contacts.md:## Data kinds Account restrictions
+./docs/entities/about-local-contacts.md:    - Groups can only exist if it is associated with an Account. Therefore, memberships to groups is
+./docs/entities/about-local-contacts.md:      not possible when there is no associated Account.
+./docs/entities/about-local-contacts.md:    - It is not clear why this requires an associated Account. Maybe because these are typically
+./docs/entities/about-local-contacts.md:    - It is not clear why this requires an associated Account...
+./docs/entities/about-local-contacts.md:The Contacts Provider may or may not enforce these Account restrictions. However, the native
+./docs/entities/about-local-contacts.md:In most flavors of Android, a local (device-only) RawContact have null Account name and type in
+./docs/entities/about-local-contacts.md:the RawContacts table. However, Samsung phones use `vnd.sec.contact.phone` to fill the Account
+./docs/entities/about-local-contacts.md:The `vnd.sec.contact.phone` does NOT refer to an actual `android.accounts.Account`. It is not
+./docs/entities/about-local-contacts.md:returned by the `android.accounts.AccountManager`.
+./docs/entities/about-local-contacts.md:In Samsung devices, RawContacts that are inserted with a null account will, immediately or at a
+./docs/entities/about-local-contacts.md:query.accounts(null)
+./docs/entities/about-local-contacts.md:`Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`.
+./docs/entities/about-local-contacts.md:> Prior versions will require you to pass in `Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`
+./docs/entities/about-local-contacts.md:> in addition to `null` when using `accounts` for matching local contacts.
+./docs/entities/about-api-entities.md:    - Rows that link Contacts rows to specific Accounts.
+./docs/entities/about-api-entities.md:    - Contains contact data that belong to an account.
+./docs/entities/about-api-entities.md:## Data kinds Account restrictions
+./docs/entities/about-api-entities.md:associated with an Account).
+./docs/entities/about-api-entities.md:the account sync settings.
+./docs/entities/about-api-entities.md:- `GroupMembership`, underlying value defaults to the account's default system group
+./docs/entities/about-api-entities.md:RawContacts that are associated with an Account. If a valid account is provided, membership to the
+./docs/entities/about-api-entities.md:If a valid account is not provided, no entries of the above are automatically created.
+./docs/entities/about-contact-lookup-key.md:      to ensure that Contact data is synced per user account.
+./docs/entities/about-contact-lookup-key.md:with an Account and are synced). The lookup key points to a person entity rather than just a row
+./docs/entities/about-contact-lookup-key.md:## Moving RawContacts between accounts and the lookup key
+./docs/entities/about-contact-lookup-key.md:Associating a local (device-only) RawContact to an Account will change the Contact lookup key. In
+./docs/entities/about-contact-lookup-key.md:general, set a RawContact's Account to something else will change the lookup key. In these cases,
+./docs/entities/about-contact-lookup-key.md:Changing a RawContact's Account will result in a failed lookup using lookup keys prior to the
+./docs/entities/about-contact-lookup-key.md:Account change.
+./docs/entities/about-contact-lookup-key.md:3. Change the RawContact's Account.
+./docs/entities/about-contact-lookup-key.md:> ℹ️ For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
+./docs/entities/about-contact-lookup-key.md:Account change.
+./docs/entities/about-contact-lookup-key.md:with an Account and are synced).
+./docs/entities/about-contact-lookup-key.md:Another thing to check is what happens when associating a local RawContact to an Account (move from
+./docs/entities/about-contact-lookup-key.md:device to Account) and vice versa. Is the lookup key of the Contact affected?
+./docs/entities/about-contact-lookup-key.md:After associating the local RawContact to an Account...
+./docs/entities/about-contact-lookup-key.md:Removing the account from it results in...
+./docs/entities/about-contact-lookup-key.md:moving between accounts in the future.
+./docs/entities/sync-contact-data.md:the account sync settings. You can typically find these account sync settings via
+./docs/entities/sync-contact-data.md:_Settings -> Accounts -> <account> -> Account sync -> "Contacts"_. Of course, in addition to having
+./docs/entities/sync-contact-data.md:![Account sync settings](./../assets/images/account-sync-settings.png)
+./docs/entities/sync-contact-data.md:When you have Contacts syncing enabled, as long as the `android.accounts.Account` has active sync
+./docs/entities/sync-contact-data.md:adapters and remote services and you have network connection, data belonging to that account (e.g.
+./docs/entities/sync-contact-data.md:"vestrel00@gmail.com" is a Google account) are synced across devices and online. This means that any
+./docs/entities/sync-contact-data.md:that account.
+./docs/entities/sync-contact-data.md:> ℹ️ Besides Google Accounts, there is also Samsung, Yahoo, MSN/Hotmail, etc.
+./docs/entities/sync-contact-data.md:## Adding or removing Accounts
+./docs/entities/sync-contact-data.md:When an Account is added to the system and Contacts syncing is enabled and there is network
+./docs/entities/sync-contact-data.md:Groups that belong to that Account.
+./docs/entities/sync-contact-data.md:Similarly, when an Account is removed from the system though regardless of Contacts syncing enabled
+./docs/entities/sync-contact-data.md:Data, and Groups that belong to that Account.
+./docs/entities/sync-contact-data.md:## Only contacts that are associated with an Account are synced
+./docs/entities/sync-contact-data.md:More specifically, RawContacts that are not associated with an Account (local, device-only) are not
+./docs/entities/sync-contact-data.md:synced. Syncing is account specific, which is why you must turn on Contact syncing in the system
+./docs/entities/sync-contact-data.md:For example, data belonging to a RawContact that is associated with a Google account (e.g. Gmail)
+./docs/entities/sync-contact-data.md:will be available anywhere the Google account is used; in any Android or iOS device, a web browser,
+./docs/entities/sync-contact-data.md:depends on the account sync settings, which can be configured in the system settings app and
+./docs/entities/sync-contact-data.md:sync events as long as Contacts sync is enabled for the Account in the system settings.
+./docs/entities/sync-contact-data.md:- Adding an Account.
+./docs/entities/sync-contact-data.md:- Removing an Account.
+./docs/entities/sync-contact-data.md:- New lookup key is not assigned after associating a local RawContact to an Account.
+./docs/entities/sync-contact-data.md:synced because they are not account specific and they have no sync adapters and no remote service
+./docs/entities/sync-contact-data.md:library as it requires access to remote databases and account-specific data. Let's talk about it
+./docs/entities/sync-contact-data.md:> device and upload existing data to a new account. Synchronization also ensures that users have
+./docs/entities/sync-contact-data.md:> and content provider, but can handle multiple account names for the same service. The framework
+./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
+./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE '*******************' ESCAPE '\') AND (account_type LIKE '**********' ESCAPE '\')
+./README.md:- ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups
+./README.md:- ✅ [**Insert**](/docs/basics/insert-contacts.md) one or more RawContacts with an associated Account,
+./README.md:- ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table
+./README.md:- ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md)
+./README.md:- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"
+./README.md:    .accounts(
+./README.md:        Account("john.doe@gmail.com", "com.google"),
+./README.md:        Account("john.doe@myspace.com", "com.myspace"),
