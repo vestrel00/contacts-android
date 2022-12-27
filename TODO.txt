@@ -389,25 +389,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
 ./core/src/main/java/contacts/core/Update.kt:        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
 ./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
-./core/src/main/java/contacts/core/data/DataQuery.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/data/DataQuery.kt: * [Address.postcode] in ascending order. Only addresses in the given account are included. Only the
-./core/src/main/java/contacts/core/data/DataQuery.kt: *      .accounts(account)
-./core/src/main/java/contacts/core/data/DataQuery.kt: *      .accounts(account)
-./core/src/main/java/contacts/core/data/DataQuery.kt:     * Limits this query to only search for data associated with one of the given [accounts].
-./core/src/main/java/contacts/core/data/DataQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
-./core/src/main/java/contacts/core/data/DataQuery.kt:     * all data from all accounts are searched.
-./core/src/main/java/contacts/core/data/DataQuery.kt:     * A null [Account] may be provided here, which results in data belonging to RawContacts with no
-./core/src/main/java/contacts/core/data/DataQuery.kt:     * associated Account to be included in the search. RawContacts without an associated account
-./core/src/main/java/contacts/core/data/DataQuery.kt:    fun accounts(vararg accounts: Account?): DataQuery<F, S, E>
-./core/src/main/java/contacts/core/data/DataQuery.kt:     * See [DataQuery.accounts]
-./core/src/main/java/contacts/core/data/DataQuery.kt:    fun accounts(accounts: Collection<Account?>): DataQuery<F, S, E>
-./core/src/main/java/contacts/core/data/DataQuery.kt:     * See [DataQuery.accounts]
-./core/src/main/java/contacts/core/data/DataQuery.kt:    fun accounts(accounts: Sequence<Account?>): DataQuery<F, S, E>
-./core/src/main/java/contacts/core/data/DataQuery.kt:        // Redact account info.
-./core/src/main/java/contacts/core/data/DataQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/data/DataQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/data/DataQuery.kt:    override fun accounts(accounts: Sequence<Account?>): DataQuery<F, S, E> = apply {
-./core/src/main/java/contacts/core/data/DataQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
 ./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:    fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(contentUri)
 ./core/src/main/java/contacts/core/entities/operation/RawContactsOperation.kt:         * Passing in null account name and type is valid. It is the same behavior as the native
