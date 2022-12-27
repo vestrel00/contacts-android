@@ -8,26 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * Limits the search to only those RawContacts associated with one of the given accounts.
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * Contacts returned may still contain RawContacts / data that belongs to other accounts not
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * specified in [accounts] because Contacts may be made up of more than one RawContact from
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * different Accounts. This is the same behavior as the native Contacts app.
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * A null [Account] may be provided here, which results in RawContacts with no associated
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * Account to be included in the search. RawContacts without an associated account are
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    fun accounts(vararg accounts: Account?): PhoneLookupQuery
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * See [PhoneLookupQuery.accounts]
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    fun accounts(accounts: Collection<Account?>): PhoneLookupQuery
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * See [PhoneLookupQuery.accounts]
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * - [contacts.core.entities.RawContact.account]
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:     * [contacts.core.entities.RawContact.account].
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:        // Redact Account information.
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:    override fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery = apply {
-./core/src/main/java/contacts/core/PhoneLookupQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
 ./core/src/main/java/contacts/core/Insert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
 ./core/src/main/java/contacts/core/Insert.kt: * To insert a raw contact with the name "john doe" with email "john@doe.com" for the given account;
 ./core/src/main/java/contacts/core/Insert.kt: *          this.account = account
