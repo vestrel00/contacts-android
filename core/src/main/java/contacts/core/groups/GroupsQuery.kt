@@ -58,22 +58,24 @@ interface GroupsQuery : CrudApi {
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all Groups are included in the search.
      *
-     * A null Account may not be provided here because groups may only exist with an Account.
+     * A null [Account] may be provided here, which results in Groups with no associated Account to
+     * be included in the search. Groups without an associated account are considered local groups
+     * or device-only groups, which are not synced.
      *
      * You may also use [where] in conjunction with [GroupsFields.AccountName] and
      * [GroupsFields.AccountType] for a more flexible search.
      */
-    fun accounts(vararg accounts: Account): GroupsQuery
+    fun accounts(vararg accounts: Account?): GroupsQuery
 
     /**
      * See [GroupsQuery.accounts].
      */
-    fun accounts(accounts: Collection<Account>): GroupsQuery
+    fun accounts(accounts: Collection<Account?>): GroupsQuery
 
     /**
      * See [GroupsQuery.accounts].
      */
-    fun accounts(accounts: Sequence<Account>): GroupsQuery
+    fun accounts(accounts: Sequence<Account?>): GroupsQuery
 
     /**
      * Filters the returned [Group]s matching the criteria defined by the [where]. If not specified
@@ -226,7 +228,7 @@ interface GroupsQuery : CrudApi {
          *
          * The [offset] and [limit] functions DOES NOT apply to this list.
          */
-        fun from(account: Account): List<Group>
+        fun from(account: Account?): List<Group>
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -280,11 +282,11 @@ private class GroupsQueryImpl(
         isRedacted = true
     )
 
-    override fun accounts(vararg accounts: Account) = accounts(accounts.asSequence())
+    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Collection<Account>) = accounts(accounts.asSequence())
+    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account>): GroupsQuery = apply {
+    override fun accounts(accounts: Sequence<Account?>): GroupsQuery = apply {
         rawContactsWhere = accounts.toGroupsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
@@ -434,5 +436,5 @@ private class GroupsQueryResult private constructor(
         isRedacted = true
     )
 
-    override fun from(account: Account): List<Group> = filter { it.account == account }
+    override fun from(account: Account?): List<Group> = filter { it.account == account }
 }
