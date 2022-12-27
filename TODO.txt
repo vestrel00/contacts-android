@@ -29,74 +29,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/util/NewRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
 ./core/src/main/java/contacts/core/util/NewRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
 ./core/src/main/java/contacts/core/util/NewRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:import contacts.core.accounts.Accounts
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns true if [this] is in the list of all accounts in the system.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns true if [this] is NOT in the list of all accounts in the system.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.nullIfNotInSystem(accounts: Accounts): Account? =
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:    nullIfNotIn(accounts.query().find())
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:    if (accounts.contains(this)) this else null
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Yes, I know that the column names of RawContactsFields and GroupsFields AccountName and
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * AccountType are the same. Two different functions exist that have outputs with the same
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches the given [Account]. This is for use in
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Account?.toRawContactsWhere(): Where<RawContactsField> =
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Collection<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? = distinct()
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:    .whereOr { account ->
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:        if (account != null) {
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:            (RawContactsFields.AccountName equalToIgnoreCase account.name) and
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    (RawContactsFields.AccountType equalToIgnoreCase account.type)
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:            // Samsung devices use "vnd.sec.contact.phone" for account name and type instead of null.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:            (RawContactsFields.AccountName.isNull() and RawContactsFields.AccountType.isNull())
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    (RawContactsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:                            (RawContactsFields.AccountType equalTo SAMSUNG_PHONE_ACCOUNT)
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct()
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:    .whereOr { account ->
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:        if (account != null) {
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:            // RawContactsFields and GroupsFields AccountName and AccountType are the same.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:            (GroupsFields.AccountName equalToIgnoreCase account.name) and
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    (GroupsFields.AccountType equalToIgnoreCase account.type)
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:            GroupsFields.AccountName.isNull() and
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:                    GroupsFields.AccountType.isNull()
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:// These Redactable Account extensions might prove useful for some consumers. Thus, they are public.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a copy of this account where the [Account.name] and [Account.type] are redacted.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Account.redactedCopy(): Account = Account(
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * If [redact] is true, returns a copy of this account where the [Account.name] and [Account.type]
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Account.redactedCopyOrThis(redact: Boolean) = if (redact) redactedCopy() else this
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a copy of every account in this collection such that the [Account.name] and
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.type] are redacted.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Collection<Account>.redactedCopies(): List<Account> = map { it.redactedCopy() }
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * If [redact] is true, returns a copy of every account in this collection such that the
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.name] and [Account.type] are redacted. Otherwise, just returns this.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Collection<Account>.redactedCopiesOrThis(redact: Boolean) =
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a copy of every account in this sequence such that the [Account.name] and
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.type] are redacted.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Sequence<Account>.redactedCopies(): Sequence<Account> = map { it.redactedCopy() }
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * If [redact] is true, returns a copy of every account in this sequence such that the
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * [Account.name] and [Account.type] are redacted. Otherwise, just returns this.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Sequence<Account>.redactedCopiesOrThis(redact: Boolean) =
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Returns a [RedactableAccount] that can be used for redacting this account and keeping track of
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * its [RedactableAccount.isRedacted] state.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:fun Account.asRedactable() = RedactableAccount(this, isRedacted = false)
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * Holds/wraps an [Account] and keeps track of its [isRedacted] state.
-./core/src/main/java/contacts/core/util/AccountExtensions.kt: * It might be possible to extend [Account]. However, I am not sure what kind of issues we can run
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:class RedactableAccount(
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:    val account: Account,
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:    override fun toString(): String = account.toString()
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:    override fun redactedCopy() = RedactableAccount(
-./core/src/main/java/contacts/core/util/AccountExtensions.kt:        account.redactedCopy(),
 ./core/src/main/java/contacts/core/util/ContactRefresh.kt: * ## Contact linking/unlinking and changing Accounts
 ./core/src/main/java/contacts/core/util/ContactRefresh.kt: * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
 ./core/src/main/java/contacts/core/util/ContactData.kt: * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
@@ -493,6 +425,8 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/Options.kt:     * Raw contacts that are not associated with an account may not have any group memberships. Even
 ./core/src/main/java/contacts/core/entities/Event.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
 ./core/src/main/java/contacts/core/entities/Relation.kt: * Local RawContacts (those that are not associated with an Account) **should not** have any entries
+
+
 ./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,
 ./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:    var defaultAccountForNewContacts: Account?
@@ -800,6 +734,8 @@ grep --include="*kt" -ri "account" .
 ./docs/basics/query-raw-contacts.md:When you perform a query that returns groups from more than one account, you will get everything
 ./docs/basics/query-raw-contacts.md:that allows you to get a sublist with RawContacts belonging only to a particular account.
 ./docs/basics/query-raw-contacts.md:val rawContactsFromAccount = rawContactsList.from(account)
+
+
 ./docs/dev-notes.md:    - Rows that link Contacts rows to specific Accounts.
 ./docs/dev-notes.md:    - `ACCOUNT_NAME`: the `Account.name`
 ./docs/dev-notes.md:    - `ACCOUNT_TYPE` the `Account.type`
@@ -905,6 +841,8 @@ grep --include="*kt" -ri "account" .
 ./docs/dev-notes.md:depends on the account sync settings, which can be configured in the native system settings app and
 ./docs/dev-notes.md:Account. Custom sync adapters are required to sync custom data. This library currently does NOT
 ./docs/dev-notes.md:- `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
+
+
 ./docs/other/get-set-clear-contact-raw-contact-options.md:> ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
 ./docs/other/link-unlink-contacts.md:You may link Contacts with RawContacts that belong to different Accounts. Any RawContact Data
 ./docs/other/link-unlink-contacts.md:modifications are synced per Account sync settings.
@@ -914,6 +852,8 @@ grep --include="*kt" -ri "account" .
 ./docs/other/link-unlink-contacts.md:RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
 ./docs/other/link-unlink-contacts.md:RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
 ./docs/other/link-unlink-contacts.md:RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
+
+
 ./docs/cheatsheet.md:    import android.accounts.Account
 ./docs/cheatsheet.md:        fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)
 ./docs/cheatsheet.md:            .accounts(Account("email@gmail.com", "com.google"))
@@ -1004,6 +944,8 @@ grep --include="*kt" -ri "account" .
 ./docs/cheatsheet.md:                    .accounts()
 ./docs/cheatsheet.md:                    .updateLocalRawContactsAccount()
 ./docs/cheatsheet.md:                    .addToAccount(account)
+
+
 ./docs/groups/update-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
 ./docs/groups/update-groups.md:The above list may vary per account.
 ./docs/groups/update-groups.md:belonging to the same account to exist. In older versions of Android, the native Contacts app
@@ -1052,6 +994,8 @@ grep --include="*kt" -ri "account" .
 ./docs/groups/delete-groups.md:val where = GroupsFields.AccountType equalTo "com.google"
 ./docs/groups/delete-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
 ./docs/groups/delete-groups.md:The above list may vary per account.
+
+
 ./docs/profile/insert-profile.md:## Allowing multiple RawContacts per Account
 ./docs/profile/insert-profile.md:The API allows you to insert a profile RawContact with an Account that already has a profile
 ./docs/profile/insert-profile.md:.allowMultipleRawContactsPerAccount(true|false)
@@ -1082,6 +1026,8 @@ grep --include="*kt" -ri "account" .
 ./docs/profile/query-profile.md:If no accounts are specified (this function is not called or called with no Accounts), then all
 ./docs/profile/query-profile.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
 ./docs/profile/query-profile.md:included. RawContacts without an associated account are considered local contacts or device-only
+
+
 ./docs/accounts/query-accounts.md:# Query for Accounts
 ./docs/accounts/query-accounts.md:This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the
 ./docs/accounts/query-accounts.md:`AccountManager`.
@@ -1139,6 +1085,8 @@ grep --include="*kt" -ri "account" .
 ./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
 ./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:   Account when the account changes. This occurs even if the group membership already exists
 ./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
+
+
 ./docs/customdata/integrate-custom-data.md:across devices and will remain local to the device regardless of Account sync settings. It is up to
 ./docs/customdata/integrate-custom-data.md:adapters. That is for you to implement based on your account services. This library provides you
 ./docs/customdata/integrate-custom-data.md:> To display your custom data, provide a `contacts.xml` file containing a `<ContactsAccountType>`
@@ -1148,8 +1096,12 @@ grep --include="*kt" -ri "account" .
 ./docs/customdata/integrate-custom-data.md:</ContactsAccountType>
 ./docs/customdata/integrate-googlecontacts-custom-data.md:shown for RawContacts that are associated with a Google Account. Local (device-only) RawContacts do
 ./docs/customdata/integrate-googlecontacts-custom-data.md:these custom data should remain synced depending on account sync settings.
+
+
 ./docs/sim/about-sim-contacts.md:SyncAdapters. The RawContacts created in the Contacts Provider have a non-remote account name and
 ./docs/sim/about-sim-contacts.md:accountName: primary.sim.account_name, accountType: vnd.sec.contact.sim
+
+
 ./docs/data/query-data-sets.md:## Specifying Accounts
 ./docs/data/query-data-sets.md:To limit the search to only those data associated with one of the given accounts,
 ./docs/data/query-data-sets.md:.accounts(accounts)
@@ -1159,7 +1111,11 @@ grep --include="*kt" -ri "account" .
 ./docs/data/query-data-sets.md:If no accounts are specified (this function is not called or called with no Accounts), then all
 ./docs/data/query-data-sets.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
 ./docs/data/query-data-sets.md:included in the search. RawContacts without an associated account are considered local contacts or
+
+
 ./docs/logging/log-api-input-output.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
+
+
 ./docs/entities/about-local-contacts.md:`android.accounts.Account` are local to each device and will not be synced across devices.
 ./docs/entities/about-local-contacts.md:remote service as it is not associated with any account.
 ./docs/entities/about-local-contacts.md:## Associating a local RawContact to an Account
@@ -1244,6 +1200,8 @@ grep --include="*kt" -ri "account" .
 ./docs/entities/sync-contact-data.md:> and content provider, but can handle multiple account names for the same service. The framework
 ./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
 ./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE '*******************' ESCAPE '\') AND (account_type LIKE '**********' ESCAPE '\')
+
+
 ./README.md:- ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups
 ./README.md:- ✅ [**Insert**](/docs/basics/insert-contacts.md) one or more RawContacts with an associated Account,
 ./README.md:- ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table

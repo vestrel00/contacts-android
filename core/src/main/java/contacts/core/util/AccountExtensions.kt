@@ -90,8 +90,6 @@ internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
         }
     }
 
-private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
-
 /**
  * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
  * in Groups table queries.
@@ -105,10 +103,15 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
             (GroupsFields.AccountName equalToIgnoreCase account.name) and
                     (GroupsFields.AccountType equalToIgnoreCase account.type)
         } else {
-            GroupsFields.AccountName.isNull() and
-                    GroupsFields.AccountType.isNull()
+            (GroupsFields.AccountName.isNull() and GroupsFields.AccountType.isNull())
+                .or(
+                    (GroupsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
+                            (GroupsFields.AccountType equalTo SAMSUNG_PHONE_ACCOUNT)
+                )
         }
     }
+
+private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
 
 // region Redactable
 
