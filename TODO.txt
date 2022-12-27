@@ -137,9 +137,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        accountGroups.find { it.id == group.id }?.let { groupInMemory ->
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.remove(groupInMemory)
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.add(groupInMemory.copy(title = group.title))
-./core/src/main/java/contacts/core/ContactsPermissions.kt:import contacts.core.accounts.AccountsPermissions.Companion.GET_ACCOUNTS_PERMISSION
-./core/src/main/java/contacts/core/ContactsPermissions.kt:     * Returns true if [WRITE_PERMISSION] and [GET_ACCOUNTS_PERMISSION] are granted.
-./core/src/main/java/contacts/core/ContactsPermissions.kt:                && applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * allowing multiple raw contacts per account;
