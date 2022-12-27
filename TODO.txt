@@ -278,26 +278,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
 ./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:    override fun canUpdateLocalRawContactsAccount(): Boolean =
 ./core/src/main/java/contacts/core/accounts/AccountsPermissions.kt:        applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
-./core/src/main/java/contacts/core/accounts/Accounts.kt:package contacts.core.accounts
-./core/src/main/java/contacts/core/accounts/Accounts.kt: * Provides new [AccountsQuery] and [AccountsLocalRawContactsUpdate] for Profile OR non-Profile
-./core/src/main/java/contacts/core/accounts/Accounts.kt: * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.READ_CONTACTS" to the
-./core/src/main/java/contacts/core/accounts/Accounts.kt: * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.WRITE_CONTACTS" to the
-./core/src/main/java/contacts/core/accounts/Accounts.kt: *   AndroidManifest in order to use [updateLocalRawContactsAccount].
-./core/src/main/java/contacts/core/accounts/Accounts.kt:interface Accounts {
-./core/src/main/java/contacts/core/accounts/Accounts.kt:     * Returns a new [AccountsQuery] instance for Profile OR non-Profile (depending on instance)
-./core/src/main/java/contacts/core/accounts/Accounts.kt:    fun query(): AccountsQuery
-./core/src/main/java/contacts/core/accounts/Accounts.kt:     * Returns a new [AccountsLocalRawContactsUpdate] instance Profile OR non-Profile
-./core/src/main/java/contacts/core/accounts/Accounts.kt:    fun updateLocalRawContactsAccount(): AccountsLocalRawContactsUpdate
-./core/src/main/java/contacts/core/accounts/Accounts.kt:     * Returns a new [Accounts] instance for Profile operations.
-./core/src/main/java/contacts/core/accounts/Accounts.kt:    fun profile(): Accounts
-./core/src/main/java/contacts/core/accounts/Accounts.kt: * Creates a new [Accounts] instance for Profile or non-Profile operations.
-./core/src/main/java/contacts/core/accounts/Accounts.kt:internal fun Accounts(contacts: Contacts, isProfile: Boolean): Accounts = AccountsImpl(
-./core/src/main/java/contacts/core/accounts/Accounts.kt:private class AccountsImpl(
-./core/src/main/java/contacts/core/accounts/Accounts.kt:) : Accounts {
-./core/src/main/java/contacts/core/accounts/Accounts.kt:    override fun query() = AccountsQuery(contactsApi, isProfile)
-./core/src/main/java/contacts/core/accounts/Accounts.kt:    override fun updateLocalRawContactsAccount() =
-./core/src/main/java/contacts/core/accounts/Accounts.kt:        AccountsLocalRawContactsUpdate(contactsApi, isProfile)
-./core/src/main/java/contacts/core/accounts/Accounts.kt:    override fun profile(): Accounts = AccountsImpl(contactsApi, true)
 ./core/src/main/java/contacts/core/Update.kt:import contacts.core.accounts.accountForRawContactWithId
 ./core/src/main/java/contacts/core/Update.kt:    val account = contentResolver.accountForRawContactWithId(rawContact.id)
 ./core/src/main/java/contacts/core/Update.kt:    val hasAccount = account != null
