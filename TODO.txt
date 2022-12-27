@@ -224,27 +224,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/Contacts.kt:        AccountsPermissions(context.applicationContext),
 ./core/src/main/java/contacts/core/Contacts.kt:    override val accountsPermissions: AccountsPermissions,
 ./core/src/main/java/contacts/core/Contacts.kt:    override fun accounts() = Accounts(this, false)
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt: * to the given account. Include only the name and email properties of the profile [Contact].
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt: *      .accounts(account)
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt: *      .accounts(account)
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * accounts. The Contact returned will not contain data that belongs to other accounts not
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * specified in [accounts].
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * If no accounts are specified (this function is not called or called with no Accounts), then
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * A null [Account] may be provided here, which results in RawContacts with no associated
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * Account to be included in the search. RawContacts without an associated account are
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    fun accounts(vararg accounts: Account?): ProfileQuery
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * See [ProfileQuery.accounts]
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    fun accounts(accounts: Collection<Account?>): ProfileQuery
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * See [ProfileQuery.accounts]
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    fun accounts(accounts: Sequence<Account?>): ProfileQuery
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * - [contacts.core.entities.RawContact.account]
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:     * [contacts.core.entities.RawContact.account].
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:        // Redact Account information.
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    override fun accounts(vararg accounts: Account?) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:    override fun accounts(accounts: Sequence<Account?>): ProfileQuery = apply {
-./core/src/main/java/contacts/core/profile/ProfileQuery.kt:        rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
 ./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * allowing multiple raw contacts per account;
