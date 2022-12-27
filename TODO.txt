@@ -58,9 +58,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
-./core/src/main/java/contacts/core/CrudApi.kt:import contacts.core.accounts.AccountsPermissions
-./core/src/main/java/contacts/core/CrudApi.kt:internal val CrudApi.accountsPermissions: AccountsPermissions
-./core/src/main/java/contacts/core/CrudApi.kt:    get() = contactsApi.accountsPermissions
 ./core/src/main/java/contacts/core/groups/GroupsQuery.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/groups/GroupsQuery.kt: * Here is an example query that returns the first 5 [Group]s in the account, skipping the first 2,
 ./core/src/main/java/contacts/core/groups/GroupsQuery.kt: *      .accounts(account)
