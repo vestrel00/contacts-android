@@ -34,6 +34,14 @@ val account = Contacts(context).accounts().query()
     .find()
 ```
 
+To get the account for a set of RawContacts with a given set of IDs,
+
+```kotlin
+val account = Contacts(context).accounts().query()
+    .associatedWithRawContactIds(rawContactIds)
+    .find()
+```
+
 To get all available accounts in the system with an account type of "com.google" or "com.yahoo"
 AND is associated with at least one of the given RawContacts,
 
