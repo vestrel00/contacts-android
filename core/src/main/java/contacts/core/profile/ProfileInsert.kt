@@ -377,7 +377,7 @@ private class ProfileInsertImpl(
             ProfileInsertFailed()
         } else {
             // This ensures that a valid account is used. Otherwise, null is used.
-            val account = rawContact.account?.nullIfNotInSystem(contactsApi.accounts())
+            val account = rawContact.account.nullIfNotInSystem(contactsApi.accounts())
 
             if (
                 (!allowMultipleRawContactsPerAccount

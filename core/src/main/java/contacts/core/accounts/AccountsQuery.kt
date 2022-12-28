@@ -188,6 +188,11 @@ interface AccountsQuery : CrudApi {
     interface Result : List<Account>, CrudApi.Result {
 
         /**
+         * A map of RawContact IDs to Accounts.
+         */
+        val rawContactIdsAccountsMap: Map<Long, Account>
+
+        /**
          * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
          *
          * ## Use only when [associatedWith] is the only query parameter used!
@@ -291,7 +296,7 @@ private class AccountsQueryImpl(
         return if (
             cancel()
             || !accountsPermissions.canQueryAccounts()
-            // If the isProfile parameter does not match for all RawContacts, fail immediately.
+            // If the isProfile parameter does not match for all RawContacts, return immediately.
             || rawContactIds.allAreProfileIds != isProfile
             // No accounts in the system. No point in processing the rest of the query.
             || accounts.isEmpty()
@@ -382,7 +387,7 @@ internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Acc
 
 private class AccountsQueryResult private constructor(
     accounts: Set<Account>,
-    private val rawContactIdsAccountsMap: Map<Long, Account>,
+    override val rawContactIdsAccountsMap: Map<Long, Account>,
     override val isRedacted: Boolean
 ) : ArrayList<Account>(accounts), AccountsQuery.Result {
 

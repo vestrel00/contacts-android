@@ -10,8 +10,15 @@ import contacts.core.accounts.Accounts
  * ## Permissions
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return false for [Account] instances created
+ * with this name and type because it is not an actual account that is registered/returned by the
+ * system AccountManager.
  */
-internal fun Account.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
+internal fun Account?.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
 
 /**
  * Returns true if [this] is NOT in the list of all accounts in the system.
@@ -19,8 +26,15 @@ internal fun Account.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem
  * ## Permissions
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return true for [Account] instances created
+ * with this name and type because it is not an actual account that is registered/returned by the
+ * system AccountManager.
  */
-internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
+internal fun Account?.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
 
 /**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
@@ -29,15 +43,23 @@ internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(ac
  * ## Permissions
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return null for [Account] instances created
+ * with this name and type because it is not an actual account that is registered/returned by the
+ * system AccountManager.
  */
-internal fun Account.nullIfNotInSystem(accounts: Accounts): Account? =
+internal fun Account?.nullIfNotInSystem(accounts: Accounts): Account? = this?.let {
     nullIfNotIn(accounts.query().find())
+}
 
 /**
  * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
  * Otherwise, returns null.
  */
-internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
+private fun Account.nullIfNotIn(accounts: List<Account>): Account? =
     if (accounts.contains(this)) this else null
 
 /*
