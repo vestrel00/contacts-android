@@ -404,7 +404,9 @@ internal fun Contacts.insertRawContact(
     rawContact: NewRawContact,
     isProfile: Boolean
 ): Long? {
-    // This ensures that a valid account is used. Otherwise, null is used.
+    // This ensures that a valid account is used. Otherwise, null is used. For Samsung devices, the
+    // "account" will later be set to a local non-null account that is not returned by the system
+    // AccountManager.
     val account = rawContact.account?.nullIfNotInSystem(accounts())
 
     val operations = arrayListOf<ContentProviderOperation>()
@@ -430,29 +432,19 @@ internal fun Contacts.insertRawContact(
         )
     )
 
-    if (account != null) {
-        // I'm not sure why the native Contacts app hides events from the UI for local raw contacts.
-        // The Contacts Provider does support having events for local raw contacts. Anyways, let's
-        // follow in the footsteps of the native Contacts app...
-        operations.addAll(
-            EventOperation(isProfile, Fields.Event.intersect(includeFields)).insertForNewRawContact(
-                rawContact.events
-            )
+    operations.addAll(
+        EventOperation(isProfile, Fields.Event.intersect(includeFields)).insertForNewRawContact(
+            rawContact.events
         )
-    }
+    )
 
-    if (account != null) {
-        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
-        // It should not be possible for consumers to get access to group memberships.
-        // The Contacts Provider does support having events for local raw contacts.
-        operations.addAll(
-            GroupMembershipOperation(
-                isProfile,
-                Fields.GroupMembership.intersect(includeFields),
-                groups()
-            ).insertForNewRawContact(rawContact.groupMemberships, account)
-        )
-    }
+    operations.addAll(
+        GroupMembershipOperation(
+            isProfile,
+            Fields.GroupMembership.intersect(includeFields),
+            groups()
+        ).insertForNewRawContact(rawContact.groupMemberships, account)
+    )
 
     // Apply the options operations after the group memberships operation.
     // Any add membership operation to the favorites group will be overshadowed by the value of
@@ -507,16 +499,12 @@ internal fun Contacts.insertRawContact(
     // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
     // to set full-sized and thumbnail photos.
 
-    if (account != null) {
-        // I'm not sure why the native Contacts app hides relations from the UI for local raw
-        // contacts. The Contacts Provider does support having events for local raw contacts.
-        // Anyways, let's follow in the footsteps of the native Contacts app...
-        operations.addAll(
-            RelationOperation(
-                isProfile, Fields.Relation.intersect(includeFields)
-            ).insertForNewRawContact(rawContact.relations)
-        )
-    }
+    operations.addAll(
+        RelationOperation(
+            isProfile,
+            Fields.Relation.intersect(includeFields)
+        ).insertForNewRawContact(rawContact.relations)
+    )
 
     rawContact.sipAddress?.let {
         SipAddressOperation(

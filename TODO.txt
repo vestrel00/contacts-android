@@ -8,20 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./core/src/main/java/contacts/core/Insert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have
-./core/src/main/java/contacts/core/Insert.kt: * To insert a raw contact with the name "john doe" with email "john@doe.com" for the given account;
-./core/src/main/java/contacts/core/Insert.kt: *          this.account = account
-./core/src/main/java/contacts/core/Insert.kt: * rawContact.setAccount(account);
-./core/src/main/java/contacts/core/Insert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/Insert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/Insert.kt:    // This ensures that a valid account is used. Otherwise, null is used.
-./core/src/main/java/contacts/core/Insert.kt:    val account = rawContact.account?.nullIfNotInSystem(accounts())
-./core/src/main/java/contacts/core/Insert.kt:    operations.add(RawContactsOperation(isProfile).insert(account))
-./core/src/main/java/contacts/core/Insert.kt:    if (account != null) {
-./core/src/main/java/contacts/core/Insert.kt:    if (account != null) {
-./core/src/main/java/contacts/core/Insert.kt:        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
-./core/src/main/java/contacts/core/Insert.kt:            ).insertForNewRawContact(rawContact.groupMemberships, account)
-./core/src/main/java/contacts/core/Insert.kt:    if (account != null) {
 ./core/src/main/java/contacts/core/util/NewRawContactData.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/util/NewRawContactData.kt: * Sets the given [NewRawContact.account] to the given [account].
 ./core/src/main/java/contacts/core/util/NewRawContactData.kt:fun NewRawContact.setAccount(account: Account?) {
@@ -112,32 +98,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        accountGroups.find { it.id == group.id }?.let { groupInMemory ->
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.remove(groupInMemory)
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.add(groupInMemory.copy(title = group.title))
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt: * allowing multiple raw contacts per account;
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * If [allowMultipleRawContactsPerAccount] is set to true, then inserting a profile RawContact
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * with an Account that already has a profile RawContact is allowed. Otherwise, this will result
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * According to the `ContactsContract.Profile` documentation; "... each account (including data
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * personal profile data from that source." In other words, one account can have one profile
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * Despite the documentation of "one profile RawContact per one Account", the Contacts Provider
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * allows for multiple RawContacts per Account, including multiple local RawContacts (no
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * Account).
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    fun allowMultipleRawContactsPerAccount(
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        allowMultipleRawContactsPerAccount: Boolean
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    private var allowMultipleRawContactsPerAccount: Boolean = false,
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:                allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        allowMultipleRawContactsPerAccount,
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    override fun allowMultipleRawContactsPerAccount(
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        allowMultipleRawContactsPerAccount: Boolean
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:        this.allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:            // This ensures that a valid account is used. Otherwise, null is used.
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:            val account = rawContact.account?.nullIfNotInSystem(contactsApi.accounts())
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:                (!allowMultipleRawContactsPerAccount
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:                        && contentResolver.profileRawContactExistFor(account))
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:private fun ContentResolver.profileRawContactExistFor(account: Account?): Boolean = query(
-./core/src/main/java/contacts/core/profile/ProfileInsert.kt:    (RawContactsFields.Deleted notEqualTo true) and account.toRawContactsWhere()
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:package contacts.core.accounts
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
