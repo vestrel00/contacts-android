@@ -187,13 +187,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:            AccountsLocalRawContactsUpdate.Result {
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:    override fun redactedCopy(): AccountsLocalRawContactsUpdate.Result =
 ./core/src/main/java/contacts/core/accounts/AccountsLocalRawContactsUpdate.kt:        AccountsRawContactsAssociationsUpdateResultFailed(
-./core/src/main/java/contacts/core/Update.kt:import contacts.core.accounts.accountForRawContactWithId
-./core/src/main/java/contacts/core/Update.kt:    val account = contentResolver.accountForRawContactWithId(rawContact.id)
-./core/src/main/java/contacts/core/Update.kt:    val hasAccount = account != null
-./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
-./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
-./core/src/main/java/contacts/core/Update.kt:        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
-./core/src/main/java/contacts/core/Update.kt:    if (hasAccount) {
 ./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountName, group.account.name)
 ./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountType, group.account.type)
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import android.accounts.Account
