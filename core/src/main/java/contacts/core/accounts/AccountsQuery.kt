@@ -100,6 +100,33 @@ interface AccountsQuery : CrudApi {
     fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>): AccountsQuery
 
     /**
+     * Limits the search to Accounts that are associated with one of the RawContacts with the
+     * given [rawContactIds].
+     *
+     * If this is not specified or none is provided (empty list), then Accounts associated with any
+     * RawContact (or no RawContact) are included in the search.
+     *
+     * Account info for RawContact IDs provided here can be retrieved via [Result.accountFor].
+     *
+     * ## Performance
+     *
+     * This will require an additional database query, internally performed in this function, which
+     * increases the time it takes for [find] to complete. Therefore, you should only specify this
+     * if you actually need it.
+     */
+    fun associatedWithRawContactIds(vararg rawContactIds: Long): AccountsQuery
+
+    /**
+     * See [AccountsQuery.associatedWithRawContactIds].
+     */
+    fun associatedWithRawContactIds(rawContactIds: Collection<Long>): AccountsQuery
+
+    /**
+     * See [AccountsQuery.associatedWithRawContactIds].
+     */
+    fun associatedWithRawContactIds(rawContactIds: Sequence<Long>): AccountsQuery
+
+    /**
      * Returns a list of [Accounts]s matching the preceding query options.
      *
      * ## Permissions
@@ -240,10 +267,18 @@ private class AccountsQueryImpl(
     override fun associatedWith(rawContacts: Collection<ExistingRawContactEntity>) =
         associatedWith(rawContacts.asSequence())
 
-    override fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>): AccountsQuery =
-        apply {
-            rawContactIds.addAll(rawContacts.map { it.id })
-        }
+    override fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>) =
+        associatedWithRawContactIds(rawContacts.map { it.id })
+
+    override fun associatedWithRawContactIds(vararg rawContactIds: Long) =
+        associatedWithRawContactIds(rawContactIds.asSequence())
+
+    override fun associatedWithRawContactIds(rawContactIds: Collection<Long>) =
+        associatedWithRawContactIds(rawContactIds.asSequence())
+
+    override fun associatedWithRawContactIds(rawContactIds: Sequence<Long>): AccountsQuery = apply {
+        this.rawContactIds.addAll(rawContactIds)
+    }
 
     override fun find(): AccountsQuery.Result = find { false }
 
