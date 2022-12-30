@@ -518,7 +518,7 @@ If you use Proguard and the `async` and/or `permissions` modules, then you may n
 
 ## License
 
-    Copyright 2022 Contacts Contributors
+    Copyright 2023 Contacts Contributors
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -8,13 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./core/src/main/java/contacts/core/util/NewRawContactData.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/util/NewRawContactData.kt: * Sets the given [NewRawContact.account] to the given [account].
-./core/src/main/java/contacts/core/util/NewRawContactData.kt:fun NewRawContact.setAccount(account: Account?) {
-./core/src/main/java/contacts/core/util/NewRawContactData.kt:    this.account = account?.redactedCopyOrThis(isRedacted)
-./core/src/main/java/contacts/core/util/NewRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
-./core/src/main/java/contacts/core/util/NewRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
-./core/src/main/java/contacts/core/util/NewRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
 ./core/src/main/java/contacts/core/util/ContactRefresh.kt: * ## Contact linking/unlinking and changing Accounts
 ./core/src/main/java/contacts/core/util/ContactRefresh.kt: * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
 ./core/src/main/java/contacts/core/util/ContactData.kt: * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
