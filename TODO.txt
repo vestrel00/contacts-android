@@ -8,8 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./core/src/main/java/contacts/core/util/ContactRefresh.kt: * ## Contact linking/unlinking and changing Accounts
-./core/src/main/java/contacts/core/util/ContactRefresh.kt: * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
 ./core/src/main/java/contacts/core/groups/GroupsInsert.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
 ./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * ## Accounts
