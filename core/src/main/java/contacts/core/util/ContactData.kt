@@ -56,7 +56,7 @@ fun Contact.eventList(): List<Event> = events().toList()
  * Adding or removing group memberships must be done at the RawContact level, not via Contact.
  * Keep reading for why.
  *
- * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
+ * ## Groups (and memberships to those groups) are tied to a (nullable) Account via RawContacts
  *
  * Groups are tied to an [android.accounts.Account]. There can be no group that exist without an
  * associated Account. Therefore, memberships to groups ([GroupMembership]s) are also tied to an

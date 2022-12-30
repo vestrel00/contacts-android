@@ -13,27 +13,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/util/ContactData.kt: * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
 ./core/src/main/java/contacts/core/util/ContactData.kt: * Groups are tied to an [android.accounts.Account]. There can be no group that exist without an
 ./core/src/main/java/contacts/core/util/ContactData.kt: * associated Account. Therefore, memberships to groups ([GroupMembership]s) are also tied to an
-./core/src/main/java/contacts/core/util/ContactData.kt: * Account. This means that Contacts do NOT have group memberships. Rather, only RawContacts can
-./core/src/main/java/contacts/core/util/ContactData.kt: * For example, if there are two Accounts in the device,
-./core/src/main/java/contacts/core/util/ContactData.kt: * account via sync. While this set of groups may differ slightly from one OEM to another, they are
-./core/src/main/java/contacts/core/util/ContactData.kt: * generally the same. The above two accounts could have the following groups.
-./core/src/main/java/contacts/core/util/ContactData.kt: * Groups from "john@gmail.com" account;
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 1, systemId: Contacts, title: My Contacts, accountName: john@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 2, systemId: null, title: Starred in Android, accountName: john@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 3, systemId: Friends,title: Friends, accountName: john@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 4, systemId: Family, title: Family, accountName: john@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 5, systemId: Coworkers, title: Coworkers, accountName: john@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * Groups from "doe@gmail.com" account;
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 6, systemId: Contacts, title: My Contacts, accountName: doe@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 7, systemId: null, title: Starred in Android, accountName: doe@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 8, systemId: Friends,title: Friends, accountName: doe@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 9, systemId: Family, title: Family, accountName: doe@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 10, systemId: Coworkers, title: Coworkers, accountName: doe@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * Notice that there are two sets of the same systemId and title but they come from different accounts
-./core/src/main/java/contacts/core/util/ContactData.kt: * different accounts, then this set of group memberships may contain two memberships to what
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 1, systemId: Contacts, title: My Contacts, accountName: john@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * - Group id: 6, systemId: Contacts, title: My Contacts, accountName: doe@gmail.com, accountType: com.google
-./core/src/main/java/contacts/core/util/ContactData.kt: * respective accounts get automatically added to. Consumers may think this is a bug BUT it should
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
 ./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
