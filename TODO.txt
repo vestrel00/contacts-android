@@ -10,12 +10,6 @@ grep --include="*kt" -ri "account" .
 
 ./core/src/main/java/contacts/core/util/ContactRefresh.kt: * ## Contact linking/unlinking and changing Accounts
 ./core/src/main/java/contacts/core/util/ContactRefresh.kt: * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
-./core/src/main/java/contacts/core/util/ContactData.kt: * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
-./core/src/main/java/contacts/core/util/ContactData.kt: * Groups are tied to an [android.accounts.Account]. There can be no group that exist without an
-./core/src/main/java/contacts/core/util/ContactData.kt: * associated Account. Therefore, memberships to groups ([GroupMembership]s) are also tied to an
-./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * If this raw contact is not associated with an Account, then this will be ignored during inserts
-./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * and updates. Only group memberships to groups that belong to the same account as the raw contact
-./core/src/main/java/contacts/core/util/MutableRawContactData.kt: * Group membership to the account's default group will not be deleted (in the database) even if it
 ./core/src/main/java/contacts/core/groups/GroupsInsert.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
 ./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * ## Accounts
