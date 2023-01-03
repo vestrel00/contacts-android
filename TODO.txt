@@ -62,8 +62,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        accountGroups.find { it.id == group.id }?.let { groupInMemory ->
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.remove(groupInMemory)
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.add(groupInMemory.copy(title = group.title))
-./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountName, group.account.name)
-./core/src/main/java/contacts/core/entities/operation/GroupsOperation.kt:        .withValue(GroupsFields.AccountType, group.account.type)
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import contacts.core.accounts.accountForRawContactWithId
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:     * Inserts all of the [groupMemberships] that belong to the given [account].
