@@ -81,23 +81,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // to the same account.
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:                groupId != null && !accountGroups.getValue(groupId).isDefaultGroup
-./core/src/main/java/contacts/core/entities/Group.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/entities/Group.kt:     * - The Contacts system group is the default group in which all raw contacts of an account
-./core/src/main/java/contacts/core/entities/Group.kt:     * The Account that this group is associated with.
-./core/src/main/java/contacts/core/entities/Group.kt:     * This must be a valid Account.
-./core/src/main/java/contacts/core/entities/Group.kt:     * When there are no available accounts, no group may exist. The native Contacts app does not
-./core/src/main/java/contacts/core/entities/Group.kt:     * accounts present.
-./core/src/main/java/contacts/core/entities/Group.kt:    val account: Account
-./core/src/main/java/contacts/core/entities/Group.kt:     * The default group of an Account is a system group that has [autoAdd] set to true.
-./core/src/main/java/contacts/core/entities/Group.kt:     * Account belong to the Account's default group.
-./core/src/main/java/contacts/core/entities/Group.kt:     * Usually, an Account only has one group that have [favorites] set to true and that is
-./core/src/main/java/contacts/core/entities/Group.kt:    override val account: Account,
-./core/src/main/java/contacts/core/entities/Group.kt:        MutableGroup(id, systemId, title, readOnly, favorites, autoAdd, account, isRedacted)
-./core/src/main/java/contacts/core/entities/Group.kt:        account = account.redactedCopy()
-./core/src/main/java/contacts/core/entities/Group.kt:    override val account: Account,
-./core/src/main/java/contacts/core/entities/Group.kt:        account = account.redactedCopy()
-./core/src/main/java/contacts/core/entities/Group.kt:    override var account: Account,
-./core/src/main/java/contacts/core/entities/Group.kt:        account = account.redactedCopy()
 ./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:    val account: Account
 ./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            // There should never be null account name or type...

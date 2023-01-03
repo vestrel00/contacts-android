@@ -19,7 +19,7 @@ sealed interface GroupEntity : Entity {
      *
      * #### Notes
      *
-     * - The Contacts system group is the default group in which all raw contacts of an account
+     * - The "Contacts" system group is the default group in which all raw contacts of an account
      *   belongs to. Therefore, it is typically hidden when showing the list of groups in the UI.
      * - The starred (favorites) group is not a system group as it has null system id. However,
      *   it behaves like one in that it is read only and it comes with most (if not all) copies of
@@ -68,11 +68,19 @@ sealed interface GroupEntity : Entity {
      *
      * #### Notes
      *
-     * When there are no available accounts, no group may exist. The native Contacts app does not
-     * display the groups field when creating or updating raw contacts when there are no available
-     * accounts present.
+     * In the AOSP Contacts app, when there are no available accounts, no group may exist. As a
+     * result, the AOSP Contacts app does not display the groups field when creating or updating
+     * raw contacts when there are no available accounts present.
+     *
+     * On the other hand, other Contacts applications such as Google Contacts allows groups to exist
+     * without an association to an account.
+     *
+     * Therefore, this library will allow groups to exist without an account. The responsibility of
+     * allowing or disallowing groups to exist without an account is up to the application.
+     *
+     * More info in https://github.com/vestrel00/contacts-android/issues/167
      */
-    val account: Account
+    val account: Account?
 
     /**
      * A group that is created and managed by the system and cannot be modified.
@@ -86,6 +94,8 @@ sealed interface GroupEntity : Entity {
     /**
      * The default group of an Account is a system group that has [autoAdd] set to true.
      *
+     * #### Notes
+     *
      * Usually, only one of these system groups have [autoAdd] set to true and that is typically the
      * "default" group as it is not shown in any UI as a selectable group. All raw contacts for an
      * Account belong to the Account's default group.
@@ -98,6 +108,8 @@ sealed interface GroupEntity : Entity {
 
     /**
      * The favorites group is a read-only group that has [favorites] set to true.
+     *
+     * #### Notes
      *
      * Usually, an Account only has one group that have [favorites] set to true and that is
      * typically THE "favorites" group as it is shown in the UI as a special group.
@@ -155,7 +167,7 @@ data class Group internal constructor(
     override val readOnly: Boolean,
     override val favorites: Boolean,
     override val autoAdd: Boolean,
-    override val account: Account,
+    override val account: Account?,
 
     override val isRedacted: Boolean
 
@@ -174,7 +186,7 @@ data class Group internal constructor(
         isRedacted = true,
 
         title = title.redact(),
-        account = account.redactedCopy()
+        account = account?.redactedCopy()
     )
 }
 
@@ -193,7 +205,7 @@ data class MutableGroup internal constructor(
     override val readOnly: Boolean,
     override val favorites: Boolean,
     override val autoAdd: Boolean,
-    override val account: Account,
+    override val account: Account?,
 
     override val isRedacted: Boolean
 
@@ -203,7 +215,7 @@ data class MutableGroup internal constructor(
         isRedacted = true,
 
         title = title.redact(),
-        account = account.redactedCopy()
+        account = account?.redactedCopy()
     )
 }
 
@@ -214,7 +226,7 @@ data class MutableGroup internal constructor(
 data class NewGroup @JvmOverloads constructor(
 
     override var title: String,
-    override var account: Account,
+    override var account: Account?,
 
     override val isRedacted: Boolean = false
 
@@ -236,7 +248,7 @@ data class NewGroup @JvmOverloads constructor(
         isRedacted = true,
 
         title = title.redact(),
-        account = account.redactedCopy()
+        account = account?.redactedCopy()
     )
 }
 
