@@ -3,6 +3,7 @@ package contacts.core.util
 import android.accounts.Account
 import contacts.core.*
 import contacts.core.accounts.Accounts
+import contacts.core.entities.cursor.SAMSUNG_PHONE_ACCOUNT
 
 /**
  * Returns true if [this] is in the list of all accounts in the system.
@@ -130,11 +131,6 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
                 )
         }
     }
-
-// Samsung devices use "vnd.sec.contact.phone" for local account name and type instead of null.
-// This is NOT an actual Account and is not returned by the Android AccountManager.
-// See https://github.com/vestrel00/contacts-android/issues/257
-private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
 
 // region Redactable
 

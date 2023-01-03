@@ -66,6 +66,13 @@ sealed interface GroupEntity : Entity {
      *
      * This must be a valid Account.
      *
+     * ## Samsung devices
+     *
+     * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local
+     * RawContacts in the RawContacts table instead of null. This will be null for [Account]
+     * instances created with this name and type because it is not an actual account that is
+     * registered/returned by the system AccountManager.
+     *
      * #### Notes
      *
      * In the AOSP Contacts app, when there are no available accounts, no group may exist. As a

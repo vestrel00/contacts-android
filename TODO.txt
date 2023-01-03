@@ -81,13 +81,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // to the same account.
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
 ./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:                groupId != null && !accountGroups.getValue(groupId).isDefaultGroup
-./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:    val account: Account
-./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            // There should never be null account name or type...
-./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            val accountName = getNonNullString(GroupsFields.AccountName, "null")
-./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            val accountType = getNonNullString(GroupsFields.AccountType, "null")
-./core/src/main/java/contacts/core/entities/cursor/GroupsCursor.kt:            return Account(accountName, accountType)
-./core/src/main/java/contacts/core/entities/mapper/GroupMapper.kt:            account = groupsCursor.account,
 
 
 ./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,
