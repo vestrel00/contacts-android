@@ -62,23 +62,6 @@ grep --include="*kt" -ri "account" .
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        accountGroups.find { it.id == group.id }?.let { groupInMemory ->
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.remove(groupInMemory)
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.add(groupInMemory.copy(title = group.title))
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:import contacts.core.accounts.accountForRawContactWithId
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:     * Inserts all of the [groupMemberships] that belong to the given [account].
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        account: Account
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        val accountGroups = groups.query().accounts(account).find()
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // to the same account.
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:     * [GroupMembershipEntity]s that do not belong to the Account associated with the [rawContactId]
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // Groups must always be associated with an account. No account, no group operation.
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        val account = context.contentResolver
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .accountForRawContactWithId(rawContactId) ?: return emptyList()
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        val accountGroups = groups.query().accounts(account).find()
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            // account. Just in case though...
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:        // to the same account.
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:            .filter { accountGroups[it.groupId] != null }
-./core/src/main/java/contacts/core/entities/operation/GroupMembershipOperation.kt:                groupId != null && !accountGroups.getValue(groupId).isDefaultGroup
 
 
 ./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,

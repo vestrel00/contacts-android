@@ -52,6 +52,13 @@ import contacts.core.util.*
  * has over 100 different Accounts that they are logged in to?). This assumption means that the
  * query function of Accounts need not be as extensive (or at all) as other Queries. Where, orderBy,
  * offset, and limit functions are left to consumers to implement if they wish.
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return null for such instances with this
+ * name and type because it is not an actual account that is registered/returned by the system
+ * AccountManager.
  */
 interface AccountsQuery : CrudApi {
 
@@ -292,6 +299,7 @@ private class AccountsQueryImpl(
 
         // We start off with the full set of accounts in the system (which is typically not
         // more than a handful). Then we'll trim the fat as we process the query parameters.
+        // This will not include Samsung's local phone "account".
         var accounts: Set<Account> = accountManager.accounts.toSet()
         return if (
             cancel()
