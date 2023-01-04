@@ -19,23 +19,9 @@ import contacts.core.util.unsafeLazy
  * granted already in these examples for brevity. All inserts will do nothing if these permissions
  * are not granted.
  *
- * ## Accounts
- *
- * A set of groups exist for each [Account]. When there are no accounts in the system, there are
- * no groups and inserting groups will fail.
- *
- * The get accounts permission is required here because this API retrieves all available accounts,
- * if any, and does the following;
- *
- * - if the account specified is found in the list of accounts returned by the system, the account
- * is used
- * - if the account specified is not found in the list of accounts returned by the system, then the
- * insertion fails for that group
- * - if there are no accounts in the system, [commit] does nothing and fails immediately
- *
  * ## Usage
  *
- * To insert a group with the title "Best Friends" for the given account,
+ * To insert a group with the title "Best Friends" for the given (nullable) account,
  *
  * In Kotlin,
  *
@@ -55,7 +41,7 @@ interface GroupsInsert : CrudApi {
      * Adds a new [NewGroup] to the insert queue, which will be inserted on [commit].
      * The new instance is created with the given [title] and [account].
      */
-    fun group(title: String, account: Account): GroupsInsert
+    fun group(title: String, account: Account?): GroupsInsert
 
     /**
      * Adds the given [groups] to the insert queue, which will be inserted on [commit].
@@ -76,9 +62,6 @@ interface GroupsInsert : CrudApi {
     /**
      * Inserts the [NewGroup]s in the queue (added via [groups]) and returns the [Result].
      *
-     * This does nothing if there are no available accounts or no groups are in the insert queue or
-     * if insert permission has not been granted. An empty map will be returned in this case.
-     *
      * ## Permissions
      *
      * The [ContactsPermissions.WRITE_PERMISSION] and
@@ -93,9 +76,6 @@ interface GroupsInsert : CrudApi {
 
     /**
      * Inserts the [NewGroup]s in the queue (added via [groups]) and returns the [Result].
-     *
-     * This does nothing if there are no available accounts or no groups are in the insert queue or
-     * if insert permission has not been granted. An empty map will be returned in this case.
      *
      * ## Permissions
      *
@@ -184,6 +164,9 @@ interface GroupsInsert : CrudApi {
 
             /**
              * The Group's Account is not found in the system.
+             *
+             * A null account is a valid "account". On the other hand, a non-null account that is
+             * not in the system AccountManager is invalid.
              */
             INVALID_ACCOUNT,
 
@@ -229,7 +212,7 @@ private class GroupsInsertImpl(
         isRedacted = true
     )
 
-    override fun group(title: String, account: Account): GroupsInsert =
+    override fun group(title: String, account: Account?): GroupsInsert =
         groups(NewGroup(title, account))
 
     override fun groups(vararg groups: NewGroup) = groups(groups.asSequence())
@@ -246,24 +229,15 @@ private class GroupsInsertImpl(
         onPreExecute()
 
         val accounts = contactsApi.accounts().query().find()
-        return if (
-            groups.isEmpty()
-            || !permissions.canInsert()
-            // Fail if there are no accounts. A group requires Accounts in the system to exist!
-            || accounts.isEmpty()
-            || cancel()
-        ) {
+        return if (groups.isEmpty() || !permissions.canInsert() || cancel()) {
             GroupsInsertFailed()
         } else {
             // Gather the accounts for groups that will be inserted.
-            val groupsAccounts = groups.map { it.account }
+            val groupsAccounts = groups.asSequence().map { it.account }.toSet()
 
             // Gather the existing titles per account to prevent duplicates.
-            val existingGroups = contactsApi.groups().query()
-                // Limit the accounts for optimization in case there are a lot of accounts in the system
-                .accounts(groupsAccounts)
-                .find()
-            val existingAccountGroupsTitles = mutableMapOf<Account, MutableSet<String>>()
+            val existingGroups = contactsApi.groups().query().accounts(groupsAccounts).find()
+            val existingAccountGroupsTitles = mutableMapOf<Account?, MutableSet<String>>()
             for (group in existingGroups) {
                 val existingTitles = existingAccountGroupsTitles
                     .getOrPut(group.account) { mutableSetOf() }
@@ -278,26 +252,31 @@ private class GroupsInsertImpl(
                     break
                 }
 
-                results[group] =
-                    if (accounts.contains(group.account)) { // Group has a valid account.
-                        val existingTitles = existingAccountGroupsTitles
-                            .getOrPut(group.account) { mutableSetOf() }
-                        if (existingTitles.contains(group.title)) { // Group title already exist.
-                            failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
-                            null
-                        } else { // Group title does not yet exist. Proceed to insert.
-                            contentResolver.insertGroup(group).also { id ->
-                                if (id == null) { // Insert failed.
-                                    failureReasons[group] = FailureReason.UNKNOWN
-                                } else { // Insert succeeded. Add title to existing titles list.
-                                    existingTitles.add(group.title)
-                                }
+                results[group] = if (group.account == null || accounts.contains(group.account)) {
+                    // Group has a valid account. A null account is valid.
+                    val existingTitles = existingAccountGroupsTitles
+                        .getOrPut(group.account) { mutableSetOf() }
+                    if (existingTitles.contains(group.title)) {
+                        // Group title already exist.
+                        failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
+                        null
+                    } else {
+                        // Group title does not yet exist. Proceed to insert.
+                        contentResolver.insertGroup(group).also { id ->
+                            if (id == null) {
+                                // Insert failed.
+                                failureReasons[group] = FailureReason.UNKNOWN
+                            } else {
+                                // Insert succeeded. Add title to existing titles list.
+                                existingTitles.add(group.title)
                             }
                         }
-                    } else { // Group has an invalid account.
-                        failureReasons[group] = FailureReason.INVALID_ACCOUNT
-                        null
                     }
+                } else {
+                    // Group has an invalid account.
+                    failureReasons[group] = FailureReason.INVALID_ACCOUNT
+                    null
+                }
             }
 
             GroupsInsertResult(results, failureReasons)

@@ -8,44 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION] are assumed to have been
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * ## Accounts
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * A set of groups exist for each [Account]. When there are no accounts in the system, there are
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * The get accounts permission is required here because this API retrieves all available accounts,
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * - if the account specified is found in the list of accounts returned by the system, the account
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * - if the account specified is not found in the list of accounts returned by the system, then the
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * - if there are no accounts in the system, [commit] does nothing and fails immediately
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * To insert a group with the title "Best Friends" for the given account,
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * val result = groupsInsert.group("Best Friends", account).commit()
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt: * GroupsInsert.Result result = groupsInsert.groups("Best Friends", account).commit();
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * The new instance is created with the given [title] and [account].
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:    fun group(title: String, account: Account): GroupsInsert
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * This does nothing if there are no available accounts or no groups are in the insert queue or
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * This does nothing if there are no available accounts or no groups are in the insert queue or
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:             * comparison) belonging to the same account to exist. In older versions of Android,
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:             * The Group's Account is not found in the system.
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            INVALID_ACCOUNT,
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:    override fun group(title: String, account: Account): GroupsInsert =
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:        groups(NewGroup(title, account))
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:        val accounts = contactsApi.accounts().query().find()
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            // Fail if there are no accounts. A group requires Accounts in the system to exist!
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            || accounts.isEmpty()
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            // Gather the accounts for groups that will be inserted.
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            val groupsAccounts = groups.map { it.account }
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            // Gather the existing titles per account to prevent duplicates.
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                // Limit the accounts for optimization in case there are a lot of accounts in the system
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                .accounts(groupsAccounts)
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:            val existingAccountGroupsTitles = mutableMapOf<Account, MutableSet<String>>()
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                val existingTitles = existingAccountGroupsTitles
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                    .getOrPut(group.account) { mutableSetOf() }
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                    if (accounts.contains(group.account)) { // Group has a valid account.
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                        val existingTitles = existingAccountGroupsTitles
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                            .getOrPut(group.account) { mutableSetOf() }
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                    } else { // Group has an invalid account.
-./core/src/main/java/contacts/core/groups/GroupsInsert.kt:                        failureReasons[group] = FailureReason.INVALID_ACCOUNT
 ./core/src/main/java/contacts/core/groups/GroupsDelete.kt: * Raw contacts that are not associated with an account do not have any group memberships. Even
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:             * comparison) belonging to the same account to exist. In older versions of Android,
