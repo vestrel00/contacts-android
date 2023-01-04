@@ -221,19 +221,11 @@ private class GroupsUpdateImpl(
             GroupsUpdateFailed()
         } else {
             // Gather the accounts for groups that will be updated.
-            val groupsAccounts = groups.mapNotNull { it?.account }
+            val groupsAccounts = groups.map { it?.account }
 
             // Gather the existing groups per account to prevent duplicate titles.
-            val existingGroups = contactsApi.groups().query()
-                // Limit the accounts for optimization in case there are a lot of accounts in the system
-                .accounts(groupsAccounts)
-                .find()
-                // Convert to mutable group so that titles can be mutated during update processing.
-                // Use the data class copy function intentionally to include read-only groups.
-                .mapNotNull {
-                    it.copy(readOnly = false).mutableCopy()
-                } //  Consumers should never do this!
-            val existingAccountGroups = mutableMapOf<Account, MutableSet<ExistingGroupEntity>>()
+            val existingGroups = contactsApi.groups().query().accounts(groupsAccounts).find()
+            val existingAccountGroups = mutableMapOf<Account?, MutableSet<ExistingGroupEntity>>()
             for (group in existingGroups) {
                 existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {
                     it.add(group)

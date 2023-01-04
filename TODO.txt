@@ -8,23 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:import android.accounts.Account
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:             * comparison) belonging to the same account to exist. In older versions of Android,
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            // Gather the accounts for groups that will be updated.
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            val groupsAccounts = groups.mapNotNull { it?.account }
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            // Gather the existing groups per account to prevent duplicate titles.
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                // Limit the accounts for optimization in case there are a lot of accounts in the system
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                .accounts(groupsAccounts)
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            val existingAccountGroups = mutableMapOf<Account, MutableSet<ExistingGroupEntity>>()
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                existingAccountGroups.getOrPut(group.account) { mutableSetOf() }.also {
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                    val accountGroups = existingAccountGroups
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        .getOrPut(group.account) { mutableSetOf(group) }
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                    val differentGroupWithSameTitle = accountGroups
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                        accountGroups.find { it.id == group.id }?.let { groupInMemory ->
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.remove(groupInMemory)
-./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:                                    accountGroups.add(groupInMemory.copy(title = group.title))
-
-
 ./sample/src/main/java/contacts/sample/ContactDetailsActivity.kt:            preferences.defaultAccountForNewContacts,
 ./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:    var defaultAccountForNewContacts: Account?
