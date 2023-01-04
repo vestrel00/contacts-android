@@ -8,7 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./core/src/main/java/contacts/core/groups/GroupsDelete.kt: * Raw contacts that are not associated with an account do not have any group memberships. Even
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:import android.accounts.Account
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:             * comparison) belonging to the same account to exist. In older versions of Android,
 ./core/src/main/java/contacts/core/groups/GroupsUpdate.kt:            // Gather the accounts for groups that will be updated.
