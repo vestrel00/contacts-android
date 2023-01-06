@@ -8,17 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/ContactsActivity.kt: * - Accounts: Opens an activity to select which accounts to include in the search.
-./sample/src/main/java/contacts/sample/ContactsActivity.kt: * - Groups: Opens an activity to select which groups of selected accounts to include in the search.
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:    private var selectedAccounts = emptyList<Account?>()
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:            R.id.accounts -> {
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:                AccountsActivity.selectAccounts(this, true, ArrayList(selectedAccounts))
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:                AccountsActivity.selectGroups(this, ArrayList(selectedGroups))
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) { selectedAccounts ->
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:            this.selectedAccounts = selectedAccounts
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:        AccountsActivity.onSelectGroupsResult(requestCode, resultCode, data) { selectedGroups ->
-./sample/src/main/java/contacts/sample/ContactsActivity.kt:                .accounts(selectedAccounts)
 ./sample/src/main/java/contacts/sample/view/ContactView.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/view/ContactView.kt:     * [contacts] API to perform operations on it. The [defaultAccount] is used as the account if
 ./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
