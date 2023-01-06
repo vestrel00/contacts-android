@@ -8,14 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:        findViewById<View>(R.id.accounts).setOnClickListener { showAccounts() }
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:        findViewById<View>(R.id.default_account).setOnClickListener { chooseDefaultAccount() }
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:            preferences.defaultAccountForNewContacts = it.firstOrNull()
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:    private fun showAccounts() {
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:    private fun chooseDefaultAccount() {
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:        AccountsActivity.selectAccounts(
-./sample/src/main/java/contacts/sample/SettingsActivity.kt:            arrayListOf(preferences.defaultAccountForNewContacts)
 ./sample/src/main/java/contacts/sample/AccountsActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/AccountsActivity.kt:import contacts.async.accounts.findWithContext
 ./sample/src/main/java/contacts/sample/AccountsActivity.kt:import contacts.permissions.accounts.queryWithPermission
