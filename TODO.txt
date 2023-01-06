@@ -8,16 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:    var defaultAccountForNewContacts: Account?
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:            val accountName = sharedPrefs.getString(ACCOUNT_NAME, null)
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:            val accountType = sharedPrefs.getString(ACCOUNT_TYPE, null)
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:            return if (accountName != null && accountType != null) {
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:                Account(accountName, accountType)
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:                .putString(ACCOUNT_NAME, value?.name)
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:                .putString(ACCOUNT_TYPE, value?.type)
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:private const val ACCOUNT_NAME = "ACCOUNT_NAME"
-./sample/src/main/java/contacts/sample/SampleAppPreferences.kt:private const val ACCOUNT_TYPE = "ACCOUNT_TYPE"
 ./sample/src/main/java/contacts/sample/ImportSimContactsActivity.kt:                        it.account = preferences.defaultAccountForNewContacts
 ./sample/src/main/java/contacts/sample/SettingsActivity.kt:        findViewById<View>(R.id.accounts).setOnClickListener { showAccounts() }
 ./sample/src/main/java/contacts/sample/SettingsActivity.kt:        findViewById<View>(R.id.default_account).setOnClickListener { chooseDefaultAccount() }
