@@ -8,19 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/view/ContactView.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/view/ContactView.kt:     * [contacts] API to perform operations on it. The [defaultAccount] is used as the account if
-./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
-./sample/src/main/java/contacts/sample/view/ContactView.kt:        setRawContactsView(contacts, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
-./sample/src/main/java/contacts/sample/view/ContactView.kt:     * Removes any loaded contact and loads an empty new (raw) contact. The [defaultAccount] is
-./sample/src/main/java/contacts/sample/view/ContactView.kt:     * used as the initially selected account.
-./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
-./sample/src/main/java/contacts/sample/view/ContactView.kt:        setContact(contacts, null, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
-./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
-./sample/src/main/java/contacts/sample/view/ContactView.kt:                    defaultAccount,
-./sample/src/main/java/contacts/sample/view/ContactView.kt:                defaultAccount,
-./sample/src/main/java/contacts/sample/view/ContactView.kt:        defaultAccount: Account?,
-./sample/src/main/java/contacts/sample/view/ContactView.kt:            defaultAccount,
 ./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:    private var account: Account? = null
 ./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:     * to belong to the given [account], and uses the given [contacts] API to perform operations on
