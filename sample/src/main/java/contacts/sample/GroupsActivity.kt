@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.ListView.*
+import android.widget.TextView
 import contacts.async.groups.findWithContext
 import contacts.core.entities.Group
 import contacts.permissions.groups.queryWithPermission
@@ -49,17 +50,18 @@ class GroupsActivity : BaseActivity() {
 
     // Not using any view binding libraries or plugins just for this.
     private lateinit var groupsListView: ListView
+    private lateinit var emptyGroupsTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO Issue #167 Remove this check as account restrictions for groups will be removed
-        if (intent.account() == null) {
-            showToast(R.string.groups_local_account_not_yet_supported)
-            finish()
-            return
-        }
-
         setContentView(R.layout.activity_groups)
+
+        // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
+        // Obviously, everyone should use RecyclerView. I'm just being stupid here by trying to
+        // avoid adding dependencies to make this repo as lean as possible.
+        groupsListView = findViewById(R.id.groupsListView)
+        emptyGroupsTextView = findViewById(R.id.emptyGroupsTextView)
+
         setupGroupsListView()
 
         launch {
@@ -77,10 +79,6 @@ class GroupsActivity : BaseActivity() {
     }
 
     private fun setupGroupsListView() {
-        // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
-        // Obviously, everyone should use RecyclerView. I'm just being stupid here by trying to
-        // avoid adding dependencies to make this repo as lean as possible.
-        groupsListView = findViewById(R.id.groupsListView)
         // For simple cases like this though, ListView actually saves us from writing a bit of code.
         // We can just use the built-in choice mode functionality instead of writing it ourselves =)
         groupsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice)
@@ -92,24 +90,31 @@ class GroupsActivity : BaseActivity() {
         val accountGroups = contacts
             .groups()
             .queryWithPermission()
-            // TODO Issue #167 Remove !! as account restrictions for groups will be removed
-            .accounts(intent.account()!!)
+            .accounts(intent.account())
             .findWithContext()
             // Hide the default group, just like in the native Contacts app.
             .filter { !it.isDefaultGroup }
 
-        selectableGroups.addAll(accountGroups)
-        groupsAdapter.addAll(
-            accountGroups.map {
-                if (it.isFavoritesGroup) {
-                    // The title for the favorites group is "Starred in Android". We'll show
-                    // "Favorites" instead.
-                    "Favorites"
-                } else {
-                    it.title
+        if (accountGroups.isEmpty()) {
+            groupsListView.visibility = GONE
+            emptyGroupsTextView.visibility = VISIBLE
+        } else {
+            groupsListView.visibility = VISIBLE
+            emptyGroupsTextView.visibility = GONE
+
+            selectableGroups.addAll(accountGroups)
+            groupsAdapter.addAll(
+                accountGroups.map {
+                    if (it.isFavoritesGroup) {
+                        // The title for the favorites group is "Starred in Android". We'll show
+                        // "Favorites" instead.
+                        "Favorites"
+                    } else {
+                        it.title
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 
     private fun checkSelectedGroups() {

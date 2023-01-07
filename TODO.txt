@@ -8,25 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/GroupsActivity.kt: * Shows the list of all the groups of a given account, allowing the user to choose which groups to
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:        // TODO Issue #167 Remove this check as account restrictions for groups will be removed
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:        if (intent.account() == null) {
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            showToast(R.string.groups_local_account_not_yet_supported)
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            addAllGroupsForAccount()
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            putExtra(ACCOUNT, intent.account())
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:    private suspend fun addAllGroupsForAccount() {
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:        val accountGroups = contacts
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            // TODO Issue #167 Remove !! as account restrictions for groups will be removed
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            .accounts(intent.account()!!)
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:        selectableGroups.addAll(accountGroups)
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            accountGroups.map {
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            account: Account?,
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:                putExtra(ACCOUNT, account)
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            processSelectedGroups: (account: Account?, selectedGroups: List<Group>) -> Unit
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:            processSelectedGroups(data.account(), data.selectedGroups())
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:        private fun Intent.account(): Account? = getParcelableExtra(ACCOUNT)
-./sample/src/main/java/contacts/sample/GroupsActivity.kt:        private const val ACCOUNT = "account"
 ./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:    fun getRawContactsForAccount(account: Account): List<RawContact> =
 ./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:            .rawContactsWhere(listOf(account), null)
