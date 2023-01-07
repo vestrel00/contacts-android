@@ -4,14 +4,16 @@ import android.accounts.Account
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
 import contacts.core.Contacts
 import contacts.core.entities.*
 import contacts.core.util.*
 import contacts.sample.R
 import contacts.ui.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -93,8 +95,6 @@ class RawContactView @JvmOverloads constructor(
     private val noteView: NoteView
     private val groupMembershipsView: GroupMembershipsView
 
-    private val accountRequiredViews: Set<View>
-
     init {
         orientation = VERTICAL
         inflate(context, R.layout.view_raw_contact, this)
@@ -114,14 +114,6 @@ class RawContactView @JvmOverloads constructor(
         relationsView = findViewById(R.id.relations)
         noteView = findViewById(R.id.note)
         groupMembershipsView = findViewById(R.id.groupMemberships)
-
-        accountRequiredViews = setOf(
-            eventsView, relationsView, groupMembershipsView,
-            findViewById(R.id.eventsLabel),
-            findViewById(R.id.relationsLabel),
-            findViewById(R.id.groupMembershipsLabel)
-        )
-
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -133,28 +125,6 @@ class RawContactView @JvmOverloads constructor(
     fun setPhotoDrawableOnPhotoPickedWith(photoView: PhotoView) {
         photoView.invokeOnPhotoPicked = photoThumbnailView
         photoThumbnailView.invokeOnPhotoPicked = photoView
-    }
-
-    // The native (AOSP) Contacts app hides these from the UI for local raw contacts. These
-    // will no longer be hidden as part of https://github.com/vestrel00/contacts-android/issues/167
-    private fun setAccountRequiredViews(contacts: Contacts) {
-        launch {
-            val account = rawContact.account
-
-            if (account != null) {
-                eventsView.dataList = rawContact.events.asMutableList()
-                relationsView.dataList = rawContact.relations.asMutableList()
-                groupMembershipsView.setMemberships(
-                    rawContact.groupMemberships.asMutableList(),
-                    account,
-                    contacts
-                )
-            } else {
-                accountRequiredViews.forEach {
-                    it.visibility = GONE
-                }
-            }
-        }
     }
 
     private fun setRawContactView(
@@ -210,6 +180,8 @@ class RawContactView @JvmOverloads constructor(
         addressesView.dataList = rawContact.addresses.asMutableList()
         imsView.dataList = rawContact.ims.asMutableList()
         websiteView.dataList = rawContact.websites.asMutableList()
+        eventsView.dataList = rawContact.events.asMutableList()
+        relationsView.dataList = rawContact.relations.asMutableList()
         noteView.data = rawContact.note ?: NewNote().also { newNote ->
             when (rawContact) {
                 is MutableRawContact -> rawContact.setNote(newNote)
@@ -220,7 +192,11 @@ class RawContactView @JvmOverloads constructor(
             }
         }
 
-        setAccountRequiredViews(contacts)
+        groupMembershipsView.setMemberships(
+            rawContact.groupMemberships.asMutableList(),
+            rawContact.account,
+            contacts
+        )
     }
 
     override fun onDetachedFromWindow() {

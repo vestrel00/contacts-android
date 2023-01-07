@@ -8,24 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:     * The [defaultAccount] is used if the [rawContact] is a [NewRawContact] that is not yet
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:     * associated with an account.
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        defaultAccount: Account?,
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        setRawContactView(contacts, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:    private val accountView: AccountView
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:    private val accountRequiredViews: Set<View>
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountView = findViewById(R.id.account)
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountRequiredViews = setOf(
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountView.onActivityResult(requestCode, resultCode, data)
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:    private fun setAccountRequiredViews(contacts: Contacts) {
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:            val account = rawContact.account
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:            if (account != null) {
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:                    account,
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:                accountRequiredViews.forEach {
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        defaultAccount: Account?,
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        accountView.setRawContact(rawContact, defaultAccount)
-./sample/src/main/java/contacts/sample/view/RawContactView.kt:        setAccountRequiredViews(contacts)
 ./sample/src/main/java/contacts/sample/view/AccountView.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/view/AccountView.kt:import contacts.sample.AccountsActivity
 ./sample/src/main/java/contacts/sample/view/AccountView.kt: * A [TextView] that displays the given [RawContactEntity.account] and handles modifications to it.
