@@ -8,26 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/view/AccountView.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/view/AccountView.kt:import contacts.sample.AccountsActivity
-./sample/src/main/java/contacts/sample/view/AccountView.kt: * A [TextView] that displays the given [RawContactEntity.account] and handles modifications to it.
-./sample/src/main/java/contacts/sample/view/AccountView.kt:class AccountView @JvmOverloads constructor(
-./sample/src/main/java/contacts/sample/view/AccountView.kt:     * Sets the RawContact account shown and managed by this view to the given [rawContact] and uses
-./sample/src/main/java/contacts/sample/view/AccountView.kt:     * the given [contacts] API to perform operations on it. The [defaultAccount] is used if the
-./sample/src/main/java/contacts/sample/view/AccountView.kt:     * [rawContact] is a [NewRawContact] that is not yet associated with an account.
-./sample/src/main/java/contacts/sample/view/AccountView.kt:    fun setRawContact(rawContact: RawContactEntity?, defaultAccount: Account?) {
-./sample/src/main/java/contacts/sample/view/AccountView.kt:        setAccount(rawContact?.account ?: defaultAccount)
-./sample/src/main/java/contacts/sample/view/AccountView.kt:    private fun setAccount(account: Account?) {
-./sample/src/main/java/contacts/sample/view/AccountView.kt:                it.account = account
-./sample/src/main/java/contacts/sample/view/AccountView.kt:        val accountToDisplay = rawContact?.account
-./sample/src/main/java/contacts/sample/view/AccountView.kt:        text = if (accountToDisplay == null) {
-./sample/src/main/java/contacts/sample/view/AccountView.kt:                Local account (device only)
-./sample/src/main/java/contacts/sample/view/AccountView.kt:                Account Name: ${accountToDisplay.name}
-./sample/src/main/java/contacts/sample/view/AccountView.kt:                Account Type: ${accountToDisplay.type}
-./sample/src/main/java/contacts/sample/view/AccountView.kt:                AccountsActivity.selectAccounts(it, false, arrayListOf(rawContact?.account))
-./sample/src/main/java/contacts/sample/view/AccountView.kt:     * account (if any). This will do nothing if the request did not originate from this view.
-./sample/src/main/java/contacts/sample/view/AccountView.kt:        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
-./sample/src/main/java/contacts/sample/view/AccountView.kt:            setAccount(it.firstOrNull())
 ./sample/src/main/java/contacts/sample/GroupsActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/GroupsActivity.kt: * Shows the list of all the groups of a given account, allowing the user to choose which groups to
 ./sample/src/main/java/contacts/sample/GroupsActivity.kt:        // TODO Issue #167 Remove this check as account restrictions for groups will be removed
