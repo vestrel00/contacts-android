@@ -8,12 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:    private var account: Account? = null
-./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:     * to belong to the given [account], and uses the given [contacts] API to perform operations on
-./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:        account: Account?,
-./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:        this.account = account
-./sample/src/main/java/contacts/sample/view/GroupMembershipsView.kt:                    account,
 ./sample/src/main/java/contacts/sample/view/RawContactView.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/view/RawContactView.kt:     * The [defaultAccount] is used if the [rawContact] is a [NewRawContact] that is not yet
 ./sample/src/main/java/contacts/sample/view/RawContactView.kt:     * associated with an account.
