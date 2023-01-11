@@ -8,9 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/InsertGroupsActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/InsertGroupsActivity.kt:    fun insertGroup(title: String, account: Account): GroupsInsert.Result =
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/InsertGroupsActivity.kt:        Contacts(this).groups().insert().group(title, account).commit()
 ./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getAllGroupsFromAllAccounts(): List<Group> = Contacts(this).groups().query().find()
 ./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getGroupsFromAccount(account: Account): List<Group> =
