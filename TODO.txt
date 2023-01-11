@@ -8,14 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:package contacts.sample.cheatsheet.accounts.kotlin
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:class QueryAccountsActivity : Activity() {
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:    fun getAllAccounts(): List<Account> = Contacts(this).accounts().query().find()
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:    fun getAllGoogleAccounts(): List<Account> = Contacts(this)
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:        .accounts()
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:    fun getRawContactAccount(rawContact: RawContact): Account? = Contacts(this)
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:        .accounts()
 ./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:    fun getEmailsForAccount(account: Account): List<Email> =
 ./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:        Contacts(this).data().query().emails().accounts(account).find()
