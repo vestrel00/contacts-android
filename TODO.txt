@@ -8,14 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getAllGroupsFromAllAccounts(): List<Group> = Contacts(this).groups().query().find()
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getGroupsFromAccount(account: Account): List<Group> =
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:        Contacts(this).groups().query().accounts(account).find()
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getSystemGroups(account: Account): List<Group> = Contacts(this)
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:        .accounts(account)
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:    fun getUserCreatedGroups(account: Account): List<Group> = Contacts(this)
-./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/QueryGroupsActivity.kt:        .accounts(account)
 ./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:package contacts.sample.cheatsheet.accounts.kotlin
 ./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate
