@@ -8,9 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryContactsAdvancedActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryContactsAdvancedActivity.kt:    fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryContactsAdvancedActivity.kt:        .accounts(Account("email@gmail.com", "com.google"))
 ./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/DeleteGroupsActivity.kt:    fun deleteUserCreatedGroupFromAllGoogleAccounts(): GroupsDelete.Result = Contacts(this)
 ./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/DeleteGroupsActivity.kt:        .groupsWhere { AccountType equalTo "com.google" }
 ./sample/src/main/java/contacts/sample/cheatsheet/groups/kotlin/InsertGroupsActivity.kt:import android.accounts.Account
