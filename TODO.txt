@@ -4,16 +4,6 @@ This file will be deleted when all of the following items have been checked/remo
 
 ------------------------
 
-Mentions of "account" in code
-
-grep --include="*kt" -ri "account" .
-
-./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:    fun getEmailsForAccount(account: Account): List<Email> =
-./sample/src/main/java/contacts/sample/cheatsheet/data/kotlin/QueryDataActivity.kt:        Contacts(this).data().query().emails().accounts(account).find()
-
-------------------------
-
 Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
