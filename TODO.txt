@@ -8,16 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:package contacts.sample.cheatsheet.accounts.kotlin
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:import contacts.core.accounts.AccountsLocalRawContactsUpdate
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:class UpdateLocalRawContactsAccountsActivity : Activity() {
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:    fun associateLocalRawContactToAccount(
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        localRawContact: RawContact, account: Account
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:    ): AccountsLocalRawContactsUpdate.Result = Contacts(this)
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        .accounts()
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        .updateLocalRawContactsAccount()
-./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/UpdateLocalRawContactsAccountsActivity.kt:        .addToAccount(account)
 ./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:package contacts.sample.cheatsheet.accounts.kotlin
 ./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/cheatsheet/accounts/kotlin/QueryAccountsActivity.kt:class QueryAccountsActivity : Activity() {
