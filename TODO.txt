@@ -8,11 +8,6 @@ Mentions of "account" in code
 
 grep --include="*kt" -ri "account" .
 
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:import android.accounts.Account
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:    fun getRawContactsForAccount(account: Account): List<RawContact> =
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:            .rawContactsWhere(listOf(account), null)
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:    fun getRawContactsForAllGoogleAccounts(): List<RawContact> =
-./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/QueryRawContactsActivity.kt:            .rawContactsWhere(emptyList(), RawContactsFields.AccountType equalTo "com.google")
 ./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/InsertContactsActivity.kt:import android.accounts.Account
 ./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/InsertContactsActivity.kt:    fun insertContact(account: Account?, groupMembership: NewGroupMembership?): Insert.Result =
 ./sample/src/main/java/contacts/sample/cheatsheet/basics/kotlin/InsertContactsActivity.kt:                setAccount(account)
