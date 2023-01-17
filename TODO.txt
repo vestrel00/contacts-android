@@ -455,13 +455,3 @@ grep --include="*kt" -ri "account" .
 ./docs/entities/sync-contact-data.md:> and content provider, but can handle multiple account names for the same service. The framework
 ./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
 ./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE '*******************' ESCAPE '\') AND (account_type LIKE '**********' ESCAPE '\')
-
-
-./README.md:- ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups
-./README.md:- ✅ [**Insert**](/docs/basics/insert-contacts.md) one or more RawContacts with an associated Account,
-./README.md:- ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table
-./README.md:- ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md)
-./README.md:- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"
-./README.md:    .accounts(
-./README.md:        Account("john.doe@gmail.com", "com.google"),
-./README.md:        Account("john.doe@myspace.com", "com.myspace"),
