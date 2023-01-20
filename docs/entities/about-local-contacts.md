@@ -3,7 +3,7 @@
 Contacts, or more specifically RawContacts, that are not associated with an
 `android.accounts.Account` are local to each device and will not be synced across devices.
 
-This means that any RawContacts you create, update, or delete will NOT be synced on any device or
+This means that local RawContacts inserted, updated, or deleted will NOT be synced on any device or
 remote service as it is not associated with any account.
 
 > ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
@@ -45,26 +45,20 @@ tables **locally**. This includes user Profile data in those tables.
 
 ## Data kinds Account restrictions
 
-The native Contacts app hides the following UI fields when inserting or updating local raw contacts. 
-To enforce this behavior, this library ignores the following fields during inserts and updates for 
-local raw contacts.
+The AOSP Contacts app hides the following UI fields when inserting or updating local raw contacts,
 
 - `GroupMembership`
-    - Groups can only exist if it is associated with an Account. Therefore, memberships to groups is
-      not possible when there is no associated Account.
 - `Event`
-    - It is not clear why this requires an associated Account. Maybe because these are typically
-      birth dates that users expect to be synced with their calendar across devices?
 - `Relation`
-    - It is not clear why this requires an associated Account...
 
-The Contacts Provider may or may not enforce these Account restrictions. However, the native
-Contacts app imposes these restrictions. Therefore, this library also imposes these restrictions and
-disables consumers from violating them.
+Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), the above 
+data kinds were ignored during insert and update operations. Subsequent versions no longer enforces 
+this behavior for the following reasons;
 
-> ⚠️ As of [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
-> [restrictions will be removed](https://github.com/vestrel00/contacts-android/issues/167). You 
-> will be able insert or update all of the above fields for local raw contacts.
+- [Google Contacts app allows these data kinds for local RawContacts](https://github.com/vestrel00/contacts-android/issues/167)
+- The Contacts Provider does not enforce these Account restrictions. 
+
+It is up to applications to impose such restrictions if so desired.
 
 ## Samsung Phone contacts
 

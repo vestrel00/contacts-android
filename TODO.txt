@@ -331,37 +331,6 @@ grep --include="*kt" -ri "account" .
 ./docs/logging/log-api-input-output.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
 
 
-./docs/entities/about-local-contacts.md:`android.accounts.Account` are local to each device and will not be synced across devices.
-./docs/entities/about-local-contacts.md:remote service as it is not associated with any account.
-./docs/entities/about-local-contacts.md:## Associating a local RawContact to an Account
-./docs/entities/about-local-contacts.md:Local RawContacts can be associated to an Account to enable syncing.
-./docs/entities/about-local-contacts.md:For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
-./docs/entities/about-local-contacts.md:## Adding an Account to the device
-./docs/entities/about-local-contacts.md:Depending on the API level, the Contacts Provider behaves differently when the user adds an account
-./docs/entities/about-local-contacts.md:When an Account is added, from a state where no accounts have yet been added to the system, the
-./docs/entities/about-local-contacts.md:Contacts Provider automatically sets all of the null `accountName` and `accountType` in the
-./docs/entities/about-local-contacts.md:RawContacts table to that Account's name and type.
-./docs/entities/about-local-contacts.md:RawContacts inserted without an associated account will automatically get assigned to an account if
-./docs/entities/about-local-contacts.md:it. Dissociating RawContacts from Accounts will result in the Contacts Provider associating those
-./docs/entities/about-local-contacts.md:back to an Account.
-./docs/entities/about-local-contacts.md:The Contacts Provider no longer associates local RawContacts to an account when an account is or
-./docs/entities/about-local-contacts.md:**Account removal**
-./docs/entities/about-local-contacts.md:Removing the Account will remove all of the associated rows in the RawContact, Data, and Groups
-./docs/entities/about-local-contacts.md:## Data kinds Account restrictions
-./docs/entities/about-local-contacts.md:    - Groups can only exist if it is associated with an Account. Therefore, memberships to groups is
-./docs/entities/about-local-contacts.md:      not possible when there is no associated Account.
-./docs/entities/about-local-contacts.md:    - It is not clear why this requires an associated Account. Maybe because these are typically
-./docs/entities/about-local-contacts.md:    - It is not clear why this requires an associated Account...
-./docs/entities/about-local-contacts.md:The Contacts Provider may or may not enforce these Account restrictions. However, the native
-./docs/entities/about-local-contacts.md:In most flavors of Android, a local (device-only) RawContact have null Account name and type in
-./docs/entities/about-local-contacts.md:the RawContacts table. However, Samsung phones use `vnd.sec.contact.phone` to fill the Account
-./docs/entities/about-local-contacts.md:The `vnd.sec.contact.phone` does NOT refer to an actual `android.accounts.Account`. It is not
-./docs/entities/about-local-contacts.md:returned by the `android.accounts.AccountManager`.
-./docs/entities/about-local-contacts.md:In Samsung devices, RawContacts that are inserted with a null account will, immediately or at a
-./docs/entities/about-local-contacts.md:query.accounts(null)
-./docs/entities/about-local-contacts.md:`Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`.
-./docs/entities/about-local-contacts.md:> Prior versions will require you to pass in `Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`
-./docs/entities/about-local-contacts.md:> in addition to `null` when using `accounts` for matching local contacts.
 ./docs/entities/about-api-entities.md:    - Rows that link Contacts rows to specific Accounts.
 ./docs/entities/about-api-entities.md:    - Contains contact data that belong to an account.
 ./docs/entities/about-api-entities.md:## Data kinds Account restrictions
