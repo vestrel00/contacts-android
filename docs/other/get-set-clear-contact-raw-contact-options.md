@@ -138,10 +138,6 @@ Contacts/RawContacts via membership to the favorites group (not recommended), th
 `Fields.Contact.Options.Starred` and `RawContactsFields.Options.Starred` from the insert/update
 operations.
 
-> ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
-> though these RawContacts may not have a membership to a favorites group, they may still be
-> "starred" (favorited), which is not dependent on the existence of a favorites group membership.
-
 ## Using the ui RingtonePicker extensions
 
 The `contacts.ui.util.RingtonePicker.kt` in the `ui` module` provides extension functions to make

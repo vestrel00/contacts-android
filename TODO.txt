@@ -8,7 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/other/get-set-clear-contact-raw-contact-options.md:> ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
 ./docs/other/link-unlink-contacts.md:You may link Contacts with RawContacts that belong to different Accounts. Any RawContact Data
 ./docs/other/link-unlink-contacts.md:modifications are synced per Account sync settings.
 ./docs/other/link-unlink-contacts.md:RawContacts that are not associated with an Account are local to the device and therefore will not
