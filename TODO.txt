@@ -8,22 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/basics/insert-contacts.md:## Associating an Account
-./docs/basics/insert-contacts.md:New RawContacts can be associated with an Account in order to enable syncing,
-./docs/basics/insert-contacts.md:newRawContact.account = account
-./docs/basics/insert-contacts.md:// or newRawContact.setAccount(account)
-./docs/basics/insert-contacts.md:> setting the account is done via the `Insert.forAccount` function.
-./docs/basics/insert-contacts.md:For example, to associated the new RawContact to an account,
-./docs/basics/insert-contacts.md:newRawContact.account = Account("john.doe@gmail.com", "com.google")
-./docs/basics/insert-contacts.md:// or newRawContact.setAccount(Account("john.doe@gmail.com", "com.google"))
-./docs/basics/insert-contacts.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
-./docs/basics/insert-contacts.md:If no Account is provided, or null is provided, or if an incorrect account is provided, the
-./docs/basics/insert-contacts.md:RawContacts inserted will not be associated with an Account. RawContacts inserted without an
-./docs/basics/insert-contacts.md:associated account are considered local or device-only contacts, which are not synced.
-./docs/basics/insert-contacts.md:Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS`
-./docs/basics/insert-contacts.md:val accountToAddContactTo = Account("vestrel00@pixar.com", "com.pixar")
-./docs/basics/insert-contacts.md:        setAccount(accountToAddContactTo)
-./docs/basics/insert-contacts.md:                .accounts(accountToAddContactTo)
 ./docs/basics/query-raw-contacts.md:> and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/accounts/query-raw-contacts.md).
 ./docs/basics/query-raw-contacts.md:To retrieve the first 5 RawContacts in the given account that has at least one email, skipping the
 ./docs/basics/query-raw-contacts.md:## Specifying Accounts

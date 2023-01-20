@@ -151,10 +151,6 @@ associated account are considered local or device-only contacts, which are not s
 
 > ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
-There are also certain data kinds that are ignored on insert or update if the RawContact is local.
-
-> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
-
 ## Including only specific data
 
 To include only the given set of fields (data) in each of the insert operation,
