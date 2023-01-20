@@ -410,11 +410,13 @@ RawContacts inserted without an associated account are considered local or devic
 which are not synced.
 
 The AOSP Contacts app hides the following UI fields when inserting or updating local raw contacts;
+
 - Event
 - Relation
 - Group memberships
-To enforce this behavior, this library ignores all of the above during inserts and updates for local
-raw contacts.
+
+However, the Google Contacts app does not hide any of the above for local raw contacts. Actually,
+the Contacts Provider does not set any account restrictions with the above data kinds.
 
 **Lollipop (API 22) and below**
 
@@ -983,8 +985,11 @@ Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, a
 Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
 ```
 
-The actual groups are in a separate table; Groups. Each group is associated with an Account. No
-group can exist without an account. It is account-exclusive.
+The actual groups are in a separate table; Groups. Each group is associated with an Account. The 
+AOSP Contacts app does not allow for Groups to exist without an Account. However, other apps such as
+the Google Contacts app allows for Groups with a null account. The Contacts Provider also allows
+this. Therefore, we will allow Group without accounts in this library and let library users decide
+if they want to restrict groups to non-null accounts.
 
 Each account will have its own set of the above system groups. This means that there may be multiple
 groups with the same title belonging to different accounts.
