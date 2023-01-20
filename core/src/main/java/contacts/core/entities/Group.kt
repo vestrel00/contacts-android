@@ -23,7 +23,7 @@ sealed interface GroupEntity : Entity {
      *   belongs to. Therefore, it is typically hidden when showing the list of groups in the UI.
      * - The starred (favorites) group is not a system group as it has null system id. However,
      *   it behaves like one in that it is read only and it comes with most (if not all) copies of
-     *   the native Contacts app.
+     *   the AOSP Contacts app.
      */
     val systemId: String?
 

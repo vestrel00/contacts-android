@@ -121,7 +121,7 @@ sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
-        // Order of declaration is the same as seen in the native contacts app
+        // Order of declaration is the same as seen in the AOSP contacts app
         HOME(CommonDataKinds.StructuredPostal.TYPE_HOME), // Default
         WORK(CommonDataKinds.StructuredPostal.TYPE_WORK),
         OTHER(CommonDataKinds.StructuredPostal.TYPE_OTHER),

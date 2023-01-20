@@ -30,7 +30,7 @@ import contacts.core.equalTo
  * [ExistingContactEntity.lookupKey] with query APIs.
  *
  * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
- * same behavior as the native AOSP and Google Contacts app.
+ * same behavior as the AOSP and Google Contacts app.
  *
  * If the lookupKey of this instance is null, then it was probably not included in the query. In
  * this case, the ID will be used instead.

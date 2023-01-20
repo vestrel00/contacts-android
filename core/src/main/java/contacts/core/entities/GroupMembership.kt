@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
  *
  * ## Notes
  *
- * In more recent versions of Android, the native Contacts app presents group memberships
+ * In more recent versions of Android, the AOSP Contacts app presents group memberships
  * in the UI as "labels".
  *
  * There is no mutable version of a group membership. To make modifications to group memberships,

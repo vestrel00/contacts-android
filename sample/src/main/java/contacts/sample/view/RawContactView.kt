@@ -27,7 +27,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * This is a very rudimentary view that is not styled or made to look good. It may not follow any
  * good practices and may even implement bad practices. Consumers of the library may choose to use
- * this as is or simply as a reference on how to implement this part of native Contacts app.
+ * this as is or simply as a reference on how to implement this part of AOSP Contacts app.
  *
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.

@@ -384,7 +384,7 @@ private enum class Mode {
  * I'm aware that [Intent.getAction] paired with [Intent.getData] are more appropriate tools
  * to use than the request code. Using these tools with the correct scheme will enable deep
  * linking into this sample app. For example, launching an intent from any app with matching
- * action and scheme will result in the suggestion of the native Contacts app or this sample
+ * action and scheme will result in the suggestion of the AOSP Contacts app or this sample
  * app to handle the intent. See [android.provider.ContactsContract.Intents].
  *
  * TODO? Implement deep linking?

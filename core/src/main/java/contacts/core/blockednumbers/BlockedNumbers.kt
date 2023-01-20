@@ -22,8 +22,8 @@ interface BlockedNumbers {
      * This is useful for apps that do not have the privilege to read/write directly to the
      * blocked number provider. See [BlockedNumbersPrivileges] for more info.
      *
-     * This is the same activity used by the native (AOSP) Contacts app and Google Contacts app
-     * when accessing the "Blocked numbers".
+     * This is the same activity used by the AOSP Contacts app and Google Contacts app when
+     * accessing the "Blocked numbers".
      *
      * If the [activity] is null, the builtin blocked numbers activity will be launched as a new
      * task, separate from the current application instance. If it is provided, then the activity

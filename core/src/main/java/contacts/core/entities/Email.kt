@@ -37,13 +37,13 @@ sealed interface EmailEntity : DataEntityWithTypeAndLabel<Type> {
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
-        // Order of declaration is the same as seen in the native contacts app
+        // Order of declaration is the same as seen in the AOSP contacts app
         HOME(CommonDataKinds.Email.TYPE_HOME), // Default
         WORK(CommonDataKinds.Email.TYPE_WORK),
         OTHER(CommonDataKinds.Email.TYPE_OTHER),
         CUSTOM(CommonDataKinds.Email.TYPE_CUSTOM);
 
-        // For some reason, the native contacts app does not show this type in the UI. Thus, we will
+        // For some reason, the AOSP contacts app does not show this type in the UI. Thus, we will
         // do the same =)
         // MOBILE(CommonDataKinds.Email.TYPE_MOBILE)
 

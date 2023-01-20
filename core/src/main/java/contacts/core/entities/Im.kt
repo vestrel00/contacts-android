@@ -79,7 +79,7 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
         // want consumers of this API to be able to use the deprecated stuff for as long as we
         // support API 30 and below! All we should do is document this fact!
 
-        // Order of declaration is the same as seen in the native contacts app
+        // Order of declaration is the same as seen in the AOSP contacts app
         @Deprecated(DEPRECATED_PROTOCOL)
         AIM(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_AIM), // Default
 
@@ -106,7 +106,7 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
         CUSTOM(CommonDataKinds.Im.PROTOCOL_CUSTOM);
 
-        // Not including the rest of these because they are not shown in the native contacts app.
+        // Not including the rest of these because they are not shown in the AOSP contacts app.
         // Probably because they aren't useful? Or is there another reason? Maybe these should be
         // visible too? Community will speak up if they want to on this matter.
         // NET_MEETING(CommonDataKinds.Im.PROTOCOL_NETMEETING),

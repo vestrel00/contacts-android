@@ -39,7 +39,7 @@ class QueryRawContactsActivity : Activity() {
         Contacts(this)
             .rawContactsQuery()
             .rawContactsWhere(emptyList(), RawContactsFields.Id equalTo rawContactId)
-            // alternatively, .where { RawContact.Id equalTo rawContactId }
+            // alterAOSPly, .where { RawContact.Id equalTo rawContactId }
             .find()
             .firstOrNull()
 }

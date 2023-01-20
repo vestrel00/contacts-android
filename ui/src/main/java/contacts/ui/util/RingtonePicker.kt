@@ -13,7 +13,7 @@ import contacts.ui.R
  *
  * The [currentRingtoneUri] determines the initially selected ringtone in the picker.
  *
- * This (sub)activity is the same one used in the native Contacts app and typically looks and
+ * This (sub)activity is the same one used in the AOSP Contacts app and typically looks and
  * behaves like an alert dialog that floats on top of the current activity with a translucent dimmed
  * overlay.
  *

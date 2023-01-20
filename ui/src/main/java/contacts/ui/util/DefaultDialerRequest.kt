@@ -40,7 +40,7 @@ fun Activity.requestToBeTheDefaultDialerAppIfNeeded(onBeingDefaultDialerApp: () 
 /**
  * Starts an activity to prompt the user to set this app as the default dialer / phone app.
  *
- * This (sub)activity is the same one used in the native Contacts app and typically looks and
+ * This (sub)activity is the same one used in the AOSP Contacts app and typically looks and
  * behaves like an alert dialog that floats on top of the current activity with a translucent dimmed
  * overlay.
  *

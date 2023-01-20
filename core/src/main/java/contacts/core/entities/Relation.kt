@@ -37,7 +37,7 @@ sealed interface RelationEntity : DataEntityWithTypeAndLabel<Type> {
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
-        // Order of declaration is the same as seen in the native contacts app
+        // Order of declaration is the same as seen in the AOSP contacts app
         ASSISTANT(CommonDataKinds.Relation.TYPE_ASSISTANT), // Default
         BROTHER(CommonDataKinds.Relation.TYPE_BROTHER),
         CHILD(CommonDataKinds.Relation.TYPE_CHILD),

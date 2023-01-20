@@ -20,7 +20,7 @@ import contacts.core.util.unsafeLazy
  *
  * Blank data will be deleted, unless the corresponding fields are not provided in [include].
  * For example, if all properties of an email are all null, empty, or blank, then the email is
- * deleted. This is the same behavior as the native Contacts app.
+ * deleted. This is the same behavior as the AOSP Contacts app.
  *
  * Note that in cases where blank data are deleted, existing RawContact instances (in memory) will
  * still have references to the deleted data instance. The RawContact instances (in memory) must be

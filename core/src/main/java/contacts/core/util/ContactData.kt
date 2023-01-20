@@ -429,7 +429,7 @@ fun MutableContact.groupMemberships(): Sequence<GroupMembershipEntity> = rawCont
 fun MutableContact.groupMembershipList(): List<GroupMembershipEntity> = groupMemberships().toList()
 
 // GroupMemberships add and remove functions are intentionally left out because they should never
-// be combined. The native Contacts app hides the group membership UI field when viewing/editing a
+// be combined. The AOSP Contacts app hides the group membership UI field when viewing/editing a
 // contact with more than one RawContact.
 
 /**

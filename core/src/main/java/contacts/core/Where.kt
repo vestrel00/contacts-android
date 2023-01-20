@@ -331,7 +331,7 @@ inline operator fun <T : Field, FS : FieldSet<T>> FS.invoke(where: FS.() -> Wher
  *
  * Removing a piece of existing data results in the deletion of the row in the Data table if that
  * row no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is
- * the behavior of the native Contacts app. Therefore, querying for null fields is not possible.
+ * the behavior of the AOSP Contacts app. Therefore, querying for null fields is not possible.
  * For example, there may be no Data rows that exist where the email address is null. Thus, a query
  * to search for all contacts with no email addresses may return 0 contacts even if there are some
  * contacts that do not have at least one email address.
@@ -354,7 +354,7 @@ fun <T : Field> T.isNotNull(): Where<T> = Where(
  *
  * Removing a piece of existing data results in the deletion of the row in the Data table if that
  * row no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is
- * the behavior of the native Contacts app. Therefore, querying for null fields is not possible.
+ * the behavior of the AOSP Contacts app. Therefore, querying for null fields is not possible.
  * For example, there may be no Data rows that exist where the email address is null. Thus, a query
  * to search for all contacts with no email addresses may return 0 contacts even if there are some
  * contacts that do not have at least one email address.

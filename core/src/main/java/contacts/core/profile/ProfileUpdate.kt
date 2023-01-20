@@ -22,7 +22,7 @@ import contacts.core.util.unsafeLazy
  *
  * Blank data will be deleted, unless the corresponding fields are not provided in [include].
  * For example, if all properties of an email are all null, empty, or blank, then the email is
- * deleted. This is the same behavior as the native Contacts app.
+ * deleted. This is the same behavior as the AOSP Contacts app.
  *
  * Note that in cases where blank data are deleted, existing RawContact instances (in memory) will
  * still have references to the deleted data instance. The RawContact instances (in memory) must be
@@ -95,9 +95,9 @@ interface ProfileUpdate : CrudApi {
      * be deleted and will result in a failed operation. This flag is set to true by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
+     * them "blanks") to exist. The AOSP Contacts app does not allow insertion of new RawContacts
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
-     * allowing blanks, the native Contacts app shows them.
+     * allowing blanks, the AOSP Contacts app shows them.
      *
      * Note that this DOES NOT refer to blank data, which are deleted regardless of the value passed
      * to this function.

@@ -92,7 +92,7 @@ class GroupsActivity : BaseActivity() {
             .queryWithPermission()
             .accounts(intent.account())
             .findWithContext()
-            // Hide the default group, just like in the native Contacts app.
+            // Hide the default group, just like in the AOSP Contacts app.
             .filter { !it.isDefaultGroup }
 
         if (accountGroups.isEmpty()) {

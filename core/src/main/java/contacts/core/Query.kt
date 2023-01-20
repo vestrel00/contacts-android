@@ -13,7 +13,7 @@ import contacts.core.util.*
  * criteria. All RawContacts of matching Contacts are included in the resulting Contact instances.
  *
  * This provides a great deal of granularity and customizations when providing matching criteria
- * via [where]. For a broader, and more native Contacts app like query, use [BroadQuery].
+ * via [where]. For a broader, and more AOSP Contacts app like query, use [BroadQuery].
  *
  * To get RawContacts directly, use [RawContactsQuery].
  *
@@ -80,7 +80,7 @@ interface Query : CrudApi {
      * Limits the search to only those RawContacts associated with one of the given accounts.
      * Contacts returned may still contain RawContacts / data that belongs to other accounts not
      * specified in [accounts] because Contacts may be made up of more than one RawContact from
-     * different Accounts. This is the same behavior as the native Contacts app.
+     * different Accounts. This is the same behavior as the AOSP Contacts app.
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all RawContacts of Contacts are included in the search.
