@@ -8,25 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/basics/query-raw-contacts.md:> and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/accounts/query-raw-contacts.md).
-./docs/basics/query-raw-contacts.md:To retrieve the first 5 RawContacts in the given account that has at least one email, skipping the
-./docs/basics/query-raw-contacts.md:## Specifying Accounts
-./docs/basics/query-raw-contacts.md:To limit the search to only those RawContacts associated with one of the given accounts,
-./docs/basics/query-raw-contacts.md:.rawContactsWhere(accounts, null)
-./docs/basics/query-raw-contacts.md:For example, to limit the search to contacts belonging to only one account,
-./docs/basics/query-raw-contacts.md:.rawContactsWhere(listOf(Account("john.doe@gmail.com", "com.google")), null)
-./docs/basics/query-raw-contacts.md:> ℹ️ For more info, read [Query for Accounts](../accounts/query-accounts.md).
-./docs/basics/query-raw-contacts.md:If no accounts are specified (this function is not called or called with no Accounts), then all
-./docs/basics/query-raw-contacts.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
-./docs/basics/query-raw-contacts.md:included in the search. RawContacts without an associated account are considered local contacts or
-./docs/basics/query-raw-contacts.md:For example, to order RawContacts by account type,
-./docs/basics/query-raw-contacts.md:.orderBy(RawContactsFields.AccountType.asc())
-./docs/basics/query-raw-contacts.md:## RawContacts from more than one account in the same list
-./docs/basics/query-raw-contacts.md:When you perform a query that returns groups from more than one account, you will get everything
-./docs/basics/query-raw-contacts.md:that allows you to get a sublist with RawContacts belonging only to a particular account.
-./docs/basics/query-raw-contacts.md:val rawContactsFromAccount = rawContactsList.from(account)
-
-
 ./docs/dev-notes.md:    - Rows that link Contacts rows to specific Accounts.
 ./docs/dev-notes.md:    - `ACCOUNT_NAME`: the `Account.name`
 ./docs/dev-notes.md:    - `ACCOUNT_TYPE` the `Account.type`
