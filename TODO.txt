@@ -8,16 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/other/link-unlink-contacts.md:You may link Contacts with RawContacts that belong to different Accounts. Any RawContact Data
-./docs/other/link-unlink-contacts.md:modifications are synced per Account sync settings.
-./docs/other/link-unlink-contacts.md:RawContacts that are not associated with an Account are local to the device and therefore will not
-./docs/other/link-unlink-contacts.md:be synced even if it is linked to a Contact with a RawContact that is associated with an Account.
-./docs/other/link-unlink-contacts.md:RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-./docs/other/link-unlink-contacts.md:RawContact id: 31, contactId: 33, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-./docs/other/link-unlink-contacts.md:RawContact id: 30, contactId: 32, displayName: X, accountName: x@x.com, accountType: com.google, starred: 0, timesContacted: 1, lastTimeContacted: 1573071785456, customRingtone: content://media/internal/audio/media/109, sendToVoicemail: 0
-./docs/other/link-unlink-contacts.md:RawContact id: 31, contactId: 32, displayName: Y, accountName: y@y.com, accountType: com.google, starred: 1, timesContacted: 2, lastTimeContacted: 1573071750624, customRingtone: content://media/internal/audio/media/115, sendToVoicemail: 1
-
-
 ./docs/groups/update-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
 ./docs/groups/update-groups.md:The above list may vary per account.
 ./docs/groups/update-groups.md:belonging to the same account to exist. In older versions of Android, the native Contacts app
