@@ -8,22 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/basics/query-contacts-advanced.md:- belongs to the account of "john.doe@gmail.com" or "john.doe@myspace.com"
-./docs/basics/query-contacts-advanced.md:    .accounts(
-./docs/basics/query-contacts-advanced.md:        Account("john.doe@gmail.com", "com.google"),
-./docs/basics/query-contacts-advanced.md:        Account("john.doe@myspace.com", "com.myspace"),
-./docs/basics/query-contacts-advanced.md:## Specifying Accounts
-./docs/basics/query-contacts-advanced.md:To limit the search to only those contacts associated with one of the given accounts,
-./docs/basics/query-contacts-advanced.md:.accounts(accounts)
-./docs/basics/query-contacts-advanced.md:For example, to limit the search to contacts belonging to only one account,
-./docs/basics/query-contacts-advanced.md:.accounts(Account("john.doe@gmail.com", "com.google"))
-./docs/basics/query-contacts-advanced.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
-./docs/basics/query-contacts-advanced.md:The Contacts returned may still contain RawContacts / data that belongs to other accounts not
-./docs/basics/query-contacts-advanced.md:specified in the given accounts because Contacts may be made up of more than one RawContact from
-./docs/basics/query-contacts-advanced.md:different Accounts. This is the same behavior as the native Contacts app.
-./docs/basics/query-contacts-advanced.md:If no accounts are specified (this function is not called or called with no Accounts), then all
-./docs/basics/query-contacts-advanced.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
-./docs/basics/query-contacts-advanced.md:included in the search. RawContacts without an associated account are considered local contacts or
 ./docs/basics/insert-contacts.md:## Associating an Account
 ./docs/basics/insert-contacts.md:New RawContacts can be associated with an Account in order to enable syncing,
 ./docs/basics/insert-contacts.md:newRawContact.account = account
