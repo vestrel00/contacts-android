@@ -211,7 +211,7 @@ Contacts(this)
 
 The `contacts.ui.util.PhotoPicker.kt` in the `ui` module` provides extension functions to make 
 selecting existing photos, taking new photos, and removing photos easier. It provides you the same
-UX as the native Contacts app. To use it,
+UX as the AOSP Contacts app. To use it,
 
 ```kotlin
 Activity {

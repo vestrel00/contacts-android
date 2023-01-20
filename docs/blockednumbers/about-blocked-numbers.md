@@ -62,8 +62,8 @@ successfully use this function **and therefore the bocked number APIs provided i
 
 If your app does not have the privilege to read/write directly to the blocked number provider, you
 may instead launch the builtin system Blocked numbers activity. It provides a fully functional UI
-allowing users to see, add, and remove blocked numbers. It is the same activity used by the native (
-AOSP) Contacts app and Google Contacts app when accessing the "Blocked numbers".
+allowing users to see, add, and remove blocked numbers. It is the same activity used by the AOSP 
+Contacts app and Google Contacts app when accessing the "Blocked numbers".
 
 ```kotlin
 Contacts(context).blockedNumbers().startBlockedNumbersActivity(activity)

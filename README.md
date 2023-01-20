@@ -27,7 +27,7 @@ and cursors.
 
 Whether you just need to get all or some Contacts for a small part of your app (written in Kotlin
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
-as the native (AOSP) Android Contacts app and Google Contacts app, this library is for you!
+as the AOSP Android Contacts app and Google Contacts app, this library is for you!
 
 **[Please help support this project 🙏❤️⭐️](https://github.com/vestrel00/contacts-android/discussions/189)**
 
@@ -181,7 +181,7 @@ To retrieve all contacts containing all available contact data,
 val contacts = Contacts(context).query().find()
 ```
 
-To simply search for Contacts, yielding the exact same results as the native Contacts app,
+To simply search for Contacts, yielding the exact same results as the AOSP Contacts app,
 
 ```kotlin
 val contacts = Contacts(context)

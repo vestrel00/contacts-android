@@ -79,7 +79,7 @@ provided in this library are committed.
 Typically, you should only read/write Contact options. Don't mind RawContact options, unless you
 really want to. For example,
 
-- the native AOSP Contacts app only allows reading and writing Contact options.
+- the AOSP Contacts app only allows reading and writing Contact options.
 - the Google Contacts app allows reading and writing Contact and RawContact options.
 
 ### Setting RawContact options
@@ -145,7 +145,7 @@ operations.
 ## Using the ui RingtonePicker extensions
 
 The `contacts.ui.util.RingtonePicker.kt` in the `ui` module` provides extension functions to make
-selecting existing ringtones easier. It provides you the same UX as the native Contacts app.
+selecting existing ringtones easier. It provides you the same UX as the AOSP Contacts app.
 
 To use it,
 

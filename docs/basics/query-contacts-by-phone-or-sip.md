@@ -11,7 +11,7 @@ An instance of the `PhoneLookupQuery` API is obtained by,
 val query = Contacts(context).phoneLookupQuery()
 ```
 
-> ℹ️ For a broader, and more native Contacts app like query that allows partial matching, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
+> ℹ️ For a broader, and more AOSP Contacts app like query that allows partial matching, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
 
 > ℹ️ For a more granular, advanced queries, use the `Query` API; [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
@@ -55,7 +55,7 @@ For example, to limit the search to contacts belonging to only one account,
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
-different Accounts. This is the same behavior as the native Contacts app.
+different Accounts. This is the same behavior as the AOSP Contacts app.
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.
@@ -88,7 +88,7 @@ For example, to limit the search to only friends,
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
-This is the same behavior as the native Contacts app.
+This is the same behavior as the AOSP Contacts app.
 
 If no groups are specified (this function is not called or called with no Groups), then all
 RawContacts of Contacts are included in the search.

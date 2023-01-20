@@ -252,11 +252,11 @@ respectively).
 
 ## Custom data support
 
-The `include` function supports registered custom data fields, which my be combined with native
+The `include` function supports registered custom data fields, which my be combined with AOSP
 (non-custom) data fields.
 
 By default, not calling the `include` function will include all fields, including custom data.
-However, the below code will include all native fields but exclude custom data;
+However, the below code will include all AOSP fields but exclude custom data;
 
 ```kotlin
 .include(Fields.all)

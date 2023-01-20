@@ -56,7 +56,7 @@ if any, and does the following;
 ## Groups and duplicate titles
 
 The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
-belonging to the same account to exist. In older versions of Android, the native Contacts app 
+belonging to the same account to exist. In older versions of Android, the AOSP Contacts app 
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 

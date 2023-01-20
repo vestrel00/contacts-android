@@ -13,7 +13,7 @@ An instance of the `Query` API is obtained by,
 val query = Contacts(context).query()
 ```
 
-> ℹ️ For a broader, and more native Contacts app like query, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
+> ℹ️ For a broader, and more AOSP Contacts app like query, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
 
 > ℹ️ For specialized matching of phone numbers and SIP addresses, use the `PhoneLookupQuery` API; [Query contacts by phone or SIP](./../basics/query-contacts-by-phone-or-sip.md).
 
@@ -123,7 +123,7 @@ For example, to limit the search to contacts belonging to only one account,
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
-different Accounts. This is the same behavior as the native Contacts app.
+different Accounts. This is the same behavior as the AOSP Contacts app.
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.
@@ -173,7 +173,7 @@ To limit the search to only those RawContacts associated with at least one of th
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
-This is the same behavior as the native Contacts app.
+This is the same behavior as the AOSP Contacts app.
 
 If no groups are specified, then all RawContacts of Contacts are included in the search.
 
@@ -335,11 +335,11 @@ This library only provides basic WHERE functions. It does not cover the entirety
 the community may add more over time <3
 
 Furthermore, this library is constrained by rules and limitations set by the Contacts Provider and
-the behavior of the native Contacts app. One such rule/limitation has resulted in this library not
+the behavior of the AOSP Contacts app. One such rule/limitation has resulted in this library not
 providing WHERE functions such as `isNull` or `isNullOrEmpty` to prevent making misleading queries.
 
 Removing a piece of existing data results in the deletion of the row in the Data table if that row 
-no longer contains any meaningful data. This is the behavior of the native Contacts app. Therefore, 
+no longer contains any meaningful data. This is the behavior of the AOSP Contacts app. Therefore, 
 querying for null fields is not possible. For example, there may be no Data rows that exist where 
 the email address is null. Thus, a query to search for all contacts with no email addresses may 
 return 0 contacts even if there are some contacts that do not have at least one email address.

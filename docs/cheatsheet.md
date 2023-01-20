@@ -494,7 +494,7 @@ heading explore each API in full detail. You may also find these samples in the 
                             new ArrayList<>(),
                             equalTo(RawContactsFields.Id, rawContactId)
                     )
-                    // alternatively, .where(equalTo(Fields.RawContact.Id, rawContactId))
+                    // alterAOSPly, .where(equalTo(Fields.RawContact.Id, rawContactId))
                     .find()
                     .get(0);
         }

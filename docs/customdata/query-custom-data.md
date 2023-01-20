@@ -93,7 +93,7 @@ that can be used in this function. For example, to match `HandleName`s starting 
 ```
 
 The `BroadQuery` API provides a `wherePartiallyMatches` function that NOT support matching custom
-data. Only native data are included in the matching process.
+data. Only AOSP data are included in the matching process.
 
 The `ProfileQuery` API does not provide a where function as there can only be one profile Contact
 per device. 
@@ -109,7 +109,7 @@ The `DataQuery` API provides an `orderBy` function that supports custom data. Fo
 
 The `Query`, `BroadQuery`, and `RawContactsQuery` APIs provides an `orderBy` function that only 
 takes in fields from the Contacts/RawContacts table, not the Data table. So there is no custom 
-data, or native data, support for this.
+data, or AOSP data, support for this.
 
 The `ProfileQuery` API does not provide an `orderBy` function as there can only be at most one 
 profile Contact on the device.

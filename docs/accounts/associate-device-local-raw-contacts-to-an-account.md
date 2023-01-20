@@ -163,7 +163,7 @@ These are the behaviors that I have found;
 - Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
   - Partially works with some unwanted-side effects.
   - Dissociates RawContact A from the device but not other devices.
-  - RawContact A is no longer visible in the native Contacts app UNLESS it retains the group
+  - RawContact A is no longer visible in the AOSP Contacts app UNLESS it retains the group
     membership to at least the default group from an Account.
   - At this point, RawContact A is a local contact. Changes to this local RawContact A will not be
     synced across devices.
@@ -176,9 +176,9 @@ These are the behaviors that I have found;
 - Associating RawContact A from original Account X to Account Y.
   - Does not work and have bad side-effects.
   - No change in other devices.
-  - For Lollipop (API 22) and below, RawContact A is no longer visible in the native Contacts app
+  - For Lollipop (API 22) and below, RawContact A is no longer visible in the AOSP Contacts app
     and syncing Account Y in system settings fails.
-  - For Marshmallow (API 23) and above, RawContact A is no longer visible in the native Contacts
+  - For Marshmallow (API 23) and above, RawContact A is no longer visible in the AOSP Contacts
     app. RawContact A is automatically deleted locally at some point by the Contacts Provider.
     Syncing Account Y in system settings succeeds.
 
@@ -188,7 +188,7 @@ works, it is the only function that will be exposed to consumers.
 If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
 RawContact associated with the desired Account and then delete the original RawContact. Same idea
 can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
-implement some functions in this library that does these things? We won't for now because the native
+implement some functions in this library that does these things? We won't for now because the AOSP
 Contacts app does not support these functions anyways. It can always be implemented later if the
 community really wants.
 
