@@ -74,6 +74,8 @@ guaranteed to be null.
 
 ### Optimizing queries
 
+Are you finding that your queries are slow or take too much memory? Well, you are in the right section!
+
 When you are showing a list of Contacts using the `Query` and `BroadQuery` APIs, you typically only 
 show their thumbnail photo and display name.
 
