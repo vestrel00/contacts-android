@@ -7,6 +7,3 @@ This file will be deleted when all of the following items have been checked/remo
 Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
-
-./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
-./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE '*******************' ESCAPE '\') AND (account_type LIKE '**********' ESCAPE '\')
