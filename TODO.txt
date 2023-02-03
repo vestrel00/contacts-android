@@ -11,14 +11,6 @@ grep --include="*kt" -ri "account" .
 ./docs/logging/log-api-input-output.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
 
 
-./docs/entities/about-api-entities.md:    - Rows that link Contacts rows to specific Accounts.
-./docs/entities/about-api-entities.md:    - Contains contact data that belong to an account.
-./docs/entities/about-api-entities.md:## Data kinds Account restrictions
-./docs/entities/about-api-entities.md:associated with an Account).
-./docs/entities/about-api-entities.md:the account sync settings.
-./docs/entities/about-api-entities.md:- `GroupMembership`, underlying value defaults to the account's default system group
-./docs/entities/about-api-entities.md:RawContacts that are associated with an Account. If a valid account is provided, membership to the
-./docs/entities/about-api-entities.md:If a valid account is not provided, no entries of the above are automatically created.
 ./docs/entities/about-contact-lookup-key.md:      to ensure that Contact data is synced per user account.
 ./docs/entities/about-contact-lookup-key.md:with an Account and are synced). The lookup key points to a person entity rather than just a row
 ./docs/entities/about-contact-lookup-key.md:## Moving RawContacts between accounts and the lookup key
