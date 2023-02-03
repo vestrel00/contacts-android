@@ -1214,26 +1214,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
-    Developer notes (or for advanced users)
-  </a>
-  
-    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#synccolumns-modifications" class="md-nav__link">
-    SyncColumns modifications
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1995,26 +1975,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#developer-notes-or-for-advanced-users" class="md-nav__link">
-    Developer notes (or for advanced users)
-  </a>
-  
-    <nav class="md-nav" aria-label="Developer notes (or for advanced users)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#synccolumns-modifications" class="md-nav__link">
-    SyncColumns modifications
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2109,80 +2069,6 @@ RawContacts. To get an instance of this API for Profile data updates,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">profileDataUpdate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">accounts</span><span class="p">().</span><span class="na">profile</span><span class="p">().</span><span class="na">updateLocalRawContactsAccount</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p>All updates will be limited to the Profile RawContacts, whether it exists or not.</p>
-<hr />
-<h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
-<p>Due to certain limitations and behaviors imposed by the Contacts Provider, this library only
-provides an API to support;</p>
-<ul>
-<li>Associate local RawContacts (those that are not associated with an Account) to an Account,
-  allowing syncing between devices.</li>
-</ul>
-<p>The library does not provide an API that supports;</p>
-<ul>
-<li>Dissociate RawContacts from their Account such that they remain local to the device and not
-  synced between devices.</li>
-<li>Transfer RawContacts from one Account to another.</li>
-</ul>
-<h3 id="synccolumns-modifications">SyncColumns modifications<a class="headerlink" href="#synccolumns-modifications" title="Permanent link">&para;</a></h3>
-<p>This library supports modifying the <code>SyncColumns.ACCOUNT_NAME</code> and <code>SyncColumns.ACCOUNT_TYPE</code> of the
-RawContacts table in some cases only. In some cases does not work as intended and produces unwanted
-side-effects. It probably has something to do with syncing with remote servers and local Account /
-sync data not matching up similar to errors on network requests if the system time does not match
-network time.</p>
-<p>The motivation behind changing the Account columns of the RawContacts table rows is that it would
-allow users to;</p>
-<ul>
-<li>Associate local RawContacts (those that are not associated with an Account) to an Account,
-  allowing syncing between devices.</li>
-<li>Dissociate RawContacts from their Account such that they remain local to the device and not synced
-  between devices.</li>
-<li>Transfer RawContacts from one Account to another.</li>
-</ul>
-<p>When modifying the SyncColumns directly, the first works as intended. The second works with some
-unwanted side-effects. The third does not work at all and produces unwanted side-effects.</p>
-<p>These are the behaviors that I have found;</p>
-<ul>
-<li>Associating local RawContact A to Account X.</li>
-<li>Works as intended.</li>
-<li>RawContact A is now associated with Account X and is synced across devices.</li>
-<li>Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.</li>
-<li>Partially works with some unwanted-side effects.</li>
-<li>Dissociates RawContact A from the device but not other devices.</li>
-<li>RawContact A is no longer visible in the native Contacts app UNLESS it retains the group
-    membership to at least the default group from an Account.</li>
-<li>At this point, RawContact A is a local contact. Changes to this local RawContact A will not be
-    synced across devices.</li>
-<li>If RawContact A is updated in another device and synced up to the server, then a syncing
-    side-effect occurs because the RawContact A in the device is different from the RawContact A
-    in the server. This causes the Contacts Provider to create another RawContact, resulting in a
-    "duplicate". The two RawContact As may get aggregated to the same Contact depending on how
-    similar they are.</li>
-<li>If local RawContact A is re-associated back to Account X, it will still no longer be synced.</li>
-<li>Associating RawContact A from original Account X to Account Y.</li>
-<li>Does not work and have bad side-effects.</li>
-<li>No change in other devices.</li>
-<li>For Lollipop (API 22) and below, RawContact A is no longer visible in the native Contacts app
-    and syncing Account Y in system settings fails.</li>
-<li>For Marshmallow (API 23) and above, RawContact A is no longer visible in the native Contacts
-    app. RawContact A is automatically deleted locally at some point by the Contacts Provider.
-    Syncing Account Y in system settings succeeds.</li>
-</ul>
-<p>Given that associating originally local RawContacts to an Account is the only thing that actually
-works, it is the only function that will be exposed to consumers.</p>
-<p>If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
-RawContact associated with the desired Account and then delete the original RawContact. Same idea
-can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
-implement some functions in this library that does these things? We won't for now because the native
-Contacts app does not support these functions anyways. It can always be implemented later if the
-community really wants.</p>
-<p>Here are some other things to note.</p>
-<ol>
-<li>The Contacts Provider automatically creates a group membership to the default group of the target
-   Account when the account changes. This occurs even if the group membership already exists
-   resulting in duplicates.</li>
-<li>The Contacts Provider DOES NOT delete existing group memberships when the account changes.
-   This has to be done manually to prevent duplicates.</li>
-</ol>
 
               
             </article>

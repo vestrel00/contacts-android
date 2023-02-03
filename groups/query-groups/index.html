@@ -2025,12 +2025,12 @@
 
 <h1 id="query-groups">Query groups<a class="headerlink" href="#query-groups" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>GroupsQuery</code> API that allows you to get groups associated with an 
-<code>Account</code>.</p>
+<code>Account</code> or no account.</p>
 <p>An instance of the <code>GroupsQuery</code> API is obtained by,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">groups</span><span class="p">().</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="a-basic-query">A basic query<a class="headerlink" href="#a-basic-query" title="Permanent link">&para;</a></h2>
-<p>To get all of the groups for all accounts,</p>
+<p>To get all of the groups for all accounts (including no/null account),</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">groupsFromAllAccounts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="p">.</span><span class="na">groups</span><span class="p">()</span><span class="w"></span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
@@ -2050,9 +2050,7 @@
 <p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 </blockquote>
 <p>If no accounts are specified (this function is not called or called with no Accounts), then all
-Groups of all accounts are included in the search.</p>
-<p>A null Account may NOT be provided here because no group can exist without an account. Groups are
-inextricably linked to an Account.</p>
+Groups from all accounts (including the null account) are included in the search.</p>
 <h2 id="ordering">Ordering<a class="headerlink" href="#ordering" title="Permanent link">&para;</a></h2>
 <p>To order resulting Groups using one or more fields,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">orderBy</span><span class="p">(</span><span class="n">fieldOrder</span><span class="p">)</span><span class="w"></span>

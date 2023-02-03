@@ -2042,7 +2042,7 @@ Contacts Provider typically have the following system groups (for standard Googl
 <li>systemId: Family, title: Family</li>
 <li>systemId: Coworkers, title: Coworkers</li>
 </ul>
-<p>The above list may vary per account. </p>
+<p>The above list may vary per account.</p>
 <p>To prevent attempting to modify/update read-only groups, the <code>Group.mutableCopy()</code> function will
 return null if the group is read-only. </p>
 <blockquote>
@@ -2052,9 +2052,9 @@ suffering caused by trying and failing XD</p>
 </blockquote>
 <h2 id="groups-and-duplicate-titles">Groups and duplicate titles<a class="headerlink" href="#groups-and-duplicate-titles" title="Permanent link">&para;</a></h2>
 <p>The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
-belonging to the same account to exist. In older versions of Android, the native Contacts app 
-allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
-allowed. Therefore, this library does not allow for duplicate titles.</p>
+belonging to the same (nullable) account to exist. In older versions of Android, the AOSP Contacts 
+app allows the creation of new groups with existing titles. In newer versions, duplicate titles are 
+not allowed. Therefore, this library does not allow for duplicate titles.</p>
 <h2 id="executing-the-update">Executing the update<a class="headerlink" href="#executing-the-update" title="Permanent link">&para;</a></h2>
 <p>To execute the update,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>

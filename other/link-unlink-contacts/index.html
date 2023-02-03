@@ -2313,7 +2313,7 @@ be synced even if it is linked to a Contact with a RawContact that is associated
 <hr />
 <h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
 <h3 id="behavior-of-linkingmergingjoining-contacts-aggregationexceptions">Behavior of linking/merging/joining contacts (AggregationExceptions)<a class="headerlink" href="#behavior-of-linkingmergingjoining-contacts-aggregationexceptions" title="Permanent link">&para;</a></h3>
-<p>The native Contacts app terminology has changed over time;</p>
+<p>The AOSP Contacts app terminology has changed over time;</p>
 <ul>
 <li>API 22 and below; join / separate</li>
 <li>API 23; merge / unmerge</li>
@@ -2362,7 +2362,7 @@ supported by the <code>ContactsContract.AggregationExceptions</code>.</p>
 <p>Contact Y's row has been deleted and its column values have been merged into Contact X row. If the
 reverse occurred (Contact Y merged with Contact X), Contact Y's row would still be deleted. The
 difference is that Contact X's display name will be set to Contact Y's display name, which is done
-by the native Contacts app manually by setting Contact Y's Data name row to be the "default"
+by the AOSP Contacts app manually by setting Contact Y's Data name row to be the "default"
 (isPrimary and isSuperPrimary both set to 1).</p>
 <blockquote>
 <p>ℹ️ The AggregationExceptions table records the linked RawContacts IDs in ascending order 
@@ -2373,7 +2373,7 @@ been changed to the id of Contact X. All Data rows' isSuperPrimary value has bee
 the isPrimary columns remain the same. In other words, this clears any "default" set before the
 link. These are done automatically by the Contacts Provider during the link operation.</p>
 <p>What is not done automatically by the Contacts Provider is that the name row of former Contact X is
-set as the default. The native Contacts app does this manually. The Contacts Providers automatically
+set as the default. The AOSP Contacts app does this manually. The Contacts Providers automatically
 sets the Contact display name to whatever the default name row is for the Contact, if available. For
 more info on Contact display name resolution, read the <strong>Contact Display Name and Default Name
 Rows</strong> section.</p>
@@ -2391,26 +2391,26 @@ changes to the options of the parent Contact will be propagated to all child Raw
 the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
 references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).</p>
 <blockquote>
-<p>ℹ️ When removing the photo in the native contacts app, the photo data row is not immediately 
+<p>ℹ️ When removing the photo in the AOSP contacts app, the photo data row is not immediately 
 deleted, though the <code>PHOTO_FILE_ID</code> is immediately set to null. This may result in the <code>PHOTO_URI</code>
 and <code>PHOTO_THUMBNAIL_URI</code> to still have a valid image uri even though the photo has been 
 "removed". This library immediately deletes the photo data row, which seems to work perfectly.</p>
 </blockquote>
 <p><strong>Data inserts</strong></p>
-<p>In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
+<p>In the AOSP Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
 first RawContact in the list sorted by the RawContact ID.</p>
 <blockquote>
 <p>ℹ️ This may not be the same as the RawContact referenced by <code>ContactsColumns.NAME_RAW_CONTACT_ID</code>.</p>
 </blockquote>
 <p><strong>UI changes?</strong></p>
-<p>The native Contacts App does not display the groups field when displaying / editing Contacts that
+<p>The AOSP Contacts App does not display the groups field when displaying / editing Contacts that
 have multiple RawContacts (linked/merged/joined) in combined mode. However, it does allow editing
 individual RawContact Data rows in which case the groups field is displayed and editable.</p>
-<p>In the native Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
+<p>In the AOSP Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
 set to true. This and all other "unique" mimetypes (organization) and non-unique mimetypes (email)
 per RawContact are shown only if they are not blank.</p>
 <p><strong>Showing multiple RawContact's data in the same edit screen (combined mode)</strong></p>
-<p>In older version of the native, Android Open Source Project (AOSP) Contacts app, data from multiple
+<p>In older version of the AOSP, Android Open Source Project (AOSP) Contacts app, data from multiple
 RawContacts was being shown in the same edit screen. This caused a lot of confusion about which data
 belonged to which RawContact. Newer versions of AOSP Contacts only allow editing one RawContact at a
 time to avoid confusion. Though, several RawContacts' data are still shown (not-editable)
@@ -2477,7 +2477,7 @@ Provider chooses from any of the other suitable data from the aggregate Contact.
 along with the display name.</p>
 </blockquote>
 <p>The default status of other sources (e.g. email) does not affect the Contact display name.</p>
-<p>The native Contacts app also sets the most recently updated name as the default at every update.
+<p>The AOSP Contacts app also sets the most recently updated name as the default at every update.
 This results in the Contact display name changing to the most recently updated name from one of the
 associated RawContacts. The "most recently updated name" is the name field that was last updated by
 the user when editing in the Contacts app, which is irrelevant to its value. It does not matter if
@@ -2488,7 +2488,7 @@ still counts as the most recently updated.</p>
 <p>The <code>ContactsColumns.NAME_RAW_CONTACT_ID</code> was added in API 21. It changed the way display names are
 resolved for Contacts with more than one constituent RawContacts, which is what has been described
 so far.</p>
-<p>Before this change (APIs 20 and below), the native Contacts app is still able to set the Contact
+<p>Before this change (APIs 20 and below), the AOSP Contacts app is still able to set the Contact
 display name somehow. I'm not sure how. If someone figures it out, please let me know. I tried
 updating the Contact <code>DISPLAY_NAME</code> directly but it does not work. Setting a name row as default
 also does not affect the Contact <code>DISPLAY_NAME</code>.</p>

@@ -2006,8 +2006,8 @@ successfully use this function <strong>and therefore the bocked number APIs prov
 <h2 id="use-the-builtin-blocked-numbers-activity">Use the builtin Blocked Numbers activity<a class="headerlink" href="#use-the-builtin-blocked-numbers-activity" title="Permanent link">&para;</a></h2>
 <p>If your app does not have the privilege to read/write directly to the blocked number provider, you
 may instead launch the builtin system Blocked numbers activity. It provides a fully functional UI
-allowing users to see, add, and remove blocked numbers. It is the same activity used by the native (
-AOSP) Contacts app and Google Contacts app when accessing the "Blocked numbers".</p>
+allowing users to see, add, and remove blocked numbers. It is the same activity used by the AOSP 
+Contacts app and Google Contacts app when accessing the "Blocked numbers".</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">blockedNumbers</span><span class="p">().</span><span class="na">startBlockedNumbersActivity</span><span class="p">(</span><span class="n">activity</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>If the <code>activity</code> is null, the builtin blocked numbers activity will be launched as a new task,

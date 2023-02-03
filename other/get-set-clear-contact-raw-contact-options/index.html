@@ -2033,7 +2033,7 @@ provided in this library are committed.</p>
 <p>Typically, you should only read/write Contact options. Don't mind RawContact options, unless you
 really want to. For example,</p>
 <ul>
-<li>the native AOSP Contacts app only allows reading and writing Contact options.</li>
+<li>the AOSP Contacts app only allows reading and writing Contact options.</li>
 <li>the Google Contacts app allows reading and writing Contact and RawContact options.</li>
 </ul>
 <h3 id="setting-rawcontact-options">Setting RawContact options<a class="headerlink" href="#setting-rawcontact-options" title="Permanent link">&para;</a></h3>
@@ -2078,17 +2078,12 @@ it to false. This behavior can cause bugs and increased code complexity for API 
 <p>Thus, the update APIs provided in this library overshadows membership changes to the favorites group
 with the value of <code>Options.starred</code>. In other words, the only way to star/favorite Contacts and
 RawContacts is to set the value of <code>Options.starred</code>. If you really want to star/favorite
-Contacts/RawContacts via membership to the favorites group (not recommended), then you must exclude 
-<code>Fields.Contact.Options.Starred</code> and <code>RawContactsFields.Options.Starred</code> from the insert/update
-operations.</p>
-<blockquote>
-<p>ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
-though these RawContacts may not have a membership to a favorites group, they may still be
-"starred" (favorited), which is not dependent on the existence of a favorites group membership.</p>
-</blockquote>
+Contacts/RawContacts via membership to the favorites group (not recommended), then you must 
+include <code>Fields.GroupMembership.GroupId</code> and also exclude <code>Fields.Contact.Options.Starred</code> and 
+<code>RawContactsFields.Options.Starred</code> from the insert/update operations.</p>
 <h2 id="using-the-ui-ringtonepicker-extensions">Using the ui RingtonePicker extensions<a class="headerlink" href="#using-the-ui-ringtonepicker-extensions" title="Permanent link">&para;</a></h2>
 <p>The <code>contacts.ui.util.RingtonePicker.kt</code> in the <code>ui</code> module` provides extension functions to make
-selecting existing ringtones easier. It provides you the same UX as the native Contacts app.</p>
+selecting existing ringtones easier. It provides you the same UX as the AOSP Contacts app.</p>
 <p>To use it,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Activity</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onSelectRingtoneClicked</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>

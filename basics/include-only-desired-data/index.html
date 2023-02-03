@@ -2080,6 +2080,8 @@ field.</p>
 Data are populated with values from the database. Properties of fields that are not included are 
 guaranteed to be null.</p>
 <h3 id="optimizing-queries">Optimizing queries<a class="headerlink" href="#optimizing-queries" title="Permanent link">&para;</a></h3>
+<p>Are you finding that your queries are slow or take too much memory? Are you looking to optimize
+your queries? Well, you are in the right section!</p>
 <p>When you are showing a list of Contacts using the <code>Query</code> and <code>BroadQuery</code> APIs, you typically only 
 show their thumbnail photo and display name.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">PhotoThumbnailUri</span><span class="p">,</span><span class="w"> </span><span class="n">Fields</span><span class="p">.</span><span class="na">Contact</span><span class="p">.</span><span class="na">DisplayNamePrimary</span><span class="p">)</span><span class="w"></span>
@@ -2227,10 +2229,10 @@ will be updated. The given name and family name columns will be set to the speci
 other columns will remain unchanged (the null or non-null values will remain null and non-null
 respectively).</p>
 <h2 id="custom-data-support">Custom data support<a class="headerlink" href="#custom-data-support" title="Permanent link">&para;</a></h2>
-<p>The <code>include</code> function supports registered custom data fields, which my be combined with native
+<p>The <code>include</code> function supports registered custom data fields, which my be combined with AOSP
 (non-custom) data fields.</p>
 <p>By default, not calling the <code>include</code> function will include all fields, including custom data.
-However, the below code will include all native fields but exclude custom data;</p>
+However, the below code will include all AOSP fields but exclude custom data;</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">Fields</span><span class="p">.</span><span class="na">all</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>If you want to include everything, including custom data, and for some reason you must invoke the

@@ -2127,7 +2127,7 @@ the <code>where</code> function.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
-<p>ℹ️ For a broader, and more native Contacts app like query, use the <code>BroadQuery</code> API, read <a href="../query-contacts/">Query contacts</a>.</p>
+<p>ℹ️ For a broader, and more AOSP Contacts app like query, use the <code>BroadQuery</code> API, read <a href="../query-contacts/">Query contacts</a>.</p>
 <p>ℹ️ For specialized matching of phone numbers and SIP addresses, use the <code>PhoneLookupQuery</code> API; <a href="../query-contacts-by-phone-or-sip/">Query contacts by phone or SIP</a>.</p>
 <p>ℹ️ If you want to query RawContacts directly instead of Contacts, read <a href="../query-raw-contacts/">Query RawContacts</a>.</p>
 <p>ℹ️ If you want to query Data directly instead of Contacts, read <a href="../../data/query-data-sets/">Query specific data kinds</a>.</p>
@@ -2213,7 +2213,7 @@ more optimized query.</p>
 </blockquote>
 <p>The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
-different Accounts. This is the same behavior as the native Contacts app.</p>
+different Accounts. This is the same behavior as the AOSP Contacts app.</p>
 <p>If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.</p>
 <p>A null Account may be provided here, which results in RawContacts with no associated Account to be
@@ -2246,7 +2246,7 @@ include fields you need.</p>
 </blockquote>
 <p>Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
-This is the same behavior as the native Contacts app.</p>
+This is the same behavior as the AOSP Contacts app.</p>
 <p>If no groups are specified, then all RawContacts of Contacts are included in the search.</p>
 <blockquote>
 <p>ℹ️ This may affect performance. This may require one or more additional queries, internally
@@ -2356,10 +2356,10 @@ that it can actually provide matching Contacts.</p>
 <p>This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
 the community may add more over time &lt;3</p>
 <p>Furthermore, this library is constrained by rules and limitations set by the Contacts Provider and
-the behavior of the native Contacts app. One such rule/limitation has resulted in this library not
+the behavior of the AOSP Contacts app. One such rule/limitation has resulted in this library not
 providing WHERE functions such as <code>isNull</code> or <code>isNullOrEmpty</code> to prevent making misleading queries.</p>
 <p>Removing a piece of existing data results in the deletion of the row in the Data table if that row 
-no longer contains any meaningful data. This is the behavior of the native Contacts app. Therefore, 
+no longer contains any meaningful data. This is the behavior of the AOSP Contacts app. Therefore, 
 querying for null fields is not possible. For example, there may be no Data rows that exist where 
 the email address is null. Thus, a query to search for all contacts with no email addresses may 
 return 0 contacts even if there are some contacts that do not have at least one email address.</p>

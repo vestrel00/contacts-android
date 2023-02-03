@@ -2074,7 +2074,7 @@ You no longer have to deal with the <a href="https://developer.android.com/guide
 and cursors. </p>
 <p>Whether you just need to get all or some Contacts for a small part of your app (written in Kotlin
 or Java), or you are looking to create your own full-fledged Contacts app with the same capabilities
-as the native (AOSP) Android Contacts app and Google Contacts app, this library is for you!</p>
+as the AOSP Android Contacts app and Google Contacts app, this library is for you!</p>
 <p><strong><a href="https://github.com/vestrel00/contacts-android/discussions/189">Please help support this project 🙏❤️⭐️</a></strong></p>
 <h2 id="quick-links">Quick links<a class="headerlink" href="#quick-links" title="Permanent link">&para;</a></h2>
 <ul>
@@ -2208,7 +2208,7 @@ read the <a href="setup/installation/">Installation guide</a>.</p>
 <p>To retrieve all contacts containing all available contact data,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">query</span><span class="p">().</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
-<p>To simply search for Contacts, yielding the exact same results as the native Contacts app,</p>
+<p>To simply search for Contacts, yielding the exact same results as the AOSP Contacts app,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="p">.</span><span class="na">broadQuery</span><span class="p">()</span><span class="w"></span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="p">.</span><span class="na">wherePartiallyMatches</span><span class="p">(</span><span class="n">searchText</span><span class="p">)</span><span class="w"></span>
@@ -2497,7 +2497,7 @@ language standards. It is Kotlin-first, Java-second (with love and care).</p>
 <p>If you use Proguard and the <code>async</code> and/or <code>permissions</code> modules, then you may need to add rules for
 <a href="https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro">Coroutines</a>.</p>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>Copyright 2022 Contacts Contributors
+<div class="highlight"><pre><span></span><code>Copyright 2023 Contacts Contributors
 
 Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
 you may not use this file except in compliance with the License.

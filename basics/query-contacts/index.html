@@ -2159,7 +2159,7 @@
 
 <h1 id="query-contacts">Query contacts<a class="headerlink" href="#query-contacts" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>BroadQuery</code> API that allows you to get the exact same search results
-as the native Contacts app! This query lets the Contacts Provider perform the search using its own
+as the AOSP Contacts app! This query lets the Contacts Provider perform the search using its own
 custom matching algorithm via the <code>wherePartiallyMatches</code> function. This type of query is the basis
 of an app that does a broad search of the Contacts Provider. The technique is useful for apps that
 want to implement functionality similar to the People app's contact list screen.</p>
@@ -2199,7 +2199,7 @@ that at least partially matches a given <code>searchText</code>,</p>
 </blockquote>
 <p>The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
-different Accounts. This is the same behavior as the native Contacts app.</p>
+different Accounts. This is the same behavior as the AOSP Contacts app.</p>
 <p>If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.</p>
 <p>A null Account may be provided here, which results in RawContacts with no associated Account to be
@@ -2223,7 +2223,7 @@ should only specify this if you actually need it.</p>
 </blockquote>
 <p>Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
-This is the same behavior as the native Contacts app.</p>
+This is the same behavior as the AOSP Contacts app.</p>
 <p>If no groups are specified (this function is not called or called with no Groups), then all
 RawContacts of Contacts are included in the search.</p>
 <blockquote>

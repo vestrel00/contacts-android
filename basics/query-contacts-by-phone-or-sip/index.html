@@ -2112,7 +2112,7 @@ to implement caller IDs for incoming and outgoing calls.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">phoneLookupQuery</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
-<p>ℹ️ For a broader, and more native Contacts app like query that allows partial matching, use the <code>BroadQuery</code> API, read <a href="../query-contacts/">Query contacts</a>.</p>
+<p>ℹ️ For a broader, and more AOSP Contacts app like query that allows partial matching, use the <code>BroadQuery</code> API, read <a href="../query-contacts/">Query contacts</a>.</p>
 <p>ℹ️ For a more granular, advanced queries, use the <code>Query</code> API; <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 <p>ℹ️ If you want to query RawContacts directly instead of Contacts, read <a href="../query-raw-contacts/">Query RawContacts</a>.</p>
 <p>ℹ️ If you want to query Data directly instead of Contacts, read <a href="../../data/query-data-sets/">Query specific data kinds</a>.</p>
@@ -2141,7 +2141,7 @@ number stored in the database</em>. For more info about matching, read up on the
 </blockquote>
 <p>The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
-different Accounts. This is the same behavior as the native Contacts app.</p>
+different Accounts. This is the same behavior as the AOSP Contacts app.</p>
 <p>If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.</p>
 <p>A null Account may be provided here, which results in RawContacts with no associated Account to be
@@ -2165,7 +2165,7 @@ should only specify this if you actually need it.</p>
 </blockquote>
 <p>Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
-This is the same behavior as the native Contacts app.</p>
+This is the same behavior as the AOSP Contacts app.</p>
 <p>If no groups are specified (this function is not called or called with no Groups), then all
 RawContacts of Contacts are included in the search.</p>
 <blockquote>

@@ -2009,7 +2009,7 @@
 
 <h1 id="insert-groups">Insert groups<a class="headerlink" href="#insert-groups" title="Permanent link">&para;</a></h1>
 <p>This library provides the <code>GroupsInsert</code> API that allows you to create/insert groups associated to
-an <code>Account</code>.</p>
+an <code>Account</code> or no account.</p>
 <p>An instance of the <code>GroupsInsert</code> API is obtained by,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">groups</span><span class="p">().</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
@@ -2035,8 +2035,7 @@ an <code>Account</code>.</p>
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="groups-and-accounts">Groups and Accounts<a class="headerlink" href="#groups-and-accounts" title="Permanent link">&para;</a></h2>
-<p>A set of groups exist for each Account. When there are no accounts in the system, there are no 
-groups and inserting groups will fail.</p>
+<p>A set of groups exist for each Account. The "null" account may also have a set of groups.</p>
 <p>The get accounts permission is required here because this API retrieves all available accounts,
 if any, and does the following;</p>
 <ul>
@@ -2044,14 +2043,14 @@ if any, and does the following;</p>
   is used</li>
 <li>if the account specified is not found in the list of accounts returned by the system, then the 
   insertion fails for that group</li>
-<li>if there are no accounts in the system, [commit] does nothing and fails immediately</li>
+<li>if a null is specified, then the group will be inserted without association to an account</li>
 </ul>
 <blockquote>
 <p>ℹ️ For more info on the relationship of Groups and Accounts, read <a href="../query-groups/">Query groups</a>.</p>
 </blockquote>
 <h2 id="groups-and-duplicate-titles">Groups and duplicate titles<a class="headerlink" href="#groups-and-duplicate-titles" title="Permanent link">&para;</a></h2>
 <p>The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
-belonging to the same account to exist. In older versions of Android, the native Contacts app 
+belonging to the same nullable account to exist. In older versions of Android, the AOSP Contacts app 
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.</p>
 <h2 id="executing-the-insert">Executing the insert<a class="headerlink" href="#executing-the-insert" title="Permanent link">&para;</a></h2>
