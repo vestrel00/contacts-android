@@ -8,22 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/entities/about-contact-lookup-key.md:      to ensure that Contact data is synced per user account.
-./docs/entities/about-contact-lookup-key.md:with an Account and are synced). The lookup key points to a person entity rather than just a row
-./docs/entities/about-contact-lookup-key.md:## Moving RawContacts between accounts and the lookup key
-./docs/entities/about-contact-lookup-key.md:Associating a local (device-only) RawContact to an Account will change the Contact lookup key. In
-./docs/entities/about-contact-lookup-key.md:general, set a RawContact's Account to something else will change the lookup key. In these cases,
-./docs/entities/about-contact-lookup-key.md:Changing a RawContact's Account will result in a failed lookup using lookup keys prior to the
-./docs/entities/about-contact-lookup-key.md:Account change.
-./docs/entities/about-contact-lookup-key.md:3. Change the RawContact's Account.
-./docs/entities/about-contact-lookup-key.md:> ℹ️ For more info, read [Associate local RawContacts to an Account](./../accounts/associate-device-local-raw-contacts-to-an-account.md).
-./docs/entities/about-contact-lookup-key.md:Account change.
-./docs/entities/about-contact-lookup-key.md:with an Account and are synced).
-./docs/entities/about-contact-lookup-key.md:Another thing to check is what happens when associating a local RawContact to an Account (move from
-./docs/entities/about-contact-lookup-key.md:device to Account) and vice versa. Is the lookup key of the Contact affected?
-./docs/entities/about-contact-lookup-key.md:After associating the local RawContact to an Account...
-./docs/entities/about-contact-lookup-key.md:Removing the account from it results in...
-./docs/entities/about-contact-lookup-key.md:moving between accounts in the future.
 ./docs/entities/sync-contact-data.md:the account sync settings. You can typically find these account sync settings via
 ./docs/entities/sync-contact-data.md:_Settings -> Accounts -> <account> -> Account sync -> "Contacts"_. Of course, in addition to having
 ./docs/entities/sync-contact-data.md:![Account sync settings](./../assets/images/account-sync-settings.png)
