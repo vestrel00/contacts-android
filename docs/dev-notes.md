@@ -501,7 +501,11 @@ RawContact associated with the desired Account and then delete the original RawC
 can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
 implement some functions in this library that does these things? We won't for now because the AOSP
 Contacts app does not support these functions anyways. It can always be implemented later if the
-community really wants.
+community really wants. 
+
+_UPDATE: My hunch for creating copies and deleting account-associated RawContacts turns out to be
+correct. This is what apps like the Google Contacts app does. This feature will be implemented in
+https://github.com/vestrel00/contacts-android/issues/168_
 
 Here are some other things to note.
 

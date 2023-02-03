@@ -8,43 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:# Associate a local RawContact to an Account
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:This library provides the `AccountsLocalRawContactsUpdate` API, which allows you to associate
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:**local** RawContacts (those that are not associated with an Account) to an Account in order to
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:An instance of the `AccountsLocalRawContactsUpdate` API is obtained by,
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:val accountsLocalRawContactsUpdate = Contacts(context).accounts().updateLocalRawContactsAccount()
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:To associate/add the given local RawContacts to the given account,
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:val updateResult = accountsLocalRawContactsUpdate
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:     .addToAccount(account)
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:        INVALID_ACCOUNT -> handleInvalidAccount()
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:These updates require the `android.permission.GET_ACCOUNTS` and `android.permission.WRITE_CONTACTS`.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:The `AccountsLocalRawContactsUpdate` API also supports updating the Profile (device owner)
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:val profileDataUpdate = Contacts(context).accounts().profile().updateLocalRawContactsAccount()
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associate local RawContacts (those that are not associated with an Account) to an Account,
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Dissociate RawContacts from their Account such that they remain local to the device and not
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Transfer RawContacts from one Account to another.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:This library supports modifying the `SyncColumns.ACCOUNT_NAME` and `SyncColumns.ACCOUNT_TYPE` of the
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:side-effects. It probably has something to do with syncing with remote servers and local Account /
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:The motivation behind changing the Account columns of the RawContacts table rows is that it would
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associate local RawContacts (those that are not associated with an Account) to an Account,
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Dissociate RawContacts from their Account such that they remain local to the device and not synced
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Transfer RawContacts from one Account to another.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associating local RawContact A to Account X.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:  - RawContact A is now associated with Account X and is synced across devices.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:    membership to at least the default group from an Account.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:  - If local RawContact A is re-associated back to Account X, it will still no longer be synced.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:- Associating RawContact A from original Account X to Account Y.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:    and syncing Account Y in system settings fails.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:    Syncing Account Y in system settings succeeds.
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:Given that associating originally local RawContacts to an Account is the only thing that actually
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:RawContact associated with the desired Account and then delete the original RawContact. Same idea
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:   Account when the account changes. This occurs even if the group membership already exists
-./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
-
-
 ./docs/customdata/integrate-custom-data.md:across devices and will remain local to the device regardless of Account sync settings. It is up to
 ./docs/customdata/integrate-custom-data.md:adapters. That is for you to implement based on your account services. This library provides you
 ./docs/customdata/integrate-custom-data.md:> To display your custom data, provide a `contacts.xml` file containing a `<ContactsAccountType>`
