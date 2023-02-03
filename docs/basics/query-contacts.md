@@ -1,7 +1,7 @@
 # Query contacts
 
 This library provides the `BroadQuery` API that allows you to get the exact same search results
-as the native Contacts app! This query lets the Contacts Provider perform the search using its own
+as the AOSP Contacts app! This query lets the Contacts Provider perform the search using its own
 custom matching algorithm via the `wherePartiallyMatches` function. This type of query is the basis
 of an app that does a broad search of the Contacts Provider. The technique is useful for apps that
 want to implement functionality similar to the People app's contact list screen.
@@ -61,7 +61,7 @@ For example, to limit the search to contacts belonging to only one account,
 
 The Contacts returned may still contain RawContacts / data that belongs to other accounts not
 specified in the given accounts because Contacts may be made up of more than one RawContact from
-different Accounts. This is the same behavior as the native Contacts app.
+different Accounts. This is the same behavior as the AOSP Contacts app.
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
 RawContacts of Contacts are included in the search.
@@ -94,7 +94,7 @@ For example, to limit the search to only friends,
 
 Contacts returned may still contain RawContacts / data that belongs to other groups not specified in
 the given groups because Contacts may be made up of more than one RawContact from different Groups.
-This is the same behavior as the native Contacts app.
+This is the same behavior as the AOSP Contacts app.
 
 If no groups are specified (this function is not called or called with no Groups), then all
 RawContacts of Contacts are included in the search.

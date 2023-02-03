@@ -7,24 +7,22 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  *
- * Local RawContacts (those that are not associated with an Account) **should not** have any entries
- * of this data kind.
- *
  * ## Notes
  *
- * In more recent versions of Android, the native Contacts app presents group memberships
+ * In more recent versions of Android, the AOSP Contacts app presents group memberships
  * in the UI as "labels".
  *
  * There is no mutable version of a group membership. To make modifications to group memberships,
  * set the group memberships in the MutableRawContact. To select a set of group memberships, use
- * the [contacts.core.groups.GroupsQuery] with the same account as the RawContact and convert the
- * desired groups to group memberships via the functions in [contacts.core.util.newMembership].
+ * the [contacts.core.groups.GroupsQuery] with the same (nullable) account as the RawContact and
+ * convert the desired groups to group memberships via the functions in
+ * [contacts.core.util.newMembership].
  */
 sealed interface GroupMembershipEntity : DataEntity {
 
     /**
      * The id of the Group in the Groups table that this membership refers to, which must share
-     * the same account as the contact.
+     * the same (nullable) account as the contact.
      *
      * This is a read-only attribute, which is ignored for insert, update, and delete functions.
      */

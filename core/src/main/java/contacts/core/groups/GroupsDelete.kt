@@ -35,8 +35,8 @@ import contacts.core.util.unsafeLazy
  * Adding a group membership to the favorites group results in starred being set to true. Removing
  * the membership sets it to false.
  *
- * Raw contacts that are not associated with an account do not have any group memberships. Even
- * though these RawContacts may not have a membership to the favorites group, they may still be
+ * Raw contacts that are not associated with an account may or may not have any group memberships.
+ * Even though these RawContacts may not have a membership to a favorites group, they may still be
  * "starred" (favorited), which is not dependent on the existence of a favorites group membership.
  *
  * **Refresh RawContact instances after changing the starred value.** Otherwise, performing an

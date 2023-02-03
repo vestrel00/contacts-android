@@ -3,6 +3,7 @@ package contacts.core.util
 import android.accounts.Account
 import contacts.core.*
 import contacts.core.accounts.Accounts
+import contacts.core.entities.cursor.SAMSUNG_PHONE_ACCOUNT
 
 /**
  * Returns true if [this] is in the list of all accounts in the system.
@@ -10,8 +11,15 @@ import contacts.core.accounts.Accounts
  * ## Permissions
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return false for [Account] instances created
+ * with this name and type because it is not an actual account that is registered/returned by the
+ * system AccountManager.
  */
-internal fun Account.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
+internal fun Account?.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
 
 /**
  * Returns true if [this] is NOT in the list of all accounts in the system.
@@ -19,8 +27,15 @@ internal fun Account.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem
  * ## Permissions
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return true for [Account] instances created
+ * with this name and type because it is not an actual account that is registered/returned by the
+ * system AccountManager.
  */
-internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
+internal fun Account?.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
 
 /**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
@@ -29,15 +44,23 @@ internal fun Account.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(ac
  * ## Permissions
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return null for [Account] instances created
+ * with this name and type because it is not an actual account that is registered/returned by the
+ * system AccountManager.
  */
-internal fun Account.nullIfNotInSystem(accounts: Accounts): Account? =
+internal fun Account?.nullIfNotInSystem(accounts: Accounts): Account? = this?.let {
     nullIfNotIn(accounts.query().find())
+}
 
 /**
  * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
  * Otherwise, returns null.
  */
-internal fun Account.nullIfNotIn(accounts: List<Account>): Account? =
+private fun Account.nullIfNotIn(accounts: List<Account>): Account? =
     if (accounts.contains(this)) this else null
 
 /*
@@ -80,8 +103,6 @@ internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
             (RawContactsFields.AccountName equalToIgnoreCase account.name) and
                     (RawContactsFields.AccountType equalToIgnoreCase account.type)
         } else {
-            // Samsung devices use "vnd.sec.contact.phone" for account name and type instead of null.
-            // See https://github.com/vestrel00/contacts-android/issues/257
             (RawContactsFields.AccountName.isNull() and RawContactsFields.AccountType.isNull())
                 .or(
                     (RawContactsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
@@ -89,8 +110,6 @@ internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
                 )
         }
     }
-
-private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
 
 /**
  * Uses [whereOr] to form a where clause that matches any of the given [Account]s. This is for use
@@ -105,8 +124,11 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
             (GroupsFields.AccountName equalToIgnoreCase account.name) and
                     (GroupsFields.AccountType equalToIgnoreCase account.type)
         } else {
-            GroupsFields.AccountName.isNull() and
-                    GroupsFields.AccountType.isNull()
+            (GroupsFields.AccountName.isNull() and GroupsFields.AccountType.isNull())
+                .or(
+                    (GroupsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
+                            (GroupsFields.AccountType equalTo SAMSUNG_PHONE_ACCOUNT)
+                )
         }
     }
 

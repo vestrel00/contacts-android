@@ -153,13 +153,6 @@ disables consumers from violating them.
 The core library does not explicitly expose count restrictions to consumers. However, it is exposed
 when integrating custom data via the `CustomDataCountRestriction`.
 
-## Data kinds Account restrictions
-
-Entries of some data kinds should not be allowed to exist for local RawContacts (those that are not
-associated with an Account). 
-
-For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
-
 ## Data integrity
 
 There is a section in the official Contacts Provider documentation about "Data Integrity";

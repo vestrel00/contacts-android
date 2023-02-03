@@ -74,6 +74,9 @@ guaranteed to be null.
 
 ### Optimizing queries
 
+Are you finding that your queries are slow or take too much memory? Are you looking to optimize
+your queries? Well, you are in the right section!
+
 When you are showing a list of Contacts using the `Query` and `BroadQuery` APIs, you typically only 
 show their thumbnail photo and display name.
 
@@ -252,11 +255,11 @@ respectively).
 
 ## Custom data support
 
-The `include` function supports registered custom data fields, which my be combined with native
+The `include` function supports registered custom data fields, which my be combined with AOSP
 (non-custom) data fields.
 
 By default, not calling the `include` function will include all fields, including custom data.
-However, the below code will include all native fields but exclude custom data;
+However, the below code will include all AOSP fields but exclude custom data;
 
 ```kotlin
 .include(Fields.all)

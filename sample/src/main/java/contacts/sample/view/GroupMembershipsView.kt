@@ -26,7 +26,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * This is a very rudimentary view that is not styled or made to look good. It may not follow any
  * good practices and may even implement bad practices. Consumers of the library may choose to use
- * this as is or simply as a reference on how to implement this part of native Contacts app.
+ * this as is or simply as a reference on how to implement this part of AOSP Contacts app.
  *
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.
@@ -77,8 +77,8 @@ class GroupMembershipsView @JvmOverloads constructor(
 
     private fun showMemberships(contacts: Contacts) = launch {
         val groups = memberships.groupsWithContext(contacts)
-            // Hide the default group, just like in the native Contacts app.
-            .filter { !it.isDefaultGroup }
+            // Hide the default and favorites group, just like in the AOSP Contacts app.
+            .filter { !it.isDefaultGroup && !it.isFavoritesGroup }
 
         showMemberships(groups)
     }

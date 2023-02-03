@@ -2,6 +2,7 @@ package contacts.core.entities.mapper
 
 import contacts.core.entities.Group
 import contacts.core.entities.cursor.GroupsCursor
+import contacts.core.entities.cursor.account
 
 internal class GroupMapper(private val groupsCursor: GroupsCursor) : EntityMapper<Group> {
 
@@ -16,7 +17,7 @@ internal class GroupMapper(private val groupsCursor: GroupsCursor) : EntityMappe
             favorites = groupsCursor.favorites,
             autoAdd = groupsCursor.autoAdd,
 
-            account = groupsCursor.account,
+            account = groupsCursor.account(),
 
             isRedacted = false
         )

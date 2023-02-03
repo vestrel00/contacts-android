@@ -161,13 +161,13 @@ interface BlockedNumbersInsert : CrudApi {
             /**
              * Duplicate (unformatted) numbers are allowed but would lead to unnecessary
              * duplication. Therefore, the insert is not attempted if the number is already blocked.
-             * This is the same behavior as the builtin native blocked numbers activity.
+             * This is the same behavior as the builtin AOSP blocked numbers activity.
              */
             NUMBER_ALREADY_BLOCKED,
 
             /**
              * Blank numbers (null, empty, or only spaces) are not allowed. This is the same
-             * behavior as the builtin native blocked numbers activity.
+             * behavior as the builtin AOSP blocked numbers activity.
              */
             NUMBER_IS_BLANK,
 

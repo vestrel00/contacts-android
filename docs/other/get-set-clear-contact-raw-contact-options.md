@@ -79,7 +79,7 @@ provided in this library are committed.
 Typically, you should only read/write Contact options. Don't mind RawContact options, unless you
 really want to. For example,
 
-- the native AOSP Contacts app only allows reading and writing Contact options.
+- the AOSP Contacts app only allows reading and writing Contact options.
 - the Google Contacts app allows reading and writing Contact and RawContact options.
 
 ### Setting RawContact options
@@ -134,18 +134,14 @@ it to false. This behavior can cause bugs and increased code complexity for API 
 Thus, the update APIs provided in this library overshadows membership changes to the favorites group
 with the value of `Options.starred`. In other words, the only way to star/favorite Contacts and
 RawContacts is to set the value of `Options.starred`. If you really want to star/favorite
-Contacts/RawContacts via membership to the favorites group (not recommended), then you must exclude 
-`Fields.Contact.Options.Starred` and `RawContactsFields.Options.Starred` from the insert/update
-operations.
-
-> ℹ️ Raw contacts that are not associated with an account may not have any group memberships. Even
-> though these RawContacts may not have a membership to a favorites group, they may still be
-> "starred" (favorited), which is not dependent on the existence of a favorites group membership.
+Contacts/RawContacts via membership to the favorites group (not recommended), then you must 
+include `Fields.GroupMembership.GroupId` and also exclude `Fields.Contact.Options.Starred` and 
+`RawContactsFields.Options.Starred` from the insert/update operations.
 
 ## Using the ui RingtonePicker extensions
 
 The `contacts.ui.util.RingtonePicker.kt` in the `ui` module` provides extension functions to make
-selecting existing ringtones easier. It provides you the same UX as the native Contacts app.
+selecting existing ringtones easier. It provides you the same UX as the AOSP Contacts app.
 
 To use it,
 

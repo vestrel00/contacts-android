@@ -14,7 +14,7 @@ import contacts.core.util.*
 
 /**
  * A generalized version of [Query], that lets the Contacts Provider perform the search using its
- * own custom matching algorithm. It allows you to get the exact same search results as the native
+ * own custom matching algorithm. It allows you to get the exact same search results as the AOSP
  * Contacts app!
  *
  * This type of query is the basis of an app that does a broad search of the Contacts Provider. The
@@ -85,7 +85,7 @@ interface BroadQuery : CrudApi {
      * Limits the search to only those RawContacts associated with one of the given accounts.
      * Contacts returned may still contain RawContacts / data that belongs to other accounts not
      * specified in [accounts] because Contacts may be made up of more than one RawContact from
-     * different Accounts. This is the same behavior as the native Contacts app.
+     * different Accounts. This is the same behavior as the AOSP Contacts app.
      *
      * If no accounts are specified (this function is not called or called with no Accounts), then
      * all RawContacts of Contacts are included in the search.
@@ -116,7 +116,7 @@ interface BroadQuery : CrudApi {
      * Limits the search to only those RawContacts associated with at least one of the given groups.
      * Contacts returned may still contain RawContacts / data that belongs to other groups not
      * specified in [groups] because Contacts may be made up of more than one RawContact from
-     * different Groups. This is the same behavior as the native Contacts app.
+     * different Groups. This is the same behavior as the AOSP Contacts app.
      *
      * If no groups are specified (this function is not called or called with no Groups), then all
      * RawContacts of Contacts are included in the search.

@@ -45,7 +45,7 @@
 
     <!-- Groups -->
     <string name="groups">Groups</string>
-    <string name="groups_local_account_not_yet_supported">Support for null (local) Account is coming in issue #167</string>
+    <string name="groups_does_not_exist_for_account">There are no groups for this account</string>
 
     <!-- RawContactView -->
     <string name="raw_contact_name_label">Name</string>

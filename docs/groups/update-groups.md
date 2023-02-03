@@ -46,7 +46,7 @@ Contacts Provider typically have the following system groups (for standard Googl
 - systemId: Family, title: Family
 - systemId: Coworkers, title: Coworkers
 
-The above list may vary per account. 
+The above list may vary per account.
 
 To prevent attempting to modify/update read-only groups, the `Group.mutableCopy()` function will
 return null if the group is read-only. 
@@ -58,9 +58,9 @@ return null if the group is read-only.
 ## Groups and duplicate titles
 
 The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
-belonging to the same account to exist. In older versions of Android, the native Contacts app 
-allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
-allowed. Therefore, this library does not allow for duplicate titles.
+belonging to the same (nullable) account to exist. In older versions of Android, the AOSP Contacts 
+app allows the creation of new groups with existing titles. In newer versions, duplicate titles are 
+not allowed. Therefore, this library does not allow for duplicate titles.
 
 ## Executing the update
 

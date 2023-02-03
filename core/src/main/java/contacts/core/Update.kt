@@ -2,7 +2,6 @@ package contacts.core
 
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
-import contacts.core.accounts.accountForRawContactWithId
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MutableRawContact
@@ -27,7 +26,7 @@ import contacts.core.util.*
  *
  * Blank data will be deleted, unless the corresponding fields are not provided in [include].
  * For example, if all properties of an email are all null, empty, or blank, then the email is
- * deleted. This is the same behavior as the native Contacts app.
+ * deleted. This is the same behavior as the AOSP Contacts app.
  *
  * Note that in cases where blank data are deleted, existing RawContact instances (in memory) will
  * still have references to the deleted data instance. The RawContact instances (in memory) must be
@@ -90,9 +89,9 @@ interface Update : CrudApi {
      * operation. This flag is set to true by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
+     * them "blanks") to exist. The AOSP Contacts app does not allow insertion of new RawContacts
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
-     * allowing blanks, the native Contacts app shows them.
+     * allowing blanks, the AOSP Contacts app shows them.
      *
      * Note that this DOES NOT refer to blank data, which are deleted regardless of the value passed
      * to this function.
@@ -552,8 +551,6 @@ private fun Contacts.updateOperationsForRawContact(
     rawContact: ExistingRawContactEntity
 ): ArrayList<ContentProviderOperation> {
     val isProfile = rawContact.isProfile
-    val account = contentResolver.accountForRawContactWithId(rawContact.id)
-    val hasAccount = account != null
 
     val operations = arrayListOf<ContentProviderOperation>()
 
@@ -571,32 +568,22 @@ private fun Contacts.updateOperationsForRawContact(
             )
     )
 
-    if (hasAccount) {
-        // I'm not sure why the native Contacts app hides events from the UI for local raw contacts.
-        // The Contacts Provider does support having events for local raw contacts. Anyways, let's
-        // follow in the footsteps of the native Contacts app...
-        operations.addAll(
-            EventOperation(isProfile, Fields.Event.intersect(includeFields))
-                .updateInsertOrDeleteDataForRawContact(
-                    rawContact.events, rawContact.id, contentResolver
-                )
-        )
-    }
-
-    if (hasAccount) {
-        // Groups require an Account. Therefore, memberships to groups cannot exist without groups.
-        // It should not be possible for consumers to get access to group memberships.
-        // The Contacts Provider does support having events for local raw contacts.
-        operations.addAll(
-            GroupMembershipOperation(
-                isProfile,
-                Fields.GroupMembership.intersect(includeFields),
-                groups()
-            ).updateInsertOrDelete(
-                rawContact.groupMemberships, rawContact.id, applicationContext
+    operations.addAll(
+        EventOperation(isProfile, Fields.Event.intersect(includeFields))
+            .updateInsertOrDeleteDataForRawContact(
+                rawContact.events, rawContact.id, contentResolver
             )
+    )
+
+    operations.addAll(
+        GroupMembershipOperation(
+            isProfile,
+            Fields.GroupMembership.intersect(includeFields),
+            groups()
+        ).updateInsertOrDelete(
+            rawContact.groupMemberships, rawContact.id, applicationContext
         )
-    }
+    )
 
     operations.addAll(
         ImOperation(isProfile, Fields.Im.intersect(includeFields))
@@ -646,17 +633,12 @@ private fun Contacts.updateOperationsForRawContact(
     // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
     // to set full-sized and thumbnail photos.
 
-    if (hasAccount) {
-        // I'm not sure why the native Contacts app hides relations from the UI for local raw
-        // contacts. The Contacts Provider does support having events for local raw contacts.
-        // Anyways, let's follow in the footsteps of the native Contacts app...
-        operations.addAll(
-            RelationOperation(isProfile, Fields.Relation.intersect(includeFields))
-                .updateInsertOrDeleteDataForRawContact(
-                    rawContact.relations, rawContact.id, contentResolver
-                )
-        )
-    }
+    operations.addAll(
+        RelationOperation(isProfile, Fields.Relation.intersect(includeFields))
+            .updateInsertOrDeleteDataForRawContact(
+                rawContact.relations, rawContact.id, contentResolver
+            )
+    )
 
     SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields))
         .updateInsertOrDeleteDataForRawContact(

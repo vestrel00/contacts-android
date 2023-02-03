@@ -109,7 +109,7 @@ For example, using the default AOSP Contacts app or the Google Contacts app...
 1. View a contact's details.
 2. Create a shortcut to it in the home screen (launcher).
    - This shortcut uses the Contact lookup key (not the ID) to form a lookup URI.
-3. Change the RawContact's Account.
+3. Associate the local RawContact's Account.
 4. Tap the shortcut in the home screen (launcher).
 
 Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
@@ -380,4 +380,4 @@ I also verified that the Data rows have also been deleted and new rows have been
 replace them!
 
 This stuff is not really relevant for lookup key but still good to know for implementing
-moving between accounts in the future.
+moving RawContacts between accounts.

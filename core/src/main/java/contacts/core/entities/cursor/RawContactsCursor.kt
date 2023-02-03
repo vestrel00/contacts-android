@@ -1,6 +1,5 @@
 package contacts.core.entities.cursor
 
-import android.accounts.Account
 import android.database.Cursor
 import contacts.core.RawContactsField
 import contacts.core.RawContactsFields
@@ -13,7 +12,12 @@ import contacts.core.entities.Entity
  * values.
  */
 internal class RawContactsCursor(cursor: Cursor, includeFields: Set<RawContactsField>) :
-    AbstractEntityCursor<RawContactsField>(cursor, includeFields), RawContactIdCursor {
+    AbstractEntityCursor<RawContactsField>(cursor, includeFields), AccountCursor,
+    RawContactIdCursor {
+
+    override val accountName: String? by string(RawContactsFields.AccountName)
+
+    override val accountType: String? by string(RawContactsFields.AccountType)
 
     override val contactId: Long by nonNullLong(RawContactsFields.ContactId, Entity.INVALID_ID)
 
@@ -23,15 +27,4 @@ internal class RawContactsCursor(cursor: Cursor, includeFields: Set<RawContactsF
 
     val displayNameAlt: String? by string(RawContactsFields.DisplayNameAlt)
 
-    val accountName: String? by string(RawContactsFields.AccountName)
-
-    val accountType: String? by string(RawContactsFields.AccountType)
-
-}
-
-internal fun RawContactsCursor.account(): Account? {
-    val name = accountName
-    val type = accountType
-
-    return if (name != null && type != null) Account(name, type) else null
 }

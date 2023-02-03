@@ -70,8 +70,8 @@ import contacts.core.entities.table.Table
  *
  * ## Contact Display Name Resolution
  *
- * There is one thing that the native Contacts app manually does that the Contacts Provider does not
- * do automatically; setting the display name for the aggregated Contact. The native Contacts app
+ * There is one thing that the AOSP Contacts app manually does that the Contacts Provider does not
+ * do automatically; setting the display name for the aggregated Contact. The AOSP Contacts app
  * sets the name of [this] as the "default" (if available) and clears the default status of all
  * other names belonging to the other RawContacts. The Contacts Provider automatically sets the
  * Contact display name to the default name that belongs to any associated RawContact. If [this]

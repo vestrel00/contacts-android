@@ -57,7 +57,7 @@ import kotlin.coroutines.CoroutineContext
  * that change is propagated to the corresponding RawContact. Likewise, if the photo of a RawContact
  * (whose photo represents the Contact's photo), then the Contact's photo receives the same change.
  *
- * With this in mind, the native Android Contacts app does not allow changing the Contact and
+ * With this in mind, the AOSP Android Contacts app does not allow changing the Contact and
  * RawContact photo in the same screen (activity/fragment) in order to reduce the code complexity
  * of the UI. As such, this API will not be providing any functions to help with supporting this
  * use case in order to keep code complexity low.
@@ -75,7 +75,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * This is a very rudimentary view that is not styled or made to look good. It may not follow any
  * good practices and may even implement bad practices. Consumers of the library may choose to use
- * this as is or simply as a reference on how to implement this part of native Contacts app.
+ * this as is or simply as a reference on how to implement this part of AOSP Contacts app.
  *
  * This does not support state retention (e.g. device rotation). The OSS community may contribute to
  * this by implementing it.

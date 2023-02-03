@@ -56,7 +56,7 @@ fun Contact.eventList(): List<Event> = events().toList()
  * Adding or removing group memberships must be done at the RawContact level, not via Contact.
  * Keep reading for why.
  *
- * ## Groups (and memberships to those groups) are tied to an Account via RawContacts
+ * ## Groups (and memberships to those groups) are tied to a (nullable) Account via RawContacts
  *
  * Groups are tied to an [android.accounts.Account]. There can be no group that exist without an
  * associated Account. Therefore, memberships to groups ([GroupMembership]s) are also tied to an
@@ -429,7 +429,7 @@ fun MutableContact.groupMemberships(): Sequence<GroupMembershipEntity> = rawCont
 fun MutableContact.groupMembershipList(): List<GroupMembershipEntity> = groupMemberships().toList()
 
 // GroupMemberships add and remove functions are intentionally left out because they should never
-// be combined. The native Contacts app hides the group membership UI field when viewing/editing a
+// be combined. The AOSP Contacts app hides the group membership UI field when viewing/editing a
 // contact with more than one RawContact.
 
 /**

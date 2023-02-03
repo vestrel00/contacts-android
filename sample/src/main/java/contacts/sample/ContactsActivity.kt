@@ -163,7 +163,7 @@ class ContactsActivity : BaseActivity() {
     private fun showContacts() {
         queryJob?.cancel()
         queryJob = launch {
-            // Using BroadQuery here so that it matches closely to the native Contacts app search
+            // Using BroadQuery here so that it matches closely to the AOSP Contacts app search
             // results. Consumers should try out Query too because it gives the most control.
             searchResults = contacts.broadQueryWithPermission()
                 .accounts(selectedAccounts)

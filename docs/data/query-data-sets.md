@@ -240,11 +240,11 @@ This library only provides basic WHERE functions. It does not cover the entirety
 the community may add more over time <3
 
 Furthermore, this library is constrained by rules and limitations set by the Contacts Provider and
-the behavior of the native Contacts app. One such rule/limitation has resulted in this library not
+the behavior of the AOSP Contacts app. One such rule/limitation has resulted in this library not
 providing WHERE functions such as `isNull` or `isNullOrEmpty` to prevent making misleading queries.
 
 Removing a piece of existing data results in the deletion of the row in the Data table if that row 
-no longer contains any meaningful data. This is the behavior of the native Contacts app. Therefore, 
+no longer contains any meaningful data. This is the behavior of the AOSP Contacts app. Therefore, 
 querying for null fields is not possible. For example, there may be no Data rows that exist where 
 the email address is null. Thus, a query to search for all emails where the address is null may
 always return no results.

@@ -20,7 +20,7 @@ class PhonesView @JvmOverloads constructor(
     dataFactory = NewPhoneFactory,
     dataViewFactory = PhoneViewFactory,
     defaultUnderlyingDataTypes = listOf(
-        // The other non-custom types are excluded in the native Contacts app so we'll do the same.
+        // The other non-custom types are excluded in the AOSP Contacts app so we'll do the same.
         PhoneEntity.Type.MOBILE,
         PhoneEntity.Type.HOME,
         PhoneEntity.Type.WORK,

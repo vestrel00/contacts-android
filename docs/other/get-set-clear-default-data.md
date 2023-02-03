@@ -2,7 +2,7 @@
 
 Default contact data are instances of common data kinds that are marked as the default.
 
-The two most common data kinds that use this mechanism are emails and phones. In the native 
+The two most common data kinds that use this mechanism are emails and phones. In the AOSP 
 Contacts app Contact details activity, long pressing an email or phone shows a popup menu with an 
 option to set it as default. When a particular email or phone is set as default, sending an email
 and making a phone call to that contact will use that default email and phone respectively.
@@ -199,5 +199,5 @@ remains a primary but not a super primary.
 | C         | 0           | 0                 |
 | D         | 0           | 0                 |
 
-The above behavior is observed from the native Contacts app. The "super primary" data of an
+The above behavior is observed from the AOSP Contacts app. The "super primary" data of an
 aggregate Contact is referred to as the "default".

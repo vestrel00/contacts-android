@@ -52,6 +52,13 @@ import contacts.core.util.*
  * has over 100 different Accounts that they are logged in to?). This assumption means that the
  * query function of Accounts need not be as extensive (or at all) as other Queries. Where, orderBy,
  * offset, and limit functions are left to consumers to implement if they wish.
+ *
+ * ## Samsung devices
+ *
+ * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * in the RawContacts table instead of null. This will return null for such instances with this
+ * name and type because it is not an actual account that is registered/returned by the system
+ * AccountManager.
  */
 interface AccountsQuery : CrudApi {
 
@@ -188,6 +195,11 @@ interface AccountsQuery : CrudApi {
     interface Result : List<Account>, CrudApi.Result {
 
         /**
+         * A map of RawContact IDs to Accounts.
+         */
+        val rawContactIdsAccountsMap: Map<Long, Account>
+
+        /**
          * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
          *
          * ## Use only when [associatedWith] is the only query parameter used!
@@ -287,11 +299,12 @@ private class AccountsQueryImpl(
 
         // We start off with the full set of accounts in the system (which is typically not
         // more than a handful). Then we'll trim the fat as we process the query parameters.
+        // This will not include Samsung's local phone "account".
         var accounts: Set<Account> = accountManager.accounts.toSet()
         return if (
             cancel()
             || !accountsPermissions.canQueryAccounts()
-            // If the isProfile parameter does not match for all RawContacts, fail immediately.
+            // If the isProfile parameter does not match for all RawContacts, return immediately.
             || rawContactIds.allAreProfileIds != isProfile
             // No accounts in the system. No point in processing the rest of the query.
             || accounts.isEmpty()
@@ -382,7 +395,7 @@ internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Acc
 
 private class AccountsQueryResult private constructor(
     accounts: Set<Account>,
-    private val rawContactIdsAccountsMap: Map<Long, Account>,
+    override val rawContactIdsAccountsMap: Map<Long, Account>,
     override val isRedacted: Boolean
 ) : ArrayList<Account>(accounts), AccountsQuery.Result {
 

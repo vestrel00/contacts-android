@@ -63,7 +63,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
             if (includeFields.contains(field) && dataValue.isNotNullOrBlank()) {
                 // Only add the operation if the field should be included.
                 // No need to insert null values. Empty values are treated the same as null, same as
-                // the native Android Contacts app.
+                // the AOSP Android Contacts app.
                 operation.withValue(field, dataValue)
                 hasValueSet = true
             }
@@ -223,7 +223,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
             if (includeFields.contains(field) && dataValue.isNotNullOrBlank()) {
                 // Only add the operation if the field should be included.
                 // No need to insert null values. Empty values are treated the same as null, same as
-                // the native Android Contacts app.
+                // the AOSP Android Contacts app.
                 operation.withValue(field, dataValue)
                 hasValueSet = true
             }

@@ -9,7 +9,7 @@ class QueryGroupsActivity : Activity() {
 
     fun getAllGroupsFromAllAccounts(): List<Group> = Contacts(this).groups().query().find()
 
-    fun getGroupsFromAccount(account: Account): List<Group> =
+    fun getGroupsFromAccount(account: Account?): List<Group> =
         Contacts(this).groups().query().accounts(account).find()
 
     fun getGroupsById(groupsIds: List<Long>): List<Group> = Contacts(this)

@@ -30,7 +30,7 @@ import contacts.core.util.*
  * ## Blank data are ignored
  *
  * Blank data will be ignored. For example, if all properties of an email are all null, empty, or
- * blank, then the email is not inserted. This is the same behavior as the native Contacts app. This
+ * blank, then the email is not inserted. This is the same behavior as the AOSP Contacts app. This
  * behavior cannot be modified.
  *
  * ## Permissions
@@ -97,13 +97,13 @@ interface ProfileInsert : CrudApi {
      * operation. This flag is set to false by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
-     * them "blanks") to exist. The native Contacts app does not allow insertion of new RawContacts
+     * them "blanks") to exist. The AOSP Contacts app does not allow insertion of new RawContacts
      * without at least one data row. It also deletes blanks on update. Despite seemingly not
-     * allowing blanks, the native Contacts app shows them.
+     * allowing blanks, the AOSP Contacts app shows them.
      *
      * Note that blank data are ignored. For example, if all properties of an email are all null,
-     * empty, or blank, then the email is not inserted. This is the same behavior as the native
-     * Contacts app. This is the same behavior as the native Contacts app. This behavior cannot be
+     * empty, or blank, then the email is not inserted. This is the same behavior as the AOSP
+     * Contacts app. This is the same behavior as the AOSP Contacts app. This behavior cannot be
      * modified.
      */
     fun allowBlanks(allowBlanks: Boolean): ProfileInsert
@@ -377,7 +377,7 @@ private class ProfileInsertImpl(
             ProfileInsertFailed()
         } else {
             // This ensures that a valid account is used. Otherwise, null is used.
-            val account = rawContact.account?.nullIfNotInSystem(contactsApi.accounts())
+            val account = rawContact.account.nullIfNotInSystem(contactsApi.accounts())
 
             if (
                 (!allowMultipleRawContactsPerAccount

@@ -36,10 +36,10 @@ sealed interface OptionsEntity : Entity {
      * changes to the favorites group with the value of [starred]. In other words, the only way to
      * star or favorite Contacts and RawContacts is to set the value of [starred].
      *
-     * Raw contacts that are not associated with an account may not have any group memberships. Even
-     * though these RawContacts may not have a membership to a favorites group, they may still be
-     * "starred" (favorited), which is not dependent on the existence of a favorites group
-     * membership.
+     * Raw contacts that are not associated with an account may (or may not) have any group
+     * memberships. Even though these RawContacts may not have a membership to a favorites group,
+     * they may still be "starred" (favorited), which is not dependent on the existence of a
+     * favorites group membership.
      */
     val starred: Boolean?
 

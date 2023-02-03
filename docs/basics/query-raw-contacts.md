@@ -14,7 +14,7 @@ An instance of the `RawContactsQuery` API is obtained by,
 val query = Contacts(context).rawContactsQuery()
 ```
 
-> ℹ️ For a broader, and more native Contacts app like query, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
+> ℹ️ For a broader, and more AOSP Contacts app like query, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
 
 > ℹ️ For specialized matching of phone numbers and SIP addresses, use the `PhoneLookupQuery` API; [Query contacts by phone or SIP](./../basics/query-contacts-by-phone-or-sip.md).
 
@@ -237,7 +237,7 @@ For example, to get a list of RawContacts with the given IDs,
 val rawContacts = Contacts(context)
     .rawContactsQuery()
     .rawContactsWhere(emptyList(), RawContactsFields.Id `in` rawContactIds)
-    // alternatively, .where { RawContact.Id `in` rawContactIds }
+    // alterAOSPly, .where { RawContact.Id `in` rawContactIds }
     .find()
 ```
 
@@ -256,5 +256,5 @@ This library only provides basic WHERE functions. It does not cover the entirety
 the community may add more over time <3
 
 Furthermore, this library is constrained by rules and limitations set by the Contacts Provider and
-the behavior of the native Contacts app. One such rule/limitation has resulted in this library not
+the behavior of the AOSP Contacts app. One such rule/limitation has resulted in this library not
 providing WHERE functions such as `isNull` or `isNullOrEmpty` to prevent making misleading queries.

@@ -112,12 +112,6 @@ fun NewRawContact.removeAllEvents() {
 
 /**
  * Adds the given [groupMembership] to [NewRawContact.groupMemberships].
- *
- * ## Note
- *
- * If this raw contact is not associated with an Account, then this will be ignored during inserts
- * and updates. Only group memberships to groups that belong to the same account as the raw contact
- * will be inserted.
  */
 fun NewRawContact.addGroupMembership(groupMembership: NewGroupMembership) {
     groupMemberships.add(groupMembership.redactedCopyOrThis(isRedacted))
@@ -129,11 +123,6 @@ fun NewRawContact.addGroupMembership(groupMembership: NewGroupMembership) {
  * By default, all **structurally equal (same content but maybe different objects)** instances will
  * be removed. Set [byReference] to true to remove all instances that are **equal by reference
  * (same object)**.
- *
- * ## Note
- *
- * Group membership to the account's default group will not be deleted (in the database) even if it
- * is removed from this list!
  */
 @JvmOverloads
 fun NewRawContact.removeGroupMembership(

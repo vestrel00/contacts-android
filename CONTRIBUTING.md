@@ -5,7 +5,7 @@ There are only a few loose guidelines to follow. Read the **Setup** and **Guidel
 ## Setup
 
 To open, build, and run this project, you will need to use 
-[Android Studio Bumblebee 2021.1.1][android-studio] and later versions.
+[Android Studio Dolphin | 2021.3.1 Patch 1][android-studio] and later versions.
 
 If you run into any build issues, open up Android Studio preferences and make sure the following is 
 set correctly...

@@ -9,7 +9,6 @@ import contacts.core.*
 import contacts.core.accounts.AccountsLocalRawContactsUpdate.Result.FailureReason
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MimeType
-import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.operation.withValue
 import contacts.core.entities.table.ProfileUris
@@ -264,24 +263,34 @@ private class AccountsLocalRawContactsUpdateImpl(
     override fun commit(cancel: () -> Boolean): AccountsLocalRawContactsUpdate.Result {
         onPreExecute()
 
-        val account = account
+        val newAccount = account
+
         return if (
             rawContactIds.isEmpty()
             || !accountsPermissions.canUpdateLocalRawContactsAccount()
             || cancel()
         ) {
             AccountsRawContactsAssociationsUpdateResultFailed(FailureReason.UNKNOWN)
-        } else if (account?.isInSystem(contactsApi.accounts()) != true) {
+        } else if (newAccount == null || newAccount.isNotInSystem(contactsApi.accounts())) {
             // Either account was not specified (null) or it is not in system.
             AccountsRawContactsAssociationsUpdateResultFailed(FailureReason.INVALID_ACCOUNT)
         } else {
+            // Map with RawContact ID as key and the corresponding Account as the value.
+            val currentAccountsMap = contactsApi.accounts()
+                .query()
+                .associatedWithRawContactIds(rawContactIds)
+                .find()
+                .rawContactIdsAccountsMap
+
             val failureReasons = mutableMapOf<Long, FailureReason>()
             for (rawContactId in rawContactIds) {
+                val currentAccount = currentAccountsMap[rawContactId]
+
                 if (cancel() || rawContactId.isProfileId != isProfile) {
                     failureReasons[rawContactId] = FailureReason.UNKNOWN
-                } else if (contentResolver.rawContactHasAccount(rawContactId)) {
+                } else if (currentAccount.isInSystem(contactsApi.accounts())) {
                     failureReasons[rawContactId] = FailureReason.RAW_CONTACT_IS_NOT_LOCAL
-                } else if (!contentResolver.setRawContactAccount(account, rawContactId)) {
+                } else if (!contentResolver.setRawContactAccount(newAccount, rawContactId)) {
                     failureReasons[rawContactId] = FailureReason.UNKNOWN
                 }
                 // else operation succeeded. No Failure reason.
@@ -324,20 +333,6 @@ private fun ContentResolver.setRawContactAccount(
             .let(::add)
     }
 ) != null
-
-private fun ContentResolver.rawContactHasAccount(rawContactId: Long): Boolean = query(
-    if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
-    Include(RawContactsFields.Id),
-    RawContactsFields.run {
-        Id.equalTo(rawContactId) and
-                AccountName.isNotNullOrEmpty() and
-                AccountType.isNotNullOrEmpty()
-    }
-) {
-    val matchingRawContactId: Long? = it.getNextOrNull { it.rawContactsCursor().rawContactId }
-    matchingRawContactId == rawContactId
-} ?: false
-
 
 private class AccountsRawContactsAssociationsUpdateResult private constructor(
     private val failureReasons: Map<Long, FailureReason>,

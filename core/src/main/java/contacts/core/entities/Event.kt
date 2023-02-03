@@ -15,9 +15,6 @@ import java.util.*
  * A data kind representing an event.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
- *
- * Local RawContacts (those that are not associated with an Account) **should not** have any entries
- * of this data kind.
  */
 sealed interface EventEntity : DataEntityWithTypeAndLabel<Type> {
 
@@ -60,7 +57,7 @@ sealed interface EventEntity : DataEntityWithTypeAndLabel<Type> {
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
-        // Order of declaration is the same as seen in the native contacts app
+        // Order of declaration is the same as seen in the AOSP contacts app
         BIRTHDAY(CommonDataKinds.Event.TYPE_BIRTHDAY), // Default
         ANNIVERSARY(CommonDataKinds.Event.TYPE_ANNIVERSARY),
         OTHER(CommonDataKinds.Event.TYPE_OTHER),

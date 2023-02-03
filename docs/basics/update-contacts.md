@@ -211,7 +211,3 @@ read [Get set remove full-sized and thumbnail contact photos](./../other/get-set
 Updates to local RawContacts are not synced!
 
 > ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
-
-There are also certain data kinds that are ignored on insert or update if the RawContact is local.
-
-> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).

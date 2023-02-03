@@ -52,7 +52,7 @@ sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
-        // Order of declaration is the same as seen in the native contacts app
+        // Order of declaration is the same as seen in the AOSP contacts app
         MOBILE(CommonDataKinds.Phone.TYPE_MOBILE), // Default
         WORK(CommonDataKinds.Phone.TYPE_WORK),
         HOME(CommonDataKinds.Phone.TYPE_HOME),

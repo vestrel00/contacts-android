@@ -9,9 +9,6 @@ import kotlinx.parcelize.Parcelize
  * A data kind representing a relation.
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
- *
- * Local RawContacts (those that are not associated with an Account) **should not** have any entries
- * of this data kind.
  */
 sealed interface RelationEntity : DataEntityWithTypeAndLabel<Type> {
 
@@ -40,7 +37,7 @@ sealed interface RelationEntity : DataEntityWithTypeAndLabel<Type> {
 
     enum class Type(override val value: Int) : DataEntity.Type {
 
-        // Order of declaration is the same as seen in the native contacts app
+        // Order of declaration is the same as seen in the AOSP contacts app
         ASSISTANT(CommonDataKinds.Relation.TYPE_ASSISTANT), // Default
         BROTHER(CommonDataKinds.Relation.TYPE_BROTHER),
         CHILD(CommonDataKinds.Relation.TYPE_CHILD),

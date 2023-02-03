@@ -66,7 +66,7 @@ sealed interface DataEntity : Entity {
     /**
      * True if [isSuperPrimary] is true.
      *
-     * "Default" is the terminology used by the native Contacts app. Consumers should use the
+     * "Default" is the terminology used by the AOSP Contacts app. Consumers should use the
      * DefaultContactData extension functions to set a data entity as default or not.
      */
     val isDefault: Boolean

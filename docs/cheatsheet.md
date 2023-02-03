@@ -494,7 +494,7 @@ heading explore each API in full detail. You may also find these samples in the 
                             new ArrayList<>(),
                             equalTo(RawContactsFields.Id, rawContactId)
                     )
-                    // alternatively, .where(equalTo(Fields.RawContact.Id, rawContactId))
+                    // alterAOSPly, .where(equalTo(Fields.RawContact.Id, rawContactId))
                     .find()
                     .get(0);
         }
@@ -2098,7 +2098,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
         fun getAllGroupsFromAllAccounts(): List<Group> = Contacts(this).groups().query().find()
     
-        fun getGroupsFromAccount(account: Account): List<Group> =
+        fun getGroupsFromAccount(account: Account?): List<Group> =
             Contacts(this).groups().query().accounts(account).find()
     
         fun getGroupsById(groupsIds: List<Long>): List<Group> = Contacts(this)

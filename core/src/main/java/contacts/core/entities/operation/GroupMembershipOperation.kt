@@ -8,9 +8,7 @@ import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.Include
 import contacts.core.accounts.accountForRawContactWithId
-import contacts.core.entities.GroupMembership
-import contacts.core.entities.GroupMembershipEntity
-import contacts.core.entities.MimeType
+import contacts.core.entities.*
 import contacts.core.entities.mapper.groupMembershipMapper
 import contacts.core.groups.Groups
 import contacts.core.util.query
@@ -35,15 +33,15 @@ internal class GroupMembershipOperation(
      */
     fun insertForNewRawContact(
         groupMemberships: Collection<GroupMembershipEntity>,
-        account: Account
+        account: Account?
     ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
         if (includeFields.isEmpty()) {
             // No-op when entity is blank or no fields are included.
             return@apply
         }
 
-
-        val accountGroups = groups.query().accounts(account).find()
+        // Map of Group.id -> Group
+        val accountGroups: MutableMap<Long, Group> = groups.query().accounts(account).find()
             .associateBy { it.id }
             .toMutableMap()
 
@@ -66,8 +64,8 @@ internal class GroupMembershipOperation(
      * in new group membership entities without unnecessarily deleting rows in the DB with a
      * different row ID but the same group id.
      *
-     * [GroupMembershipEntity]s that do not belong to the Account associated with the [rawContactId]
-     * will be ignored. Also, memberships to default groups are never deleted.
+     * [GroupMembershipEntity]s that do not belong to the (nullable) account associated with the
+     * [rawContactId] will be ignored. Also, memberships to default groups are never deleted.
      */
     fun updateInsertOrDelete(
         groupMemberships: Collection<GroupMembershipEntity>,
@@ -79,62 +77,71 @@ internal class GroupMembershipOperation(
             return@apply
         }
 
-        // Groups must always be associated with an account. No account, no group operation.
-        val account = context.contentResolver
-            .accountForRawContactWithId(rawContactId) ?: return emptyList()
+        val account: Account? = context.contentResolver.accountForRawContactWithId(rawContactId)
 
         // A map of Group.id -> Group
-        val accountGroups = groups.query().accounts(account).find()
-            .associateBy { it.id }
+        val accountGroups: Map<Long, Group> =
+            groups.query().accounts(account).find().associateBy { it.id }
 
         // A map of Group.id -> GroupMembership
-        val groupMembershipsInDB = context.contentResolver.getGroupMembershipsInDB(rawContactId)
-            .asSequence()
-            // There should not exist any memberships in the DB that does not belong to the same
-            // account. Just in case though...
-            .filter { accountGroups[it.groupId] != null }
-            .associateBy { it.groupId }
-            .toMutableMap()
+        val groupMembershipsInDB: MutableMap<Long, GroupMembership> =
+            context.contentResolver.getGroupMembershipsInDB(rawContactId)
+                .asSequence()
+                // There should not exist any memberships in the DB that does not belong to the same
+                // account. Just in case though...
+                .filter { membership ->
+                    membership.groupId != null && accountGroups[membership.groupId] != null
+                }
+                .associateBy { membership ->
+                    // There should be no null groupId at this point. This is just for casting the
+                    // nullable groupId to a non-null long.
+                    membership.groupId ?: Entity.INVALID_ID
+                }
+                .toMutableMap()
 
         // Ensure no duplicate group memberships by only comparing the groupId and that they belong
         // to the same account.
         groupMemberships
             .asSequence()
-            .distinctBy { it.groupId }
-            .filter { accountGroups[it.groupId] != null }
-            .forEach { groupMembership ->
-                // Remove this groupMembership from the groupMembershipsInDB so that it will not
-                // be deleted later down this function.
-                if (groupMembershipsInDB.remove(groupMembership.groupId) == null) {
-                    // If the groupMembership is not in the DB, insert it.
-                    insertDataRowForRawContact(groupMembership, rawContactId)?.let(::add)
+            .distinctBy { membership ->
+                membership.groupId
+            }
+            .filter { membership ->
+                membership.groupId != null && accountGroups[membership.groupId] != null
+            }
+            .forEach { membership ->
+                // Remove this membership from the groupMembershipsInDB so that it will not be
+                // deleted later down this function.
+                if (groupMembershipsInDB.remove(membership.groupId) == null) {
+                    // If the membership is not in the DB, insert it.
+                    insertDataRowForRawContact(membership, rawContactId)?.let(::add)
                 }
-                // Else if the groupMembership is in the DB, do nothing.
+                // Else if the membership is in the DB, do nothing.
             }
 
         // Delete the remaining non-default groupMembershipsInDB.
         groupMembershipsInDB.values
             .asSequence()
-            .filter {
-                val groupId = it.groupId
+            .filter { membership ->
+                val groupId = membership.groupId
                 // Do no delete memberships to the default group!
                 groupId != null && !accountGroups.getValue(groupId).isDefaultGroup
             }
-            .forEach {
-                add(deleteDataRowWithId(it.id))
+            .forEach { membership ->
+                add(deleteDataRowWithId(membership.id))
             }
     }
 
     private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long):
-            List<GroupMembership> = query(contentUri, INCLUDE, selectionWithMimeTypeForRawContact(rawContactId)) {
-
-        mutableListOf<GroupMembership>().apply {
-            val groupMembershipMapper = it.groupMembershipMapper()
-            while (it.moveToNext()) {
-                add(groupMembershipMapper.value)
+            List<GroupMembership> =
+        query(contentUri, INCLUDE, selectionWithMimeTypeForRawContact(rawContactId)) {
+            mutableListOf<GroupMembership>().apply {
+                val groupMembershipMapper = it.groupMembershipMapper()
+                while (it.moveToNext()) {
+                    add(groupMembershipMapper.value)
+                }
             }
-        }
-    } ?: emptyList()
+        } ?: emptyList()
 }
 
 private val INCLUDE = Include(Fields.DataId, Fields.GroupMembership.GroupId)

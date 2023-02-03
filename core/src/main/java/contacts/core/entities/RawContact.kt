@@ -41,17 +41,11 @@ sealed interface RawContactEntity : Entity {
 
     /**
      * A list of [EventEntity].
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
      */
     val events: List<EventEntity>
 
     /**
      * A list of [GroupMembershipEntity].
-     *
-     * If this raw contact is not associated with an Account, then this will be ignored during
-     * inserts and updates.
      */
     val groupMemberships: List<GroupMembershipEntity>
 

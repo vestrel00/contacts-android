@@ -21,10 +21,10 @@ internal class RawContactsOperation(private val isProfile: Boolean) {
 
     fun insert(rawContactAccount: Account?): ContentProviderOperation = newInsert(contentUri)
         /*
-         * Passing in null account name and type is valid. It is the same behavior as the native
-         * Android Contacts app when creating contacts when there are no available accounts. When an
-         * account becomes available (or is already available), Android will automatically update
-         * the RawContact name and type to an existing Account.
+         * Passing in null account name and type is valid. It is the same behavior as the AOSP
+         * Contacts app when creating contacts when there are no available accounts. When an account
+         * becomes available (or is already available), Android will automatically update the
+         * RawContact name and type to an existing Account.
          */
         .withValue(RawContactsFields.AccountName, rawContactAccount?.name)
         .withValue(RawContactsFields.AccountType, rawContactAccount?.type)

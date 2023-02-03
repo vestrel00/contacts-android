@@ -103,7 +103,7 @@ The Contacts Provider's [general matching][2] algorithm does **not** include the
 `Contacts.DISPLAY_NAME`. However, the `StructuredName.DISPLAY_NAME` is included in the matching
 process but not the rest of the structured components (e.g. given and family name).
 
-The native Contacts app displays the `Contacts.DISPLAY_NAME`. So, here comes the unusual scenario
+The AOSP Contacts app displays the `Contacts.DISPLAY_NAME`. So, here comes the unusual scenario
 that looks like a bug. The [general matching][2] algorithm will match the text "Ice" or "Cold" but
 not "Hot" or "Fire". The end result is that searching for the Contact "Ice Cold" will show a
 Contact called "Hot Fire"!
@@ -119,7 +119,7 @@ Provider chooses from any of the other suitable data from the aggregate Contact.
 
 The default status of other sources (e.g. email) does not affect the Contact display name.
 
-The native Contacts app also sets the most recently updated name as the default at every update. 
+The AOSP Contacts app also sets the most recently updated name as the default at every update. 
 This results in the Contact display name changing to the most recently updated name from one of the
 associated RawContacts. The "most recently updated name" is the name field that was last updated
 by the user when editing in the Contacts app, which is irrelevant to its value. It does not matter
@@ -134,7 +134,7 @@ The `ContactsColumns.NAME_RAW_CONTACT_ID` was added in API 21. It changed the wa
 are resolved for Contacts with more than one constituent RawContacts, which is what has been 
 described so far.
 
-Before this change (APIs 20 and below), the native Contacts app is still able to set the Contact
+Before this change (APIs 20 and below), the AOSP Contacts app is still able to set the Contact
 display name somehow. I'm not sure how. If someone figures it out, please let me know. I tried 
 updating the Contact `DISPLAY_NAME` directly but it does not work. Setting a name row as default 
 also does not affect the Contact `DISPLAY_NAME`.
@@ -351,7 +351,7 @@ RawContact id: 55, contactId: 58
 ```
 
 The lookup key changed but the Contact ID remained the same! In this case, loading a reference to
-the previously local Contact will fail! I verified that this is indeed the behavior of the native
+the previously local Contact will fail! I verified that this is indeed the behavior of the AOSP
 (AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while 
 having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
 not exist" message in the AOSP Contacts app!
@@ -387,7 +387,7 @@ Each new RawContacts row created results in;
 > ℹ️ It is possible to create RawContacts without any rows in the Data table. See the 
 > **Data required** section for more details.
 
-For example, creating 4 new contacts using the native Android Contacts app results in;
+For example, creating 4 new contacts using the AOSP Android Contacts app results in;
 
 ```
 Contact id: 4, displayName: First Local Contact
@@ -409,12 +409,14 @@ Data id: 18, rawContactId: 7, contactId: 7, data: Third Local Contact
 RawContacts inserted without an associated account are considered local or device-only raw contacts,
 which are not synced.
 
-The native Contacts app hides the following UI fields when inserting or updating local raw contacts;
+The AOSP Contacts app hides the following UI fields when inserting or updating local raw contacts;
+
 - Event
 - Relation
 - Group memberships
-To enforce this behavior, this library ignores all of the above during inserts and updates for local
-raw contacts.
+
+However, the Google Contacts app does not hide any of the above for local raw contacts. Actually,
+the Contacts Provider does not set any account restrictions with the above data kinds.
 
 **Lollipop (API 22) and below**
 
@@ -472,7 +474,7 @@ These are the behaviors that I have found;
 - Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
     - Partially works with some unwanted-side effects.
     - Dissociates RawContact A from the device but not other devices.
-    - RawContact A is no longer visible in the native Contacts app UNLESS it retains the group
+    - RawContact A is no longer visible in the AOSP Contacts app UNLESS it retains the group
       membership to at least the default group from an Account.
     - At this point, RawContact A is a local contact. Changes to this local RawContact A will not be
       synced across devices.
@@ -485,9 +487,9 @@ These are the behaviors that I have found;
 - Associating RawContact A from original Account X to Account Y.
     - Does not work and have bad side-effects.
     - No change in other devices.
-    - For Lollipop (API 22) and below, RawContact A is no longer visible in the native Contacts app
+    - For Lollipop (API 22) and below, RawContact A is no longer visible in the AOSP Contacts app
       and syncing Account Y in system settings fails.
-    - For Marshmallow (API 23) and above, RawContact A is no longer visible in the native Contacts
+    - For Marshmallow (API 23) and above, RawContact A is no longer visible in the AOSP Contacts
       app. RawContact A is automatically deleted locally at some point by the Contacts Provider.
       Syncing Account Y in system settings succeeds.
 
@@ -497,9 +499,13 @@ works, it is the only function that will be exposed to consumers.
 If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
 RawContact associated with the desired Account and then delete the original RawContact. Same idea
 can be used to transform an Account-associated RawContact to a local RawContact. Perhaps we can
-implement some functions in this library that does these things? We won't for now because the native
+implement some functions in this library that does these things? We won't for now because the AOSP
 Contacts app does not support these functions anyways. It can always be implemented later if the
-community really wants.
+community really wants. 
+
+_UPDATE: My hunch for creating copies and deleting account-associated RawContacts turns out to be
+correct. This is what apps like the Google Contacts app does. This feature will be implemented in
+https://github.com/vestrel00/contacts-android/issues/168_
 
 Here are some other things to note.
 
@@ -566,7 +572,7 @@ A more likely scenario that causes multiple RawContacts per Contact is when two 
 
 ### Behavior of linking/merging/joining contacts (AggregationExceptions)
 
-The native Contacts app terminology has changed over time;
+The AOSP Contacts app terminology has changed over time;
 
 - API 22 and below; join / separate
 - API 23; merge / unmerge
@@ -623,7 +629,7 @@ Data id: 66, rawContactId: 31, contactId: 33, mimeType: vnd.android.cursor.item/
 Contact Y's row has been deleted and its column values have been merged into Contact X row. If the 
 reverse occurred (Contact Y merged with Contact X), Contact Y's row would still be deleted. The 
 difference is that Contact X's display name will be set to Contact Y's display name, which is
-done by the native Contacts app manually by setting Contact Y's Data name row to be the "default" 
+done by the AOSP Contacts app manually by setting Contact Y's Data name row to be the "default" 
 (isPrimary and isSuperPrimary both set to 1).
 
 > ℹ️ The AggregationExceptions table records the linked RawContacts' IDs in ascending order 
@@ -635,7 +641,7 @@ the isPrimary columns remain the same. In other words, this clears any "default"
 link. These are done automatically by the Contacts Provider during the link operation.
 
 What is not done automatically by the Contacts Provider is that the name row of former Contact X is
-set as the default. The native Contacts app does this manually. The Contacts Providers automatically
+set as the default. The AOSP Contacts app does this manually. The Contacts Providers automatically
 sets the Contact display name to whatever the default name row is for the Contact, if available.
 For more info on Contact display name resolution, read the **Contact Display Name and Default Name
 Rows** section.
@@ -658,31 +664,31 @@ A RawContact may have a full-sized photo saved as a file and a thumbnail version
 the Data table in a photo mimetype row. A Contact's full-sized photo and thumbnail are simply
 references to the "chosen" RawContact's full-sized photo and thumbnail (though the URIs may differ).
 
-> ℹ️ When removing the photo in the native contacts app, the photo data row is not immediately 
+> ℹ️ When removing the photo in the AOSP contacts app, the photo data row is not immediately 
 > deleted, though the `PHOTO_FILE_ID` is immediately set to null. This may result in the `PHOTO_URI`
 > and `PHOTO_THUMBNAIL_URI` to still have a valid image uri even though the photo has been 
 > "removed". This library immediately deletes the photo data row, which seems to work perfectly.
 
 **Data inserts**
 
-In the native Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
+In the AOSP Contacts app, Data inserted in combined (raw) contacts mode will be associated to the
 first RawContact in the list sorted by the RawContact ID. 
 
 > ℹ️ This may not be the same as the RawContact referenced by `ContactsColumns.NAME_RAW_CONTACT_ID`.
 
 **UI changes?**
 
-The native Contacts App does not display the groups field when displaying / editing Contacts that
+The AOSP Contacts App does not display the groups field when displaying / editing Contacts that
 have multiple RawContacts (linked/merged/joined) in combined mode. However, it does allow editing 
 individual RawContact Data rows in which case the groups field is displayed and editable.
 
-In the native Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
+In the AOSP Contacts app, the name attribute used comes from the name row with IS_SUPER_PRIMARY
 set to true. This and all other "unique" mimetypes (organization) and non-unique mimetypes (email)
 per RawContact are shown only if they are not blank.
 
 **Showing multiple RawContact's data in the same edit screen (combined mode)**
 
-In older version of the native, Android Open Source Project (AOSP) Contacts app, data from multiple
+In older version of the AOSP, Android Open Source Project (AOSP) Contacts app, data from multiple
 RawContacts was being shown in the same edit screen. This caused a lot of confusion about which
 data belonged to which RawContact. Newer versions of AOSP Contacts only allow editing one RawContact
 at a time to avoid confusion. Though, several RawContacts' data are still shown (not-editable) 
@@ -863,20 +869,20 @@ remains a primary but not a super primary.
 | C         | 0           | 0                 |
 | D         | 0           | 0                 |
 
-The above behavior is observed from the native Contacts app. The "super primary" data of an 
+The above behavior is observed from the AOSP Contacts app. The "super primary" data of an 
 aggregate Contact is referred to as the "default".
 
-> ℹ️ At this point, the native Contacts app still shows email B as the first email in the list even
+> ℹ️ At this point, the AOSP Contacts app still shows email B as the first email in the list even
 > though it isn't the "default" (super primary) because it is still a primary. This adds a bit of
 > confusion in my opinion, especially when more than 2, 3, or 4 RawContacts are linked. A "fix" 
 > would be to only order the list of emails using "super primary" instead of "super primary" and 
 > "primary". OR to remove the primary status of the data set of all linked RawContacts.
 > 
-> One benefit of the native Contacts implementation of this is that it retains the primary status
+> One benefit of the AOSP Contacts implementation of this is that it retains the primary status
 > when unlinking RawContacts. 
 > 
-> This library should follow what the native Contacts app is doing in spirit of recreating the
-> native experience as closely as possible, even if it seems like a lesser experience.
+> This library should follow what the AOSP Contacts app is doing in spirit of recreating the
+> AOSP experience as closely as possible, even if it seems like a lesser experience.
 
 ### Data Table Joins
 
@@ -899,7 +905,7 @@ the contact.
 
 Removing a piece of existing data results in the deletion of the row in the Data table if that row
 no longer contains any meaningful data (no meaningful non-null "datax" columns left). This is the 
-behavior of the native Android Contacts app. Therefore, querying for null fields is not possible. 
+behavior of the AOSP Android Contacts app. Therefore, querying for null fields is not possible. 
 For example, there may be no Data rows that exist where the email address is null. Thus, a query to 
 search for all contacts with null email address may return 0 contacts even if there are some
 contacts without email addresses.
@@ -927,9 +933,9 @@ If a valid account is not provided, none of the above data rows are automaticall
 **Blank RawContacts**
 
 The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call them
-"blanks") to exist. The native Contacts app does not allow insertion of new RawContacts without at
+"blanks") to exist. The AOSP Contacts app does not allow insertion of new RawContacts without at
 least one data row. It also deletes blanks on update. Despite seemingly not allowing blanks, the
-native Contacts app shows them.
+AOSP Contacts app shows them.
 
 There are two scenarios where blanks may exist.
 
@@ -983,8 +989,11 @@ Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, a
 Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
 ```
 
-The actual groups are in a separate table; Groups. Each group is associated with an Account. No
-group can exist without an account. It is account-exclusive.
+The actual groups are in a separate table; Groups. Each group is associated with an Account. The 
+AOSP Contacts app does not allow for Groups to exist without an Account. However, other apps such as
+the Google Contacts app allows for Groups with a null account. The Contacts Provider also allows
+this. Therefore, we will allow Group without accounts in this library and let library users decide
+if they want to restrict groups to non-null accounts.
 
 Each account will have its own set of the above system groups. This means that there may be multiple
 groups with the same title belonging to different accounts.
@@ -994,25 +1003,25 @@ across all copies of Android. Notes;
 - The Contacts system group is the default group in which all raw contacts of an account belongs to.
   Therefore, it is typically hidden when showing the list of groups in the UI.
 - The starred (favorites) group is not a system group as it has null system id. However, it behaves
-  like one in that it is read only and it comes with most (if not all) copies of the native app.
+  like one in that it is read only and it comes with most (if not all) copies of the AOSP app.
 
 Removing the Account will delete all of the associated rows in the Groups table.
 
 **Groups, duplicate titles**
 
 The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
-belonging to the same account to exist. In older versions of Android, the native Contacts app 
+belonging to the same account to exist. In older versions of Android, the AOSP Contacts app 
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 
 > ℹ️ In newer versions, the group with the duplicate title gets deleted either automatically by the 
-> Contacts Provider or when viewing groups in the native Contacts app. It's not an immediate failure 
+> Contacts Provider or when viewing groups in the AOSP Contacts app. It's not an immediate failure 
 > on insert or update. This could lead to bugs!
 
 ### Groups Table & GroupMemberships (Data Table)
 
 There may be multiple groups with the same title from different accounts. Therefore, the group
-membership should point to the group belonging to the same account as the raw contact. The native
+membership should point to the group belonging to the same account as the raw contact. The AOSP
 Contacts app displays only the groups belonging to the selected account.
 
 Updating group memberships of existing raw contacts seem to be almost instant. All raw contacts must
@@ -1047,7 +1056,7 @@ containing a group membership to the favorites group) -> starred will be set bac
 Local RawContacts may have a group membership to the default system group of an Account without
 being associated with the Account...
 
-The native Contacts app may not have an edit-RawContact option for newly inserted RawContacts that
+The AOSP Contacts app may not have an edit-RawContact option for newly inserted RawContacts that
 have no group membership to the default group when an Account is available. Though, edits can still
 be made in other ways. Instead, an option to "Add to contacts" is shown that adds a membership to
 the default group but does not associate the raw contact to the Account that owns the group. The
@@ -1077,7 +1086,7 @@ needs to occur.
 
 ### Groups; UI
 
-In newer Android versions of the native Contacts app, "groups" are now being referred to as
+In newer Android versions of the AOSP Contacts app, "groups" are now being referred to as
 "labels". However, the underlying code still uses groups. Google is probably just trying to make it
 more user friendly by calling it label instead of group.
 
@@ -1146,7 +1155,7 @@ Despite the documentation of "one profile RawContact per one Account", the Conta
 for multiple RawContacts per Account, including multiple local RawContacts (no Account). Thus, we
 should let consumers exploit this but set defaults to be one-for-one.
 
-Creating / setting up the profile in the native Contacts app results in the creation of a local
+Creating / setting up the profile in the AOSP Contacts app results in the creation of a local
 RawContact (not associated with an Account) even if there are available Accounts.
 
 The Contacts Provider does not associate local contacts to an account when an account is or becomes
@@ -1170,13 +1179,13 @@ https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapt
 Now, let’s ingest the official docs… Data belonging to a RawContact that is associated with a Google 
 account will be available anywhere the Google account is used; in any Android or iOS device, a web 
 browser, etc… Data is synced by Google’s sync adapters to and from their remote servers. Syncing 
-depends on the account sync settings, which can be configured in the native system settings app and 
+depends on the account sync settings, which can be configured in the AOSP system settings app and 
 possibly through some remote configuration.
 
 This library does not provide any sync adapters. Instead, it relies on existing sync adapters to do 
 the syncing. Sync adapters and syncing are really out of scope of this library. Syncing is its own 
 thing that typically happens outside of an application UI. This library is focused on reading and 
-writing native and custom data to and from the local database. Syncing the local database to and 
+writing AOSP and custom data to and from the local database. Syncing the local database to and 
 from a remote service is a different story altogether =)
 
 ### Custom Data / MimeTypes
@@ -1184,7 +1193,7 @@ from a remote service is a different story altogether =)
 First, it’s good to know the official documentation of custom data rows; 
 https://developer.android.com/guide/topics/providers/contacts-provider#CustomData
 
-Now, let’s ingest the official docs… Custom mimetypes do not belong to the native Contacts Provider 
+Now, let’s ingest the official docs… Custom mimetypes do not belong to the AOSP Contacts Provider 
 mimetype set (e.g. address, email, phone, etc). The Contacts Provider allows for the creation of 
 new / custom mimetypes. This is especially useful for other apps (Google Contacts, Facebook, 
 Twitter, WhatsApp, etc) that want to attach extra pieces of data to a particular RawContact.
@@ -1202,7 +1211,7 @@ official documentation; https://developer.android.com/guide/topics/providers/con
 ### Unused ContactsContract Stuff
 
 We are currently not utilizing these things because I haven't found usages of them while using the
-native Contacts app. They are probably working behind the scenes but until we find uses for these,
+AOSP Contacts app. They are probably working behind the scenes but until we find uses for these,
 let's leave it out because [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it).
 
 - `Settings`. Contacts-specific settings for various Accounts (settings for an Account).
@@ -1387,7 +1396,7 @@ worth it (IMO).
 
 ## Why Not Add Android X / Support Library Dependencies?
 
-I want to keep the dependency list of this library to a minimum. The Contacts Provider is native to
+I want to keep the dependency list of this library to a minimum. The Contacts Provider is AOSP to
 Android since the beginning. I want to honor that fact by avoiding adding dependencies here. I made
 a bit of an exception by adding a permissions handling library for the permissions modules (not in 
 the core modules). I'm tempted to remove the permissions dependency and implement permissions 

@@ -26,7 +26,7 @@ sealed interface ContactEntity : Entity {
     /**
      * A list of [RawContactEntity]s that are associated with this contact.
      *
-     * This list is sorted by RawContact id, which seems to be the sort order used by the native
+     * This list is sorted by RawContact id, which seems to be the sort order used by the AOSP
      * Contacts app when displaying the linked RawContacts and when inserting new data for a Contact
      * with multiple linked RawContacts.
      */
@@ -38,7 +38,7 @@ sealed interface ContactEntity : Entity {
      * available). This may be null if the Contacts Provider cannot find a suitable display name
      * source to use.
      *
-     * This is the contact name displayed by the native Contacts app when viewing a contact. If a
+     * This is the contact name displayed by the AOSP Contacts app when viewing a contact. If a
      * Contact consists of more than one RawContact, then it is up to the Contacts Provider to
      * choose the display name to from the associated RawContacts.
      *
@@ -71,7 +71,7 @@ sealed interface ContactEntity : Entity {
      *
      * ## Display name may change upon data updates
      *
-     * The native Contacts app also sets the most recently updated name as the default at every update
+     * The AOSP Contacts app also sets the most recently updated name as the default at every update
      * (and new Contact creation). This results in the Contact display name changing to the most
      * recently updated name from one of the associated RawContacts. The "most recently updated name"
      * is the name field that was last updated by the user when editing in the Contacts app, which is
@@ -88,8 +88,8 @@ sealed interface ContactEntity : Entity {
     val displayNamePrimary: String?
 
     /**
-     * An alternative representation of the display name, such as "family name first" instead of
-     * "given name first" for Western names. If an alternative is not available, the values should
+     * An alterAOSP representation of the display name, such as "family name first" instead of
+     * "given name first" for Western names. If an alterAOSP is not available, the values should
      * be the same as [displayNamePrimary].
      *
      * This is a read-only attribute as the Contacts Provider automatically sets this value.
@@ -197,7 +197,7 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      * A list of [ExistingRawContactEntity]s that are associated with this contact.
      *
      * This list is sorted by [ExistingRawContactEntity.id], which seems to be the sort order used
-     * by the native Contacts app when displaying the linked RawContacts and when inserting new data
+     * by the AOSP Contacts app when displaying the linked RawContacts and when inserting new data
      * for a Contact with multiple linked RawContacts.
      */
     override val rawContacts: List<ExistingRawContactEntity>
