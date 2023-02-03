@@ -8,12 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/groups/delete-groups.md:    .groupsWhere { AccountType equalTo "com.google" }
-./docs/groups/delete-groups.md:val where = GroupsFields.AccountType equalTo "com.google"
-./docs/groups/delete-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
-./docs/groups/delete-groups.md:The above list may vary per account.
-
-
 ./docs/profile/insert-profile.md:## Allowing multiple RawContacts per Account
 ./docs/profile/insert-profile.md:The API allows you to insert a profile RawContact with an Account that already has a profile
 ./docs/profile/insert-profile.md:.allowMultipleRawContactsPerAccount(true|false)
