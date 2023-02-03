@@ -8,9 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/logging/log-api-input-output.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
-
-
 ./docs/entities/about-contact-lookup-key.md:      to ensure that Contact data is synced per user account.
 ./docs/entities/about-contact-lookup-key.md:with an Account and are synced). The lookup key points to a person entity rather than just a row
 ./docs/entities/about-contact-lookup-key.md:## Moving RawContacts between accounts and the lookup key
