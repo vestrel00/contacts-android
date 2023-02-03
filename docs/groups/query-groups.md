@@ -1,7 +1,7 @@
 # Query groups
 
 This library provides the `GroupsQuery` API that allows you to get groups associated with an 
-`Account`.
+`Account` or no account.
 
 An instance of the `GroupsQuery` API is obtained by,
 
@@ -11,7 +11,7 @@ val query = Contacts(context).groups().query()
 
 ## A basic query
 
-To get all of the groups for all accounts,
+To get all of the groups for all accounts (including no/null account),
 
 ```kotlin
 val groupsFromAllAccounts = Contacts(context)
@@ -39,10 +39,7 @@ For example, to limit the search to groups belonging to only one account,
 > ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
 If no accounts are specified (this function is not called or called with no Accounts), then all
-Groups of all accounts are included in the search.
-
-A null Account may NOT be provided here because no group can exist without an account. Groups are
-inextricably linked to an Account.
+Groups from all accounts (including the null account) are included in the search.
 
 ## Ordering
 

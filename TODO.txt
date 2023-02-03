@@ -8,32 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/groups/query-groups.md:`Account`.
-./docs/groups/query-groups.md:To get all of the groups for all accounts,
-./docs/groups/query-groups.md:val groupsFromAllAccounts = Contacts(context)
-./docs/groups/query-groups.md:> ℹ️ It is recommended to get sets of groups for a single account at a time to avoid confusion.
-./docs/groups/query-groups.md:## Specifying Accounts
-./docs/groups/query-groups.md:To limit the search to only those Groups associated with one of the given accounts,
-./docs/groups/query-groups.md:.accounts(accounts)
-./docs/groups/query-groups.md:For example, to limit the search to groups belonging to only one account,
-./docs/groups/query-groups.md:.accounts(Account("john.doe@gmail.com", "com.google"))
-./docs/groups/query-groups.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
-./docs/groups/query-groups.md:If no accounts are specified (this function is not called or called with no Accounts), then all
-./docs/groups/query-groups.md:Groups of all accounts are included in the search.
-./docs/groups/query-groups.md:A null Account may NOT be provided here because no group can exist without an account. Groups are
-./docs/groups/query-groups.md:inextricably linked to an Account.
-./docs/groups/query-groups.md:For example, to order groups by account name,
-./docs/groups/query-groups.md:.orderBy(GroupsFields.AccountName.asc())
-./docs/groups/query-groups.md:Each account will have its own set of system and user-created groups. This means that there may be
-./docs/groups/query-groups.md:multiple groups with the same title belonging to different accounts. This is not a bug. This is why
-./docs/groups/query-groups.md:it is recommended to only get sets of groups per account, especially if there is more than one
-./docs/groups/query-groups.md:account in the system.
-./docs/groups/query-groups.md:## Groups from more than one account in the same list
-./docs/groups/query-groups.md:When you perform a query that returns groups from more than one account, you will get everything
-./docs/groups/query-groups.md:function that allows you to get a sublist with groups belonging only to a particular account.
-./docs/groups/query-groups.md:val groupsFromAccount = groupsList.from(account)
-./docs/groups/query-groups.md:val groupsFromAccount = groupsList.filter { it.account == account }
-./docs/groups/query-groups.md:accounts in the same list as it could cause confusion. However, if you know what you are doing and
 ./docs/groups/delete-groups.md:    .groupsWhere { AccountType equalTo "com.google" }
 ./docs/groups/delete-groups.md:val where = GroupsFields.AccountType equalTo "com.google"
 ./docs/groups/delete-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
