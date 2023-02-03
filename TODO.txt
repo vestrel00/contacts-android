@@ -8,17 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/data/query-data-sets.md:## Specifying Accounts
-./docs/data/query-data-sets.md:To limit the search to only those data associated with one of the given accounts,
-./docs/data/query-data-sets.md:.accounts(accounts)
-./docs/data/query-data-sets.md:For example, to limit the search to data belonging to only one account,
-./docs/data/query-data-sets.md:.accounts(Account("john.doe@gmail.com", "com.google"))
-./docs/data/query-data-sets.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
-./docs/data/query-data-sets.md:If no accounts are specified (this function is not called or called with no Accounts), then all
-./docs/data/query-data-sets.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
-./docs/data/query-data-sets.md:included in the search. RawContacts without an associated account are considered local contacts or
-
-
 ./docs/logging/log-api-input-output.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
 
 
