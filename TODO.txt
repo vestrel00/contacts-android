@@ -8,18 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/profile/query-profile.md:## Specifying Accounts
-./docs/profile/query-profile.md:To only include RawContacts associated with one of the given accounts,
-./docs/profile/query-profile.md:.accounts(accounts)
-./docs/profile/query-profile.md:For example, to include only RawContacts belonging to only one account,
-./docs/profile/query-profile.md:.accounts(Account("john.doe@gmail.com", "com.google"))
-./docs/profile/query-profile.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
-./docs/profile/query-profile.md:The RawContacts returned will only belong to the specified accounts.
-./docs/profile/query-profile.md:If no accounts are specified (this function is not called or called with no Accounts), then all
-./docs/profile/query-profile.md:A null Account may be provided here, which results in RawContacts with no associated Account to be
-./docs/profile/query-profile.md:included. RawContacts without an associated account are considered local contacts or device-only
-
-
 ./docs/accounts/query-accounts.md:# Query for Accounts
 ./docs/accounts/query-accounts.md:This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the
 ./docs/accounts/query-accounts.md:`AccountManager`.
