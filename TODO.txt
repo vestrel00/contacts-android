@@ -1,9 +1,0 @@
-DO NOT COMMIT THIS FILE TO MAIN!
-
-This file will be deleted when all of the following items have been checked/removed.
-
-------------------------
-
-Mentions of "account" in docs
-
-grep --include="*kt" -ri "account" .
