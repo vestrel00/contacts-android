@@ -92,8 +92,8 @@ class GroupsActivity : BaseActivity() {
             .queryWithPermission()
             .accounts(intent.account())
             .findWithContext()
-            // Hide the default group, just like in the AOSP Contacts app.
-            .filter { !it.isDefaultGroup }
+            // Hide the default and favorites group, just like in the AOSP Contacts app.
+            .filter { !it.isDefaultGroup && !it.isFavoritesGroup }
 
         if (accountGroups.isEmpty()) {
             groupsListView.visibility = GONE

@@ -134,9 +134,9 @@ it to false. This behavior can cause bugs and increased code complexity for API 
 Thus, the update APIs provided in this library overshadows membership changes to the favorites group
 with the value of `Options.starred`. In other words, the only way to star/favorite Contacts and
 RawContacts is to set the value of `Options.starred`. If you really want to star/favorite
-Contacts/RawContacts via membership to the favorites group (not recommended), then you must exclude 
-`Fields.Contact.Options.Starred` and `RawContactsFields.Options.Starred` from the insert/update
-operations.
+Contacts/RawContacts via membership to the favorites group (not recommended), then you must 
+include `Fields.GroupMembership.GroupId` and also exclude `Fields.Contact.Options.Starred` and 
+`RawContactsFields.Options.Starred` from the insert/update operations.
 
 ## Using the ui RingtonePicker extensions
 

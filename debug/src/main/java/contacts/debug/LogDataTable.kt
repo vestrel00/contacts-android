@@ -4,7 +4,21 @@ import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
 
-fun Context.logDataTable() {
+@JvmOverloads
+fun Context.logDataTable(
+    /**
+     * Only rows whose mime type value is contained in this set will be logged. If this set is
+     * empty, then all rows, regardless of mime type, will be logged.
+     *
+     * The mime type values are the "CONTENT_ITEM_TYPE". For example,
+     *
+     * - [ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE]
+     * - [ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE]
+     *
+     * This supports any custom data mime types.
+     */
+    mimeTypesFilter: Set<String> = emptySet()
+) {
     if (!hasReadPermission()) {
         log("#### Data table - read contacts permission not granted")
         return
@@ -12,10 +26,10 @@ fun Context.logDataTable() {
 
     log("#### Data table")
 
-    logDataTable(ContactsContract.Data.CONTENT_URI)
+    logDataTable(ContactsContract.Data.CONTENT_URI, mimeTypesFilter)
 }
 
-internal fun Context.logDataTable(contentUri: Uri) {
+internal fun Context.logDataTable(contentUri: Uri, mimeTypesFilter: Set<String>) {
     val cursor = contentResolver.query(
         contentUri,
         arrayOf(
@@ -57,6 +71,10 @@ internal fun Context.logDataTable(contentUri: Uri) {
         val mimeType = cursor.getString(3)
         val isPrimary = cursor.getString(4)
         val isSuperPrimary = cursor.getString(5)
+
+        if (mimeTypesFilter.isNotEmpty() && !mimeTypesFilter.contains(mimeType)) {
+            continue
+        }
 
         val data1 = cursor.getString(6)
         val data2 = cursor.getString(7)

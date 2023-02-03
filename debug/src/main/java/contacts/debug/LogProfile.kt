@@ -17,6 +17,7 @@ fun Context.logProfile() {
     logDataTable(
         Uri.withAppendedPath(
             ContactsContract.Profile.CONTENT_URI, ContactsContract.Contacts.Data.CONTENT_DIRECTORY
-        )
+        ),
+        emptySet()
     )
 }
