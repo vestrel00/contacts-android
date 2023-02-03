@@ -8,9 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/groups/update-groups.md:Contacts Provider typically have the following system groups (for standard Google Accounts),
-./docs/groups/update-groups.md:The above list may vary per account.
-./docs/groups/update-groups.md:belonging to the same account to exist. In older versions of Android, the native Contacts app
 ./docs/groups/insert-groups.md:an `Account`.
 ./docs/groups/insert-groups.md:To create/insert a new group for an Account,
 ./docs/groups/insert-groups.md:        account = Account("john.doe@gmail.com", "com.google")
