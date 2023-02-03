@@ -8,21 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/groups/insert-groups.md:an `Account`.
-./docs/groups/insert-groups.md:To create/insert a new group for an Account,
-./docs/groups/insert-groups.md:        account = Account("john.doe@gmail.com", "com.google")
-./docs/groups/insert-groups.md:val newGroup1 = NewGroup("Goodies", Account("john.doe@gmail.com", "com.google"))
-./docs/groups/insert-groups.md:val newGroup2 = NewGroup("Baddies", Account("john.doe@gmail.com", "com.google"))
-./docs/groups/insert-groups.md:## Groups and Accounts
-./docs/groups/insert-groups.md:A set of groups exist for each Account. When there are no accounts in the system, there are no
-./docs/groups/insert-groups.md:The get accounts permission is required here because this API retrieves all available accounts,
-./docs/groups/insert-groups.md:- if the account specified is found in the list of accounts returned by the system, then the account
-./docs/groups/insert-groups.md:- if the account specified is not found in the list of accounts returned by the system, then the
-./docs/groups/insert-groups.md:- if there are no accounts in the system, [commit] does nothing and fails immediately
-./docs/groups/insert-groups.md:> ℹ️ For more info on the relationship of Groups and Accounts, read [Query groups](./../groups/query-groups.md).
-./docs/groups/insert-groups.md:belonging to the same account to exist. In older versions of Android, the native Contacts app
-./docs/groups/insert-groups.md:        INVALID_ACCOUNT -> promptUserToPickDifferentAccount()
-./docs/groups/insert-groups.md:Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS`
 ./docs/groups/query-groups.md:`Account`.
 ./docs/groups/query-groups.md:To get all of the groups for all accounts,
 ./docs/groups/query-groups.md:val groupsFromAllAccounts = Contacts(context)

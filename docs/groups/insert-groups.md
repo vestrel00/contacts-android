@@ -1,7 +1,7 @@
 # Insert groups
 
 This library provides the `GroupsInsert` API that allows you to create/insert groups associated to
-an `Account`.
+an `Account` or no account.
 
 An instance of the `GroupsInsert` API is obtained by,
 
@@ -39,8 +39,7 @@ val insertResult = Contacts(context)
 
 ## Groups and Accounts
 
-A set of groups exist for each Account. When there are no accounts in the system, there are no 
-groups and inserting groups will fail.
+A set of groups exist for each Account. The "null" account may also have a set of groups.
 
 The get accounts permission is required here because this API retrieves all available accounts,
 if any, and does the following;
@@ -49,14 +48,14 @@ if any, and does the following;
   is used
 - if the account specified is not found in the list of accounts returned by the system, then the 
   insertion fails for that group
-- if there are no accounts in the system, [commit] does nothing and fails immediately
+- if a null is specified, then the group will be inserted without association to an account
 
 > ℹ️ For more info on the relationship of Groups and Accounts, read [Query groups](./../groups/query-groups.md).
 
 ## Groups and duplicate titles
 
 The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
-belonging to the same account to exist. In older versions of Android, the AOSP Contacts app 
+belonging to the same nullable account to exist. In older versions of Android, the AOSP Contacts app 
 allows the creation of new groups with existing titles. In newer versions, duplicate titles are not 
 allowed. Therefore, this library does not allow for duplicate titles.
 
