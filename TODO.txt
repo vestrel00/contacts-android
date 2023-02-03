@@ -8,26 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/profile/insert-profile.md:## Allowing multiple RawContacts per Account
-./docs/profile/insert-profile.md:The API allows you to insert a profile RawContact with an Account that already has a profile
-./docs/profile/insert-profile.md:.allowMultipleRawContactsPerAccount(true|false)
-./docs/profile/insert-profile.md:> ... each account (including data set, if applicable) on the device may contribute a single raw
-./docs/profile/insert-profile.md:In other words, one account can have one profile RawContact. However, despite the documentation of
-./docs/profile/insert-profile.md:"one profile RawContact per one Account", the Contacts Provider allows for multiple RawContacts per
-./docs/profile/insert-profile.md:Account, including multiple local RawContacts (no Account).
-./docs/profile/insert-profile.md:## Associating an Account
-./docs/profile/insert-profile.md:New RawContacts can be associated with an Account in order to enable syncing,
-./docs/profile/insert-profile.md:newRawContact.account = account
-./docs/profile/insert-profile.md:// or newRawContact.setAccount(account)
-./docs/profile/insert-profile.md:> setting the account is done via the `ProfileInsert.forAccount` function.
-./docs/profile/insert-profile.md:For example, to associated the new RawContact to an account,
-./docs/profile/insert-profile.md:newRawContact.account = Account("john.doe@gmail.com", "com.google")
-./docs/profile/insert-profile.md:// or newRawContact.setAccount(Account("john.doe@gmail.com", "com.google"))
-./docs/profile/insert-profile.md:> ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
-./docs/profile/insert-profile.md:If no Account is provided, or null is provided, or if an incorrect account is provided, the
-./docs/profile/insert-profile.md:RawContacts inserted will not be associated with an Account. RawContacts inserted without an
-./docs/profile/insert-profile.md:associated account are considered local or device-only contacts, which are not synced.
-./docs/profile/insert-profile.md:Inserts require the `android.permission.WRITE_CONTACTS` and `android.permission.GET_ACCOUNTS`
 ./docs/profile/query-profile.md:## Specifying Accounts
 ./docs/profile/query-profile.md:To only include RawContacts associated with one of the given accounts,
 ./docs/profile/query-profile.md:.accounts(accounts)
