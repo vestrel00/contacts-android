@@ -8,10 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/sim/about-sim-contacts.md:SyncAdapters. The RawContacts created in the Contacts Provider have a non-remote account name and
-./docs/sim/about-sim-contacts.md:accountName: primary.sim.account_name, accountType: vnd.sec.contact.sim
-
-
 ./docs/data/query-data-sets.md:## Specifying Accounts
 ./docs/data/query-data-sets.md:To limit the search to only those data associated with one of the given accounts,
 ./docs/data/query-data-sets.md:.accounts(accounts)
