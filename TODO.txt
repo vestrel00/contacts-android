@@ -8,10 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/customdata/integrate-googlecontacts-custom-data.md:shown for RawContacts that are associated with a Google Account. Local (device-only) RawContacts do
-./docs/customdata/integrate-googlecontacts-custom-data.md:these custom data should remain synced depending on account sync settings.
-
-
 ./docs/sim/about-sim-contacts.md:SyncAdapters. The RawContacts created in the Contacts Provider have a non-remote account name and
 ./docs/sim/about-sim-contacts.md:accountName: primary.sim.account_name, accountType: vnd.sec.contact.sim
 
