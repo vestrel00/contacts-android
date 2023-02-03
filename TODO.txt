@@ -8,32 +8,5 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/entities/sync-contact-data.md:the account sync settings. You can typically find these account sync settings via
-./docs/entities/sync-contact-data.md:_Settings -> Accounts -> <account> -> Account sync -> "Contacts"_. Of course, in addition to having
-./docs/entities/sync-contact-data.md:![Account sync settings](./../assets/images/account-sync-settings.png)
-./docs/entities/sync-contact-data.md:When you have Contacts syncing enabled, as long as the `android.accounts.Account` has active sync
-./docs/entities/sync-contact-data.md:adapters and remote services and you have network connection, data belonging to that account (e.g.
-./docs/entities/sync-contact-data.md:"vestrel00@gmail.com" is a Google account) are synced across devices and online. This means that any
-./docs/entities/sync-contact-data.md:that account.
-./docs/entities/sync-contact-data.md:> ℹ️ Besides Google Accounts, there is also Samsung, Yahoo, MSN/Hotmail, etc.
-./docs/entities/sync-contact-data.md:## Adding or removing Accounts
-./docs/entities/sync-contact-data.md:When an Account is added to the system and Contacts syncing is enabled and there is network
-./docs/entities/sync-contact-data.md:Groups that belong to that Account.
-./docs/entities/sync-contact-data.md:Similarly, when an Account is removed from the system though regardless of Contacts syncing enabled
-./docs/entities/sync-contact-data.md:Data, and Groups that belong to that Account.
-./docs/entities/sync-contact-data.md:## Only contacts that are associated with an Account are synced
-./docs/entities/sync-contact-data.md:More specifically, RawContacts that are not associated with an Account (local, device-only) are not
-./docs/entities/sync-contact-data.md:synced. Syncing is account specific, which is why you must turn on Contact syncing in the system
-./docs/entities/sync-contact-data.md:For example, data belonging to a RawContact that is associated with a Google account (e.g. Gmail)
-./docs/entities/sync-contact-data.md:will be available anywhere the Google account is used; in any Android or iOS device, a web browser,
-./docs/entities/sync-contact-data.md:depends on the account sync settings, which can be configured in the system settings app and
-./docs/entities/sync-contact-data.md:sync events as long as Contacts sync is enabled for the Account in the system settings.
-./docs/entities/sync-contact-data.md:- Adding an Account.
-./docs/entities/sync-contact-data.md:- Removing an Account.
-./docs/entities/sync-contact-data.md:- New lookup key is not assigned after associating a local RawContact to an Account.
-./docs/entities/sync-contact-data.md:synced because they are not account specific and they have no sync adapters and no remote service
-./docs/entities/sync-contact-data.md:library as it requires access to remote databases and account-specific data. Let's talk about it
-./docs/entities/sync-contact-data.md:> device and upload existing data to a new account. Synchronization also ensures that users have
-./docs/entities/sync-contact-data.md:> and content provider, but can handle multiple account names for the same service. The framework
 ./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE 'test@gmail.com' ESCAPE '\') AND (account_type LIKE 'com.google' ESCAPE '\')
 ./docs/entities/redact-apis-and-entities.md:    rawContactsWhere: (account_name LIKE '*******************' ESCAPE '\') AND (account_type LIKE '**********' ESCAPE '\')
