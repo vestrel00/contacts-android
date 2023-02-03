@@ -8,13 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/customdata/integrate-custom-data.md:across devices and will remain local to the device regardless of Account sync settings. It is up to
-./docs/customdata/integrate-custom-data.md:adapters. That is for you to implement based on your account services. This library provides you
-./docs/customdata/integrate-custom-data.md:> To display your custom data, provide a `contacts.xml` file containing a `<ContactsAccountType>`
-./docs/customdata/integrate-custom-data.md:<ContactsAccountType
-./docs/customdata/integrate-custom-data.md:</ContactsAccountType>
-./docs/customdata/integrate-custom-data.md:<ContactsAccountType xmlns:android="http://schemas.android.com/apk/res/android">
-./docs/customdata/integrate-custom-data.md:</ContactsAccountType>
 ./docs/customdata/integrate-googlecontacts-custom-data.md:shown for RawContacts that are associated with a Google Account. Local (device-only) RawContacts do
 ./docs/customdata/integrate-googlecontacts-custom-data.md:these custom data should remain synced depending on account sync settings.
 
