@@ -8,28 +8,6 @@ Mentions of "account" in docs
 
 grep --include="*kt" -ri "account" .
 
-./docs/accounts/query-accounts.md:# Query for Accounts
-./docs/accounts/query-accounts.md:This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the
-./docs/accounts/query-accounts.md:`AccountManager`.
-./docs/accounts/query-accounts.md:An instance of the `AccountsQuery` API is obtained by,
-./docs/accounts/query-accounts.md:val query = Contacts(context).accounts().query()
-./docs/accounts/query-accounts.md:To get all available accounts in the system,
-./docs/accounts/query-accounts.md:val accounts = Contacts(context).accounts().query()
-./docs/accounts/query-accounts.md:To get all available accounts in the system with an account type of "com.google" or "com.yahoo",
-./docs/accounts/query-accounts.md:val accounts = Contacts(context).accounts().query()
-./docs/accounts/query-accounts.md:To get the account for a set of RawContacts,
-./docs/accounts/query-accounts.md:val account = Contacts(context).accounts().query()
-./docs/accounts/query-accounts.md:To get all available accounts in the system with an account type of "com.google" or "com.yahoo"
-./docs/accounts/query-accounts.md:val accounts = Contacts(context).accounts().query()
-./docs/accounts/query-accounts.md:> ℹ️ RawContacts that are not associated with an Account are local to the device. For more info,
-./docs/accounts/query-accounts.md:## Account for each specified RawContact
-./docs/accounts/query-accounts.md:the `Account` for each of the `RawContact` specified.
-./docs/accounts/query-accounts.md:val rawContactAccount = accounts.accountFor(rawContact)
-./docs/accounts/query-accounts.md:This allows you to get the accounts for multiple RawContacts in one API call =)
-./docs/accounts/query-accounts.md:Queries require the `android.permission.READ_CONTACTS` and `android.permission.GET_ACCOUNTS`
-./docs/accounts/query-accounts.md:## Profile accounts
-./docs/accounts/query-accounts.md:The `AccountsQuery` API also supports querying the Profile (device owner) account. To get an
-./docs/accounts/query-accounts.md:val query = Contacts(context).accounts().profile().query()
 ./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:# Associate a local RawContact to an Account
 ./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:This library provides the `AccountsLocalRawContactsUpdate` API, which allows you to associate
 ./docs/accounts/associate-device-local-raw-contacts-to-an-account.md:**local** RawContacts (those that are not associated with an Account) to an Account in order to
