@@ -42,12 +42,14 @@ import kotlinx.coroutines.launch
  * - Accounts: Opens an activity to select which accounts to include in the search.
  * - Groups: Opens an activity to select which groups of selected accounts to include in the search.
  * - Blocked numbers: Opens an activity that allows users to add/remove blocked numbers.
+ * - Settings: Opens the settings activity.
  *
  * #### Contextual options menu
  *
- * When multiple contacts are selected...
- *
  * - Delete: Deletes all selected contacts.
+ *     - This is only visible when one or more contacts are selected.
+ * - Link: Links all selected contacts.
+ *     - This is only visible when two or more contacts are selected.
  *
  * ## Note
  *
@@ -157,7 +159,7 @@ class ContactsActivity : BaseActivity() {
         contactsListView.onItemClickListener = OnContactClickListener()
         // CHOICE_MODE_MULTIPLE_(MODAL) means that initial selection will only occur on long press.
         contactsListView.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-        contactsListView.setMultiChoiceModeListener(OnMultipleContactsChosenListener())
+        contactsListView.setMultiChoiceModeListener(OnContactsChosenListener())
     }
 
     private fun showContacts() {
@@ -264,7 +266,7 @@ class ContactsActivity : BaseActivity() {
         }
     }
 
-    private inner class OnMultipleContactsChosenListener : AbstractMultiChoiceModeListener {
+    private inner class OnContactsChosenListener : AbstractMultiChoiceModeListener {
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
             menuInflater.inflate(R.menu.menu_contacts_multiple_choice, menu)
             return true

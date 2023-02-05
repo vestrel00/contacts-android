@@ -13,7 +13,7 @@ import contacts.core.entities.MutableDataEntityWithTypeAndLabel
 import contacts.ui.R
 import contacts.ui.entities.DataEntityType
 import contacts.ui.entities.DataEntityTypeFactory
-import contacts.ui.util.CustomLabelInputDialog
+import contacts.ui.util.UserInputDialog
 
 /**
  * A [RelativeLayout] that displays a [DataEntityWithTypeAndLabel] [E] that has a [DataEntityType]
@@ -111,14 +111,17 @@ open class DataEntityWithTypeAndLabelView<T : DataEntity.Type, E : DataEntityWit
     }
 
     private fun showCreateUserCustomTypeInputPrompt() {
-        CustomLabelInputDialog(context)
-            .show(R.string.contacts_ui_custom_label_input_dialog_title,
-                onLabelEntered = { label ->
-                    replaceUserCustomTypeWithLabel(label)
-                }, onCancelled = {
+        UserInputDialog(context)
+            .show(
+                titleRes = R.string.contacts_ui_custom_label_input_dialog_title,
+                onCancelled = {
                     // Revert the selection to the current selected type.
                     dataTypeField.setSelection(dataTypesAdapter.getPosition(selectedType))
-                })
+                },
+                onTextEntered = { text ->
+                    replaceUserCustomTypeWithLabel(text)
+                }
+            )
     }
 
     private fun replaceUserCustomTypeWithLabel(label: String) {

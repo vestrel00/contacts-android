@@ -45,6 +45,19 @@
 
     <!-- Groups -->
     <string name="groups">Groups</string>
+    <string name="groups_create">Create new group/label</string>
+    <string name="groups_create_input_dialog_title">Enter new group title/label</string>
+    <string name="groups_create_success">Group created</string>
+    <string name="groups_create_error">Unable to create group</string>    <string name="groups_create_error_title_already_exist">Unable to create group because title/label already exist</string>
+
+    <string name="groups_edit">Edit selected group/label</string>
+    <string name="groups_edit_success">Group title/label updated</string>
+    <string name="groups_edit_error">Unable to update group title/label</string>
+    <string name="groups_edit_error_title_already_exist">Unable to update group because title/label already exist</string>
+    <string name="groups_edit_input_dialog_title">Edit group title/label</string>
+    <string name="groups_delete">Delete selected group/label</string>
+    <string name="groups_delete_success">Group deleted</string>
+    <string name="groups_delete_error">Unable to delete group</string>
     <string name="groups_does_not_exist_for_account">There are no groups for this account</string>
 
     <!-- RawContactView -->

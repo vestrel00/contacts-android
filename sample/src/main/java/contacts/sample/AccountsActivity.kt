@@ -151,9 +151,7 @@ class AccountsActivity : BaseActivity() {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val account = selectableAccounts[position]
             val selectedGroupIds = selectedAccountGroups[account]?.map { it.id } ?: emptyList()
-            GroupsActivity.selectGroups(
-                this@AccountsActivity, true, account, selectedGroupIds
-            )
+            GroupsActivity.selectGroups(this@AccountsActivity, account, selectedGroupIds)
         }
     }
 

@@ -93,7 +93,6 @@ class GroupMembershipsView @JvmOverloads constructor(
             activity?.let { activity ->
                 GroupsActivity.selectGroups(
                     activity,
-                    true,
                     account,
                     memberships.mapNotNull { it.groupId }
                 )

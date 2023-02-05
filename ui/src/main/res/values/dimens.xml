@@ -3,5 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="custom_label_input_dialog_margin_horizontal">24dp</dimen>
+    <dimen name="user_input_dialog_margin_horizontal">24dp</dimen>
 </resources>

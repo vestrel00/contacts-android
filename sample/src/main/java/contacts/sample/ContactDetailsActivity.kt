@@ -61,8 +61,8 @@ import kotlinx.coroutines.launch
  * This is a very rudimentary activity that is not styled or made to look good. It may not follow
  * any good practices and may even implement bad practices. This is for demonstration purposes only!
  *
- * This does not support state retention (e.g. device rotation). The OSS community may contribute to
- * this by implementing it.
+ * This does not fully support state retention (e.g. device rotation). The OSS community may
+ * contribute to this by implementing it.
  */
 class ContactDetailsActivity : BaseActivity() {
 
