@@ -209,7 +209,7 @@ private class GroupsUpdateImpl(
     override fun groups(groups: Collection<ExistingGroupEntity?>) = groups(groups.asSequence())
 
     override fun groups(groups: Sequence<ExistingGroupEntity?>): GroupsUpdate = apply {
-        this.groups.addAll(groups.asSequence().map { it?.redactedCopy() })
+        this.groups.addAll(groups.asSequence().map { it?.redactedCopyOrThis(isRedacted) })
     }
 
     override fun commit(): GroupsUpdate.Result = commit { false }
