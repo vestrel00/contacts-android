@@ -503,17 +503,16 @@ implement some functions in this library that does these things? We won't for no
 Contacts app does not support these functions anyways. It can always be implemented later if the
 community really wants. 
 
-_UPDATE: My hunch for creating copies and deleting account-associated RawContacts turns out to be
-correct. This is what apps like the Google Contacts app does. This feature will be implemented in
-https://github.com/vestrel00/contacts-android/issues/168_
-
 Here are some other things to note.
 
 1. The Contacts Provider automatically creates a group membership to the default group of the target
    Account when the account changes. This occurs even if the group membership already exists
    resulting in duplicates.
 2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
-   This has to be done manually to prevent duplicates.
+
+_UPDATE: My hunch for creating copies and deleting account-associated RawContacts turns out to be
+correct. This is what apps like the Google Contacts app does. This feature will be implemented in
+https://github.com/vestrel00/contacts-android/issues/168_
 
 ### RawContacts; Deletion
 

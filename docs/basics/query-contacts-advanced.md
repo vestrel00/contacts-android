@@ -329,6 +329,11 @@ that it can actually provide matching Contacts.
 
 Using the `or` operator does not have this performance hit.
 
+## Groups Matching
+
+Unlike `BroadQuery.groups`, this does not have a `groups` function. You may still match groups
+(in a much flexible way) by using `Fields.GroupMembership` with `where`.
+
 ### Limitations
 
 This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
