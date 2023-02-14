@@ -2035,7 +2035,12 @@ an <code>Account</code> or no account.</p>
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="groups-and-accounts">Groups and Accounts<a class="headerlink" href="#groups-and-accounts" title="Permanent link">&para;</a></h2>
-<p>A set of groups exist for each Account. The "null" account may also have a set of groups.</p>
+<p>A set of groups exist for each Account. The "null" account (representing the local/device-only 
+account) may also have a set of groups.</p>
+<blockquote>
+<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>,
+this API did not allow insertion of groups with null accounts.</p>
+</blockquote>
 <p>The get accounts permission is required here because this API retrieves all available accounts,
 if any, and does the following;</p>
 <ul>
