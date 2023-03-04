@@ -13,6 +13,10 @@ import contacts.core.util.redactedCopy
  * valid [Account] will have syncing enabled depending on system Account settings. RawContacts that
  * are not associated with an Account are local to the device and will not be synced.
  *
+ * TODO This supports profile and non-profile RawContacts.
+ *
+ * TODO Rewrite the following sections after completing investigations
+ *
  * ## How does this work?
  *
  * This API does the same things as the Google Contacts app. The functions of this API is based off
@@ -26,12 +30,12 @@ import contacts.core.util.redactedCopy
  * This API will change the values of the account_name and account_type on the RawContact's table
  * row to that of the target Account.
  *
- * As a result, the following takes place...
+ * Additionally, the following takes place...
  *
  * - The parent Contact lookup key changes after a sync is performed by the system.
  *   - Existing shortcuts to the Contact using the lookup key will no longer be valid.
- * - A group membership to the default group of the given account will be created automatically by
- *   the Contacts Provider upon successful operation.
+ * - A group membership to the default group (the Group(s) whose autoAdd is true) of the given
+ *   account will be created automatically by the Contacts Provider upon successful operation.
  * - Group memberships from the current account prior to the operation is not
  *   automatically deleted by the Contacts Provider. This API does that manually.
  *
@@ -43,15 +47,17 @@ import contacts.core.util.redactedCopy
  *
  * #### B. Current Account is not null and target Account is null.
  *
- * This API inserts a copy of the RawContact (associated to the target Account) and all of its Data
- * into the database. The original RawContact and all of its Data are deleted from the database.
+ * This API reads a copy of the RawContact and its Data from the current account and then inserts
+ * a copy of it to the target Account. The original RawContact and all of its Data are deleted from
+ * the database.
  *
- * As a result, the following takes place...
+ * Additionally, the following takes place...
  *
  * - The parent Contact lookup key changes after a sync is performed by the system.
  *   - Existing shortcuts to the Contact using the lookup key will no longer be valid.
- * - A group membership to the default group of the given account will be created automatically by
- *   the Contacts Provider upon successful operation.
+ * - A group membership to the default group (the Group(s) whose autoAdd is true) of the given
+ *   account will be created automatically by the Contacts Provider upon successful operation.
+ *   - Typically, the null/local account does not have a default group.
  * - Group memberships from the current account prior to the operation will not be carried over to
  *   the RawContact copy.
  *

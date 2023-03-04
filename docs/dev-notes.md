@@ -468,10 +468,10 @@ unwanted side-effects. The third does not work at all and produces unwanted side
 
 These are the behaviors that I have found;
 
-- Associating local RawContact A to Account X.
+1. Associating local RawContact A to Account X.
     - Works as intended.
     - RawContact A is now associated with Account X and is synced across devices.
-- Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
+2. Dissociating RawContact A (setting the SyncColumns' Account name and type to null) from Account X.
     - Partially works with some unwanted-side effects.
     - Dissociates RawContact A from the device but not other devices.
     - RawContact A is no longer visible in the AOSP Contacts app UNLESS it retains the group
@@ -484,7 +484,7 @@ These are the behaviors that I have found;
       "duplicate". The two RawContact As may get aggregated to the same Contact depending on how
       similar they are.
     - If local RawContact A is re-associated back to Account X, it will still no longer be synced.
-- Associating RawContact A from original Account X to Account Y.
+3. Associating RawContact A from original Account X to Account Y.
     - Does not work and have bad side-effects.
     - No change in other devices.
     - For Lollipop (API 22) and below, RawContact A is no longer visible in the AOSP Contacts app
@@ -505,13 +505,16 @@ community really wants.
 
 Here are some other things to note.
 
-1. The Contacts Provider automatically creates a group membership to the default group of the target
-   Account when the account changes. This occurs even if the group membership already exists
-   resulting in duplicates.
-2. The Contacts Provider DOES NOT delete existing group memberships when the account changes.
+- The Contacts Provider automatically creates a group membership to the default group (if exist)
+   of the target Account when the account changes. 
+- The Contacts Provider DOES NOT delete existing group memberships when the account changes.
 
-_UPDATE: My hunch for creating copies and deleting account-associated RawContacts turns out to be
-correct. This is what apps like the Google Contacts app does. This feature will be implemented in
+_UPDATE: My hunch for insert copies then deleting non-null account-associated RawContacts turns 
+to perform an "account move operation" turned out to be correct (case 2 and 3). This is what apps 
+like the Google Contacts app does. Actually, Google Contacts app takes it even further by performing 
+insert-delete operation regardless of whether the RawContact is associated to an account or not
+(cases 1, 2, 3). It does not modify the `SyncColumns.ACCOUNT_NAME` and `SyncColumns.ACCOUNT_TYPE`
+even though case 1 seems to be supported (for now). We should follow what Google Contacts is doing.
 https://github.com/vestrel00/contacts-android/issues/168_
 
 ### RawContacts; Deletion
