@@ -1,0 +1,33 @@
+TODO
+
+------------------------
+
+## Developer notes (or for advanced users)
+
+TODO Group membership migrations
+TODO Multiple RawContacts linked to a single Contact
+
+Let's take a look at what happens when the AOSP Contacts, Google Contacts, and Samsung Contacts
+apps moves RawContacts to different Accounts. I used a physical Samsung Galaxy A71 API 33 to run
+Samsung Contacts. For AOSP Contacts and Google Contacts, I used an emulator Pixel 4 API 30.
+
+For simplicity, I setup my test devices/emulators with two remote Accounts; X and Y. This allows me
+to test all different cases when moving a RawContact from its current account to the target account.
+
+| **Current Account** | **Target Account** |
+|---------------------|--------------------|
+| null (local)        | X                  |
+| X                   | null (local)       |
+| X                   | Y                  |
+
+#### null (local) -> X
+
+TODO
+
+#### X -> null (local)
+
+TODO
+
+#### X -> Y
+
+TODO
