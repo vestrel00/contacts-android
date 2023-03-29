@@ -34,9 +34,10 @@ as the AOSP Android Contacts app and Google Contacts app, this library is for yo
 ## Quick links
 
 - 📜 [Documentation][github-pages]
-- 🚉 [Current release - 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
-- 🚂 [Upcoming release - 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218)
-- 🗺 [Project roadmap][project-roadmap]
+- 🚉 [Current Release - 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
+- 🚂 [Upcoming Release - 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218)
+- ℹ️ [Project Status][project-status]
+- 🗺 [Project Roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
 
 ## Features
@@ -533,6 +534,7 @@ If you use Proguard and the `async` and/or `permissions` modules, then you may n
     limitations under the License.
 
 [project-roadmap]: https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap
+[project-status]: https://github.com/vestrel00/contacts-android/discussions/284
 [why-use-this]: https://github.com/vestrel00/contacts-android/wiki/Why-use-this-library%3F
 [compare-other-libs]: https://github.com/vestrel00/contacts-android/wiki/Why-use-this-library%3F#how-does-this-library-compare-to-other-contacts-libraries
 [discussions]: https://github.com/vestrel00/contacts-android/discussions
