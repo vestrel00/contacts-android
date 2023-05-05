@@ -18,9 +18,10 @@ interface AccountsPermissions {
     fun canQueryAccounts(): Boolean
 
     /**
-     * Returns true if [GET_ACCOUNTS_PERMISSION] and [WRITE_PERMISSION] are granted.
+     * Returns true if [GET_ACCOUNTS_PERMISSION], [READ_PERMISSION], and [WRITE_PERMISSION] are
+     * granted.
      */
-    fun canUpdateLocalRawContactsAccount(): Boolean
+    fun canMoveRawContactsAcrossAccounts(): Boolean
 
     companion object {
         const val GET_ACCOUNTS_PERMISSION: String = Manifest.permission.GET_ACCOUNTS
@@ -38,7 +39,8 @@ private class AccountsPermissionsImpl(private val applicationContext: Context) :
         applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
                 && applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
-    override fun canUpdateLocalRawContactsAccount(): Boolean =
+    override fun canMoveRawContactsAcrossAccounts(): Boolean =
         applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
+                && applicationContext.isPermissionGrantedFor(READ_PERMISSION)
                 && applicationContext.isPermissionGrantedFor(WRITE_PERMISSION)
 }

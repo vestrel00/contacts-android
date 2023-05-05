@@ -3,6 +3,7 @@ package contacts.core.accounts
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.ContentResolver
+import android.content.Context
 import contacts.core.*
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.cursor.account
@@ -300,43 +301,44 @@ private class AccountsQueryImpl(
         // We start off with the full set of accounts in the system (which is typically not
         // more than a handful). Then we'll trim the fat as we process the query parameters.
         // This will not include Samsung's local phone "account".
-        var accounts: Set<Account> = accountManager.accounts.toSet()
+        var systemAccounts: Set<Account> = accountManager.accounts.toSet()
+
         return if (
             cancel()
             || !accountsPermissions.canQueryAccounts()
             // If the isProfile parameter does not match for all RawContacts, return immediately.
             || rawContactIds.allAreProfileIds != isProfile
             // No accounts in the system. No point in processing the rest of the query.
-            || accounts.isEmpty()
+            || systemAccounts.isEmpty()
         ) {
-            AccountsQueryResult(accounts, emptyMap())
+            AccountsQueryResult(systemAccounts, emptyMap())
         } else {
             var rawContactIdsAccountsMap = emptyMap<Long, Account>()
 
             if (!cancel() && accountTypes.isNotEmpty()) {
                 // Reduce the accounts to only those that have the given types.
-                accounts = accounts.filter {
+                systemAccounts = systemAccounts.filter {
                     accountTypes.contains(it.type)
                 }.toSet()
             }
 
-            if (!cancel() && rawContactIds.isNotEmpty() && accounts.isNotEmpty()) {
+            if (!cancel() && rawContactIds.isNotEmpty() && systemAccounts.isNotEmpty()) {
                 // Reduce the accounts to only those that are associated with one of the
                 // RawContacts. Note that this map can only be as large as the amount of
                 // rawContactIds passed to it. Therefore, there should not be any need to paginate,
                 // unless the consumer passed in way too many RawContact IDs =P
                 rawContactIdsAccountsMap = contentResolver.accountsForRawContactsWithIdsInAccounts(
-                    rawContactIds, accounts, cancel
+                    rawContactIds, systemAccounts, cancel
                 )
-                accounts = rawContactIdsAccountsMap.values.toSet()
+                systemAccounts = rawContactIdsAccountsMap.values.toSet()
             }
 
             if (cancel()) {
-                accounts = emptySet()
+                systemAccounts = emptySet()
                 rawContactIdsAccountsMap = emptyMap()
             }
 
-            AccountsQueryResult(accounts, rawContactIdsAccountsMap)
+            AccountsQueryResult(systemAccounts, rawContactIdsAccountsMap)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
@@ -345,30 +347,30 @@ private class AccountsQueryImpl(
 
 /**
  * Returns a map of RawContact IDs to the corresponding Account for all RawContacts with IDs in
- * [rawContactIds] that belong to one of the Accounts in [accounts].
+ * [rawContactIds] that belong to one of the Accounts in [systemAccounts].
  *
- * If the [accounts] is empty, it will be ignored. Otherwise, the query will only return RawContacts
+ * If the [systemAccounts] is empty, it will be ignored. Otherwise, the query will only return RawContacts
  * that are associated with one of the given accounts.
  *
  * This only requires [contacts.core.ContactsPermissions.READ_PERMISSION].
  */
 private fun ContentResolver.accountsForRawContactsWithIdsInAccounts(
     rawContactIds: Set<Long>,
-    accounts: Set<Account>,
+    systemAccounts: Set<Account>,
     cancel: () -> Boolean
 ): Map<Long, Account> = query(
     if (rawContactIds.allAreProfileIds) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
     Include(RawContactsFields.Id, RawContactsFields.AccountName, RawContactsFields.AccountType),
     // Note that if accounts is empty, then accounts.toRawContactsWhere() will return null.
     // Then the following WHERE will resolve to just (RawContactsFields.Id `in` rawContactIds).
-    (RawContactsFields.Id `in` rawContactIds) and accounts.toRawContactsWhere()
+    (RawContactsFields.Id `in` rawContactIds) and systemAccounts.toRawContactsWhere()
 ) {
     val rawContactIdsAccountsMap = mutableMapOf<Long, Account>()
     val rawContactsCursor = it.rawContactsCursor()
     while (!cancel() && it.moveToNext()) {
         // Reuse references to the given set of accounts to reduce memory consumption by avoiding
         // creating duplicate Accounts.
-        val account = accounts.find { account ->
+        val account = systemAccounts.find { account ->
             account.name == rawContactsCursor.accountName &&
                     account.type == rawContactsCursor.accountType
         }
@@ -383,15 +385,20 @@ private fun ContentResolver.accountsForRawContactsWithIdsInAccounts(
  * Returns the Account, based on the values in the RawContacts table, for the RawContact with the
  * given [rawContactId].
  *
+ * This will return a null Account if the non-null account name and type stored in the RawContacts
+ * table is not in the system. In other words, this will return null for invalid Accounts.
+ *
  * This only requires [contacts.core.ContactsPermissions.READ_PERMISSION].
  */
-internal fun ContentResolver.accountForRawContactWithId(rawContactId: Long): Account? = query(
-    if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
-    Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
-    RawContactsFields.Id equalTo rawContactId
-) {
-    it.getNextOrNull { it.rawContactsCursor().account() }
-}
+internal fun Context.accountForRawContactWithId(rawContactId: Long): Account? =
+    contentResolver.query(
+        if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+        Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
+        RawContactsFields.Id equalTo rawContactId
+    ) {
+        val account = it.getNextOrNull { it.rawContactsCursor().account() }
+        account.nullIfNotInSystem(this)
+    }
 
 private class AccountsQueryResult private constructor(
     accounts: Set<Account>,

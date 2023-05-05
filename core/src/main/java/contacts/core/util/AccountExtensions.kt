@@ -1,8 +1,10 @@
 package contacts.core.util
 
 import android.accounts.Account
+import android.accounts.AccountManager
+import android.annotation.SuppressLint
+import android.content.Context
 import contacts.core.*
-import contacts.core.accounts.Accounts
 import contacts.core.entities.cursor.SAMSUNG_PHONE_ACCOUNT
 
 /**
@@ -19,7 +21,7 @@ import contacts.core.entities.cursor.SAMSUNG_PHONE_ACCOUNT
  * with this name and type because it is not an actual account that is registered/returned by the
  * system AccountManager.
  */
-internal fun Account?.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
+internal fun Account?.isInSystem(context: Context): Boolean = nullIfNotInSystem(context) != null
 
 /**
  * Returns true if [this] is NOT in the list of all accounts in the system.
@@ -35,7 +37,7 @@ internal fun Account?.isInSystem(accounts: Accounts): Boolean = nullIfNotInSyste
  * with this name and type because it is not an actual account that is registered/returned by the
  * system AccountManager.
  */
-internal fun Account?.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
+internal fun Account?.isNotInSystem(context: Context): Boolean = !isInSystem(context)
 
 /**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
@@ -52,8 +54,9 @@ internal fun Account?.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(a
  * with this name and type because it is not an actual account that is registered/returned by the
  * system AccountManager.
  */
-internal fun Account?.nullIfNotInSystem(accounts: Accounts): Account? = this?.let {
-    nullIfNotIn(accounts.query().find())
+@SuppressLint("MissingPermission")
+internal fun Account?.nullIfNotInSystem(context: Context): Account? = this?.let {
+    nullIfNotIn(AccountManager.get(context.applicationContext).accounts.toList())
 }
 
 /**

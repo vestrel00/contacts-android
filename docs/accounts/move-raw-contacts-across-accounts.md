@@ -1,4 +1,4 @@
-# Move/associate RawContacts to other Accounts
+# Move RawContacts across Accounts
 
 TODO
 
@@ -6,7 +6,6 @@ TODO
 
 ## Developer notes (or for advanced users)
 
-TODO Group membership migrations
 TODO Multiple RawContacts linked to a single Contact
 
 Let's take a look at what happens when **Google Contacts** moves RawContacts to different Accounts.

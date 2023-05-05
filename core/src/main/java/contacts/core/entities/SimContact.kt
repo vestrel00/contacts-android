@@ -40,7 +40,7 @@ sealed interface SimContactEntity : Entity {
      * - when there is one email, this value is "one@gmail.com,"
      * - when there are two emails, this value is "one@gmail.com,two@gmail.com,"
      *
-     * There seems to always be a trailing ",". This may or may not vary between SIM cards and OEMs.
+     * There seems to always be a trailing ",". This may or may not vary across SIM cards and OEMs.
      */
     // val emails: String?
 

@@ -3,15 +3,14 @@ package contacts.core.accounts
 import contacts.core.Contacts
 
 /**
- * Provides new [AccountsQuery] and [AccountsLocalRawContactsUpdate] for Profile OR non-Profile
- * (depending on instance) operations.
+ * Provides new [AccountsQuery] and [MoveRawContactsAcrossAccounts].
  *
  * ## Permissions
  *
  * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.READ_CONTACTS" to the
  *   AndroidManifest in order to use [query].
- * - Add the "android.permission.GET_ACCOUNTS" and "android.permission.WRITE_CONTACTS" to the
- *   AndroidManifest in order to use [updateLocalRawContactsAccount].
+ * - Add the "android.permission.GET_ACCOUNTS", "android.permission.READ_CONTACTS", and
+ *   "android.permission.WRITE_CONTACTS" to the AndroidManifest in order to use [move].
  */
 interface Accounts {
 
@@ -22,13 +21,14 @@ interface Accounts {
     fun query(): AccountsQuery
 
     /**
-     * Returns a new [AccountsLocalRawContactsUpdate] instance Profile OR non-Profile
-     * (depending on instance) RawContacts associations operations.
+     * Returns a new [MoveRawContactsAcrossAccounts] instance for non-Profile operations.
      */
-    fun updateLocalRawContactsAccount(): AccountsLocalRawContactsUpdate
+    fun move(): MoveRawContactsAcrossAccounts
 
     /**
      * Returns a new [Accounts] instance for Profile operations.
+     *
+     * Note that the [MoveRawContactsAcrossAccounts] API does NOT support Profile operations.
      */
     fun profile(): Accounts
 
@@ -46,10 +46,8 @@ interface Accounts {
  * Creates a new [Accounts] instance for Profile or non-Profile operations.
  */
 @Suppress("FunctionName")
-internal fun Accounts(contacts: Contacts, isProfile: Boolean): Accounts = AccountsImpl(
-    contacts,
-    isProfile
-)
+internal fun Accounts(contacts: Contacts, isProfile: Boolean): Accounts =
+    AccountsImpl(contacts, isProfile)
 
 private class AccountsImpl(
     override val contactsApi: Contacts,
@@ -58,8 +56,7 @@ private class AccountsImpl(
 
     override fun query() = AccountsQuery(contactsApi, isProfile)
 
-    override fun updateLocalRawContactsAccount() =
-        AccountsLocalRawContactsUpdate(contactsApi, isProfile)
+    override fun move() = MoveRawContactsAcrossAccounts(contactsApi)
 
     override fun profile(): Accounts = AccountsImpl(contactsApi, true)
 }

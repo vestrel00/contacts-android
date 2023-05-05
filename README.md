@@ -72,7 +72,7 @@ The `core` module provides,
   [update](/docs/sim/update-sim-contacts.md), and [delete](/docs/sim/delete-sim-contacts.md) **SIM card contacts**
 - ✅ [Query](/docs/accounts/query-accounts.md) for Accounts in the system or RawContacts table
 - ✅ [Query](/docs/basics/query-raw-contacts.md) for just RawContacts
-- ✅ [Associate **local RawContacts** (no Account) to an Account](/docs/accounts/associate-device-local-raw-contacts-to-an-account.md)
+- ✅ [Move RawContacts across Accounts](/docs/accounts/move-raw-contacts-across-accounts.md)
 - ✅ [**Link/unlink**](/docs/other/link-unlink-contacts.md) two or more Contacts
 - ✅ [Get/set contact options](/docs/other/get-set-clear-contact-raw-contact-options.md);
   **_starred (favorite), custom ringtone, send to voicemail_**

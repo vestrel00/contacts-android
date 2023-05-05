@@ -77,7 +77,7 @@ internal class GroupMembershipOperation(
             return@apply
         }
 
-        val account: Account? = context.contentResolver.accountForRawContactWithId(rawContactId)
+        val account: Account? = context.accountForRawContactWithId(rawContactId)
 
         // A map of Group.id -> Group
         val accountGroups: Map<Long, Group> =

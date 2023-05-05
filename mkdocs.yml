@@ -64,7 +64,7 @@ nav:
     - 'Delete device owner Contact profile': profile/delete-profile.md
   - 'Accounts':
     - 'Query for Accounts': accounts/query-accounts.md
-    - 'Associate a local RawContact to an Account': accounts/associate-device-local-raw-contacts-to-an-account.md
+    - 'Move RawContacts across Accounts': accounts/move-raw-contacts-across-accounts.md
   - 'SIM card':
       - 'About SIM contacts': sim/about-sim-contacts.md
       - 'Query contacts in SIM card': sim/query-sim-contacts.md
