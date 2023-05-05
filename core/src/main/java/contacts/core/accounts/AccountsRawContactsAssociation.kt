@@ -9,74 +9,26 @@ import contacts.core.entities.ExistingSimContactEntity
 import contacts.core.util.redactedCopy
 
 /**
- * Associates RawContacts to specified Accounts. RawContacts that are associated with a non-null
- * valid [Account] will have syncing enabled depending on system Account settings. RawContacts that
- * are not associated with an Account are local to the device and will not be synced.
+ * Associates/moves RawContacts from one Account to another.
  *
- * TODO This supports profile and non-profile RawContacts.
+ * This API functions similarly to the Google Contacts app. Copies of RawContacts are inserted
+ * into the database under a different account and the original RawContacts are deleted afterwards.
+ * RawContact and Data values are carried over.
  *
- * TODO Rewrite the following sections after completing investigations
+ * In other words, this is a copy-paste-delete operation. New rows are created in the RawContact,
+ * Contact, and Data tables with the same values from the original. Then, the original rows are
+ * deleted.
  *
- * ## How does this work?
+ * Memberships to Groups (which are Account-based) are "carried over" on a best-effort basis;
  *
- * This API does the same things as the Google Contacts app. The functions of this API is based off
- * of the Google Contacts app.
+ * - Groups with matching title (case-sensitive)
+ * - Default Group (autoAdd is true)
+ * - Favorites Group (if starred is true)
  *
- * Depending on the current Account and target Account of the [ExistingRawContactEntity], the
- * following will occur...
+ * Contact IDs and lookup keys will change. This means that references to Contact IDs and lookup
+ * keys will become invalid. For example, shortcuts may break after performing this operation.
  *
- * #### A. Current Account is null and target Account is not null.
- *
- * This API will change the values of the account_name and account_type on the RawContact's table
- * row to that of the target Account.
- *
- * Additionally, the following takes place...
- *
- * - The parent Contact lookup key changes after a sync is performed by the system.
- *   - Existing shortcuts to the Contact using the lookup key will no longer be valid.
- * - A group membership to the default group (the Group(s) whose autoAdd is true) of the given
- *   account will be created automatically by the Contacts Provider upon successful operation.
- * - Group memberships from the current account prior to the operation is not
- *   automatically deleted by the Contacts Provider. This API does that manually.
- *
- * There are no changes to anything else. All rows in the Data table also remain the same.
- *
- * TODO verify this ^
- * TODO are group memberships from the current account carried over to the target account for
- * similar groups (if exist)?
- *
- * #### B. Current Account is not null and target Account is null.
- *
- * This API reads a copy of the RawContact and its Data from the current account and then inserts
- * a copy of it to the target Account. The original RawContact and all of its Data are deleted from
- * the database.
- *
- * Additionally, the following takes place...
- *
- * - The parent Contact lookup key changes after a sync is performed by the system.
- *   - Existing shortcuts to the Contact using the lookup key will no longer be valid.
- * - A group membership to the default group (the Group(s) whose autoAdd is true) of the given
- *   account will be created automatically by the Contacts Provider upon successful operation.
- *   - Typically, the null/local account does not have a default group.
- * - Group memberships from the current account prior to the operation will not be carried over to
- *   the RawContact copy.
- *
- * TODO verify this ^
- * TODO are group memberships from the current account carried over to the target account for
- * similar groups (if exist)?
- *
- * #### C. Current Account is not null and target Account is also not null.
- *
- * Same as "B. Current Account is not null and target Account is null."
- *
- * TODO verify this ^
- * TODO are group memberships from the current account carried over to the target account for
- * similar groups (if exist)?
- *
- * #### D. Current Account (null or not) is the same as the target Account.
- *
- * No operation is performed here. The current Account is already the target Account. Result is
- * success.
+ * **Profile RawContacts are not supported!** Operations for these will fail.
  *
  * ## Permissions
  *
@@ -118,12 +70,12 @@ interface AccountsRawContactsAssociation : CrudApi {
     /**
      * See [AccountsRawContactsAssociation.associate].
      */
-    fun associate(rawContacts: Collection<Entry>)
+    fun associate(entry: Collection<Entry>)
 
     /**
      * See [AccountsRawContactsAssociation.associate].
      */
-    fun associate(rawContacts: Sequence<Entry>)
+    fun associate(entry: Sequence<Entry>)
 
     /**
      * Creates an [Entry] for each RawContact in [rawContacts] with the [account] and passes it on
@@ -248,6 +200,11 @@ interface AccountsRawContactsAssociation : CrudApi {
     interface Result : CrudApi.Result {
 
         /**
+         * The list of IDs of successfully created RawContacts.
+         */
+        val rawContactIds: List<Long>
+
+        /**
          * True if all RawContacts have been successfully associated to the target Accounts.
          */
         val isSuccessful: Boolean
@@ -256,6 +213,14 @@ interface AccountsRawContactsAssociation : CrudApi {
          * True if the [rawContact] has been successfully associated with the target Account.
          */
         fun isSuccessful(rawContact: ExistingRawContactEntity): Boolean
+
+        /**
+         * Returns the ID of the newly created RawContact, which is a copy of the given
+         * [rawContact]. Use the ID to get the newly created RawContact via a query.
+         *
+         * Returns null if the insert operation failed.
+         */
+        fun rawContactId(rawContact: ExistingRawContactEntity): Long?
 
         /**
          * Returns the reason why the association failed for this [rawContact].
@@ -291,7 +256,7 @@ interface AccountsRawContactsAssociation : CrudApi {
             DELETE_ORIGINAL_RAW_CONTACT_FAILED,
 
             /**
-             * The associated failed because of no permissions, no RawContacts specified, etc...
+             * The operation failed because of no permissions, RawContact is used as Profile, etc...
              *
              * ## Dev note
              *
