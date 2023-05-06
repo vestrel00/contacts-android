@@ -7,8 +7,9 @@ import contacts.core.accounts.MoveRawContactsAcrossAccounts.Result
 import contacts.core.accounts.MoveRawContactsAcrossAccounts.Result.FailureReason
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.ExistingSimContactEntity
-import contacts.core.util.redactedCopy
-import contacts.core.util.unsafeLazy
+import contacts.core.entities.Group
+import contacts.core.entities.RawContact
+import contacts.core.util.*
 
 /**
  * Moves RawContacts from one Account to another.
@@ -108,23 +109,23 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
      * Creates an [Entry] for each RawContact with the given ids in [rawContactIds] with the
      * [account] and passes it on to [MoveRawContactsAcrossAccounts.rawContactsTo].
      */
-    fun moveRawContactsWithIdsTo(
+    fun rawContactsWithIdsTo(
         account: Account?,
         vararg rawContactIds: Long
     ): MoveRawContactsAcrossAccounts
 
     /**
-     * See [MoveRawContactsAcrossAccounts.moveRawContactsWithIdsTo].
+     * See [MoveRawContactsAcrossAccounts.rawContactsWithIdsTo].
      */
-    fun moveRawContactsWithIdsTo(
+    fun rawContactsWithIdsTo(
         account: Account?,
         rawContactIds: Collection<Long>
     ): MoveRawContactsAcrossAccounts
 
     /**
-     * See [MoveRawContactsAcrossAccounts.moveRawContactsWithIdsTo].
+     * See [MoveRawContactsAcrossAccounts.rawContactsWithIdsTo].
      */
-    fun moveRawContactsWithIdsTo(
+    fun rawContactsWithIdsTo(
         account: Account?,
         rawContactIds: Sequence<Long>
     ): MoveRawContactsAcrossAccounts
@@ -256,24 +257,36 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
         enum class FailureReason {
 
             /**
-             * The Account is not in the system.
+             * The [Entry.targetAccount] is not in the system.
              */
             INVALID_ACCOUNT,
 
             /**
-             * The RawContact may have been deleted prior to this operation or an incorrect
-             * RawContact ID was provided.
+             * The RawContact is already associated with the [Entry.targetAccount].
+             */
+            ALREADY_IN_ACCOUNT,
+
+            /**
+             * The RawContact with the given [Entry.rawContactId] may have been deleted prior to
+             * this operation or an incorrect RawContact ID was provided.
              */
             RAW_CONTACT_NOT_FOUND,
 
             /**
-             * Inserting a copy of a RawContact to a different Account failed.
+             * Inserting a copy of the RawContact to a different Account failed.
              */
             INSERT_RAW_CONTACT_COPY_FAILED,
 
             /**
-             * A copy of the RawContact was inserted to the target Account but deleting the
-             * original RawContact failed.
+             * A copy of the RawContact was inserted to the target Account but something went
+             * wrong wit deleting the original RawContact. It may or may not have been deleted.
+             *
+             * To prevent data loss, this API does NOT attempt to delete the inserted copy in this
+             * scenario. This may or may not result in a duplicate RawContact.
+             *
+             * In this case, the [Result.isSuccessful] will be false even though a new copy of the
+             * origin RawContact was inserted. The inserted RawContact will be returned in
+             * [Result.rawContactIds] and [Result.rawContactId].
              */
             DELETE_ORIGINAL_RAW_CONTACT_FAILED,
 
@@ -345,13 +358,13 @@ private class MoveRawContactsAcrossAccountsImpl(
             .also(::rawContacts)
     }
 
-    override fun moveRawContactsWithIdsTo(account: Account?, vararg rawContactIds: Long) =
-        moveRawContactsWithIdsTo(account, rawContactIds.asSequence())
+    override fun rawContactsWithIdsTo(account: Account?, vararg rawContactIds: Long) =
+        rawContactsWithIdsTo(account, rawContactIds.asSequence())
 
-    override fun moveRawContactsWithIdsTo(account: Account?, rawContactIds: Collection<Long>) =
-        moveRawContactsWithIdsTo(account, rawContactIds.asSequence())
+    override fun rawContactsWithIdsTo(account: Account?, rawContactIds: Collection<Long>) =
+        rawContactsWithIdsTo(account, rawContactIds.asSequence())
 
-    override fun moveRawContactsWithIdsTo(
+    override fun rawContactsWithIdsTo(
         account: Account?, rawContactIds: Sequence<Long>
     ): MoveRawContactsAcrossAccounts = apply {
         rawContactIds
@@ -379,14 +392,83 @@ private class MoveRawContactsAcrossAccountsImpl(
                     break
                 }
 
+                // Check if target Account is in system. If it is not in system but is a Samsung
+                // phone Account, then it is referencing the local "null" system Account.
+                val targetAccount = entry.targetAccount?.nullIfSamsungPhoneAccount()
+                if (
+                    targetAccount != null
+                    && targetAccount.isNotInSystem(contactsApi.applicationContext)
+                ) {
+                    failureReasons[entry.rawContactId] = FailureReason.INVALID_ACCOUNT
+                    break
+                }
+
+                // Fetch the origin RawContact.
+                val originalRawContact: RawContact? = contactsApi.rawContactFor(entry, cancel)
+
+                if (originalRawContact == null) {
+                    failureReasons[entry.rawContactId] = FailureReason.RAW_CONTACT_NOT_FOUND
+                    break
+                }
+
+                // Check if the original and target Accounts are the same.
+                if (originalRawContact.account == targetAccount) {
+                    failureReasons[entry.rawContactId] = FailureReason.ALREADY_IN_ACCOUNT
+                    break
+                }
+
+                // Fetch all of the Group's titles the original RawContact has a membership to.
+                val matchedGroupsInTargetAccount: List<Group> = contactsApi
+                    .groupsFromTargetAccountMatchingGroupsFromRawContact(
+                        originalRawContact, targetAccount, cancel
+                    )
+
+                // Insert a copy of the original RawContact.
                 TODO()
+
+                // Delete the original RawContact.
+                TODO()
+
+
             }
 
+            // TODO Membership to the target Account's default group and favorites group are auto added?
             MoveRawContactsAcrossAccountsResult(originalToNewRawContacts, failureReasons)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
+}
+
+private fun Contacts.rawContactFor(entry: Entry, cancel: () -> Boolean): RawContact? =
+    rawContactsQuery()
+        .where { RawContact.Id equalTo entry.rawContactId }
+        .find(cancel)
+        .firstOrNull()
+
+private fun Contacts.groupsFromTargetAccountMatchingGroupsFromRawContact(
+    rawContact: RawContact, targetAccount: Account?, cancel: () -> Boolean
+): List<Group> {
+    val rawContactGroupIds = rawContact.groupMemberships.mapNotNull { it.groupId }
+
+    if (rawContactGroupIds.isEmpty()) {
+        return emptyList()
+    }
+
+    val rawContactGroups = groups()
+        .query()
+        .where { Id `in` rawContactGroupIds }
+        .find(cancel)
+
+    if (rawContactGroups.isEmpty()) {
+        return emptyList()
+    }
+
+    return groups()
+        .query()
+        .accounts(targetAccount)
+        .where { Title `in` rawContactGroups.map { it.title } }
+        .find(cancel)
 }
 
 // TODO util functions + async + withContext functions
