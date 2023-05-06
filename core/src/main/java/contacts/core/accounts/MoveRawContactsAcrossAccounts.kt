@@ -14,22 +14,28 @@ import contacts.core.util.*
 /**
  * Moves RawContacts from one Account to another.
  *
- * This API functions similarly to the Google Contacts app. Copies of RawContacts are inserted
+ * This API functions identically to the Google Contacts app. Copies of RawContacts are inserted
  * into the database under a different account and the original RawContacts are deleted afterwards.
  * RawContact and Data values are carried over.
  *
- * In other words, this is a copy-paste-delete operation. New rows are created in the RawContact,
+ * In other words, this is a copy-insert-delete operation. New rows are created in the RawContact,
  * Contact, and Data tables with the same values from the original. Then, the original rows are
  * deleted.
  *
- * Memberships to Groups (which are Account-based) are "carried over" on a best-effort basis;
+ * **Group memberships** (which are Account-based) are "carried over" on a best-effort basis;
  *
  * - Groups with matching title (case-sensitive)
  * - Default Group (autoAdd is true)
  * - Favorites Group (if starred is true)
  *
- * Contact IDs and lookup keys will change. This means that references to Contact IDs and lookup
- * keys will become invalid. For example, shortcuts may break after performing this operation.
+ * **Default/primary** flags of Data rows are not retained. For example, if a phone number is set
+ * as the default (isPrimary: 1, isSuperPrimary: 1), after this move operation it will no longer
+ * be a default data (isPrimary: 0,	isSuperPrimary: 0). _Yes, like all other behaviors of this API,
+ * this is the same as Google Contacts._
+ *
+ * Contact **IDs** and **lookup keys** will change. This means that references to Contact IDs and
+ * lookup keys will become invalid. For example, shortcuts may break after performing this
+ * operation.
  *
  * **Profile RawContacts are not supported!** Operations for these will fail.
  *
@@ -273,13 +279,13 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
             RAW_CONTACT_NOT_FOUND,
 
             /**
-             * Inserting a copy of the RawContact to a different Account failed.
+             * Inserting a copy of the original RawContact with to the [Entry.targetAccount] failed.
              */
             INSERT_RAW_CONTACT_COPY_FAILED,
 
             /**
              * A copy of the RawContact was inserted to the target Account but something went
-             * wrong wit deleting the original RawContact. It may or may not have been deleted.
+             * wrong with deleting the original RawContact. It may or may not have been deleted.
              *
              * To prevent data loss, this API does NOT attempt to delete the inserted copy in this
              * scenario. This may or may not result in a duplicate RawContact.
@@ -292,7 +298,7 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
 
             /**
              * The operation failed because of no permissions, there are no entries,
-             * RawContact is used as Profile, etc...
+             * RawContact is from the Profile tables, etc...
              *
              * ## Dev note
              *
@@ -417,22 +423,61 @@ private class MoveRawContactsAcrossAccountsImpl(
                     break
                 }
 
-                // Fetch all of the Group's titles the original RawContact has a membership to.
-                val matchedGroupsInTargetAccount: List<Group> = contactsApi
+                // Fetch Groups belonging to the target Account that the original RawContact has a
+                // membership to based on case-sensitive matching of the Group title.
+                val matchedGroupsInTargetAccount = contactsApi
                     .groupsFromTargetAccountMatchingGroupsFromRawContact(
                         originalRawContact, targetAccount, cancel
                     )
 
                 // Insert a copy of the original RawContact.
-                TODO()
+                val rawContactCopyId = contactsApi.insert().rawContacts()
+                    .allowBlanks(true)
+                    .rawContacts(
+                        originalRawContact.newCopy {
+                            // Set the Account.
+                            account = entry.targetAccount
+
+                            // Replace the group memberships.
+                            // Note that memberships to the target Account's default group and
+                            // favorites group are auto added by the Contacts Provider.
+                            groupMemberships.clear()
+                            groupMemberships.addAll(matchedGroupsInTargetAccount.newMemberships())
+
+                            // Copy over the photo. Note that the Contact photo columns may not
+                            // be set immediately after the insert. It is probably done
+                            // asynchronously by the Contacts Provider.
+                            originalRawContact.photoBytes(contactsApi)?.let { originalPhotoBytes ->
+                                setPhoto(PhotoData.from(originalPhotoBytes))
+                            }
+                        }
+                    )
+                    .commit(cancel)
+                    .rawContactIds
+                    .firstOrNull()
+
+                // Check if insert copy failed.
+                if (rawContactCopyId == null) {
+                    failureReasons[entry.rawContactId] =
+                        FailureReason.INSERT_RAW_CONTACT_COPY_FAILED
+                    break
+                } else {
+                    originalToNewRawContacts[originalRawContact.id] = rawContactCopyId
+                }
 
                 // Delete the original RawContact.
-                TODO()
+                val originalDeleted = contentResolver.deleteRawContactsWhere(
+                    RawContactsFields.Id equalTo originalRawContact.id
+                )
 
-
+                // Check if delete original failed.
+                if (!originalDeleted) {
+                    failureReasons[originalRawContact.id] =
+                        FailureReason.DELETE_ORIGINAL_RAW_CONTACT_FAILED
+                    break
+                }
             }
 
-            // TODO Membership to the target Account's default group and favorites group are auto added?
             MoveRawContactsAcrossAccountsResult(originalToNewRawContacts, failureReasons)
         }
             .redactedCopyOrThis(isRedacted)

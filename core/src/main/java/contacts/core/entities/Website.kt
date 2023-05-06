@@ -108,9 +108,9 @@ data class Website internal constructor(
     )
 
     override fun redactedCopy() = copy(
-        isRedacted = true,
+        url = url?.redact(),
 
-        url = url?.redact()
+        isRedacted = true
     )
 }
 
@@ -134,9 +134,9 @@ data class MutableWebsite internal constructor(
 ) : WebsiteEntity, ExistingDataEntity, MutableWebsiteEntity {
 
     override fun redactedCopy() = copy(
-        isRedacted = true,
+        url = url?.redact(),
 
-        url = url?.redact()
+        isRedacted = true
     )
 }
 
@@ -153,8 +153,8 @@ data class NewWebsite @JvmOverloads constructor(
 ) : WebsiteEntity, NewDataEntity, MutableWebsiteEntity {
 
     override fun redactedCopy() = copy(
-        isRedacted = true,
+        url = url?.redact(),
 
-        url = url?.redact()
+        isRedacted = true
     )
 }

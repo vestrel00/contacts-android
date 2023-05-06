@@ -27,7 +27,17 @@ For all of the above scenarios, the behavior is as follows...
 - New rows in the Data table with same values as original, belonging to the new RawContact
   - Original rows are deleted
 
-Memberships to Groups from the original Account are "carried over" for Groups in the target Account
-that have a matching title (case-sensitive). Group memberships to Account X's
-default ("My Contacts" - autoAdd is true) Group and favorites ("Starred in Android") Group are also
-"carried over".
+**Group memberships** (which are Account-based) are "carried over" on a best-effort basis;
+
+- Groups with matching title (case-sensitive)
+- Default Group (autoAdd is true)
+- Favorites Group (if starred is true)
+
+**Default/primary** flags of Data rows are not retained. For example, if a phone number is set
+as the default (isPrimary: 1, isSuperPrimary: 1), after this move operation it will no longer
+be a default data (isPrimary: 0,	isSuperPrimary: 0). _Yes, like all other behaviors of this API,
+this is the same as Google Contacts._
+
+Contact **IDs** and **lookup keys** will change. This means that references to Contact IDs and
+lookup keys will become invalid. For example, shortcuts may break after performing this
+operation.

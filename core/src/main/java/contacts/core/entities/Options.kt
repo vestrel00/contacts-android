@@ -125,11 +125,11 @@ data class Options internal constructor(
     override fun mutableCopy() = MutableOptions(
         id = id,
 
-        isRedacted = isRedacted,
-
         starred = starred,
         customRingtone = customRingtone,
-        sendToVoicemail = sendToVoicemail
+        sendToVoicemail = sendToVoicemail,
+
+        isRedacted = isRedacted
     )
 
     // Nothing to redact.

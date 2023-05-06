@@ -310,6 +310,9 @@ fun NewRawContact.setPhoto(photoData: PhotoData) {
  * This function will make the changes to the Contacts Provider database immediately. You do not
  * need to use update APIs to commit the changes.
  *
+ * Note that the Contact photo columns may not be set immediately after setting the photo for the
+ * RawContact. It is probably done asynchronously by the Contacts Provider.
+ *
  * If you want to set the photo lazily, upon and update API call, use [MutableRawContact.setPhoto].
  *
  * ## Changes are not applied to the receiver
