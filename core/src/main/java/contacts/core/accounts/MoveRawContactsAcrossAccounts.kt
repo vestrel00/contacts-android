@@ -516,7 +516,6 @@ private fun Contacts.groupsFromTargetAccountMatchingGroupsFromRawContact(
         .find(cancel)
 }
 
-// TODO util functions + async + withContext functions
 private class MoveRawContactsAcrossAccountsResult private constructor(
     /**
      * Map of [Entry.rawContactId] to the corresponding newly created/inserted RawContact ID, which

@@ -10,7 +10,8 @@ TODO Multiple RawContacts linked to a single Contact
 
 Let's take a look at what happens when **Google Contacts** moves RawContacts to different Accounts.
 Other apps such as AOSP Contacts and Samsung Contacts may do things a bit differently. We will
-focus on modelling API behavior after Google Contacts behavior because... it's Google.
+focus on modelling API behavior after Google Contacts behavior because... it's Google. For testing,
+I used a Pixel 4 API 30 emulator and a Samsung Galaxy A71 API 33.
 
 | **Original Account** | **Target Account** |
 |----------------------|--------------------|

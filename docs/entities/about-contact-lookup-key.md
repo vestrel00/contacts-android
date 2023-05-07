@@ -100,8 +100,7 @@ sync adapters sync the changes. This means that the local changes are not immedi
 
 > ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
 
-Changing a RawContact's Account will result in a failed lookup using lookup keys prior to the 
-Account change.
+Moving a RawContact from one Account to another will result in a failed query using lookup keys.
 
 For example, using the default AOSP Contacts app or the Google Contacts app...
 

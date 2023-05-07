@@ -10,7 +10,7 @@ remote service as it is not associated with any account.
 
 ## Moving a local RawContact to an Account
 
-Local RawContacts can be associated to an Account to enable syncing.
+Local RawContacts (no Account) can be moved to an Account to enable syncing.
 
 For more info, read [Move RawContacts across Accounts](./../accounts/move-raw-contacts-across-accounts.md).
 
