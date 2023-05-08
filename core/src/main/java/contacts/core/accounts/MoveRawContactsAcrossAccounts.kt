@@ -33,9 +33,14 @@ import contacts.core.util.*
  * be a default data (isPrimary: 0,	isSuperPrimary: 0). _Yes, like all other behaviors of this API,
  * this is the same as Google Contacts._
  *
- * Contact **IDs** and **lookup keys** will change. This means that references to Contact IDs and
- * lookup keys will become invalid. For example, shortcuts may break after performing this
+ * Contact **IDs** and **lookup keys** may change. This means that references to Contact IDs and
+ * lookup keys may become invalid. For example, shortcuts may break after performing this
  * operation.
+ *
+ * **(Raw)Contact links (AggregationExceptions)** will be retained. For example, if there are two
+ * or more RawContacts that are linked to the same Contact, moving one or more of the RawContacts
+ * will still result in the RawContacts being linked to the same Contact (though the original
+ * Contact may have been deleted and replaced with a new copy).
  *
  * **Profile RawContacts are not supported!** Operations for these will fail.
  *
@@ -409,8 +414,12 @@ private class MoveRawContactsAcrossAccountsImpl(
                     break
                 }
 
-                // Fetch the origin RawContact.
-                val originalRawContact: RawContact? = contactsApi.rawContactFor(entry, cancel)
+                // Fetch the original RawContact.
+                val originalRawContact: RawContact? = contactsApi
+                    .rawContactsQuery()
+                    .where { RawContact.Id equalTo entry.rawContactId }
+                    .find(cancel)
+                    .firstOrNull()
 
                 if (originalRawContact == null) {
                     failureReasons[entry.rawContactId] = FailureReason.RAW_CONTACT_NOT_FOUND
@@ -465,6 +474,9 @@ private class MoveRawContactsAcrossAccountsImpl(
                     originalToNewRawContacts[originalRawContact.id] = rawContactCopyId
                 }
 
+                // Retain links (AggregationExceptions), if any.
+                contactsApi.link(rawContactCopyId, originalRawContact.contactId, cancel)
+
                 // Delete the original RawContact.
                 val originalDeleted = contentResolver.deleteRawContactsWhere(
                     RawContactsFields.Id equalTo originalRawContact.id
@@ -485,11 +497,80 @@ private class MoveRawContactsAcrossAccountsImpl(
     }
 }
 
-private fun Contacts.rawContactFor(entry: Entry, cancel: () -> Boolean): RawContact? =
-    rawContactsQuery()
-        .where { RawContact.Id equalTo entry.rawContactId }
+/**
+ * If the original RawContact's parent Contact had more than one child RawContact, in other words
+ * if the original RawContact had a sibling, then attempt to link the RawContact copy's parent
+ * Contact with the original parent Contact. Ignore the result, just attempt it. Google Contacts
+ * fails to keep AggregationExceptions in some cases where this function succeeds =)
+ *
+ * The easiest way to do this is to just link the RawContact copy with the original parent Contact's
+ * RawContacts before deleting the original RawContact. This will cover all cases, including the
+ * case where there the original RawContact has no sibling.
+ */
+private fun Contacts.link(
+    rawContactCopyId: Long,
+    originalRawContactParentId: Long,
+    cancel: () -> Boolean
+) {
+    query()
+        .include { Required.all }
+        .where {
+            /*
+             * We cannot use the originalRawContact.id and rawContactCopyId to get the Contacts
+             * for linking because the Contacts Provider may have automatically linked them to the
+             * same parent Contact (which is expected because the RawContacts are identical) when
+             * moving to the same Account. The original RawContact's Contact ID may have been set
+             * to the copy's Contact ID in the database. In such cases, the following WHERE clause
+             * will result in only one Contact being returned (the copy's new Contact) instead of
+             * two (the original and the copy), which will cause the link to fail.
+             * RawContact.Id `in` listOf(originalRawContact.id, rawContactCopyId)
+             *
+             * To fix this, we will use the originalRawContactParentId from memory instead of the
+             * one from the database (which may have been changed after he insert operation as
+             * discussed above).
+             *
+             * For example, say that there is a Contact with ID 10 and child RawContacts with IDs
+             * 21 and 22 that both belong to Account X...
+             *
+             * 1. We insert a copy of RawContact 22 to the device (null Account).
+             * 2. Contacts Provider creates Contact 11 with child RawContact 23.
+             * 3. Contacts Provider determines that RawContact 23 should be linked to (aggregated
+             *    with) RawContact 22.
+             * 4. Contacts Provider creates Contact 12 with child RawContact 21, 22, and 23 and
+             *    deletes Contacts 10 and 11.
+             *
+             * Before: { Contact 10 { RawContact 21, 22 } }
+             * After: { Contact 12 { RawContact 21, 22, 23 } }
+             *
+             * In this case, we will attempt to link the RawContacts of Contacts 12, which will do
+             * nothing because linking requires at least 2 Contacts.
+             *
+             * Another example is that there is a Contact with ID 10 and child RawContacts with IDs
+             * 21 and 22. RawContact 21 belongs to Account X but RawContact 22 belongs to no
+             * Account (null Account).
+             *
+             * 1. We insert a copy of RawContact 22 to Account X.
+             * 2. Contacts Provider creates Contact 11 with child RawContact 23.
+             * 3. Contacts Provider determines that RawContact 22 should be linked to (aggregated
+             *    with) RawContact 23 instead of RawContact 21.
+             * 4. Contacts Provider updates the AggregationExceptions table such that RawContact
+             *    21 no longer has a sibling.
+             *
+             * Before: { Contact 10 { RawContact 21, 22 } }
+             * After: { Contact 10 { RawContact 21 } }, { Contact 11 { RawContact 22, 23 } }
+             *
+             * In this case, we will attempt to link the RawContacts of Contacts 10 and 11.
+             *
+             * To reiterate, the following WHERE clause,
+             * RawContact.Id `in` listOf(originalRawContact.id, rawContactCopyId)
+             * will result in only Contact 11 to be returned as originalRawContact.id (22) and
+             * rawContactCopyId (23) will only match Contact 11.
+             */
+            (RawContact.Id equalTo rawContactCopyId) or (Contact.Id equalTo originalRawContactParentId)
+        }
         .find(cancel)
-        .firstOrNull()
+        .linkDirect(this)
+}
 
 private fun Contacts.groupsFromTargetAccountMatchingGroupsFromRawContact(
     rawContact: RawContact, targetAccount: Account?, cancel: () -> Boolean

@@ -39,6 +39,14 @@ as the default (isPrimary: 1, isSuperPrimary: 1), after this move operation it w
 be a default data (isPrimary: 0,	isSuperPrimary: 0). _Yes, like all other behaviors of this API,
 this is the same as Google Contacts._
 
-Contact **IDs** and **lookup keys** will change. This means that references to Contact IDs and
-lookup keys will become invalid. For example, shortcuts may break after performing this
+Contact **IDs** and **lookup keys** may change. This means that references to Contact IDs and
+lookup keys may become invalid. For example, shortcuts may break after performing this
 operation.
+
+**(Raw)Contact links** (AggregationExceptions) are also retained, in some cases. For example,
+if there are two RawContacts linked to the same Contact and one RawContact is moved to device 
+(no Account), a new RawContact is created, the original RawContact is deleted, and the two 
+RawContacts are still linked together. However, in the case where there are two RawContacts (one 
+having no Account) linked to the same Contact and the device RawContact is moved to the same Account
+as the sibling RawContact, the two RawContacts are no longer linked to the same Contact. This may
+or may not be intentional. Regardless, we should fix it =)
