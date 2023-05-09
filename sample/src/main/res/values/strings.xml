@@ -31,6 +31,8 @@
     <string name="contact_details_update_error">Unable to update contact</string>
     <string name="contact_details_delete_success">Contact deleted</string>
     <string name="contact_details_delete_error">Unable to delete contact</string>
+    <string name="contact_details_move_success">RawContact moved</string>
+    <string name="contact_details_move_error">Unable to move RawContact</string>
 
     <string name="contact_details_delete">Delete</string>
     <string name="contact_details_share">Share</string>

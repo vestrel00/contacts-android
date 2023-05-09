@@ -2,6 +2,8 @@
 
 TODO
 
+prior to 0.3.0 this API was known as X and it could only move local raw contacts to an Account
+
 ------------------------
 
 ## Developer notes (or for advanced users)

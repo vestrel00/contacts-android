@@ -30,8 +30,8 @@ class SettingsActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) {
-            preferences.defaultAccountForNewContacts = it.firstOrNull()
+        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) { accounts, _ ->
+            preferences.defaultAccountForNewContacts = accounts.firstOrNull()
             setResult(RESULT_OK)
         }
         ImportSimContactsActivity.onImportSimContactsResult(requestCode, resultCode) {

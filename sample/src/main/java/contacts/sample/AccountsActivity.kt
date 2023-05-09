@@ -78,11 +78,12 @@ class AccountsActivity : BaseActivity() {
     }
 
     override fun finish() {
-        setResult(RESULT_OK, Intent().apply {
-            putParcelableArrayListExtra(SELECTED_ACCOUNTS, ArrayList(selectedAccounts))
-            putParcelableArrayListExtra(SELECTED_GROUPS, ArrayList(
+        setResult(RESULT_OK, Intent().also {
+            it.putParcelableArrayListExtra(SELECTED_ACCOUNTS, ArrayList(selectedAccounts))
+            it.putParcelableArrayListExtra(SELECTED_GROUPS, ArrayList(
                 selectedAccountGroups.flatMap { it.value }
             ))
+            it.requestTag = intent.requestTag
         })
         super.finish()
     }
@@ -160,14 +161,19 @@ class AccountsActivity : BaseActivity() {
         // region SELECT ACCOUNTS
 
         fun selectAccounts(
-            activity: Activity, multipleChoice: Boolean, selectedAccounts: ArrayList<Account?>
+            activity: Activity,
+            multipleChoice: Boolean,
+            selectedAccounts: ArrayList<Account?>,
+            requestTag: String? = null
         ) {
-            val intent = Intent(activity, AccountsActivity::class.java).apply {
-                putExtra(
+            val intent = Intent(activity, AccountsActivity::class.java).also {
+                it.putExtra(
                     CHOICE_MODE,
                     if (multipleChoice) CHOICE_MODE_MULTIPLE else CHOICE_MODE_SINGLE
                 )
-                putParcelableArrayListExtra(SELECTED_ACCOUNTS, selectedAccounts)
+                it.putParcelableArrayListExtra(SELECTED_ACCOUNTS, selectedAccounts)
+
+                it.requestTag = requestTag
             }
 
             activity.startActivityForResult(intent, REQUEST_SELECT_ACCOUNTS)
@@ -175,13 +181,13 @@ class AccountsActivity : BaseActivity() {
 
         fun onSelectAccountsResult(
             requestCode: Int, resultCode: Int, data: Intent?,
-            processSelectedAccounts: (selectedAccounts: List<Account?>) -> Unit
+            processSelectedAccounts: (selectedAccounts: List<Account?>, requestTag: String?) -> Unit
         ) {
             if (requestCode != REQUEST_SELECT_ACCOUNTS || resultCode != RESULT_OK || data == null) {
                 return
             }
 
-            processSelectedAccounts(data.selectedAccounts())
+            processSelectedAccounts(data.selectedAccounts(), data.requestTag)
         }
 
         // endregion
@@ -218,10 +224,17 @@ class AccountsActivity : BaseActivity() {
         private fun Intent.selectedGroups(): List<Group> =
             getParcelableArrayListExtra(SELECTED_GROUPS) ?: emptyList()
 
+        private var Intent.requestTag: String?
+            get() = getStringExtra(REQUEST_TAG)
+            set(value) {
+                putExtra(REQUEST_TAG, value)
+            }
+
         private const val REQUEST_SELECT_ACCOUNTS = 101
         private const val REQUEST_SELECT_GROUPS = 102
         private const val CHOICE_MODE = "choiceMode"
         private const val SELECTED_ACCOUNTS = "selectedAccounts"
         private const val SELECTED_GROUPS = "selectedGroups"
+        private const val REQUEST_TAG = "requestTag"
     }
 }

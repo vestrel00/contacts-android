@@ -29,11 +29,6 @@ import contacts.sample.R
 import contacts.ui.view.OptionsView
 import contacts.ui.view.activity
 import contacts.ui.view.setThisAndDescendantsEnabled
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlin.coroutines.CoroutineContext
 
 /**
  * A (vertical) [LinearLayout] that displays a [ContactEntity] and handles the modifications to the
@@ -87,17 +82,10 @@ import kotlin.coroutines.CoroutineContext
  *
  * I usually am a proponent of passive views and don't add any logic to views. However, I will make
  * an exception for this basic view that I don't really encourage consumers to use.
- *
- * This is in the sample and not in the contacts-ui module because it requires concurrency. We
- * should not add coroutines and contacts-async as dependencies to contacts-ui just for this.
- * Consumers may copy and paste this into their projects or if the community really wants it, we may
- * move this to a separate module (contacts-ui-async).
  */
 class ContactView @JvmOverloads constructor(
-    context: Context,
-    attributeSet: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : LinearLayout(context, attributeSet, defStyleAttr), CoroutineScope {
+    context: Context, attributeSet: AttributeSet? = null, defStyleAttr: Int = 0
+) : LinearLayout(context, attributeSet, defStyleAttr) {
 
     /**
      * The Contact that is shown in this view. Setting this will automatically update the views. Any
@@ -129,9 +117,6 @@ class ContactView @JvmOverloads constructor(
      */
     private var newRawContactView: RawContactView? = null
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Main
-
     // options
     private val optionsView: OptionsView
 
@@ -149,6 +134,9 @@ class ContactView @JvmOverloads constructor(
     // obviously the most correct way is to use a RecyclerView... But I'm prioritizing simplicity
     // over performance and correctness for this SAMPLE app!
     private val rawContactsView: ViewGroup
+
+    private var onMoveExistingRawContactToAccount: ((Account?, ExistingRawContactEntity) -> Unit)? =
+        null
 
     init {
         orientation = VERTICAL
@@ -183,22 +171,22 @@ class ContactView @JvmOverloads constructor(
         rawContactsView.setThisAndDescendantsEnabled(enabled)
     }
 
+    fun setOnMoveExistingRawContactToAccountListener(
+        listener: (Account?, ExistingRawContactEntity) -> Unit
+    ) {
+        onMoveExistingRawContactToAccount = listener
+    }
+
     /**
      * Loads the contact with the given [lookupKey] using the given [contacts] API.
      *
      * Returns true if the load succeeded.
      */
     suspend fun loadContactWithLookupKey(
-        contacts: Contacts,
-        lookupKey: String,
-        hidePhoneticNameIfEmptyAndDisabled: Boolean
+        contacts: Contacts, lookupKey: String, hidePhoneticNameIfEmptyAndDisabled: Boolean
     ): Boolean {
-        val contact = contacts
-            .queryWithPermission()
-            .where { Contact.lookupKeyIn(lookupKey) }
-            .findWithContext()
-            .firstOrNull()
-            ?.mutableCopy()
+        val contact = contacts.queryWithPermission().where { Contact.lookupKeyIn(lookupKey) }
+            .findWithContext().firstOrNull()?.mutableCopy()
 
         setContact(contacts, contact, null, hidePhoneticNameIfEmptyAndDisabled)
 
@@ -209,15 +197,10 @@ class ContactView @JvmOverloads constructor(
      * Loads the Profile (device owner) contact.
      */
     suspend fun loadProfile(
-        contacts: Contacts,
-        hidePhoneticNameIfEmptyAndDisabled: Boolean
+        contacts: Contacts, hidePhoneticNameIfEmptyAndDisabled: Boolean
     ): Boolean {
-        val contact = contacts
-            .profile()
-            .queryWithPermission()
-            .findWithContext()
-            .contact
-            ?.mutableCopy()
+        val contact =
+            contacts.profile().queryWithPermission().findWithContext().contact?.mutableCopy()
 
         setContact(contacts, contact, null, hidePhoneticNameIfEmptyAndDisabled)
 
@@ -231,9 +214,7 @@ class ContactView @JvmOverloads constructor(
      * To insert the new (raw) contact into the Contacts database, call [createNewContact].
      */
     fun loadNewContact(
-        contacts: Contacts,
-        defaultAccount: Account?,
-        hidePhoneticNameIfEmptyAndDisabled: Boolean
+        contacts: Contacts, defaultAccount: Account?, hidePhoneticNameIfEmptyAndDisabled: Boolean
     ) {
         setContact(contacts, null, defaultAccount, hidePhoneticNameIfEmptyAndDisabled)
     }
@@ -251,17 +232,10 @@ class ContactView @JvmOverloads constructor(
         }
 
         val newContact = if (isProfile) {
-            contacts
-                .profile()
-                .insertWithPermission()
-                .rawContact(rawContact)
-                .commitWithContext()
+            contacts.profile().insertWithPermission().rawContact(rawContact).commitWithContext()
                 .contactWithContext(contacts)
         } else {
-            contacts
-                .insertWithPermission()
-                .rawContacts(rawContact)
-                .commitWithContext()
+            contacts.insertWithPermission().rawContacts(rawContact).commitWithContext()
                 .contactWithContext(contacts, rawContact)
         }
 
@@ -286,18 +260,10 @@ class ContactView @JvmOverloads constructor(
 
         // Perform the update. Ignore if photos update succeeded or not :D
         return if (contact.isProfile) {
-            contacts
-                .profile()
-                .updateWithPermission()
-                .contact(contact)
-                .commitWithContext()
-                .isSuccessful
+            contacts.profile().updateWithPermission().contact(contact)
+                .commitWithContext().isSuccessful
         } else {
-            contacts
-                .updateWithPermission()
-                .contacts(contact)
-                .commitWithContext()
-                .isSuccessful
+            contacts.updateWithPermission().contacts(contact).commitWithContext().isSuccessful
         }
     }
 
@@ -315,18 +281,9 @@ class ContactView @JvmOverloads constructor(
         }
 
         return if (contact.isProfile) {
-            contacts
-                .profile()
-                .deleteWithPermission()
-                .contact()
-                .commitWithContext()
-                .isSuccessful
+            contacts.profile().deleteWithPermission().contact().commitWithContext().isSuccessful
         } else {
-            contacts
-                .deleteWithPermission()
-                .contacts(contact)
-                .commitWithContext()
-                .isSuccessful
+            contacts.deleteWithPermission().contacts(contact).commitWithContext().isSuccessful
         }
     }
 
@@ -367,9 +324,7 @@ class ContactView @JvmOverloads constructor(
     }
 
     private fun setRawContactsView(
-        contacts: Contacts,
-        defaultAccount: Account?,
-        hidePhoneticNameIfEmptyAndDisabled: Boolean
+        contacts: Contacts, defaultAccount: Account?, hidePhoneticNameIfEmptyAndDisabled: Boolean
     ) {
         rawContactsView.removeAllViews()
 
@@ -379,15 +334,10 @@ class ContactView @JvmOverloads constructor(
 
             contact.rawContacts.forEach { rawContact ->
                 val rawContactView = addRawContactView(
-                    contacts,
-                    rawContact,
-                    defaultAccount,
-                    hidePhoneticNameIfEmptyAndDisabled
+                    contacts, rawContact, defaultAccount, hidePhoneticNameIfEmptyAndDisabled
                 )
 
-                if (contact is ExistingContactEntity
-                    && rawContact is ExistingRawContactEntity
-                ) {
+                if (contact is ExistingContactEntity && rawContact is ExistingRawContactEntity) {
                     // Make sure that this Contact view and the primary photo holder view is set to
                     // the same photo whenever the user picks one.
                     val photoHolderId = contact.primaryPhotoHolder?.id
@@ -398,10 +348,7 @@ class ContactView @JvmOverloads constructor(
             }
         } else { // Create new raw contact
             newRawContactView = addRawContactView(
-                contacts,
-                NewRawContact(),
-                defaultAccount,
-                hidePhoneticNameIfEmptyAndDisabled
+                contacts, NewRawContact(), defaultAccount, hidePhoneticNameIfEmptyAndDisabled
             ).also {
                 // Make sure that this Contact view and the primary photo holder view is set to the
                 // same photo whenever the user picks one.
@@ -418,17 +365,11 @@ class ContactView @JvmOverloads constructor(
     ): RawContactView {
         val rawContactView = RawContactView(context)
         rawContactView.setRawContact(
-            contacts,
-            rawContact,
-            defaultAccount,
-            hidePhoneticNameIfEmptyAndDisabled
-        )
+            contacts, rawContact, defaultAccount, hidePhoneticNameIfEmptyAndDisabled
+        ) { account, existingRawContact ->
+            onMoveExistingRawContactToAccount?.invoke(account, existingRawContact)
+        }
         rawContactsView.addView(rawContactView)
         return rawContactView
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        cancel()
     }
 }
