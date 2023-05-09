@@ -125,7 +125,9 @@ class ContactsActivity : BaseActivity() {
             showContacts()
         }
 
-        AccountsActivity.onSelectAccountsResult(requestCode, resultCode, data) { selectedAccounts ->
+        AccountsActivity.onSelectAccountsResult(
+            requestCode, resultCode, data
+        ) { selectedAccounts, _ ->
             this.selectedAccounts = selectedAccounts
             showContacts()
         }
