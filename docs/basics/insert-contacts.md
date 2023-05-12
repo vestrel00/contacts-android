@@ -211,7 +211,7 @@ val contacts = insertResult.contacts(contactsApi)
 To get a particular contact,
 
 ```kotlin
-val contact = insertResult.contacts(contactsApi, newRawContact1)
+val contact = insertResult.contact(contactsApi, newRawContact1)
 ```
 
 To instead get the RawContacts directly,

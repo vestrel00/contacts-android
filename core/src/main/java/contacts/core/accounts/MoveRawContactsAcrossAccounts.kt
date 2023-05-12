@@ -12,23 +12,23 @@ import contacts.core.entities.RawContact
 import contacts.core.util.*
 
 /**
- * Moves RawContacts from one Account to another.
+ * Moves RawContacts from one Account to another, including a null Account.
  *
  * This API functions identically to the Google Contacts app. Copies of RawContacts are inserted
- * into the database under a different account and the original RawContacts are deleted afterwards.
- * RawContact and Data values are carried over.
+ * into the Contacts Provider database under a different account and the original RawContacts are
+ * deleted afterwards. RawContact and Data values are also copied over.
  *
  * In other words, this is a copy-insert-delete operation. New rows are created in the RawContact,
  * Contact, and Data tables with the same values from the original. Then, the original rows are
  * deleted.
  *
- * **Group memberships** (which are Account-based) are "carried over" on a best-effort basis;
+ * **Group memberships** (which are Account-based) are "copied over" on a best-effort basis;
  *
  * - Groups with matching title (case-sensitive)
  * - Default Group (autoAdd is true)
  * - Favorites Group (if starred is true)
  *
- * **Default/primary** flags of Data rows are not retained. For example, if a phone number is set
+ * **Default/primary** flags of Data rows are not copied over. For example, if a phone number is set
  * as the default (isPrimary: 1, isSuperPrimary: 1), after this move operation it will no longer
  * be a default data (isPrimary: 0,	isSuperPrimary: 0). _Yes, like all other behaviors of this API,
  * this is the same as Google Contacts._
@@ -37,10 +37,12 @@ import contacts.core.util.*
  * lookup keys may become invalid. For example, shortcuts may break after performing this
  * operation.
  *
- * **(Raw)Contact links (AggregationExceptions)** will be retained. For example, if there are two
+ * **(Raw)Contact links (AggregationExceptions)** a copied over. For example, if there are two
  * or more RawContacts that are linked to the same Contact, moving one or more of the RawContacts
  * will still result in the RawContacts being linked to the same Contact (though the original
  * Contact may have been deleted and replaced with a new copy).
+ *
+ * **Custom data** are supported.
  *
  * **Profile RawContacts are not supported!** Operations for these will fail.
  *
@@ -243,10 +245,23 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
         val isSuccessful: Boolean
 
         /**
+         * True if the [originalRawContact] has been successfully moved to the target Account.
+         */
+        fun isSuccessful(originalRawContact: ExistingRawContactEntity): Boolean
+
+        /**
          * True if the RawContact with [originalRawContactId] has been successfully moved to the
          * target Account.
          */
         fun isSuccessful(originalRawContactId: Long): Boolean
+
+        /**
+         * Returns the ID of the newly created RawContact corresponding to the [originalRawContact].
+         * Use the ID to get the newly created RawContact via a query.
+         *
+         * Returns null if the operation failed.
+         */
+        fun rawContactId(originalRawContact: ExistingRawContactEntity): Long?
 
         /**
          * Returns the ID of the newly created RawContact corresponding to the RawContact with the
@@ -641,8 +656,14 @@ private class MoveRawContactsAcrossAccountsResult private constructor(
 
     override val rawContactIds: List<Long> = originalToNewRawContacts.values.toList()
 
+    override fun isSuccessful(originalRawContact: ExistingRawContactEntity): Boolean =
+        isSuccessful(originalRawContact.id)
+
     override fun isSuccessful(originalRawContactId: Long): Boolean =
         failureReason(originalRawContactId) == null
+
+    override fun rawContactId(originalRawContact: ExistingRawContactEntity): Long? =
+        rawContactId(originalRawContact.id)
 
     override fun rawContactId(originalRawContactId: Long): Long? =
         originalToNewRawContacts[originalRawContactId]
@@ -679,7 +700,11 @@ private class MoveRawContactsAcrossAccountsResultFailed private constructor(
 
     override val rawContactIds: List<Long> = emptyList()
 
+    override fun isSuccessful(originalRawContact: ExistingRawContactEntity): Boolean = isSuccessful
+
     override fun isSuccessful(originalRawContactId: Long): Boolean = isSuccessful
+
+    override fun rawContactId(originalRawContact: ExistingRawContactEntity): Long? = null
 
     override fun rawContactId(originalRawContactId: Long): Long? = null
 
