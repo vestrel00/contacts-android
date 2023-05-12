@@ -12,12 +12,12 @@ import contacts.permissions.requestWritePermission
  *
  * If permission is already granted, then immediately returns a new [ContactLink] instance.
  */
-suspend fun AggregationExceptions.linkContactsWithPermission(): ContactLink {
+suspend fun AggregationExceptions.linkWithPermission(): ContactLink {
     if (!contactsApi.permissions.canUpdateDelete()) {
         requestWritePermission()
     }
 
-    return linkContacts()
+    return link()
 }
 
 /**
@@ -26,10 +26,10 @@ suspend fun AggregationExceptions.linkContactsWithPermission(): ContactLink {
  *
  * If permission is already granted, then immediately returns a new [ContactUnlink] instance.
  */
-suspend fun AggregationExceptions.unlinkContactWithPermission(): ContactUnlink {
+suspend fun AggregationExceptions.unlinkWithPermission(): ContactUnlink {
     if (!contactsApi.permissions.canUpdateDelete()) {
         requestWritePermission()
     }
 
-    return unlinkContact()
+    return unlink()
 }

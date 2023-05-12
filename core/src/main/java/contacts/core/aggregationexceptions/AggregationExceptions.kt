@@ -10,12 +10,12 @@ interface AggregationExceptions {
     /**
      * Returns a new [ContactLink] instance.
      */
-    fun linkContacts(): ContactLink
+    fun link(): ContactLink
 
     /**
      * Returns a new [ContactUnlink] instance.
      */
-    fun unlinkContact(): ContactUnlink
+    fun unlink(): ContactUnlink
 
     /**
      * A reference to the [Contacts] instance that constructed this. This is mostly used internally
@@ -37,8 +37,8 @@ internal fun AggregationExceptions(contacts: Contacts): AggregationExceptions =
 private class AggregationExceptionsImpl(override val contactsApi: Contacts) :
     AggregationExceptions {
 
-    override fun linkContacts() = ContactLink(contactsApi)
+    override fun link() = ContactLink(contactsApi)
 
-    override fun unlinkContact() = ContactUnlink(contactsApi)
+    override fun unlink() = ContactUnlink(contactsApi)
 
 }

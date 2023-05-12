@@ -36,7 +36,7 @@ To link three Contacts and all of their constituent RawContacts into a single Co
 ```kotlin
 val linkResult = contactsApi
   .aggregationExceptions()
-  .linkContacts()
+  .link()
   .contacts(contact1, contact2, contact3)
   .commit()
 ```
@@ -141,15 +141,13 @@ To unlink a Contacts with more than one RawContact into a separate Contacts usin
 ```kotlin
 val unlinkResult = contactsApi
   .aggregationExceptions()
-  .unlinkContact()
+  .unlink()
   .contact(contact)
   .commit()
 ```
 
 > ℹ️ The `ContactUnlink` API was not available prior to
 > [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
-
----------
 
 The above unlinks (keep separate) all RawContacts belonging to the `contact` into separate
 Contacts.

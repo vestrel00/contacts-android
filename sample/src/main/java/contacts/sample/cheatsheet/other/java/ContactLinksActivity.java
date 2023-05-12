@@ -12,29 +12,29 @@ import contacts.core.util.ContactLinksKt;
 
 public class ContactLinksActivity extends Activity {
 
-    ContactLink.Result linkContacts(List<Contact> contacts) {
+    ContactLink.Result link(List<Contact> contacts) {
         return ContactsFactory
                 .create(this)
                 .aggregationExceptions()
-                .linkContacts()
+                .link()
                 .contacts(contacts)
                 .commit();
     }
 
-    ContactUnlink.Result unlinkContact(Contact contact) {
+    ContactUnlink.Result unlink(Contact contact) {
         return ContactsFactory
                 .create(this)
                 .aggregationExceptions()
-                .unlinkContact()
+                .unlink()
                 .contact(contact)
                 .commit();
     }
 
-    ContactLink.Result linkContactsDirect(List<Contact> contacts) {
+    ContactLink.Result linkDirect(List<Contact> contacts) {
         return ContactLinksKt.linkDirect(contacts, ContactsFactory.create(this));
     }
 
-    ContactUnlink.Result unlinkContactDirect(Contact contact) {
+    ContactUnlink.Result unlinkDirect(Contact contact) {
         return ContactLinksKt.unlinkDirect(contact, ContactsFactory.create(this));
     }
 }

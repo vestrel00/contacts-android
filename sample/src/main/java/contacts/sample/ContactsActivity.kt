@@ -20,7 +20,7 @@ import contacts.core.Fields
 import contacts.core.asc
 import contacts.core.entities.Contact
 import contacts.core.entities.Group
-import contacts.permissions.aggregationexceptions.linkContactsWithPermission
+import contacts.permissions.aggregationexceptions.linkWithPermission
 import contacts.permissions.broadQueryWithPermission
 import contacts.permissions.deleteWithPermission
 import contacts.sample.util.AbstractMultiChoiceModeListener
@@ -245,7 +245,7 @@ class ContactsActivity : BaseActivity() {
 
         val link = contacts
             .aggregationExceptions()
-            .linkContactsWithPermission()
+            .linkWithPermission()
             .contacts(contactsToLink)
             .commitWithContext()
 

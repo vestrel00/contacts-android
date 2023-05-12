@@ -15,7 +15,7 @@ import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.equalTo
 import contacts.permissions.accounts.moveWithPermission
-import contacts.permissions.aggregationexceptions.unlinkContactWithPermission
+import contacts.permissions.aggregationexceptions.unlinkWithPermission
 import contacts.permissions.queryWithPermission
 import contacts.sample.util.createPinnedShortcut
 import contacts.sample.view.ContactView
@@ -172,7 +172,7 @@ class ContactDetailsActivity : BaseActivity() {
                     launch {
                         val unlink = contacts
                             .aggregationExceptions()
-                            .unlinkContactWithPermission()
+                            .unlinkWithPermission()
                             .contact(contact)
                             .commitWithContext()
 

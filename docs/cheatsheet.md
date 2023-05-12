@@ -3538,22 +3538,22 @@ heading explore each API in full detail. You may also find these samples in the 
     
     class ContactLinksActivity : Activity() {
     
-        fun linkContacts(contacts: List<Contact>): ContactLink.Result = Contacts(this)
+        fun link(contacts: List<Contact>): ContactLink.Result = Contacts(this)
             .aggregationExceptions()
-            .linkContacts()
+            .link()
             .contacts(contacts)
             .commit()
     
-        fun unlinkContact(contact: Contact): ContactUnlink.Result = Contacts(this)
+        fun unlink(contact: Contact): ContactUnlink.Result = Contacts(this)
             .aggregationExceptions()
-            .unlinkContact()
+            .unlink()
             .contact(contact)
             .commit()
     
-        fun linkContactsDirect(contacts: List<Contact>): ContactLink.Result =
+        fun linkDirect(contacts: List<Contact>): ContactLink.Result =
             contacts.linkDirect(Contacts(this))
     
-        fun unlinkContactDirect(contact: Contact): ContactUnlink.Result =
+        fun unlinkDirect(contact: Contact): ContactUnlink.Result =
             contact.unlinkDirect(Contacts(this))
     }
     ```
@@ -3573,29 +3573,29 @@ heading explore each API in full detail. You may also find these samples in the 
     
     public class ContactLinksActivity extends Activity {
     
-        ContactLink.Result linkContacts(List<Contact> contacts) {
+        ContactLink.Result link(List<Contact> contacts) {
             return ContactsFactory
                     .create(this)
                     .aggregationExceptions()
-                    .linkContacts()
+                    .link()
                     .contacts(contacts)
                     .commit();
         }
     
-        ContactUnlink.Result unlinkContact(Contact contact) {
+        ContactUnlink.Result unlink(Contact contact) {
             return ContactsFactory
                     .create(this)
                     .aggregationExceptions()
-                    .unlinkContact()
+                    .unlink()
                     .contact(contact)
                     .commit();
         }
     
-        ContactLink.Result linkContactsDirect(List<Contact> contacts) {
+        ContactLink.Result linkDirect(List<Contact> contacts) {
             return ContactLinksKt.linkDirect(contacts, ContactsFactory.create(this));
         }
     
-        ContactUnlink.Result unlinkContactDirect(Contact contact) {
+        ContactUnlink.Result unlinkDirect(Contact contact) {
             return ContactLinksKt.unlinkDirect(contact, ContactsFactory.create(this));
         }
     }
