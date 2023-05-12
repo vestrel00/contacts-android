@@ -1195,8 +1195,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
-        Associate a local RawContact to an Account
+      <a href="../../accounts/move-raw-contacts-across-accounts/" class="md-nav__link">
+        Move RawContacts across Accounts
       </a>
     </li>
   
@@ -2035,27 +2035,25 @@ multiple Contacts.</p>
 <p>ℹ️ For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <h2 id="moving-rawcontacts-between-accounts-and-the-lookup-key">Moving RawContacts between accounts and the lookup key<a class="headerlink" href="#moving-rawcontacts-between-accounts-and-the-lookup-key" title="Permanent link">&para;</a></h2>
-<p>Associating a local (device-only) RawContact to an Account will change the Contact lookup key. In 
-general, set a RawContact's Account to something else will change the lookup key. In these cases,
-the changes to the lookup key will only be applied after the Contacts Provider and sync adapters
-sync the changes. This means that the local changes are not immediately applied.</p>
+<p>Moving a RawContact to a different Account will cause the Contact lookup key to change. 
+In these cases, the changes to the lookup key will only be applied after the Contacts Provider and 
+sync adapters sync the changes. This means that the local changes are not immediately applied.</p>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../sync-contact-data/">Sync contact data across devices</a>.</p>
 </blockquote>
-<p>Changing a RawContact's Account will result in a failed lookup using lookup keys prior to the 
-Account change.</p>
+<p>Moving a RawContact from one Account to another will result in a failed query using lookup keys.</p>
 <p>For example, using the default AOSP Contacts app or the Google Contacts app...</p>
 <ol>
 <li>View a contact's details.</li>
 <li>Create a shortcut to it in the home screen (launcher).</li>
 <li>This shortcut uses the Contact lookup key (not the ID) to form a lookup URI.</li>
-<li>Associate the local RawContact's Account.</li>
+<li>Move the RawContact to a different Account.</li>
 <li>Tap the shortcut in the home screen (launcher).</li>
 </ol>
 <p>Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
 It is expected behavior due to the way the Contacts Provider works.</p>
 <blockquote>
-<p>ℹ️ For more info, read <a href="../../accounts/associate-device-local-raw-contacts-to-an-account/">Associate local RawContacts to an Account</a>.</p>
+<p>ℹ️ For more info, read <a href="../../accounts/move-raw-contacts-across-accounts/">Move RawContacts across Accounts</a>.</p>
 </blockquote>
 <h2 id="linkingunlinking-contacts-and-the-lookup-key">Linking/unlinking contacts and the lookup key<a class="headerlink" href="#linkingunlinking-contacts-and-the-lookup-key" title="Permanent link">&para;</a></h2>
 <p>Linking and unlinking RawContacts will change the value of the lookup key. However, as discussed

@@ -525,8 +525,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#associate-a-local-rawcontact-to-an-account" class="md-nav__link">
-    Associate a local RawContact to an Account
+  <a href="#move-rawcontacts-across-accounts" class="md-nav__link">
+    Move RawContacts across Accounts
   </a>
   
 </li>
@@ -1608,8 +1608,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
-        Associate a local RawContact to an Account
+      <a href="../accounts/move-raw-contacts-across-accounts/" class="md-nav__link">
+        Move RawContacts across Accounts
       </a>
     </li>
   
@@ -2548,8 +2548,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#associate-a-local-rawcontact-to-an-account" class="md-nav__link">
-    Associate a local RawContact to an Account
+  <a href="#move-rawcontacts-across-accounts" class="md-nav__link">
+    Move RawContacts across Accounts
   </a>
   
 </li>
@@ -5479,27 +5479,26 @@ markups from MkDocs. Also, most of the code is the same so it would just add clu
 </div>
 </div>
 </div>
-<h3 id="associate-a-local-rawcontact-to-an-account"><a href="../accounts/associate-device-local-raw-contacts-to-an-account/">Associate a local RawContact to an Account</a><a class="headerlink" href="#associate-a-local-rawcontact-to-an-account" title="Permanent link">&para;</a></h3>
+<h3 id="move-rawcontacts-across-accounts"><a href="../accounts/move-raw-contacts-across-accounts/">Move RawContacts across Accounts</a><a class="headerlink" href="#move-rawcontacts-across-accounts" title="Permanent link">&para;</a></h3>
 <div class="tabbed-set tabbed-alternate" data-tabs="25:2"><input checked="checked" id="__tabbed_25_1" name="__tabbed_25" type="radio" /><input id="__tabbed_25_2" name="__tabbed_25" type="radio" /><div class="tabbed-labels"><label for="__tabbed_25_1">Kotlin</label><label for="__tabbed_25_2">Java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="k">import</span><span class="w"> </span><span class="nn">android.accounts.Account</span><span class="w"></span>
 <a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a><span class="k">import</span><span class="w"> </span><span class="nn">android.app.Activity</span><span class="w"></span>
 <a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a><span class="k">import</span><span class="w"> </span><span class="nn">contacts.core.Contacts</span><span class="w"></span>
-<a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a><span class="k">import</span><span class="w"> </span><span class="nn">contacts.core.accounts.AccountsLocalRawContactsUpdate</span><span class="w"></span>
+<a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a><span class="k">import</span><span class="w"> </span><span class="nn">contacts.core.accounts.MoveRawContactsToAccounts</span><span class="w"></span>
 <a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a><span class="k">import</span><span class="w"> </span><span class="nn">contacts.core.entities.RawContact</span><span class="w"></span>
 <a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a>
-<a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="kd">class</span><span class="w"> </span><span class="nc">UpdateLocalRawContactsAccountsActivity</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Activity</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="kd">class</span><span class="w"> </span><span class="nc">MoveRawContactsAcrossAccountsActivity</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Activity</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-48-8" name="__codelineno-48-8" href="#__codelineno-48-8"></a>
-<a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a><span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">associateLocalRawContactToAccount</span><span class="p">(</span><span class="w"></span>
-<a id="__codelineno-48-10" name="__codelineno-48-10" href="#__codelineno-48-10"></a><span class="w">        </span><span class="n">localRawContact</span><span class="p">:</span><span class="w"> </span><span class="n">RawContact</span><span class="p">,</span><span class="w"> </span><span class="n">account</span><span class="p">:</span><span class="w"> </span><span class="n">Account</span><span class="w"></span>
-<a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a><span class="w">    </span><span class="p">):</span><span class="w"> </span><span class="n">AccountsLocalRawContactsUpdate</span><span class="p">.</span><span class="na">Result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a><span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">moveRawContactToAccount</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-48-10" name="__codelineno-48-10" href="#__codelineno-48-10"></a><span class="w">        </span><span class="n">rawContact</span><span class="p">:</span><span class="w"> </span><span class="n">RawContact</span><span class="p">,</span><span class="w"> </span><span class="n">account</span><span class="p">:</span><span class="w"> </span><span class="n">Account</span><span class="w"></span>
+<a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a><span class="w">    </span><span class="p">):</span><span class="w"> </span><span class="n">MoveRawContactsToAccounts</span><span class="p">.</span><span class="na">Result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-48-12" name="__codelineno-48-12" href="#__codelineno-48-12"></a><span class="w">        </span><span class="p">.</span><span class="na">accounts</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-48-13" name="__codelineno-48-13" href="#__codelineno-48-13"></a><span class="w">        </span><span class="p">.</span><span class="na">updateLocalRawContactsAccount</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a><span class="w">        </span><span class="p">.</span><span class="na">addToAccount</span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a><span class="w">        </span><span class="p">.</span><span class="na">localRawContacts</span><span class="p">(</span><span class="n">localRawContact</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-48-16" name="__codelineno-48-16" href="#__codelineno-48-16"></a><span class="w">        </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-48-17" name="__codelineno-48-17" href="#__codelineno-48-17"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-48-13" name="__codelineno-48-13" href="#__codelineno-48-13"></a><span class="w">        </span><span class="p">.</span><span class="na">move</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a><span class="w">        </span><span class="p">.</span><span class="na">rawContactsTo</span><span class="p">(</span><span class="n">account</span><span class="p">,</span><span class="w"> </span><span class="n">rawContact</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a><span class="w">        </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-48-16" name="__codelineno-48-16" href="#__codelineno-48-16"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -5507,22 +5506,21 @@ markups from MkDocs. Also, most of the code is the same so it would just add clu
 <a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">android.app.Activity</span><span class="p">;</span><span class="w"></span>
 <a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>
 <a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">contacts.core.ContactsFactory</span><span class="p">;</span><span class="w"></span>
-<a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">contacts.core.accounts.AccountsLocalRawContactsUpdate</span><span class="p">;</span><span class="w"></span>
+<a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">contacts.core.accounts.MoveRawContactsToAccounts</span><span class="p">;</span><span class="w"></span>
 <a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">contacts.core.entities.RawContact</span><span class="p">;</span><span class="w"></span>
 <a id="__codelineno-49-7" name="__codelineno-49-7" href="#__codelineno-49-7"></a>
-<a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UpdateLocalRawContactsAccountsActivity</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Activity</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MoveRawContactsAcrossAccountsActivity</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Activity</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-49-9" name="__codelineno-49-9" href="#__codelineno-49-9"></a>
-<a id="__codelineno-49-10" name="__codelineno-49-10" href="#__codelineno-49-10"></a><span class="w">    </span><span class="n">AccountsLocalRawContactsUpdate</span><span class="p">.</span><span class="na">Result</span><span class="w"> </span><span class="nf">associateLocalRawContactToAccount</span><span class="p">(</span><span class="w"></span>
-<a id="__codelineno-49-11" name="__codelineno-49-11" href="#__codelineno-49-11"></a><span class="w">            </span><span class="n">RawContact</span><span class="w"> </span><span class="n">localRawContact</span><span class="p">,</span><span class="w"> </span><span class="n">Account</span><span class="w"> </span><span class="n">account</span><span class="w"></span>
+<a id="__codelineno-49-10" name="__codelineno-49-10" href="#__codelineno-49-10"></a><span class="w">    </span><span class="n">MoveRawContactsToAccounts</span><span class="p">.</span><span class="na">Result</span><span class="w"> </span><span class="nf">moveRawContactToAccount</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-49-11" name="__codelineno-49-11" href="#__codelineno-49-11"></a><span class="w">            </span><span class="n">RawContact</span><span class="w"> </span><span class="n">rawContact</span><span class="p">,</span><span class="w"> </span><span class="n">Account</span><span class="w"> </span><span class="n">account</span><span class="w"></span>
 <a id="__codelineno-49-12" name="__codelineno-49-12" href="#__codelineno-49-12"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-49-13" name="__codelineno-49-13" href="#__codelineno-49-13"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ContactsFactory</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
 <a id="__codelineno-49-14" name="__codelineno-49-14" href="#__codelineno-49-14"></a><span class="w">                </span><span class="p">.</span><span class="na">accounts</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-49-15" name="__codelineno-49-15" href="#__codelineno-49-15"></a><span class="w">                </span><span class="p">.</span><span class="na">updateLocalRawContactsAccount</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-49-16" name="__codelineno-49-16" href="#__codelineno-49-16"></a><span class="w">                </span><span class="p">.</span><span class="na">addToAccount</span><span class="p">(</span><span class="n">account</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-49-17" name="__codelineno-49-17" href="#__codelineno-49-17"></a><span class="w">                </span><span class="p">.</span><span class="na">localRawContacts</span><span class="p">(</span><span class="n">localRawContact</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-49-18" name="__codelineno-49-18" href="#__codelineno-49-18"></a><span class="w">                </span><span class="p">.</span><span class="na">commit</span><span class="p">();</span><span class="w"></span>
-<a id="__codelineno-49-19" name="__codelineno-49-19" href="#__codelineno-49-19"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-49-20" name="__codelineno-49-20" href="#__codelineno-49-20"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-49-15" name="__codelineno-49-15" href="#__codelineno-49-15"></a><span class="w">                </span><span class="p">.</span><span class="na">move</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-49-16" name="__codelineno-49-16" href="#__codelineno-49-16"></a><span class="w">                </span><span class="p">.</span><span class="na">rawContactsTo</span><span class="p">(</span><span class="n">account</span><span class="p">,</span><span class="w"> </span><span class="n">rawContact</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-49-17" name="__codelineno-49-17" href="#__codelineno-49-17"></a><span class="w">                </span><span class="p">.</span><span class="na">commit</span><span class="p">();</span><span class="w"></span>
+<a id="__codelineno-49-18" name="__codelineno-49-18" href="#__codelineno-49-18"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-49-19" name="__codelineno-49-19" href="#__codelineno-49-19"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 </div>
 </div>

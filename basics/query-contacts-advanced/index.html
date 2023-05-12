@@ -646,6 +646,19 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groups-matching" class="md-nav__link">
+    Groups Matching
+  </a>
+  
+    <nav class="md-nav" aria-label="Groups Matching">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#limitations" class="md-nav__link">
     Limitations
@@ -1277,8 +1290,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
-        Associate a local RawContact to an Account
+      <a href="../../accounts/move-raw-contacts-across-accounts/" class="md-nav__link">
+        Move RawContacts across Accounts
       </a>
     </li>
   
@@ -2087,6 +2100,19 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groups-matching" class="md-nav__link">
+    Groups Matching
+  </a>
+  
+    <nav class="md-nav" aria-label="Groups Matching">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#limitations" class="md-nav__link">
     Limitations
@@ -2352,6 +2378,9 @@ structured in relation to Contacts. For example,</p>
 <p>The above will require two additional internal database queries in order to simplify the query such 
 that it can actually provide matching Contacts.</p>
 <p>Using the <code>or</code> operator does not have this performance hit.</p>
+<h2 id="groups-matching">Groups Matching<a class="headerlink" href="#groups-matching" title="Permanent link">&para;</a></h2>
+<p>Unlike <code>BroadQuery.groups</code>, this does not have a <code>groups</code> function. You may still match groups
+(in a much flexible way) by using <code>Fields.GroupMembership</code> with <code>where</code>.</p>
 <h3 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h3>
 <p>This library only provides basic WHERE functions. It does not cover the entirety of SQLite, though 
 the community may add more over time &lt;3</p>

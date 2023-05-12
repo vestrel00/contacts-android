@@ -1117,8 +1117,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../accounts/associate-device-local-raw-contacts-to-an-account/" class="md-nav__link">
-        Associate a local RawContact to an Account
+      <a href="../accounts/move-raw-contacts-across-accounts/" class="md-nav__link">
+        Move RawContacts across Accounts
       </a>
     </li>
   
@@ -2789,7 +2789,7 @@ allow users to;</p>
 <p>When modifying the SyncColumns directly, the first works as intended. The second works with some
 unwanted side-effects. The third does not work at all and produces unwanted side-effects.</p>
 <p>These are the behaviors that I have found;</p>
-<ul>
+<ol>
 <li>Associating local RawContact A to Account X.<ul>
 <li>Works as intended.</li>
 <li>RawContact A is now associated with Account X and is synced across devices.</li>
@@ -2820,7 +2820,7 @@ unwanted side-effects. The third does not work at all and produces unwanted side
   Syncing Account Y in system settings succeeds.</li>
 </ul>
 </li>
-</ul>
+</ol>
 <p>Given that associating originally local RawContacts to an Account is the only thing that actually
 works, it is the only function that will be exposed to consumers.</p>
 <p>If consumers want to transfer RawContacts from one Account to another, they can create a copy of a
@@ -2829,17 +2829,19 @@ can be used to transform an Account-associated RawContact to a local RawContact.
 implement some functions in this library that does these things? We won't for now because the AOSP
 Contacts app does not support these functions anyways. It can always be implemented later if the
 community really wants. </p>
-<p><em>UPDATE: My hunch for creating copies and deleting account-associated RawContacts turns out to be
-correct. This is what apps like the Google Contacts app does. This feature will be implemented in
-https://github.com/vestrel00/contacts-android/issues/168</em></p>
 <p>Here are some other things to note.</p>
-<ol>
-<li>The Contacts Provider automatically creates a group membership to the default group of the target
-   Account when the account changes. This occurs even if the group membership already exists
-   resulting in duplicates.</li>
-<li>The Contacts Provider DOES NOT delete existing group memberships when the account changes.
-   This has to be done manually to prevent duplicates.</li>
-</ol>
+<ul>
+<li>The Contacts Provider automatically creates a group membership to the default group (if exist)
+   of the target Account when the account changes. </li>
+<li>The Contacts Provider DOES NOT delete existing group memberships when the account changes.</li>
+</ul>
+<p><em>UPDATE: My hunch for insert copies then deleting non-null account-associated RawContacts turns 
+to perform an "account move operation" turned out to be correct (case 2 and 3). This is what apps 
+like the Google Contacts app does. Actually, Google Contacts app takes it even further by performing 
+insert-delete operation regardless of whether the RawContact is associated to an account or not
+(cases 1, 2, 3). It does not modify the <code>SyncColumns.ACCOUNT_NAME</code> and <code>SyncColumns.ACCOUNT_TYPE</code>
+even though case 1 seems to be supported (for now). We should follow what Google Contacts is doing.
+https://github.com/vestrel00/contacts-android/issues/168</em></p>
 <h3 id="rawcontacts-deletion">RawContacts; Deletion<a class="headerlink" href="#rawcontacts-deletion" title="Permanent link">&para;</a></h3>
 <p>Deleting a contact's Contacts row, RawContacts row(s), and associated Data row(s) are best explained
 in the documentation in <code>ContactsContract.RawContacts</code>;</p>
