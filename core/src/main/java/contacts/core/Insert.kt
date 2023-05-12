@@ -407,7 +407,7 @@ internal fun Contacts.insertRawContact(
     // This ensures that a valid account is used. Otherwise, null is used. For Samsung devices, the
     // "account" will later be set to a local non-null account that is not returned by the system
     // AccountManager.
-    val account = rawContact.account.nullIfNotInSystem(accounts())
+    val account = rawContact.account.nullIfNotInSystem(applicationContext)
 
     val operations = arrayListOf<ContentProviderOperation>()
 

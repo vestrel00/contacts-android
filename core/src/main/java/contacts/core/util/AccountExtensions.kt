@@ -1,9 +1,10 @@
 package contacts.core.util
 
 import android.accounts.Account
+import android.accounts.AccountManager
+import android.annotation.SuppressLint
+import android.content.Context
 import contacts.core.*
-import contacts.core.accounts.Accounts
-import contacts.core.entities.cursor.SAMSUNG_PHONE_ACCOUNT
 
 /**
  * Returns true if [this] is in the list of all accounts in the system.
@@ -19,7 +20,7 @@ import contacts.core.entities.cursor.SAMSUNG_PHONE_ACCOUNT
  * with this name and type because it is not an actual account that is registered/returned by the
  * system AccountManager.
  */
-internal fun Account?.isInSystem(accounts: Accounts): Boolean = nullIfNotInSystem(accounts) != null
+internal fun Account?.isInSystem(context: Context): Boolean = nullIfNotInSystem(context) != null
 
 /**
  * Returns true if [this] is NOT in the list of all accounts in the system.
@@ -35,7 +36,7 @@ internal fun Account?.isInSystem(accounts: Accounts): Boolean = nullIfNotInSyste
  * with this name and type because it is not an actual account that is registered/returned by the
  * system AccountManager.
  */
-internal fun Account?.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(accounts)
+internal fun Account?.isNotInSystem(context: Context): Boolean = !isInSystem(context)
 
 /**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
@@ -52,9 +53,17 @@ internal fun Account?.isNotInSystem(accounts: Accounts): Boolean = !isInSystem(a
  * with this name and type because it is not an actual account that is registered/returned by the
  * system AccountManager.
  */
-internal fun Account?.nullIfNotInSystem(accounts: Accounts): Account? = this?.let {
-    nullIfNotIn(accounts.query().find())
+@SuppressLint("MissingPermission")
+internal fun Account?.nullIfNotInSystem(context: Context): Account? = this?.let {
+    nullIfNotIn(AccountManager.get(context.applicationContext).accounts.toList())
 }
+
+/**
+ * Returns null if this is a Samsung phone Account, which is not returned by the AccountManager.
+ */
+internal fun Account.nullIfSamsungPhoneAccount(): Account? = if (
+    name == SAMSUNG_PHONE_ACCOUNT && type == SAMSUNG_PHONE_ACCOUNT
+) { null } else { this }
 
 /**
  * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
@@ -134,8 +143,6 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
 
 // region Redactable
 
-// These Redactable Account extensions might prove useful for some consumers. Thus, they are public.
-
 /**
  * Returns a copy of this account where the [Account.name] and [Account.type] are redacted.
  */
@@ -176,37 +183,9 @@ fun Sequence<Account>.redactedCopies(): Sequence<Account> = map { it.redactedCop
 fun Sequence<Account>.redactedCopiesOrThis(redact: Boolean) =
     if (redact) redactedCopies() else this
 
-/* This might come in handy in the future. It is unused for now so it is commented out.
-/**
- * Returns a [RedactableAccount] that can be used for redacting this account and keeping track of
- * its [RedactableAccount.isRedacted] state.
- *
- * This is particularly useful for loggers that can only take in [Redactable] instances.
- */
-fun Account.asRedactable() = RedactableAccount(this, isRedacted = false)
-
-/**
- * Holds/wraps an [Account] and keeps track of its [isRedacted] state.
- *
- * This is particularly useful for loggers that can only take in [Redactable] instances.
- *
- * ## Developer notes
- *
- * It might be possible to extend [Account]. However, I am not sure what kind of issues we can run
- * into by extending this platform type. Therefore, we are using composition instead =)
- */
-class RedactableAccount(
-    val account: Account,
-    override val isRedacted: Boolean = false
-) : Redactable {
-
-    override fun toString(): String = account.toString()
-
-    override fun redactedCopy() = RedactableAccount(
-        account.redactedCopy(),
-        isRedacted = true
-    )
-}
- */
-
 // endregion
+
+// Samsung devices use "vnd.sec.contact.phone" for local account name and type instead of null.
+// This is NOT an actual Account and is not returned by the Android AccountManager.
+// See https://github.com/vestrel00/contacts-android/issues/257
+private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"

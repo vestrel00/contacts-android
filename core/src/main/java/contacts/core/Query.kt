@@ -68,11 +68,6 @@ import contacts.core.util.*
  *      .limit(10)
  *      .find();
  * ```
- *
- * ## Groups Matching
- *
- * Unlike [BroadQuery.groups], this does not have a groups function. You may still match groups
- * (in a much flexible way) by using [Fields.GroupMembership] with [where].
  */
 interface Query : CrudApi {
 
@@ -236,6 +231,11 @@ interface Query : CrudApi {
      * query such that it can actually provide matching Contacts.
      *
      * Using the `or` operator does not have this performance hit.
+     *
+     * ## Groups Matching
+     *
+     * Unlike [BroadQuery.groups], this does not have a groups function. You may still match groups
+     * (in a much flexible way) by using [Fields.GroupMembership] with [where].
      *
      * ## Blank Contacts
      *

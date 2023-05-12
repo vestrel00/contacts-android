@@ -1,15 +1,14 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.Insert
+import contacts.core.accounts.MoveRawContactsAcrossAccounts
 import contacts.core.entities.Contact
-import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContact
 import contacts.core.equalTo
 import contacts.core.`in`
 
 /**
- * Returns the newly created [RawContact] or null if the insert operation failed.
+ * Returns the newly created [RawContact] or null if the move insert operation failed.
  *
  * Supports RawContacts with native/custom data.
  *
@@ -30,19 +29,20 @@ import contacts.core.`in`
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Insert.Result.rawContact(
+fun MoveRawContactsAcrossAccounts.Result.rawContact(
     contacts: Contacts,
-    rawContact: NewRawContact,
+    originalRawContactId: Long,
     cancel: () -> Boolean = { false }
-): RawContact? = rawContactId(rawContact)?.let { rawContactId ->
-    contacts.rawContactsQuery()
+): RawContact? = rawContactId(originalRawContactId)?.let { rawContactId ->
+    contacts
+        .rawContactsQuery()
         .where { RawContact.Id equalTo rawContactId }
         .find(cancel)
         .find { it.id == rawContactId }
 }
 
 /**
- * Returns all newly created [RawContact]s (for those insert operations that succeeded).
+ * Returns all newly created [RawContact]s (for those move insert operations that succeeded).
  *
  * Supports RawContacts with native/custom data.
  *
@@ -63,7 +63,7 @@ fun Insert.Result.rawContact(
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Insert.Result.rawContacts(
+fun MoveRawContactsAcrossAccounts.Result.rawContacts(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): List<RawContact> = contacts
@@ -72,8 +72,8 @@ fun Insert.Result.rawContacts(
     .find(cancel)
 
 /**
- * Returns the newly created [Contact] containing the [RawContact] or null if the insert operation
- * failed.
+ * Returns the newly created [Contact] containing the [RawContact] or null if the move insert
+ * operation failed.
  *
  * Supports Contacts with native/custom data.
  *
@@ -94,11 +94,11 @@ fun Insert.Result.rawContacts(
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Insert.Result.contact(
+fun MoveRawContactsAcrossAccounts.Result.contact(
     contacts: Contacts,
-    rawContact: NewRawContact,
+    originalRawContactId: Long,
     cancel: () -> Boolean = { false }
-): Contact? = rawContactId(rawContact)?.let { rawContactId ->
+): Contact? = rawContactId(originalRawContactId)?.let { rawContactId ->
     contacts.query()
         .where { RawContact.Id equalTo rawContactId }
         .find(cancel)
@@ -106,8 +106,8 @@ fun Insert.Result.contact(
 }
 
 /**
- * Returns all newly created [Contact]s containing the [RawContact]s (for those insert operations
- * that succeeded).
+ * Returns all newly created [Contact]s containing the [RawContact]s (for those move insert
+ * operations that succeeded).
  *
  * Supports Contacts with native/custom data.
  *
@@ -130,7 +130,7 @@ fun Insert.Result.contact(
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun Insert.Result.contacts(
+fun MoveRawContactsAcrossAccounts.Result.contacts(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): List<Contact> = contacts.query()

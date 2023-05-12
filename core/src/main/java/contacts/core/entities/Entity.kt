@@ -91,7 +91,7 @@ sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEn
     /**
      * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
      */
-    fun mutableCopy(newCopy: T.() -> Unit): T = mutableCopy().apply(newCopy)
+    fun mutableCopy(block: T.() -> Unit): T = mutableCopy().apply(block)
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): ImmutableEntityWithMutableType<T>
@@ -116,7 +116,7 @@ sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : Imm
     /**
      * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
      */
-    fun mutableCopy(newCopy: T.() -> Unit): T? = mutableCopy()?.apply(newCopy)
+    fun mutableCopy(block: T.() -> Unit): T? = mutableCopy()?.apply(block)
 
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): ImmutableEntityWithNullableMutableType<T>

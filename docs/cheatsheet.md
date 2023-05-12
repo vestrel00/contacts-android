@@ -2735,7 +2735,7 @@ heading explore each API in full detail. You may also find these samples in the 
     }
     ```
 
-### [Associate a local RawContact to an Account](./accounts/associate-device-local-raw-contacts-to-an-account.md)
+### [Move RawContacts across Accounts](./accounts/move-raw-contacts-across-accounts.md)
 
 === "Kotlin"
 
@@ -2743,18 +2743,17 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.accounts.Account
     import android.app.Activity
     import contacts.core.Contacts
-    import contacts.core.accounts.AccountsLocalRawContactsUpdate
+    import contacts.core.accounts.MoveRawContactsToAccounts
     import contacts.core.entities.RawContact
     
-    class UpdateLocalRawContactsAccountsActivity : Activity() {
+    class MoveRawContactsAcrossAccountsActivity : Activity() {
     
-        fun associateLocalRawContactToAccount(
-            localRawContact: RawContact, account: Account
-        ): AccountsLocalRawContactsUpdate.Result = Contacts(this)
+        fun moveRawContactToAccount(
+            rawContact: RawContact, account: Account
+        ): MoveRawContactsToAccounts.Result = Contacts(this)
             .accounts()
-            .updateLocalRawContactsAccount()
-            .addToAccount(account)
-            .localRawContacts(localRawContact)
+            .move()
+            .rawContactsTo(account, rawContact)
             .commit()
     }
     ```
@@ -2766,19 +2765,18 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.app.Activity;
     
     import contacts.core.ContactsFactory;
-    import contacts.core.accounts.AccountsLocalRawContactsUpdate;
+    import contacts.core.accounts.MoveRawContactsToAccounts;
     import contacts.core.entities.RawContact;
     
-    public class UpdateLocalRawContactsAccountsActivity extends Activity {
+    public class MoveRawContactsAcrossAccountsActivity extends Activity {
     
-        AccountsLocalRawContactsUpdate.Result associateLocalRawContactToAccount(
-                RawContact localRawContact, Account account
+        MoveRawContactsToAccounts.Result moveRawContactToAccount(
+                RawContact rawContact, Account account
         ) {
             return ContactsFactory.create(this)
                     .accounts()
-                    .updateLocalRawContactsAccount()
-                    .addToAccount(account)
-                    .localRawContacts(localRawContact)
+                    .move()
+                    .rawContactsTo(account, rawContact)
                     .commit();
         }
     }

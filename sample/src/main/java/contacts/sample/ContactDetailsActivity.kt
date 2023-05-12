@@ -1,14 +1,22 @@
 package contacts.sample
 
+import android.accounts.Account
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import contacts.async.accounts.commitWithContext
 import contacts.async.aggregationexceptions.commitWithContext
+import contacts.async.findWithContext
+import contacts.core.Fields
 import contacts.core.entities.ExistingContactEntity
+import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.equalTo
+import contacts.permissions.accounts.moveWithPermission
 import contacts.permissions.aggregationexceptions.unlinkContactWithPermission
+import contacts.permissions.queryWithPermission
 import contacts.sample.util.createPinnedShortcut
 import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
@@ -82,7 +90,9 @@ class ContactDetailsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_details)
-        contactView = findViewById(R.id.contactView)
+        contactView = findViewById<ContactView?>(R.id.contactView).also {
+            it.setOnMoveExistingRawContactToAccountListener(::onMoveExistingRawContactToAccount)
+        }
 
         if (savedInstanceState != null) {
             contactLookupKey = savedInstanceState.getString(CONTACT_LOOKUP_KEY)
@@ -148,7 +158,7 @@ class ContactDetailsActivity : BaseActivity() {
                 Mode.VIEW, Mode.EDIT -> deleteContact()
                 Mode.CREATE -> finish()
             }
-            R.id.refresh -> mode = mode
+            R.id.refresh -> refresh()
             R.id.share -> contactView.shareContact()
             R.id.create_shortcut -> {
                 val contact = contactView.contact
@@ -295,6 +305,38 @@ class ContactDetailsActivity : BaseActivity() {
         } else {
             dismissProgressDialog()
         }
+    }
+
+    private fun onMoveExistingRawContactToAccount(
+        account: Account?,
+        existingRawContact: ExistingRawContactEntity
+    ) = launch {
+        val moveResult = contacts
+            .accounts()
+            .moveWithPermission()
+            .rawContactsTo(account, existingRawContact)
+            .commitWithContext()
+
+        val movedRawContactId = moveResult.rawContactIds.firstOrNull()
+        if (movedRawContactId != null) {
+            showToast(R.string.contact_details_move_success)
+
+            contactLookupKey = contacts
+                .queryWithPermission()
+                .include(Fields.Contact.LookupKey)
+                .where { RawContact.Id equalTo movedRawContactId }
+                .findWithContext()
+                .firstOrNull()
+                ?.lookupKey
+        } else {
+            showToast(R.string.contact_details_move_error)
+        }
+
+        refresh()
+    }
+
+    private fun refresh() {
+        mode = mode
     }
 
     companion object {
