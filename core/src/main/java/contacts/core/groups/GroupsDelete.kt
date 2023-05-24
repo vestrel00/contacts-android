@@ -8,7 +8,6 @@ import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.Table
 import contacts.core.util.applyBatch
 import contacts.core.util.deleteSuccess
-import contacts.core.util.unsafeLazy
 
 /**
  * Deletes one or more groups from the groups table.
@@ -354,7 +353,7 @@ private class GroupsDeleteResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         if (groupIdsResultMap.isEmpty() && whereResultMap.isEmpty()
         ) {
             // Deleting nothing is NOT successful.

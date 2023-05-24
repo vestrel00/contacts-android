@@ -357,9 +357,9 @@ private class GroupsQueryImpl(
 
     companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<GroupsField>? = null
-        val INCLUDE by unsafeLazy { Include(GroupsFields) }
+        val INCLUDE by lazy { Include(GroupsFields) }
         val DEFAULT_WHERE: Where<GroupsField>? = null
-        val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(GroupsFields.Id.asc())) }
+        val DEFAULT_ORDER_BY by lazy { CompoundOrderBy(setOf(GroupsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
         const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true

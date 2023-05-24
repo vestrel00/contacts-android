@@ -6,7 +6,6 @@ import contacts.core.entities.NewSimContact
 import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.sim.SimContactsInsert.Result.FailureReason
-import contacts.core.util.unsafeLazy
 
 /**
  * Inserts one or more user SIM contacts into the SIM contacts table.
@@ -334,7 +333,7 @@ private class SimContactsInsertResult private constructor(
     override val newSimContacts: Set<NewSimContact>
         get() = failureReasons.filter { it.value == null }.keys
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         // By default, all returns true when the collection is empty. So, we override that.
         failureReasons.run { isNotEmpty() && all { it.value == null } }
     }

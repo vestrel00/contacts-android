@@ -15,11 +15,9 @@ import contacts.core.GroupsFields.all
 import contacts.core.RequiredDataFields.all
 import contacts.core.RequiredDataFields.forMatching
 import contacts.core.entities.MimeType
-import contacts.core.util.unsafeLazy
 
-// A note about the lazy usage here. I made everything that is more memory or CPU intensive than
-// lazy(LazyThreadSafetyMode.NONE) { ... } to be lazy. For the most part, this means that
-// implementations (not all) and callers of FieldSet.all and FieldSet.forMatching are lazy.
+// A note about the lazy usage here. I wrapped everything that is more memory or CPU intensive to
+// to be lazily initialized.
 //
 // Variables annotated with @JvmField can not be lazy. The @JvmField annotation is required so that
 // Java consumers can access the member variables with the same ease as Kotlin folks. This should
@@ -213,7 +211,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val Required = RequiredDataFields
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         mutableSetOf<AbstractDataField>().apply {
             addAll(Address.all)
             addAll(Contact.all)
@@ -244,7 +242,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
         }
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         mutableSetOf<AbstractDataField>().apply {
             addAll(Address.forMatching)
             addAll(Contact.forMatching)
@@ -310,7 +308,7 @@ val F = Fields
  */
 object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(
             Fields.DataId,
             Fields.RawContact.Id,
@@ -381,7 +379,7 @@ class DataContactsFields internal constructor() : AbstractDataFieldSet<DataConta
     @JvmField
     val HasPhoneNumber = DataContactsField(Contacts.HAS_PHONE_NUMBER)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         mutableSetOf(
             Id, LookupKey, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
             PhotoUri, PhotoThumbnailUri, PhotoFileId, HasPhoneNumber
@@ -417,7 +415,7 @@ class DataContactsOptionsFields internal constructor() : AbstractDataFieldSet<Da
     @JvmField
     val SendToVoicemail = DataContactsField(Data.SEND_TO_VOICEMAIL)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(
             Id, Starred, CustomRingtone, SendToVoicemail
         )
@@ -437,7 +435,7 @@ class DataRawContactsFields internal constructor() : AbstractDataFieldSet<DataRa
     @JvmField
     val Id = DataRawContactsField(Data.RAW_CONTACT_ID, required = true)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Id)
     }
 
@@ -496,7 +494,7 @@ class AddressFields internal constructor() : AbstractDataFieldSet<AddressField>(
     @JvmField
     val Country = AddressField(CommonDataKinds.StructuredPostal.COUNTRY)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(
             Type, Label, FormattedAddress,
             Street, PoBox, Neighborhood,
@@ -504,7 +502,7 @@ class AddressFields internal constructor() : AbstractDataFieldSet<AddressField>(
         )
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(FormattedAddress)
     }
@@ -525,11 +523,11 @@ class EmailFields internal constructor() : AbstractDataFieldSet<EmailField>() {
     @JvmField
     val Address = EmailField(CommonDataKinds.Email.ADDRESS)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Type, Label, Address)
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(Address)
     }
@@ -550,7 +548,7 @@ class EventFields internal constructor() : AbstractDataFieldSet<EventField>() {
     @JvmField
     val Date = EventField(CommonDataKinds.Event.START_DATE)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Type, Label, Date)
     }
 
@@ -568,7 +566,7 @@ class GroupMembershipFields internal constructor() : AbstractDataFieldSet<GroupM
     @JvmField
     val GroupId = GroupMembershipField(CommonDataKinds.GroupMembership.GROUP_ROW_ID)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(GroupId)
     }
 
@@ -591,11 +589,11 @@ class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
     @JvmField
     val Data = ImField(CommonDataKinds.Im.DATA)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Protocol, CustomProtocol, Data)
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider actually matches the Data and
         // Protocol. We are excluding Protocol here because its value is a number, not actual
         // text (E.G. AIM's actual value in the DB is 0). These fields are typically used for the
@@ -642,7 +640,7 @@ class NameFields internal constructor() : AbstractDataFieldSet<NameField>() {
     @JvmField
     val PhoneticFamilyName = NameField(CommonDataKinds.StructuredName.PHONETIC_FAMILY_NAME)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(
             DisplayName,
             GivenName, MiddleName, FamilyName,
@@ -651,7 +649,7 @@ class NameFields internal constructor() : AbstractDataFieldSet<NameField>() {
         )
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider only matches these fields.
         setOf(DisplayName, PhoneticGivenName, PhoneticMiddleName, PhoneticFamilyName)
     }
@@ -666,11 +664,11 @@ class NicknameFields internal constructor() : AbstractDataFieldSet<NicknameField
     @JvmField
     val Name = NicknameField(CommonDataKinds.Nickname.NAME)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Name)
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(Name)
     }
@@ -685,11 +683,11 @@ class NoteFields internal constructor() : AbstractDataFieldSet<NoteField>() {
     @JvmField
     val Note = NoteField(CommonDataKinds.Note.NOTE)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Note)
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(Note)
     }
@@ -725,13 +723,13 @@ class OrganizationFields internal constructor() : AbstractDataFieldSet<Organizat
     @JvmField
     val PhoneticName = OrganizationField(CommonDataKinds.Organization.PHONETIC_NAME)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(
             Company, Title, Department, JobDescription, OfficeLocation, Symbol, PhoneticName
         )
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider matches all fields.
         all
     }
@@ -755,11 +753,11 @@ class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
     @JvmField
     val NormalizedNumber = PhoneField(CommonDataKinds.Phone.NORMALIZED_NUMBER)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Type, Label, Number, NormalizedNumber)
     }
 
-    override val forMatching by unsafeLazy {
+    override val forMatching by lazy {
         // The GeneralMatch algorithm of the Contacts Provider only matches this field.
         setOf(Number)
     }
@@ -782,7 +780,7 @@ class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
     /**
      * DO NOT use this property unless you intend to get the photo thumbnail binary data!
      */
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(PhotoFileId, PhotoThumbnail)
     }
 
@@ -805,7 +803,7 @@ class RelationFields internal constructor() : AbstractDataFieldSet<RelationField
     @JvmField
     val Name = RelationField(CommonDataKinds.Relation.NAME)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Type, Label, Name)
     }
 
@@ -824,7 +822,7 @@ class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressF
     @JvmField
     val SipAddress = SipAddressField(CommonDataKinds.SipAddress.SIP_ADDRESS)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(SipAddress)
     }
 
@@ -843,7 +841,7 @@ class WebsiteFields internal constructor() : AbstractDataFieldSet<WebsiteField>(
     @JvmField
     val Url = WebsiteField(CommonDataKinds.Website.URL)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Url)
     }
 
@@ -1097,7 +1095,7 @@ object RawContactsFields : FieldSet<RawContactsField>() {
     @JvmField
     val Required = RequiredRawContactsFields
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         mutableSetOf(
             Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
         ).apply {
@@ -1119,7 +1117,7 @@ object RawContactsFields : FieldSet<RawContactsField>() {
  */
 object RequiredRawContactsFields : FieldSet<RawContactsField>() {
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(RawContactsFields.Id, RawContactsFields.ContactId)
     }
 
@@ -1154,7 +1152,7 @@ class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsFiel
     @JvmField
     val SendToVoicemail = RawContactsField(RawContacts.SEND_TO_VOICEMAIL)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(
             Id, Starred, CustomRingtone, SendToVoicemail
         )
@@ -1211,7 +1209,7 @@ object ContactsFields : FieldSet<ContactsField>() {
     @JvmField
     val HasPhoneNumber = ContactsField(Contacts.HAS_PHONE_NUMBER)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         mutableSetOf(
             Id, LookupKey, DisplayNamePrimary, DisplayNameAlt, LastUpdatedTimestamp,
             PhotoUri, PhotoThumbnailUri, PhotoFileId, HasPhoneNumber
@@ -1251,7 +1249,7 @@ class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
     @JvmField
     val SendToVoicemail = ContactsField(Contacts.SEND_TO_VOICEMAIL)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(
             Id, Starred, CustomRingtone, SendToVoicemail
         )
@@ -1280,7 +1278,7 @@ object PhoneLookupFields : FieldSet<PhoneLookupField>() {
     @TargetApi(Build.VERSION_CODES.N)
     internal val ContactId = PhoneLookupField(PhoneLookup.CONTACT_ID)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         // The ContactId is intentionally not included because it serves the same purpose as Id
         // and is not available for all API versions.
         setOf(Id)
@@ -1329,7 +1327,7 @@ object GroupsFields : FieldSet<GroupsField>() {
 
     internal val Deleted = GroupsField(Groups.DELETED)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType, Deleted)
     }
 
@@ -1359,7 +1357,7 @@ internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsFiel
 
     val RawContactId2 = AggregationExceptionsField(AggregationExceptions.RAW_CONTACT_ID2)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Type, RawContactId1, RawContactId2)
     }
 }
@@ -1390,7 +1388,7 @@ object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
     val NormalizedNumber =
         BlockedNumbersField(BlockedNumberContract.BlockedNumbers.COLUMN_E164_NUMBER)
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         setOf(Id, Number, NormalizedNumber)
     }
 
@@ -1414,7 +1412,7 @@ data class SimContactsField internal constructor(
 /**
  * Fields for SIM table operations.
  */
-// Given that we are not adding include, where, and orderbBy, functions in SIM queries due to
+// Given that we are not adding include, where, and orderBy, functions in SIM queries due to
 // projection, selection, and order not being supported, there is no need to expose this to
 // consumers.
 internal object SimContactsFields : FieldSet<SimContactsField>() {
@@ -1443,7 +1441,7 @@ internal object SimContactsFields : FieldSet<SimContactsField>() {
     // val Emails = SimContactsField("emails")
     // val NewEmails = SimContactsField("newEmails")
 
-    override val all by unsafeLazy {
+    override val all by lazy {
         // Only added fields used for queries
         setOf(Id, Name, Number)
     }

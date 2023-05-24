@@ -11,7 +11,6 @@ import contacts.core.entities.table.Table
 import contacts.core.util.applyBatch
 import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
-import contacts.core.util.unsafeLazy
 
 /**
  * Deletes one or more Profile OR non-Profile (depending on instance) data rows the data table.
@@ -330,7 +329,7 @@ private class DataDeleteResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         if (dataIdsResultMap.isEmpty() && whereResultMap.isEmpty()
         ) {
             // Deleting nothing is NOT successful.

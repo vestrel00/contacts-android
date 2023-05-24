@@ -7,7 +7,6 @@ import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.updateOperation
 import contacts.core.util.applyBatch
 import contacts.core.util.isEmpty
-import contacts.core.util.unsafeLazy
 
 /**
  * Updates one or more Profile OR non-Profile (depending on instance) data in the Contacts Provider
@@ -278,7 +277,7 @@ private class DataUpdateResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         // By default, all returns true when the collection is empty. So, we override that.
         dataIdsResultMap.run { isNotEmpty() && all { it.value } }
     }

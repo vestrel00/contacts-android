@@ -438,8 +438,8 @@ private class UpdateImpl(
     }
 
     private companion object {
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
         }
     }
@@ -723,7 +723,7 @@ private class UpdateResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         if (rawContactIdsResultMap.isEmpty() && contactIdsResultMap.isEmpty()) {
             // Updating nothing is NOT successful.
             false

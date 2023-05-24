@@ -575,9 +575,9 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
+        val REQUIRED_INCLUDE_FIELDS by lazy { Fields.Required.all.asSequence() }
         val DEFAULT_WHERE: Where<AbstractDataField>? = null
-        val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(Fields.DataId.asc())) }
+        val DEFAULT_ORDER_BY by lazy { CompoundOrderBy(setOf(Fields.DataId.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
         const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true

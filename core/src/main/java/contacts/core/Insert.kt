@@ -381,8 +381,8 @@ private class InsertImpl(
     private companion object {
         const val IS_PROFILE = false
 
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
         }
     }
@@ -607,13 +607,13 @@ private class InsertResult private constructor(
         isRedacted = true
     )
 
-    override val rawContactIds: List<Long> by unsafeLazy {
+    override val rawContactIds: List<Long> by lazy {
         rawContactMap.values.asSequence()
             .filterNotNull()
             .toList()
     }
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         // By default, all returns true when the collection is empty. So, we override that.
         rawContactMap.run { isNotEmpty() && all { it.value != null } }
     }

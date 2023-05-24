@@ -7,7 +7,6 @@ import contacts.core.entities.EventDate
 import contacts.core.entities.MimeType
 import contacts.core.entities.toWhereString
 import contacts.core.util.copyWithFieldValueSubstitutions
-import contacts.core.util.unsafeLazy
 import java.util.*
 
 // Java consumers would have to access these static functions via Wherekt instead of Where.
@@ -596,7 +595,7 @@ class Where<out T : Field> private constructor(
      * The order of traversal is preorder (this, lhs, rhs). The first mimeType in the list will be
      * the mimeType of this (if it holds a field).
      */
-    internal val mimeTypes: Set<MimeType> by unsafeLazy {
+    internal val mimeTypes: Set<MimeType> by lazy {
         mutableSetOf<MimeType>().apply {
             if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
                 if (lhs.field is DataField) {
@@ -615,7 +614,7 @@ class Where<out T : Field> private constructor(
     // If there are mutable property values, then this will be evaluated at the time of invocation
     // and will not mutate along with the mutable property values (e.g. a mutable list). I don't
     // think consumers expect this to mutate anyways if they happen to save a reference to it.
-    private val evaluatedWhereString: String by unsafeLazy {
+    private val evaluatedWhereString: String by lazy {
         var whereString = when (operator) {
             // Recursive case. Traverse lhs and rhs.
             is Operator.Combine -> "($lhs) $operator ($rhs)"

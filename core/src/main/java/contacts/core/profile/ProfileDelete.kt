@@ -10,7 +10,6 @@ import contacts.core.entities.table.ProfileUris
 import contacts.core.util.applyBatch
 import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
-import contacts.core.util.unsafeLazy
 
 /**
  * Deletes one or more (Profile) raw contacts or the (Profile) contact from the raw contacts and
@@ -303,7 +302,7 @@ private class ProfileDeleteResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         profileContactDeleteSuccess
                 // By default, all returns true when the collection is empty. So, we override that.
                 || rawContactIdsResultMap.run { isNotEmpty() && all { it.value } }

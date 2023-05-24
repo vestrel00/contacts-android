@@ -652,7 +652,7 @@ private class MoveRawContactsAcrossAccountsResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy { failureReasons.isEmpty() }
+    override val isSuccessful: Boolean by lazy { failureReasons.isEmpty() }
 
     override val rawContactIds: List<Long> = originalToNewRawContacts.values.toList()
 

@@ -347,9 +347,9 @@ private class ProfileQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_FIELDS by lazy { Fields.Required.all.asSequence() }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
         }
     }

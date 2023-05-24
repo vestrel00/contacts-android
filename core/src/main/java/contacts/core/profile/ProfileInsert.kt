@@ -402,8 +402,8 @@ private class ProfileInsertImpl(
     private companion object {
         const val IS_PROFILE = true
 
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
         }
     }

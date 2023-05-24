@@ -8,7 +8,6 @@ import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.Table
 import contacts.core.util.applyBlockedNumberBatch
 import contacts.core.util.deleteSuccess
-import contacts.core.util.unsafeLazy
 
 /**
  * Deletes one or more blocked numbers from the Blocked Numbers table.
@@ -321,7 +320,7 @@ private class BlockedNumbersDeleteResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         if (blockedNumberIdsResultMap.isEmpty() && whereResultMap.isEmpty()
         ) {
             // Deleting nothing is NOT successful.

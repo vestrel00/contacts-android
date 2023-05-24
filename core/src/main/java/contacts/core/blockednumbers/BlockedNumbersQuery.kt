@@ -8,7 +8,6 @@ import contacts.core.entities.table.Table
 import contacts.core.util.isEmpty
 import contacts.core.util.offsetAndLimit
 import contacts.core.util.query
-import contacts.core.util.unsafeLazy
 
 /**
  * Queries on the Blocked Numbers table.
@@ -312,9 +311,9 @@ private class BlockedNumbersQueryImpl(
     }
 
     companion object {
-        val INCLUDE by unsafeLazy { Include(BlockedNumbersFields) }
+        val INCLUDE by lazy { Include(BlockedNumbersFields) }
         val DEFAULT_WHERE: Where<BlockedNumbersField>? = null
-        val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(BlockedNumbersFields.Id.asc())) }
+        val DEFAULT_ORDER_BY by lazy { CompoundOrderBy(setOf(BlockedNumbersFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
         const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true

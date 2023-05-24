@@ -7,7 +7,6 @@ import contacts.core.entities.NewGroup
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.groups.GroupsInsert.Result.FailureReason
 import contacts.core.util.applyBatch
-import contacts.core.util.unsafeLazy
 
 /**
  * Inserts one or more user groups into the groups table.
@@ -333,13 +332,13 @@ private class GroupsInsertResult private constructor(
         isRedacted = true
     )
 
-    override val groupIds: List<Long> by unsafeLazy {
+    override val groupIds: List<Long> by lazy {
         groupsMap.asSequence()
             .mapNotNull { it.value }
             .toList()
     }
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         // By default, all returns true when the collection is empty. So, we override that.
         groupsMap.run { isNotEmpty() && all { it.value != null } }
     }

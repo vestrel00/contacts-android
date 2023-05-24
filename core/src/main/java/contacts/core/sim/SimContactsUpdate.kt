@@ -7,7 +7,6 @@ import contacts.core.entities.MutableSimContact
 import contacts.core.entities.operation.SimContactsOperation
 import contacts.core.entities.table.Table
 import contacts.core.sim.SimContactsUpdate.Result.FailureReason
-import contacts.core.util.unsafeLazy
 
 /**
  * Updates one or more user SIM contacts in the SIM contacts table.
@@ -390,7 +389,7 @@ private class SimContactsUpdateResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         // By default, all returns true when the collection is empty. So, we override that.
         failureReasons.run { isNotEmpty() && all { it.value == null } }
     }

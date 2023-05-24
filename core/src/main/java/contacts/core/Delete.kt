@@ -367,7 +367,7 @@ private class DeleteImpl(
         rawContacts(rawContacts.asSequence())
 
     override fun rawContacts(rawContacts: Sequence<ExistingRawContactEntity>) =
-        rawContactsWithId(rawContacts.asSequence().map { it.id })
+        rawContactsWithId(rawContacts.map { it.id })
 
     override fun rawContactsWithId(vararg rawContactsIds: Long) =
         rawContactsWithId(rawContactsIds.asSequence())
@@ -585,7 +585,7 @@ private class DeleteResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         if (rawContactIdsResultMap.isEmpty()
             && contactIdsResultMap.isEmpty()
             && whereResultMap.isEmpty()

@@ -9,7 +9,6 @@ import contacts.core.entities.MutableGroup
 import contacts.core.entities.operation.GroupsOperation
 import contacts.core.groups.GroupsUpdate.Result.FailureReason
 import contacts.core.util.applyBatch
-import contacts.core.util.unsafeLazy
 
 /**
  * Updates one or more groups rows in the groups table.
@@ -316,7 +315,7 @@ private class GroupsUpdateResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy { failureReasons.isEmpty() }
+    override val isSuccessful: Boolean by lazy { failureReasons.isEmpty() }
 
     override fun isSuccessful(group: ExistingGroupEntity?): Boolean = failureReason(group) == null
 

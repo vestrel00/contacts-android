@@ -2,7 +2,6 @@ package contacts.core
 
 import android.content.ContentResolver
 import contacts.core.util.query
-import contacts.core.util.unsafeLazy
 
 @Suppress("FunctionName")
 internal fun <T : Field> Include(vararg fields: T) = Include(fields.asSequence())
@@ -51,7 +50,7 @@ internal class Include<out T : Field>(
      *
      * Read the **Dev notes** in the class doc for more info.
      */
-    val columnNames: Set<String> by unsafeLazy {
+    val columnNames: Set<String> by lazy {
         fields.map { it.columnName }.toSet()
     }
 

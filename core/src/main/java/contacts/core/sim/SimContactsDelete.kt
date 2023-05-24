@@ -6,7 +6,6 @@ import contacts.core.entities.Entity
 import contacts.core.entities.ExistingSimContactEntity
 import contacts.core.entities.SimContact
 import contacts.core.entities.table.Table
-import contacts.core.util.unsafeLazy
 
 /**
  * Deletes one or more SIM contacts from the SIM Contacts table.
@@ -223,7 +222,7 @@ private class SimContactsDeleteResult private constructor(
         simContactsToDeleteResultMap.redactedKeys(), true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         // By default, all returns true when the collection is empty. So, we override that.
         simContactsToDeleteResultMap.run { isNotEmpty() && all { it.value } }
     }

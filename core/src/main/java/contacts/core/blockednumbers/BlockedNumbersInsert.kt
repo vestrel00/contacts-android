@@ -9,7 +9,6 @@ import contacts.core.blockednumbers.BlockedNumbersInsert.Result.FailureReason
 import contacts.core.entities.NewBlockedNumber
 import contacts.core.entities.operation.BlockedNumbersOperation
 import contacts.core.util.applyBlockedNumberBatch
-import contacts.core.util.unsafeLazy
 
 /**
  * Inserts one or more user blocked numbers into the blocked numbers table.
@@ -327,13 +326,13 @@ private class BlockedNumbersInsertResult private constructor(
         isRedacted = true
     )
 
-    override val blockedNumberIds: List<Long> by unsafeLazy {
+    override val blockedNumberIds: List<Long> by lazy {
         blockedNumbersMap.asSequence()
             .mapNotNull { it.value }
             .toList()
     }
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         // By default, all returns true when the collection is empty. So, we override that.
         blockedNumbersMap.run { isNotEmpty() && all { it.value != null } }
     }

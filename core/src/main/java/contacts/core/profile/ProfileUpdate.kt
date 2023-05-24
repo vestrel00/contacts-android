@@ -6,7 +6,6 @@ import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.util.contacts
 import contacts.core.util.isEmpty
 import contacts.core.util.rawContacts
-import contacts.core.util.unsafeLazy
 
 /**
  * Updates the Profile contact in the Contacts Provider database to ensure that it contains the same
@@ -425,8 +424,8 @@ private class ProfileUpdateImpl(
     }
 
     private companion object {
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
         }
     }
@@ -460,7 +459,7 @@ private class ProfileUpdateResult private constructor(
         isRedacted = true
     )
 
-    override val isSuccessful: Boolean by unsafeLazy {
+    override val isSuccessful: Boolean by lazy {
         if (rawContactIdsResultMap.isEmpty() && contactUpdateSuccess == null) {
             // Updating nothing is NOT successful.
             false

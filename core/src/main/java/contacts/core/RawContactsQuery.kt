@@ -557,13 +557,13 @@ private class RawContactsQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_FIELDS by unsafeLazy { Fields.Required.all.asSequence() }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by unsafeLazy {
+        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
+        val REQUIRED_INCLUDE_FIELDS by lazy { Fields.Required.all.asSequence() }
+        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
         }
         val DEFAULT_WHERE: Where<AbstractDataField>? = null
-        val DEFAULT_ORDER_BY by unsafeLazy { CompoundOrderBy(setOf(RawContactsFields.Id.asc())) }
+        val DEFAULT_ORDER_BY by lazy { CompoundOrderBy(setOf(RawContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
         const val DEFAULT_FORCE_OFFSET_AND_LIMIT = true
