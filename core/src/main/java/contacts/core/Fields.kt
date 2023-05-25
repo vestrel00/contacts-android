@@ -17,9 +17,12 @@ import contacts.core.RequiredDataFields.forMatching
 import contacts.core.entities.MimeType
 
 // A note about the lazy usage here. I wrapped everything that is more memory or CPU intensive to
-// to be lazily initialized.
+// to be lazily initialized. I did a rough measurement of how much time is saved during app cold
+// start by using lazy; https://github.com/vestrel00/contacts-android/issues/286#issuecomment-1563335175
+// It's roughly ~10ms for mid-range Android phones and ~5ms for high-range phones. For low range
+// phones, it could be ~20-30ms.
 //
-// Variables annotated with @JvmField can not be lazy. The @JvmField annotation is required so that
+// Variables annotated with @JvmField cannot be lazy. The @JvmField annotation is required so that
 // Java consumers can access the member variables with the same ease as Kotlin folks. This should
 // be trivial because such variables just initialize simple class instances.
 //
