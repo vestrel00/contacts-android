@@ -1,9 +1,11 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
+    namespace 'contacts.sample'
+
     compileSdkVersion versions.android.compileSdk
 
     defaultConfig {
@@ -14,6 +16,10 @@ android {
     compileOptions {
         sourceCompatibility versions.java.version
         targetCompatibility versions.java.version
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     kotlinOptions {

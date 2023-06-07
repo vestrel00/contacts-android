@@ -8,6 +8,8 @@ plugins {
 apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
+    namespace 'contacts.entities.custom.googlecontacts'
+
     compileSdkVersion versions.android.compileSdk
 
     defaultConfig {

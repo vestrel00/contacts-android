@@ -8,6 +8,8 @@ plugins {
 apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
+    namespace 'contacts.test'
+
     compileSdkVersion versions.android.compileSdk
 
     defaultConfig {
