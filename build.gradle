@@ -8,7 +8,7 @@ buildscript {
                 ],
 
                 java     : [
-                        version: JavaVersion.VERSION_1_8,
+                        version: JavaVersion.VERSION_17,
                 ],
 
                 kotlin   : [
