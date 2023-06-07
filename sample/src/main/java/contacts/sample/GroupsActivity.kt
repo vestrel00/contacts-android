@@ -24,6 +24,8 @@ import contacts.permissions.groups.deleteWithPermission
 import contacts.permissions.groups.insertWithPermission
 import contacts.permissions.groups.queryWithPermission
 import contacts.permissions.groups.updateWithPermission
+import contacts.sample.util.getParcelableArrayListExtraCompat
+import contacts.sample.util.getParcelableExtraCompat
 import contacts.ui.util.UserInputDialog
 import kotlinx.coroutines.launch
 
@@ -215,6 +217,7 @@ class GroupsActivity : BaseActivity() {
         } else when (insertResult.failureReason(newGroup)) {
             GroupsInsert.Result.FailureReason.TITLE_ALREADY_EXIST ->
                 showToast(R.string.groups_create_error_title_already_exist)
+
             else -> showToast(R.string.groups_create_error)
         }
     }
@@ -232,6 +235,7 @@ class GroupsActivity : BaseActivity() {
         } else when (updateResult.failureReason(group)) {
             GroupsUpdate.Result.FailureReason.TITLE_ALREADY_EXIST ->
                 showToast(R.string.groups_edit_error_title_already_exist)
+
             else -> showToast(R.string.groups_edit_error)
         }
     }
@@ -296,13 +300,13 @@ class GroupsActivity : BaseActivity() {
             processSelectedGroups(data.account(), data.selectedGroups())
         }
 
-        private fun Intent.account(): Account? = getParcelableExtra(ACCOUNT)
+        private fun Intent.account(): Account? = getParcelableExtraCompat(ACCOUNT)
 
         private fun Intent.selectedGroupIds(): List<Long> =
             getLongArrayExtra(SELECTED_GROUP_IDS)?.asList() ?: emptyList()
 
         private fun Intent.selectedGroups(): List<Group> =
-            getParcelableArrayListExtra(SELECTED_GROUPS) ?: emptyList()
+            getParcelableArrayListExtraCompat(SELECTED_GROUPS) ?: emptyList()
 
         private const val REQUEST_SELECT_GROUPS = 112
         private const val ACCOUNT = "account"
