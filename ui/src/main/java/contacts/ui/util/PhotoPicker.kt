@@ -6,6 +6,9 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Parcelable
 import android.provider.MediaStore
 import android.widget.Toast
 import contacts.ui.R
@@ -164,7 +167,7 @@ fun onPhotoPicked(
 
     when (requestCode) {
         REQUEST_TAKE_PHOTO -> {
-            val bitmap = intent?.extras?.get("data") as Bitmap?
+            val bitmap = intent?.extras?.getParcelableCompat("data") as Bitmap?
             bitmap?.let(photoBitmapPicked)
         }
         REQUEST_SELECT_PHOTO -> {
@@ -180,10 +183,10 @@ fun onPhotoPicked(
 private const val REQUEST_TAKE_PHOTO = 9001
 private const val REQUEST_SELECT_PHOTO = 9002
 
-// Cannot use Intent.get/setIdentifier as that require API 29.
-//private var Intent.intentId: String?
-//    get() = getStringExtra(INTENT_ID_EXTRA)
-//    set(value) {
-//        putExtra(INTENT_ID_EXTRA, value)
-//    }
-//private const val INTENT_ID_EXTRA = "INTENT_ID_EXTRA"
+private inline fun <reified T : Parcelable> Bundle.getParcelableCompat(name: String): T? =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        getParcelable(name, T::class.java)
+    } else {
+        @Suppress("Deprecation")
+        getParcelable(name) as T?
+    }

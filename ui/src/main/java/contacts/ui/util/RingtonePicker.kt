@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
+import android.os.Parcelable
 import android.widget.Toast
 import contacts.ui.R
 
@@ -60,9 +62,17 @@ fun onRingtoneSelected(
     ringtoneSelected: (ringtoneUri: Uri?) -> Unit
 ) {
     if (requestCode == REQUEST_SELECT_RINGTONE && resultCode == Activity.RESULT_OK) {
-        val ringtoneUri = intent?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+        val ringtoneUri = intent?.getParcelableExtraCompat<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
         ringtoneSelected(ringtoneUri)
     }
 }
 
 private const val REQUEST_SELECT_RINGTONE = 9100
+
+private inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(name: String): T? =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        getParcelableExtra(name, T::class.java)
+    } else {
+        @Suppress("Deprecation")
+        getParcelableExtra(name)
+    }
