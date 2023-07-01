@@ -7,6 +7,8 @@ plugins {
 apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
+    namespace 'contacts.debug'
+
     compileSdkVersion versions.android.compileSdk
 
     defaultConfig {
@@ -22,8 +24,4 @@ android {
     kotlinOptions {
         jvmTarget = versions.java.version
     }
-}
-
-dependencies {
-
 }

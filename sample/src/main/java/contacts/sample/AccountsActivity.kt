@@ -15,6 +15,7 @@ import contacts.permissions.accounts.queryWithPermission
 import contacts.sample.AccountsActivity.Companion.CHOICE_MODE
 import contacts.sample.AccountsActivity.Companion.REQUEST_SELECT_ACCOUNTS
 import contacts.sample.AccountsActivity.Companion.REQUEST_SELECT_GROUPS
+import contacts.sample.util.getParcelableArrayListExtraCompat
 import contacts.sample.util.trueKeys
 import kotlinx.coroutines.launch
 
@@ -219,10 +220,10 @@ class AccountsActivity : BaseActivity() {
         private fun Intent.choiceMode(): Int = getIntExtra(CHOICE_MODE, CHOICE_MODE_NONE)
 
         private fun Intent.selectedAccounts(): List<Account?> =
-            getParcelableArrayListExtra(SELECTED_ACCOUNTS) ?: emptyList()
+            getParcelableArrayListExtraCompat(SELECTED_ACCOUNTS) ?: emptyList()
 
         private fun Intent.selectedGroups(): List<Group> =
-            getParcelableArrayListExtra(SELECTED_GROUPS) ?: emptyList()
+            getParcelableArrayListExtraCompat(SELECTED_GROUPS) ?: emptyList()
 
         private var Intent.requestTag: String?
             get() = getStringExtra(REQUEST_TAG)

@@ -5,16 +5,16 @@ There are only a few loose guidelines to follow. Read the **Setup** and **Guidel
 ## Setup
 
 To open, build, and run this project, you will need to use 
-[Android Studio Dolphin | 2021.3.1 Patch 1][android-studio] and later versions.
+[Android Studio Flamingo | 2022.2.1 Patch 2][android-studio] and later versions.
 
 If you run into any build issues, open up Android Studio preferences and make sure the following is 
 set correctly...
 
 - Build, Execution, Deployment -> Build Tools -> Gradle
    - Use Gradle from: 'gradlew-wrapper.properties' file
-   - Gradle JDK: Embedded JDK version 11.x.x
+   - Gradle JDK: Embedded JDK version 17.x.x
 - Language & Frameworks -> Kotlin 
-   - Current Kotlin plugin version: 211-1.6.10-release-923-AS7442.40
+   - Current Kotlin plugin version: 222-1.8.20-release-AS3739.54
 
 Restart Android Studio, clean, build, and invalidate caches & restart.
 

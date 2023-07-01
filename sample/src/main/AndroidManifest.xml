@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="contacts.sample">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Required for getting accounts. -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -18,7 +17,8 @@
 
          Used in PhotoView.
     -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <!--
         Profile permissions have been removed since API 23. It is still required for API 22 and below.

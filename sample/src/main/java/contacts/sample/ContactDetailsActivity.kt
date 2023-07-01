@@ -18,6 +18,7 @@ import contacts.permissions.accounts.moveWithPermission
 import contacts.permissions.aggregationexceptions.unlinkWithPermission
 import contacts.permissions.queryWithPermission
 import contacts.sample.util.createPinnedShortcut
+import contacts.sample.util.getSerializableCompat
 import contacts.sample.view.ContactView
 import kotlinx.coroutines.launch
 
@@ -96,7 +97,7 @@ class ContactDetailsActivity : BaseActivity() {
 
         if (savedInstanceState != null) {
             contactLookupKey = savedInstanceState.getString(CONTACT_LOOKUP_KEY)
-            mode = savedInstanceState.getSerializable(MODE) as Mode
+            mode = savedInstanceState.getSerializableCompat(MODE) ?: intent.mode
         } else {
             contactLookupKey = intent.contactLookupKey
             mode = intent.mode

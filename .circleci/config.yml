@@ -1,0 +1,16 @@
+version: 2.1
+orbs:
+  android: circleci/android@2.3.0
+jobs:
+  build:
+    executor:
+      name: android/android-machine
+      tag: 2023.06.1
+    steps:
+      - checkout
+      - android/restore-gradle-cache
+      - android/restore-build-cache
+      - run:
+          name: Build all variants
+          command: |
+            ./gradlew build
