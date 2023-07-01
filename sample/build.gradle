@@ -28,6 +28,10 @@ android {
 }
 
 dependencies {
+    // When testing if the current main branch is ready to be tagged and released in Jitpack,
+    // uncomment this next line and comment out all "implementation project" lines
+    // implementation 'com.github.vestrel00:contacts-android:main-SNAPSHOT'
+
     implementation project(':async')
     implementation project(':core')
     implementation project(':customdata-gender')
