@@ -308,11 +308,9 @@ fun ExistingContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): Bitm
  * photo already exists, it will be overwritten. The Contacts Provider automatically creates a
  * downsized version of this as the thumbnail.
  *
- * Note that if the [MutableContact.photoFileId] is null, either because the PhotoFileId Contact and
- * RawContact fields were not included in the query or the contact does not yet have a photo set,
- * then the [MutableContact.primaryPhotoHolder] will correspond to the first RawContact with a null
- * [PhotoEntity.fileId] or the first [ExistingRawContactEntity] in
- * [ExistingContactEntity.rawContacts].
+ * Make sure that the [MutableContact] came from a query that included all fields from
+ * [contacts.core.Fields.PrimaryPhotoHolder]. Otherwise, the incorrect child RawContact's photo may
+ * be set (in case the Contact has more than one child RawContact).
  *
  * The given [photoData] will not be set until the update API call is committed successfully.
  *
@@ -338,9 +336,9 @@ fun MutableContact.setPhoto(photoData: PhotoData) {
  * already exists, it will be overwritten. The Contacts Provider automatically creates a downsized
  * version of this as the thumbnail.
  *
- * If a photo has not yet been set and the Contacts Provider has not yet chosen the RawContact that
- * will be used as the primary photo holder, then this will use the oldest RawContact associated
- * with this Contact.
+ * Make sure that the [ExistingContactEntity] came from a query that included all fields from
+ * [contacts.core.Fields.PrimaryPhotoHolder]. Otherwise, the incorrect child RawContact's photo may
+ * be set (in case the Contact has more than one child RawContact).
  *
  * Returns true if the operation succeeds.
  *
@@ -391,6 +389,10 @@ fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoData: PhotoDat
  * [ExistingContactEntity] will be removed. Otherwise, only the photo of the
  * [ExistingContactEntity.primaryPhotoHolder] will be removed.
  *
+ * Make sure that the [MutableContact] came from a query that included all fields from
+ * [contacts.core.Fields.PrimaryPhotoHolder]. Otherwise, the incorrect child RawContact's photo may
+ * be removed (in case the Contact has more than one child RawContact).
+ *
  * The photo will not be removed until the update API call is committed successfully.
  *
  * If you want to directly remove the photo from the database, without an update API call, use
@@ -423,11 +425,9 @@ fun MutableContact.removePhoto(fromAllRawContacts: Boolean = false) {
  * [ExistingContactEntity] will be removed. Otherwise, only the photo of the
  * [ExistingContactEntity.primaryPhotoHolder] will be removed.
  *
- * Note that if the [MutableContact.photoFileId] is null, either because the PhotoFileId Contact and
- * RawContact fields were not included in the query or the contact does not yet have a photo set,
- * then the [MutableContact.primaryPhotoHolder] will correspond to the first RawContact with a null
- * [PhotoEntity.fileId] or the first [ExistingRawContactEntity] in
- * [ExistingContactEntity.rawContacts].
+ * Make sure that the [ExistingContactEntity] came from a query that included all fields from
+ * [contacts.core.Fields.PrimaryPhotoHolder]. Otherwise, the incorrect child RawContact's photo may
+ * be removed (in case the Contact has more than one child RawContact).
  *
  * Returns true if the operation succeeds.
  *

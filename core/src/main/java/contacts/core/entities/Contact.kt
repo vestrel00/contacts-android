@@ -275,10 +275,9 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      * This is useful if you are showing the Contact photo and the primary photo holder (a
      * RawContact) photo in the same screen.
      *
-     * If the [photoFileId] is null, either because the PhotoFileId Contact and RawContact fields
-     * were not included in the query or the contact does not yet have a photo set, then this will
-     * return the first [ExistingRawContactEntity] with a null [PhotoEntity.fileId] or the first
-     * [ExistingRawContactEntity] in [rawContacts].
+     * To properly resolve this value, this Contact instance must have come from a query that
+     * included all fields in [contacts.core.Fields.PrimaryPhotoHolder]. Otherwise, may return
+     * the incorrect [ExistingRawContactEntity].
      */
     val primaryPhotoHolder: ExistingRawContactEntity?
 

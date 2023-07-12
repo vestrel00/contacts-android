@@ -169,7 +169,7 @@ There are two ways to remove Contact or RawContact photo.
 
 > ⚠️ Make sure that the Contact instances you are performing these operations on came from a query
 > that included all fields from `Fields.PrimaryPhotoHolder`. Otherwise, the incorrect child
-> RawContact's photo may be set (in case the Contact has more than one child RawContact).
+> RawContact's photo may be removed (in case the Contact has more than one child RawContact).
 
 ### Using extension functions
 
