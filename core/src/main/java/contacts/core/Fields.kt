@@ -214,6 +214,12 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val Required = RequiredDataFields
 
+    /**
+     * See [PrimaryPhotoHolderFields].
+     */
+    @JvmField
+    val PrimaryPhotoHolder = PrimaryPhotoHolderFields
+
     override val all by lazy {
         mutableSetOf<AbstractDataField>().apply {
             addAll(Address.all)
@@ -304,6 +310,36 @@ val DataFields = Fields
 val F = Fields
 
 // region Composite Fields
+
+/**
+ * The set of data fields that are required to properly resolve
+ * [contacts.core.entities.ExistingContactEntity.primaryPhotoHolder].
+ */
+object PrimaryPhotoHolderFields : AbstractDataFieldSet<AbstractDataField>() {
+
+    override val all by lazy {
+        setOf(
+            Fields.Contact.PhotoFileId,
+            Fields.Photo.PhotoFileId
+        )
+    }
+
+    override val forMatching = emptySet<AbstractDataField>()
+
+    /**
+     * Same as [all], but as a function. This makes it visible to Java consumers when accessing this
+     * using the object reference directly.
+     */
+    @JvmStatic
+    fun all() = all
+
+    /**
+     * Same as [forMatching], but as a function. This makes it visible to Java consumers when
+     * accessing this using the object reference directly
+     */
+    @JvmStatic
+    fun forMatching() = forMatching
+}
 
 /**
  * The set of data fields that are required, internally by this library, to be included in all

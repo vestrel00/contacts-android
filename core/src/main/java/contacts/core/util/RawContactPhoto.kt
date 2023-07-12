@@ -1,5 +1,6 @@
 package contacts.core.util
 
+import android.annotation.SuppressLint
 import android.content.ContentProviderOperation.newDelete
 import android.content.ContentUris
 import android.graphics.Bitmap
@@ -54,6 +55,7 @@ fun ExistingRawContactEntity.photoInputStream(contacts: Contacts): InputStream? 
 
     var inputStream: InputStream? = null
     try {
+        @SuppressLint("Recycle")
         val fd = contacts.contentResolver.openAssetFileDescriptor(photoUri, "r")
         inputStream = fd?.createInputStream()
     } catch (ioe: IOException) {

@@ -1,5 +1,6 @@
 package contacts.core.util
 
+import android.annotation.SuppressLint
 import android.content.ContentProviderOperation.newDelete
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,8 +9,10 @@ import android.net.Uri
 import android.provider.ContactsContract
 import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
+import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableContact
+import contacts.core.entities.PhotoEntity
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.operation.withSelection
@@ -155,6 +158,7 @@ private fun uriInputStream(contacts: Contacts, uri: Uri?): InputStream? {
 
     var inputStream: InputStream? = null
     try {
+        @SuppressLint("Recycle")
         val fd = contacts.contentResolver.openAssetFileDescriptor(uri, "r")
         inputStream = fd?.createInputStream()
     } catch (ioe: IOException) {
@@ -304,21 +308,16 @@ fun ExistingContactEntity.photoThumbnailBitmapDrawable(contacts: Contacts): Bitm
  * photo already exists, it will be overwritten. The Contacts Provider automatically creates a
  * downsized version of this as the thumbnail.
  *
- * If a photo has not yet been set and the Contacts Provider has not yet chosen the RawContact that
- * will be used as the primary photo holder, then this will use the first RawContact in the list of
- * [MutableContact.rawContacts].
+ * Note that if the [MutableContact.photoFileId] is null, either because the PhotoFileId Contact and
+ * RawContact fields were not included in the query or the contact does not yet have a photo set,
+ * then the [MutableContact.primaryPhotoHolder] will correspond to the first RawContact with a null
+ * [PhotoEntity.fileId] or the first [ExistingRawContactEntity] in
+ * [ExistingContactEntity.rawContacts].
  *
  * The given [photoData] will not be set until the update API call is committed successfully.
  *
  * If you want to directly set the photo into the database, without an update API call, use
  * [MutableContact.setPhotoDirect].
- *
- * Note that the [MutableContact.primaryPhotoHolder] requires [MutableContact.photoFileId].
- *
- * ## No includes required
- *
- * When using update APIs, there is is no field required to be passed into the `include` function
- * to make sure the photo is set as long as this function is invoked.
  *
  * ## Not parcelable
  *
@@ -340,8 +339,8 @@ fun MutableContact.setPhoto(photoData: PhotoData) {
  * version of this as the thumbnail.
  *
  * If a photo has not yet been set and the Contacts Provider has not yet chosen the RawContact that
- * will be used as the primary photo holder, then this will use the first RawContact in the list of
- * [ExistingContactEntity.rawContacts].
+ * will be used as the primary photo holder, then this will use the oldest RawContact associated
+ * with this Contact.
  *
  * Returns true if the operation succeeds.
  *
@@ -378,34 +377,7 @@ fun ExistingContactEntity.setPhotoDirect(contacts: Contacts, photoData: PhotoDat
         return false
     }
 
-    val photoFileId = photoFileId(contacts)
-    val rawContactId = photoFileId?.let {
-        // A photo exists for the Contact. Get the RawContact in the Data table that holds the photo
-        // row with the same photo file id. Keep in mind that there may be multiple RawContacts
-        // associated with a single Contact.
-        rawContactIdWithPhotoFileId(contacts, photoFileId)
-    }
-
-    return rawContactId != null && contacts.setRawContactPhotoDirect(rawContactId, photoData)
-}
-
-private fun ExistingContactEntity.photoFileId(contacts: Contacts): Long? =
-    contacts.contentResolver.query(
-        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
-        Include(ContactsFields.PhotoFileId),
-        ContactsFields.Id equalTo id
-    ) {
-        it.getNextOrNull { it.contactsCursor().photoFileId }
-    }
-
-private fun ExistingContactEntity.rawContactIdWithPhotoFileId(
-    contacts: Contacts, photoFileId: Long
-): Long? = contacts.contentResolver.query(
-    if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
-    Include(Fields.RawContact.Id),
-    Fields.Photo.PhotoFileId equalTo photoFileId
-) {
-    it.getNextOrNull { it.dataCursor().rawContactId }
+    return primaryPhotoHolder?.setPhotoDirect(contacts, photoData) == true
 }
 
 // endregion
@@ -423,11 +395,6 @@ private fun ExistingContactEntity.rawContactIdWithPhotoFileId(
  *
  * If you want to directly remove the photo from the database, without an update API call, use
  * [MutableContact.removePhotoDirect].
- *
- * ## No includes required
- *
- * When using update APIs, there is is no field required to be passed into the `include` function
- * to make sure the photo is removed as long as this function is invoked.
  *
  * ## Not parcelable
  *
@@ -455,6 +422,12 @@ fun MutableContact.removePhoto(fromAllRawContacts: Boolean = false) {
  * If [fromAllRawContacts] is true, the photos of all RawContacts associated with this
  * [ExistingContactEntity] will be removed. Otherwise, only the photo of the
  * [ExistingContactEntity.primaryPhotoHolder] will be removed.
+ *
+ * Note that if the [MutableContact.photoFileId] is null, either because the PhotoFileId Contact and
+ * RawContact fields were not included in the query or the contact does not yet have a photo set,
+ * then the [MutableContact.primaryPhotoHolder] will correspond to the first RawContact with a null
+ * [PhotoEntity.fileId] or the first [ExistingRawContactEntity] in
+ * [ExistingContactEntity.rawContacts].
  *
  * Returns true if the operation succeeds.
  *
@@ -492,15 +465,9 @@ fun ExistingContactEntity.removePhotoDirect(
     val whereId = if (fromAllRawContacts) {
         Fields.Contact.Id equalTo id
     } else {
-        val photoFileId = photoFileId(contacts)
-        val rawContactId = photoFileId?.let {
-            // A photo exists for the Contact. Get the RawContact in the Data table that holds the photo
-            // row with the same photo file id. Keep in mind that there may be multiple RawContacts
-            // associated with a single Contact.
-            rawContactIdWithPhotoFileId(contacts, photoFileId)
-        }
-        if (rawContactId != null) {
-            Fields.RawContact.Id equalTo rawContactId
+        val primaryPhotoHolderId = primaryPhotoHolder?.id
+        if (primaryPhotoHolderId != null) {
+            Fields.RawContact.Id equalTo primaryPhotoHolderId
         } else {
             return false
         }

@@ -93,6 +93,10 @@ val photoThumbnailBitmapDrawable = rawContact.photoThumbnailBitmapDrawable(conta
 
 There are two ways to set Contact or RawContact photo.
 
+> ⚠️ Make sure that the Contact instances you are performing these operations on came from a query
+> that included all fields from `Fields.PrimaryPhotoHolder`. Otherwise, the incorrect child
+> RawContact's photo may be set (in case the Contact has more than one child RawContact).  
+
 ### Using extension functions
 
 This can only be done for existing Contacts/RawContacts.
@@ -162,6 +166,10 @@ Contacts(this)
 ## Removing contact photo
 
 There are two ways to remove Contact or RawContact photo.
+
+> ⚠️ Make sure that the Contact instances you are performing these operations on came from a query
+> that included all fields from `Fields.PrimaryPhotoHolder`. Otherwise, the incorrect child
+> RawContact's photo may be set (in case the Contact has more than one child RawContact).
 
 ### Using extension functions
 
