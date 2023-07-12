@@ -2138,6 +2138,11 @@ and <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a
 </blockquote>
 <h2 id="setting-contact-photo">Setting contact photo<a class="headerlink" href="#setting-contact-photo" title="Permanent link">&para;</a></h2>
 <p>There are two ways to set Contact or RawContact photo.</p>
+<blockquote>
+<p>⚠️ Make sure that the Contact instances you are performing these operations on came from a query
+that included all fields from <code>Fields.PrimaryPhotoHolder</code>. Otherwise, the incorrect child
+RawContact's photo may be set (in case the Contact has more than one child RawContact).  </p>
+</blockquote>
 <h3 id="using-extension-functions">Using extension functions<a class="headerlink" href="#using-extension-functions" title="Permanent link">&para;</a></h3>
 <p>This can only be done for existing Contacts/RawContacts.</p>
 <p>To set the Contact photo, use one of the extension functions in <code>contacts.core.util.ContactPhoto.kt</code>,</p>
@@ -2194,6 +2199,11 @@ functions were named <code>setPhoto</code>.</p>
 </blockquote>
 <h2 id="removing-contact-photo">Removing contact photo<a class="headerlink" href="#removing-contact-photo" title="Permanent link">&para;</a></h2>
 <p>There are two ways to remove Contact or RawContact photo.</p>
+<blockquote>
+<p>⚠️ Make sure that the Contact instances you are performing these operations on came from a query
+that included all fields from <code>Fields.PrimaryPhotoHolder</code>. Otherwise, the incorrect child
+RawContact's photo may be set (in case the Contact has more than one child RawContact).</p>
+</blockquote>
 <h3 id="using-extension-functions_1">Using extension functions<a class="headerlink" href="#using-extension-functions_1" title="Permanent link">&para;</a></h3>
 <p>This can only be done for existing Contacts/RawContacts.</p>
 <p>To remove the Contact (and corresponding RawContact) photo (full-sized and thumbnail),</p>
