@@ -20,7 +20,7 @@ val contactsApi = Contacts(
 )
 ```
 
-Or, alterAOSPly after creating the `Contacts` API instance,
+Or, alternatively after creating the `Contacts` API instance,
 
 ```kotlin
 val contactsApi = Contacts(context)

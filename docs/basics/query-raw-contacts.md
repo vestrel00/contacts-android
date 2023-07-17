@@ -237,7 +237,7 @@ For example, to get a list of RawContacts with the given IDs,
 val rawContacts = Contacts(context)
     .rawContactsQuery()
     .rawContactsWhere(emptyList(), RawContactsFields.Id `in` rawContactIds)
-    // alterAOSPly, .where { RawContact.Id `in` rawContactIds }
+    // alternatively, .where { RawContact.Id `in` rawContactIds }
     .find()
 ```
 
