@@ -309,6 +309,8 @@ data class EventDate internal constructor(
                 }
             } catch (pe: ParseException) {
                 null
+            } catch (e: IndexOutOfBoundsException) {
+                null
             }
 
             // I know we can do date?.let. I like this better in this case because this is already
