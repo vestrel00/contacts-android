@@ -8,7 +8,7 @@ to these RawContacts. Sometimes, they are not enough to determine if they indeed
 person. With this in mind, the Contacts Provider allows us to explicitly and forcefully specify 
 whether two or more RawContacts reference the same person (Contact) or not.
 
-> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 > For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
 > and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/other/link-unlink-contacts.md).
 
@@ -25,8 +25,8 @@ extensions from `contacts.core.util.ContactLinks.kt`,
 val linkResult = contact1.linkDirect(contactsApi, contact2, contact3)
 ```
 
-> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), this
-> function was named `link`.
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0), 
+> this function was named `link`.
 
 ### Using the `ContactLink` API
 
@@ -42,7 +42,7 @@ val linkResult = contactsApi
 ```
 
 > ℹ️ The `ContactLink` API was not available prior to 
-> [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 
 ---------
 
@@ -130,8 +130,8 @@ To unlink a Contacts with more than one RawContact into a separate Contacts usin
 val unlinkResult = contact.unlinkDirect(contactsApi)
 ```
 
-> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), this
-> function was named `unlink`.
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0), 
+> this function was named `unlink`.
 
 ### Using the `ContactUnlink` API
 
@@ -147,7 +147,7 @@ val unlinkResult = contactsApi
 ```
 
 > ℹ️ The `ContactUnlink` API was not available prior to
-> [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 
 The above unlinks (keep separate) all RawContacts belonging to the `contact` into separate
 Contacts.

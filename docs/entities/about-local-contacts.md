@@ -51,21 +51,25 @@ The AOSP Contacts app hides the following UI fields when inserting or updating l
 - `Event`
 - `Relation`
 
-Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), the above 
-data kinds were ignored during insert and update operations. Subsequent versions no longer enforces 
-this behavior for the following reasons;
+⚠️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0), the 
+above data kinds were ignored during insert and update operations. Subsequent versions no longer 
+enforces this behavior for the following reasons;
 
 - [Google Contacts app allows these data kinds for local RawContacts](https://github.com/vestrel00/contacts-android/issues/167)
 - The Contacts Provider does not enforce these Account restrictions. 
 
 It is up to applications to impose such restrictions if so desired.
 
-## Samsung Phone contacts
+## Samsung and Xiaomi Phone contacts
 
 In most flavors of Android, a local (device-only) RawContact have null Account name and type in
-the RawContacts table. However, Samsung phones use `vnd.sec.contact.phone` to fill the Account
-name and type in the RawContacts table for local RawContacts (referred to as "Phone" in the 
-Samsung Contacts app).
+the RawContacts table. However, Samsung phones running OneUI use `vnd.sec.contact.phone` to fill the
+Account name and type in the RawContacts table for local RawContacts (referred to as "Phone" in the 
+Samsung Contacts app),
+
+```
+accountName: vnd.sec.contact.phone, accountType: vnd.sec.contact.phone
+```
 
 The `vnd.sec.contact.phone` does NOT refer to an actual `android.accounts.Account`. It is not 
 returned by the `android.accounts.AccountManager`. 
@@ -87,4 +91,25 @@ When a null is provided, all query APIs will internally additionally add
 
 > ⚠️ This internal fix is available as of [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4).
 > Prior versions will require you to pass in `Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")`
+> in addition to `null` when using `accounts` for matching local contacts.
+
+As for Xiaomi phones running MIUI, the same thing applies as discussed above with Samsung phones.
+The only difference is that for Xiaomi phones the account name and type have the following values,
+
+```
+accountName: default, accountType: com.android.contacts.default
+```
+
+In order to query for local RawContacts on Xiaomi devices, you do not have to do anything
+different. Just pass in null as usual;
+
+```kotlin
+query.accounts(null)
+```
+
+When a null is provided, all query APIs will internally additionally add
+`Account("default", "com.android.contacts.default")`.
+
+> ⚠️ This internal fix is available as of [version 0.3.1](https://github.com/vestrel00/contacts-android/discussions/288).
+> Prior versions will require you to pass in `Account("default", "com.android.contacts.default")`
 > in addition to `null` when using `accounts` for matching local contacts.

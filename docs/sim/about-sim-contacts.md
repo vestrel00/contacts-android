@@ -69,9 +69,10 @@ can be null or blank but not both.
 
 ## Some OEMs automatically sync SIM card data with Contacts Provider data
 
-Samsung phones import contacts from SIM into the Contacts Provider. When using the builtin Samsung 
-Contacts app, modifications made to the SIM contacts from the Contacts Provider are propagated to 
-the SIM card and vice versa.
+Samsung and Xiaomi phones import contacts from SIM into the Contacts Provider. When using the 
+builtin Samsung Contacts app (in Samsung phones), modifications made to the SIM contacts from the 
+Contacts Provider are propagated to the SIM card and vice versa. AFAIK, Xiaomi phones do not have 
+this feature.
 
 Samsung is most likely syncing the SIM contacts with the copy in the Contacts Provider via
 SyncAdapters. The RawContacts created in the Contacts Provider have a non-remote account name and
@@ -81,9 +82,16 @@ type (pointing to the SIM card),
 accountName: primary.sim.account_name, accountType: vnd.sec.contact.sim 
 ```
 
-Furthermore, SIM contacts imported into the Contacts Provider have the same restrictions as the SIM 
-card in that only columns available in the SIM are editable (_id, name, number, emails). Editing 
-SIM contacts using 3rd party apps such as the Google Contacts app are not supported.
+Similarly, in Xiaomi phones (though not synced to/from SIM card and Contacts Provider),
+
+```
+accountName: USIM, accountType: com.android.contacts.usim
+```
+
+SIM contacts imported into the Contacts Provider have the same restrictions as the SIM card in that 
+only columns available in the SIM are editable (_id, name, number, emails). Editing SIM contacts 
+that appear in the Contacts Provider using 3rd party apps will fail, though it may be possible to do
+with builtin Contacts app such as the case with Samsung's Contacts app (depends on OEM).
 
 If you find any issues when using the `SimContacts` APIs, please 
 [raise an issue](https://github.com/vestrel00/contacts-android/issues/new) if you find any bugs

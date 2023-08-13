@@ -13,12 +13,11 @@ import contacts.core.*
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  *
- * ## Samsung devices
+ * ## Samsung and Xiaomi devices
  *
- * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * Samsung and Xiaomi devices use non-null values for the account name and type of local RawContacts
  * in the RawContacts table instead of null. This will return false for [Account] instances created
- * with this name and type because it is not an actual account that is registered/returned by the
- * system AccountManager.
+ * with this name and type.
  */
 internal fun Account?.isInSystem(context: Context): Boolean = nullIfNotInSystem(context) != null
 
@@ -29,12 +28,11 @@ internal fun Account?.isInSystem(context: Context): Boolean = nullIfNotInSystem(
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  *
- * ## Samsung devices
+ * ## Samsung and Xiaomi devices
  *
- * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * Samsung and Xiaomi devices use non-null values for the account name and type of local RawContacts
  * in the RawContacts table instead of null. This will return true for [Account] instances created
- * with this name and type because it is not an actual account that is registered/returned by the
- * system AccountManager.
+ * with this name and type.
  */
 internal fun Account?.isNotInSystem(context: Context): Boolean = !isInSystem(context)
 
@@ -46,12 +44,11 @@ internal fun Account?.isNotInSystem(context: Context): Boolean = !isInSystem(con
  *
  * Requires [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
  *
- * ## Samsung devices
+ * ## Samsung and Xiaomi devices
  *
- * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
+ * Samsung and Xiaomi devices use non-null values for the account name and type of local RawContacts
  * in the RawContacts table instead of null. This will return null for [Account] instances created
- * with this name and type because it is not an actual account that is registered/returned by the
- * system AccountManager.
+ * with this name and type.
  */
 @SuppressLint("MissingPermission")
 internal fun Account?.nullIfNotInSystem(context: Context): Account? = this?.let {
@@ -59,10 +56,12 @@ internal fun Account?.nullIfNotInSystem(context: Context): Account? = this?.let 
 }
 
 /**
- * Returns null if this is a Samsung phone Account, which is not returned by the AccountManager.
+ * Returns null if this is a Samsung or Xiaomi device/phone Account, which is not returned by the
+ * AccountManager.
  */
-internal fun Account.nullIfSamsungPhoneAccount(): Account? = if (
-    name == SAMSUNG_PHONE_ACCOUNT && type == SAMSUNG_PHONE_ACCOUNT
+internal fun Account.nullIfSamsungOrXiaomiLocalAccount(): Account? = if (
+    (name == SAMSUNG_PHONE_ACCOUNT && type == SAMSUNG_PHONE_ACCOUNT) ||
+    (name == XIAOMI_PHONE_ACCOUNT_NAME && type == XIAOMI_PHONE_ACCOUNT_TYPE)
 ) { null } else { this }
 
 /**
@@ -117,6 +116,10 @@ internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
                     (RawContactsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
                             (RawContactsFields.AccountType equalTo SAMSUNG_PHONE_ACCOUNT)
                 )
+                .or(
+                    (RawContactsFields.AccountName equalTo XIAOMI_PHONE_ACCOUNT_NAME) and
+                            (RawContactsFields.AccountType equalTo XIAOMI_PHONE_ACCOUNT_TYPE)
+                )
         }
     }
 
@@ -129,7 +132,6 @@ internal fun Sequence<Account?>.toRawContactsWhere(): Where<RawContactsField>? =
 internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct()
     .whereOr { account ->
         if (account != null) {
-            // RawContactsFields and GroupsFields AccountName and AccountType are the same.
             (GroupsFields.AccountName equalToIgnoreCase account.name) and
                     (GroupsFields.AccountType equalToIgnoreCase account.type)
         } else {
@@ -137,6 +139,10 @@ internal fun Sequence<Account?>.toGroupsWhere(): Where<GroupsField>? = distinct(
                 .or(
                     (GroupsFields.AccountName equalTo SAMSUNG_PHONE_ACCOUNT) and
                             (GroupsFields.AccountType equalTo SAMSUNG_PHONE_ACCOUNT)
+                )
+                .or(
+                    (GroupsFields.AccountName equalTo XIAOMI_PHONE_ACCOUNT_NAME) and
+                            (GroupsFields.AccountType equalTo XIAOMI_PHONE_ACCOUNT_TYPE)
                 )
         }
     }
@@ -186,6 +192,12 @@ fun Sequence<Account>.redactedCopiesOrThis(redact: Boolean) =
 // endregion
 
 // Samsung devices use "vnd.sec.contact.phone" for local account name and type instead of null.
-// This is NOT an actual Account and is not returned by the Android AccountManager.
 // See https://github.com/vestrel00/contacts-android/issues/257
 private const val SAMSUNG_PHONE_ACCOUNT = "vnd.sec.contact.phone"
+
+
+// Xiaomi devices use "default" and "com.android.contacts.default" for local account name and type
+// respectively instead of null.
+// See https://github.com/vestrel00/contacts-android/issues/296
+private const val XIAOMI_PHONE_ACCOUNT_NAME = "default"
+private const val XIAOMI_PHONE_ACCOUNT_TYPE = "com.android.contacts.default"

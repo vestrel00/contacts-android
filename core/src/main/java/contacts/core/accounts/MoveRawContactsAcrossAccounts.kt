@@ -12,7 +12,7 @@ import contacts.core.entities.RawContact
 import contacts.core.util.*
 
 /**
- * Moves RawContacts from one Account to another, including a null Account.
+ * Moves RawContacts from one Account to another, including the null/phone/device Account.
  *
  * This API functions identically to the Google Contacts app. Copies of RawContacts are inserted
  * into the Contacts Provider database under a different account and the original RawContacts are
@@ -420,7 +420,7 @@ private class MoveRawContactsAcrossAccountsImpl(
 
                 // Check if target Account is in system. If it is not in system but is a Samsung
                 // phone Account, then it is referencing the local "null" system Account.
-                val targetAccount = entry.targetAccount?.nullIfSamsungPhoneAccount()
+                val targetAccount = entry.targetAccount?.nullIfSamsungOrXiaomiLocalAccount()
                 if (
                     targetAccount != null
                     && targetAccount.isNotInSystem(contactsApi.applicationContext)

@@ -131,7 +131,7 @@ newRawContact.account = account
 // or newRawContact.setAccount(account)
 ```
 
-> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218),
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0),
 > setting the account is done via the `ProfileInsert.forAccount` function.
 
 For example, to associated the new RawContact to an account,

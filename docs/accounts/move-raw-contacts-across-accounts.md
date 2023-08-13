@@ -10,7 +10,7 @@ afterwards. RawContact and Data values are also copied over.
 In other words, this is a copy-insert-delete operation. New rows are created in the RawContact, 
 Contact, and Data tables with the same values from the original. Then, the original rows are deleted.
 
-> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 > For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
 > and below, only supported moving local RawContacts to an Account,
 > [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/accounts/associate-device-local-raw-contacts-to-an-account.md).

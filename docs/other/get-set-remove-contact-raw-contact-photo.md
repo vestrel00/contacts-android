@@ -3,7 +3,7 @@
 This library provides several functions to interact with Contact and RawContact full-sized and 
 thumbnail photos.
 
-> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 > For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4) 
 > and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/other/get-set-remove-contact-raw-contact-photo.md).
 
@@ -122,13 +122,13 @@ rawContact.setPhotoDirect(contactsApi, PhotoData.from(bitmap))
 rawContact.setPhotoDirect(contactsApi, PhotoData.from(bitmapDrawable))
 ```
 
-> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0), these
 > functions were named `setPhoto`.
 
 ### As part of an insert or update API call
 
 > ℹ️ Setting photo as part of insert or update API calls was not possible prior to
-> [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 
 To insert a new RawContact with a photo,
 
@@ -187,13 +187,13 @@ To remove a specific RawContact's photo (full-sized and thumbnail),
 rawContact.removePhotoDirect(contactsApi)
 ```
 
-> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218), these
-> functions were named `removePhoto`.
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0), 
+> these functions were named `removePhoto`.
 
 ### As part of an update API call
 
 > ℹ️ Removing photo as part of insert or update API calls was not possible prior to
-> [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 
 To update an existing Contact or RawContact without a photo,
 

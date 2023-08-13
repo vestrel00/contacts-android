@@ -3,7 +3,7 @@
 This library provides several functions to interact with Contact and RawContact options; starred,
 send to voicemail, and ringtone.
 
-> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218).
+> ⚠️ The APIs for this have changed significantly since [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0).
 > For documentation for [version 0.2.4](https://github.com/vestrel00/contacts-android/releases/tag/0.2.4)
 > and below, [visit this page (click me)](https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/other/get-set-clear-contact-raw-contact-options.md).
 

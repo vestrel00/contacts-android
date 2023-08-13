@@ -42,7 +42,7 @@ val insertResult = Contacts(context)
 A set of groups exist for each Account. The "null" account (representing the local/device-only 
 account) may also have a set of groups.
 
-> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/discussions/218),
+> ℹ️ Prior to [version 0.3.0](https://github.com/vestrel00/contacts-android/releases/tag/0.3.0),
 > this API did not allow insertion of groups with null accounts.
 
 The get accounts permission is required here because this API retrieves all available accounts,
