@@ -46,6 +46,16 @@ import contacts.core.util.*
  *
  * **Profile RawContacts are not supported!** Operations for these will fail.
  *
+ * ## Invalid or invisible Accounts
+ *
+ * Attempting to move RawContacts to an [android.accounts.Account] that your app does not have
+ * access/visibility to or a completely invalid/bogus Account will result the operation to fail
+ * with [Result.FailureReason.INVALID_ACCOUNT].
+ *
+ * For example, Samsung and Xiaomi accounts in Samsung and Xiaomi devices respectively are not
+ * returned by [android.accounts.AccountManager.getAccounts] if the calling app is a 3rd party app
+ * (does not come pre-installed with the OS).
+ *
  * ## Permissions
  *
  * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION], [ContactsPermissions.READ_PERMISSION], and
@@ -283,7 +293,14 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
         enum class FailureReason {
 
             /**
-             * The [Entry.targetAccount] is not in the system.
+             * The [Entry.targetAccount] is invalid or just not visible.
+             *
+             * Note that this does not necessarily mean that the [Entry.targetAccount] is not a real
+             * account that is registered with the OS. It just means that the Account is not visible
+             * to the calling app via the [android.accounts.AccountManager]. For example, Samsung
+             * and Xiaomi accounts in Samsung and Xiaomi devices respectively are not returned by
+             * [android.accounts.AccountManager.getAccounts] if the calling app is a 3rd party app
+             * (does not come pre-installed with the OS).
              */
             INVALID_ACCOUNT,
 
@@ -418,8 +435,8 @@ private class MoveRawContactsAcrossAccountsImpl(
                     break
                 }
 
-                // Check if target Account is in system. If it is not in system but is a Samsung
-                // phone Account, then it is referencing the local "null" system Account.
+                // Ensure that the target Account is in system or is referencing the local "null"
+                // system Account.
                 val targetAccount = entry.targetAccount?.nullIfSamsungOrXiaomiLocalAccount()
                 if (
                     targetAccount != null

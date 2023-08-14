@@ -26,46 +26,6 @@ val accounts = Contacts(context).accounts().query()
     .find()
 ```
 
-To get the account for a set of RawContacts,
-
-```kotlin
-val account = Contacts(context).accounts().query()
-    .associatedWith(rawContacts)
-    .find()
-```
-
-To get the account for a set of RawContacts with a given set of IDs,
-
-```kotlin
-val account = Contacts(context).accounts().query()
-    .associatedWithRawContactIds(rawContactIds)
-    .find()
-```
-
-To get all available accounts in the system with an account type of "com.google" or "com.yahoo"
-AND is associated with at least one of the given RawContacts,
-
-```kotlin
-val accounts = Contacts(context).accounts().query()
-    .withTypes("com.google", "com.yahoo")
-    .associatedWith(rawContacts)
-    .find()
-```
-
-> ℹ️ RawContacts that are not associated with an Account are local to the device. For more info, 
-> read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
-
-## Account for each specified RawContact
-
-When you perform a query that uses `associatedWith` without using `withTypes`, you are able to get
-the `Account` for each of the `RawContact` specified.
-
-```kotlin
-val rawContactAccount = accounts.accountFor(rawContact)
-```
-
-This allows you to get the accounts for multiple RawContacts in one API call =)
-
 ## Cancelling the query
 
 To cancel a query amid execution,
@@ -108,21 +68,10 @@ You may, of course, use other multi-threading libraries or just do it yourself =
 
 ## Performing the query with permission
 
-Queries require the `android.permission.READ_CONTACTS` and `android.permission.GET_ACCOUNTS`
-permissions. If not granted, the query will do nothing and return an empty list.
+Queries require the `android.permission.GET_ACCOUNTS` permissions. If not granted, the query will 
+do nothing and return an empty list.
 
 To perform the query with permission, use the extensions provided in the `permissions` module. For
 more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
-
-## Profile accounts
-
-The `AccountsQuery` API also supports querying the Profile (device owner) account. To get an
-instance of this API for Profile queries,
-
-```kotlin
-val query = Contacts(context).accounts().profile().query()
-```
-
-All queries will be limited to the Profile, whether it exists or not.

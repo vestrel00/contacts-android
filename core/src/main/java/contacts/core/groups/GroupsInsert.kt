@@ -162,10 +162,14 @@ interface GroupsInsert : CrudApi {
             TITLE_ALREADY_EXIST,
 
             /**
-             * The Group's Account is not found in the system.
+             * The Group's Account is invalid or just not visible.
              *
-             * A null account is a valid "account". On the other hand, a non-null account that is
-             * not in the system AccountManager is invalid.
+             * Note that this does not necessarily mean that the Group's Account is not a real
+             * account that is registered with the OS. It just means that the Account is not visible
+             * to the calling app via the [android.accounts.AccountManager]. For example, Samsung
+             * and Xiaomi accounts in Samsung and Xiaomi devices respectively are not returned by
+             * [android.accounts.AccountManager.getAccounts] if the calling app is a 3rd party app
+             * (does not come pre-installed with the OS).
              */
             INVALID_ACCOUNT,
 

@@ -2,50 +2,38 @@ package contacts.core.accounts
 
 import android.accounts.Account
 import android.accounts.AccountManager
-import android.content.ContentResolver
-import android.content.Context
 import contacts.core.*
-import contacts.core.entities.ExistingRawContactEntity
-import contacts.core.entities.cursor.account
-import contacts.core.entities.cursor.rawContactsCursor
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 import contacts.core.util.*
 
 /**
- * Retrieves [Account]s from the [AccountManager].
+ * Retrieves **visible** [Account]s from the [AccountManager].
+ *
+ * Note that this is a lightweight wrapper around the [AccountManager]. It used to support filtering
+ * Accounts based on RawContacts but that functionality has since been removed to due Samsung,
+ * Xiaomi, and perhaps other OEMs not allowing 3rd party apps to easily access their accounts.
+ * More context in TODO
  *
  * ## Permissions
  *
- * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
- * [contacts.core.ContactsPermissions.READ_PERMISSION] are assumed to
- * have been granted already in these examples for brevity. If not granted, the query will do
+ * The [AccountsPermissions.GET_ACCOUNTS_PERMISSION] is assumed to have been granted already in
+ * these examples for brevity. If not granted, the query will do
  * nothing and return an empty list.
  *
  * ## Usage
  *
- * Here is an example of how to get all accounts with type "com.google" that is associated with
- * any of the given rawContacts.
+ * Here is an example of how to get all accounts with type "com.google".
  *
  * In Kotlin,
  *
  * ```kotlin
- * val accounts = accountsQuery
- *     .withType("com.google")
- *     .associatedWith(rawContacts)
- *     .find()
+ * val accounts = accountsQuery.withType("com.google").find()
  * ```
  *
  * In Java,
  *
  * ```kotlin
- * List<Account> accounts = accountsQuery
- *     .withType("com.google")
- *     .associatedWith(rawContacts)
- *     .find();
+ * List<Account> accounts = accountsQuery.withType("com.google").find();
  * ```
- *
- * If [withTypes] and [associatedWith] are not used, then all accounts in the system are returned.
  *
  * ## Where, orderBy, offset, and limit
  *
@@ -54,12 +42,25 @@ import contacts.core.util.*
  * query function of Accounts need not be as extensive (or at all) as other Queries. Where, orderBy,
  * offset, and limit functions are left to consumers to implement if they wish.
  *
- * ## Samsung devices
+ * ## Invalid or invisible Accounts
  *
- * Samsung devices use "vnd.sec.contact.phone" for the account name and type of local RawContacts
- * in the RawContacts table instead of null. This will return null for such instances with this
- * name and type because it is not an actual account that is registered/returned by the system
- * AccountManager.
+ * Samsung Accounts (type "com.osp.app.signin") and Xiaomi Accounts (type "com.xiaomi") on Samsung
+ * and Xiaomi devices respectively are not returned by the [AccountManager] if the calling app is a
+ * 3rd party app (does not come pre-installed with the OS).
+ *
+ * In Samsung devices, the default Contacts app that comes pre-installed is Samsung Contacts. The
+ * Samsung Contacts app allows users to create and filter contacts using the Samsung account.
+ * However, 3rd party apps such as Google Contacts do not have visibility of the Samsung account.
+ * Contacts belonging to Samsung accounts are still accessible to 3rd party apps, it's just that the
+ * Accounts are not.
+ *
+ * In Xiaomi devices, the default Contacts app that comes pre-installed (in the global version) is
+ * the Google Contacts app. The Google Contacts app allows users to create and filter contacts
+ * using the Samsung account. However, 3rd party Contacts apps do not have visibility of the Xiaomi
+ * account. Contacts belonging to Xiaomi accounts are still accessible to 3rd party apps, it's just
+ * that the Accounts are not.
+ *
+ * There may be other OEMs aside from Samsung and Xiaomi that have similar caveats.
  */
 interface AccountsQuery : CrudApi {
 
@@ -82,65 +83,11 @@ interface AccountsQuery : CrudApi {
     fun withTypes(accountTypes: Sequence<String>): AccountsQuery
 
     /**
-     * Limits the search to Accounts that are associated with one of the given [rawContacts]s.
-     *
-     * If this is not specified or none is provided (empty list), then Accounts associated with any
-     * RawContact (or no RawContact) are included in the search.
-     *
-     * Account info for RawContacts provided here can be retrieved via [Result.accountFor].
-     *
-     * ## Performance
-     *
-     * This will require an additional database query, internally performed in this function, which
-     * increases the time it takes for [find] to complete. Therefore, you should only specify this
-     * if you actually need it.
-     */
-    fun associatedWith(vararg rawContacts: ExistingRawContactEntity): AccountsQuery
-
-    /**
-     * See [AccountsQuery.associatedWith].
-     */
-    fun associatedWith(rawContacts: Collection<ExistingRawContactEntity>): AccountsQuery
-
-    /**
-     * See [AccountsQuery.associatedWith].
-     */
-    fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>): AccountsQuery
-
-    /**
-     * Limits the search to Accounts that are associated with one of the RawContacts with the
-     * given [rawContactIds].
-     *
-     * If this is not specified or none is provided (empty list), then Accounts associated with any
-     * RawContact (or no RawContact) are included in the search.
-     *
-     * Account info for RawContact IDs provided here can be retrieved via [Result.accountFor].
-     *
-     * ## Performance
-     *
-     * This will require an additional database query, internally performed in this function, which
-     * increases the time it takes for [find] to complete. Therefore, you should only specify this
-     * if you actually need it.
-     */
-    fun associatedWithRawContactIds(vararg rawContactIds: Long): AccountsQuery
-
-    /**
-     * See [AccountsQuery.associatedWithRawContactIds].
-     */
-    fun associatedWithRawContactIds(rawContactIds: Collection<Long>): AccountsQuery
-
-    /**
-     * See [AccountsQuery.associatedWithRawContactIds].
-     */
-    fun associatedWithRawContactIds(rawContactIds: Sequence<Long>): AccountsQuery
-
-    /**
      * Returns a list of [Accounts]s matching the preceding query options.
      *
      * ## Permissions
      *
-     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
-     * [contacts.core.ContactsPermissions.READ_PERMISSION].
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION].
      *
      * ## Thread Safety
      *
@@ -154,8 +101,7 @@ interface AccountsQuery : CrudApi {
      *
      * ## Permissions
      *
-     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
-     * [contacts.core.ContactsPermissions.READ_PERMISSION].
+     * Requires [AccountsPermissions.GET_ACCOUNTS_PERMISSION].
      *
      * ## Cancellation
      *
@@ -190,36 +136,8 @@ interface AccountsQuery : CrudApi {
 
     /**
      * A list of [Account]s.
-     *
-     * Use [accountFor] to retrieve the Account for the specified RawContact.
      */
     interface Result : List<Account>, CrudApi.Result {
-
-        /**
-         * A map of RawContact IDs to Accounts.
-         */
-        val rawContactIdsAccountsMap: Map<Long, Account>
-
-        /**
-         * The [Account] retrieved for the [rawContact]. Null if no Account or retrieval failed.
-         *
-         * ## Use only when [associatedWith] is the only query parameter used!
-         *
-         * This will only work for RawContacts that have been specified  in [associatedWith]. If
-         * you did not specify RawContacts in [associatedWith], then this is guaranteed to return
-         * null even if the [rawContact] actually has an account in the database.
-         *
-         * Using [withTypes] may also interfere with the value returned here. If the RawContact
-         * specified in [associatedWith] does not have an Account with a type specified in
-         * [withTypes], then this will return null even if the [rawContact] actually has an account
-         * in the database.
-         */
-        fun accountFor(rawContact: ExistingRawContactEntity): Account?
-
-        /**
-         * See [Result.accountFor]
-         */
-        fun accountFor(rawContactId: Long): Account?
 
         // We have to cast the return type because we are not using recursive generic types.
         override fun redactedCopy(): Result
@@ -227,21 +145,18 @@ interface AccountsQuery : CrudApi {
 }
 
 @Suppress("FunctionName")
-internal fun AccountsQuery(contacts: Contacts, isProfile: Boolean): AccountsQuery =
+internal fun AccountsQuery(contacts: Contacts): AccountsQuery =
     AccountsQueryImpl(
         contacts,
-        AccountManager.get(contacts.applicationContext),
-        isProfile
+        AccountManager.get(contacts.applicationContext)
     )
 
 @SuppressWarnings("MissingPermission")
 private class AccountsQueryImpl(
     override val contactsApi: Contacts,
     private val accountManager: AccountManager,
-    private val isProfile: Boolean,
 
     private val accountTypes: MutableSet<String> = mutableSetOf(),
-    private val rawContactIds: MutableSet<Long> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
 ) : AccountsQuery {
@@ -249,19 +164,16 @@ private class AccountsQueryImpl(
     override fun toString(): String =
         """
             AccountsQuery {
-                isProfile: $isProfile
                 accountType: $accountTypes
-                rawContactIds: $rawContactIds
                 hasPermission: ${accountsPermissions.canQueryAccounts()}
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): AccountsQuery = AccountsQueryImpl(
-        contactsApi, accountManager, isProfile,
+        contactsApi, accountManager,
 
         accountTypes = accountTypes.redactStrings().toMutableSet(),
-        rawContactIds = rawContactIds,
 
         isRedacted = true
     )
@@ -274,25 +186,6 @@ private class AccountsQueryImpl(
         this.accountTypes.addAll(accountTypes.redactStringsOrThis(isRedacted))
     }
 
-    override fun associatedWith(vararg rawContacts: ExistingRawContactEntity) =
-        associatedWith(rawContacts.asSequence())
-
-    override fun associatedWith(rawContacts: Collection<ExistingRawContactEntity>) =
-        associatedWith(rawContacts.asSequence())
-
-    override fun associatedWith(rawContacts: Sequence<ExistingRawContactEntity>) =
-        associatedWithRawContactIds(rawContacts.map { it.id })
-
-    override fun associatedWithRawContactIds(vararg rawContactIds: Long) =
-        associatedWithRawContactIds(rawContactIds.asSequence())
-
-    override fun associatedWithRawContactIds(rawContactIds: Collection<Long>) =
-        associatedWithRawContactIds(rawContactIds.asSequence())
-
-    override fun associatedWithRawContactIds(rawContactIds: Sequence<Long>): AccountsQuery = apply {
-        this.rawContactIds.addAll(rawContactIds)
-    }
-
     override fun find(): AccountsQuery.Result = find { false }
 
     override fun find(cancel: () -> Boolean): AccountsQuery.Result {
@@ -300,21 +193,17 @@ private class AccountsQueryImpl(
 
         // We start off with the full set of accounts in the system (which is typically not
         // more than a handful). Then we'll trim the fat as we process the query parameters.
-        // This will not include Samsung's local phone "account".
+        // This will not include Samsung's or Xiaomi's local phone "account".
         var systemAccounts: Set<Account> = accountManager.accounts.toSet()
 
         return if (
             cancel()
             || !accountsPermissions.canQueryAccounts()
-            // If the isProfile parameter does not match for all RawContacts, return immediately.
-            || rawContactIds.allAreProfileIds != isProfile
-            // No accounts in the system. No point in processing the rest of the query.
+            // No (visible) accounts in the system. No point in processing the rest of the query.
             || systemAccounts.isEmpty()
         ) {
-            AccountsQueryResult(systemAccounts, emptyMap())
+            AccountsQueryResult(systemAccounts)
         } else {
-            var rawContactIdsAccountsMap = emptyMap<Long, Account>()
-
             if (!cancel() && accountTypes.isNotEmpty()) {
                 // Reduce the accounts to only those that have the given types.
                 systemAccounts = systemAccounts.filter {
@@ -322,94 +211,23 @@ private class AccountsQueryImpl(
                 }.toSet()
             }
 
-            if (!cancel() && rawContactIds.isNotEmpty() && systemAccounts.isNotEmpty()) {
-                // Reduce the accounts to only those that are associated with one of the
-                // RawContacts. Note that this map can only be as large as the amount of
-                // rawContactIds passed to it. Therefore, there should not be any need to paginate,
-                // unless the consumer passed in way too many RawContact IDs =P
-                rawContactIdsAccountsMap = contentResolver.accountsForRawContactsWithIdsInAccounts(
-                    rawContactIds, systemAccounts, cancel
-                )
-                systemAccounts = rawContactIdsAccountsMap.values.toSet()
-            }
-
             if (cancel()) {
                 systemAccounts = emptySet()
-                rawContactIdsAccountsMap = emptyMap()
             }
 
-            AccountsQueryResult(systemAccounts, rawContactIdsAccountsMap)
+            AccountsQueryResult(systemAccounts)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
 
-/**
- * Returns a map of RawContact IDs to the corresponding Account for all RawContacts with IDs in
- * [rawContactIds] that belong to one of the Accounts in [systemAccounts].
- *
- * If the [systemAccounts] is empty, it will be ignored. Otherwise, the query will only return RawContacts
- * that are associated with one of the given accounts.
- *
- * This only requires [contacts.core.ContactsPermissions.READ_PERMISSION].
- */
-private fun ContentResolver.accountsForRawContactsWithIdsInAccounts(
-    rawContactIds: Set<Long>,
-    systemAccounts: Set<Account>,
-    cancel: () -> Boolean
-): Map<Long, Account> = query(
-    if (rawContactIds.allAreProfileIds) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
-    Include(RawContactsFields.Id, RawContactsFields.AccountName, RawContactsFields.AccountType),
-    // Note that if accounts is empty, then accounts.toRawContactsWhere() will return null.
-    // Then the following WHERE will resolve to just (RawContactsFields.Id `in` rawContactIds).
-    (RawContactsFields.Id `in` rawContactIds) and systemAccounts.toRawContactsWhere()
-) {
-    val rawContactIdsAccountsMap = mutableMapOf<Long, Account>()
-    val rawContactsCursor = it.rawContactsCursor()
-    while (!cancel() && it.moveToNext()) {
-        // Reuse references to the given set of accounts to reduce memory consumption by avoiding
-        // creating duplicate Accounts.
-        val account = systemAccounts.find { account ->
-            account.name == rawContactsCursor.accountName &&
-                    account.type == rawContactsCursor.accountType
-        }
-        if (account != null) {
-            rawContactIdsAccountsMap[rawContactsCursor.rawContactId] = account
-        }
-    }
-    rawContactIdsAccountsMap
-} ?: emptyMap()
-
-/**
- * Returns the Account, based on the values in the RawContacts table, for the RawContact with the
- * given [rawContactId].
- *
- * This will return a null Account if the non-null account name and type stored in the RawContacts
- * table is not in the system. In other words, this will return null for invalid Accounts.
- *
- * This only requires [contacts.core.ContactsPermissions.READ_PERMISSION].
- */
-internal fun Context.accountForRawContactWithId(rawContactId: Long): Account? =
-    contentResolver.query(
-        if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
-        Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
-        RawContactsFields.Id equalTo rawContactId
-    ) {
-        val account = it.getNextOrNull { it.rawContactsCursor().account() }
-        account.nullIfNotInSystem(this)
-    }
-
 private class AccountsQueryResult private constructor(
     accounts: Set<Account>,
-    override val rawContactIdsAccountsMap: Map<Long, Account>,
     override val isRedacted: Boolean
 ) : ArrayList<Account>(accounts), AccountsQuery.Result {
 
-    constructor(
-        accounts: Set<Account>,
-        rawContactIdAccountMap: Map<Long, Account>
-    ) : this(accounts, rawContactIdAccountMap, false)
+    constructor(accounts: Set<Account>) : this(accounts, false)
 
     // Note that it should be okay to print all of the Accounts as there shouldn't be much.
     override fun toString(): String =
@@ -417,19 +235,12 @@ private class AccountsQueryResult private constructor(
             AccountsQuery.Result {
                 Number of accounts found: $size
                 Accounts: ${joinToString()}
-                rawContactIdsAccountsMap: $rawContactIdsAccountsMap
                 isRedacted: $isRedacted
             }
         """.trimIndent()
 
     override fun redactedCopy(): AccountsQuery.Result = AccountsQueryResult(
         asSequence().redactedCopies().toSet(),
-        rawContactIdsAccountsMap.mapValues { it.value.redactedCopy() },
         isRedacted = true
     )
-
-    override fun accountFor(rawContact: ExistingRawContactEntity): Account? =
-        accountFor(rawContact.id)
-
-    override fun accountFor(rawContactId: Long): Account? = rawContactIdsAccountsMap[rawContactId]
 }

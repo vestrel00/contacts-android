@@ -2678,7 +2678,6 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.accounts.Account
     import android.app.Activity
     import contacts.core.Contacts
-    import contacts.core.entities.RawContact
     
     class QueryAccountsActivity : Activity() {
     
@@ -2689,13 +2688,6 @@ heading explore each API in full detail. You may also find these samples in the 
             .query()
             .withTypes("com.google")
             .find()
-    
-        fun getRawContactAccount(rawContact: RawContact): Account? = Contacts(this)
-            .accounts()
-            .query()
-            .associatedWith(rawContact)
-            .find()
-            .firstOrNull()
     }
     ```
 
@@ -2708,7 +2700,6 @@ heading explore each API in full detail. You may also find these samples in the 
     import java.util.List;
     
     import contacts.core.ContactsFactory;
-    import contacts.core.entities.RawContact;
     
     public class QueryAccountsActivity extends Activity {
     
@@ -2722,15 +2713,6 @@ heading explore each API in full detail. You may also find these samples in the 
                     .query()
                     .withTypes("com.google")
                     .find();
-        }
-    
-        Account getRawContactAccount(RawContact rawContact) {
-            return ContactsFactory.create(this)
-                    .accounts()
-                    .query()
-                    .associatedWith(rawContact)
-                    .find()
-                    .get(0);
         }
     }
     ```

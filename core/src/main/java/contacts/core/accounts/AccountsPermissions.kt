@@ -13,7 +13,7 @@ import contacts.core.isPermissionGrantedFor
 interface AccountsPermissions {
 
     /**
-     * Returns true if [GET_ACCOUNTS_PERMISSION] and [READ_PERMISSION] are granted.
+     * Returns true if [GET_ACCOUNTS_PERMISSION] ] is granted.
      */
     fun canQueryAccounts(): Boolean
 
@@ -37,7 +37,6 @@ private class AccountsPermissionsImpl(private val applicationContext: Context) :
 
     override fun canQueryAccounts(): Boolean =
         applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)
-                && applicationContext.isPermissionGrantedFor(READ_PERMISSION)
 
     override fun canMoveRawContactsAcrossAccounts(): Boolean =
         applicationContext.isPermissionGrantedFor(GET_ACCOUNTS_PERMISSION)

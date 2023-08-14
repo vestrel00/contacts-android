@@ -11,9 +11,8 @@ import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
 
 /**
- * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and [ContactsPermissions.READ_PERMISSION] are
- * not yet granted, suspends the current coroutine, requests for the permission, and then returns a
- * new [AccountsQuery] instance.
+ * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION] is not yet granted, suspends the current
+ * coroutine, requests for the permission, and then returns a new [AccountsQuery] instance.
  *
  * If permissions are already granted, then immediately returns a new [AccountsQuery] instance.
  */

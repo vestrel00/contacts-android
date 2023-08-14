@@ -14,7 +14,7 @@ adapters and remote services and you have network connection, data belonging to 
 contacts you create, update, or delete will be synced on all devices and services associated with
 that account.
 
-> ℹ️ Besides Google Accounts, there is also Samsung, Yahoo, MSN/Hotmail, etc.
+> ℹ️ Besides Google Accounts, there is also Samsung, Xiaomi, Yahoo, MSN/Hotmail, etc.
 
 Syncing contacts across devices is possible with sync adapters and Contacts' lookup key.
 

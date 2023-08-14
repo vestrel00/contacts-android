@@ -231,7 +231,7 @@ private class ContactsImpl(
 
     override fun profile() = Profile(this)
 
-    override fun accounts() = Accounts(this, false)
+    override fun accounts() = Accounts(this)
 
     override fun blockedNumbers() = BlockedNumbers(this)
 

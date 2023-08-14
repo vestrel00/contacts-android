@@ -27,6 +27,16 @@ import contacts.core.util.*
  * blank, then the email is not inserted. This is the same behavior as the AOSP Contacts app. This
  * behavior cannot be modified.
  *
+ * ## Invalid or invisible Accounts
+ *
+ * Attempting to insert new RawContacts using an [android.accounts.Account] that your app does not
+ * have access/visibility to or a completely invalid/bogus Account will result in the RawContact to
+ * be associated with the local/device-only Account.
+ *
+ * For example, Samsung and Xiaomi accounts in Samsung and Xiaomi devices respectively are not
+ * returned by [android.accounts.AccountManager.getAccounts] if the calling app is a 3rd party app
+ * (does not come pre-installed with the OS).
+ *
  * ## Permissions
  *
  * The [ContactsPermissions.WRITE_PERMISSION] and
@@ -404,9 +414,12 @@ internal fun Contacts.insertRawContact(
     rawContact: NewRawContact,
     isProfile: Boolean
 ): Long? {
-    // This ensures that a valid account is used. Otherwise, null is used. For Samsung and Xiaomi
-    // devices, the "account" will later be set to a local non-null account that may not returned
-    // by the system AccountManager.
+    // This ensures that a valid and (visible) account is used. Otherwise, null is used. For Samsung
+    // and Xiaomi devices, RawContacts with null accounts will later be set to a local non-null
+    // account that may not returned by the system AccountManager. This disallows 3rd party apps
+    // using this library from inserting new Contacts using Samsung or Xiaomi accounts if the
+    // calling app does not have access to the account via the system AccountManager.
+    // FIXME? Perhaps we should fail the insert operation instead of defaulting to the local account?
     val account = rawContact.account.nullIfNotInSystem(applicationContext)
 
     val operations = arrayListOf<ContentProviderOperation>()

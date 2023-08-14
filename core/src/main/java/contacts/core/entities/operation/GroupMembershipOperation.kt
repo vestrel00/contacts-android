@@ -7,10 +7,18 @@ import android.content.Context
 import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.Include
-import contacts.core.accounts.accountForRawContactWithId
+import contacts.core.RawContactsFields
 import contacts.core.entities.*
+import contacts.core.entities.cursor.account
+import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.groupMembershipMapper
+import contacts.core.entities.table.ProfileUris
+import contacts.core.entities.table.Table
+import contacts.core.equalTo
 import contacts.core.groups.Groups
+import contacts.core.util.contacts
+import contacts.core.util.isProfileId
+import contacts.core.util.nullIfNotInSystem
 import contacts.core.util.query
 
 internal class GroupMembershipOperation(
@@ -143,5 +151,24 @@ internal class GroupMembershipOperation(
             }
         } ?: emptyList()
 }
+
+/**
+ * Returns the Account, based on the values in the RawContacts table, for the RawContact with the
+ * given [rawContactId].
+ *
+ * This will return a null Account if the non-null account name and type stored in the RawContacts
+ * table is not in the system. In other words, this will return null for invalid Accounts.
+ *
+ * This only requires [contacts.core.ContactsPermissions.READ_PERMISSION].
+ */
+private fun Context.accountForRawContactWithId(rawContactId: Long): Account? =
+    contentResolver.query(
+        if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+        Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
+        RawContactsFields.Id equalTo rawContactId
+    ) {
+        val account = it.getNextOrNull { it.rawContactsCursor().account() }
+        account.nullIfNotInSystem(this)
+    }
 
 private val INCLUDE = Include(Fields.DataId, Fields.GroupMembership.GroupId)
