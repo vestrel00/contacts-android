@@ -194,28 +194,31 @@ private class AccountsQueryImpl(
         // We start off with the full set of accounts in the system (which is typically not
         // more than a handful). Then we'll trim the fat as we process the query parameters.
         // This will not include Samsung's or Xiaomi's local phone "account".
-        var systemAccounts: Set<Account> = accountManager.accounts.toSet()
+        val visibleAccounts: MutableSet<Account> = accountManager.accounts.toMutableSet()
 
         return if (
             cancel()
             || !accountsPermissions.canQueryAccounts()
             // No (visible) accounts in the system. No point in processing the rest of the query.
-            || systemAccounts.isEmpty()
+            || visibleAccounts.isEmpty()
         ) {
-            AccountsQueryResult(systemAccounts)
+            AccountsQueryResult(visibleAccounts)
         } else {
             if (!cancel() && accountTypes.isNotEmpty()) {
                 // Reduce the accounts to only those that have the given types.
-                systemAccounts = systemAccounts.filter {
-                    accountTypes.contains(it.type)
-                }.toSet()
+                visibleAccounts.removeAll { !accountTypes.contains(it.type) }
+            }
+
+            if (!cancel()) {
+                // See https://github.com/vestrel00/contacts-android/issues/298
+                visibleAccounts.removeAll { it.type == "com.samsung.android.mobileservice" }
             }
 
             if (cancel()) {
-                systemAccounts = emptySet()
+                visibleAccounts.clear()
             }
 
-            AccountsQueryResult(systemAccounts)
+            AccountsQueryResult(visibleAccounts)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
