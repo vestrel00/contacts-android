@@ -452,8 +452,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#samsung-phone-contacts" class="md-nav__link">
-    Samsung Phone contacts
+  <a href="#samsung-and-xiaomi-phone-contacts" class="md-nav__link">
+    Samsung and Xiaomi Phone contacts
   </a>
   
 </li>
@@ -1901,8 +1901,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#samsung-phone-contacts" class="md-nav__link">
-    Samsung Phone contacts
+  <a href="#samsung-and-xiaomi-phone-contacts" class="md-nav__link">
+    Samsung and Xiaomi Phone contacts
   </a>
   
 </li>
@@ -1964,19 +1964,21 @@ Contacts Provider.</p>
 <li><code>Event</code></li>
 <li><code>Relation</code></li>
 </ul>
-<p>Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>, the above 
-data kinds were ignored during insert and update operations. Subsequent versions no longer enforces 
-this behavior for the following reasons;</p>
+<p>⚠️ Prior to <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.3.0">version 0.3.0</a>, the 
+above data kinds were ignored during insert and update operations. Subsequent versions no longer 
+enforces this behavior for the following reasons;</p>
 <ul>
 <li><a href="https://github.com/vestrel00/contacts-android/issues/167">Google Contacts app allows these data kinds for local RawContacts</a></li>
 <li>The Contacts Provider does not enforce these Account restrictions. </li>
 </ul>
 <p>It is up to applications to impose such restrictions if so desired.</p>
-<h2 id="samsung-phone-contacts">Samsung Phone contacts<a class="headerlink" href="#samsung-phone-contacts" title="Permanent link">&para;</a></h2>
+<h2 id="samsung-and-xiaomi-phone-contacts">Samsung and Xiaomi Phone contacts<a class="headerlink" href="#samsung-and-xiaomi-phone-contacts" title="Permanent link">&para;</a></h2>
 <p>In most flavors of Android, a local (device-only) RawContact have null Account name and type in
-the RawContacts table. However, Samsung phones use <code>vnd.sec.contact.phone</code> to fill the Account
-name and type in the RawContacts table for local RawContacts (referred to as "Phone" in the 
-Samsung Contacts app).</p>
+the RawContacts table. However, Samsung phones running OneUI use <code>vnd.sec.contact.phone</code> to fill the
+Account name and type in the RawContacts table for local RawContacts (referred to as "Phone" in the 
+Samsung Contacts app),</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>accountName: vnd.sec.contact.phone, accountType: vnd.sec.contact.phone
+</code></pre></div>
 <p>The <code>vnd.sec.contact.phone</code> does NOT refer to an actual <code>android.accounts.Account</code>. It is not 
 returned by the <code>android.accounts.AccountManager</code>. </p>
 <p>In short, Samsung devices use <code>vnd.sec.contact.phone</code> instead of null for local RawContacts.</p>
@@ -1984,13 +1986,28 @@ returned by the <code>android.accounts.AccountManager</code>. </p>
 later time, be automatically associated with the <code>vnd.sec.contact.phone</code>.</p>
 <p>In order to query for local RawContacts on Samsung devices, you do not have to do anything 
 different. Just pass in null as usual;</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">query</span><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">query</span><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>When a null is provided, all query APIs will internally additionally add 
 <code>Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")</code>.</p>
 <blockquote>
 <p>⚠️ This internal fix is available as of <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.2.4">version 0.2.4</a>.
 Prior versions will require you to pass in <code>Account("vnd.sec.contact.phone", "vnd.sec.contact.phone")</code>
+in addition to <code>null</code> when using <code>accounts</code> for matching local contacts.</p>
+</blockquote>
+<p>As for Xiaomi phones running MIUI, the same thing applies as discussed above with Samsung phones.
+The only difference is that for Xiaomi phones the account name and type have the following values,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>accountName: default, accountType: com.android.contacts.default
+</code></pre></div>
+<p>In order to query for local RawContacts on Xiaomi devices, you do not have to do anything
+different. Just pass in null as usual;</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">query</span><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<p>When a null is provided, all query APIs will internally additionally add
+<code>Account("default", "com.android.contacts.default")</code>.</p>
+<blockquote>
+<p>⚠️ This internal fix is available as of <a href="https://github.com/vestrel00/contacts-android/discussions/288">version 0.3.1</a>.
+Prior versions will require you to pass in <code>Account("default", "com.android.contacts.default")</code>
 in addition to <code>null</code> when using <code>accounts</code> for matching local contacts.</p>
 </blockquote>
 

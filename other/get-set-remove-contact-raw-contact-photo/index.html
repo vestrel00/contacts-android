@@ -2065,7 +2065,7 @@
 <p>This library provides several functions to interact with Contact and RawContact full-sized and 
 thumbnail photos.</p>
 <blockquote>
-<p>⚠️ The APIs for this have changed significantly since <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>.
+<p>⚠️ The APIs for this have changed significantly since <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.3.0">version 0.3.0</a>.
 For documentation for <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.2.4">version 0.2.4</a> 
 and below, <a href="https://github.com/vestrel00/contacts-android/blob/0.2.4/docs/other/get-set-remove-contact-raw-contact-photo.md">visit this page (click me)</a>.</p>
 </blockquote>
@@ -2160,13 +2160,13 @@ automatically creates a downsized version of the full-sized photo.</p>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">setPhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">PhotoData</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">bitmapDrawable</span><span class="p">))</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
-<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>, these
+<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.3.0">version 0.3.0</a>, these
 functions were named <code>setPhoto</code>.</p>
 </blockquote>
 <h3 id="as-part-of-an-insert-or-update-api-call">As part of an insert or update API call<a class="headerlink" href="#as-part-of-an-insert-or-update-api-call" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p>ℹ️ Setting photo as part of insert or update API calls was not possible prior to
-<a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>.</p>
+<a href="https://github.com/vestrel00/contacts-android/releases/tag/0.3.0">version 0.3.0</a>.</p>
 </blockquote>
 <p>To insert a new RawContact with a photo,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
@@ -2213,13 +2213,13 @@ RawContact's photo may be removed (in case the Contact has more than one child R
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">rawContact</span><span class="p">.</span><span class="na">removePhotoDirect</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
-<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>, these
-functions were named <code>removePhoto</code>.</p>
+<p>ℹ️ Prior to <a href="https://github.com/vestrel00/contacts-android/releases/tag/0.3.0">version 0.3.0</a>, 
+these functions were named <code>removePhoto</code>.</p>
 </blockquote>
 <h3 id="as-part-of-an-update-api-call">As part of an update API call<a class="headerlink" href="#as-part-of-an-update-api-call" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p>ℹ️ Removing photo as part of insert or update API calls was not possible prior to
-<a href="https://github.com/vestrel00/contacts-android/discussions/218">version 0.3.0</a>.</p>
+<a href="https://github.com/vestrel00/contacts-android/releases/tag/0.3.0">version 0.3.0</a>.</p>
 </blockquote>
 <p>To update an existing Contact or RawContact without a photo,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">Contacts</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"></span>
@@ -2292,7 +2292,7 @@ in a choppy UI.</p>
 For more info, read <a href="../../async/async-execution-coroutines/">Execute work outside of the UI thread using coroutines</a>.</p>
 <p>You may, of course, use other multi-threading libraries or just do it yourself =)</p>
 <blockquote>
-<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap.</p>
+<p>ℹ️ Extensions for Kotlin Flow and RxJava are also in the project roadmap.</p>
 </blockquote>
 <h2 id="performing-photo-management-with-permission">Performing photo management with permission<a class="headerlink" href="#performing-photo-management-with-permission" title="Permanent link">&para;</a></h2>
 <p>Getting and setting photos require the <code>android.permission.READ_CONTACTS</code> and 
