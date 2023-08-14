@@ -103,7 +103,7 @@ For more info, read [Execute work outside of the UI thread using coroutines](./.
 
 You may, of course, use other multi-threading libraries or just do it yourself =)
 
-> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the project roadmap, which includes APIs for
 > listening to Contacts database changes.
 
 ## Performing the query with permission

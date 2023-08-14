@@ -434,7 +434,7 @@ give the appropriate permissions before the query proceeds. Then, the work is do
 context of choice (default is Dispatchers.IO). If the user does not give permission, the query will
 return no results.
 
-> ℹ️ Extensions for Kotlin Flow and RxJava are also in the v1 roadmap, which includes APIs for 
+> ℹ️ Extensions for Kotlin Flow and RxJava are also in the project roadmap, which includes APIs for 
 > listening to Contacts database changes.
 
 ## Full documentation, guides, and samples

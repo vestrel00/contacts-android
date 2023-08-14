@@ -11,7 +11,7 @@ import contacts.core.util.*
  * Note that this is a lightweight wrapper around the [AccountManager]. It used to support filtering
  * Accounts based on RawContacts but that functionality has since been removed to due Samsung,
  * Xiaomi, and perhaps other OEMs not allowing 3rd party apps to easily access their accounts.
- * More context in TODO
+ * More context in https://github.com/vestrel00/contacts-android/issues/297
  *
  * ## Permissions
  *
