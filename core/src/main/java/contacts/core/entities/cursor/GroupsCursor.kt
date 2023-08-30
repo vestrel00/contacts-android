@@ -18,6 +18,8 @@ internal class GroupsCursor(cursor: Cursor, includeFields: Set<GroupsField>) :
 
     override val accountType: String? by string(GroupsFields.AccountType)
 
+    val sourceId: String? by string(GroupsFields.SourceId)
+
     val id: Long by nonNullLong(GroupsFields.Id, Entity.INVALID_ID)
 
     val systemId: String? by string(GroupsFields.SystemId)

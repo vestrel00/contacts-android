@@ -186,7 +186,7 @@ sealed interface RawContactEntity : Entity {
      * this property may be set to a non-null value. The final value of this property may be
      * assigned at a later time, when the sync adapter performs a sync. This means that the value of
      * this may be null or assigned a non-null temporary value right after insertion but may change
-     * once the sync as occured.
+     * once the sync as occurred.
      *
      * ## Changing this will change the parent contact's lookup key!
      *

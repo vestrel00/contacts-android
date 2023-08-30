@@ -89,6 +89,39 @@ sealed interface GroupEntity : Entity {
     val account: Account?
 
     /**
+     * Similar to [RawContactEntity.sourceId], this is a String that uniquely identifies this row to
+     * its source account.
+     *
+     * The source ID will be null if the RawContact is not associated/managed by an [account] that
+     * has a sync adapter that assigns a non-null value to it.
+     *
+     * ## Not guaranteed to be immediate!
+     *
+     * When a [NewGroup] is inserted with a [NewGroup.account] that has a sync adapter, this
+     * property may be set to a non-null value. The final value of this property may be assigned at
+     * a later time, when the sync adapter performs a sync. This means that the value of this may be
+     * null or assigned a non-null temporary value right after insertion but may change
+     * once the sync as occurred.
+     *
+     * ## For sync adapter use only!
+     *
+     * Applications should NOT set/modify the value of this property!
+     *
+     * Setting the value for this property at the time of insertion or updating its value afterwards
+     * is typically only done in the context of sync adapters. This is not for general app use!
+     *
+     * Do NOT mess with this unless you know exactly what you are doing. Otherwise, it WILL cause
+     * issues with syncing with respect to the Account's sync adapter and remote servers/databases.
+     *
+     * ## Other things to note
+     *
+     * Surprisingly, setting/modifying this value does not require
+     * [android.provider.ContactsContract.CALLER_IS_SYNCADAPTER] to be set to true. This means that
+     * regular applications can set/modify it... The best we can do is document this.
+     */
+    val sourceId: String?
+
+    /**
      * A group that is created and managed by the system and cannot be modified.
      *
      * See [systemId] for more info.
@@ -165,7 +198,6 @@ sealed interface ExistingGroupEntity : GroupEntity, ExistingEntity {
 data class Group internal constructor(
 
     override val id: Long,
-
     override val systemId: String?,
 
     override val title: String,
@@ -174,6 +206,7 @@ data class Group internal constructor(
     override val favorites: Boolean,
     override val autoAdd: Boolean,
     override val account: Account?,
+    override val sourceId: String?,
 
     override val isRedacted: Boolean
 
@@ -185,7 +218,17 @@ data class Group internal constructor(
     override fun mutableCopy(): MutableGroup? = if (readOnly) {
         null
     } else {
-        MutableGroup(id, systemId, title, readOnly, favorites, autoAdd, account, isRedacted)
+        MutableGroup(
+            id = id,
+            systemId = systemId,
+            title = title,
+            readOnly = readOnly,
+            favorites = favorites,
+            autoAdd = autoAdd,
+            account = account,
+            sourceId = sourceId,
+            isRedacted = isRedacted
+        )
     }
 
     override fun redactedCopy() = copy(
@@ -212,6 +255,7 @@ data class MutableGroup internal constructor(
     override val favorites: Boolean,
     override val autoAdd: Boolean,
     override val account: Account?,
+    override var sourceId: String?,
 
     override val isRedacted: Boolean
 
@@ -233,6 +277,8 @@ data class NewGroup @JvmOverloads constructor(
 
     override var title: String,
     override var account: Account?,
+
+    override var sourceId: String? = null,
 
     override val isRedacted: Boolean = false
 

@@ -18,6 +18,7 @@ internal class GroupMapper(private val groupsCursor: GroupsCursor) : EntityMappe
             autoAdd = groupsCursor.autoAdd,
 
             account = groupsCursor.account(),
+            sourceId = groupsCursor.sourceId,
 
             isRedacted = false
         )

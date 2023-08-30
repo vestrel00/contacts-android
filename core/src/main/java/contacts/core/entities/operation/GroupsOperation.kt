@@ -18,6 +18,7 @@ internal class GroupsOperation {
         .withValue(GroupsFields.Title, group.title)
         .withValue(GroupsFields.AccountName, group.account?.name)
         .withValue(GroupsFields.AccountType, group.account?.type)
+        .withValue(GroupsFields.SourceId, group.sourceId)
         // Setting favorites and auto add has no effect. The Contacts Provider will routinely set
         // them to false for all user-created groups.
         // .withValue(Fields.Group.Favorites, it.favorites.toSqlValue())
@@ -27,5 +28,6 @@ internal class GroupsOperation {
     fun update(group: ExistingGroupEntity): ContentProviderOperation = newUpdate(TABLE)
         .withSelection(GroupsFields.Id equalTo group.id)
         .withValue(GroupsFields.Title, group.title)
+        .withValue(GroupsFields.SourceId, group.sourceId)
         .build()
 }

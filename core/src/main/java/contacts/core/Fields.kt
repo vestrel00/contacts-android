@@ -1373,10 +1373,24 @@ object GroupsFields : FieldSet<GroupsField>() {
     // From protected SyncColumns
     val AccountType = GroupsField(Groups.ACCOUNT_TYPE)
 
+    @JvmField
+    val SourceId = GroupsField(Groups.SOURCE_ID)
+
     internal val Deleted = GroupsField(Groups.DELETED)
 
     override val all by lazy {
-        setOf(Id, SystemId, Title, ReadOnly, Favorites, AutoAdd, AccountName, AccountType, Deleted)
+        setOf(
+            Id,
+            SystemId,
+            Title,
+            ReadOnly,
+            Favorites,
+            AutoAdd,
+            AccountName,
+            AccountType,
+            SourceId,
+            Deleted
+        )
     }
 
     /**

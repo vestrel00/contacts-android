@@ -15,6 +15,7 @@ fun Context.logGroupsTable() {
         ContactsContract.Groups.CONTENT_URI,
         arrayOf(
             ContactsContract.Groups._ID,
+            ContactsContract.Groups.SOURCE_ID,
             ContactsContract.Groups.SYSTEM_ID,
             ContactsContract.Groups.TITLE,
             ContactsContract.Groups.GROUP_IS_READ_ONLY,
@@ -35,19 +36,20 @@ fun Context.logGroupsTable() {
     while (cursor.moveToNext()) {
         // Use getString instead of getLong, getInt, etc so that the value could be null.
         val id = cursor.getString(0)
-        val systemId = cursor.getString(1)
-        val title = cursor.getString(2)
-        val readOnly = cursor.getString(3)
-        val favorites = cursor.getString(4)
-        val autoAdd = cursor.getString(5)
-        val shouldSync = cursor.getString(6)
-        val accountName = cursor.getString(7)
-        val accountType = cursor.getString(8)
-        val deleted = cursor.getString(9)
+        val sourceId = cursor.getString(1)
+        val systemId = cursor.getString(2)
+        val title = cursor.getString(3)
+        val readOnly = cursor.getString(4)
+        val favorites = cursor.getString(5)
+        val autoAdd = cursor.getString(6)
+        val shouldSync = cursor.getString(7)
+        val accountName = cursor.getString(8)
+        val accountType = cursor.getString(9)
+        val deleted = cursor.getString(10)
 
         log(
             """
-                Group id: $id, systemId: $systemId, title: $title,
+                Group id: $id, sourceId: $sourceId, systemId: $systemId, title: $title,
                  readOnly: $readOnly, favorites: $favorites, autoAdd: $autoAdd,
                  shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType,
                  deleted: $deleted
