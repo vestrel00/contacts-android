@@ -168,6 +168,53 @@ sealed interface RawContactEntity : Entity {
      */
     val account: Account?
 
+    /**
+     * From the official docs at https://developer.android.com/reference/android/provider/ContactsContract.RawContacts
+     *
+     * > String that uniquely identifies this row to its source account. Typically it is set at the
+     * > time the raw contact is inserted and never changed afterwards. The one notable exception is
+     * > a new raw contact: it will have an account name and type (and possibly a data set), but no
+     * > source id. This indicates to the sync adapter that a new contact needs to be created
+     * > server-side and its ID stored in the corresponding SOURCE_ID field on the phone.
+     *
+     * The source ID will be null if the RawContact is not associated/managed by an [account] that
+     * has a sync adapter that assigns a non-null value to it.
+     *
+     * ## Not guaranteed to be immediate!
+     *
+     * When a [NewRawContact] is inserted with a [NewRawContact.account] that has a sync adapter,
+     * this property may be set to a non-null value. The final value of this property may be
+     * assigned at a later time, when the sync adapter performs a sync. This means that the value of
+     * this may be null or assigned a non-null temporary value right after insertion but may change
+     * once the sync as occured.
+     *
+     * ## Changing this will change the parent contact's lookup key!
+     *
+     * When the value of this is not null, the Contacts Provider will automatically use this as a
+     * component to the parent Contact's [ExistingContactEntity.lookupKey].
+     *
+     * Changing this may break existing shortcuts that use the parent Contact's lookup key! This
+     * should never be changed, except by the sync adapter in the aforementioned scenarios.
+     *
+     * ## For sync adapter use only!
+     *
+     * Applications should NOT set/modify the value of this property!
+     *
+     * As mentioned in the official docs, setting the value for this property at the time of
+     * insertion or updating its value afterwards is typically only done in the context of sync
+     * adapters. This is not for general app use!
+     *
+     * Do NOT mess with this unless you know exactly what you are doing. Otherwise, it WILL cause
+     * issues with syncing with respect to the Account's sync adapter and remote servers/databases.
+     *
+     * ## Other things to note
+     *
+     * Surprisingly, setting/modifying this value does not require
+     * [android.provider.ContactsContract.CALLER_IS_SYNCADAPTER] to be set to true. This means that
+     * regular applications can set/modify it... The best we can do is document this.
+     */
+    val sourceId: String?
+
     // We have to cast the return type because we are not using recursive generic types.
     override fun redactedCopy(): RawContactEntity
 }
@@ -277,10 +324,11 @@ data class RawContact internal constructor(
 
     override val id: Long,
     override val contactId: Long,
+    override val account: Account?,
+    override val sourceId: String?,
 
     override val displayNamePrimary: String?,
     override val displayNameAlt: String?,
-    override val account: Account?,
 
     override val addresses: List<Address>,
     override val emails: List<Email>,
@@ -306,6 +354,7 @@ data class RawContact internal constructor(
     override fun mutableCopy() = MutableRawContact(
         id = id,
         contactId = contactId,
+        sourceId = sourceId,
 
         displayNamePrimary = displayNamePrimary,
         displayNameAlt = displayNameAlt,
@@ -371,10 +420,14 @@ data class MutableRawContact internal constructor(
 
     override val id: Long,
     override val contactId: Long,
+    override val account: Account?,
+
+    // Intentionally making this var so that it can be modified post-insert by sync adapters. As
+    // stated in the property doc, this should only be set by sync adapters!
+    override var sourceId: String?,
 
     override val displayNamePrimary: String?,
     override val displayNameAlt: String?,
-    override val account: Account?,
 
     override var addresses: MutableList<MutableAddressEntity>,
     override var emails: MutableList<MutableEmailEntity>,
@@ -441,6 +494,7 @@ data class MutableRawContact internal constructor(
 data class NewRawContact @JvmOverloads constructor(
 
     override var account: Account? = null,
+    override var sourceId: String? = null,
 
     override var addresses: MutableList<NewAddress> = mutableListOf(),
     override var emails: MutableList<NewEmail> = mutableListOf(),
@@ -507,10 +561,11 @@ internal data class TempRawContact constructor(
 
     override val id: Long,
     val contactId: Long,
+    override val account: Account?,
+    override val sourceId: String?,
 
     var displayNamePrimary: String?,
     var displayNameAlt: String?,
-    override var account: Account?,
 
     override var addresses: MutableList<Address>,
     override var emails: MutableList<Email>,
@@ -538,10 +593,11 @@ internal data class TempRawContact constructor(
     fun toRawContact() = RawContact(
         id = id,
         contactId = contactId,
+        sourceId = sourceId,
+        account = account,
 
         displayNamePrimary = displayNamePrimary,
         displayNameAlt = displayNameAlt,
-        account = account,
 
         addresses = addresses.toList(),
         emails = emails.toList(),

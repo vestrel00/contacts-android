@@ -23,6 +23,8 @@ internal class RawContactsCursor(cursor: Cursor, includeFields: Set<RawContactsF
 
     override val rawContactId: Long by nonNullLong(RawContactsFields.Id, Entity.INVALID_ID)
 
+    val sourceId: String? by string(RawContactsFields.SourceId)
+
     val displayNamePrimary: String? by string(RawContactsFields.DisplayNamePrimary)
 
     val displayNameAlt: String? by string(RawContactsFields.DisplayNameAlt)

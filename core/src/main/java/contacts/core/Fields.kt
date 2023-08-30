@@ -352,6 +352,9 @@ object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
             Fields.DataId,
             Fields.RawContact.Id,
             Fields.Contact.Id,
+            // Intentionally not including the Contact lookup key because the APIs in this library
+            // does not depend on it to function at a basic level.
+            // As for the RawContact sourceId, it is simply not available in the joined data table.
             Fields.MimeType,
             Fields.IsPrimary,
             Fields.IsSuperPrimary
@@ -1110,6 +1113,9 @@ object RawContactsFields : FieldSet<RawContactsField>() {
     val ContactId = RawContactsField(RawContacts.CONTACT_ID, required = true)
 
     @JvmField
+    val SourceId = RawContactsField(RawContacts.SOURCE_ID)
+
+    @JvmField
     val DisplayNamePrimary = RawContactsField(RawContacts.DISPLAY_NAME_PRIMARY)
 
     @JvmField
@@ -1136,7 +1142,10 @@ object RawContactsFields : FieldSet<RawContactsField>() {
 
     override val all by lazy {
         mutableSetOf(
-            Id, ContactId, DisplayNamePrimary, DisplayNameAlt, AccountName, AccountType, Deleted
+            Id, ContactId, SourceId,
+            DisplayNamePrimary, DisplayNameAlt,
+            AccountName, AccountType,
+            Deleted
         ).apply {
             addAll(Options.all)
         }.toSet() // ensure that this is not modifiable at runtime

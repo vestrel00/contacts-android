@@ -158,16 +158,18 @@ Let's take a look at the following Contacts and RawContacts table rows,
 Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
 Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 #### RawContacts table
-RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
+RawContact id: 55, contactId: 55, sourceId: null, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 56, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 ```
 
-There are two Contacts each having one RawContact. 
+There are two Contacts each having one RawContact.
 
 Notice that the lookup keys are a bit different.
 
 - Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
 - Contact With Synced RawContact: 2059i6f5de8460f7f227e
+
+The Contact with synced RawContact uses the RawContact's `SOURCE_ID` as part of its lookup key.
 
 The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
 lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The 
@@ -186,8 +188,8 @@ sync adapters.
 ```
 Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 #### RawContacts table
-RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+RawContact id: 55, contactId: 55, sorceId: null, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 ```
 
 Notice,
@@ -278,8 +280,8 @@ can **avoid having to create another API or extensions just for using lookup key
 Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
 #### RawContacts table
-RawContact id: 55, contactId: 58, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+RawContact id: 55, contactId: 58, sourceId: null, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 ```
 
 Notice,
@@ -347,10 +349,11 @@ After associating the local RawContact to an Account...
 #### Contacts table
 Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
 #### RawContacts table
-RawContact id: 55, contactId: 58
+RawContact id: 55, contactId: 58, sourceId: 2059i4abd4a8f8ff89642
 ```
 
-The lookup key changed but the Contact ID remained the same! In this case, loading a reference to
+The lookup key changed (since the RawContact's source ID has been assigned the value that came from
+the sync adapter) but the Contact ID remained the same! In this case, loading a reference to
 the previously local Contact will fail! I verified that this is indeed the behavior of the AOSP
 (AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while 
 having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
@@ -364,7 +367,7 @@ Removing the account from it results in...
 #### Contacts table
 Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
 #### RawContacts table
-RawContact id: 58, contactId: 59
+RawContact id: 58, contactId: 59, sourceId: null
 ```
 
 The Contact and RawContacts row have been deleted and new rows have been created to replace them!

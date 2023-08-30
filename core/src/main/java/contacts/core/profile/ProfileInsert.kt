@@ -160,9 +160,10 @@ interface ProfileInsert : CrudApi {
     fun include(fields: Fields.() -> Sequence<AbstractDataField>): ProfileInsert
 
     /**
-     * Similar to [include] except this is really only used to specify
-     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields
-     * and the corresponding properties are immutable (exception for options).
+     * Similar to [include] except this is used to specify
+     * [contacts.core.entities.RawContact.sourceId] and
+     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields are
+     * ignored.
      *
      * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
      * included. Otherwise, only the specified fields will be included in addition to required API

@@ -16,7 +16,8 @@ that account.
 
 > ℹ️ Besides Google Accounts, there is also Samsung, Xiaomi, Yahoo, MSN/Hotmail, etc.
 
-Syncing contacts across devices is possible with sync adapters and Contacts' lookup key.
+Syncing contacts across devices is possible with sync adapters and Contacts' lookup key, more 
+specifically the RawContact's source ID.
 
 > ℹ️ For more info, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
 
@@ -33,8 +34,13 @@ Data, and Groups that belong to that Account.
 ## Only contacts that are associated with an Account are synced
 
 More specifically, RawContacts that are not associated with an Account (local, device-only) are not
-synced. Syncing is account specific, which is why you must turn on Contact syncing in the system
-settings.
+synced. 
+
+> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+
+Syncing is account specific (and therefore specific to RawContacts as a Contact may have one
+or more constituent RawContacts from different Accounts), which is why you must turn on Contact
+syncing in the system settings.
 
 For example, data belonging to a RawContact that is associated with a Google account (e.g. Gmail)
 will be available anywhere the Google account is used; in any Android or iOS device, a web browser,
@@ -42,7 +48,33 @@ etc... Data is synced by Google’s sync adapters between devices and their remo
 depends on the account sync settings, which can be configured in the system settings app and
 possibly through some remote configuration.
 
-> ℹ️ For more info, read about [Local (device-only) contacts](./../entities/about-local-contacts.md).
+Here is an example of a newly created RawContact associated with a `com.google` Account **prior** 
+to syncing,
+
+```
+#### Contacts table
+Contact id: 31, lookupKey: 2059r31-38462A40563E3A4436
+#### RawContacts table
+RawContact id: 31, contactId: 31, sourceId:null
+```
+
+After sync,
+
+```
+#### Contacts table
+Contact id: 31, lookupKey: 2059i7b975d4a8fec684e
+#### RawContacts table
+RawContact id: 31, contactId: 31, sourceId:7b975d4a8fec684e
+```
+
+For a RawContact that is not associated with an Account (null),
+
+```
+#### Contacts table
+Contact id: 32, lookupKey: 0r32-3032543A2E324644405A
+#### RawContacts table
+RawContact id: 32, contactId: 32, sourceId:null
+```
 
 ## When are changes synced?
 
@@ -60,6 +92,7 @@ Until changes are synced, local changes will not take effect. Some examples are;
 
 - RawContact rows are marked for deletion but remain until synced.
 - Group rows are marked for deletion but remain until synced.
+- Newly created RawContacts may have a null or temporary source ID.
 - New lookup key is not assigned after associating a local RawContact to an Account.
 
 ## Some custom data provided in this library are not synced
@@ -82,7 +115,7 @@ that their own sync adapters sync with their own remote services, which requires
 
 This library does not have any APIs related to syncing. It is considered out of scope of this
 library as it requires access to remote databases and account-specific data. Let's talk about it
-though. However, it is good to know how it works if you just want more insight.
+though since it is good to know how it works if you just want more insight.
 
 https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters
 

@@ -182,13 +182,8 @@ interface BroadQuery : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): BroadQuery
 
     /**
-     * Includes [fields] from the RawContacts table corresponding to the following RawContacts
-     * properties;
-     *
-     * - [contacts.core.entities.RawContact.displayNamePrimary]
-     * - [contacts.core.entities.RawContact.displayNameAlt]
-     * - [contacts.core.entities.RawContact.account]
-     * - [contacts.core.entities.RawContact.options]
+     * Includes [fields] from the RawContacts table corresponding to
+     * [contacts.core.entities.RawContact] properties.
      *
      * For all other fields/properties, use [include].
      *

@@ -21,6 +21,7 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
         arrayOf(
             ContactsContract.RawContacts._ID,
             ContactsContract.RawContacts.CONTACT_ID,
+            ContactsContract.RawContacts.SOURCE_ID,
             ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
             ContactsContract.RawContacts.DISPLAY_NAME_ALTERNATIVE,
             ContactsContract.RawContacts.ACCOUNT_NAME,
@@ -44,22 +45,22 @@ internal fun Context.logRawContactsTable(contentUri: Uri) {
         // Use getString instead of getLong, getInt, etc so that the value could be null.
         val id = cursor.getString(0)
         val contactId = cursor.getString(1)
-        val displayNamePrimary = cursor.getString(2)
-        val displayNameAlt = cursor.getString(3)
-        val name = cursor.getString(4)
-        val type = cursor.getString(5)
+        val sourceId = cursor.getString(2)
+        val displayNamePrimary = cursor.getString(3)
+        val displayNameAlt = cursor.getString(4)
+        val name = cursor.getString(5)
+        val type = cursor.getString(6)
 
-        val starred = cursor.getString(6)
-        // val timesContacted = cursor.getString(7)
-        // val lastTimeContacted = cursor.getString(8)
-        val customRingtone = cursor.getString(7)
-        val sendToVoicemail = cursor.getString(8)
-        val deleted = cursor.getString(9)
+        val starred = cursor.getString(7)
+        val customRingtone = cursor.getString(8)
+        val sendToVoicemail = cursor.getString(9)
+        val deleted = cursor.getString(10)
 
         log(
             """
-                RawContact id: $id, contactId: $contactId, displayNamePrimary: $displayNamePrimary,
-                 displayNameAlt: $displayNameAlt,  accountName: $name, accountType: $type,
+                RawContact id: $id, contactId: $contactId, sourceId:$sourceId,
+                 displayNamePrimary: $displayNamePrimary, displayNameAlt: $displayNameAlt,
+                 accountName: $name, accountType: $type,
                  starred: $starred, customRingtone: $customRingtone,
                  sendToVoicemail: $sendToVoicemail, deleted: $deleted
             """.trimIndent().replace("\n", "")

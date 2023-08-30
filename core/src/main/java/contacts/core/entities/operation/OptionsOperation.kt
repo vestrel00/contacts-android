@@ -43,7 +43,7 @@ internal class OptionsOperation {
     }
 
     fun updateRawContactOptions(
-        rawContactId: Long, options: OptionsEntity?, includeFields: Set<RawContactsField>
+        options: OptionsEntity?, rawContactId: Long,  includeFields: Set<RawContactsField>
     ): ContentProviderOperation? = if (includeFields.isEmpty()) {
         null
     } else {

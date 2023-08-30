@@ -31,7 +31,7 @@ val updateResult = Contacts(context)
 ### Making further updates
 
 The current entry in the SIM table is not updated based on the ID. Instead, the name AND number are 
-used to lookup the entry to update. Continuing the example above, if you need to make another 
+used to look up the entry to update. Continuing the example above, if you need to make another 
 update, then you must use the modified copy as the current,
 
 ```kotlin

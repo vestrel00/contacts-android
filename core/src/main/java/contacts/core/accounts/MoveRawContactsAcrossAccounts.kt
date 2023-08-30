@@ -33,9 +33,8 @@ import contacts.core.util.*
  * be a default data (isPrimary: 0,	isSuperPrimary: 0). _Yes, like all other behaviors of this API,
  * this is the same as Google Contacts._
  *
- * Contact **IDs** and **lookup keys** may change. This means that references to Contact IDs and
- * lookup keys may become invalid. For example, shortcuts may break after performing this
- * operation.
+ * RawContact **IDs** and **source IDs** and Contact **IDs** and **lookup keys** may change.
+ * Shortcuts may break after performing this operation.
  *
  * **(Raw)Contact links (AggregationExceptions)** a copied over. For example, if there are two
  * or more RawContacts that are linked to the same Contact, moving one or more of the RawContacts
@@ -478,6 +477,9 @@ private class MoveRawContactsAcrossAccountsImpl(
                         originalRawContact.newCopy {
                             // Set the Account.
                             account = entry.targetAccount
+                            // Intentionally not copying the source ID because that should only be
+                            // set by the Account's sync adapter, which should occur automatically
+                            // some time after insertion.
 
                             // Replace the group memberships.
                             // Note that memberships to the target Account's default group and

@@ -128,9 +128,10 @@ interface Update : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): Update
 
     /**
-     * Similar to [include] except this is really only used to specify
-     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields
-     * and the corresponding properties are immutable (exception for options).
+     * Similar to [include] except this is used to specify
+     * [contacts.core.entities.RawContact.sourceId] and
+     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields are
+     * ignored.
      *
      * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
      * included. Otherwise, only the specified fields will be included in addition to required API
@@ -537,6 +538,7 @@ private fun Contacts.executePendingPhotoDataOperationFor(rawContact: ExistingRaw
                     rawContact.id,
                     it.photoData
                 )
+
                 is PhotoDataOperation.RemovePhoto -> removeRawContactPhotoDirect(rawContact.id)
             }
         }
@@ -553,6 +555,10 @@ private fun Contacts.updateOperationsForRawContact(
     val isProfile = rawContact.isProfile
 
     val operations = arrayListOf<ContentProviderOperation>()
+
+    RawContactsOperation(isProfile)
+        .update(rawContact, includeRawContactsFields)
+        ?.let(operations::add)
 
     operations.addAll(
         AddressOperation(isProfile, Fields.Address.intersect(includeFields))
@@ -613,8 +619,8 @@ private fun Contacts.updateOperationsForRawContact(
     // group membership to the favorites group (if exist). If starred is false, then the favorites
     // group membership will be removed.
     OptionsOperation().updateRawContactOptions(
-        rawContact.id,
         rawContact.options,
+        rawContact.id,
         RawContactsFields.Options.all.intersect(includeRawContactsFields)
     )?.let(operations::add)
 
@@ -683,6 +689,7 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
                         customDataEntityHolder.entities.firstOrNull(), id, contentResolver
                     )?.let(::add)
             }
+
             CustomDataCountRestriction.NO_LIMIT -> {
                 customDataOperation
                     .updateInsertOrDeleteDataForRawContact(

@@ -17,10 +17,11 @@ internal class TempRawContactMapper(
         get() = TempRawContact(
             id = rawContactsCursor.rawContactId,
             contactId = rawContactsCursor.contactId,
+            account = rawContactsCursor.account(),
+            sourceId = rawContactsCursor.sourceId,
 
             displayNamePrimary = rawContactsCursor.displayNamePrimary,
             displayNameAlt = rawContactsCursor.displayNameAlt,
-            account = rawContactsCursor.account(),
 
             addresses = mutableListOf(),
 

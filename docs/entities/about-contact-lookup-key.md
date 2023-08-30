@@ -26,17 +26,24 @@ Let's dissect the documentation,
       Contact row. Unlinking will result in the original Contacts prior to linking to have different
       IDs in the Contacts table because the previously deleted row IDs cannot be reused.
 
-Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
+Unlike the Contact ID, the lookup key's components (it can be more than one if there are more than
+one constituent RawContact) is the same across devices (for contacts that are associated
 with an Account and are synced). The lookup key points to a person entity rather than just a row 
 in a table. It is the unique identifier used by local and remote sync adapters to identify an 
-aggregate contact.
+aggregate contact. 
 
 > ℹ️ Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
 > constituent RawContacts). RawContacts have a reference to the parent Contact via the Contact ID. 
 > Similarly, the parent Contact has a reference to all of its constituent RawContacts via the 
 > lookup key.
 
-Note that RawContacts do not have a lookup key. It is exclusive to Contacts.
+Note that RawContacts do not have a lookup key. It is exclusive to Contacts. However, RawContacts 
+associated with an Account that have a SyncAdapter typically have a non-null value in the 
+`ContactsContract.SyncColumns.SOURCE_ID` column, which is typically used as a component in the 
+parent Contact's lookup key.
+
+> ⚠️Setting the RawContact's `SOURCE_ID` to a different value will change the lookup key of the
+> parent Contact, which may break existing shortcuts!
 
 ## When to use Contact lookup key vs Contact ID?
 
@@ -164,8 +171,8 @@ Let's take a look at the following Contacts and RawContacts table rows,
 Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
 Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 #### RawContacts table
-RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
+RawContact id: 55, contactId: 55, sourceId: null, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 56, sourceId: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 ```
 
 There are two Contacts each having one RawContact.
@@ -175,6 +182,8 @@ Notice that the lookup keys are a bit different.
 - Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
 - Contact With Synced RawContact: 2059i6f5de8460f7f227e
 
+The Contact with synced RawContact uses te RawContact's `SOURCE_ID` as part of its lookup key.
+
 The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
 lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The
 other thing to notice is that the "55" in "0r55-" seems to be the same as the RawContact ID (I did
@@ -182,7 +191,7 @@ a bit more experiments than what is written in these notes to confirm that it is
 RawContact ID and not the Contact ID). We probably don't need to worry about these details though
 the Contacts Provider probably uses these things internally. We also should not rely on it.
 
-However, it may be safe to assume that the **Contact lookup key is a reference to a RawContact**
+In any case, it is safe to assume that the **Contact lookup key is a reference to a RawContact**
 (or reference to more than one constituent RawContact when multiple RawContacts are linked). Again,
 an internal Contacts Provider detail we should not rely on BUT is probably relevant when implementing
 sync adapters.
@@ -192,8 +201,8 @@ sync adapters.
 ```
 Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 #### RawContacts table
-RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+RawContact id: 55, contactId: 55, sorceId: null, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 ```
 
 Notice,
@@ -284,8 +293,8 @@ can **avoid having to create another API or extensions just for using lookup key
 Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
 #### RawContacts table
-RawContact id: 55, contactId: 58, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+RawContact id: 55, contactId: 58, sourceId: null, displayNamePrimary: Contact With Local RawContact
+RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 ```
 
 Notice,
@@ -353,10 +362,11 @@ After associating the local RawContact to an Account...
 #### Contacts table
 Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
 #### RawContacts table
-RawContact id: 55, contactId: 58
+RawContact id: 55, contactId: 58, sourceId: 4abd4a8f8ff89642
 ```
 
-The lookup key changed but the Contact ID remained the same! In this case, loading a reference to
+The lookup key changed (since the RawContact's source ID has been assigned the value that came from
+the sync adapter) but the Contact ID remained the same! In this case, loading a reference to
 the previously local Contact will fail! I verified that this is indeed the behavior of the native
 (AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while
 having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
@@ -370,7 +380,7 @@ Removing the account from it results in...
 #### Contacts table
 Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
 #### RawContacts table
-RawContact id: 58, contactId: 59
+RawContact id: 58, contactId: 59, sourceId: null
 ```
 
 The Contact and RawContacts row have been deleted and new rows have been created to replace them!

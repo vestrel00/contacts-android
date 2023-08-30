@@ -208,10 +208,10 @@ For example, if a phone number is set as the default (isPrimary: 1, isSuperPrima
 move operation it will no longer be a default data (isPrimary: 0,	isSuperPrimary: 0). 
 _Yes, like all other behaviors of this API, this is the same as Google Contacts._
 
-## Contact IDs and lookup keys may change
+## IDs and lookup keys may change
 
-This means that references to Contact IDs and lookup keys may become invalid. For example, shortcuts
-may break after performing this operation.
+This means that references to Contact IDs and lookup keys, RawContact IDs and source IDs may become 
+invalid. Shortcuts using aforementioned properties may break after performing this operation.
 
 ## (Raw)Contact links (AggregationExceptions) are copied over
 
@@ -251,11 +251,11 @@ For all of the above scenarios, the behavior is as follows...
 
 **Default/primary** flags of Data rows are not copied over. For example, if a phone number is set
 as the default (isPrimary: 1, isSuperPrimary: 1), after this move operation it will no longer
-be a default data (isPrimary: 0,	isSuperPrimary: 0). _Yes, like all other behaviors of this API,
+be a default data (isPrimary: 0, isSuperPrimary: 0). _Yes, like all other behaviors of this API,
 this is the same as Google Contacts._
 
-Contact **IDs** and **lookup keys** may change. This means that references to Contact IDs and
-lookup keys may become invalid. For example, shortcuts may break after performing this
+Contact **IDs** and **lookup keys** and RawContact **IDs** and **source IDs** may change since new 
+copies are created and the originals are deleted. Existing shortcuts may break after performing this
 operation.
 
 **(Raw)Contact links** (AggregationExceptions) are also copied over, in some cases. For example,
