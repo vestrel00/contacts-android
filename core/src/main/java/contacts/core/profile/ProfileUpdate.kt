@@ -374,15 +374,19 @@ private class ProfileUpdateImpl(
     override fun commit(cancel: () -> Boolean): ProfileUpdate.Result {
         onPreExecute()
 
-        return if (rawContacts.isEmpty() || !permissions.canUpdateDelete() || cancel()) {
+        return if (
+            (contact == null && rawContacts.isEmpty()) ||
+            !permissions.canUpdateDelete() ||
+            cancel()
+        ) {
             ProfileUpdateFailed()
         } else {
             val rawContactIdsResultMap = mutableMapOf<Long, Boolean>()
 
             val contactUpdateSuccess = contact?.let {
-                if (it.isProfile) {
+                if (!it.isProfile) {
                     // Intentionally fail the operation to ensure that this is only used for
-                    // non-profile updates. Otherwise, operation can succeed. This is only done to
+                    // profile updates. Otherwise, operation can succeed. This is only done to
                     // enforce API design.
                     false
                 } else if (it.isBlank && deleteBlanks) {
