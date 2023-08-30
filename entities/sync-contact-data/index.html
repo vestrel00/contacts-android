@@ -1968,7 +1968,8 @@ that account.</p>
 <blockquote>
 <p>ℹ️ Besides Google Accounts, there is also Samsung, Xiaomi, Yahoo, MSN/Hotmail, etc.</p>
 </blockquote>
-<p>Syncing contacts across devices is possible with sync adapters and Contacts' lookup key.</p>
+<p>Syncing contacts across devices is possible with sync adapters and Contacts' lookup key, more 
+specifically the RawContact's source ID.</p>
 <blockquote>
 <p>ℹ️ For more info, read about <a href="../about-contact-lookup-key/">Contact lookup key vs ID</a>.</p>
 </blockquote>
@@ -1981,16 +1982,37 @@ or network availability, the Contacts Provider will automatically remove Contact
 Data, and Groups that belong to that Account.</p>
 <h2 id="only-contacts-that-are-associated-with-an-account-are-synced">Only contacts that are associated with an Account are synced<a class="headerlink" href="#only-contacts-that-are-associated-with-an-account-are-synced" title="Permanent link">&para;</a></h2>
 <p>More specifically, RawContacts that are not associated with an Account (local, device-only) are not
-synced. Syncing is account specific, which is why you must turn on Contact syncing in the system
-settings.</p>
+synced. </p>
+<blockquote>
+<p>ℹ️ For more info, read about <a href="../about-local-contacts/">Local (device-only) contacts</a>.</p>
+</blockquote>
+<p>Syncing is account specific (and therefore specific to RawContacts as a Contact may have one
+or more constituent RawContacts from different Accounts), which is why you must turn on Contact
+syncing in the system settings.</p>
 <p>For example, data belonging to a RawContact that is associated with a Google account (e.g. Gmail)
 will be available anywhere the Google account is used; in any Android or iOS device, a web browser,
 etc... Data is synced by Google’s sync adapters between devices and their remote servers. Syncing
 depends on the account sync settings, which can be configured in the system settings app and
 possibly through some remote configuration.</p>
-<blockquote>
-<p>ℹ️ For more info, read about <a href="../about-local-contacts/">Local (device-only) contacts</a>.</p>
-</blockquote>
+<p>Here is an example of a newly created RawContact associated with a <code>com.google</code> Account <strong>prior</strong> 
+to syncing,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>#### Contacts table
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Contact id: 31, lookupKey: 2059r31-38462A40563E3A4436
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>#### RawContacts table
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>RawContact id: 31, contactId: 31, sourceId:null
+</code></pre></div>
+<p>After sync,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>#### Contacts table
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Contact id: 31, lookupKey: 2059i7b975d4a8fec684e
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>#### RawContacts table
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>RawContact id: 31, contactId: 31, sourceId:7b975d4a8fec684e
+</code></pre></div>
+<p>For a RawContact that is not associated with an Account (null),</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>#### Contacts table
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Contact id: 32, lookupKey: 0r32-3032543A2E324644405A
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>#### RawContacts table
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>RawContact id: 32, contactId: 32, sourceId:null
+</code></pre></div>
 <h2 id="when-are-changes-synced">When are changes synced?<a class="headerlink" href="#when-are-changes-synced" title="Permanent link">&para;</a></h2>
 <p>In general, the Contacts Provider and the registered sync adapters are responsible for triggering 
 sync events as long as Contacts sync is enabled for the Account in the system settings. </p>
@@ -2005,6 +2027,7 @@ trigger a sync are;</p>
 <ul>
 <li>RawContact rows are marked for deletion but remain until synced.</li>
 <li>Group rows are marked for deletion but remain until synced.</li>
+<li>Newly created RawContacts may have a null or temporary source ID.</li>
 <li>New lookup key is not assigned after associating a local RawContact to an Account.</li>
 </ul>
 <h2 id="some-custom-data-provided-in-this-library-are-not-synced">Some custom data provided in this library are not synced<a class="headerlink" href="#some-custom-data-provided-in-this-library-are-not-synced" title="Permanent link">&para;</a></h2>
@@ -2024,7 +2047,7 @@ that their own sync adapters sync with their own remote services, which requires
 <h2 id="this-library-does-not-provide-sync-adapters">This library does not provide sync adapters<a class="headerlink" href="#this-library-does-not-provide-sync-adapters" title="Permanent link">&para;</a></h2>
 <p>This library does not have any APIs related to syncing. It is considered out of scope of this
 library as it requires access to remote databases and account-specific data. Let's talk about it
-though. However, it is good to know how it works if you just want more insight.</p>
+though since it is good to know how it works if you just want more insight.</p>
 <p>https://developer.android.com/guide/topics/providers/contacts-provider#SyncAdapters</p>
 <blockquote>
 <p>The Contacts Provider is specifically designed for handling synchronization of contacts data

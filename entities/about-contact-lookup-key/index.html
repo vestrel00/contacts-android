@@ -1984,17 +1984,25 @@ of a sync or aggregation.</p>
 </ul>
 </li>
 </ul>
-<p>Unlike the Contact ID, the lookup key is the same across devices (for contacts that are associated
+<p>Unlike the Contact ID, the lookup key's components (it can be more than one if there are more than
+one constituent RawContact) is the same across devices (for contacts that are associated
 with an Account and are synced). The lookup key points to a person entity rather than just a row 
 in a table. It is the unique identifier used by local and remote sync adapters to identify an 
-aggregate contact.</p>
+aggregate contact. </p>
 <blockquote>
 <p>ℹ️ Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
 constituent RawContacts). RawContacts have a reference to the parent Contact via the Contact ID. 
 Similarly, the parent Contact has a reference to all of its constituent RawContacts via the 
 lookup key.</p>
 </blockquote>
-<p>Note that RawContacts do not have a lookup key. It is exclusive to Contacts.</p>
+<p>Note that RawContacts do not have a lookup key. It is exclusive to Contacts. However, RawContacts 
+associated with an Account that have a SyncAdapter typically have a non-null value in the 
+<code>ContactsContract.SyncColumns.SOURCE_ID</code> column, which is typically used as a component in the 
+parent Contact's lookup key.</p>
+<blockquote>
+<p>⚠️Setting the RawContact's <code>SOURCE_ID</code> to a different value will change the lookup key of the
+parent Contact, which may break existing shortcuts!</p>
+</blockquote>
 <h2 id="when-to-use-contact-lookup-key-vs-contact-id">When to use Contact lookup key vs Contact ID?<a class="headerlink" href="#when-to-use-contact-lookup-key-vs-contact-id" title="Permanent link">&para;</a></h2>
 <p>Use the <strong>Contact lookup key</strong> when you need to save a reference to a Contact that you want to 
 fetch after some period of time.</p>
@@ -2099,8 +2107,8 @@ for brevity.</p>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>#### RawContacts table
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>RawContact id: 56, contactId: 56, displayNamePrimary: Contact With Synced RawContact
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>RawContact id: 55, contactId: 55, sourceId: null, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>RawContact id: 56, contactId: 56, sourceId: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 </code></pre></div>
 <p>There are two Contacts each having one RawContact.</p>
 <p>Notice that the lookup keys are a bit different.</p>
@@ -2108,21 +2116,22 @@ for brevity.</p>
 <li>Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50</li>
 <li>Contact With Synced RawContact: 2059i6f5de8460f7f227e</li>
 </ul>
+<p>The Contact with synced RawContact uses te RawContact's <code>SOURCE_ID</code> as part of its lookup key.</p>
 <p>The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
 lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The
 other thing to notice is that the "55" in "0r55-" seems to be the same as the RawContact ID (I did
 a bit more experiments than what is written in these notes to confirm that it is indeed the
 RawContact ID and not the Contact ID). We probably don't need to worry about these details though
 the Contacts Provider probably uses these things internally. We also should not rely on it.</p>
-<p>However, it may be safe to assume that the <strong>Contact lookup key is a reference to a RawContact</strong>
+<p>In any case, it is safe to assume that the <strong>Contact lookup key is a reference to a RawContact</strong>
 (or reference to more than one constituent RawContact when multiple RawContacts are linked). Again,
 an internal Contacts Provider detail we should not rely on BUT is probably relevant when implementing
 sync adapters.</p>
 <p><strong>When we link</strong> the two, we get...</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>#### RawContacts table
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>RawContact id: 55, contactId: 55, displayNamePrimary: Contact With Local RawContact
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>RawContact id: 55, contactId: 55, sorceId: null, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 </code></pre></div>
 <p>Notice,</p>
 <ul>
@@ -2202,8 +2211,8 @@ can <strong>avoid having to create another API or extensions just for using look
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>#### RawContacts table
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>RawContact id: 55, contactId: 58, displayNamePrimary: Contact With Local RawContact
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>RawContact id: 56, contactId: 55, displayNamePrimary: Contact With Synced RawContact
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>RawContact id: 55, contactId: 58, sourceId: null, displayNamePrimary: Contact With Local RawContact
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 </code></pre></div>
 <p>Notice,</p>
 <ul>
@@ -2308,9 +2317,10 @@ device to Account) and vice versa. Is the lookup key of the Contact affected?</p
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>#### Contacts table
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>#### RawContacts table
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>RawContact id: 55, contactId: 58
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>RawContact id: 55, contactId: 58, sourceId: 4abd4a8f8ff89642
 </code></pre></div>
-<p>The lookup key changed but the Contact ID remained the same! In this case, loading a reference to
+<p>The lookup key changed (since the RawContact's source ID has been assigned the value that came from
+the sync adapter) but the Contact ID remained the same! In this case, loading a reference to
 the previously local Contact will fail! I verified that this is indeed the behavior of the native
 (AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while
 having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
@@ -2322,7 +2332,7 @@ not exist" message in the AOSP Contacts app!</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>#### Contacts table
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
 <a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>#### RawContacts table
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>RawContact id: 58, contactId: 59
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>RawContact id: 58, contactId: 59, sourceId: null
 </code></pre></div>
 <p>The Contact and RawContacts row have been deleted and new rows have been created to replace them!
 I also verified that the Data rows have also been deleted and new rows have been created to

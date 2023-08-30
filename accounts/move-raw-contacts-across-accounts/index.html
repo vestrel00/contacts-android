@@ -1236,8 +1236,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#contact-ids-and-lookup-keys-may-change" class="md-nav__link">
-    Contact IDs and lookup keys may change
+  <a href="#ids-and-lookup-keys-may-change" class="md-nav__link">
+    IDs and lookup keys may change
   </a>
   
 </li>
@@ -2039,8 +2039,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#contact-ids-and-lookup-keys-may-change" class="md-nav__link">
-    Contact IDs and lookup keys may change
+  <a href="#ids-and-lookup-keys-may-change" class="md-nav__link">
+    IDs and lookup keys may change
   </a>
   
 </li>
@@ -2215,9 +2215,9 @@ read <a href="../../customdata/integrate-custom-data/">Integrate custom data</a>
 <p>For example, if a phone number is set as the default (isPrimary: 1, isSuperPrimary: 1), after this 
 move operation it will no longer be a default data (isPrimary: 0,   isSuperPrimary: 0). 
 <em>Yes, like all other behaviors of this API, this is the same as Google Contacts.</em></p>
-<h2 id="contact-ids-and-lookup-keys-may-change">Contact IDs and lookup keys may change<a class="headerlink" href="#contact-ids-and-lookup-keys-may-change" title="Permanent link">&para;</a></h2>
-<p>This means that references to Contact IDs and lookup keys may become invalid. For example, shortcuts
-may break after performing this operation.</p>
+<h2 id="ids-and-lookup-keys-may-change">IDs and lookup keys may change<a class="headerlink" href="#ids-and-lookup-keys-may-change" title="Permanent link">&para;</a></h2>
+<p>This means that references to Contact IDs and lookup keys, RawContact IDs and source IDs may become 
+invalid. Shortcuts using aforementioned properties may break after performing this operation.</p>
 <h2 id="rawcontact-links-aggregationexceptions-are-copied-over">(Raw)Contact links (AggregationExceptions) are copied over<a class="headerlink" href="#rawcontact-links-aggregationexceptions-are-copied-over" title="Permanent link">&para;</a></h2>
 <p>For example, if there are two or more RawContacts that are linked to the same Contact, moving one
 or more of the RawContacts will still result in the RawContacts being linked to the same Contact 
@@ -2267,10 +2267,10 @@ I used a Pixel 4 API 30 emulator and a Samsung Galaxy A71 API 33.</p>
 </ul>
 <p><strong>Default/primary</strong> flags of Data rows are not copied over. For example, if a phone number is set
 as the default (isPrimary: 1, isSuperPrimary: 1), after this move operation it will no longer
-be a default data (isPrimary: 0,    isSuperPrimary: 0). <em>Yes, like all other behaviors of this API,
+be a default data (isPrimary: 0, isSuperPrimary: 0). <em>Yes, like all other behaviors of this API,
 this is the same as Google Contacts.</em></p>
-<p>Contact <strong>IDs</strong> and <strong>lookup keys</strong> may change. This means that references to Contact IDs and
-lookup keys may become invalid. For example, shortcuts may break after performing this
+<p>Contact <strong>IDs</strong> and <strong>lookup keys</strong> and RawContact <strong>IDs</strong> and <strong>source IDs</strong> may change since new 
+copies are created and the originals are deleted. Existing shortcuts may break after performing this
 operation.</p>
 <p><strong>(Raw)Contact links</strong> (AggregationExceptions) are also copied over, in some cases. For example,
 if there are two RawContacts linked to the same Contact and one RawContact is moved to device 
