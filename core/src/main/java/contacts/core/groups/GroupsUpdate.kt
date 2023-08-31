@@ -153,6 +153,12 @@ interface GroupsUpdate : CrudApi {
             TITLE_ALREADY_EXIST,
 
             /**
+             * The [ExistingGroupEntity.readOnly] is true. System, read-only groups cannot be
+             * modified, except perhaps by the owning sync adapter.
+             */
+            READ_ONLY,
+
+            /**
              * The update failed because of no permissions, no groups specified for update, group
              * is read-only, etc...
              *
@@ -229,6 +235,11 @@ private class GroupsUpdateImpl(
                 // Intentionally not breaking if cancelled so that all groups are assigned a failure
                 // reason. Unlike other APIs in this library, this API will indicate success if there
                 // is no failure reason.
+
+                if (group.readOnly) {
+                    failureReasons[group] = FailureReason.READ_ONLY
+                    continue
+                }
 
                 if (!cancel()) {
                     val accountGroups = existingAccountGroups

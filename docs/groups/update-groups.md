@@ -87,6 +87,7 @@ The update may fail for a particular group for various reasons,
 updateResult.failureReason(mutableGroup1)?.let {
     when (it) {
         TITLE_ALREADY_EXIST -> promptUserToPickDifferentTitle()
+        READ_ONLY -> informUserThatReadOnlyGroupsCannotBeModified()
         UNKNOWN -> showGenericErrorMessage()
     }   
 }

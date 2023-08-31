@@ -235,7 +235,8 @@ class GroupsActivity : BaseActivity() {
         } else when (updateResult.failureReason(group)) {
             GroupsUpdate.Result.FailureReason.TITLE_ALREADY_EXIST ->
                 showToast(R.string.groups_edit_error_title_already_exist)
-
+            GroupsUpdate.Result.FailureReason.READ_ONLY ->
+                showToast(R.string.groups_edit_error_read_only)
             else -> showToast(R.string.groups_edit_error)
         }
     }

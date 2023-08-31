@@ -56,6 +56,7 @@
     <string name="groups_edit_success">Group title/label updated</string>
     <string name="groups_edit_error">Unable to update group title/label</string>
     <string name="groups_edit_error_title_already_exist">Unable to update group because title/label already exist</string>
+    <string name="groups_edit_error_read_only">Unable to update group because it is read-only</string>
     <string name="groups_edit_input_dialog_title">Edit group title/label</string>
     <string name="groups_delete">Delete selected group/label</string>
     <string name="groups_delete_success">Group deleted</string>
