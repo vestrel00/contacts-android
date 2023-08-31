@@ -5,7 +5,6 @@ import contacts.core.Redactable
 import contacts.core.entities.CustomDataEntity
 import contacts.core.entities.ImmutableCustomDataEntity
 import contacts.core.entities.ImmutableCustomDataEntityWithMutableType
-import contacts.core.entities.ImmutableCustomDataEntityWithNullableMutableType
 import contacts.core.redactedCopies
 import kotlinx.parcelize.Parcelize
 
@@ -66,13 +65,10 @@ data class ImmutableCustomDataEntityHolder internal constructor(
 private fun MutableList<ImmutableCustomDataEntity>.toMutableListOfCustomDataEntity()
         : MutableList<CustomDataEntity> = asSequence()
     .map {
-        when (it) {
-            is ImmutableCustomDataEntityWithMutableType<*> -> it.mutableCopy()
-            is ImmutableCustomDataEntityWithNullableMutableType<*> -> {
-                // For entities with no mutable type, just pass in the immutable reference.
-                it.mutableCopy() ?: it
-            }
-            else -> it
+        if (it is ImmutableCustomDataEntityWithMutableType<*>) {
+            it.mutableCopy()
+        } else {
+            it
         }
     }
     .toMutableList()

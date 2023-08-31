@@ -73,17 +73,6 @@ interface ImmutableCustomDataEntityWithMutableType<T : MutableCustomDataEntity> 
 }
 
 /**
- * An [ImmutableCustomDataEntity] that has a mutable type [T] that may or may not be null.
- */
-// Intentionally not sealed so that consumers can define their own implementations.
-interface ImmutableCustomDataEntityWithNullableMutableType<T : MutableCustomDataEntity> :
-    ImmutableCustomDataEntity, ImmutableDataEntityWithNullableMutableType<T> {
-
-    // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): ImmutableCustomDataEntityWithNullableMutableType<T>
-}
-
-/**
  * A mutable [CustomDataEntity].
  */
 // Intentionally not sealed so that consumers can define their own implementations.

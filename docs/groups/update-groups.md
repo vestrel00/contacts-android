@@ -48,13 +48,6 @@ Contacts Provider typically have the following system groups (for standard Googl
 
 The above list may vary per account.
 
-To prevent attempting to modify/update read-only groups, the `Group.mutableCopy()` function will
-return null if the group is read-only. 
-
-> ℹ️ You can try and hack your way around this limitation that this library imposes but you will 
-> still not be able to change read-only groups. This library is just trying to save you the pain and 
-> suffering caused by trying and failing XD
-
 ## Groups and duplicate titles
 
 The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 

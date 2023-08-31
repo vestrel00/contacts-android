@@ -33,7 +33,8 @@ sealed interface GroupEntity : Entity {
     val title: String
 
     /**
-     * If true, this group cannot be modified. All system groups are read-only.
+     * If true, this group cannot be modified or deleted except by sync adapters. All system
+     * groups are read-only.
      *
      * This is a read-only flag! The Contacts Provider routinely sets this to false for all
      * user-created groups. System groups has this set to true.
@@ -210,26 +211,19 @@ data class Group internal constructor(
 
     override val isRedacted: Boolean
 
-) : ExistingGroupEntity, ImmutableEntityWithNullableMutableType<MutableGroup> {
+) : ExistingGroupEntity, ImmutableEntityWithMutableType<MutableGroup> {
 
-    /**
-     * Returns a [MutableGroup]. If [readOnly] is true, this returns null instead.
-     */
-    override fun mutableCopy(): MutableGroup? = if (readOnly) {
-        null
-    } else {
-        MutableGroup(
-            id = id,
-            systemId = systemId,
-            title = title,
-            readOnly = readOnly,
-            favorites = favorites,
-            autoAdd = autoAdd,
-            account = account,
-            sourceId = sourceId,
-            isRedacted = isRedacted
-        )
-    }
+    override fun mutableCopy() = MutableGroup(
+        id = id,
+        systemId = systemId,
+        title = title,
+        readOnly = readOnly,
+        favorites = favorites,
+        autoAdd = autoAdd,
+        account = account,
+        sourceId = sourceId,
+        isRedacted = isRedacted
+    )
 
     override fun redactedCopy() = copy(
         isRedacted = true,

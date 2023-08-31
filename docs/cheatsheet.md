@@ -2296,9 +2296,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
         GroupsUpdate.Result updateGroup(Group group) {
             MutableGroup mutableGroup = group.mutableCopy();
-            if (mutableGroup != null) {
-                mutableGroup.setTitle("Bad love");
-            }
+            mutableGroup.setTitle("Bad love");
     
             return ContactsFactory.create(this)
                     .groups()

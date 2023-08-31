@@ -10,9 +10,7 @@ public class UpdateGroupsActivity extends Activity {
 
     GroupsUpdate.Result updateGroup(Group group) {
         MutableGroup mutableGroup = group.mutableCopy();
-        if (mutableGroup != null) {
-            mutableGroup.setTitle("Bad love");
-        }
+        mutableGroup.setTitle("Bad love");
 
         return ContactsFactory.create(this)
                 .groups()

@@ -34,18 +34,12 @@ fun <T : ExistingDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean
     } else {
         val existingDataEntity: T? = fetchDataEntity(contacts, id, cancel)
 
-        val existingDataEntityIsImmutable = existingDataEntity is ImmutableDataEntity
-        val resultShouldBeMutable = this is MutableDataEntity
-
         @Suppress("UNCHECKED_CAST")
-        return if (existingDataEntityIsImmutable && resultShouldBeMutable) {
-            // Need to cast to mutable entity
-            when (existingDataEntity) {
-                null -> null
-                is ImmutableDataEntityWithMutableType<*> -> existingDataEntity.mutableCopy() as T
-                is ImmutableDataEntityWithNullableMutableType<*> -> existingDataEntity.mutableCopy() as T?
-                else -> existingDataEntity
-            }
+        return if (
+            existingDataEntity is ImmutableDataEntityWithMutableType<*> &&
+            this is MutableDataEntity
+        ) {
+            existingDataEntity.mutableCopy() as T
         } else {
             existingDataEntity
         }

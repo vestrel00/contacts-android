@@ -98,31 +98,6 @@ sealed interface ImmutableEntityWithMutableType<T : MutableEntity> : ImmutableEn
 }
 
 /**
- * An [ImmutableEntity] that has a mutable type [T] that may or may not be null.
- *
- * To get a mutable copy of the corresponding mutable type [T], use the [mutableCopy] function.
- */
-sealed interface ImmutableEntityWithNullableMutableType<T : MutableEntity> : ImmutableEntity {
-
-    /**
-     * Returns a **mutable copy** of this immutable entity. This copy allows for some properties of
-     * instances to be mutated/modified.
-     *
-     * The return value of this may be null. This is useful in cases where a mutable copy should
-     * only be produced under certain conditions.
-     */
-    fun mutableCopy(): T?
-
-    /**
-     * Same as [mutableCopy] except this takes in a function with [T] as the receiver.
-     */
-    fun mutableCopy(block: T.() -> Unit): T? = mutableCopy()?.apply(block)
-
-    // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): ImmutableEntityWithNullableMutableType<T>
-}
-
-/**
  * A mutable [Entity].
  *
  * Implementations of this interface must have at least one property that is mutable. Otherwise, it

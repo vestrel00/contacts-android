@@ -222,7 +222,7 @@ class GroupsActivity : BaseActivity() {
         }
     }
 
-    private suspend fun updateGroup(group: ExistingGroupEntity?) {
+    private suspend fun updateGroup(group: ExistingGroupEntity) {
         val updateResult = contacts
             .groups()
             .updateWithPermission()

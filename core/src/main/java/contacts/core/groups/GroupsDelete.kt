@@ -261,8 +261,12 @@ private class GroupsDeleteImpl(
             for (groupId in groupsIds) {
                 results[groupId] = contentResolver.deleteGroupsWhere(
                     // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. Therefore, we need to
-                    // manually add the check to match only non-read-only groups.
+                    // even though the group was not actually deleted. The group will be marked as
+                    // "deleted" in the local Contacts Provider database but will cause sync adapter
+                    // failures. Ultimately, deletion of read-only groups will not be propagated
+                    // to the remote sync servers.
+                    //
+                    // Thus, we manually add the check to match only non-read-only groups.
                     (GroupsFields.Id equalTo groupId) and (GroupsFields.ReadOnly equalTo false)
                 )
             }
@@ -271,8 +275,12 @@ private class GroupsDeleteImpl(
             groupsWhere?.let {
                 whereResultMap[it.toString()] = contentResolver.deleteGroupsWhere(
                     // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. Therefore, we need to
-                    // manually add the check to match only non-read-only groups.
+                    // even though the group was not actually deleted. The group will be marked as
+                    // "deleted" in the local Contacts Provider database but will cause sync adapter
+                    // failures. Ultimately, deletion of read-only groups will not be propagated
+                    // to the remote sync servers.
+                    //
+                    // Thus, we manually add the check to match only non-read-only groups.
                     it and (GroupsFields.ReadOnly equalTo false)
                 )
             }
@@ -294,8 +302,12 @@ private class GroupsDeleteImpl(
             if (groupsIds.isNotEmpty()) {
                 deleteOperationFor(
                     // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. Therefore, we need to
-                    // manually add the check to match only non-read-only groups.
+                    // even though the group was not actually deleted. The group will be marked as
+                    // "deleted" in the local Contacts Provider database but will cause sync adapter
+                    // failures. Ultimately, deletion of read-only groups will not be propagated
+                    // to the remote sync servers.
+                    //
+                    // Thus, we manually add the check to match only non-read-only groups.
                     (GroupsFields.Id `in` groupsIds) and (GroupsFields.ReadOnly equalTo false)
                 ).let(operations::add)
             }
@@ -303,8 +315,12 @@ private class GroupsDeleteImpl(
             groupsWhere?.let {
                 deleteOperationFor(
                     // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. Therefore, we need to
-                    // manually add the check to match only non-read-only groups.
+                    // even though the group was not actually deleted. The group will be marked as
+                    // "deleted" in the local Contacts Provider database but will cause sync adapter
+                    // failures. Ultimately, deletion of read-only groups will not be propagated
+                    // to the remote sync servers.
+                    //
+                    // Thus, we manually add the check to match only non-read-only groups.
                     it and (GroupsFields.ReadOnly equalTo false)
                 ).let(operations::add)
             }

@@ -203,17 +203,6 @@ sealed interface ImmutableDataEntityWithMutableType<T : MutableDataEntity> : Imm
 }
 
 /**
- * An [ImmutableDataEntity] that has a mutable type [T] that may or may not be null.
- */
-sealed interface ImmutableDataEntityWithNullableMutableType<T : MutableDataEntity> :
-    ImmutableDataEntity,
-    ImmutableEntityWithNullableMutableType<T> {
-
-    // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): ImmutableDataEntityWithNullableMutableType<T>
-}
-
-/**
  * A mutable [DataEntity], with a mutable [primaryValue].
  */
 sealed interface MutableDataEntity : DataEntity, MutableEntity {
