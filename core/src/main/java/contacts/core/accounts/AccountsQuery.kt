@@ -2,16 +2,37 @@ package contacts.core.accounts
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.content.ContentResolver
+import android.provider.ContactsContract
 import contacts.core.*
 import contacts.core.util.*
 
 /**
- * Retrieves **visible** [Account]s from the [AccountManager].
+ * Retrieves **visible** [Account]s from the [AccountManager] whose [Account.type] has a matching
+ * [android.content.SyncAdapterType.accountType] where the
+ * [android.content.SyncAdapterType.authority] is equal to
+ * [android.provider.ContactsContract.AUTHORITY].
  *
- * Note that this is a lightweight wrapper around the [AccountManager]. It used to support filtering
- * Accounts based on RawContacts but that functionality has since been removed to due Samsung,
- * Xiaomi, and perhaps other OEMs not allowing 3rd party apps to easily access their accounts.
- * More context in https://github.com/vestrel00/contacts-android/issues/297
+ * If you look at all of the Accounts returned by the [AccountManager.getAccounts] in your 3rd
+ * party app, you might see the following [Account.type]s...
+ *
+ * - "com.google" if you are signed into a Google account
+ * - "com.google.android.gm.legacyimap" if you are signed into an Personal (IMAP) account
+ * - "com.samsung.android.mobileservice" if the device is from Samsung
+ *
+ * When you open the Google Contacts app (assuming that it is a 3rd party app that did not come
+ * pre-installed in the OS) and select an Account to save a new Contact to, you will notice that it
+ * only allows you to choose between the Google account of local/device account. It does not show
+ * the Personal (IMAP) account or the Samsung Account. The reason is (probably) because there is
+ * no sync adapter for Contacts for those accounts. This API filters such accounts for you because
+ * this API is specific to accounts relating to Contacts!
+ *
+ * Another thing to note is that Samsung (type "com.osp.app.signin"), Xiaomi (type "com.xiaomi"),
+ * and perhaps other OEMs do not allow 3rd party (non-system) apps (those that do not come
+ * pre-installed in the OS) to access their accounts. Your app does not have visibility on this
+ * accounts, unless this API is packaged as part of a custom Android OS, which would be super cool.
+ * Such accounts are not returned by this query. In a Samsung device, the Samsung Contacts app
+ * is able to show the Samsung account but the Google Contacts app cannot.
  *
  * ## Permissions
  *
@@ -210,8 +231,13 @@ private class AccountsQueryImpl(
             }
 
             if (!cancel()) {
-                // See https://github.com/vestrel00/contacts-android/issues/298
-                visibleAccounts.removeAll { it.type == "com.samsung.android.mobileservice" }
+                // Remove accounts that do not have a sync adapter for contacts.
+                val accountTypesWithSyncAdapterForContacts = ContentResolver.getSyncAdapterTypes()
+                    .filter { it.authority == ContactsContract.AUTHORITY }
+                    .map { it.accountType }
+                visibleAccounts.removeAll {
+                    !accountTypesWithSyncAdapterForContacts.contains(it.type)
+                }
             }
 
             if (cancel()) {

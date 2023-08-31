@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import android.accounts.Account
-import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.content.Context
 import contacts.core.*
@@ -52,7 +51,7 @@ internal fun Account?.isNotInSystem(context: Context): Boolean = !isInSystem(con
  */
 @SuppressLint("MissingPermission")
 internal fun Account?.nullIfNotInSystem(context: Context): Account? = this?.let {
-    nullIfNotIn(AccountManager.get(context.applicationContext).accounts.toList())
+    nullIfNotIn(Contacts(context).accounts().query().find())
 }
 
 /**

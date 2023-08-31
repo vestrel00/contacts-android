@@ -1,7 +1,24 @@
 # Query for Accounts
 
-This library provides the `AccountsQuery` API that allows you to retrieve `Account`s from the
-`AccountManager`.
+This library provides the `AccountsQuery` API that allows you to retrieve **visible** `Account`s 
+from the `AccountManager` whose `Account.type` has a matching 
+`android.content.SyncAdapterType.accountType` where the
+[`android.content.SyncAdapterType.authority` is equal to
+[`android.provider.ContactsContract.AUTHORITY`.
+
+If you look at all of the Accounts returned by the `AccountManager.getAccounts` in your 3rd party
+app, you might see the following [Account.type]s...
+
+- "com.google" if you are signed into a Google account
+- "com.google.android.gm.legacyimap" if you are signed into an Personal (IMAP) account
+- "com.samsung.android.mobileservice" if the device is from Samsung
+
+When you open the Google Contacts app (assuming that it is a 3rd party app that did not come 
+pre-installed in the OS) and select an Account to save a new Contact to, you will notice that it
+only allows you to choose between the Google account of local/device account. It does not show
+the Personal (IMAP) account or the Samsung Account. The reason is (probably) because there is no 
+sync adapter for Contacts for those accounts. This API filters such accounts for you because this 
+API is specific to accounts relating to Contacts!
 
 An instance of the `AccountsQuery` API is obtained by,
 
@@ -75,3 +92,12 @@ To perform the query with permission, use the extensions provided in the `permis
 more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
+
+## Limitations
+
+Samsung (type "com.osp.app.signin"), Xiaomi (type "com.xiaomi"), and perhaps other OEMs do not allow
+3rd party (non-system) apps (those that do not come pre-installed in the OS) to access their 
+accounts. Your app does not have visibility on this accounts, unless this API is packaged as part 
+of a custom Android OS, which would be super cool. Such accounts are not returned by this query. 
+In a Samsung device, the Samsung Contacts app is able to show the Samsung account but the Google 
+Contacts app cannot.
