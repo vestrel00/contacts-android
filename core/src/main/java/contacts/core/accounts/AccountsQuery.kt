@@ -232,11 +232,8 @@ private class AccountsQueryImpl(
 
             if (!cancel()) {
                 // Remove accounts that do not have a sync adapter for contacts.
-                val accountTypesWithSyncAdapterForContacts = ContentResolver.getSyncAdapterTypes()
-                    .filter { it.authority == ContactsContract.AUTHORITY }
-                    .map { it.accountType }
                 visibleAccounts.removeAll {
-                    !accountTypesWithSyncAdapterForContacts.contains(it.type)
+                    !syncAdapterAccountTypesWithContactsAuthority().contains(it.type)
                 }
             }
 
@@ -249,6 +246,14 @@ private class AccountsQueryImpl(
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
+}
+
+private fun syncAdapterAccountTypesWithContactsAuthority(): List<String> = try {
+    ContentResolver.getSyncAdapterTypes()
+        .filter { it.authority == ContactsContract.AUTHORITY }
+        .map { it.accountType }
+} catch (e: Exception) {
+    emptyList()
 }
 
 private class AccountsQueryResult private constructor(
