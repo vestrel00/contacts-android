@@ -1166,6 +1166,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    Limitations
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1907,6 +1914,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    Limitations
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1926,8 +1940,24 @@
 
 
 <h1 id="query-for-accounts">Query for Accounts<a class="headerlink" href="#query-for-accounts" title="Permanent link">&para;</a></h1>
-<p>This library provides the <code>AccountsQuery</code> API that allows you to retrieve <code>Account</code>s from the
-<code>AccountManager</code>.</p>
+<p>This library provides the <code>AccountsQuery</code> API that allows you to retrieve <strong>visible</strong> <code>Account</code>s 
+from the <code>AccountManager</code> whose <code>Account.type</code> has a matching 
+<code>android.content.SyncAdapterType.accountType</code> where the
+[<code>android.content.SyncAdapterType.authority</code> is equal to
+[<code>android.provider.ContactsContract.AUTHORITY</code>.</p>
+<p>If you look at all of the Accounts returned by the <code>AccountManager.getAccounts</code> in your 3rd party
+app, you might see the following [Account.type]s...</p>
+<ul>
+<li>"com.google" if you are signed into a Google account</li>
+<li>"com.google.android.gm.legacyimap" if you are signed into an Personal (IMAP) account</li>
+<li>"com.samsung.android.mobileservice" if the device is from Samsung</li>
+</ul>
+<p>When you open the Google Contacts app (assuming that it is a 3rd party app that did not come 
+pre-installed in the OS) and select an Account to save a new Contact to, you will notice that it
+only allows you to choose between the Google account of local/device account. It does not show
+the Personal (IMAP) account or the Samsung Account. The reason is (probably) because there is no 
+sync adapter for Contacts for those accounts. This API filters such accounts for you because this 
+API is specific to accounts relating to Contacts!</p>
 <p>An instance of the <code>AccountsQuery</code> API is obtained by,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="na">accounts</span><span class="p">().</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
@@ -1975,6 +2005,13 @@ do nothing and return an empty list.</p>
 <p>To perform the query with permission, use the extensions provided in the <code>permissions</code> module. For
 more info, read <a href="../../permissions/permissions-handling-coroutines/">Permissions handling using coroutines</a>.</p>
 <p>You may, of course, use other permission handling libraries or just do it yourself =)</p>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
+<p>Samsung (type "com.osp.app.signin"), Xiaomi (type "com.xiaomi"), and perhaps other OEMs do not allow
+3rd party (non-system) apps (those that do not come pre-installed in the OS) to access their 
+accounts. Your app does not have visibility on this accounts, unless this API is packaged as part 
+of a custom Android OS, which would be super cool. Such accounts are not returned by this query. 
+In a Samsung device, the Samsung Contacts app is able to show the Samsung account but the Google 
+Contacts app cannot.</p>
 
               
             </article>

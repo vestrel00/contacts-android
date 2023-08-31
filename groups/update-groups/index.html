@@ -2043,13 +2043,6 @@ Contacts Provider typically have the following system groups (for standard Googl
 <li>systemId: Coworkers, title: Coworkers</li>
 </ul>
 <p>The above list may vary per account.</p>
-<p>To prevent attempting to modify/update read-only groups, the <code>Group.mutableCopy()</code> function will
-return null if the group is read-only. </p>
-<blockquote>
-<p>ℹ️ You can try and hack your way around this limitation that this library imposes but you will 
-still not be able to change read-only groups. This library is just trying to save you the pain and 
-suffering caused by trying and failing XD</p>
-</blockquote>
 <h2 id="groups-and-duplicate-titles">Groups and duplicate titles<a class="headerlink" href="#groups-and-duplicate-titles" title="Permanent link">&para;</a></h2>
 <p>The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
 belonging to the same (nullable) account to exist. In older versions of Android, the AOSP Contacts 
@@ -2072,9 +2065,10 @@ not allowed. Therefore, this library does not allow for duplicate titles.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">updateResult</span><span class="p">.</span><span class="na">failureReason</span><span class="p">(</span><span class="n">mutableGroup1</span><span class="p">)</span><span class="o">?.</span><span class="na">let</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="n">TITLE_ALREADY_EXIST</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">promptUserToPickDifferentTitle</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">        </span><span class="n">UNKNOWN</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showGenericErrorMessage</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="p">}</span><span class="w">   </span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">        </span><span class="n">READ_ONLY</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">informUserThatReadOnlyGroupsCannotBeModified</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">        </span><span class="n">UNKNOWN</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showGenericErrorMessage</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="p">}</span><span class="w">   </span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="cancelling-the-update">Cancelling the update<a class="headerlink" href="#cancelling-the-update" title="Permanent link">&para;</a></h2>
 <p>To cancel an update amid execution,</p>
