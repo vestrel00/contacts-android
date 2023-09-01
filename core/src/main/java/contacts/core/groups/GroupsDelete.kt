@@ -267,7 +267,7 @@ private class GroupsDeleteImpl(
                     // to the remote sync servers.
                     //
                     // Thus, we manually add the check to match only non-read-only groups.
-                    (GroupsFields.Id equalTo groupId) and (GroupsFields.ReadOnly equalTo false)
+                    (GroupsFields.Id equalTo groupId) and (GroupsFields.GroupIsReadOnly equalTo false)
                 )
             }
 
@@ -281,7 +281,7 @@ private class GroupsDeleteImpl(
                     // to the remote sync servers.
                     //
                     // Thus, we manually add the check to match only non-read-only groups.
-                    it and (GroupsFields.ReadOnly equalTo false)
+                    it and (GroupsFields.GroupIsReadOnly equalTo false)
                 )
             }
 
@@ -308,7 +308,7 @@ private class GroupsDeleteImpl(
                     // to the remote sync servers.
                     //
                     // Thus, we manually add the check to match only non-read-only groups.
-                    (GroupsFields.Id `in` groupsIds) and (GroupsFields.ReadOnly equalTo false)
+                    (GroupsFields.Id `in` groupsIds) and (GroupsFields.GroupIsReadOnly equalTo false)
                 ).let(operations::add)
             }
 
@@ -321,7 +321,7 @@ private class GroupsDeleteImpl(
                     // to the remote sync servers.
                     //
                     // Thus, we manually add the check to match only non-read-only groups.
-                    it and (GroupsFields.ReadOnly equalTo false)
+                    it and (GroupsFields.GroupIsReadOnly equalTo false)
                 ).let(operations::add)
             }
 
