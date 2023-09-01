@@ -53,8 +53,8 @@ internal fun Context.logDataTable(contentUri: Uri, mimeTypesFilter: Set<String>)
             ContactsContract.Data.DATA12,
             ContactsContract.Data.DATA13,
             ContactsContract.Data.DATA14
-            // Intentionally not including DATA15 as it probably contains relatively BLOB data
-            // that is not suitable for logging such as photo thumbnails.
+            // Intentionally not including DATA15 as it probably contains image BLOB data, which is
+            // not suitable for logging such as photo thumbnails.
         ),
         null,
         null,

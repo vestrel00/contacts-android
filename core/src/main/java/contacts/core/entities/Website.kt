@@ -148,6 +148,7 @@ data class NewWebsite @JvmOverloads constructor(
 
     override var url: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : WebsiteEntity, NewDataEntity, MutableWebsiteEntity {

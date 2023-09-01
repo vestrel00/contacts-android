@@ -151,6 +151,7 @@ data class NewHandleName @JvmOverloads constructor(
 
     override var handle: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : HandleNameEntity, NewCustomDataEntity, MutableHandleNameEntity {

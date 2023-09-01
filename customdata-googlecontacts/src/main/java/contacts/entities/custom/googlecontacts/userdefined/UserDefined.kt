@@ -187,6 +187,7 @@ data class NewUserDefined @JvmOverloads constructor(
     override var field: String? = null,
     override var label: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : UserDefinedEntity, NewCustomDataEntity, MutableUserDefinedEntity {

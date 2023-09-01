@@ -223,6 +223,7 @@ data class NewOrganization @JvmOverloads constructor(
     override var symbol: String? = null,
     override var phoneticName: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : OrganizationEntity, NewDataEntity, MutableOrganizationEntity {

@@ -476,9 +476,6 @@ internal fun Contacts.updateContact(
 
     /*
      * Atomically perform all of the operations. All will either succeed or all will fail.
-     *
-     * Note that the returned result on success is ContentProviderResult(count=0). Therefore, we
-     * cannot use the count to determine if the operation succeeded or not.
      */
     val success = contentResolver.applyBatch(operations) != null
 
@@ -515,9 +512,6 @@ internal fun Contacts.updateRawContact(
 
     /*
      * Atomically perform all of the operations. All will either succeed or all will fail.
-     *
-     * Note that the returned result on success is ContentProviderResult(count=0). Therefore, we
-     * cannot use the count to determine if the operation succeeded or not.
      */
     val success = contentResolver.applyBatch(operations) != null
 

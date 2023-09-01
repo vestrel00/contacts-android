@@ -276,6 +276,7 @@ data class NewIm @JvmOverloads constructor(
     override var customProtocol: String? = null,
     override var data: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : ImEntity, NewDataEntity, MutableImEntity {

@@ -327,6 +327,7 @@ data class NewName @JvmOverloads constructor(
     override var phoneticMiddleName: String? = null,
     override var phoneticFamilyName: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : NameEntity, NewDataEntity, MutableNameEntity {

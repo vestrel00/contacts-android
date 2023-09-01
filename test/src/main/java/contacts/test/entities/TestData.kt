@@ -145,6 +145,7 @@ internal data class NewTestData @JvmOverloads constructor(
 
     override var value: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : TestDataEntity, NewCustomDataEntity, MutableTestDataEntity {

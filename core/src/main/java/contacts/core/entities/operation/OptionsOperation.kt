@@ -7,6 +7,7 @@ import contacts.core.entities.OptionsEntity
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.util.isProfileId
+import contacts.core.util.toSqlValue
 
 /*
  * Note that changes to the options of a RawContact may affect the options of the parent Contact.
@@ -97,10 +98,3 @@ private fun ContentProviderOperation.Builder.withRawContactOptions(
     ) {
         it.toSqlValue()
     }
-
-private fun Boolean?.toSqlValue(): Int {
-    if (this != null) {
-        return if (this) 1 else 0
-    }
-    return 0
-}

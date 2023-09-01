@@ -145,6 +145,7 @@ data class NewNote @JvmOverloads constructor(
 
     override var note: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : NoteEntity, NewDataEntity, MutableNoteEntity {

@@ -125,10 +125,10 @@ sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {
     abstract val forMatching: Set<T>
 }
 
-data class GenericDataField internal constructor(override val columnName: String) :
-    AbstractDataField() {
-    override val required: Boolean = true
-}
+data class GenericDataField internal constructor(
+    override val columnName: String,
+    override val required: Boolean
+) : AbstractDataField()
 
 /**
  * Contains all fields / columns that are accessible via the Data table with joins from the
@@ -156,7 +156,14 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Contact = DataContactsFields()
 
     @JvmField
-    val DataId = GenericDataField(Data._ID)
+    val DataId = GenericDataField(Data._ID, required = true)
+
+    /**
+     * Note that adding this to the included fields of any CRUD API does nothing. However, you may
+     * use this for matching via WHERE clauses.
+     */
+    @JvmField
+    val DataIsReadOnly = GenericDataField(Data.IS_READ_ONLY, required = false)
 
     @JvmField
     val Email = EmailFields()
@@ -171,12 +178,12 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val Im = ImFields()
 
     @JvmField
-    val IsPrimary = GenericDataField(Data.IS_PRIMARY)
+    val IsPrimary = GenericDataField(Data.IS_PRIMARY, required = true)
 
     @JvmField
-    val IsSuperPrimary = GenericDataField(Data.IS_SUPER_PRIMARY)
+    val IsSuperPrimary = GenericDataField(Data.IS_SUPER_PRIMARY, required = true)
 
-    internal val MimeType = GenericDataField(Data.MIMETYPE)
+    internal val MimeType = GenericDataField(Data.MIMETYPE, required = true)
 
     @JvmField
     val Name = NameFields()
@@ -225,6 +232,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Address.all)
             addAll(Contact.all)
             add(DataId)
+            add(DataIsReadOnly)
             addAll(Email.all)
             addAll(Event.all)
             addAll(GroupMembership.all)
@@ -256,6 +264,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Address.forMatching)
             addAll(Contact.forMatching)
             // add(DataId) not included
+            // add(DataIsReadOnly) not included
             addAll(Email.forMatching)
             addAll(Event.forMatching)
             addAll(GroupMembership.forMatching)
@@ -350,11 +359,12 @@ object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
     override val all by lazy {
         setOf(
             Fields.DataId,
+            // Intentionally not including Fields.DataIsReadOnly because the APIs in this library
+            // does not depend on it to function at a basic level.
             Fields.RawContact.Id,
             Fields.Contact.Id,
-            // Intentionally not including the Contact lookup key because the APIs in this library
+            // Intentionally not including Fields.Contact.LookupKey because the APIs in this library
             // does not depend on it to function at a basic level.
-            // As for the RawContact sourceId, it is simply not available in the joined data table.
             Fields.MimeType,
             Fields.IsPrimary,
             Fields.IsSuperPrimary

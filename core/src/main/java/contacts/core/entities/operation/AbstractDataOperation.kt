@@ -4,16 +4,24 @@ import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
-import contacts.core.*
+import contacts.core.AbstractDataField
+import contacts.core.DataField
+import contacts.core.Fields
+import contacts.core.Include
+import contacts.core.Where
+import contacts.core.and
 import contacts.core.entities.DataEntity
 import contacts.core.entities.MimeType
+import contacts.core.entities.NewDataEntity
 import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.isNotNullOrBlank
 import contacts.core.entities.propertiesAreAllNullOrBlank
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
+import contacts.core.equalTo
 import contacts.core.util.query
+import contacts.core.util.toSqlValue
 
 /**
  * Builds [ContentProviderOperation]s for [Table.Data] using the field [F] and entity [E].
@@ -56,6 +64,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         }
 
         val operation = ContentProviderOperation.newInsert(contentUri)
+            .withDataIsReadOnly(entity)
 
         var hasValueSet = false
 
@@ -216,6 +225,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         val operation = ContentProviderOperation.newInsert(contentUri)
             .withValue(Fields.RawContact.Id, rawContactId)
             .withValue(Fields.MimeType, mimeType.value)
+            .withDataIsReadOnly(entity)
 
         var hasValueSet = false
 
@@ -323,4 +333,15 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
         selectionWithMimeTypeForRawContact(rawContactId),
         processCursor = processCursor
     )
+
+    private fun ContentProviderOperation.Builder.withDataIsReadOnly(entity: E) = apply {
+        if (entity is NewDataEntity) {
+            // Yes, we are not checking if Fields.DataIsReadyOnly is in the includeFields. We could
+            // change includeFields: Set<F> to be includeFields: Set<AbstractDataField> so that
+            // it can be included BUT requires repetitive code changes in a bunch of files and
+            // additional memory/CPU overhead and may mess up the way includeFields.isEmpty() is
+            // used in this file if not done correctly.
+            withValue(Fields.DataIsReadOnly, entity.isReadOnly.toSqlValue())
+        }
+    }
 }

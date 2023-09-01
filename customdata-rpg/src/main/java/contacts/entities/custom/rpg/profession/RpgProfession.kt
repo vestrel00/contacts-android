@@ -152,6 +152,7 @@ data class NewRpgProfession @JvmOverloads constructor(
 
     override var title: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : RpgProfessionEntity, NewCustomDataEntity, MutableRpgProfessionEntity {

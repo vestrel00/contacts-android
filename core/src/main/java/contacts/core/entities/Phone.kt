@@ -217,6 +217,7 @@ data class NewPhone @JvmOverloads constructor(
     override var number: String? = null,
     override var normalizedNumber: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : PhoneEntity, NewDataEntity, MutablePhoneEntity {

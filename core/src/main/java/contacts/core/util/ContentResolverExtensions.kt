@@ -63,7 +63,7 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
     val cursor = try {
         query(
             contentUri,
-            include.columnNames.toTypedArray(),
+            include.columnNamesForQueryProjection.toTypedArray(),
             where?.toString(),
             null,
             sortOrder

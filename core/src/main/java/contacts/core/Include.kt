@@ -54,6 +54,14 @@ internal class Include<out T : Field>(
         fields.map { it.columnName }.toSet()
     }
 
+    /**
+     * This is the same as [columnNames] except certain fields are removed because they cause
+     * exceptions in queries.
+     */
+    val columnNamesForQueryProjection: Set<String> by lazy {
+        columnNames.minus(Fields.DataIsReadOnly.columnName)
+    }
+
     override fun toString(): String = columnNames.joinToString(", ")
 }
 

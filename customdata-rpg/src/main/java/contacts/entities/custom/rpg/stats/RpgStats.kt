@@ -179,6 +179,7 @@ data class NewRpgStats @JvmOverloads constructor(
     override var intelligence: Int? = null,
     override var luck: Int? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : RpgStatsEntity, NewCustomDataEntity, MutableRpgStatsEntity {

@@ -33,8 +33,8 @@ sealed interface GroupEntity : Entity {
     val title: String
 
     /**
-     * If true, this group cannot be modified or deleted except by sync adapters. All system
-     * groups are read-only.
+     * If true, this group cannot be modified except by sync adapters. Note that all system groups
+     * are read-only.
      *
      * This is a read-only flag! The Contacts Provider routinely sets this to false for all
      * user-created groups. System groups has this set to true.

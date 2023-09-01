@@ -189,6 +189,7 @@ data class NewRelation @JvmOverloads constructor(
 
     override var name: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : RelationEntity, NewDataEntity, MutableRelationEntity {

@@ -148,6 +148,7 @@ data class NewSipAddress @JvmOverloads constructor(
 
     override var sipAddress: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : SipAddressEntity, NewDataEntity, MutableSipAddressEntity {

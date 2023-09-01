@@ -180,6 +180,7 @@ data class NewEmail @JvmOverloads constructor(
     override var label: String? = null,
     override var address: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : EmailEntity, NewDataEntity, MutableEmailEntity {

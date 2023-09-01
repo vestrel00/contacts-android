@@ -194,6 +194,7 @@ data class NewPokemon @JvmOverloads constructor(
     override var level: Int? = null,
     override var pokeApiId: Int? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : PokemonEntity, NewCustomDataEntity, MutablePokemonEntity {

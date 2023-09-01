@@ -212,6 +212,7 @@ data class NewEvent @JvmOverloads constructor(
 
     override var date: EventDate? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : EventEntity, NewDataEntity, MutableEventEntity {

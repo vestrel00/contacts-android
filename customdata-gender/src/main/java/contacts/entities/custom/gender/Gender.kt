@@ -166,6 +166,7 @@ data class NewGender @JvmOverloads constructor(
     override var type: Type? = null,
     override var label: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : GenderEntity, NewCustomDataEntity, MutableGenderEntity {

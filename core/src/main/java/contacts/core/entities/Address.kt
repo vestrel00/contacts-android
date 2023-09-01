@@ -311,6 +311,7 @@ data class NewAddress @JvmOverloads constructor(
     override var postcode: String? = null,
     override var country: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : AddressEntity, NewDataEntity, MutableAddressEntity {

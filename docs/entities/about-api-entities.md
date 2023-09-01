@@ -153,6 +153,17 @@ disables consumers from violating them.
 The core library does not explicitly expose count restrictions to consumers. However, it is exposed
 when integrating custom data via the `CustomDataCountRestriction`.
 
+## Read-only data
+
+Any data kind may be set as read-only during insertion of new RawContacts. This is not for general
+application usage and should really only be used by sync adapters. For example,
+
+```kotlin
+NewEmail(address = "read.only@read.com", isReadOnly = true)
+```
+
+For more info, read the in-code documentation of `NewDataEntity.isReadOnly`.
+
 ## Data integrity
 
 There is a section in the official Contacts Provider documentation about "Data Integrity";

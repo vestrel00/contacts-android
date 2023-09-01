@@ -149,6 +149,7 @@ data class NewNickname @JvmOverloads constructor(
 
     override var name: String? = null,
 
+    override var isReadOnly: Boolean = false,
     override val isRedacted: Boolean = false
 
 ) : NicknameEntity, NewDataEntity, MutableNicknameEntity {

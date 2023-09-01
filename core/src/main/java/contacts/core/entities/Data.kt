@@ -145,6 +145,28 @@ sealed interface DataEntityWithTypeAndLabel<out T : DataEntity.Type> : DataEntit
  */
 sealed interface NewDataEntity : DataEntity, NewEntity {
 
+    /**
+     * When true, only sync adapters are allowed to update this data, though deletion may still be
+     * possible regardless.
+     *
+     * Note that this property is not at the [DataEntity] because including the column in query
+     * projection array causes an exception to be thrown. In order to check if an
+     * [ExistingDataEntity] is read-only, use the read-only field in query selection/WHERE clauses
+     * in conjunction with the ID. Or, use the extension functions provided in [contacts.core.util].
+     *
+     * ## For sync adapter use only!
+     *
+     * Do NOT set this to true unless you know what you are doing. Typically, you only set this to
+     * true in the context of sync adapters. If you are working on a regular application, keep this
+     * false.
+     *
+     * Note that API update operations from those that are not sync adapters for read-only data may
+     * still indicate success even though the data was not actually updated. This is a limitation
+     * that is also present in other Contacts apps such as AOSP Contacts, Google Contacts, Samsung
+     * Contacts, etc.
+     */
+    var isReadOnly: Boolean
+
     override val isPrimary: Boolean
         get() = false
 
