@@ -153,10 +153,10 @@ interface GroupsUpdate : CrudApi {
             TITLE_ALREADY_EXIST,
 
             /**
-             * The [ExistingGroupEntity.readOnly] is true. System, read-only groups cannot be
+             * The [ExistingGroupEntity.isReadOnly] is true. System, read-only groups cannot be
              * modified, except perhaps by the owning sync adapter.
              */
-            READ_ONLY,
+            GROUP_IS_READ_ONLY,
 
             /**
              * The update failed because of no permissions, no groups specified for update, group
@@ -236,8 +236,8 @@ private class GroupsUpdateImpl(
                 // reason. Unlike other APIs in this library, this API will indicate success if there
                 // is no failure reason.
 
-                if (group.readOnly) {
-                    failureReasons[group] = FailureReason.READ_ONLY
+                if (group.isReadOnly) {
+                    failureReasons[group] = FailureReason.GROUP_IS_READ_ONLY
                     continue
                 }
 

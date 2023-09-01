@@ -1367,7 +1367,7 @@ object GroupsFields : FieldSet<GroupsField>() {
     val Title = GroupsField(Groups.TITLE)
 
     @JvmField
-    val ReadOnly = GroupsField(Groups.GROUP_IS_READ_ONLY)
+    val GroupIsReadOnly = GroupsField(Groups.GROUP_IS_READ_ONLY)
 
     @JvmField
     val Favorites = GroupsField(Groups.FAVORITES)
@@ -1393,7 +1393,7 @@ object GroupsFields : FieldSet<GroupsField>() {
             Id,
             SystemId,
             Title,
-            ReadOnly,
+            GroupIsReadOnly,
             Favorites,
             AutoAdd,
             AccountName,

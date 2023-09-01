@@ -13,7 +13,7 @@ internal class GroupMapper(private val groupsCursor: GroupsCursor) : EntityMappe
 
             title = groupsCursor.title,
 
-            readOnly = groupsCursor.readOnly,
+            isReadOnly = groupsCursor.isReadOnly,
             favorites = groupsCursor.favorites,
             autoAdd = groupsCursor.autoAdd,
 

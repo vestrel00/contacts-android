@@ -39,7 +39,7 @@ sealed interface GroupEntity : Entity {
      * This is a read-only flag! The Contacts Provider routinely sets this to false for all
      * user-created groups. System groups has this set to true.
      */
-    val readOnly: Boolean
+    val isReadOnly: Boolean
 
     /**
      * When a contacts is marked as a favorites it will be automatically added to the groups that
@@ -156,9 +156,9 @@ sealed interface GroupEntity : Entity {
      */
     @IgnoredOnParcel
     val isFavoritesGroup: Boolean
-        get() = readOnly && favorites
+        get() = isReadOnly && favorites
 
-    // This is never blank because of the non-nullable attributes such as readOnly, favorites, ...
+    // This is never blank because of the non-nullable attributes such as isReadOnly, favorites, ...
     @IgnoredOnParcel
     override val isBlank: Boolean
         get() = false
@@ -203,7 +203,7 @@ data class Group internal constructor(
 
     override val title: String,
 
-    override val readOnly: Boolean,
+    override val isReadOnly: Boolean,
     override val favorites: Boolean,
     override val autoAdd: Boolean,
     override val account: Account?,
@@ -217,7 +217,7 @@ data class Group internal constructor(
         id = id,
         systemId = systemId,
         title = title,
-        readOnly = readOnly,
+        isReadOnly = isReadOnly,
         favorites = favorites,
         autoAdd = autoAdd,
         account = account,
@@ -245,7 +245,7 @@ data class MutableGroup internal constructor(
 
     override var title: String,
 
-    override val readOnly: Boolean,
+    override val isReadOnly: Boolean,
     override val favorites: Boolean,
     override val autoAdd: Boolean,
     override val account: Account?,
@@ -281,7 +281,7 @@ data class NewGroup @JvmOverloads constructor(
     override val systemId: String?
         get() = null
 
-    override val readOnly: Boolean
+    override val isReadOnly: Boolean
         get() = false
 
     override val favorites: Boolean

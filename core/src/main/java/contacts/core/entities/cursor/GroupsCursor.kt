@@ -26,7 +26,7 @@ internal class GroupsCursor(cursor: Cursor, includeFields: Set<GroupsField>) :
 
     val title: String by nonNullString(GroupsFields.Title, "null")
 
-    val readOnly: Boolean by nonNullBoolean(GroupsFields.ReadOnly)
+    val isReadOnly: Boolean by nonNullBoolean(GroupsFields.GroupIsReadOnly)
 
     val favorites: Boolean by nonNullBoolean(GroupsFields.Favorites)
 

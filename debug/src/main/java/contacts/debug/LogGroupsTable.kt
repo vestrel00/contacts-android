@@ -39,7 +39,7 @@ fun Context.logGroupsTable() {
         val sourceId = cursor.getString(1)
         val systemId = cursor.getString(2)
         val title = cursor.getString(3)
-        val readOnly = cursor.getString(4)
+        val isReadOnly = cursor.getString(4)
         val favorites = cursor.getString(5)
         val autoAdd = cursor.getString(6)
         val shouldSync = cursor.getString(7)
@@ -50,7 +50,7 @@ fun Context.logGroupsTable() {
         log(
             """
                 Group id: $id, sourceId: $sourceId, systemId: $systemId, title: $title,
-                 readOnly: $readOnly, favorites: $favorites, autoAdd: $autoAdd,
+                 isReadOnly: $isReadOnly, favorites: $favorites, autoAdd: $autoAdd,
                  shouldSync: $shouldSync, accountName: $accountName, accountType: $accountType,
                  deleted: $deleted
             """.trimIndent().replace("\n", "")
