@@ -3394,12 +3394,12 @@ structured components; <code>STREET</code>, <code>POBOX</code>, <code>NEIGHBORHO
 </ul>
 <h3 id="groups-table-accounts">Groups Table &amp; Accounts<a class="headerlink" href="#groups-table-accounts" title="Permanent link">&para;</a></h3>
 <p>Contacts are assigned to one or more groups via the <code>GroupMembership</code>. It typically looks like this;</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Group id: 1, systemId: Contacts, readOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1, accountName: vestrel00@gmail.com, accountType: com.google
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>Group id: 2, systemId: null, readOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>Group id: 3, systemId: Friends, readOnly: 1, title: Friends, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>Group id: 4, systemId: Family, readOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>Group id: 5, systemId: Coworkers, readOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>Group id: 6, systemId: null, readOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Group id: 1, systemId: Contacts, isReadOnly: 1, title: My Contacts, favorites: 0, autoAdd: 1, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>Group id: 2, systemId: null, isReadOnly: 1, title: Starred in Android, favorites: 1, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>Group id: 3, systemId: Friends, isReadOnly: 1, title: Friends, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>Group id: 4, systemId: Family, isReadOnly: 1, title: Family, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>Group id: 5, systemId: Coworkers, isReadOnly: 1, title: Coworkers, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>Group id: 6, systemId: null, isReadOnly: 0, title: Custom Group, favorites: 0, autoAdd: 0, accountName: vestrel00@gmail.com, accountType: com.google
 </code></pre></div>
 <p>The actual groups are in a separate table; Groups. Each group is associated with an Account. The 
 AOSP Contacts app does not allow for Groups to exist without an Account. However, other apps such as

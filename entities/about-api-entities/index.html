@@ -2200,7 +2200,14 @@ when integrating custom data via the <code>CustomDataCountRestriction</code>.</p
 application usage and should really only be used by sync adapters. For example,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">NewEmail</span><span class="p">(</span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;read.only@read.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">isReadOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
-<p>For more info, read the in-code documentation of <code>NewDataEntity.isReadOnly</code>.</p>
+<blockquote>
+<p>ℹ️ For more info, read the in-code documentation of <code>NewDataEntity.isReadOnly</code>.</p>
+</blockquote>
+<p>Checking if an <code>ExistingDataEntity</code> is read-only requires a separate query. You can use extension
+functions defined in <code>DataIsReadOnly.kt</code> for this purpose.</p>
+<blockquote>
+<p>ℹ️ For more info, read <a href="../../other/convenience-functions/#check-if-data-is-read-only">Convenience functions | Check if Data is read-only</a>.</p>
+</blockquote>
 <h2 id="data-integrity">Data integrity<a class="headerlink" href="#data-integrity" title="Permanent link">&para;</a></h2>
 <p>There is a section in the official Contacts Provider documentation about "Data Integrity";
 https://developer.android.com/guide/topics/providers/contacts-provider#DataIntegrity</p>
