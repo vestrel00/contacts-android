@@ -28,14 +28,14 @@ import contacts.core.entities.*
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 @JvmOverloads
-fun <T : ExistingDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? {
-    return if (!contacts.permissions.canQuery()) {
+fun <T : ExistingDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean = { false }): T? =
+    if (!contacts.permissions.canQuery()) {
         null
     } else {
         val existingDataEntity: T? = fetchDataEntity(contacts, id, cancel)
 
         @Suppress("UNCHECKED_CAST")
-        return if (
+        if (
             existingDataEntity is ImmutableDataEntityWithMutableType<*> &&
             this is MutableDataEntity
         ) {
@@ -44,7 +44,6 @@ fun <T : ExistingDataEntity> T.refresh(contacts: Contacts, cancel: () -> Boolean
             existingDataEntity
         }
     }
-}
 
 private fun <T : ExistingDataEntity> T.fetchDataEntity(
     contacts: Contacts,

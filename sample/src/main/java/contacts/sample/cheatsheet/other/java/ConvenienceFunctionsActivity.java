@@ -50,6 +50,14 @@ public class ConvenienceFunctionsActivity extends Activity {
         return DataRefreshKt.refresh(data, ContactsFactory.create(this));
     }
 
+    boolean isDataReadOnly(ExistingDataEntity data) {
+        return DataIsReadOnlyKt.isReadOnly(data, ContactsFactory.create(this));
+    }
+
+    Map<Long, Boolean> isDataReadOnlyMap(Collection<ExistingDataEntity> data) {
+        return DataIsReadOnlyKt.isReadOnlyMap(data, ContactsFactory.create(this));
+    }
+
     List<Contact> sortContactsUsingDataTableFields(List<Contact> contacts) {
         List<OrderBy<AbstractDataField>> orderByFields = new ArrayList<>();
         orderByFields.add(OrderByKt.desc(Fields.Contact.Options.Starred));

@@ -3651,7 +3651,10 @@ heading explore each API in full detail. You may also find these samples in the 
     class ConvenienceFunctionsActivity : Activity() {
     
         fun getSetRawContactDataThroughContact(contact: Contact) {
+            @Suppress("Unused")
             val contactEmailSequence = contact.emails()
+    
+            @Suppress("Unused")
             val contactEmailList = contact.emailList()
     
             contact.mutableCopy().addEmail(NewEmail().apply {
@@ -3680,6 +3683,11 @@ heading explore each API in full detail. You may also find these samples in the 
         fun refreshRawContact(rawContact: RawContact): RawContact? = rawContact.refresh(Contacts(this))
     
         fun refreshData(data: ExistingDataEntity): ExistingDataEntity? = data.refresh(Contacts(this))
+    
+        fun isDataReadOnly(data: ExistingDataEntity): Boolean = data.isReadOnly(Contacts(this))
+    
+        fun isDataReadOnlyMap(data: Collection<ExistingDataEntity>): Map<Long, Boolean> =
+            data.isReadOnlyMap(Contacts(this))
     
         fun sortContactsUsingDataTableFields(contacts: List<Contact>) =
             contacts.sortedWith(
@@ -3745,6 +3753,14 @@ heading explore each API in full detail. You may also find these samples in the 
     
         ExistingDataEntity refreshData(ExistingDataEntity data) {
             return DataRefreshKt.refresh(data, ContactsFactory.create(this));
+        }
+    
+        boolean isDataReadOnly(ExistingDataEntity data) {
+            return DataIsReadOnlyKt.isReadOnly(data, ContactsFactory.create(this));
+        }
+    
+        Map<Long, Boolean> isDataReadOnlyMap(Collection<ExistingDataEntity> data) {
+            return DataIsReadOnlyKt.isReadOnlyMap(data, ContactsFactory.create(this));
         }
     
         List<Contact> sortContactsUsingDataTableFields(List<Contact> contacts) {

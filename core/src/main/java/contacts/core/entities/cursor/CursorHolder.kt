@@ -23,7 +23,7 @@ internal class CursorHolder<T : Field>(val cursor: Cursor, val includeFields: Se
 @Suppress("UNCHECKED_CAST")
 internal inline fun <reified T : Field> Cursor.toEntityCursor(includeFields: Set<T>): CursorHolder<T> =
     when (T::class) {
-        AbstractDataField::class, DataContactsField::class -> CursorHolder(
+        AbstractDataField::class, GenericDataField::class, DataContactsField::class -> CursorHolder(
             this,
             includeFields as Set<AbstractDataField>
         )

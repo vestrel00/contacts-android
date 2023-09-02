@@ -149,10 +149,11 @@ sealed interface NewDataEntity : DataEntity, NewEntity {
      * When true, only sync adapters are allowed to update this data, though deletion may still be
      * possible regardless.
      *
-     * Note that this property is not at the [DataEntity] because including the column in query
-     * projection array causes an exception to be thrown. In order to check if an
-     * [ExistingDataEntity] is read-only, use the read-only field in query selection/WHERE clauses
-     * in conjunction with the ID. Or, use the extension functions provided in [contacts.core.util].
+     * Note that this property is not at the [DataEntity] because including the
+     * [android.provider.ContactsContract.DataColumns.IS_READ_ONLY] column in query projection
+     * array causes an exception to be thrown. In order to check if an [ExistingDataEntity] is
+     * read-only, use the read-only field in query selection/WHERE clauses in conjunction with the
+     * ID. Or, use the extension functions provided in [contacts.core.util].
      *
      * ## For sync adapter use only!
      *

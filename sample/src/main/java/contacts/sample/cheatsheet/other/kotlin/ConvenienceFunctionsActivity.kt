@@ -41,6 +41,11 @@ class ConvenienceFunctionsActivity : Activity() {
 
     fun refreshData(data: ExistingDataEntity): ExistingDataEntity? = data.refresh(Contacts(this))
 
+    fun isDataReadOnly(data: ExistingDataEntity): Boolean = data.isReadOnly(Contacts(this))
+
+    fun isDataReadOnlyMap(data: Collection<ExistingDataEntity>): Map<Long, Boolean> =
+        data.isReadOnlyMap(Contacts(this))
+
     fun sortContactsUsingDataTableFields(contacts: List<Contact>) =
         contacts.sortedWith(
             setOf(

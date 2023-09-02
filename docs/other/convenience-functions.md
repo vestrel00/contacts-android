@@ -127,6 +127,31 @@ These are blocking calls so you might want to do them outside the UI thread.
 
 > ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
+## Check if Data is read-only
+
+To check if any `ExistingDataEntity` is read-only,
+
+```kotlin
+val isReadOnly = existingDataEntity.isReadOnly(contactsApi)
+```
+
+To check if multiple `ExistingDataEntity`s are read-only,
+
+```kotlin
+val isReadOnlyMap = existingDataEntities.isReadOnlyMap(contactsApi)
+```
+
+These are blocking calls so you might want to do them outside the UI thread.
+
+> ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
+
+> The value of `android.provider.ContactsContract.DataColumns.IS_READ_ONLY` is not a property of
+> `ExistingDataEntity` because including that particular column in the query projection array causes 
+> an exception. However, it is still possible to use the column in selection/WHERE clauses. Thus, 
+> allowing us to create this extension function =)
+
+> ℹ️ For more info, read [API Entities | Read-only data](./../entities/about-api-entities.md#read-only-data).
+
 ## Sort Contacts by data fields
 
 The `Query` and `BroadQuery` APIs allows you to sort Contacts based on fields in the Contacts table

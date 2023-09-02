@@ -162,7 +162,12 @@ application usage and should really only be used by sync adapters. For example,
 NewEmail(address = "read.only@read.com", isReadOnly = true)
 ```
 
-For more info, read the in-code documentation of `NewDataEntity.isReadOnly`.
+> ℹ️ For more info, read the in-code documentation of `NewDataEntity.isReadOnly`.
+
+Checking if an `ExistingDataEntity` is read-only requires a separate query. You can use extension
+functions defined in `DataIsReadOnly.kt` for this purpose.
+
+> ℹ️ For more info, read [Convenience functions | Check if Data is read-only](./../other/convenience-functions.md#check-if-data-is-read-only).
 
 ## Data integrity
 
