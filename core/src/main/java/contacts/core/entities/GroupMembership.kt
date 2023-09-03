@@ -91,7 +91,7 @@ data class NewGroupMembership internal constructor(
 
     override val isRedacted: Boolean,
 
-    // Group memberships are inherently read-only anyways.
+    // Group memberships are implicitly read-only.
     override var isReadOnly: Boolean = true
 
 ) : GroupMembershipEntity, NewDataEntity, ImmutableDataEntity {

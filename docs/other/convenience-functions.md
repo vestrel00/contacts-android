@@ -127,9 +127,16 @@ These are blocking calls so you might want to do them outside the UI thread.
 
 > ℹ️ For more info, read [Execute work outside of the UI thread using coroutines](./../async/async-execution-coroutines.md).
 
-## Check if Data is read-only
+## Get/set Data read-only
 
-To check if any `ExistingDataEntity` is read-only,
+To set the read-only property of all data of a `NewRawContact` in one function call, you can use 
+extensions in `NewRawContactData.kt`,
+
+```kotlin
+newRawContact.setDataAsReadOnly(true)
+```
+
+To check if any `ExistingDataEntity` is read-only you can use extensions in `DataIsReadOnly.kt`,
 
 ```kotlin
 val isReadOnly = existingDataEntity.isReadOnly(contactsApi)

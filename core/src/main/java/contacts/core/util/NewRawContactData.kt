@@ -356,3 +356,43 @@ fun NewRawContact.removeWebsite(website: NewWebsite, byReference: Boolean = fals
 fun NewRawContact.removeAllWebsites() {
     websites.clear()
 }
+
+/**
+ * Sets the value of all [NewDataEntity.isReadOnly] (including any custom data) to [readOnly].
+ *
+ * This is useful if you are passing a [NewRawContact] into an insert API and you want all of its
+ * data to be read-only or not.
+ *
+ * ## A few things to note!
+ *
+ * 1. This does not set the RawContact itself to be read-only. This only sets the read-only flag of
+ * all the data belonging to this RawContact.
+ * 2. Only data that have already been set/added into this instance will have their read-only
+ * properties set. Other data set/added after the call to this function will not have their
+ * read-only properties set. For example; [addEmail] -> [setDataAsReadOnly] -> [addPhone]. Only the
+ * added email has its read-only property set. The phone did not. Therefore, if you want all data to
+ * have the same read-only value, then you should invoke this function after all data has been
+ * added/set.
+ */
+fun NewRawContact.setDataAsReadOnly(readOnly: Boolean) {
+    addresses.forEach { it.isReadOnly = readOnly }
+    emails.forEach { it.isReadOnly = readOnly }
+    events.forEach { it.isReadOnly = readOnly }
+    // Group memberships are implicitly read-only.
+    ims.forEach { it.isReadOnly = readOnly }
+    name?.isReadOnly = readOnly
+    nickname?.isReadOnly = readOnly
+    note?.isReadOnly = readOnly
+    organization?.isReadOnly = readOnly
+    phones.forEach { it.isReadOnly = readOnly }
+    // Photo is implicitly read-only.
+    relations.forEach { it.isReadOnly = readOnly }
+    sipAddress?.isReadOnly = readOnly
+    websites.forEach { it.isReadOnly = readOnly }
+
+    customDataEntities.values.flatMap { it.entities }.forEach {
+        if (it is NewCustomDataEntity) {
+            it.isReadOnly = readOnly
+        }
+    }
+}

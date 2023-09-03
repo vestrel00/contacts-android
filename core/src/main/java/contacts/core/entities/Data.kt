@@ -161,8 +161,10 @@ sealed interface NewDataEntity : DataEntity, NewEntity {
      * true in the context of sync adapters. If you are working on a regular application, keep this
      * false.
      *
-     * Note that API update operations from those that are not sync adapters for read-only data may
-     * still indicate success even though the data was not actually updated. This is a limitation
+     * ## Update API results are non-indicative of actual success or failure.
+     *
+     * Update API operations from those that are not sync adapters for read-only data may still
+     * indicate success even though the data was not actually updated. This is a limitation/behavior
      * that is also present in other Contacts apps such as AOSP Contacts, Google Contacts, Samsung
      * Contacts, etc.
      */

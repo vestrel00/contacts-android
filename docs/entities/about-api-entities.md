@@ -164,6 +164,12 @@ NewEmail(address = "read.only@read.com", isReadOnly = true)
 
 > ℹ️ For more info, read the in-code documentation of `NewDataEntity.isReadOnly`.
 
+To set the read-only property of all data of a `NewRawContact` in one function call,
+
+```kotlin
+newRawContact.setDataAsReadOnly(true)
+```
+
 Checking if an `ExistingDataEntity` is read-only requires a separate query. You can use extension
 functions defined in `DataIsReadOnly.kt` for this purpose.
 
