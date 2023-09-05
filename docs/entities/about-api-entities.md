@@ -302,6 +302,13 @@ Log.d(
 Each Contact may have more than one of the following data if the Contact is made up of 2 or more
 RawContacts; name, nickname, note, organization, sip address.
 
+To get the list of all data kinds of a particular Contact or RawContact,
+
+```kotlin
+contact.dataList()
+rawContact.dataList()
+```
+
 > ℹ️ For more info on how to easily aggregate data from all RawContacts in a Contact, read
 [Convenience functions](./../other/convenience-functions.md).
 

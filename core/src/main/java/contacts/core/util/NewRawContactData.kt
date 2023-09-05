@@ -1,7 +1,24 @@
 package contacts.core.util
 
 import android.accounts.Account
-import contacts.core.entities.*
+import contacts.core.entities.NewAddress
+import contacts.core.entities.NewCustomDataEntity
+import contacts.core.entities.NewDataEntity
+import contacts.core.entities.NewEmail
+import contacts.core.entities.NewEvent
+import contacts.core.entities.NewGroupMembership
+import contacts.core.entities.NewIm
+import contacts.core.entities.NewName
+import contacts.core.entities.NewNickname
+import contacts.core.entities.NewNote
+import contacts.core.entities.NewOptions
+import contacts.core.entities.NewOrganization
+import contacts.core.entities.NewPhone
+import contacts.core.entities.NewRawContact
+import contacts.core.entities.NewRelation
+import contacts.core.entities.NewSipAddress
+import contacts.core.entities.NewWebsite
+import contacts.core.entities.removeAll
 import contacts.core.redactedCopyOrThis
 
 /**
@@ -358,6 +375,37 @@ fun NewRawContact.removeAllWebsites() {
 }
 
 /**
+ * Sequence of all data kinds (e.g. addresses, emails, events, etc) of this [NewRawContact].
+ */
+fun NewRawContact.data(): Sequence<NewDataEntity> = sequence {
+    yieldAll(addresses)
+    yieldAll(emails)
+    yieldAll(events)
+    // Group memberships are implicitly read-only.
+    yieldAll(ims)
+    name?.also { yield(it) }
+    nickname?.also { yield(it) }
+    note?.also { yield(it) }
+    organization?.also { yield(it) }
+    yieldAll(phones)
+    // Photo is implicitly read-only.
+    yieldAll(relations)
+    sipAddress?.also { yield(it) }
+    yieldAll(websites)
+
+    yieldAll(
+        customDataEntities.values
+            .flatMap { it.entities }
+            .filterIsInstance(NewCustomDataEntity::class.java)
+    )
+}
+
+/**
+ * Same as [NewRawContact.data] but as a [List].
+ */
+fun NewRawContact.dataList(): List<NewDataEntity> = data().toList()
+
+/**
  * Sets the value of all [NewDataEntity.isReadOnly] (including any custom data) to [readOnly].
  *
  * This is useful if you are passing a [NewRawContact] into an insert API and you want all of its
@@ -375,24 +423,5 @@ fun NewRawContact.removeAllWebsites() {
  * added/set.
  */
 fun NewRawContact.setDataAsReadOnly(readOnly: Boolean) {
-    addresses.forEach { it.isReadOnly = readOnly }
-    emails.forEach { it.isReadOnly = readOnly }
-    events.forEach { it.isReadOnly = readOnly }
-    // Group memberships are implicitly read-only.
-    ims.forEach { it.isReadOnly = readOnly }
-    name?.isReadOnly = readOnly
-    nickname?.isReadOnly = readOnly
-    note?.isReadOnly = readOnly
-    organization?.isReadOnly = readOnly
-    phones.forEach { it.isReadOnly = readOnly }
-    // Photo is implicitly read-only.
-    relations.forEach { it.isReadOnly = readOnly }
-    sipAddress?.isReadOnly = readOnly
-    websites.forEach { it.isReadOnly = readOnly }
-
-    customDataEntities.values.flatMap { it.entities }.forEach {
-        if (it is NewCustomDataEntity) {
-            it.isReadOnly = readOnly
-        }
-    }
+    data().forEach { it.isReadOnly = readOnly }
 }

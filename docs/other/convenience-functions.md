@@ -70,6 +70,26 @@ added to is redacted.
 
 > ℹ️ For more info, read [Redact entities and API input and output in production](./../entities/redact-apis-and-entities.md).
 
+## Getting all data of a Contact or RawContact
+
+There may be instances where you want to get all available data of a Contact or RawContact instance.
+In such cases, you can use extensions in `ExistingContactData.kt`, `ExistingRawContactData.kt`, and
+`NewRawContactData.kt`.
+
+To get a sequence of all data kinds of a Contact or RawContact,
+
+```kotlin
+contact.data()
+rawContact.data()
+```
+
+To get it as a list,
+
+```kotlin
+contact.dataList()
+rawContact.dataList()
+```
+
 ## Getting the parent Contact of a RawContact or Data
 
 Using the `Query` API, it is easy to get the parent Contact of a RawContact or Data,
