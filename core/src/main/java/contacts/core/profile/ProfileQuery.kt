@@ -405,7 +405,7 @@ private fun ContentResolver.rawContactIds(
     // There may be RawContacts that are marked for deletion that have not yet been deleted.
     (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere
 ) {
-    mutableSetOf<Long>().apply {
+    buildSet {
         val rawContactsCursor = it.rawContactsCursor()
         while (!cancel() && it.moveToNext()) {
             add(rawContactsCursor.rawContactId)

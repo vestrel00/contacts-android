@@ -1,12 +1,21 @@
 package contacts.core.util
 
 import android.content.ContentResolver
-import contacts.core.*
+import contacts.core.AbstractDataField
+import contacts.core.ContactsField
+import contacts.core.ContactsFields
+import contacts.core.Fields
+import contacts.core.Include
+import contacts.core.RawContactsField
+import contacts.core.RawContactsFields
+import contacts.core.Where
+import contacts.core.and
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.cursor.dataContactsCursor
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.table.Table
+import contacts.core.notEqualTo
 
 // region Contacts table
 
@@ -19,7 +28,7 @@ internal fun ContentResolver.findContactIdsInContactsTable(
         Table.Contacts, Include(ContactsFields.Id), contactsWhere,
         suppressDbExceptions = suppressDbExceptions
     ) {
-        mutableSetOf<Long>().apply {
+        buildSet {
             val contactsCursor = it.contactsCursor()
             while (!cancel() && it.moveToNext()) {
                 add(contactsCursor.contactId)
@@ -44,7 +53,7 @@ internal fun ContentResolver.findContactIdsInRawContactsTable(
         (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere,
         suppressDbExceptions = suppressDbExceptions
     ) {
-        mutableSetOf<Long>().apply {
+        buildSet {
             val rawContactsCursor = it.rawContactsCursor()
             while (!cancel() && it.moveToNext()) {
                 add(rawContactsCursor.contactId)
@@ -66,7 +75,7 @@ internal fun ContentResolver.findRawContactIdsInRawContactsTable(
         (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere,
         suppressDbExceptions = suppressDbExceptions
     ) {
-        mutableSetOf<Long>().apply {
+        buildSet {
             val rawContactsCursor = it.rawContactsCursor()
             while (!cancel() && it.moveToNext()) {
                 add(rawContactsCursor.rawContactId)
@@ -83,7 +92,7 @@ internal fun ContentResolver.findContactIdsInDataTable(
     where: Where<AbstractDataField>?, cancel: () -> Boolean = { false }
 ): Set<Long> = if (cancel()) emptySet() else {
     query(Table.Data, Include(Fields.Contact.Id), where) {
-        mutableSetOf<Long>().apply {
+        buildSet {
             val contactsCursor = it.dataContactsCursor()
             while (!cancel() && it.moveToNext()) {
                 add(contactsCursor.contactId)
@@ -95,7 +104,7 @@ internal fun ContentResolver.findContactIdsInDataTable(
 internal fun ContentResolver.findRawContactIdsInDataTable(
     where: Where<AbstractDataField>, cancel: () -> Boolean = { false }
 ): Set<Long> = query(Table.Data, Include(Fields.RawContact.Id), where) { cursor ->
-    mutableSetOf<Long>().apply {
+    buildSet {
         val dataCursor = cursor.dataCursor()
         while (!cancel() && cursor.moveToNext()) {
             add(dataCursor.rawContactId)

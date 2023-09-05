@@ -7,7 +7,7 @@ import contacts.core.entities.EventDate
 import contacts.core.entities.MimeType
 import contacts.core.entities.toWhereString
 import contacts.core.util.copyWithFieldValueSubstitutions
-import java.util.*
+import java.util.Date
 
 // Java consumers would have to access these static functions via Wherekt instead of Where.
 // Using @file:JvmName("Where") will not work because of the name clash with the Where class.
@@ -596,7 +596,7 @@ class Where<out T : Field> private constructor(
      * the mimeType of this (if it holds a field).
      */
     internal val mimeTypes: Set<MimeType> by lazy {
-        mutableSetOf<MimeType>().apply {
+        buildSet {
             if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
                 if (lhs.field is DataField) {
                     add(lhs.field.mimeType)
@@ -844,7 +844,7 @@ fun Any.likeWildcardsEscaped(escapeExpression: String = LIKE_ESCAPE_EXPR): Strin
  * - "field match value"
  * - "where combine where"
  */
-internal class InvalidWhereFormException(where: Where<*>): ContactsException(
+internal class InvalidWhereFormException(where: Where<*>) : ContactsException(
     """
         lhs: ${where.lhs.javaClass.simpleName}
         operator: ${where.operator}
@@ -862,10 +862,12 @@ private fun Any?.toSqlString(redactStringValue: Boolean): String = when (this) {
             this
         }
     )
+
     is Array<*> -> this.asSequence().toSqlString(redactStringValue)
     is Collection<*> -> this.asSequence().toSqlString(redactStringValue)
     is Sequence<*> -> this.map { it?.toSqlString(redactStringValue) }
         .joinToString(separator = ", ", prefix = "(", postfix = ")")
+
     is DataEntity.Type -> value.toSqlString(redactStringValue)
     is Date -> time.toString() // we will not assume that all dates are for EventDate comparisons.
     is EventDate -> toWhereString()

@@ -228,7 +228,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     val PrimaryPhotoHolder = PrimaryPhotoHolderFields
 
     override val all by lazy {
-        mutableSetOf<AbstractDataField>().apply {
+        buildSet {
             addAll(Address.all)
             addAll(Contact.all)
             add(DataId)
@@ -260,7 +260,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     }
 
     override val forMatching by lazy {
-        mutableSetOf<AbstractDataField>().apply {
+        buildSet {
             addAll(Address.forMatching)
             addAll(Contact.forMatching)
             // add(DataId) not included
