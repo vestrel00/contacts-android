@@ -112,7 +112,7 @@ private fun Contacts.dataReadOnlyList(
     Include(Fields.DataId),
     (Fields.DataId `in` existingDataIds) and (Fields.DataIsReadOnly equalTo true)
 ) {
-    mutableListOf<Long>().apply {
+    buildList {
         val dataCursor = it.dataCursor()
         while (!cancel() && it.moveToNext()) {
             add(dataCursor.dataId)

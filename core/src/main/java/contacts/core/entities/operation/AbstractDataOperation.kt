@@ -103,7 +103,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      * Blank entities are excluded.
      */
     internal fun insertForNewRawContact(entities: List<E>): List<ContentProviderOperation> =
-        mutableListOf<ContentProviderOperation>().apply {
+        buildList {
             for (entity in entities) {
                 insertForNewRawContact(entity)?.let(::add)
             }
@@ -118,10 +118,10 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
      */
     internal fun updateInsertOrDeleteDataForRawContact(
         entities: Collection<E>, rawContactId: Long, contentResolver: ContentResolver
-    ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+    ): List<ContentProviderOperation> = buildList {
         if (includeFields.isEmpty()) {
             // No-op when no fields are included.
-            return@apply
+            return@buildList
         }
 
         if (!propertiesAreAllNullOrBlank(entities)) {

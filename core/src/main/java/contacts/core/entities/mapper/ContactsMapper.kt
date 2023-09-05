@@ -151,7 +151,7 @@ internal class ContactsMapper(
         return if (cancel()) emptyList() else contactList
     }
 
-    fun mapRawContacts(): List<RawContact> = mutableListOf<RawContact>().apply {
+    fun mapRawContacts(): List<RawContact> = buildList {
         // In order to support cancellations, we do not just do;
         // rawContactsMap.values.map { it.toRawContact() }
         for (tempRawContact in rawContactsMap.values) {

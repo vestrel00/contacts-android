@@ -8,7 +8,11 @@ import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.Include
 import contacts.core.RawContactsFields
-import contacts.core.entities.*
+import contacts.core.entities.Entity
+import contacts.core.entities.Group
+import contacts.core.entities.GroupMembership
+import contacts.core.entities.GroupMembershipEntity
+import contacts.core.entities.MimeType
 import contacts.core.entities.cursor.account
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.groupMembershipMapper
@@ -42,10 +46,10 @@ internal class GroupMembershipOperation(
     fun insertForNewRawContact(
         groupMemberships: Collection<GroupMembershipEntity>,
         account: Account?
-    ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+    ): List<ContentProviderOperation> = buildList {
         if (includeFields.isEmpty()) {
             // No-op when entity is blank or no fields are included.
-            return@apply
+            return@buildList
         }
 
         // Map of Group.id -> Group
@@ -79,10 +83,10 @@ internal class GroupMembershipOperation(
         groupMemberships: Collection<GroupMembershipEntity>,
         rawContactId: Long,
         context: Context
-    ): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+    ): List<ContentProviderOperation> = buildList {
         if (includeFields.isEmpty()) {
             // No-op when no fields are included.
-            return@apply
+            return@buildList
         }
 
         val account: Account? = context.accountForRawContactWithId(rawContactId)
@@ -140,10 +144,9 @@ internal class GroupMembershipOperation(
             }
     }
 
-    private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long):
-            List<GroupMembership> =
+    private fun ContentResolver.getGroupMembershipsInDB(rawContactId: Long): List<GroupMembership> =
         query(contentUri, INCLUDE, selectionWithMimeTypeForRawContact(rawContactId)) {
-            mutableListOf<GroupMembership>().apply {
+            buildList {
                 val groupMembershipMapper = it.groupMembershipMapper()
                 while (it.moveToNext()) {
                     add(groupMembershipMapper.value)

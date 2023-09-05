@@ -3,8 +3,20 @@ package contacts.core.util
 import android.content.ContentProviderOperation
 import android.os.Build
 import android.provider.ContactsContract
-import contacts.core.*
-import contacts.core.aggregationexceptions.*
+import contacts.core.AggregationExceptionsFields
+import contacts.core.Contacts
+import contacts.core.ContactsFields
+import contacts.core.Fields
+import contacts.core.Include
+import contacts.core.RawContactsFields
+import contacts.core.aggregationexceptions.ContactLink
+import contacts.core.aggregationexceptions.ContactLinkFailed
+import contacts.core.aggregationexceptions.ContactLinkSuccess
+import contacts.core.aggregationexceptions.ContactUnlink
+import contacts.core.aggregationexceptions.ContactUnlinkFailed
+import contacts.core.aggregationexceptions.ContactUnlinkSuccess
+import contacts.core.and
+import contacts.core.contentResolver
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.Name
@@ -15,6 +27,8 @@ import contacts.core.entities.mapper.nameMapper
 import contacts.core.entities.operation.newUpdate
 import contacts.core.entities.operation.withValue
 import contacts.core.entities.table.Table
+import contacts.core.equalTo
+import contacts.core.`in`
 
 // region LINK
 
@@ -393,7 +407,7 @@ private fun Contacts.sortedRawContactIds(contactIds: Set<Long>): List<Long> = co
     RawContactsFields.ContactId `in` contactIds,
     RawContactsFields.Id.columnName
 ) {
-    mutableListOf<Long>().apply {
+    buildList {
         val rawContactsCursor = it.rawContactsCursor()
         while (it.moveToNext()) {
             add(rawContactsCursor.rawContactId)

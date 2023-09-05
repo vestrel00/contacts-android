@@ -666,7 +666,7 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
     contentResolver: ContentResolver,
     includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry
-): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+): List<ContentProviderOperation> = buildList {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
 

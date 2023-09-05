@@ -57,7 +57,7 @@ class GroupsActivity : BaseActivity() {
     private val selectableGroups = mutableListOf<Group>()
 
     private val selectedGroups: List<Group>
-        get() = mutableListOf<Group>().apply {
+        get() = buildList {
 
             val checkedItemPositions = groupsListView.checkedItemPositions
             for (i in 0 until checkedItemPositions.size()) {

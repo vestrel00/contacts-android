@@ -617,7 +617,7 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
         if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
         include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
     ) {
-        mutableListOf<T>().apply {
+        buildList {
             val entityMapper = it.dataEntityMapperFor<T>(mimeType, customDataRegistry)
             while (!cancel() && it.moveToNext()) {
                 // Do not add blanks.

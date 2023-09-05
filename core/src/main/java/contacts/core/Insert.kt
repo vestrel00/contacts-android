@@ -574,7 +574,7 @@ private fun NewRawContact.customDataInsertOperations(
     includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry,
     isProfile: Boolean
-): List<ContentProviderOperation> = mutableListOf<ContentProviderOperation>().apply {
+): List<ContentProviderOperation> = buildList {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
 
