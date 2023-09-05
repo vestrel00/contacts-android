@@ -236,22 +236,26 @@ private class DataDeleteImpl(
         return if (!permissions.canUpdateDelete() || hasNothingToCommit) {
             DataDeleteAllResult(isSuccessful = false)
         } else {
-            val dataIdsResultMap = mutableMapOf<Long, Boolean>()
-            for (dataId in dataIds) {
-                dataIdsResultMap[dataId] =
-                    if (dataId.isProfileId != isProfile) {
-                        // Intentionally fail the operation to ensure that this is only used for
-                        // profile or non-profile deletes. Otherwise, operation can succeed. This
-                        // is only done to enforce API design.
-                        false
-                    } else {
-                        contentResolver.deleteDataWhere(Fields.DataId equalTo dataId, isProfile)
-                    }
+            val dataIdsResultMap = buildMap {
+                for (dataId in dataIds) {
+                    put(
+                        dataId,
+                        if (dataId.isProfileId != isProfile) {
+                            // Intentionally fail the operation to ensure that this is only used for
+                            // profile or non-profile deletes. Otherwise, operation can succeed. This
+                            // is only done to enforce API design.
+                            false
+                        } else {
+                            contentResolver.deleteDataWhere(Fields.DataId equalTo dataId, isProfile)
+                        }
+                    )
+                }
             }
 
-            val whereResultMap = mutableMapOf<String, Boolean>()
-            dataWhere?.let {
-                whereResultMap[it.toString()] = contentResolver.deleteDataWhere(it, isProfile)
+            val whereResultMap = buildMap {
+                dataWhere?.let {
+                    put(it.toString(), contentResolver.deleteDataWhere(it, isProfile))
+                }
             }
 
             DataDeleteResult(dataIdsResultMap, whereResultMap)

@@ -239,16 +239,24 @@ private class BlockedNumbersDeleteImpl(
         return if (!privileges.canReadAndWrite() || hasNothingToCommit) {
             BlockedNumbersDeleteAllResult(isSuccessful = false)
         } else {
-            val results = mutableMapOf<Long, Boolean>()
-            for (blockedNumberId in blockedNumbersIds) {
-                results[blockedNumberId] = contentResolver.deleteBlockedNumbersWhere(
-                    BlockedNumbersFields.Id equalTo blockedNumberId
-                )
+            val results = buildMap {
+                for (blockedNumberId in blockedNumbersIds) {
+                    put(
+                        blockedNumberId,
+                        contentResolver.deleteBlockedNumbersWhere(
+                            BlockedNumbersFields.Id equalTo blockedNumberId
+                        )
+                    )
+                }
             }
 
-            val whereResultMap = mutableMapOf<String, Boolean>()
-            blockedNumbersWhere?.let {
-                whereResultMap[it.toString()] = contentResolver.deleteBlockedNumbersWhere(it)
+            val whereResultMap = buildMap {
+                blockedNumbersWhere?.let {
+                    put(
+                        it.toString(),
+                        contentResolver.deleteBlockedNumbersWhere(it)
+                    )
+                }
             }
 
             BlockedNumbersDeleteResult(results, whereResultMap)
